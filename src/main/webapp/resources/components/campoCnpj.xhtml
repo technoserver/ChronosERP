@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="idComponente" />
+        <cc:attribute name="label" />
+        <cc:attribute name="nomeAtributo" />
+        <cc:attribute name="requerido" />      
+        <cc:attribute name="styleClassDiv" />
+        <cc:attribute name="styleClassInput" default="form-control cnpj" />
+        <cc:attribute name="tamanhoMaximo" default="18"/>
+        <cc:attribute name="desabilitado" default="false" />
+        <cc:attribute name="somenteLeitura" default="false" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <script type="text/javascript">
+            $(function () {              
+                $(".cnpj").mask("99.999.999/9999-99");
+            });
+        </script>
+        <div class="#{cc.attrs.styleClassDiv}" >
+            <h:outputLabel value="#{cc.attrs.label}"
+                           for="#{cc.attrs.idComponente}" />
+
+            <h:inputText id        = "#{cc.attrs.idComponente}"
+                         value     = "#{cc.attrs.nomeAtributo}" 
+                         required  = "#{cc.attrs.requerido}"
+                         maxlength = "#{cc.attrs.tamanhoMaximo}"
+                         disabled  = "#{cc.attrs.desabilitado}"
+                         readonly  = "#{cc.attrs.somenteLeitura}" 
+                         class     = "#{cc.attrs.styleClassInput}"                        
+                         validator="cnpjValidator"
+
+                         />
+        </div>
+    </cc:implementation>
+</html>

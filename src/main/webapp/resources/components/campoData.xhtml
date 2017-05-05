@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="idComponente" />
+        <cc:attribute name="label" />
+        <cc:attribute name="nomeAtributo" />
+        <cc:attribute name="requerido" />
+        <cc:attribute name="styleClassDiv" />    
+        <cc:attribute name="styleClassInput" default="data form-control" />
+        <cc:attribute name="somenteLeitura"  default="false"/>
+        <cc:attribute name="formato"  default="dd/MM/yyyy"/>
+        <cc:attribute name="formatoConverte"  default="dd/MM/yyyy"/>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+
+        <div class="#{cc.attrs.styleClassDiv}">
+            <h:outputLabel value="#{cc.attrs.label}"
+                           for="#{cc.attrs.idComponente}" />
+            <br/>
+
+            <p:calendar id="#{cc.attrs.idComponente}" 
+                        value="#{cc.attrs.nomeAtributo}" style="width: 100%"
+                        required="#{cc.attrs.requerido}" pattern="#{cc.attrs.formato}"  readonly="#{cc.attrs.somenteLeitura}" />
+        </div>
+    </cc:implementation>
+</html>

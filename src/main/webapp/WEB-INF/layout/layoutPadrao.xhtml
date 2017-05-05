@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <title>INSPINIA | Empty Page</title>
+
+
+
+        <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="style.css"/>
+        <h:outputStylesheet library="css" name="dashboard.css"/>
+
+        <title>Facelets Template</title>
+    </h:head>
+
+    <h:body class="pace-done fixed-sidebar">
+        <f:metadata>
+            <f:viewParam name="chronos"/>
+        </f:metadata>
+        <ui:insert name="metadata" />
+
+        <p:ajaxStatus onstart="PF('statusDialog').show();"
+                      onsuccess="PF('statusDialog').hide();" />
+
+        <p:dialog modal="true" widgetVar="statusDialog" header="Carregando..."
+                  draggable="false" closable="false" resizable="false">
+            <p:graphicImage value="/resources/images/ajax_loading_bar.gif" />
+        </p:dialog>
+        <div id="wrapper">
+            <nav class="navbar-default navbar-static-side" role="navigation">
+                <ui:include src="menu.xhtml"></ui:include>
+            </nav>
+            <div id="page-wrapper" class="gray-bg">
+                <div class="row border-bottom">
+                    <ui:include src="header.xhtml"></ui:include>
+                </div>
+                <div class="row wrapper border-bottom white-bg page-heading">
+                    <div class="col-lg-6">
+                        <h3>  
+                            <ui:insert name="controle"></ui:insert> - 
+                            <small><ui:insert name="tela"></ui:insert></small>
+                        </h3>
+                        <ol class="breadcrumb">
+                            <li>
+                                <a href="index-2.html">Home</a>
+                            </li>
+                            <li>
+                                <a><ui:insert name="controle"></ui:insert> </a>
+                            </li>
+                            <li class="active">
+                                <strong><ui:insert name="tela"></ui:insert></strong>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="col-lg-6">
+
+                    </div>
+                </div>
+                <div class="wrapper wrapper-content animated fadeInRight">
+
+
+                    <h:form id="formCentro" style="margin: 0" role="form">
+                        <p:confirmDialog global="true" showEffect="fade"
+                                         hideEffect="explode">
+                            <p:commandButton value="Sim" type="button"
+                                             styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                            <p:commandButton value="Não" type="button"
+                                             styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                        </p:confirmDialog>
+                        <p:growl id="growl" life="3000" showDetail="true" sticky="true"  />
+
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5><ui:insert name="tela"></ui:insert></h5>
+                                <h:messages id="messages" showSummary="true" showDetail="true"/>
+                            </div>
+                            <ui:insert name="gridDados"></ui:insert>
+                            <ui:insert name="telaInclusaoAlteracao" id="gridForm" />
+                        
+                        </div>
+                    </h:form> 
+
+
+
+
+                </div>
+
+                <div class="footer fixed">
+                    <ui:include src="footer.xhtml"></ui:include>
+
+                </div>
+            </div>
+
+
+        </div>
+
+        <h:outputScript library="primefaces" name="jquery/jquery.js" /> 
+        <h:outputScript library="js" name="vendor/metisMenu/jquery.metisMenu.js" />
+        <h:outputScript library="js" name="vendor/slimscroll/jquery.slimscroll.min.js" />
+        <h:outputScript library="js" name="bootstrap.min.js"/>       
+        <h:outputScript library="js" name="inspinia.js"/>
+    </h:body>
+
+</html>

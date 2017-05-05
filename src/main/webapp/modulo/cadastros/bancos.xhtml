@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://xmlns.jcp.org/jsf/composite/components">
+
+    <ui:define name="title">
+        Banco 
+    </ui:define>
+
+    <ui:define name="tela">
+        #{bancoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Banco 
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+        <h:panelGroup layout="block" id="outputPanelGrid">
+            <h:panelGroup layout="block" rendered="#{bancoControll.telaGrid}">
+
+                <div class="ibox-content">
+
+                    <p:dataTable value="#{bancoControll.dataModel}" var="row" id="dataTableBanco" paginator="true"
+                                 rows="10" rowsPerPageTemplate="10,20,30,40"  paginatorPosition="bottom"                                                                   
+                                 reflow="true"
+                                 resizableColumns="true" lazy="true" >
+
+                        <p:column headerText="Nome" width="300" sortBy="#{obj.nome}">
+                            <h:outputLabel value="#{row.nome}" />
+                        </p:column>
+                        <p:column headerText="Codigo">
+                            <h:outputLabel value="#{row.codigo}" />
+                        </p:column>
+                        <p:column headerText="Url">
+                            <h:outputLabel value="#{row.url}" />
+                        </p:column>                    
+                        <p:column headerText="Ações" width="100">
+                            <p:commandLink title="Alterar"  action="#{bancoControll.doEdit()}" class=" btn btn-default"
+                                           update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe">
+                                <i class="fa fa-file-text-o"></i>   
+                                <f:setPropertyActionListener value="#{row}" target="#{bancoControll.objetoSelecionado}"/>
+                            </p:commandLink>
+                            &nbsp;
+                            <p:commandLink title="Excluir"   action="#{bancoControll.remover()}" style="position: relative; right: 7px"
+                                           update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                                           process="dataTableBanco"
+                                           class="btn btn-default">
+                                <i class="fa fa-times"></i> 
+                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                                <f:setPropertyActionListener value="#{row}" target="#{bancoControll.objetoSelecionado}"/> 
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </div><!-- /.box-body -->
+                <div class="ibox-footer">
+                    <div class="row">
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cadastrar" class="btn btn-danger center-block"
+                                             actionListener="#{bancoControll.doCreate()}"
+                                             disabled="#{!bancoControll.podeInserir()}"
+                                             >
+                                <p:ajax process="@form"  update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"/>
+                            </h:commandButton>
+                        </div>
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             action="#{bancoControll.doIndex()}" immediate="true"
+                                             />
+                        </div>
+
+                    </div>
+                </div>
+
+            </h:panelGroup>
+        </h:panelGroup>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <h:panelGroup layout="block" id="outputPanelDetalhe">
+            <h:panelGroup layout="block" rendered="#{!bancoControll.telaGrid}">
+                <h:panelGroup layout="block" id="panelCentroDetalhe">
+                    <ui:include src="formBanco.xhtml"/>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:panelGroup>
+    </ui:define>
+
+</ui:composition>

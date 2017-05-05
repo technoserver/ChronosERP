@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>      
+        <cc:attribute name="idComponente" />
+        <cc:attribute name="label" />
+        <cc:attribute name="acao" method-signature="void action()" />        
+        <cc:attribute name="listener" method-signature="void action()" />
+        <cc:attribute name="posicaoBotao" />
+        <cc:attribute name="nomeAtributo" />        
+        <cc:attribute name="styleClassDiv"/> 
+        <cc:attribute name="evento" default="dialogReturn"/>
+        <cc:attribute name="updateBotao" default="@none"/>
+        <cc:attribute name="processBotao" default="@this"/>
+        <cc:attribute name="processAjax" default="@this"/>
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <div class="#{cc.attrs.styleClassDiv}" >
+            <h:outputLabel value="#{cc.attrs.label}"
+                           for="#{cc.attrs.idComponente}" />
+            <h:inputText id        = "#{cc.attrs.idComponente}"
+                         value     = "#{cc.attrs.nomeAtributo}" 
+                         readonly  = "#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}" 
+                         class     = "form-control"/>
+            <p:commandButton action="#{cc.attrs.acao}" styleClass= "btn btn-default" icon="ui-icon-search"
+                             process="#{cc.attrs.processBotao}" update="#{cc.attrs.updateBotao}" style="#{cc.attrs.posicaoBotao}">
+                <p:ajax event="#{cc.attrs.evento}" listener="#{cc.attrs.listener}"
+                        process="#{cc.attrs.processAjax}" update="#{cc.attrs.idComponente}" />
+                <p:resetInput target="#{cc.attrs.idComponente}" />
+            </p:commandButton>
+        </div>
+    </cc:implementation>
+</html>

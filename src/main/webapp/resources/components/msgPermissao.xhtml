@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <!-- INTERFACE -->
+    <cc:interface>       
+        <cc:attribute name="permissao" />        
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>       
+        <h:panelGroup rendered="#{!cc.attrs.permissao}">
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-ban"></i> Alerta !</h4>
+                Você não possui acesso a essa função
+            </div>
+        </h:panelGroup>
+    </cc:implementation>
+</html>
