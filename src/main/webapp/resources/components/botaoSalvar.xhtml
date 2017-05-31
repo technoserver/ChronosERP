@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>       
+        <cc:attribute name="nomeBotaoSalva" default="salvar" /> 
+        <cc:attribute name="exibirBotaoSalvar" default="#{true}" /> 
+        <cc:attribute name="exibirBotaoAtualizar" default="#{false}" /> 
+        <cc:attribute name="atualizarSalvarAlterar" /> 
+        <cc:attribute name="atualizarCancelar" />                
+        <cc:attribute name="acaoSalvar"
+                      method-signature="void action()"
+                      />
+        <cc:attribute name="acaoCancelar"
+                      method-signature="void action()"
+                      /> 
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+
+        <div class="row" >
+            <div class="col-xs-6 col-lg-6">
+                <h:commandButton value="#{cc.attrs.nomeBotaoSalva}" class="btn btn-danger center-block"
+                                 rendered="#{cc.attrs.exibirBotaoSalvar}"
+                                 actionListener="#{cc.attrs.acaoSalvar}"
+                                 id="btnSalvar" 
+                                 >
+                    <p:ajax process="@form" update="#{cc.attrs.atualizarSalvarAlterar}" />
+                </h:commandButton>
+                <h:commandButton value="Salvar" class="btn btn-danger center-block"
+                                 rendered="#{cc.attrs.exibirBotaoAtualizar}"
+                                 actionListener="#{cc.attrs.acaoSalvar}"
+                                 id="btnAtualizar" 
+                                 >
+                    <p:ajax update="#{cc.attrs.atualizarSalvarAlterar}" />
+                </h:commandButton>
+            </div>
+            <div class="col-xs-6 col-lg-6">
+                <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
+                                 actionListener="#{cc.attrs.acaoCancelar}"
+                                 id="btnCancelar" 
+                                 >
+                    <p:ajax update="#{cc.attrs.atualizarSalvarAlterar}"
+                            process="@this"/>
+                </h:commandButton>
+            </div>
+        </div>
+    </cc:implementation>
+</html>

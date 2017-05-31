@@ -10,7 +10,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-        <title>INSPINIA | Empty Page</title>
+        <title>ChronosERP Light - <ui:insert name="title"></ui:insert></title>
 
 
 
@@ -41,8 +41,9 @@
             <div id="page-wrapper" class="gray-bg">
                 <div class="row border-bottom">
                     <ui:include src="header.xhtml"></ui:include>
-                </div>
-                <div class="row wrapper border-bottom white-bg page-heading">
+                </div>  
+
+                <h:panelGroup layout="block" class="row wrapper border-bottom white-bg page-heading" id="navegacao">
                     <div class="col-lg-6">
                         <h3>  
                             <ui:insert name="controle"></ui:insert> - 
@@ -60,16 +61,14 @@
                             </li>
                         </ol>
                     </div>
-                    <div class="col-lg-6">
 
-                    </div>
-                </div>
+                </h:panelGroup>
                 <div class="wrapper wrapper-content animated fadeInRight">
 
 
                     <h:form id="formCentro" style="margin: 0" role="form">
                         <p:confirmDialog global="true" showEffect="fade"
-                                         hideEffect="explode">
+                                         hideEffect="explode" responsive="true">
                             <p:commandButton value="Sim" type="button"
                                              styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
                             <p:commandButton value="Não" type="button"
@@ -78,13 +77,16 @@
                         <p:growl id="growl" life="3000" showDetail="true" sticky="true"  />
 
                         <div class="ibox float-e-margins">
-                            <div class="ibox-title">
+
+                            <h:panelGroup layout="block" class="ibox-title" id="mensagem">
                                 <h5><ui:insert name="tela"></ui:insert></h5>
-                                <h:messages id="messages" showSummary="true" showDetail="true"/>
-                            </div>
+                                <br/>
+                                
+                                <h:messages  showSummary="true" showDetail="true"/>
+                            </h:panelGroup>
                             <ui:insert name="gridDados"></ui:insert>
                             <ui:insert name="telaInclusaoAlteracao" id="gridForm" />
-                        
+
                         </div>
                     </h:form> 
 
@@ -107,6 +109,14 @@
         <h:outputScript library="js" name="vendor/slimscroll/jquery.slimscroll.min.js" />
         <h:outputScript library="js" name="bootstrap.min.js"/>       
         <h:outputScript library="js" name="inspinia.js"/>
+        <script type="text/javascript">
+            function init() {
+                $(".ui-growl-image-info").parent().parent().addClass("g-info");
+                $(".ui-growl-image-warn").parent().parent().addClass("g-warn");
+                $(".ui-growl-image-error").parent().parent().addClass("g-error");
+                $(".ui-growl-image-fatal").parent().parent().addClass("g-fatal");
+            }
+        </script>
     </h:body>
 
 </html>

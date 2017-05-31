@@ -11,7 +11,6 @@ import com.chronos.util.jsf.Mensagem;
 import java.io.Serializable;
 import java.util.HashMap;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
@@ -80,7 +79,7 @@ public abstract class AbstractControll<T> implements Serializable {
     public void doCreate() {
         try {
             objeto = (T) getClazz().newInstance();
-            telaGrid = true;
+            telaGrid = false;
             titulo = "Cadastrar";
             activeTabIndex = 0;
         } catch (InstantiationException | IllegalAccessException e) {
@@ -170,11 +169,11 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public String getTitulo() {
-        return titulo;
+        return StringUtils.isEmpty(titulo) ? "Consultar" : titulo;
     }
 
     public void setTitulo(String titulo) {
-        this.titulo = StringUtils.isEmpty(titulo) ? "Consultar" : titulo;
+        this.titulo = titulo;
     }
 
     public int getActiveTabIndex() {

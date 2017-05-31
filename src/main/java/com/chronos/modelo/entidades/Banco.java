@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 
@@ -40,8 +41,8 @@ public class Banco implements Serializable {
     private String codigo;
     @Size(max = 100)
     @Column(name = "nome", length = 100)
-  //  @NotEmpty(message = "Nome do Banco Orbigatorio")
-    @NotNull(message = "Nome do Banco Obrigatorio")
+    @NotEmpty
+    @NotNull
     private String nome;
     @Size(max = 250)
     @Column(name = "url", length = 250)

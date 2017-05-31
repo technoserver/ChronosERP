@@ -43,7 +43,7 @@
                         </p:column>                    
                         <p:column headerText="Ações" width="100">
                             <p:commandLink title="Alterar"  action="#{bancoControll.doEdit()}" class=" btn btn-default"
-                                           update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe">
+                                           update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
                                 <i class="fa fa-file-text-o"></i>   
                                 <f:setPropertyActionListener value="#{row}" target="#{bancoControll.objetoSelecionado}"/>
                             </p:commandLink>
@@ -68,7 +68,7 @@
                                              actionListener="#{bancoControll.doCreate()}"
                                              disabled="#{!bancoControll.podeInserir()}"
                                              >
-                                <p:ajax process="@form"  update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"/>
+                                <p:ajax process="@form"  update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
                             </h:commandButton>
                         </div>
                         <div  class="col-xs-6 col-lg-6">

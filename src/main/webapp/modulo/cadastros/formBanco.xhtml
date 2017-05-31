@@ -23,7 +23,8 @@
                     <div class="row">
 
                         <erp:campoTexto styleClassDiv="col-lg-6" styleClassInput="form-control" label="Banco :" 
-                                        idComponente="banco" nomeAtributo="#{bancoControll.objeto.nome}" tamanhoMaximo="100"/>    
+                                        idComponente="banco" requerido="true"
+                                        nomeAtributo="#{bancoControll.objeto.nome}" tamanhoMaximo="100"/>    
 
                     </div>
                     <div class="row">
@@ -48,25 +49,26 @@
                                      action="#{bancoControll.salvar()}"
 
                                      >
-                        <p:ajax process="@form" update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe" />
+                        <p:ajax process="@form" update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem" />
                     </h:commandButton>
                     <h:commandButton value="Salvar" class="btn btn-danger center-block"
                                      rendered="#{not empty bancoControll.objeto.id}"
                                      actionListener="#{bancoControll.salvar()}"
 
                                      >
-                        <p:ajax update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe" />
+                        <p:ajax process="@form" update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem" />
                     </h:commandButton>
                 </div>
                 <div class="col-xs-6 col-lg-6">
                     <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
                                      actionListener="#{bancoControll.voltar()}"
                                      >
-                        <p:ajax update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                        <p:ajax update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                                 process="@this"/>
                     </h:commandButton>
                 </div>
             </div>
+
         </h:panelGroup>
 
     </div>

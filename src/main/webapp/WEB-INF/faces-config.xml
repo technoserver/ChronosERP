@@ -14,7 +14,14 @@
             <default-locale>pt_BR</default-locale>
         </locale-config>
     </application>
-     <factory>
+    <render-kit>
+        <renderer>
+            <component-family>javax.faces.Messages</component-family>
+            <renderer-type>javax.faces.Messages</renderer-type>
+            <renderer-class>com.chronos.util.jsf.BootstrapMessagesRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+    <factory>
         <exception-handler-factory>
             com.chronos.util.jsf.JSFExceptionHandlerFactory
         </exception-handler-factory>

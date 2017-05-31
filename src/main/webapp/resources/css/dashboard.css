@@ -11,3 +11,45 @@ and open the template in the editor.
 .wrapper-content{
     padding: 10px 0px 40px !important;
 }
+.ui-state-highlight{
+    background-color: #dd4b39 !important;
+    background-image: none !important;
+}
+
+/*ajuste nos botoes quando a linha da grid é to tipo selected*/
+ui-state-highlight a, .ui-widget-content .ui-state-highlight a, .ui-widget-header .ui-state-highlight a {
+    color: #333333 !important;
+}
+/*fim do ajuste*/
+div[id="formCentro:growl_container"] > div[class~="g-fatal"] {
+    background-color: #dd4b39 !important;
+    background-image: none !important;
+}
+
+div[id="formCentro:growl_container"] > div[class~="g-error"] {
+    background-color: #dd4b39 !important;
+    background-image: none !important;
+}
+
+div[id="formCentro:growl_container"] > div[class~="g-warn"]{
+    background-color: #fcf8e3 !important;
+    background-image: none !important;
+}
+
+div[id="formCentro:growl_container"] > div[class~="g-info"]{
+    background-color: #3c763d !important;
+    background-image: none !important;
+}
+
+.ui-growl-image-info ~ .ui-growl-message {
+    color:#fff;
+}
+.ui-growl-image-error ~ .ui-growl-message {
+    color:#fff;
+}
+.ui-growl-image-warn ~ .ui-growl-message {
+    color:#fff;
+}
+.ui-growl-image-fatal ~ .ui-growl-message {
+    color:#fff;
+}

@@ -8,7 +8,7 @@ package com.chronos.controll.cadastros;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Banco;
 import java.io.Serializable;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
 /**
