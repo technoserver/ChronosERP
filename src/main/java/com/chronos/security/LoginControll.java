@@ -49,7 +49,8 @@ public class LoginControll extends ManualCDILookup implements AuthenticationProv
             if (usr != null) {
                 List<PapelFuncao> funcoes = dao.getPapelFuncao(usr); 
                 grantedAuths =  (List<GrantedAuthority>) getAutorizacoes(funcoes);
-                if (usr.getPapel().getAcessoCompleto().equals("S")) {
+                
+                if (usr.getPapel().getAcessoCompleto().equals("S") || usr.getAdministrador().equals("S")) {
                     
                     grantedAuths.add(new SimpleGrantedAuthority("ADMIN"));
                 } 
@@ -62,20 +63,34 @@ public class LoginControll extends ManualCDILookup implements AuthenticationProv
             }
 
         } catch (NamingException ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);            
         } catch (Exception ex) {
-            ex.printStackTrace();
+            throw new RuntimeException(ex);
         }
-        return null;
+      
     }
 
     private Collection<? extends GrantedAuthority> getAutorizacoes(List<PapelFuncao> funcoes) {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        for (PapelFuncao p : funcoes) {
-            authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome()));
-
-        }
+        funcoes.stream().map((p) -> {
+            if(p.getPodeConsultar().equals("S")){
+                authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome()+"_CONSULTAR"));
+            }
+            return p;
+        }).map((p) -> {
+            if(p.getPodeInserir().equals("S")){
+                authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome()+"_INSERIR"));
+            }
+            return p;
+        }).map((p) -> {
+            if(p.getPodeAlterar().equals("S")){
+                authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome()+"_ALTERAR"));
+            }
+            return p;
+        }).filter((p) -> (p.getPodeExcluir().equals("S"))).forEach((p) -> {
+            authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome()+"_EXCLUIR"));
+        });
 
         return authorities;
     }

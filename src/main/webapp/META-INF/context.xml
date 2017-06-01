@@ -1,8 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/ChronoERPLight">
-  <!-- disables storage of sessions across restarts -->
-   <Manager pathname=""/>
+    <!-- disables storage of sessions across restarts -->
+    <Manager pathname=""/>
     <Resource name="BeanManager" auth="Container" 
-        type="javax.enterprise.inject.spi.BeanManager" 
-        factory="org.jboss.weld.resources.ManagerObjectFactory"/>
+              type="javax.enterprise.inject.spi.BeanManager" 
+              factory="org.jboss.weld.resources.ManagerObjectFactory"/>
+    <Resource	
+        name="jdbc/datasource" 
+        auth="Container" 
+        type="javax.sql.DataSource"
+        defaultAutoCommit='false'
+        maxActive="50"
+        maxIdle="10" 
+        maxWait="10"
+        initialSize="10"
+        driverClassName="org.postgresql.Driver"
+        validationQuery="SELECT 'OK'"
+        testWhileIdle="true"
+        testOnBorrow="true"
+        numTestsPerEvictionRun="5"
+        timeBetweenEvictionRunsMillis="5000"
+        minEvictableIdleTimeMillis="60000"
+        antiJARLocking="false"
+        antiResourceLocking="false"
+        username="caixaki" 
+        password="admin" 
+        url="jdbc:postgresql://localhost:5432/chronosERPLight?autoReconnect=true"/>
 </Context>

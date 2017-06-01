@@ -62,10 +62,28 @@
     </authentication-manager>
 
     <b:bean name="loginControll" class="com.chronos.security.LoginControll" />
-<!--    <b:bean name="successHandler" class="com.chronos.controll.ChronosSuccessHandler" />-->
+    <!--    <b:bean name="successHandler" class="com.chronos.controll.ChronosSuccessHandler" />-->
         
     <b:bean id="roleVoter" class="org.springframework.security.access.vote.RoleVoter">
         <b:property name="rolePrefix" value="" />
+    </b:bean>
+    
+    <!-- Data Source -->
+    <b:bean id="springDataSource" name="springDataSource"
+              class="org.springframework.jndi.JndiObjectFactoryBean" lazy-init="false">
+        <b:property name="jndiName">
+            <value>java:comp/env/jdbc/datasource</value>
+        </b:property>
+    </b:bean>
+    
+    <b:bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate" 
+          lazy-init="false" >
+        <b:property name="dataSource" ref="springDataSource"/>	
+        <b:property name="baselineOnMigrate" value="true"/>
+        <b:property name="table" value="version"/>
+        <b:property name="sqlMigrationPrefix" value="V"/>
+        <b:property name="sqlMigrationSeparator" value="__"/>        
+        <b:property name="validateOnMigrate" value="true"/>
     </b:bean>
 
 </b:beans>
