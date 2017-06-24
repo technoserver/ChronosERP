@@ -39,7 +39,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 @Entity
@@ -52,10 +53,10 @@ public class Almoxarifado implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-//    @NotEmpty(message = "Nome Obrigatório")
+    @NotEmpty(message = "Nome Obrigatório")
     @Column(name = "NOME")
-    private String nome;
-    @Valid
+    @NotNull
+    private String nome;    
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;

@@ -1,31 +1,4 @@
-/*
- * The MIT License
- * 
- * Copyright: Copyright (C) 2014 T2Ti.COM
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- * The author may be contacted at: t2ti.com@gmail.com
- *
- * @author Claudio de Barros (T2Ti.com)
- * @version 2.0
- */
+
 package com.chronos.modelo.entidades;
 
 import java.io.Serializable;
@@ -40,8 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.Valid;
+import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "CONTA_CAIXA")
@@ -57,29 +31,51 @@ public class ContaCaixa implements Serializable {
     private String codigo;
     @Column(name = "DIGITO")
     private String digito;
-//    @NotEmpty(message = "Nome Obrigatório")
     @Column(name = "NOME")
+    @NotNull
+    @NotEmpty
     private String nome;
     @Column(name = "DESCRICAO")
     private String descricao;
     @Column(name = "TIPO")
+    @NotNull
+    @NotEmpty
     private String tipo;
     @Column(name = "LIMITE_CREDITO")
+    @DecimalMax(value = "9999999.99", message = "O limite de credito deve ser menor que R$9.999.999,99")
     private BigDecimal limiteCredito;
+    @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")
+    private String classificacaoContabilConta;
+    @Column(name = "TAXA_MULTA")
+    @DecimalMax(value = "100.0", message = "O percentual de multa deve ser menor que 100")
+    private BigDecimal taxaMulta;
+    @Column(name = "TAXA_JURO")
+    @DecimalMax(value = "100.0", message = "O percentual de juros deve ser menor que 100")
+    private BigDecimal taxaJuro;
+    @Column(name = "DESCONTO_MAXIMO_PERMITIDO")
+    @DecimalMax(value = "100.0", message = "O desconto maximo deve ser menor que 100")
+    private BigDecimal descontoMaximoPermitido;
+    @Column(name = "LIMITE_COBRANCA_JURO")
+    @DecimalMax(value = "100.0", message = "O limite de cobrança deve ser menor que 100")
+    private Integer limiteCobrancaJuro;
     @JoinColumn(name = "ID_AGENCIA_BANCO", referencedColumnName = "ID")
-    @ManyToOne
-    @Valid   
+    @ManyToOne   
     private AgenciaBanco agenciaBanco;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    @Valid
-    @NotNull(message = "Empresa Obrogatória")
+    @NotNull
     private Empresa empresa;
-    @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")
-    private String classificacaoContabilConta;
+  
 
     public ContaCaixa() {
     }
+
+    public ContaCaixa(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+    
+    
 
     public Integer getId() {
         return id;
@@ -160,6 +156,40 @@ public class ContaCaixa implements Serializable {
     public void setClassificacaoContabilConta(String classificacaoContabilConta) {
         this.classificacaoContabilConta = classificacaoContabilConta;
     }
+
+    public BigDecimal getTaxaMulta() {
+        return taxaMulta;
+    }
+
+    public void setTaxaMulta(BigDecimal taxaMulta) {
+        this.taxaMulta = taxaMulta;
+    }
+
+    public BigDecimal getTaxaJuro() {
+        return taxaJuro;
+    }
+
+    public void setTaxaJuro(BigDecimal taxaJuro) {
+        this.taxaJuro = taxaJuro;
+    }
+
+    public BigDecimal getDescontoMaximoPermitido() {
+        return descontoMaximoPermitido;
+    }
+
+    public void setDescontoMaximoPermitido(BigDecimal descontoMaximoPermitido) {
+        this.descontoMaximoPermitido = descontoMaximoPermitido;
+    }
+
+    public Integer getLimiteCobrancaJuro() {
+        return limiteCobrancaJuro;
+    }
+
+    public void setLimiteCobrancaJuro(Integer limiteCobrancaJuro) {
+        this.limiteCobrancaJuro = limiteCobrancaJuro;
+    }
+    
+    
 
     @Override
     public int hashCode() {

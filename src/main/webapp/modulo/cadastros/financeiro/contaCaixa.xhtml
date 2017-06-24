@@ -1,0 +1,121 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                >
+
+    <ui:define name="title">
+        Conta Caixa 
+    </ui:define>
+
+    <ui:define name="tela">
+        #{contaCaixaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Conta Caixa 
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{contaCaixaControll}"
+                       idDataTable="dataTableContaCaixa"
+                       nomeFuncao="Cheque"
+                       id="telaGrid">
+
+            <p:column headerText="Codigo">
+                <h:outputLabel value="#{row.codigo}" />
+            </p:column>
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}" />
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}" />
+            </p:column>
+            <p:column headerText="Tipo">
+                <h:outputLabel value="#{contaCaixaControll.keyFromValue(contaCaixaControll.tipoContaCaixa, row.tipo)}" />
+            </p:column>
+            <p:column headerText="Agencia Banco">
+                <h:outputLabel value="#{row.agenciaBanco.nome}" />
+            </p:column>
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{contaCaixaControll}"
+                                   nomeFuncao="Conta Caixa"
+                                   id="telaDetalhe">
+
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-4"
+                                  label="Agencia Banco" 
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{contaCaixaControll}"
+                                  completeMethod="getListaAgenciaBanco"
+                                  nomeAtributo="#{contaCaixaControll.objeto.agenciaBanco}" 
+                                  idComponente="contaCaixaAgenciaBanco" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-5"
+                                idComponente="contaCaixaNome" label="Nome"
+                                nomeAtributo="#{contaCaixaControll.objeto.nome}"
+                                tamanhoMaximo="50" />
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2"
+                                idComponente="contaCaixaCodigo" label="Codigo"
+                                nomeAtributo="#{contaCaixaControll.objeto.codigo}"
+                                tamanhoMaximo="20" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-1"
+                                idComponente="contaCaixaDigito" label="DV"
+                                nomeAtributo="#{contaCaixaControll.objeto.digito}"
+                                tamanhoMaximo="1" />
+
+
+            </div>
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2"
+                                 idComponente="contaCaixaTipo" label="Tipo"
+                                 nomeAtributo="#{contaCaixaControll.objeto.tipo}"
+                                 itens="#{contaCaixaControll.tipoContaCaixa}" />
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2"
+                                  idComponente="contaCaixaLimiteCredito" label="Limite Credito"
+                                  nomeAtributo="#{contaCaixaControll.objeto.limiteCredito}" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3"
+                                idComponente="contaCaixaClassificacaoContabilConta" label="Classificacao Contabil"
+                                nomeAtributo="#{contaCaixaControll.objeto.classificacaoContabilConta}"
+                                tamanhoMaximo="30" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2"
+                                  idComponente="contaCaixaTaxaMulta" label="Taxa Multa"
+                                  nomeAtributo="#{contaCaixaControll.objeto.taxaMulta}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2"
+                                  idComponente="contaCaixaTaxaJuro" label="Taxa Juro"
+                                  nomeAtributo="#{contaCaixaControll.objeto.taxaJuro}" />
+
+            </div>
+            <div class="row">
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3"
+                                  idComponente="contaCaixaDescontoMaximoPermitido" label="Desconto Maximo Permitido"
+                                  nomeAtributo="#{contaCaixaControll.objeto.descontoMaximoPermitido}" />
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3"
+                                  idComponente="contaCaixaLimiteCobrancaJuro" label="Limite Cobranca Juro"
+                                  nomeAtributo="#{contaCaixaControll.objeto.limiteCobrancaJuro}" />
+            </div>
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12"
+                                    idComponente="contaCaixaDescricao" label="Descricao"
+                                    nomeAtributo="#{contaCaixaControll.objeto.descricao}" />
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

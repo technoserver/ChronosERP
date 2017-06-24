@@ -5,8 +5,10 @@
  */
 package com.chronos.repository;
 
+import com.chronos.util.jpa.Transactional;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,25 +34,31 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     }
 
+    @Transactional
     @Override
     public T atualizar(T bean) throws Exception {
         Object updateObj = em.merge(bean);
         return (T) updateObj;
     }
 
+    @Transactional
     @Override
     public void excluir(Class<T> clazz) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Object updateObj = em.merge(clazz);
+        em.remove(updateObj);
     }
 
+    @Transactional
     @Override
     public void excluir(T bean) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Object updateObj = em.merge(bean);
+        em.remove(updateObj);
     }
 
+    @Transactional
     @Override
     public void excluir(T bean, Integer id) throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        em.remove(em.getReference(bean.getClass(), id));
     }
 
     @Override
@@ -59,7 +67,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
-    public T getEntityJoinFetch(Integer id, Class<T> clazz) throws Exception {
+    public T getJoinFetch(Integer id, Class<T> clazz) throws Exception {
         String jpql = "SELECT DISTINCT o FROM " + clazz.getName() + " o";
         Field fields[] = clazz.getDeclaredFields();
         for (Field f : fields) {
@@ -104,7 +112,51 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
-    public List<T> getEntityPagination(Class<T> clazz, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) throws Exception {
+    public <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws Exception {
+        Query qr = createQuery(query, values);
+        return qr.getResultList();
+    }
+    
+    @Override
+    public List<T> getEntitys(Class<T> clazz, String atributo, Object valor, Object... atributos) throws Exception {
+        List<Filtro> filtros = new ArrayList<>();
+        if (valor.getClass() == String.class) {
+            filtros.add(new Filtro(Filtro.AND, atributo, Filtro.LIKE, valor));
+        } else {
+            filtros.add(new Filtro(Filtro.AND, atributo, Filtro.IGUAL, valor));
+        }
+
+        return getEntitys(clazz, filtros, atributos);
+    }
+
+    @Override
+    public List<T> getEntitys(Class<T> clazz, List<Filtro> filtros, Object... atributos) throws Exception {
+
+        return getEntitys(clazz, filtros, 20, null, null, atributos);
+    }
+
+    @Override
+    public List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int qtdRegistro, String sortField, SortOrder sortOrder, Object... atributos) throws Exception {
+        String jpql = atributos != null ? "SELECT NEW " + clazz.getName() + "(o.id " : "SELECT o FROM " + clazz.getName() + " o WHERE 1 = 1";
+
+        if (atributos != null) {
+            for (int i = 0; i < atributos.length; i++) {
+                jpql += ", o." + atributos[i].toString();
+            }
+            jpql += ")  FROM " + clazz.getName() + " o WHERE 1 = 1 ";
+        }
+
+        jpql = montaQuery(jpql, sortField, sortOrder, filters);
+        Query query = queryPrepared(jpql, filters);
+        query.setFirstResult(0);
+        query.setMaxResults(qtdRegistro);
+        List<T> beans = query.getResultList();
+
+        return beans;
+    }
+
+    @Override
+    public List<T> getEntitysPagination(Class<T> clazz, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) throws Exception {
         String jpql = "SELECT o FROM " + clazz.getName() + " o WHERE 1 = 1";
         jpql = montaQuery(jpql, sortField, sortOrder, filters);
         Query query = queryPrepared(jpql, filters);
@@ -119,8 +171,20 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         int i = 0;
         for (Filtro f : filters) {
             i++;
-
-            jpql += " " + f.getOperadorLogico() + " LOWER(o." + f.getAtributo() + ") " + f.getOperadorRelacional() + ":valor" + i;
+            String operadorRelacional ="" ;
+            switch(f.getOperadorRelacional()){
+                case Filtro.LIKE  :
+                    operadorRelacional = " LOWER(o." + f.getAtributo() + ")"+ f.getOperadorRelacional() +" " + ":valor" + i;
+                    break;
+                case Filtro.NAO_NULO :
+                    operadorRelacional = f.getAtributo()+" "+f.getOperadorRelacional();
+                    break;
+                default:
+                    operadorRelacional = f.getAtributo()+" "+f.getOperadorRelacional()+ ":valor" + i;
+                    break;
+            }
+            
+            jpql += " " + f.getOperadorLogico() + " "+operadorRelacional;
 
         }
 
@@ -166,7 +230,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
             Object valor = filters.get(atributo);
             if (valor != null) {
                 if (valor.getClass() == String.class) {
-                    query.setParameter(atributo, "%" + String.valueOf(valor).toLowerCase() + "%");
+                    query.setParameter(atributo, "%" + String.valueOf(valor).toLowerCase().trim() + "%");
                 } else {
                     query.setParameter(atributo, valor);
                 }
@@ -184,7 +248,10 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
             if (f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) {
                 query.setParameter("valor" + i, "%" + String.valueOf(f.getValor()).trim().toLowerCase() + "%");
             } else {
-                query.setParameter("valor" + i, f.getValor());
+                if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)){
+                    query.setParameter("valor" + i, f.getValor());
+                }
+                
             }
         }
         return query;
@@ -201,5 +268,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         }
         return qr;
     }
+
+   
 
 }

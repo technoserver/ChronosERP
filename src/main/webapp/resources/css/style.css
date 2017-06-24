@@ -170,7 +170,8 @@ h5 {
 .nav-header {
   padding: 33px 25px;
   background-color: #2f4050;
-  background-image: url("patterns/header-profile.png");
+  background-image: url("../resources/images/header-profile.png");
+                    
 }
 .pace-done .nav-header {
   transition: all 0.4s;

@@ -28,7 +28,7 @@ public interface Repository<T> {
 
     T get(Integer id, Class<T> clazz) throws Exception;
     
-    T getEntityJoinFetch(Integer id, Class<T> clazz) throws Exception;
+    T getJoinFetch(Integer id, Class<T> clazz) throws Exception;
 
     List<T> getAll(Class<T> clazz) throws Exception;
 
@@ -36,5 +36,14 @@ public interface Repository<T> {
 
     Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws Exception;
 
-    List<T> getEntityPagination(Class<T> clazz, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) throws Exception;
+    List<T> getEntitysPagination(Class<T> clazz, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) throws Exception;
+    
+    <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws Exception;
+    
+    List<T> getEntitys(Class<T> clazz, String atributo, Object valor,Object... atributos) throws Exception;
+    
+    List<T> getEntitys(Class<T> clazz,List<Filtro> filters,Object... atributos) throws Exception;
+    
+    List<T> getEntitys(Class<T> clazz,List<Filtro> filters,int qtdRegistro,String sortField, SortOrder sortOrder, Object... atributos) throws Exception;
+    
 }

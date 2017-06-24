@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/ChronoERPLight">
-    <!-- disables storage of sessions across restarts -->
-    <Manager pathname=""/>
-    <Resource name="BeanManager" auth="Container" 
-              type="javax.enterprise.inject.spi.BeanManager" 
-              factory="org.jboss.weld.resources.ManagerObjectFactory"/>
-    <Resource	
+  <!-- disables storage of sessions across restarts -->
+  <Manager pathname=""/>
+  <Resource auth="Container" factory="org.jboss.weld.resources.ManagerObjectFactory" name="BeanManager" type="javax.enterprise.inject.spi.BeanManager"/>
+  <!--     <Resource	
         name="jdbc/datasource" 
         auth="Container" 
         type="javax.sql.DataSource"
@@ -23,7 +21,8 @@
         minEvictableIdleTimeMillis="60000"
         antiJARLocking="false"
         antiResourceLocking="false"
-        username="caixaki" 
-        password="admin" 
-        url="jdbc:postgresql://localhost:5432/chronosERPLight?autoReconnect=true"/>
+        username="postgres" 
+        password="p@ssw0rd" 
+        url="jdbc:postgresql://localhost:5432/chronosLight?autoReconnect=true"/>-->
+  <Resource acquireIncrement="1" auth="Container" driverClass="org.postgresql.Driver" factory="org.apache.naming.factory.BeanFactory" jdbcUrl="jdbc:postgresql://localhost:5432/chronosLight?autoReconnect=true" maxIdleTime="300" maxPoolSize="5" maxStatements="50" minPoolSize="5" name="jdbc/chronosLightDB" password="p@ssw0rd" type="com.mchange.v2.c3p0.ComboPooledDataSource" user="postgres"/>
 </Context>

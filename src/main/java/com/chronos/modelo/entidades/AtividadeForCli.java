@@ -37,6 +37,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 @Entity
@@ -50,7 +51,7 @@ public class AtividadeForCli implements Serializable {
     @Column(name = "ID")
     private Integer id;
     @Column(name = "NOME")
-//    @NotEmpty(message = "Nome obrigatório")
+    @NotEmpty(message = "Nome obrigatório")
     private String nome;
     @Column(name = "DESCRICAO")
     private String descricao;

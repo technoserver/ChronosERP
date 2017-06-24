@@ -1,13 +1,19 @@
 package com.chronos.modelo.entidades;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -62,9 +68,17 @@ public class Papel implements Serializable {
     private String descricao;
     @Column(name = "ACESSO_COMPLETO")
     private String acessoCompleto;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "papel",fetch = FetchType.LAZY)
+    private List<PapelFuncao> listaPapelFuncao;
+    
     public Papel() {
     }
+
+    public Papel(Integer id) {
+        this.id = id;
+    }
+    
+    
 
     public Integer getId() {
         return id;
@@ -97,5 +111,42 @@ public class Papel implements Serializable {
     public void setAcessoCompleto(String acessoCompleto) {
         this.acessoCompleto = acessoCompleto;
     }
+
+    public List<PapelFuncao> getListaPapelFuncao() {
+        return listaPapelFuncao;
+    }
+
+    public void setListaPapelFuncao(List<PapelFuncao> listaPapelFuncao) {
+        this.listaPapelFuncao = listaPapelFuncao;
+    }
+
+    
+    
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 79 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Papel other = (Papel) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
 }

@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui">
+
+    <!-- INTERFACE -->
+    <cc:interface>	
+        <cc:attribute name="styleClass" />        
+        <cc:attribute name="idComponente" required="true" />
+        <cc:attribute name="label" required="true"/>
+        <cc:attribute name="itemLabel" required="true"/>
+        <cc:attribute name="completeMethod" required="true"/>
+        <cc:attribute name="nomeAtributo" required="true"/>
+        <cc:attribute name="requerido" default="true"/>       
+        <cc:attribute name="controller" required="true"/>
+        <cc:clientBehavior name="itemSelecionado" targets="#{cc.attrs.idComponente}" event="itemSelect" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <div class="#{cc.attrs.styleClass}">
+            <p:outputLabel value="#{cc.attrs.label}"
+                           for="#{cc.attrs.idComponente}" />
+            <br />
+            <p:autoComplete id="#{cc.attrs.idComponente}"
+                            value="#{cc.attrs.nomeAtributo}"
+                            completeMethod="#{cc.attrs.controller[cc.attrs.completeMethod]}" var="objeto"
+                            itemLabel="#{cc.attrs.itemLabel}" itemValue="#{objeto}"
+                            converter="defaultConverter" forceSelection="true"
+                            minQueryLength="3" maxResults="10" required="#{cc.attrs.requerido}"
+                            style="width: 100%" emptyMessage="Nenhum registro encontrado" >
+
+                <cc:insertChildren />
+
+            </p:autoComplete>
+        </div>
+    </cc:implementation>
+</html>

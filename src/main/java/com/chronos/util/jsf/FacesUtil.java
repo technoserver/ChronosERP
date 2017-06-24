@@ -5,16 +5,23 @@
  */
 package com.chronos.util.jsf;
 
+import com.chronos.modelo.entidades.Empresa;
+import com.chronos.security.UsuarioLogado;
+import com.chronos.security.UsuarioSistema;
 import com.chronos.util.Biblioteca;
 import java.io.File;
+import javax.enterprise.inject.Produces;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 /**
  *
  * @author john
  */
 public class FacesUtil {
+
+    private UsuarioSistema usuario;
 
     public static boolean isPostback() {
         return FacesContext.getCurrentInstance().isPostback();
@@ -30,12 +37,13 @@ public class FacesUtil {
         facesContext.responseComplete();
     }
 
+  
+
     public static boolean isNotPostback() {
         return !isPostback();
     }
 
     public static boolean isUserInRole(String role) {
-
         return FacesContext.getCurrentInstance().getExternalContext().isUserInRole(role);
     }
 

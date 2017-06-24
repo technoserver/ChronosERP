@@ -14,6 +14,7 @@
             <default-locale>pt_BR</default-locale>
         </locale-config>
     </application>
+    
     <render-kit>
         <renderer>
             <component-family>javax.faces.Messages</component-family>
@@ -21,9 +22,10 @@
             <renderer-class>com.chronos.util.jsf.BootstrapMessagesRenderer</renderer-class>
         </renderer>
     </render-kit>
+    
     <factory>
         <exception-handler-factory>
-            com.chronos.util.jsf.JSFExceptionHandlerFactory
+            org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory
         </exception-handler-factory>
     </factory>
 

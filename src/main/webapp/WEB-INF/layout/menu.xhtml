@@ -1,9 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:erp="http://java.sun.com/jsf/composite/components">
 
 
     <div class="sidebar-collapse">
@@ -12,23 +15,23 @@
                 <li class="nav-header">
                     <div class="dropdown profile-element"> 
                         <span>
+                            <h:graphicImage id="imgPadrap" library="images" name="pessoa.png" class="img-circle" rendered="#{seguranca.fotoFuncionario==null}"/>
+                            <h:graphicImage id="imfFuncionario" value="#{seguranca.fotoFuncionario}"  class="img-circle" rendered="#{seguranca.fotoFuncionario!=null}"/>
 
-                            <img alt="image" class="img-circle" src="resources/images/profile_small.jpg" />
                         </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> 
                                 <span class="block m-t-xs"> 
-                                    <strong class="font-bold">David Williams</strong>
+                                    <strong class="font-bold">#{seguranca.nomeUsuario}</strong>
                                 </span> 
                                 <span class="text-muted text-xs block">
-                                    Art Director <b class="caret"></b>
+                                    #{seguranca.usuarioLogado.usuario.colaborador.cargo.nome}<b class="caret"></b>
                                 </span> 
                             </span> 
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                            <li><a href="profile.html">Profile</a></li>
-                            <li><a href="contacts.html">Contacts</a></li>
-                            <li><a href="mailbox.html">Mailbox</a></li>
+                            <li><a href="profile.html">Perfil</a></li>
+                            <li><a href="contacts.html">Agenda</a></li>                            
                             <li class="divider"></li>
                             <li><a href="login.html">Logout</a></li>
                         </ul>
@@ -37,17 +40,64 @@
                         IN+
                     </div>
                 </li>
-                <li>
-                    <a href="index-2.html"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span> <span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level collapse">
-                        <li>
-                            <h:link outcome="/modulo/cadastros/bancos" value="Banco"/>
-                          
+                <li class="${fn:contains(view.viewId,'cadastros')?'active':''}">
+                    <a href="#">
+                        <i class="fa fa-th-large"></i> 
+                        <span class="nav-label">Cadastros</span> 
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse ">
+                        <li class="${fn:contains(view.viewId,'modulo/cadastros/comercial/')?'active':''}">
+                            <a href="#">Cliente|Fornecedor <span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">                               
+
+                                <erp:subMenu caminho="/modulo/cadastros/comercial/atividadeForCli"
+                                             label="Atividade"
+                                             funcao="atividadeForCli"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/comercial/situacaoForCli"
+                                             label="Situação"
+                                             funcao="situacaoForCli"/>
+
+                            </ul>
                         </li>
-                        <li><a href="dashboard_2.html">Dashboard v.2</a></li>
-                        <li><a href="dashboard_3.html">Dashboard v.3</a></li>
-                        <li><a href="dashboard_4_1.html">Dashboard v.4</a></li>
-                        <li><a href="dashboard_5.html">Dashboard v.5 </a></li>
+                        <li class="${fn:contains(view.viewId,'cadastros/financeiro')?'active':''}">
+                            <a href="#">Finaceiro <span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">                               
+                                <erp:subMenu caminho="/modulo/cadastros/financeiro/bancos"
+                                             label="Banco"
+                                             funcao="bancos"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/financeiro/agenciaBanco"
+                                             label="Agencia Bancaria"
+                                             funcao="agenciaBanco"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/financeiro/contaCaixa"
+                                             label="Conta Caixa"
+                                             funcao="contaCaixa"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/financeiro/talonarioCheque"
+                                             label="Talonário Cheque"
+                                             funcao="talonarioCheque"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/financeiro/cheque"
+                                             label="Cheque"
+                                             funcao="cheque"/>
+                            </ul>
+                        </li>
+                        <li class="${fn:contains(view.viewId,'cadastros/diversos')?'active':''}">
+                            <a href="#">Diversos<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">                               
+
+                                <erp:subMenu caminho="/modulo/cadastros/diversos/almoxarifado"
+                                             label="Almoxarifado"
+                                             funcao="almoxarifado"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/diversos/setor"
+                                             label="Setor"
+                                             funcao="setor"/>
+                            </ul>
+                        </li>                       
                     </ul>
                 </li>
 
@@ -76,6 +126,7 @@
                             <a href="#">Second Level Item</a>
                         </li>
                     </ul>
+
                 </li>
             </ul>
         </h:form>

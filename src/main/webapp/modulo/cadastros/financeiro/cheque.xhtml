@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                >
+
+    <ui:define name="title">
+        Cheque 
+    </ui:define>
+
+    <ui:define name="tela">
+        #{chequeControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Cheque 
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{chequeControll}"
+                       idDataTable="dataTableCheque"
+                       nomeFuncao="Cheque"
+                       id="telaGrid">
+
+            <p:column headerText="Talonario">
+                <h:outputLabel value="#{row.talonarioCheque.talao}" />
+            </p:column>
+            <p:column headerText="Numero">
+                <h:outputLabel value="#{row.numero}" />
+            </p:column>
+            <p:column headerText="Status Cheque">
+                <h:outputLabel value="#{chequeControll.keyFromValue(chequeControll.chequeStatus, obj.statusCheque)}" />
+            </p:column>
+            <p:column headerText="Data Status">
+                <h:outputLabel value="#{obj.dataStatus}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputLabel>
+            </p:column>
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{chequeControll}"
+                                   nomeFuncao="CHeque"
+                                   id="telaDetalhe">
+
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-5"
+                                    label="Talonario" 
+                                    itemLabel="#{objeto.talao}"
+                                    controller="#{chequeControll}"
+                                    completeMethod="getListaTalao"
+                                    nomeAtributo="#{chequeControll.objeto.talonarioCheque}" 
+                                    idComponente="chequeTalonarioCheque" />
+                
+                <erp:campoInteiro idComponente="numChueque" label="Número Cheque" 
+                                  nomeAtributo="#{chequeControll.objeto.numero}"
+                                  styleClass="col-xs-12 col-lg-3" />
+                <erp:campoSelect idComponente="status" nomeAtributo="#{chequeControll.objeto.statusCheque}"
+                                 itens="#{chequeControll.chequeStatus}" label="Status :" 
+                                 styleClass="col-lg-2" />
+                <erp:campoData label="Data do Status" idComponente="dataStatus" styleClassDiv="col-xs-12 col-lg-2"
+                               nomeAtributo="#{chequeControll.objeto.dataStatus}" 
+                               id="campoData"/> 
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

@@ -42,7 +42,7 @@ public class Filtro implements Serializable {
 	public static final String MENOR_OU_IGUAL = "<=";
 	public static final String MAIOR = ">";
 	public static final String MAIOR_OU_IGUAL = ">=";
-	public static final String NAO_NULO = "NOT NULL";
+	public static final String NAO_NULO = "IS NOT NULL";
         public static final String LIKE = " like";      
 	private String operadorLogico;
 	private String atributo;

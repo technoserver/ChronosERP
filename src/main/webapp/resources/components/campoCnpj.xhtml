@@ -6,15 +6,16 @@
 
     <!-- INTERFACE -->
     <cc:interface>
-        <cc:attribute name="idComponente" />
-        <cc:attribute name="label" />
-        <cc:attribute name="nomeAtributo" />
+        <cc:attribute name="idComponente" required="true"/>
+        <cc:attribute name="label" required="true"/>
+        <cc:attribute name="nomeAtributo" required="true"/>
         <cc:attribute name="requerido" />      
-        <cc:attribute name="styleClassDiv" />
+        <cc:attribute name="styleClass" required="true"/>
         <cc:attribute name="styleClassInput" default="form-control cnpj" />
         <cc:attribute name="tamanhoMaximo" default="18"/>
         <cc:attribute name="desabilitado" default="false" />
         <cc:attribute name="somenteLeitura" default="false" />
+         <cc:attribute name="exibir"  default="#{true}"/>
     </cc:interface>
 
     <!-- IMPLEMENTATION -->
@@ -24,7 +25,7 @@
                 $(".cnpj").mask("99.999.999/9999-99");
             });
         </script>
-        <div class="#{cc.attrs.styleClassDiv}" >
+        <div class="#{cc.attrs.styleClass}" >
             <h:outputLabel value="#{cc.attrs.label}"
                            for="#{cc.attrs.idComponente}" />
 

@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      >
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="controller" type="com.chronos.controll.AbstractControll" required="true" />
+        <cc:attribute name="nomeFuncao" required="true" />
+        <cc:attribute name="somenteConsulta" default="false" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:panelGroup layout="block" id="outputPanelDetalhe">
+            <h:panelGroup layout="block" rendered="#{!cc.attrs.controller.telaGrid}">
+                <h:panelGroup layout="block" id="panelCentroDetalhe">
+                    <div class="ibox-footer">
+
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h:panelGroup layout="block" rendered="#{not empty cc.attrs.controller.objeto}">
+
+
+                                    <cc:insertChildren />
+
+
+                                </h:panelGroup>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ibox-footer">  
+
+                        <h:panelGroup layout="block" rendered="#{not empty cc.attrs.controller.objeto}">
+                            <div class="row" >
+                                <div class="col-xs-6 col-lg-6">
+                                    <h:commandButton value="Salvar" class="btn btn-danger center-block"
+                                                     rendered="#{empty cc.attrs.controller.objeto.id and !cc.attrs.somenteConsulta}"
+                                                     action="#{cc.attrs.controller.salvar()}"
+                                                     disabled="#{!cc.attrs.controller.podeInserir()}"
+                                                     >
+                                        <p:ajax process="@form" 
+                                                oncomplete="addClass()"                                                
+                                                update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem" />
+                                    </h:commandButton>
+                                    <h:commandButton value="Salvar" class="btn btn-danger center-block"
+                                                     rendered="#{not empty cc.attrs.controller.objeto.id and !cc.attrs.somenteConsulta}"
+                                                     actionListener="#{cc.attrs.controller.salvar()}"
+                                                     disabled="#{!cc.attrs.controller.podeAlterar()}"
+                                                     >
+                                        <p:ajax process="@form"  
+                                                oncomplete="addClass()"
+                                                update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem" />
+                                    </h:commandButton>
+                                </div>
+                                <div class="col-xs-6 col-lg-6">
+                                    <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
+                                                     actionListener="#{cc.attrs.controller.voltar()}"
+                                                     >
+                                        <p:ajax update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                                process="@this"/>
+                                    </h:commandButton>
+                                </div>
+                            </div>
+
+                        </h:panelGroup>
+
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+        </h:panelGroup>
+    </cc:implementation>
+</html>

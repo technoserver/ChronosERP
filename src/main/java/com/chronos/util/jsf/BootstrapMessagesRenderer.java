@@ -125,11 +125,11 @@ public class BootstrapMessagesRenderer extends MessagesRenderer {
         if (FacesMessage.SEVERITY_INFO.equals(severity)) {
             alertSeverityClass = "alert-success";
         } else if (FacesMessage.SEVERITY_WARN.equals(severity)) {
-            alertSeverityClass = ""; // Default alert is a warning
+            alertSeverityClass = "alert-warning"; // Default alert is a warning
         } else if (FacesMessage.SEVERITY_ERROR.equals(severity)) {
-            alertSeverityClass = "alert-error";
+            alertSeverityClass = "alert-danger";
         } else if (FacesMessage.SEVERITY_FATAL.equals(severity)) {
-            alertSeverityClass = "alert-error";
+            alertSeverityClass = "alert-danger";
         }
 
         writer.startElement("div", null);

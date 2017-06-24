@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                >
+
+    <ui:define name="title">
+        Setor 
+    </ui:define>
+
+    <ui:define name="tela">
+        #{setorControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Setor 
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{setorControll}"
+                       idDataTable="dataTableSetor"
+                       nomeFuncao="Setor"
+                       id="telaGrid">
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{setorControll}"
+                                   nomeFuncao="Setor"
+                                   id="telaDetalhe">
+
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6"
+                                idComponente="nome" label="Nome"
+                                nomeAtributo="#{setorControll.objeto.nome}"
+                                tamanhoMaximo="50" 
+                                id="campoTextoNome"/>
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

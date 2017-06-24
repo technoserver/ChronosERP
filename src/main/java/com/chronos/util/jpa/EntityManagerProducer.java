@@ -30,6 +30,7 @@ public class EntityManagerProducer {
     @RequestScoped
     public EntityManager createEntityManager() {
         return factory.createEntityManager();
+        //return factory.createEntityManager();
     }
 
     public void closeEntityManager(@Disposes EntityManager manager) {

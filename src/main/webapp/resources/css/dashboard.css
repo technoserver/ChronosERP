@@ -53,3 +53,24 @@ div[id="formCentro:growl_container"] > div[class~="g-info"]{
 .ui-growl-image-fatal ~ .ui-growl-message {
     color:#fff;
 }
+
+.ui-autocomplete-input {
+    width: 100%;
+}
+
+.ui-inputfield {
+    width: 100% !important;
+}
+
+.ui-selectonemenu {
+    padding-right: 0 !important;
+    width: 100% !important;
+}
+
+.ui-selectonemenu-label {
+    width: 100% !important;
+}
+
+.ui-inputnumber input{
+    text-align: right !important;;
+}

@@ -34,9 +34,6 @@ public class BancoControll extends AbstractControll<Banco> implements Serializab
         return "BANCO";
     }
 
-    @Override
-    protected String getPagina() {
-        return "/modulo/cadastros/bancos?faces-redirect=true";
-    }
+   
 
 }

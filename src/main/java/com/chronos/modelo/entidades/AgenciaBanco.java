@@ -14,8 +14,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -66,14 +67,20 @@ public class AgenciaBanco implements Serializable {
     @Column(name = "OBSERVACAO")
     private String observacao;
     @JoinColumn(name = "id_banco", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    @Valid
+    @ManyToOne(optional = false)   
     @NotNull
     private Banco banco;
 
     public AgenciaBanco() {
     }
 
+    @PreUpdate
+    @PrePersist
+    private void preUpdate(){
+        this.cep = cep!=null?cep.replaceAll("\\D",""):"";  
+        this.telefone = telefone!=null?telefone.replaceAll("\\D",""):"";  
+    }
+    
     public AgenciaBanco(Integer id) {
         this.id = id;
     }

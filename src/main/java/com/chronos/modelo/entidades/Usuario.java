@@ -42,6 +42,18 @@ public class Usuario implements Serializable {
     @ManyToOne(optional = false)
     private Papel papel;
 
+    public Usuario(Integer id, String login, String senha,Integer idpapel) {
+        this.id = id;
+        this.login = login;
+        this.senha = senha;
+        this.papel = new Papel(idpapel);
+    }
+
+    public Usuario(Integer id) {
+        this.id = id;
+    }
+
+    
     public Usuario() {
     }
 
