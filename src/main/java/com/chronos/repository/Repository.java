@@ -7,6 +7,7 @@ package com.chronos.repository;
 
 import java.util.List;
 import java.util.Map;
+import javax.persistence.PersistenceException;
 import org.primefaces.model.SortOrder;
 
 /**
@@ -16,34 +17,34 @@ import org.primefaces.model.SortOrder;
  */
 public interface Repository<T> {
 
-    void salvar(T bean) throws Exception;
+    void salvar(T bean) throws PersistenceException;
 
-    T atualizar(T bean) throws Exception;
+    T atualizar(T bean) throws PersistenceException;
 
-    void excluir(Class<T> clazz) throws Exception;
+    void excluir(Class<T> clazz) throws PersistenceException;
 
-    void excluir(T bean) throws Exception;
+    void excluir(T bean) throws PersistenceException;
 
-    void excluir(T bean, Integer id) throws Exception;
+    void excluir(T bean, Integer id) throws PersistenceException;
 
-    T get(Integer id, Class<T> clazz) throws Exception;
+    T get(Integer id, Class<T> clazz) throws PersistenceException;
     
-    T getJoinFetch(Integer id, Class<T> clazz) throws Exception;
+    T getJoinFetch(Integer id, Class<T> clazz) throws PersistenceException;
 
     List<T> getAll(Class<T> clazz) throws Exception;
 
-    Long getTotalRegistros(Class<T> clazz, Map<String, Object> filters) throws Exception;
+    Long getTotalRegistros(Class<T> clazz, Map<String, Object> filters) throws PersistenceException;
 
-    Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws Exception;
+    Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws PersistenceException;
 
-    List<T> getEntitysPagination(Class<T> clazz, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) throws Exception;
+    List<T> getEntitysPagination(Class<T> clazz, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) throws PersistenceException;
     
-    <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws Exception;
+    <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws PersistenceException;
     
-    List<T> getEntitys(Class<T> clazz, String atributo, Object valor,Object... atributos) throws Exception;
+    List<T> getEntitys(Class<T> clazz, String atributo, Object valor,Object... atributos) throws PersistenceException;
     
-    List<T> getEntitys(Class<T> clazz,List<Filtro> filters,Object... atributos) throws Exception;
+    List<T> getEntitys(Class<T> clazz,List<Filtro> filters,Object... atributos) throws PersistenceException;
     
-    List<T> getEntitys(Class<T> clazz,List<Filtro> filters,int qtdRegistro,String sortField, SortOrder sortOrder, Object... atributos) throws Exception;
+    List<T> getEntitys(Class<T> clazz,List<Filtro> filters,int qtdRegistro,String sortField, SortOrder sortOrder, Object... atributos) throws PersistenceException;
     
 }

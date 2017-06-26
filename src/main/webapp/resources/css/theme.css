@@ -2488,7 +2488,8 @@ body .ui-paginator .ui-paginator-pages .ui-paginator-page.ui-state-hover {
 body .ui-datatable .ui-datatable-header, body .ui-datatable .ui-datatable-footer {
     padding: 8px 14px; }
 body .ui-datatable .ui-paginator {
-    padding: 8px 14px; }
+    padding: 8px 14px; 
+}
 body .ui-datatable thead th {
     background-color: #ffffff;
     padding: 8px 14px;

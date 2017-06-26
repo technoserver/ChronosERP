@@ -61,35 +61,36 @@
                                    id="telaDetalhe">
 
             <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                idComponente="feriadosAno" label="Ano"
-                                nomeAtributo="#{feriadosControll.objeto.ano}"
-                                tamanhoMaximo="4" />
-                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
-                               idComponente="feriadosDataFeriado" label="Data Feriado"
-                               nomeAtributo="#{feriadosControll.objeto.dataFeriado}" />
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-6"
                                 idComponente="feriadosNome" label="Nome"
                                 nomeAtributo="#{feriadosControll.objeto.nome}"
-                                tamanhoMaximo="50" />
-                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                tamanhoMaximo="50" requerido="true"/>
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-6 col-sm-2 col-md-1"
+                                idComponente="feriadosAno" label="Ano"
+                                nomeAtributo="#{feriadosControll.objeto.ano}"
+                                tamanhoMaximo="4" requerido="true"/>
+                <erp:campoData styleClass="col-xs-6 col-sm-2 col-md-2"
+                               idComponente="feriadosDataFeriado" label="Data Feriado"
+                               nomeAtributo="#{feriadosControll.objeto.dataFeriado}" requerido="true"/>
+
+                <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
                                  idComponente="feriadosAbrangencia" label="Abrangencia"
                                  nomeAtributo="#{feriadosControll.objeto.abrangencia}"
                                  itens="#{feriadosControll.feriadoAbrangencia}" />
-            </div>
-            <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-1"
-                                idComponente="feriadosUf" label="UF"
-                                nomeAtributo="#{feriadosControll.objeto.uf}"
-                                tamanhoMaximo="2" />
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-12 col-md-2"
+                <erp:campoUf controller="#{feriadosControll}" nomeAtributo="#{feriadosControll.objeto.uf}"
+                             idComponente="feriadosUf" styleClass="col-xs-6 col-sm-2 col-md-2"/>
+                
+                <erp:campoInteiro styleClass="col-xs-6 col-sm-2 col-md-2"
                                   idComponente="feriadosMunicipioIbge" label="Municipio Ibge"
                                   nomeAtributo="#{feriadosControll.objeto.municipioIbge}" />
-                <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-2"
+                <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
                                  idComponente="feriadosTipo" label="Tipo"
                                  nomeAtributo="#{feriadosControll.objeto.tipo}"
                                  itens="#{feriadosControll.tipoFeriado}" />
             </div>
+
 
         </erp:telaInclusaoAlteracao>
     </ui:define>

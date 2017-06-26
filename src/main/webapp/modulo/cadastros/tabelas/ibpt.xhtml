@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                >
+
+    <ui:define name="title">
+        IBPT 
+    </ui:define>
+
+    <ui:define name="tela">
+        #{ibptControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        IBPT 
+    </ui:define>
+
+    <ui:define name="filtrosComandos">
+        <br/>
+        <div class="row">
+            <div class="col-lg-12">
+                <h:commandLink title="Importar Tabela do IBTP" class="btn btn-default margem-bottom-10"                                 
+                               type="button">
+                    <i class="glyphicon glyphicon-cloud-download"/>
+                    <p:ajax oncomplete="PF('dialogUploadTabelaIbtp').show();" update=":formoutrasTelas:dialogUploadTabelaIbtp"/> 
+                </h:commandLink> 
+            </div>
+
+        </div>
+    </ui:define>
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{ibptControll}"
+                       idDataTable="dataTableIbpt"
+                       nomeFuncao="IBPT"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="NCM" width="90">
+                <h:outputLabel value="#{row.ncm}" />
+            </p:column>
+            <p:column headerText="Ex" width="50">
+                <h:outputLabel value="#{row.ex}" />
+            </p:column>  
+
+            <p:column headerText="Descrição">
+                <h:outputLabel value="#{row.descricao}" />
+            </p:column> 
+            <p:column headerText="Aliq. Nacional" width="120">
+                <h:outputLabel value="#{row.nacionalFederal}" />
+            </p:column> 
+            <p:column headerText="Aliq. Importados" width="120">
+                <h:outputLabel value="#{row.importadosFederal}" />
+            </p:column> 
+            <p:column headerText="Aliq. Estadual" width="120">
+                <h:outputLabel value="#{row.estadual}" />
+            </p:column> 
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{ibptControll}"
+                                   nomeFuncao="IBPT"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="ncm" label="NCM"
+                                nomeAtributo="#{ibptControll.objeto.ncm}" 
+                                tamanhoMaximo="15"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nacionalFederal"
+                                  label="Aliq. Nacional"
+                                  nomeAtributo="#{ibptControll.objeto.nacionalFederal}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="estadual"
+                                  label="Aliq. Estadual"
+                                  nomeAtributo="#{ibptControll.objeto.estadual}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="estadual"
+                                  label="Aliq. Importados"
+                                  nomeAtributo="#{ibptControll.objeto.importadosFederal}"/>
+            </div>
+            <div  class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="descricao" label="Descrção"
+                                    nomeAtributo="#{ibptControll.objeto.descricao}" />
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formoutrasTelas" enctype="multipart/form-data">
+            <p:dialog id="dialogUploadTabelaIbtp" header="Upload da Tabela Ibtp" responsive="true"
+                      widgetVar="dialogUploadTabelaIbtp" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="600">
+                <p:outputPanel id="panelUpload">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-12">
+
+                        </div>
+                        <p:fileUpload
+                            fileUploadListener="#{ibptControll.importaArquivo}"
+                            mode="advanced" fileLimit="1"
+                            allowTypes="/(\.|\/)(csv)$/" update=":formCentro:growl,:formCentro:telaGrid:dataTableIbpt"
+                            oncomplete="PF('dialogUploadTabelaIbtp').hide();" process="@this"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar" update=":formCentro:telaGrid:outputPanelGrid"
+                                     oncomplete="PF('dialogUploadTabelaIbtp').hide();" process="@this" />
+
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

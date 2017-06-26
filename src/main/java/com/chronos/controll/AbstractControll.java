@@ -7,14 +7,19 @@ package com.chronos.controll;
 
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.Usuario;
+import com.chronos.modelo.entidades.enuns.Estados;
 import com.chronos.repository.Repository;
 import com.chronos.security.UsuarioLogado;
 import com.chronos.security.UsuarioSistema;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Produces;
@@ -221,6 +226,15 @@ public abstract class AbstractControll<T> implements Serializable {
     public void voltar() {
         titulo = "Consultar";
         telaGrid = true;
+    }
+    
+    public List<Estados> getEstado() {
+        List<Estados> estados = new ArrayList<>();
+        if (estados.isEmpty()) {
+            estados = new LinkedList<>();
+            estados.addAll(Arrays.asList(Estados.values()));
+        }
+        return estados;
     }
 
     public String keyFromValue(HashMap map, Object value) {

@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import org.primefaces.model.SortOrder;
 
@@ -29,45 +30,49 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Inject
     private EntityManager em;
 
+    @Transactional
     @Override
-    public void salvar(T bean) throws Exception {
+    public void salvar(T bean) throws PersistenceException {
+        em.persist(bean);
 
     }
 
     @Transactional
     @Override
-    public T atualizar(T bean) throws Exception {
+    public T atualizar(T bean) throws PersistenceException {
         Object updateObj = em.merge(bean);
         return (T) updateObj;
     }
 
     @Transactional
     @Override
-    public void excluir(Class<T> clazz) throws Exception {
-        Object updateObj = em.merge(clazz);
-        em.remove(updateObj);
+    public void excluir(Class<T> clazz) throws PersistenceException {
+        String jpql = "delete  FROM " + clazz.getName();
+        Query q = em.createQuery(jpql);
+
+        q.executeUpdate();
     }
 
     @Transactional
     @Override
-    public void excluir(T bean) throws Exception {
+    public void excluir(T bean) throws PersistenceException {
         Object updateObj = em.merge(bean);
         em.remove(updateObj);
     }
 
     @Transactional
     @Override
-    public void excluir(T bean, Integer id) throws Exception {
+    public void excluir(T bean, Integer id) throws PersistenceException {
         em.remove(em.getReference(bean.getClass(), id));
     }
 
     @Override
-    public T get(Integer id, Class<T> clazz) throws Exception {
+    public T get(Integer id, Class<T> clazz) throws PersistenceException {
         return em.find(clazz, id);
     }
 
     @Override
-    public T getJoinFetch(Integer id, Class<T> clazz) throws Exception {
+    public T getJoinFetch(Integer id, Class<T> clazz) throws PersistenceException {
         String jpql = "SELECT DISTINCT o FROM " + clazz.getName() + " o";
         Field fields[] = clazz.getDeclaredFields();
         for (Field f : fields) {
@@ -88,7 +93,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
-    public List<T> getAll(Class<T> clazz) throws Exception {
+    public List<T> getAll(Class<T> clazz) throws PersistenceException {
 
         Query query = createQuery("SELECT o FROM " + clazz.getName() + " o");
         List<T> beans = query.getResultList();
@@ -96,7 +101,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
-    public Long getTotalRegistros(Class<T> clazz, Map<String, Object> filters) throws Exception {
+    public Long getTotalRegistros(Class<T> clazz, Map<String, Object> filters) throws PersistenceException {
         String jpql = "SELECT COUNT(o.id) FROM " + clazz.getName() + " o WHERE 1 = 1";
         jpql = montaQuery(jpql, null, null, filters);
         Query query = queryPrepared(jpql, filters);
@@ -104,7 +109,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
-    public Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws Exception {
+    public Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws PersistenceException {
         String jpql = "SELECT COUNT(o.id) FROM " + clazz.getName() + " o WHERE 1 = 1";
         jpql = montaQuery(jpql, null, null, filters);
         Query query = queryPrepared(jpql, filters);
@@ -112,13 +117,13 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
-    public <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws Exception {
+    public <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws PersistenceException {
         Query qr = createQuery(query, values);
         return qr.getResultList();
     }
-    
+
     @Override
-    public List<T> getEntitys(Class<T> clazz, String atributo, Object valor, Object... atributos) throws Exception {
+    public List<T> getEntitys(Class<T> clazz, String atributo, Object valor, Object... atributos) throws PersistenceException {
         List<Filtro> filtros = new ArrayList<>();
         if (valor.getClass() == String.class) {
             filtros.add(new Filtro(Filtro.AND, atributo, Filtro.LIKE, valor));
@@ -130,13 +135,13 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
-    public List<T> getEntitys(Class<T> clazz, List<Filtro> filtros, Object... atributos) throws Exception {
+    public List<T> getEntitys(Class<T> clazz, List<Filtro> filtros, Object... atributos) throws PersistenceException {
 
         return getEntitys(clazz, filtros, 20, null, null, atributos);
     }
 
     @Override
-    public List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int qtdRegistro, String sortField, SortOrder sortOrder, Object... atributos) throws Exception {
+    public List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int qtdRegistro, String sortField, SortOrder sortOrder, Object... atributos) throws PersistenceException {
         String jpql = atributos != null ? "SELECT NEW " + clazz.getName() + "(o.id " : "SELECT o FROM " + clazz.getName() + " o WHERE 1 = 1";
 
         if (atributos != null) {
@@ -156,7 +161,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
-    public List<T> getEntitysPagination(Class<T> clazz, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) throws Exception {
+    public List<T> getEntitysPagination(Class<T> clazz, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) throws PersistenceException {
         String jpql = "SELECT o FROM " + clazz.getName() + " o WHERE 1 = 1";
         jpql = montaQuery(jpql, sortField, sortOrder, filters);
         Query query = queryPrepared(jpql, filters);
@@ -171,20 +176,20 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         int i = 0;
         for (Filtro f : filters) {
             i++;
-            String operadorRelacional ="" ;
-            switch(f.getOperadorRelacional()){
-                case Filtro.LIKE  :
-                    operadorRelacional = " LOWER(o." + f.getAtributo() + ")"+ f.getOperadorRelacional() +" " + ":valor" + i;
+            String operadorRelacional = "";
+            switch (f.getOperadorRelacional()) {
+                case Filtro.LIKE:
+                    operadorRelacional = " LOWER(o." + f.getAtributo() + ")" + f.getOperadorRelacional() + " " + ":valor" + i;
                     break;
-                case Filtro.NAO_NULO :
-                    operadorRelacional = f.getAtributo()+" "+f.getOperadorRelacional();
+                case Filtro.NAO_NULO:
+                    operadorRelacional = f.getAtributo() + " " + f.getOperadorRelacional();
                     break;
                 default:
-                    operadorRelacional = f.getAtributo()+" "+f.getOperadorRelacional()+ ":valor" + i;
+                    operadorRelacional = f.getAtributo() + " " + f.getOperadorRelacional() + ":valor" + i;
                     break;
             }
-            
-            jpql += " " + f.getOperadorLogico() + " "+operadorRelacional;
+
+            jpql += " " + f.getOperadorLogico() + " " + operadorRelacional;
 
         }
 
@@ -247,11 +252,8 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
             i++;
             if (f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) {
                 query.setParameter("valor" + i, "%" + String.valueOf(f.getValor()).trim().toLowerCase() + "%");
-            } else {
-                if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)){
-                    query.setParameter("valor" + i, f.getValor());
-                }
-                
+            } else if (!f.getOperadorRelacional().equals(Filtro.NAO_NULO)) {
+                query.setParameter("valor" + i, f.getValor());
             }
         }
         return query;
@@ -268,7 +270,5 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         }
         return qr;
     }
-
-   
 
 }

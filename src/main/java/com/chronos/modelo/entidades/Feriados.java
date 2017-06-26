@@ -41,6 +41,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotBlank;
 
 
 
@@ -54,10 +55,11 @@ public class Feriados  implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
- //   @NotEmpty(message = "Ano Obrigatório")
+    @NotBlank
     @Column(name = "ANO")
     private String ano;
- //   @NotEmpty(message = "Nome Obrigatório")
+    
+    @NotBlank
     @Column(name = "NOME")
     private String nome;
     @Column(name = "ABRANGENCIA")

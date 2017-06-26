@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:cc="http://java.sun.com/jsf/composite">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="controller" type="com.chronos.controll.AbstractControll" required="true" />
+        <cc:attribute name="idComponente" required="true"/>
+	<cc:attribute name="label" default="UF"/>
+        <cc:attribute name="nomeAtributo" required="true"/>
+	<cc:attribute name="requerido" />
+	<cc:attribute name="styleClass" />      
+	<cc:attribute name="desabilitado" default="false" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        	<div class="#{cc.attrs.styleClass}">
+                    <h:outputLabel value="#{cc.attrs.label}"
+			for="#{cc.attrs.idComponente}" />
+		
+		<h:selectOneMenu id="#{cc.attrs.idComponente}"
+                                 class="form-control"
+			         value="#{cc.attrs.nomeAtributo}"
+			         required="#{cc.attrs.requerido}" 
+                                 disabled="#{cc.attrs.desabilitado}">
+                    <f:selectItems value="#{cc.attrs.controller.estado}" />
+		</h:selectOneMenu>
+	</div>
+    </cc:implementation>
+</html>
