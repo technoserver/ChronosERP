@@ -27,10 +27,8 @@ public class Seguranca {
 
     @Inject
     private ExternalContext externalContext;
-    private  Empresa empresa;
-    private  UsuarioSistema usuario;
-
-   
+    private Empresa empresa;
+    private UsuarioSistema usuario;
 
     public String getNomeUsuario() {
         String nome = null;
@@ -48,8 +46,14 @@ public class Seguranca {
         usuario = getUsuarioLogado();
         empresa = getEmpresaUsuario(getUsuarioLogado().getUsuario());
         String foto = ArquivoUtil.getInstance().getFotoFuncionario(empresa.getCnpj(), usuario.getUsuario().getColaborador().getPessoa().getPessoaFisica().getCpf());
-        
-        return new File(foto).exists()?foto:null;
+
+        return new File(foto).exists() ? foto : null;
+    }
+
+    public String getNomeEmpresa() {
+        usuario = getUsuarioLogado();
+        empresa = getEmpresaUsuario(getUsuarioLogado().getUsuario());
+        return empresa.getRazaoSocial();
     }
 
     @Produces

@@ -37,7 +37,7 @@
                         <h:panelGroup layout="block" rendered="#{not empty cc.attrs.controller.objeto}">
                             <div class="row" >
                                 <div class="col-xs-6 col-lg-6">
-                                    <h:commandButton value="Salvar" class="btn btn-danger center-block"
+                                    <h:commandButton value="Salvar" class="btn btn-primary center-block"
                                                      rendered="#{empty cc.attrs.controller.objeto.id and !cc.attrs.somenteConsulta}"
                                                      action="#{cc.attrs.controller.salvar()}"
                                                      disabled="#{!cc.attrs.controller.podeInserir()}"
@@ -46,7 +46,7 @@
                                                 oncomplete="addClass()"                                                
                                                 update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem" />
                                     </h:commandButton>
-                                    <h:commandButton value="Salvar" class="btn btn-danger center-block"
+                                    <h:commandButton value="Salvar" class="btn btn-primary center-block"
                                                      rendered="#{not empty cc.attrs.controller.objeto.id and !cc.attrs.somenteConsulta}"
                                                      actionListener="#{cc.attrs.controller.salvar()}"
                                                      disabled="#{!cc.attrs.controller.podeAlterar()}"

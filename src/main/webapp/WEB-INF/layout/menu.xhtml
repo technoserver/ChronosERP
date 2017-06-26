@@ -96,8 +96,27 @@
                                 <erp:subMenu caminho="/modulo/cadastros/diversos/setor"
                                              label="Setor"
                                              funcao="setor"/>
+                                <erp:subMenu caminho="/modulo/cadastros/diversos/operadoraCartao"
+                                             label="Operadora de Cartão"
+                                             funcao="operadoraCartao"/>
+                                <erp:subMenu caminho="/modulo/cadastros/diversos/operadoraPlanoSaude"
+                                             label="Operadora Plano Saude"
+                                             funcao="operadoraPlanoSaude"/>
                             </ul>
-                        </li>                       
+                        </li>      
+                        <li class="${fn:contains(view.viewId,'cadastros/tabelas')?'active':''}">
+                            <a href="#">Tabelas<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">                               
+
+                                <erp:subMenu caminho="/modulo/cadastros/tabelas/cfop"
+                                             label="CFOP"
+                                             funcao="cfop"/>
+                                <erp:subMenu caminho="/modulo/cadastros/tabelas/feriados"
+                                             label="Feriados"
+                                             funcao="feriados"/>
+
+                            </ul>
+                        </li> 
                     </ul>
                 </li>
 

@@ -38,6 +38,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 @Entity
@@ -53,13 +55,21 @@ public class OperadoraPlanoSaude implements Serializable {
     @Column(name = "REGISTRO_ANS")
     private String registroAns;
     @Column(name = "NOME")
-  //  @NotEmpty(message = "Nome Obrigatório")
+    @NotEmpty(message = "Nome Obrigatório")
+    @NotNull
     private String nome;
     @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")
     private String classificacaoContabilConta;
 
     public OperadoraPlanoSaude() {
     }
+
+    public OperadoraPlanoSaude(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+    
+            
 
     public Integer getId() {
         return id;

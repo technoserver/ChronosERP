@@ -7,17 +7,25 @@
       xmlns:p="http://primefaces.org/ui">
 
     <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+        <meta name="apple-mobile-web-app-capable" content="yes" />
         <title>ChronosERP Light - <ui:insert name="title"></ui:insert></title>
 
 
 
         <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+        <h:outputStylesheet library="css" name="bootstrap-datepicker.min.css"/>
         <h:outputStylesheet library="css" name="style.css"/>
         <h:outputStylesheet library="css" name="dashboard.css"/>
+
+
+        <h:outputStylesheet library="css" name="primefacesCustom.css"/>
+
+
         <h:outputScript library="js" name="validadores.js"/>
+         <h:outputScript library="primefaces" name="jquery/jquery.js" />
 
     </h:head>
 
@@ -30,7 +38,7 @@
         <p:ajaxStatus onstart="PF('statusDialog').show();"
                       onsuccess="PF('statusDialog').hide();"
                       oncomplete="atualizarMsg()">
-                          
+
         </p:ajaxStatus>
 
         <p:dialog modal="true" widgetVar="statusDialog" header="Carregando..."
@@ -85,7 +93,7 @@
                             <h:panelGroup layout="block" class="ibox-title" id="mensagem">
                                 <h5><ui:insert name="tela"></ui:insert></h5>
                                 <br/>
-                                
+
                                 <h:messages  showSummary="true" />
                             </h:panelGroup>
                             <ui:insert name="gridDados"></ui:insert>
@@ -108,35 +116,36 @@
 
         </div>
 
-        <h:outputScript library="primefaces" name="jquery/jquery.js" /> 
+        
         <h:outputScript library="js" name="vendor/metisMenu/jquery.metisMenu.js" />
         <h:outputScript library="js" name="vendor/slimscroll/jquery.slimscroll.min.js" />
         <h:outputScript library="js" name="bootstrap.min.js"/>       
         <h:outputScript library="js" name="inspinia.js"/>
         <script type="text/javascript">
-           $(function() {
-               
+            $(function () {
+
                 $('.hasDatepicker').addClass('form-control');
                 $('.ui-autocomplete-input').addClass('form-control');
-                $('.ui-autocomplete-input').css('width','100%');
+                $('.ui-autocomplete-input').css('width', '100%');
             });
-            
-            function addClass(){
+
+            function addClass() {
                 $('.hasDatepicker').addClass('form-control');
                 $('.ui-inputnumber input').addClass('form-control');
                 $('.ui-autocomplete-input').addClass('form-control');
-                $('.ui-autocomplete-input').css('width','100%');
+                $('.ui-autocomplete-input').css('width', '100%');
+                $('.js-data-table table').addClass("table table-striped table-bordered table-condensed");
             }
-            
+
             function atualizarMsg() {
                 $(".ui-growl-image-info").parent().parent().addClass("g-info");
                 $(".ui-growl-image-warn").parent().parent().addClass("g-warn");
                 $(".ui-growl-image-error").parent().parent().addClass("g-error");
                 $(".ui-growl-image-fatal").parent().parent().addClass("g-fatal");
-            }       
-		
+            }
+
         </script>
-      
+
     </h:body>
 
 </html>

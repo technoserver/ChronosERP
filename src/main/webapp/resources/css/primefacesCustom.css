@@ -1,0 +1,141 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 25/06/2017, 19:04:47
+    Author     : john
+*/
+
+body .ui-datepicker {
+    padding: 0; 
+}
+body .ui-datepicker .ui-datepicker-header {
+    padding: 8px 14px;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0; 
+}
+body .ui-datepicker .ui-datepicker-header .ui-datepicker-prev {
+    cursor: pointer;
+    top: 14px;
+    color: #ffffff;
+    background: none !important;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-indent: 0px !important;
+    text-align: center;
+    -moz-transition: color 0.3s;
+    -o-transition: color 0.3s;
+    -webkit-transition: color 0.3s;
+    transition: color 0.3s; 
+}
+body .ui-datepicker .ui-datepicker-header .ui-datepicker-prev:before {
+    content: ""; 
+}
+body .ui-datepicker .ui-datepicker-header .ui-datepicker-prev span {
+    display: none; 
+}
+body .ui-datepicker .ui-datepicker-header .ui-datepicker-prev.ui-datepicker-prev-hover {
+    color: #00acac;
+    left: 2px; 
+}
+body .ui-datepicker .ui-datepicker-header .ui-datepicker-next {
+    cursor: pointer;
+    top: 14px;
+    color: #ffffff;
+    background: none !important;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-indent: 0px !important;
+    text-align: center;
+    -moz-transition: color 0.3s;
+    -o-transition: color 0.3s;
+    -webkit-transition: color 0.3s;
+    transition: color 0.3s; 
+}
+body .ui-datepicker .ui-datepicker-header .ui-datepicker-next:before {
+    content: ""; 
+}
+body .ui-datepicker .ui-datepicker-header .ui-datepicker-next span {
+    display: none; 
+}
+body .ui-datepicker .ui-datepicker-header .ui-datepicker-next.ui-datepicker-next-hover {
+    color: #00acac;
+    right: 2px; 
+}
+body .ui-datepicker table {
+    font-size: 14px; 
+}
+body .ui-datepicker table td a {
+    text-align: center;
+    color: #5f666c;
+    padding: 5px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px; 
+}
+body .ui-datepicker table td a.ui-state-hover {
+    background-color: #f0f3f5; 
+}
+body .ui-datepicker table td a.ui-state-highlight {
+    color: #5f666c;
+    background-color: #c9cdd2 !important; 
+}
+body .ui-datepicker table td a.ui-state-active {
+    color: #ffffff;
+    background-color: #00acac; 
+}
+body .ui-datepicker#ui-datepicker-div {
+    -webkit-box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15); 
+}
+body .ui-trigger-calendar .ui-inputfield {
+    -moz-border-radius-topright: 0;
+    -webkit-border-top-right-radius: 0;
+    border-top-right-radius: 0;
+    -moz-border-radius-bottomright: 0;
+    -webkit-border-bottom-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0 none; 
+}
+body .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+    -moz-border-radius-topleft: 0;
+    -webkit-border-top-left-radius: 0;
+    border-top-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    -webkit-border-bottom-left-radius: 0;
+    border-bottom-left-radius: 0; }
+body .ui-fluid .ui-trigger-calendar .ui-datepicker-trigger.ui-button {
+    right: -2px;
+    height: 31px; 
+}
+
+.ui-datepicker-header{
+    background-color: #2d353c !important;
+    color: #ffffff; 
+}
+.ui-datepicker-unselectable{
+    background-color: #ffffff !important; 
+}
+/*Data atble*/
+
+
+
+/*--------------------------------------------------------*/
+
+
+.ui-clock{
+ background: none !important;
+ border: none !important;
+}

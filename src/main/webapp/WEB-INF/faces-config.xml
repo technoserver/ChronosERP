@@ -13,7 +13,11 @@
         <locale-config>
             <default-locale>pt_BR</default-locale>
         </locale-config>
+        <el-resolver>
+         org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver
+        </el-resolver>
     </application>
+    
     
     <render-kit>
         <renderer>
@@ -26,6 +30,7 @@
     <factory>
         <exception-handler-factory>
             org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory
+            <!--            com.chronos.util.jsf.JSFExceptionHandlerFactory-->
         </exception-handler-factory>
     </factory>
 

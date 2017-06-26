@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      >
 
     <h:head>
 
@@ -172,12 +173,17 @@
                         Chronosinfo &amp; Tecnoserver.
                     </div>
                     <div>
-                        <a href="/ChronosNFe" class="btn btn-success">Home</a>
+                        <a href="#" onclick="history.back();" class="btn btn-success">Home</a>
                     </div>
                 </div>
             </div>
             <!-- end error -->
 
+        </div>
+        
+        <div style="display: none">
+            <h:outputText value="Message:#{pfExceptionHandler.message}" />
+          <h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" />
         </div>
 
 

@@ -3,12 +3,13 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                >
+                    
+                xmlns:p="http://primefaces.org/ui">
     <div class="pull-right">
-        10GB of <strong>250GB</strong> Free.
+        #{seguranca.nomeEmpresa} <strong><p:clock pattern="dd/MM/yyyy HH:mm:ss " mode="server" /></strong>
     </div>
     <div>
-        <strong>Copyright</strong> Example Company &copy; 2014-2017
+        <strong>Copyright </strong> ChronosInfo &copy; 2017 <strong>Versão1.0.0</strong>
     </div>
 
 </ui:composition>

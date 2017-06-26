@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                >
+
+    <ui:define name="title">
+        Operadora Cartão 
+    </ui:define>
+
+    <ui:define name="tela">
+        #{operadoraCartaoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Operadora Cartão 
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{operadoraCartaoControll}"
+                       idDataTable="dataTableOperadoraCartao"
+                       nomeFuncao="Operadora Cartão"
+                       id="telaGrid">
+
+            <p:column headerText="Bandeira">
+                <h:outputLabel value="#{row.bandeira}" />
+            </p:column>
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}" />
+            </p:column>
+            <p:column headerText="Taxa Adm">
+                <h:outputLabel value="#{row.taxaAdm}" />
+            </p:column>
+            <p:column headerText="Taxa Adm Debito">
+                <h:outputLabel value="#{row.taxaAdmDebito}" />
+            </p:column>
+            <p:column headerText="Vencimento Aluguel">
+                <h:outputLabel value="#{row.vencimentoAluguel}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Fone">
+                <h:outputLabel value="#{row.fone1}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{operadoraCartaoControll}"
+                                   nomeFuncao="Operadora Cartão"
+                                   id="telaDetalhe">
+
+            <div class="row">
+
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Conta Caixa" 
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{operadoraCartaoControll}"
+                                  completeMethod="getListaContaCaixa"
+                                  nomeAtributo="#{operadoraCartaoControll.objeto.contaCaixa}" 
+                                  idComponente="operadoraCartaoContaCaixa" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="operadoraCartaoClassificacaoContabilConta" label="Classificacao Contabil Conta"
+                                nomeAtributo="#{operadoraCartaoControll.objeto.classificacaoContabilConta}"
+                                tamanhoMaximo="30" />
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="operadoraCartaoBandeira" label="Bandeira"
+                                nomeAtributo="#{operadoraCartaoControll.objeto.bandeira}"
+                                tamanhoMaximo="30" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="operadoraCartaoNome" label="Nome"
+                                nomeAtributo="#{operadoraCartaoControll.objeto.nome}"
+                                tamanhoMaximo="50" />
+            </div>  
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="operadoraCartaoTaxaAdm" label="Taxa Adm"
+                                  nomeAtributo="#{operadoraCartaoControll.objeto.taxaAdm}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="operadoraCartaoTaxaAdmDebito" label="Taxa Adm Debito"
+                                  nomeAtributo="#{operadoraCartaoControll.objeto.taxaAdmDebito}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="operadoraCartaoValorAluguelPosPin" label="Valor Aluguel Pos Pin"
+                                  nomeAtributo="#{operadoraCartaoControll.objeto.valorAluguelPosPin}" />
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="operadoraCartaoVencimentoAluguel" label="Vencimento Aluguel"
+                                  nomeAtributo="#{operadoraCartaoControll.objeto.vencimentoAluguel}" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="operadoraCartaoFone1" label="Fone"
+                                nomeAtributo="#{operadoraCartaoControll.objeto.fone1}"
+                                tamanhoMaximo="14" />
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

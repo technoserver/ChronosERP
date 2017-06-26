@@ -24,6 +24,7 @@ public class SetorControll extends AbstractControll<Setor> implements Serializab
     @Override
     public void doCreate() {
         super.doCreate(); //To change body of generated methods, choose Tools | Templates.
+      
         getObjeto().setEmpresa(empresa);
     }
     

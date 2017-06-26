@@ -23,12 +23,12 @@ public class CfopControll extends AbstractControll<Cfop> implements Serializable
 
     @Override
     protected Class<Cfop> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Cfop.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "CFOP";
     }
     
 }

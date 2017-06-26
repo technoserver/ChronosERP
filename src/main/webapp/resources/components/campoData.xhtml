@@ -10,7 +10,7 @@
         <cc:attribute name="label" />
         <cc:attribute name="nomeAtributo" />
         <cc:attribute name="requerido" />
-        <cc:attribute name="styleClassDiv" />    
+        <cc:attribute name="styleClass" />    
         <cc:attribute name="styleClassInput" default="data form-control" />
         <cc:attribute name="somenteLeitura"  default="false"/>
         <cc:attribute name="formato"  default="dd/MM/yyyy"/>
@@ -20,12 +20,12 @@
     <!-- IMPLEMENTATION -->
     <cc:implementation>
 
-        <div class="#{cc.attrs.styleClassDiv}">
+        <div class="#{cc.attrs.styleClass}">
             <p:outputLabel value="#{cc.attrs.label}"
                            for="#{cc.attrs.idComponente}" />
             <br/>
 
-            <p:calendar id="#{cc.attrs.idComponente}" showButtonPanel="true" showTodayButton="true" 
+            <p:calendar id="#{cc.attrs.idComponente}"  
                         value="#{cc.attrs.nomeAtributo}" style="width: 100% !important;"
                         required="#{cc.attrs.requerido}" pattern="#{cc.attrs.formato}"  readonly="#{cc.attrs.somenteLeitura}" />
         </div>

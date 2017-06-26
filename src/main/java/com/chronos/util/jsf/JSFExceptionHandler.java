@@ -52,6 +52,8 @@ public class JSFExceptionHandler extends ExceptionHandlerWrapper {
                 if (exception instanceof ViewExpiredException) {
                     tratarException = true;
                     redirect("/login.xhtml");
+                }else{
+                    
                 }
             } finally {
                 if (tratarException) {

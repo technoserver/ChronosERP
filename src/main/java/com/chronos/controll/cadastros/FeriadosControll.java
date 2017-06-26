@@ -23,12 +23,12 @@ public class FeriadosControll extends AbstractControll<Feriados> implements Seri
 
     @Override
     protected Class<Feriados> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Feriados.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "FERIADOS";
     }
     
 }

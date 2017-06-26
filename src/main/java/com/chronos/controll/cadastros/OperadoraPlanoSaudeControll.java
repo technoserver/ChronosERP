@@ -23,12 +23,12 @@ public class OperadoraPlanoSaudeControll extends AbstractControll<OperadoraPlano
 
     @Override
     protected Class<OperadoraPlanoSaude> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return OperadoraPlanoSaude.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "OPERADORA_PLANO_SAUDE";
     }
     
 }

@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml" 
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                >
+
+    <ui:define name="title">
+        Feriados 
+    </ui:define>
+
+    <ui:define name="tela">
+        #{feriadosControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Feriados 
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{feriadosControll}"
+                       idDataTable="dataTableFeriados"
+                       nomeFuncao="Feriados"
+                       id="telaGrid">
+
+            <p:column headerText="Ano">
+                <h:outputLabel value="#{row.ano}" />
+            </p:column>
+            <p:column headerText="Data Feriado">
+                <h:outputLabel value="#{row.dataFeriado}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}" />
+            </p:column>
+            <p:column headerText="Abrangencia">
+                <h:outputLabel value="#{feriadosController.keyFromValue(feriadosControll.feriadoAbrangencia, row.abrangencia)}" />
+            </p:column>
+            <p:column headerText="UF">
+                <h:outputLabel value="#{row.uf}" />
+            </p:column>
+            <p:column headerText="Tipo">
+                <h:outputLabel value="#{feriadosController.keyFromValue(feriadosControll.tipoFeriado, row.tipo)}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{feriadosControll}"
+                                   nomeFuncao="Feriados"
+                                   id="telaDetalhe">
+
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="feriadosAno" label="Ano"
+                                nomeAtributo="#{feriadosControll.objeto.ano}"
+                                tamanhoMaximo="4" />
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                               idComponente="feriadosDataFeriado" label="Data Feriado"
+                               nomeAtributo="#{feriadosControll.objeto.dataFeriado}" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="feriadosNome" label="Nome"
+                                nomeAtributo="#{feriadosControll.objeto.nome}"
+                                tamanhoMaximo="50" />
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="feriadosAbrangencia" label="Abrangencia"
+                                 nomeAtributo="#{feriadosControll.objeto.abrangencia}"
+                                 itens="#{feriadosControll.feriadoAbrangencia}" />
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-1"
+                                idComponente="feriadosUf" label="UF"
+                                nomeAtributo="#{feriadosControll.objeto.uf}"
+                                tamanhoMaximo="2" />
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-12 col-md-2"
+                                  idComponente="feriadosMunicipioIbge" label="Municipio Ibge"
+                                  nomeAtributo="#{feriadosControll.objeto.municipioIbge}" />
+                <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-2"
+                                 idComponente="feriadosTipo" label="Tipo"
+                                 nomeAtributo="#{feriadosControll.objeto.tipo}"
+                                 itens="#{feriadosControll.tipoFeriado}" />
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

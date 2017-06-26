@@ -24,5 +24,17 @@
         username="postgres" 
         password="p@ssw0rd" 
         url="jdbc:postgresql://localhost:5432/chronosLight?autoReconnect=true"/>-->
-  <Resource acquireIncrement="1" auth="Container" driverClass="org.postgresql.Driver" factory="org.apache.naming.factory.BeanFactory" jdbcUrl="jdbc:postgresql://localhost:5432/chronosLight?autoReconnect=true" maxIdleTime="300" maxPoolSize="5" maxStatements="50" minPoolSize="5" name="jdbc/chronosLightDB" password="p@ssw0rd" type="com.mchange.v2.c3p0.ComboPooledDataSource" user="postgres"/>
+  <Resource acquireIncrement="1" 
+            auth="Container" 
+            driverClass="org.postgresql.Driver"
+            factory="org.apache.naming.factory.BeanFactory" 
+            jdbcUrl="jdbc:postgresql://localhost:5432/chronosLight?autoReconnect=true"
+            maxIdleTime="300"
+            maxPoolSize="5"
+            maxStatements="50" 
+            minPoolSize="5" 
+            name="jdbc/chronosLightDB" 
+            password="p@ssw0rd"
+            type="com.mchange.v2.c3p0.ComboPooledDataSource"
+            user="postgres"/>
 </Context>

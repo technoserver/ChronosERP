@@ -25,7 +25,8 @@
                     <p:dataTable value="#{cc.attrs.controller.dataModel}" var="row" id="#{cc.attrs.idDataTable}" paginator="true"
                                  rows="10" rowsPerPageTemplate="10,20,30,40"  paginatorPosition="bottom"                                                                   
                                  reflow="true" rendered="#{cc.attrs.controller.podeConsultar()}"
-                                 resizableColumns="true" lazy="true" >
+                                 resizableColumns="true" lazy="true"
+                                 class="js-data-table">
                         
                         <cc:insertChildren />
                         
@@ -41,7 +42,9 @@
                                            update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                            process="#{cc.attrs.idDataTable}"
                                            oncomplete="atualizarMsg();"
-                                           class="btn btn-default">
+                                           class="btn btn-default"
+                                           rendered="#{!cc.attrs.somenteConsulta}"
+                                           disabled="#{!cc.attrs.controller.podeExcluir()}">
                                 <i class="fa fa-times"></i> 
                                 <p:confirm header="Confirmar" message="Deseja excluir ?"/>
                                 <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.controller.objetoSelecionado}"/> 
@@ -54,9 +57,10 @@
                 <div class="ibox-footer">
                     <div class="row">
                         <div  class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Cadastrar" class="btn btn-danger center-block"
+                            <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
                                              actionListener="#{cc.attrs.controller.doCreate()}"
                                              disabled="#{!cc.attrs.controller.podeInserir()}"
+                                             rendered="#{!cc.attrs.somenteConsulta}"
                                              >
                                 <p:ajax process="@form"  
                                         oncomplete="addClass()"
