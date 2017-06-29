@@ -37,6 +37,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 
 @Entity
@@ -49,7 +51,8 @@ public class UnidadeProduto implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-   // @NotEmpty(message = "Sigla obrigatória")
+    @NotBlank
+    @NotEmpty(message = "Sigla obrigatória")
     @Column(name = "SIGLA")
     private String sigla;
     @Column(name = "DESCRICAO")
@@ -60,6 +63,23 @@ public class UnidadeProduto implements Serializable {
     
     public UnidadeProduto() {
     }
+
+    public UnidadeProduto(Integer id) {
+        this.id = id;
+    }
+
+    public UnidadeProduto(Integer id, String sigla) {
+        this.id = id;
+        this.sigla = sigla;
+    }
+
+    public UnidadeProduto(Integer id, String sigla, String descricao) {
+        this.id = id;
+        this.sigla = sigla;
+        this.descricao = descricao;
+    }
+    
+    
 
     public Integer getId() {
         return id;

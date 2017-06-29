@@ -62,6 +62,17 @@ public class ProdutoSubGrupo implements Serializable {
     public ProdutoSubGrupo() {
     }
 
+    public ProdutoSubGrupo(Integer id) {
+        this.id = id;
+    }
+
+    public ProdutoSubGrupo(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+    
+    
+
     public Integer getId() {
         return id;
     }

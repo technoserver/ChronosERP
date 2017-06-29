@@ -49,6 +49,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private int activeTabIndex;
     protected Usuario usuario;
     protected Empresa empresa;
+    protected Object[] atributos;
 
     private Map<String, String> simNao;
     private Map<String, String> tipoPessoa;

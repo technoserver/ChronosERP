@@ -29,6 +29,10 @@ public interface Repository<T> {
 
     T get(Integer id, Class<T> clazz) throws PersistenceException;
     
+    T get(Integer id, Class<T> clazz,List<Filtro> filters) throws PersistenceException;
+    
+    T get(Integer id, Class<T> clazz,List<Filtro> filters, Object[] atributos) throws PersistenceException;
+    
     T getJoinFetch(Integer id, Class<T> clazz) throws PersistenceException;
 
     List<T> getAll(Class<T> clazz) throws Exception;
@@ -41,10 +45,44 @@ public interface Repository<T> {
     
     <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws PersistenceException;
     
-    List<T> getEntitys(Class<T> clazz, String atributo, Object valor,Object... atributos) throws PersistenceException;
+    List<T> getEntitys(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
     
-    List<T> getEntitys(Class<T> clazz,List<Filtro> filters,Object... atributos) throws PersistenceException;
+    List<T> getEntitys(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException;
     
-    List<T> getEntitys(Class<T> clazz,List<Filtro> filters,int qtdRegistro,String sortField, SortOrder sortOrder, Object... atributos) throws PersistenceException;
+    
+    List<T> getEntitys(Class<T> clazz) throws PersistenceException;    
+    
+    List<T> getEntitys(Class<T> clazz,Object[] atributos) throws PersistenceException;
+    
+    
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters) throws PersistenceException;
+    
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters, Object[] atributos) throws PersistenceException;
+    
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters,int qtdRegistro) throws PersistenceException;
+    
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters,int qtdRegistro,Object[] atributos) throws PersistenceException;
+    
+    
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters, String sortField, SortOrder sortOrder) throws PersistenceException;
+    
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters, String sortField, SortOrder sortOrder, Object[] atributos) throws PersistenceException;
+    
+    
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int qtdRegistro,String sortField, SortOrder sortOrder) throws PersistenceException;
+    
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int qtdRegistro,String sortField, SortOrder sortOrder, Object[] atributos) throws Exception;
+    
+  
+    
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int first, int qtdRegistro,String sortField, SortOrder sortOrder) throws PersistenceException;
+
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int first, int qtdRegistro,String sortField, SortOrder sortOrder, Object[] atributos) throws PersistenceException;
+     
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int first, int qtdRegistro, Object[] atributos) throws PersistenceException;
+    
+    
+    
+    List<T> getEntitys(Class<T> clazz,List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder,Object[] joinfetch,Object[] atributos) throws Exception;
     
 }

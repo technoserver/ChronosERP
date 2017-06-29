@@ -1,35 +1,9 @@
-/*
-* The MIT License
-* 
-* Copyright: Copyright (C) 2014 T2Ti.COM
-* 
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-* 
-* The author may be contacted at: t2ti.com@gmail.com
-*
-* @author Claudio de Barros (T2Ti.com)
-* @version 2.0
-*/
+
 package com.chronos.modelo.entidades;
 
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -39,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.NotBlank;
 
 
 @Entity
@@ -51,7 +27,9 @@ public class TributGrupoTributario implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @NotBlank
     @Column(name = "DESCRICAO")
+    @NotNull
     private String descricao;
     @Column(name = "ORIGEM_MERCADORIA")
     private String origemMercadoria;
@@ -59,10 +37,22 @@ public class TributGrupoTributario implements Serializable {
     private String observacao;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
+    @NotNull
     private Empresa empresa;
 
     public TributGrupoTributario() {
     }
+
+    public TributGrupoTributario(Integer id) {
+        this.id = id;
+    }
+
+    public TributGrupoTributario(Integer id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
+    
+    
 
     public Integer getId() {
         return id;
@@ -105,8 +95,29 @@ public class TributGrupoTributario implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "com.t2tierp.model.bean.tributacao.TributGrupoTributario[id=" + id + "]";
+    public int hashCode() {
+        int hash = 5;
+        hash = 53 * hash + Objects.hashCode(this.id);
+        return hash;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TributGrupoTributario other = (TributGrupoTributario) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
+
+   
 }

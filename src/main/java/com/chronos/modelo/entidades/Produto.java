@@ -30,6 +30,7 @@ package com.chronos.modelo.entidades;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -111,7 +112,7 @@ public class Produto implements Serializable {
     private String inativo;
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_CADASTRO")
-    private Date dataCadastro;
+    private LocalDate dataCadastro;
     @Column(name = "IMAGEM")
     private String imagem;
     @Column(name = "EX_TIPI")
@@ -144,7 +145,7 @@ public class Produto implements Serializable {
     private Integer codigoBalanca;
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_ALTERACAO")
-    private Date dataAlteracao;
+    private LocalDate dataAlteracao;
     @Column(name = "TIPO")
     private String tipo;
     @Column(name = "SERVICO")
@@ -369,11 +370,11 @@ public class Produto implements Serializable {
         this.inativo = inativo;
     }
 
-    public Date getDataCadastro() {
+    public LocalDate getDataCadastro() {
         return dataCadastro;
     }
 
-    public void setDataCadastro(Date dataCadastro) {
+    public void setDataCadastro(LocalDate dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
 
@@ -521,11 +522,11 @@ public class Produto implements Serializable {
         this.codigoBalanca = codigoBalanca;
     }
 
-    public Date getDataAlteracao() {
+    public LocalDate getDataAlteracao() {
         return dataAlteracao;
     }
 
-    public void setDataAlteracao(Date dataAlteracao) {
+    public void setDataAlteracao(LocalDate dataAlteracao) {
         this.dataAlteracao = dataAlteracao;
     }
 
