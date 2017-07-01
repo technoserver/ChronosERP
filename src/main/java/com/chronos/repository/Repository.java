@@ -17,6 +17,8 @@ import org.primefaces.model.SortOrder;
  */
 public interface Repository<T> {
 
+    void clear() throws PersistenceException;
+
     void salvar(T bean) throws PersistenceException;
 
     T atualizar(T bean) throws PersistenceException;
@@ -27,21 +29,23 @@ public interface Repository<T> {
 
     void excluir(T bean, Integer id) throws PersistenceException;
 
+    boolean existeRegisro(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
+
     T get(Integer id, Class<T> clazz) throws PersistenceException;
-    
-    T get(Integer id, Class<T> clazz,List<Filtro> filters) throws PersistenceException;
-    
-    T get(Integer id, Class<T> clazz,List<Filtro> filters, Object[] atributos) throws PersistenceException;
-    
-    T getJoinFetch(Integer id, Class<T> clazz) throws PersistenceException;
 
-    List<T> getAll(Class<T> clazz) throws Exception;
+    T get(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
 
-    Long getTotalRegistros(Class<T> clazz, Map<String, Object> filters) throws PersistenceException;
+    T get(Class<T> clazz, List<Filtro> filtros) throws PersistenceException;
 
     Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws PersistenceException;
 
-    List<T> getEntitysPagination(Class<T> clazz, int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) throws PersistenceException;
+    T getEntityJoinFetch(Integer id, Class<T> clazz) throws PersistenceException;
+    
+    T getJoinFetch(Integer id, Class<T> clazz) throws PersistenceException;
+
+    List<T> getAll(Class<T> clazz) throws PersistenceException;
+
+
     
     <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws PersistenceException;
     
@@ -80,8 +84,8 @@ public interface Repository<T> {
     List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int first, int qtdRegistro,String sortField, SortOrder sortOrder, Object[] atributos) throws PersistenceException;
      
     List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int first, int qtdRegistro, Object[] atributos) throws PersistenceException;
-    
-    
+
+    List<T> getEntitys(Class<T> clazz,Class classToCast,List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder,Object[] joinfetch,Object[] atributos) throws Exception;
     
     List<T> getEntitys(Class<T> clazz,List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder,Object[] joinfetch,Object[] atributos) throws Exception;
     

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="ChronoERPLight:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="ChronoERPLight.war">
+      <element id="artifact" artifact-name="ChronoERPLight:war exploded" />
+    </root>
+  </artifact>
+</component>
