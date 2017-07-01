@@ -6,14 +6,13 @@
 package com.chronos.controll;
 
 
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
@@ -27,11 +26,12 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     private static final long serialVersionUID = 1L;
     private Class<T> clazz;
     protected Repository<T> dao;
-    private Map<String, Object> filtro;
+    private List<Filtro> filtros;
     private List<T> objs;
+
     
     public ERPLazyDataModel() {
-        filtro = new HashMap<>();
+        filtros = new ArrayList<>();
 
     }
 
@@ -60,20 +60,33 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         try {
-            objs = dao.getEntitysPagination(getClazz(), first, pageSize, sortField, sortOrder, filtro);
+            objs = dao.getEntitys(getClazz(),filtros, first, pageSize, sortField, sortOrder );
 
-            Long totalRegistros = dao.getTotalRegistros(getClazz(), filtro);
+            Long totalRegistros = dao.getTotalRegistros(getClazz(), filtros);
             this.setRowCount(totalRegistros.intValue());
+            filtros.clear();
             return objs;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return objs = new LinkedList<T>();
     }
-    
-    public void addFiltro(String campo, Object valor){
-        this.filtro.put(campo, valor);
-       
+
+    public void addFiltro(String atributo, Object valor) {
+        if(valor!=null){
+            addFiltro(atributo, valor, Filtro.LIKE);
+        }
+    }
+
+    public void addFiltro(String atributo, Object valor,String operadorRelacional) {
+        if (filtros == null) {
+            filtros = new ArrayList<>();
+        }
+        if (valor.getClass() == String.class) {
+            filtros.add(new Filtro(Filtro.AND, atributo, Filtro.LIKE, valor));
+        } else {
+            filtros.add(new Filtro(Filtro.AND, atributo, operadorRelacional, valor));
+        }
     }
 
     public Class<T> getClazz() {
@@ -92,15 +105,7 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
         this.dao = dao;
     }
 
-    
 
-    public Map<String, Object> getFiltro() {
-        return filtro;
-    }
-
-    public void setFiltro(Map<String, Object> filtro) {
-        this.filtro = filtro;
-    }
 
     public List<T> getObjs() {
         return objs;

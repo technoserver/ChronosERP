@@ -45,8 +45,8 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Transactional
     @Override
     public T atualizar(T bean) throws PersistenceException {
-        Object updateObj = em.merge(bean);
-        return (T) updateObj;
+        return  em.merge(bean);
+
     }
 
     @Transactional
@@ -91,20 +91,20 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return getEntitys(clazz,filtros).get(0);
     }
 
-
+    @SuppressWarnings("unchecked")
     @Override
     public T getJoinFetch(Integer id, Class<T> clazz) throws PersistenceException {
-        String jpql = "SELECT DISTINCT o FROM " + clazz.getName() + " o";
+        StringBuilder jpql = new StringBuilder("SELECT DISTINCT o FROM " + clazz.getName() + " o");
         Field fields[] = clazz.getDeclaredFields();
         for (Field f : fields) {
             if (f.getType() == Set.class) {
-                jpql += " LEFT JOIN FETCH o." + f.getName();
+                jpql.append(" LEFT JOIN FETCH o.").append(f.getName());
             }
         }
 
-        jpql += " WHERE o.id = :id";
+        jpql.append(" WHERE o.id = :id");
 
-        Query query = em.createQuery(jpql);
+        Query query = em.createQuery(jpql.toString());
         query.setParameter("id", id);
         try {
             return (T) query.getSingleResult();
@@ -117,7 +117,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     public List<T> getAll(Class<T> clazz) throws PersistenceException {
 
         Query query = createQuery("SELECT o FROM " + clazz.getName() + " o");
-        List<T> beans = query.getResultList();
+        List beans = query.getResultList();
         return beans;
     }
 
@@ -332,14 +332,14 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     private String montaQuery(String jpql, String sortField, SortOrder sortOrder, List<Filtro> filters) {
 
         int i = 0;
+        StringBuilder jpqlBuilder = new StringBuilder(jpql);
         for (Filtro f : filters) {
             i++;
 
-            jpql += " " + f.getOperadorLogico()
-                    + (f.getValor().getClass() == String.class ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ")
-                    + f.getOperadorRelacional() + ":valor" + i;
+            jpqlBuilder.append(" ").append(f.getOperadorLogico()).append(f.getValor().getClass() == String.class ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional()).append(":valor").append(i);
 
         }
+        jpql = jpqlBuilder.toString();
 
         if (sortField != null && sortOrder != null) {
             if (sortOrder.equals(SortOrder.ASCENDING)) {

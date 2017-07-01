@@ -20,6 +20,8 @@ import javax.persistence.Persistence;
 @ApplicationScoped
 public class EntityManagerProducer {
 
+
+
     private EntityManagerFactory factory;
 
     public EntityManagerProducer() {
