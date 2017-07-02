@@ -20,6 +20,7 @@ import com.chronos.util.jsf.Mensagem;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -52,7 +53,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void doCreate() {
         super.doCreate(); //To change body of generated methods, choose Tools | Templates.
         getObjeto().setExcluido("N");
-        getObjeto().setDataCadastro(LocalDate.now());
+        getObjeto().setDataCadastro(new Date());
 
     }
 

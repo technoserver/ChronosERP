@@ -54,7 +54,7 @@ import javax.persistence.Transient;
 @Table(name = "PRODUTO")
 public class Produto implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -112,7 +112,7 @@ public class Produto implements Serializable {
     private String inativo;
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_CADASTRO")
-    private LocalDate dataCadastro;
+    private Date dataCadastro;
     @Column(name = "IMAGEM")
     private String imagem;
     @Column(name = "EX_TIPI")
@@ -145,7 +145,7 @@ public class Produto implements Serializable {
     private Integer codigoBalanca;
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_ALTERACAO")
-    private LocalDate dataAlteracao;
+    private Date dataAlteracao;
     @Column(name = "TIPO")
     private String tipo;
     @Column(name = "SERVICO")
@@ -370,11 +370,11 @@ public class Produto implements Serializable {
         this.inativo = inativo;
     }
 
-    public LocalDate getDataCadastro() {
+    public Date getDataCadastro() {
         return dataCadastro;
     }
 
-    public void setDataCadastro(LocalDate dataCadastro) {
+    public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
 
@@ -522,11 +522,11 @@ public class Produto implements Serializable {
         this.codigoBalanca = codigoBalanca;
     }
 
-    public LocalDate getDataAlteracao() {
+    public Date getDataAlteracao() {
         return dataAlteracao;
     }
 
-    public void setDataAlteracao(LocalDate dataAlteracao) {
+    public void setDataAlteracao(Date dataAlteracao) {
         this.dataAlteracao = dataAlteracao;
     }
 
