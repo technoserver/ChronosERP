@@ -6,8 +6,9 @@
 package com.chronos.security;
 
 import com.chronos.util.flyway.FlyWay;
-import javax.servlet.ServletContext;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
+
+import javax.servlet.ServletContext;
 
 /**
  *

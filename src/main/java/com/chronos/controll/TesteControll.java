@@ -7,16 +7,15 @@ package com.chronos.controll;
 
 import com.chronos.modelo.entidades.Banco;
 import com.chronos.repository.Repository;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ViewScoped;
-
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  *

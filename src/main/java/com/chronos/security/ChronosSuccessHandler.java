@@ -3,14 +3,13 @@ package com.chronos.security;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.repository.Usuarios;
 import com.chronos.util.cdi.CDIServiceLocator;
-import java.io.IOException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import java.io.IOException;
 
 public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 

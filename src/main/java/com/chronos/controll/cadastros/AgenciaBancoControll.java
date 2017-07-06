@@ -10,12 +10,13 @@ import com.chronos.modelo.entidades.AgenciaBanco;
 import com.chronos.modelo.entidades.Banco;
 import com.chronos.modelo.entidades.Municipio;
 import com.chronos.repository.Repository;
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *

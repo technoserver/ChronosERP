@@ -7,9 +7,10 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Setor;
-import java.io.Serializable;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  *

@@ -28,17 +28,12 @@
 */
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 
 @Entity
@@ -51,12 +46,14 @@ public class ProdutoSubGrupo implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @NotBlank
     @Column(name = "NOME")
     private String nome;
     @Column(name = "DESCRICAO")
     private String descricao;
     @JoinColumn(name = "ID_GRUPO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
+    @NotNull
     private ProdutoGrupo produtoGrupo;
 
     public ProdutoSubGrupo() {

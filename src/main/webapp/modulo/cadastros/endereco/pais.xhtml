@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Pais
+    </ui:define>
+
+    <ui:define name="tela">
+        #{paisControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Pais
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{paisControll}"
+                       idDataTable="dataTablePais"
+                       nomeFuncao="Pais"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="Codigo">
+                <h:outputLabel value="#{row.codigo}" />
+            </p:column>
+            <p:column headerText="Nome EN">
+                <h:outputLabel value="#{row.nomeEn}" />
+            </p:column>
+            <p:column headerText="Nome PT-BR">
+                <h:outputLabel value="#{row.nomePtbr}" />
+            </p:column>
+            <p:column headerText="Sigla 2">
+                <h:outputLabel value="#{row.sigla2}" />
+            </p:column>
+            <p:column headerText="Sigla 3">
+                <h:outputLabel value="#{row.sigla3}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{paisControll}"
+                                   nomeFuncao="Pais"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-6"
+                                   idComponente="nomePtbr" label="Nome PT-BR"
+                                   nomeAtributo="#{paisControll.objeto.nomePtbr}"
+                                   tamanhoMaximo="100"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-6"
+                                   idComponente="nomeEn" label="Nome EN"
+                                   nomeAtributo="#{paisControll.objeto.nomeEn}"
+                                   tamanhoMaximo="100"/>
+
+            </div>
+            <div class="row">
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="codigo" label="Código"
+                                nomeAtributo="#{paisControll.objeto.codigo}"
+                                />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="sigla2" label="Sigla 2"
+                                nomeAtributo="#{paisControll.objeto.sigla2}"
+                                tamanhoMaximo="2"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="sigla3" label="Sigla 3"
+                                nomeAtributo="#{paisControll.objeto.sigla3}"
+                                tamanhoMaximo="3"/>
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

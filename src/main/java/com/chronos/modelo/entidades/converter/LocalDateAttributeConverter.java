@@ -5,11 +5,10 @@
  */
 package com.chronos.modelo.entidades.converter;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  *

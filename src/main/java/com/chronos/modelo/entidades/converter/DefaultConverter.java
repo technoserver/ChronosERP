@@ -1,12 +1,11 @@
 package com.chronos.modelo.entidades.converter;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 @FacesConverter(value = "defaultConverter")
 public class DefaultConverter implements Converter {

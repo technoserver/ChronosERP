@@ -7,9 +7,10 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.ProdutoMarca;
-import java.io.Serializable;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  *
@@ -23,12 +24,12 @@ public class ProdutoMarcaControll extends AbstractControll<ProdutoMarca> impleme
 
     @Override
     protected Class<ProdutoMarca> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return ProdutoMarca.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "MARCA";
     }
     
 }

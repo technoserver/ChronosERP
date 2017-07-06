@@ -5,15 +5,12 @@
  */
 package com.chronos.util.jsf;
 
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.security.UsuarioLogado;
 import com.chronos.security.UsuarioSistema;
 import com.chronos.util.Biblioteca;
-import java.io.File;
-import javax.enterprise.inject.Produces;
+
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import java.io.File;
 
 /**
  *

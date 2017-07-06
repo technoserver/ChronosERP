@@ -7,9 +7,10 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Cep;
-import java.io.Serializable;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  *
@@ -23,12 +24,12 @@ public class CepControll extends AbstractControll<Cep> implements Serializable {
 
     @Override
     protected Class<Cep> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Cep.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "CEP";
     }
     
 }

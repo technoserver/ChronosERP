@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        UF
+    </ui:define>
+
+    <ui:define name="tela">
+        #{ufControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        UF
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{ufControll}"
+                       idDataTable="dataTableUf"
+                       nomeFuncao="UF"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="Sigla">
+                <h:outputLabel value="#{row.sigla}" />
+            </p:column>
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}" />
+            </p:column>
+            <p:column headerText="Codigo IBGE">
+                <h:outputLabel value="#{row.codigoIbge}" />
+            </p:column>
+            <p:column headerText="Pais">
+                <h:outputLabel value="#{row.pais.nomePtbr}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{ufControll}"
+                                   nomeFuncao="UF"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                   idComponente="codigoIbge" label="Cód. IBGE"
+                                   nomeAtributo="#{ufControll.objeto.codigoIbge}" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="sigla" label="sigla"
+                                nomeAtributo="#{ufControll.objeto.sigla}"
+                                tamanhoMaximo="2"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="nome" label="Nome"
+                                nomeAtributo="#{ufControll.objeto.nome}"
+                                tamanhoMaximo="100"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="nomePtbr" label="Nome PT-BR"
+                                nomeAtributo="#{ufControll.objeto.pais.nomePtbr}"
+                                tamanhoMaximo="100"/>
+            </div>
+
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

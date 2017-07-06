@@ -13,22 +13,17 @@ import com.chronos.security.UsuarioLogado;
 import com.chronos.security.UsuarioSistema;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Produces;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.util.StringUtils;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Produces;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  *
@@ -41,7 +36,7 @@ public abstract class AbstractControll<T> implements Serializable {
 
     private T objetoSelecionado;
     private T objeto;
-    private ERPLazyDataModel<T> dataModel;
+    protected ERPLazyDataModel<T> dataModel;
     private boolean telaGrid = true;
     @Inject
     protected Repository<T> dao;
@@ -50,6 +45,7 @@ public abstract class AbstractControll<T> implements Serializable {
     protected Usuario usuario;
     protected Empresa empresa;
     protected Object[] atributos;
+    protected Object[] joinFetch;
 
     private Map<String, String> simNao;
     private Map<String, String> tipoPessoa;

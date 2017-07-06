@@ -6,25 +6,19 @@
 package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
-import com.chronos.modelo.entidades.Almoxarifado;
-import com.chronos.modelo.entidades.Produto;
-import com.chronos.modelo.entidades.ProdutoMarca;
-import com.chronos.modelo.entidades.ProdutoSubGrupo;
-import com.chronos.modelo.entidades.TributGrupoTributario;
-import com.chronos.modelo.entidades.TributIcmsCustomCab;
-import com.chronos.modelo.entidades.UnidadeProduto;
+import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
-import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -39,6 +33,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Inject
     private Repository<ProdutoSubGrupo> subGrupos;
     @Inject
+    private Repository<ProdutoGrupo> grupos;
+    @Inject
     private Repository<TributIcmsCustomCab> icmsCustomizados;
     @Inject
     private Repository<UnidadeProduto> unidades;
@@ -48,6 +44,23 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private Repository<TributGrupoTributario> gruposTributarios;
     @Inject
     private Repository<ProdutoMarca> marcas;
+    private ProdutoGrupo grupo;
+
+
+    @Override
+    public ERPLazyDataModel<Produto> getDataModel() {
+        if(dataModel==null){
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(getClazz());
+            dataModel.setDao(dao);
+            joinFetch = new Object[]{"produtoMarca"};
+            Object[] atribs = new Object[]{"nome","valorVenda","quantidadeEstoque","unidadeProduto"};
+            dataModel.setAtributos(atribs);
+            dataModel.setJoinFetch(joinFetch);
+
+        }
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {
@@ -98,6 +111,17 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             // e.printStackTrace();
         }
         return listaSubgrupo;
+    }
+
+    public List<ProdutoSubGrupo> getListaGrupo(String nome) {
+        List<ProdutoSubGrupo> listaGrupo = new ArrayList<>();
+        try {
+
+            listaGrupo = subGrupos.getEntitys(ProdutoSubGrupo.class, "nome", nome, atributos);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaGrupo;
     }
 
     public List<TributIcmsCustomCab> getListaTributIcmsCustomCab(String nome) {
@@ -164,4 +188,11 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         return "PRODUTO";
     }
 
+    public ProdutoGrupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(ProdutoGrupo grupo) {
+        this.grupo = grupo;
+    }
 }

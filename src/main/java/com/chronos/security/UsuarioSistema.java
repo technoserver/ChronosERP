@@ -6,9 +6,10 @@
 package com.chronos.security;
 
 import com.chronos.modelo.entidades.Usuario;
-import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+
+import java.util.Collection;
 
 /**
  *

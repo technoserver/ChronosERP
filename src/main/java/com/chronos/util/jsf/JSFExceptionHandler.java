@@ -5,8 +5,6 @@
  */
 package com.chronos.util.jsf;
 
-import java.io.IOException;
-import java.util.Iterator;
 import javax.el.ELException;
 import javax.faces.FacesException;
 import javax.faces.application.ViewExpiredException;
@@ -16,6 +14,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
+import java.io.IOException;
+import java.util.Iterator;
 
 /**
  *

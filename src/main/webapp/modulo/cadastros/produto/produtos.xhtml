@@ -1,0 +1,389 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Produto
+    </ui:define>
+
+    <ui:define name="tela">
+        #{produtoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Produto
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{produtoControll}"
+                       idDataTable="dataTableProduto"
+                       nomeFuncao="Produto"
+                       id="telaGrid"
+        >
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.id}"/>
+            </p:column>
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+            <p:column headerText="Unidade">
+                <h:outputLabel value="#{row.unidadeProduto.sigla}"/>
+            </p:column>
+            <p:column headerText="Valor">
+                <h:outputLabel value="#{row.valorVenda}">
+                    <f:convertNumber pattern="#,###,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Qtde Estoque">
+                <h:outputLabel value="#{row.quantidadeEstoque}">
+                    <f:convertNumber pattern="#,##0.000"/>
+                </h:outputLabel>
+            </p:column>
+
+            <p:column headerText="Marca">
+                <h:outputLabel value="#{row.produtoMarca.nome}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{produtoControll}"
+                                   nomeFuncao="Produto"
+                                   id="telaDetalhe">
+            <p:tabView id="tabProduto">
+                <p:tab title="Dados Principais" id="dadosPrincipais">
+                    <div class="row">
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        idComponente="produtoNome" label="Nome"
+                                        nomeAtributo="#{produtoControll.objeto.nome}"
+                                        tamanhoMaximo="100"
+                                        requerido="true"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        idComponente="produtoDescricaoPdv" label="Descricao PDV"
+                                        nomeAtributo="#{produtoControll.objeto.descricaoPdv}"
+                                        tamanhoMaximo="30"
+                                        requerido="true"/>
+                    </div>
+                    <div class="row">
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Grupo"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaGrupo"
+                                          nomeAtributo="#{produtoControll.grupo}"
+                                          idComponente="grupo">
+
+                        </erp:autoComplete>
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Subgrupo"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaSubgrupo"
+                                          nomeAtributo="#{produtoControll.objeto.produtoSubGrupo}"
+                                          idComponente="produtoSubgrupo"/>
+                    </div>
+                    <div class="row">
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          label="UN Produto"
+                                          itemLabel="#{objeto.sigla}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaUnidadeProduto"
+                                          nomeAtributo="#{produtoControll.objeto.unidadeProduto}"
+                                          idComponente="produtoUnidadeProduto">
+
+                            <p:column headerText="Sigla">
+                                <p:outputLabel value="#{objeto.sigla}"/>
+                            </p:column>
+                            <p:column headerText="Descricao">
+                                <p:outputLabel value="#{objeto.descricao}"/>
+                            </p:column>
+                            <p:column headerText="Pode Fracionar">
+                                <p:outputLabel value="#{objeto.podeFracionar}"/>
+                            </p:column>
+
+                        </erp:autoComplete>
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                          label="Marca"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaMarcaProduto"
+                                          nomeAtributo="#{produtoControll.objeto.produtoMarca}"
+                                          idComponente="produtoMarcaProduto"
+                                          requerido="false"/>
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Almoxarifado"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaAlmoxarifado"
+                                          nomeAtributo="#{produtoControll.objeto.almoxarifado}"
+                                          idComponente="produtoAlmoxarifado"
+                                          requerido="false"/>
+                    </div>
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="ICMS Customizado"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaTributIcmsCustomCab"
+                                          nomeAtributo="#{produtoControll.objeto.tributIcmsCustomCab}"
+                                          idComponente="produtoTributIcmsCustomCab"
+                                          requerido="false"
+                                          id="campoProdutoTributIcmsCustomCab">
+                            <p:ajax event="itemSelecionado"
+                                    listener="#{produtoControll.alteraTributacao}"
+                                    update="formCentro:telaDetalhe:tabProduto:campoProdutoGrupoTributario:produtoGrupoTributario"/>
+
+                        </erp:autoComplete>
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Grupo Tributario"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaGrupoTributario"
+                                          nomeAtributo="#{produtoControll.objeto.tributGrupoTributario}"
+                                          idComponente="produtoGrupoTributario"
+                                          requerido="false"
+                                          id="campoProdutoGrupoTributario">
+
+                            <p:ajax event="itemSelecionado"
+                                    listener="#{produtoControll.alteraTributacao()}"
+                                    update="formCentro:telaDetalhe:tabProduto:campoProdutoTributIcmsCustomCab:produtoTributIcmsCustomCab"/>
+
+                        </erp:autoComplete>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="produtoNcm" label="Ncm"
+                                        nomeAtributo="#{produtoControll.objeto.ncm}"
+                                        tamanhoMaximo="8"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="produtoCest" label="CEST"
+                                        nomeAtributo="#{produtoControll.objeto.cest}"
+                                        tamanhoMaximo="7"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="produtoExTipi" label="Ex TIPI"
+                                        nomeAtributo="#{produtoControll.objeto.exTipi}"
+                                        tamanhoMaximo="3"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="produtoCodigoLst" label="Codigo LST"
+                                        nomeAtributo="#{produtoControll.objeto.codigoLst}"
+                                        tamanhoMaximo="4"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="produtoValorCompra" label="Valor Compra"
+                                          nomeAtributo="#{produtoControll.objeto.valorCompra}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="produtoValorVenda" label="Valor Venda"
+                                          nomeAtributo="#{produtoControll.objeto.valorVenda}"
+                                          requerido="true"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="produtoGtin" label="GTIN"
+                                        nomeAtributo="#{produtoControll.objeto.gtin}"
+                                        tamanhoMaximo="14"
+                        />
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                                         idComponente="produtoServico" label="Servico"
+                                         nomeAtributo="#{produtoControll.objeto.servico}"
+                                         itens="#{produtoControll.simNao}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="produtoTipo" label="Tipo"
+                                         nomeAtributo="#{produtoControll.objeto.tipo}"
+                                         itens="#{produtoControll.produtoTipo}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="produtoInativo" label="Inativo"
+                                         nomeAtributo="#{produtoControll.objeto.inativo}"
+                                         itens="#{produtoControll.simNao}"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="produtoDataCadastro" label="Data Cadastro"
+                                       nomeAtributo="#{produtoControll.objeto.dataCadastro}"
+                                       somenteLeitura="true"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="produtoExcluido" label="Excluido"
+                                         nomeAtributo="#{produtoControll.objeto.excluido}"
+                                         itens="#{produtoControll.simNao}"
+                                         desabilitado="true"/>
+                    </div>
+                    <div class="row">
+
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            idComponente="produtoDescricao" label="Descricao"
+                                            nomeAtributo="#{produtoControll.objeto.descricao}"/>
+                    </div>
+
+                </p:tab>
+                <p:tab title="Dados Estrategicos">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-7 col-md-9">
+                            <div class="row">
+
+
+                                <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-2"
+                                                 idComponente="produtoClasseAbc" label="Classe ABC"
+                                                 nomeAtributo="#{produtoControll.objeto.classeAbc}"
+                                                 itens="#{produtoControll.produtoClasse}"/>
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                idComponente="produtoCodigoInterno" label="Codigo Interno"
+                                                nomeAtributo="#{produtoControll.objeto.codigoInterno}"
+                                                tamanhoMaximo="60"/>
+
+                                <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                 idComponente="produtoIppt" label="IPPT"
+                                                 nomeAtributo="#{produtoControll.objeto.ippt}"
+                                                 itens="#{produtoControll.produtoIppt}"/>
+
+                                <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                 idComponente="produtoIat" label="IAT"
+                                                 nomeAtributo="#{produtoControll.objeto.iat}"
+                                                 itens="#{produtoControll.produtoIat}"/>
+
+
+                            </div>
+                            <div class="row">
+                                <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-5"
+                                                 idComponente="produtoTipoItemSped" label="Tipo Item Sped"
+                                                 nomeAtributo="#{produtoControll.objeto.tipoItemSped}"
+                                                 itens="#{produtoControll.tipoItemSped}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                                  idComponente="produtoPeso" label="Peso"
+                                                  nomeAtributo="#{produtoControll.objeto.peso}"/>
+
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                                  idComponente="produtoMarkup" label="Markup"
+                                                  nomeAtributo="#{produtoControll.objeto.markup}"/>
+
+
+                            </div>
+                            <div class="row">
+
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoPrecoVendaMinimo" label="Preco Venda Minimo"
+                                                  nomeAtributo="#{produtoControll.objeto.precoVendaMinimo}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoPrecoSugerido" label="Preco Sugerido"
+                                                  nomeAtributo="#{produtoControll.objeto.precoSugerido}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoPrecoLucroZero" label="Preco Lucro Zero"
+                                                  nomeAtributo="#{produtoControll.objeto.precoLucroZero}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoPrecoLucroMinimo" label="Preco Lucro Minimo"
+                                                  nomeAtributo="#{produtoControll.objeto.precoLucroMinimo}"/>
+                            </div>
+                            <div class="row">
+
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoPrecoLucroMaximo" label="Preco Lucro Maximo"
+                                                  nomeAtributo="#{produtoControll.objeto.precoLucroMaximo}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoCustoUnitario" label="Custo Unitario"
+                                                  nomeAtributo="#{produtoControll.objeto.custoUnitario}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoCustoProducao" label="Custo Producao"
+                                                  nomeAtributo="#{produtoControll.objeto.custoProducao}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoCustoMedioLiquido" label="Custo Medio Liquido"
+                                                  nomeAtributo="#{produtoControll.objeto.custoMedioLiquido}"/>
+
+
+                            </div>
+
+                            <div class="row">
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoQuantidadeEstoqueAnterior"
+                                                  label="Qtde Est. Anterior"
+                                                  nomeAtributo="#{produtoControll.objeto.quantidadeEstoqueAnterior}"/>
+
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoEstoqueMinimo" label="Estoque Minimo"
+                                                  nomeAtributo="#{produtoControll.objeto.estoqueMinimo}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoEstoqueMaximo" label="Estoque Maximo"
+                                                  nomeAtributo="#{produtoControll.objeto.estoqueMaximo}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                  idComponente="produtoEstoqueIdeal" label="Estoque Ideal"
+                                                  nomeAtributo="#{produtoControll.objeto.estoqueIdeal}"/>
+
+                            </div>
+                            <div class="row">
+
+
+                            </div>
+                            <div class="row">
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-2"
+                                                  idComponente="produtoPorcentoComissao" label="% Comissao"
+                                                  nomeAtributo="#{produtoControll.objeto.porcentoComissao}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-2"
+                                                  idComponente="produtoAliquotaIcmsPaf" label="% ICMS PAF"
+                                                  nomeAtributo="#{produtoControll.objeto.aliquotaIcmsPaf}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-2"
+                                                  idComponente="produtoAliquotaIssqnPaf" label="% ISSQN PAF"
+                                                  nomeAtributo="#{produtoControll.objeto.aliquotaIssqnPaf}"/>
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-3"
+                                                idComponente="produtoTotalizadorParcial" label="Totalizador Parcial"
+                                                nomeAtributo="#{produtoControll.objeto.totalizadorParcial}"
+                                                tamanhoMaximo="10"/>
+
+                                <erp:campoInteiro styleClass="col-xs-12 col-sm-4 col-md-3"
+                                                  idComponente="produtoCodigoBalanca" label="Codigo Balanca"
+                                                  nomeAtributo="#{produtoControll.objeto.codigoBalanca}"/>
+
+                            </div>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-5 col-md-3">
+                            <p:outputLabel value="Imagem" />
+                            <p:commandButton title="Selecionar Imagem"
+                                             value="Selecionar Imagem" oncomplete="PF('dialogUpload').show()"
+                                             update=":formUpload:panelUpload" />
+                            <br /> <br />
+                            <p:outputLabel id="imagemProduto">
+                                <img src="#{produtoController.objeto.imagem}" />
+                            </p:outputLabel>
+                        </div>
+                    </div>
+                </p:tab>
+            </p:tabView>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formUpload" enctype="multipart/form-data">
+            <p:dialog id="dialogUpload" header="Upload Imagem Produto" responsive="true"
+                      widgetVar="dialogUpload" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" >
+                <p:outputPanel id="panelUpload" >
+                    <div class="row">
+                        <p:fileUpload
+                                fileUploadListener="#{produtoController.uploadImagem}"
+                                mode="advanced" fileLimit="1"
+                                allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formCentro:growl" />
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar" update=":formCentro:telaDetalhe:tabProduto:imagemProduto"
+                                     oncomplete="PF('dialogUpload').hide();" process="@this" />
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

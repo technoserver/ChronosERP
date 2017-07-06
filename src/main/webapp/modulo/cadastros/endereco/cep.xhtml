@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        CEP
+    </ui:define>
+
+    <ui:define name="tela">
+        #{cepControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        CEP
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{cepControll}"
+                       idDataTable="dataTableCep"
+                       nomeFuncao="CEP"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="CEP">
+                <h:outputLabel value="#{row.cep}"/>
+            </p:column>
+            <p:column headerText="Logradouro">
+                <h:outputLabel value="#{row.logradouro}"/>
+            </p:column>
+            <p:column headerText="Bairro">
+                <h:outputLabel value="#{row.bairro}"/>
+            </p:column>
+            <p:column headerText="Municipio">
+                <h:outputLabel value="#{row.municipio}"/>
+            </p:column>
+            <p:column headerText="UF">
+                <h:outputLabel value="#{row.uf}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{cepControll}"
+                                   nomeFuncao="CEP"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+
+                <erp:campoMascara styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="cepCep" label="CEP"
+                                  nomeAtributo="#{cepControll.objeto.cep}"
+                                  mascara="99.999-999"
+                />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-9 col-md-9"
+                                idComponente="cepLogradouro" label="Logradouro"
+                                nomeAtributo="#{cepControll.objeto.logradouro}"
+                                tamanhoMaximo="60"/>
+            </div>
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="cepComplemento" label="Complemento"
+                                nomeAtributo="#{cepControll.objeto.complemento}"
+                                tamanhoMaximo="60"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="cepBairro" label="Bairro"
+                                nomeAtributo="#{cepControll.objeto.bairro}"
+                                tamanhoMaximo="60"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="cepRegiao" label="Regiao"
+                                nomeAtributo="#{cepControll.objeto.regiao.nome}"
+                                tamanhoMaximo="100"/>
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="cepUf" label="UF"
+                                nomeAtributo="#{cepControll.objeto.uf}"
+                                tamanhoMaximo="2"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                idComponente="cepMunicipio" label="Municipio"
+                                nomeAtributo="#{cepControll.objeto.municipio}"
+                                tamanhoMaximo="60"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="cepCodigoIbgeMunicipio" label="Codigo IBGE Municipio"
+                                  nomeAtributo="#{cepControll.objeto.codigoIbgeMunicipio}"
+                                  thousandSeparator=""/>
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

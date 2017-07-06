@@ -8,13 +8,16 @@ package com.chronos.controll;
 
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
-
-import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortOrder;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -28,6 +31,8 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     protected Repository<T> dao;
     private List<Filtro> filtros;
     private List<T> objs;
+    protected Object[] joinFetch;
+    protected Object[] atributos;
 
     
     public ERPLazyDataModel() {
@@ -60,7 +65,7 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         try {
-            objs = dao.getEntitys(getClazz(),filtros, first, pageSize, sortField, sortOrder );
+            objs = dao.getEntitys(getClazz(),filtros, first, pageSize, sortField, sortOrder,joinFetch,atributos );
 
             Long totalRegistros = dao.getTotalRegistros(getClazz(), filtros);
             this.setRowCount(totalRegistros.intValue());
@@ -114,7 +119,20 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     public void setObjs(List<T> objs) {
         this.objs = objs;
     }
-    
-    
 
+    public Object[] getJoinFetch() {
+        return joinFetch;
+    }
+
+    public void setJoinFetch(Object[] joinFetch) {
+        this.joinFetch = joinFetch;
+    }
+
+    public Object[] getAtributos() {
+        return atributos;
+    }
+
+    public void setAtributos(Object[] atributos) {
+        this.atributos = atributos;
+    }
 }

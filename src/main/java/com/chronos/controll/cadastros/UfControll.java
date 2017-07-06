@@ -6,10 +6,12 @@
 package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.Uf;
-import java.io.Serializable;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  *
@@ -21,14 +23,28 @@ public class UfControll extends AbstractControll<Uf> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
+    @Override
+    public ERPLazyDataModel<Uf> getDataModel() {
+
+        if(dataModel==null){
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(getClazz());
+            dataModel.setDao(dao);
+        }
+        joinFetch = new Object[]{"pais"};
+        dataModel.setJoinFetch(joinFetch);
+        return dataModel;
+    }
+
     @Override
     protected Class<Uf> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Uf.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "UF";
     }
     
 }

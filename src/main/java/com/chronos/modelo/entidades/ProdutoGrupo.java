@@ -28,15 +28,11 @@
 */
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 
 @Entity
@@ -49,7 +45,7 @@ public class ProdutoGrupo implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
- //   @NotEmpty(message = "Nome obrigatório")
+    @NotBlank
     @Column(name = "NOME")
     private String nome;
     @Column(name = "DESCRICAO")

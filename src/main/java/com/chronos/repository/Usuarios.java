@@ -5,22 +5,18 @@
  */
 package com.chronos.repository;
 
-import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.entidades.PapelFuncao;
 import com.chronos.modelo.entidades.Usuario;
-import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
 
 /**
  *

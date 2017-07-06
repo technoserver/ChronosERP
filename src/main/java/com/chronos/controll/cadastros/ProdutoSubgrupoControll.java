@@ -6,10 +6,17 @@
 package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.modelo.entidades.ProdutoGrupo;
 import com.chronos.modelo.entidades.ProdutoSubGrupo;
-import java.io.Serializable;
+import com.chronos.repository.Repository;
+
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -21,14 +28,42 @@ public class ProdutoSubgrupoControll extends AbstractControll<ProdutoSubGrupo> i
 
     private static final long serialVersionUID = 1L;
 
+    @Inject
+    private Repository<ProdutoGrupo> grupos;
+
+    @Override
+    public ERPLazyDataModel<ProdutoSubGrupo> getDataModel() {
+
+        if(dataModel==null){
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(getClazz());
+            dataModel.setDao(dao);
+        }
+        joinFetch = new Object[]{"produtoGrupo"};
+        dataModel.setJoinFetch(joinFetch);
+
+        return dataModel;
+
+    }
+
+    public List<ProdutoGrupo> getListaProdutoGrupo(String nome) {
+        List<ProdutoGrupo> listaGrupo = new ArrayList<>();
+        try {
+            listaGrupo = grupos.getEntitys(ProdutoGrupo.class,"nome", nome,atributos);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaGrupo;
+    }
+
     @Override
     protected Class<ProdutoSubGrupo> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return ProdutoSubGrupo.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "SUBGRUPO";
     }
     
 }

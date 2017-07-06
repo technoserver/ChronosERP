@@ -28,17 +28,12 @@
  */
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "CEP")
@@ -60,6 +55,8 @@ public class Cep implements Serializable {
     private String complemento;
     @Column(name = "BAIRRO")
     private String bairro;
+    @Column(name = "regiao")
+    private String regiao;
     @NotNull
     @NotBlank
     @Column(name = "MUNICIPIO")
@@ -67,7 +64,7 @@ public class Cep implements Serializable {
     @NotNull
     @NotBlank
     @Column(name = "UF")
-    private String uf;      
+    private String uf;
     @Column(name = "CODIGO_IBGE_MUNICIPIO")
     @NotNull
     private Integer codigoIbgeMunicipio;
@@ -115,6 +112,14 @@ public class Cep implements Serializable {
         this.bairro = bairro;
     }
 
+    public String getRegiao() {
+        return regiao;
+    }
+
+    public void setRegiao(String regiao) {
+        this.regiao = regiao;
+    }
+
     public String getMunicipio() {
         return municipio;
     }
@@ -139,10 +144,10 @@ public class Cep implements Serializable {
         this.codigoIbgeMunicipio = codigoIbgeMunicipio;
     }
 
-    public String getEndereco(){
-        return uf + " "+municipio;
+    public String getEndereco() {
+        return uf + " " + municipio;
     }
-    
+
     @Override
     public String toString() {
         return cep;
@@ -172,7 +177,6 @@ public class Cep implements Serializable {
         }
         return true;
     }
-    
-    
+
 
 }

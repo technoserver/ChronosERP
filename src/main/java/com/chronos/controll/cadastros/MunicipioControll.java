@@ -6,9 +6,12 @@
 package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
-import java.io.Serializable;
+import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.modelo.entidades.Municipio;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  *
@@ -16,18 +19,31 @@ import javax.inject.Named;
  */
 @Named
 @ViewScoped
-public class MunicipioControll extends AbstractControll<MunicipioControll> implements Serializable {
+public class MunicipioControll extends AbstractControll<Municipio> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected Class<MunicipioControll> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ERPLazyDataModel<Municipio> getDataModel() {
+
+        if(dataModel==null){
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(getClazz());
+            dataModel.setDao(dao);
+        }
+        joinFetch = new Object[]{"uf"};
+        dataModel.setJoinFetch(joinFetch);
+        return dataModel;
+    }
+
+    @Override
+    protected Class<Municipio> getClazz() {
+        return Municipio.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "MUNICIPIO";
     }
     
 }

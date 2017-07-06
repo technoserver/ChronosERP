@@ -7,9 +7,11 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Cheque;
-import java.io.Serializable;
+import com.chronos.modelo.entidades.Pais;
+
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  *
@@ -17,18 +19,18 @@ import javax.inject.Named;
  */
 @Named
 @ViewScoped
-public class PaisControll extends AbstractControll<Cheque> implements Serializable {
+public class PaisControll extends AbstractControll<Pais> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected Class<Cheque> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected Class<Pais> getClazz() {
+        return Pais.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "PAIS";
     }
     
 }

@@ -10,18 +10,18 @@ import com.chronos.modelo.entidades.Usuario;
 import com.chronos.repository.Usuarios;
 import com.chronos.util.cdi.CDIServiceLocator;
 import com.chronos.util.cdi.ManualCDILookup;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import javax.persistence.NoResultException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.NoResultException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  *
@@ -62,24 +62,22 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
     private Collection<? extends GrantedAuthority> getAutorizacoes(List<PapelFuncao> funcoes) {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        funcoes.stream().map((p) -> {
+        funcoes.stream().forEach((p)->{
             if (p.getPodeConsultar() != null && p.getPodeConsultar().equals("S")) {
                 authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome() + "_CONSULTAR"));
             }
-            return p;
-        }).map((p) -> {
             if (p.getPodeInserir() != null && p.getPodeInserir().equals("S")) {
                 authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome() + "_INSERIR"));
             }
-            return p;
-        }).map((p) -> {
             if (p.getPodeAlterar() != null && p.getPodeAlterar().equals("S")) {
                 authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome() + "_ALTERAR"));
             }
-            return p;
-        }).filter((p) -> (p.getPodeExcluir() != null && p.getPodeExcluir().equals("S"))).forEach((p) -> {
-            authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome() + "_EXCLUIR"));
+            if (p.getPodeExcluir() != null && p.getPodeExcluir().equals("S")) {
+                authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome() + "_EXCLUIR"));
+            }
         });
+
+
 
         return authorities;
     }

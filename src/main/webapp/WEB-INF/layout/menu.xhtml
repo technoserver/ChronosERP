@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-                xmlns:p="http://primefaces.org/ui"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 xmlns:erp="http://java.sun.com/jsf/composite/components">
 
@@ -15,8 +15,10 @@
                 <li class="nav-header">
                     <div class="dropdown profile-element"> 
                         <span>
-                            <h:graphicImage id="imgPadrap" library="images" name="pessoa.png" class="img-circle" rendered="#{seguranca.fotoFuncionario==null}"/>
-                            <h:graphicImage id="imfFuncionario" value="#{seguranca.fotoFuncionario}"  class="img-circle" rendered="#{seguranca.fotoFuncionario!=null}"/>
+                            <h:graphicImage id="imgPadrap" library="images" name="pessoa.png" class="img-circle"
+                                            rendered="#{seguranca.fotoFuncionario==null}"/>
+                            <h:graphicImage id="imfFuncionario" value="#{seguranca.fotoFuncionario}" class="img-circle"
+                                            rendered="#{seguranca.fotoFuncionario!=null}"/>
 
                         </span>
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -27,11 +29,11 @@
                                 <span class="text-muted text-xs block">
                                     #{seguranca.usuarioLogado.usuario.colaborador.cargo.nome}<b class="caret"></b>
                                 </span> 
-                            </span> 
+                            </span>
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
                             <li><a href="profile.html">Perfil</a></li>
-                            <li><a href="contacts.html">Agenda</a></li>                            
+                            <li><a href="contacts.html">Agenda</a></li>
                             <li class="divider"></li>
                             <li><a href="login.html">Logout</a></li>
                         </ul>
@@ -42,14 +44,14 @@
                 </li>
                 <li class="${fn:contains(view.viewId,'cadastros')?'active':''}">
                     <a href="#">
-                        <i class="fa fa-th-large"></i> 
-                        <span class="nav-label">Cadastros</span> 
+                        <i class="fa fa-th-large"></i>
+                        <span class="nav-label">Cadastros</span>
                         <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level collapse ">
                         <li class="${fn:contains(view.viewId,'modulo/cadastros/comercial/')?'active':''}">
                             <a href="#">Cliente|Fornecedor <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">                               
+                            <ul class="nav nav-third-level">
 
                                 <erp:subMenu caminho="/modulo/cadastros/comercial/atividadeForCli"
                                              label="Atividade"
@@ -63,7 +65,7 @@
                         </li>
                         <li class="${fn:contains(view.viewId,'cadastros/financeiro')?'active':''}">
                             <a href="#">Finaceiro <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">                               
+                            <ul class="nav nav-third-level">
                                 <erp:subMenu caminho="/modulo/cadastros/financeiro/bancos"
                                              label="Banco"
                                              funcao="bancos"/>
@@ -85,9 +87,38 @@
                                              funcao="cheque"/>
                             </ul>
                         </li>
+
+                        <li class="${fn:contains(view.viewId,'cadastros/produto')?'active':''}">
+                            <a href="#">Produto <span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <erp:subMenu caminho="/modulo/cadastros/produto/subGrupo"
+                                             label="SubGrupo"
+                                             funcao="subGrupo"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/produto/grupo"
+                                             label="Grupo"
+                                             funcao="grupo"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/produto/marca"
+                                             label="Marca"
+                                             funcao="marca"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/produto/unidadeMedida"
+                                             label="UM"
+                                             funcao="unidadeMedida"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/produto/produtos"
+                                             label="Produto"
+                                             funcao="produtos"/>
+
+
+                            </ul>
+                        </li>
+
+
                         <li class="${fn:contains(view.viewId,'cadastros/diversos')?'active':''}">
                             <a href="#">Diversos<span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">                               
+                            <ul class="nav nav-third-level">
 
                                 <erp:subMenu caminho="/modulo/cadastros/diversos/almoxarifado"
                                              label="Almoxarifado"
@@ -103,34 +134,56 @@
                                              label="Operadora Plano Saude"
                                              funcao="operadoraPlanoSaude"/>
                             </ul>
-                        </li>      
+                        </li>
                         <li class="${fn:contains(view.viewId,'cadastros/tabelas')?'active':''}">
                             <a href="#">Tabelas<span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">                               
+                            <ul class="nav nav-third-level">
 
                                 <erp:subMenu caminho="/modulo/cadastros/tabelas/cfop"
                                              label="CFOP"
                                              funcao="cfop"/>
-                                
+
                                 <erp:subMenu caminho="/modulo/cadastros/tabelas/cest"
                                              label="CEST"
                                              funcao="cest"/>
-                                
+
                                 <erp:subMenu caminho="/modulo/cadastros/tabelas/ibpt"
                                              label="IBPT"
                                              funcao="ibpt"/>
-                                
+
                                 <erp:subMenu caminho="/modulo/cadastros/tabelas/feriados"
                                              label="Feriados"
                                              funcao="feriados"/>
 
                             </ul>
-                        </li> 
+                        </li>
+                        <li class="${fn:contains(view.viewId,'cadastros/endereco')?'active':''}">
+                            <a href="#">Endereço<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+
+                                <erp:subMenu caminho="/modulo/cadastros/endereco/pais"
+                                             label="Pais"
+                                             funcao="pais"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/endereco/uf"
+                                             label="UF"
+                                             funcao="uf"/>
+                                <erp:subMenu caminho="/modulo/cadastros/endereco/municipio"
+                                             label="Municipio"
+                                             funcao="municipio"/>
+
+                                <erp:subMenu caminho="/modulo/cadastros/endereco/cep"
+                                             label="CEP"
+                                             funcao="cep"/>
+
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 
                 <li>
-                    <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label">Menu Levels </span><span class="fa arrow"></span></a>
+                    <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label">Menu Levels </span><span
+                            class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <li>
                             <a href="#">Third Level <span class="fa arrow"></span></a>
@@ -141,18 +194,13 @@
                                 <li>
                                     <a href="#">Third Level Item</a>
                                 </li>
+
                                 <li>
                                     <a href="#">Third Level Item</a>
                                 </li>
-
                             </ul>
                         </li>
-                        <li><a href="#">Second Level Item</a></li>
-                        <li>
-                            <a href="#">Second Level Item</a></li>
-                        <li>
-                            <a href="#">Second Level Item</a>
-                        </li>
+
                     </ul>
 
                 </li>

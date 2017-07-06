@@ -8,14 +8,15 @@ package com.chronos.security;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.util.ArquivoUtil;
-import java.io.File;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import java.io.File;
 
 /**
  *

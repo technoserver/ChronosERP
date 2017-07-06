@@ -6,18 +6,17 @@
 package com.chronos.repository;
 
 import com.chronos.util.jpa.Transactional;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.primefaces.model.SortOrder;
+
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
-import org.primefaces.model.SortOrder;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -322,7 +321,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         }
         if (joinFetch != null) {
             for (Object jf : joinFetch) {
-                jpql += " JOIN o." + jf;
+                jpql += " JOIN FETCH o." + jf;
             }
         }
         jpql += " WHERE 1 = 1";

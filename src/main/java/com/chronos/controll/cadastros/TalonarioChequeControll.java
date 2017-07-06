@@ -10,13 +10,14 @@ import com.chronos.modelo.entidades.ContaCaixa;
 import com.chronos.modelo.entidades.TalonarioCheque;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 /**
  *
