@@ -24,12 +24,12 @@ public class EstadoCivilControll extends AbstractControll<EstadoCivil> implement
 
     @Override
     protected Class<EstadoCivil> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return EstadoCivil.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "ESTADO_CIVIL";
     }
     
 }

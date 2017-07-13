@@ -28,8 +28,8 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
 
     private static final long serialVersionUID = 1L;
     private Class<T> clazz;
-    protected Repository<T> dao;
-    private List<Filtro> filtros;
+    protected Repository<T> repository;
+    protected List<Filtro> filtros;
     private List<T> objs;
     protected Object[] joinFetch;
     protected Object[] atributos;
@@ -43,7 +43,7 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     @Override
     public T getRowData(String rowKey) {
         try {
-            return dao.getJoinFetch(Integer.valueOf(rowKey), getClazz());
+            return repository.getJoinFetch(Integer.valueOf(rowKey), getClazz());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -65,9 +65,9 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         try {
-            objs = dao.getEntitys(getClazz(),filtros, first, pageSize, sortField, sortOrder,joinFetch,atributos );
+            objs = repository.getEntitys(getClazz(),filtros, first, pageSize, sortField, sortOrder,joinFetch,atributos );
 
-            Long totalRegistros = dao.getTotalRegistros(getClazz(), filtros);
+            Long totalRegistros = repository.getTotalRegistros(getClazz(), filtros);
             this.setRowCount(totalRegistros.intValue());
             filtros.clear();
             return objs;
@@ -103,11 +103,11 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     }
 
     public Repository<T> getDao() {
-        return dao;
+        return repository;
     }
 
     public void setDao(Repository<T> dao) {
-        this.dao = dao;
+        this.repository = dao;
     }
 
 

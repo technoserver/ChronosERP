@@ -24,12 +24,12 @@ public class SituacaoColaboradorControll extends AbstractControll<SituacaoColabo
 
     @Override
     protected Class<SituacaoColaborador> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return SituacaoColaborador.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return "SITUACAO_COLBORADOR";
     }
     
 }

@@ -24,12 +24,12 @@ public class TipoRelacionamentoControll extends AbstractControll<TipoRelacioname
 
     @Override
     protected Class<TipoRelacionamento> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return TipoRelacionamento.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "TIPO_RELCIONAMENTO";
     }
     
 }

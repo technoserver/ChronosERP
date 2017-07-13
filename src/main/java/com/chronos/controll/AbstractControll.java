@@ -11,6 +11,7 @@ import com.chronos.modelo.entidades.enuns.Estados;
 import com.chronos.repository.Repository;
 import com.chronos.security.UsuarioLogado;
 import com.chronos.security.UsuarioSistema;
+import com.chronos.service.AbstractService;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.component.tabview.TabView;
@@ -40,6 +41,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private boolean telaGrid = true;
     @Inject
     protected Repository<T> dao;
+
     private String titulo;
     private int activeTabIndex;
     protected Usuario usuario;
@@ -272,12 +274,13 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public void salvar() {
-        salvar(null);
+       // salvar(null);
+
     }
 
     public void salvar(String mensagem) {
         try {
-            objeto = dao.atualizar(objeto);
+            objeto = dao.atualizar (objeto);
             Mensagem.addInfoMessage(mensagem != null ? mensagem : "Registro salvo com sucesso!");
         } catch (Exception e) {
             e.printStackTrace();

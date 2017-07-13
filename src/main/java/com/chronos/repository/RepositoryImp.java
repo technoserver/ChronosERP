@@ -249,17 +249,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Override
     public List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder, Object[] joinFetch, Object[] atributos) throws PersistenceException {
-        String jpql = montaQuery(clazz, clazz, atributos, joinFetch);
-
-        jpql = montaQuery(jpql, sortField, sortOrder, filters);
-        Query query = queryPrepared(jpql, filters);
-        query.setFirstResult(first);
-        if (pageSize > 0) {
-            query.setMaxResults(pageSize);
-        }
-        List<T> beans = query.getResultList();
-
-        return beans;
+        return getTs(clazz, clazz, filters, first, pageSize, sortField, sortOrder, joinFetch, atributos);
     }
 
     /**
@@ -278,6 +268,10 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
      */
     @Override
     public List<T> getEntitys(Class<T> clazz, Class classToCast, List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder, Object[] joinFetch, Object[] atributos) throws PersistenceException {
+        return getTs(clazz, classToCast, filters, first, pageSize, sortField, sortOrder, joinFetch, atributos);
+    }
+
+    private List<T> getTs(Class<T> clazz, Class classToCast, List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder, Object[] joinFetch, Object[] atributos) {
         String jpql = montaQuery(clazz, classToCast, atributos, joinFetch);
 
         jpql = montaQuery(jpql, sortField, sortOrder, filters);

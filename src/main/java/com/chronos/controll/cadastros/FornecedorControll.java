@@ -24,12 +24,13 @@ public class FornecedorControll  extends AbstractControll<Fornecedor> implements
 
     @Override
     protected Class<Fornecedor> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Fornecedor.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        return "FORNECEDOR";
     }
     
 }

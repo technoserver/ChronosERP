@@ -13,6 +13,8 @@
         <cc:attribute name="nomeFuncao" required="true" />
         <cc:attribute name="idDataTable" required="true" />
         <cc:attribute name="somenteConsulta" default="false" />
+        <cc:attribute name="dataModel"  default="#{cc.attrs.controller.dataModel}" />
+        <cc:attribute name="objetoSelecionado"  default="#{cc.attrs.controller.objetoSelecionado}" />
     </cc:interface>
 
     <!-- IMPLEMENTATION -->
@@ -22,7 +24,7 @@
 
                 <div class="ibox-content">
                     <erp:msgPermissao permissao="#{cc.attrs.controller.podeConsultar()}"/>  
-                    <p:dataTable value="#{cc.attrs.controller.dataModel}" var="row" id="#{cc.attrs.idDataTable}" paginator="true"
+                    <p:dataTable value="#{cc.attrs.dataModel!=null? cc.attrs.dataModel :cc.attrs.controller.dataModel}" var="row" id="#{cc.attrs.idDataTable}" paginator="true"
                                  rows="10" rowsPerPageTemplate="10,20,30,40"  paginatorPosition="bottom"                                                                   
                                  reflow="true" rendered="#{cc.attrs.controller.podeConsultar()}"
                                  resizableColumns="true" lazy="true"
@@ -35,7 +37,7 @@
                                            oncomplete="addClass()"
                                            update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem">
                                 <i class="fa fa-file-text-o"></i>   
-                                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.controller.objetoSelecionado}"/>
+                                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.objetoSelecionado}"/>
                             </p:commandLink>
                             &nbsp;
                             <p:commandLink title="Excluir"   action="#{cc.attrs.controller.remover()}" style="position: relative; right: 7px"
@@ -47,7 +49,7 @@
                                            disabled="#{!cc.attrs.controller.podeExcluir()}">
                                 <i class="fa fa-times"></i> 
                                 <p:confirm header="Confirmar" message="Deseja excluir ?"/>
-                                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.controller.objetoSelecionado}"/> 
+                                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.objetoSelecionado}"/>
                             </p:commandLink>
                         </p:column>
 

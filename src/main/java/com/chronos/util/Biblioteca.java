@@ -46,4 +46,28 @@ public class Biblioteca {
         }
         return documento;
     }
+
+    public static String cpfCnpjFormatado(String cpfCnpj) {
+        if (cpfCnpj != null) {
+            cpfCnpj = cpfCnpj.replaceAll("\\D", "");
+            if (cpfCnpj.length() == 11) {
+                String strFormatado = cpfCnpj.substring(0, 3) + "."
+                        + cpfCnpj.substring(3, 6) + "."
+                        + cpfCnpj.substring(6, 9) + "-"
+                        + cpfCnpj.substring(9, 11);
+
+                return strFormatado;
+            }
+            if (cpfCnpj.length() == 14) {
+                String strFormatado = cpfCnpj.substring(0, 2) + "."
+                        + cpfCnpj.substring(2, 5) + "."
+                        + cpfCnpj.substring(5, 8) + "/"
+                        + cpfCnpj.substring(8, 12) + "-"
+                        + cpfCnpj.substring(12, 14);
+
+                return strFormatado;
+            }
+        }
+        return cpfCnpj;
+    }
 }

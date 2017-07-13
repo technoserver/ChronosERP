@@ -7,6 +7,9 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Pessoa;
+import com.chronos.modelo.entidades.PessoaContato;
+import com.chronos.modelo.entidades.PessoaEndereco;
+import com.chronos.modelo.entidades.PessoaTelefone;
 
 import java.io.Serializable;
 
@@ -14,18 +17,24 @@ import java.io.Serializable;
  *
  * @author john
  */
-public class PessoaControll extends AbstractControll<Pessoa> implements Serializable {
+public abstract class PessoaControll<T> extends AbstractControll<Pessoa> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Override
-    protected Class<Pessoa> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    private PessoaContato pessoaContatoSelecionado;
+    private PessoaContato pessoaContato;
+    private PessoaEndereco pessoaEnderecoSelecionado;
+    private PessoaEndereco pessoaEndereco;
+    private PessoaTelefone pessoaTelefoneSelecionado;
+    private PessoaTelefone pessoaTelefone;
 
-    @Override
-    protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    private String cpf;
+    private String cnpj;
+
+    public abstract Pessoa getPessoa();
+
+    public abstract void setPessoa(Pessoa pessoa);
+
+
     
 }

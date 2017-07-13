@@ -24,12 +24,12 @@ public class NivelFormacaoControll extends AbstractControll<NivelFormacao> imple
 
     @Override
     protected Class<NivelFormacao> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return NivelFormacao.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "NIVEl_FORMACAO";
     }
     
 }

@@ -29,7 +29,7 @@ public class ArquivoUtil {
     private static ArquivoUtil instance;
 
     private ArquivoUtil() {
-        this(getDefault().getPath(diretorioRaiz(), ".chronos"));
+        this(getDefault().getPath(diretorioRaiz(),".chronos"));
     }
 
     private ArquivoUtil(Path path) {
@@ -60,6 +60,8 @@ public class ArquivoUtil {
         String sistema = (String) System.getProperties().get("os.name");
         return sistema.startsWith("Windows") ? "c://" : System.getenv("HOME");
     }
+
+
 
     private String diretorio() {
         return getDefault().getPath(diretorioRaiz(), ".chronos").toString();

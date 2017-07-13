@@ -68,6 +68,10 @@ public class Cliente implements Serializable {
     private String tipoFrete;
     @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")
     private String classificacaoContabilConta;
+    @Column(name = "BLOQUEADO")
+    private String bloqueado;
+    @Column(name = "DIAS_BLOQUEIO")
+    private Integer diasBloqueio;
     @JoinColumn(name = "ID_SITUACAO_FOR_CLI", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private SituacaoForCli situacaoForCli;
@@ -83,6 +87,12 @@ public class Cliente implements Serializable {
     @JoinColumn(name = "ID_CONVENIO", referencedColumnName = "ID")
     @ManyToOne
     private Convenio convenio;
+    @JoinColumn(name = "ID_TABELA_PRECO", referencedColumnName = "ID")
+    @ManyToOne
+    private TabelaPreco tabelaPreco;
+    @JoinColumn(name = "ID_REGIAO", referencedColumnName = "ID")
+    @ManyToOne
+    private Regiao regiao;
 
     public Cliente() {
     }
@@ -223,8 +233,38 @@ public class Cliente implements Serializable {
         this.convenio = convenio;
     }
 
-    
-    
+    public String getBloqueado() {
+        return bloqueado;
+    }
+
+    public void setBloqueado(String bloqueado) {
+        this.bloqueado = bloqueado;
+    }
+
+    public Integer getDiasBloqueio() {
+        return diasBloqueio;
+    }
+
+    public void setDiasBloqueio(Integer diasBloqueio) {
+        this.diasBloqueio = diasBloqueio;
+    }
+
+    public TabelaPreco getTabelaPreco() {
+        return tabelaPreco;
+    }
+
+    public void setTabelaPreco(TabelaPreco tabelaPreco) {
+        this.tabelaPreco = tabelaPreco;
+    }
+
+    public Regiao getRegiao() {
+        return regiao;
+    }
+
+    public void setRegiao(Regiao regiao) {
+        this.regiao = regiao;
+    }
+
     @Override
     public String toString() {
         return pessoa.getNome();
