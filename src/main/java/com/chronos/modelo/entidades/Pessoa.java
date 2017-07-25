@@ -197,6 +197,13 @@ public class Pessoa implements Serializable {
         this.listaEmpresa = listaEmpresa;
     }
 
+
+    public String getIdentificador(){
+        String identificador;
+        identificador = this.tipo.equals("F")?this.pessoaFisica.getCpf():this.pessoaJuridica.getCnpj();
+        return identificador!=null?identificador.replaceAll("\\D",""):"";
+    }
+
     @Override
     public String toString() {
         return nome;

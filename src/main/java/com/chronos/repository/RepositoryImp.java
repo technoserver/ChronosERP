@@ -90,6 +90,8 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return getEntitys(clazz,filtros).get(0);
     }
 
+
+
     @SuppressWarnings("unchecked")
     @Override
     public T getJoinFetch(Integer id, Class<T> clazz) throws PersistenceException {
@@ -121,6 +123,17 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
 
+    @Override
+    public Long getTotalRegistros(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
+        List<Filtro> filtros = new ArrayList<>();
+        if (valor.getClass() == String.class) {
+            filtros.add(new Filtro(Filtro.AND, atributo, Filtro.LIKE, valor));
+        } else {
+            filtros.add(new Filtro(Filtro.AND, atributo, Filtro.IGUAL, valor));
+        }
+
+        return getTotalRegistros(clazz,filtros);
+    }
 
     @Override
     public Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws PersistenceException {

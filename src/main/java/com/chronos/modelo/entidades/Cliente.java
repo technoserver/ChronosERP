@@ -265,10 +265,7 @@ public class Cliente implements Serializable {
         this.regiao = regiao;
     }
 
-    @Override
-    public String toString() {
-        return pessoa.getNome();
-    }
+
 
     @Override
     public int hashCode() {

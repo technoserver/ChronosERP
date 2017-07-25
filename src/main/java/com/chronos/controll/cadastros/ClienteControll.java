@@ -9,23 +9,26 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.controll.cadastros.datamodel.ClienteDataModel;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.enuns.TelaPessoa;
 import com.chronos.modelo.entidades.view.PessoaCliente;
 import com.chronos.repository.Repository;
+import com.chronos.service.cadastros.ClienteService;
+import com.chronos.service.cadastros.PessoaService;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
- *
  * @author john
  */
 @Named
 @ViewScoped
-public class ClienteControll extends AbstractControll<Cliente> implements Serializable {
+public class ClienteControll extends PessoaControll<Cliente> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,12 +47,21 @@ public class ClienteControll extends AbstractControll<Cliente> implements Serial
     private Repository<AtividadeForCli> atividadesClientes;
     @Inject
     private Repository<SituacaoForCli> situacoesCliente;
+    @Inject
+    private Repository<Pessoa> pessoas;
+
+    @Inject
+    private ClienteService service;
+
+
 
     private PessoaCliente clienteSelecionado;
 
+    private String completo;
+
     public ClienteDataModel getClienteDataModel() {
 
-        if(clienteDataModel==null){
+        if (clienteDataModel == null) {
             clienteDataModel = new ClienteDataModel();
             clienteDataModel.setDao(clientes);
             clienteDataModel.setClazz(PessoaCliente.class);
@@ -58,19 +70,46 @@ public class ClienteControll extends AbstractControll<Cliente> implements Serial
         return clienteDataModel;
     }
 
+
     @Override
-    public void doEdit() {
-        Cliente cliente = dao.getJoinFetch(clienteSelecionado.getId(),Cliente.class);
-        setObjeto(cliente);
-        setTelaGrid(false);
+    public void doCreate() {
+        super.doCreate();
+        Pessoa pessoa = novaPessoa("S","N","N","N");
+        getObjeto().setPessoa(pessoa);
+        getObjeto().setDesde(new Date());
+        completo = "N";
+
     }
 
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        setTelaGrid(false);
+        completo = "N";
+    }
+
+    @Override
+    public void salvar() {
+
+        service.salvar(getObjeto());
+
+    }
+
+    public List<Pessoa> getListaPessoa(String nome) {
+        List<Pessoa> listaPessoa = new ArrayList<>();
+        try {
+            listaPessoa = pessoas.getEntitys(Pessoa.class, "nome", nome, atributos);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaPessoa;
+    }
 
 
     public List<Regiao> getListaRegiao(String nome) {
         List<Regiao> listaRegiao = new ArrayList<>();
         try {
-            listaRegiao = regioes.getEntitys(Regiao.class, "nome", nome,atributos);
+            listaRegiao = regioes.getEntitys(Regiao.class, "nome", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -80,7 +119,7 @@ public class ClienteControll extends AbstractControll<Cliente> implements Serial
     public List<TabelaPreco> getListaTabelaPreco(String nome) {
         List<TabelaPreco> listaTabelaPreco = new ArrayList<>();
         try {
-            listaTabelaPreco = tabelasPreco.getEntitys(TabelaPreco.class, "nome", nome,atributos);
+            listaTabelaPreco = tabelasPreco.getEntitys(TabelaPreco.class, "nome", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -90,7 +129,7 @@ public class ClienteControll extends AbstractControll<Cliente> implements Serial
     public List<Convenio> getListaConvenio(String nome) {
         List<Convenio> listaConvenio = new ArrayList<>();
         try {
-            listaConvenio = convenios.getEntitys(Convenio.class, "nome", nome,atributos);
+            listaConvenio = convenios.getEntitys(Convenio.class, "nome", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -101,7 +140,7 @@ public class ClienteControll extends AbstractControll<Cliente> implements Serial
         List<TributOperacaoFiscal> listaOperacaoFiscal = new ArrayList<>();
         try {
             atributos = new Object[]{"descricao"};
-            listaOperacaoFiscal = operacoesFiscais.getEntitys(TributOperacaoFiscal.class, "descricao", nome,atributos);
+            listaOperacaoFiscal = operacoesFiscais.getEntitys(TributOperacaoFiscal.class, "descricao", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -111,7 +150,7 @@ public class ClienteControll extends AbstractControll<Cliente> implements Serial
     public List<AtividadeForCli> getListaAtividadeForCli(String nome) {
         List<AtividadeForCli> listaAtividadeForCli = new ArrayList<>();
         try {
-            listaAtividadeForCli = atividadesClientes.getEntitys(AtividadeForCli.class, "nome", nome,atributos);
+            listaAtividadeForCli = atividadesClientes.getEntitys(AtividadeForCli.class, "nome", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -121,7 +160,7 @@ public class ClienteControll extends AbstractControll<Cliente> implements Serial
     public List<SituacaoForCli> getListaSituacaoForCli(String nome) {
         List<SituacaoForCli> listaSituacaoForCli = new ArrayList<>();
         try {
-            listaSituacaoForCli = situacoesCliente.getEntitys(SituacaoForCli.class, "nome", nome,atributos);
+            listaSituacaoForCli = situacoesCliente.getEntitys(SituacaoForCli.class, "nome", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -129,12 +168,17 @@ public class ClienteControll extends AbstractControll<Cliente> implements Serial
     }
 
 
-    public PessoaCliente getClienteSelecionado() {
-        return clienteSelecionado;
+
+
+
+    public void instanciaPessoaFisica(){
+        Pessoa pessoa = instanciaPessoaFisica(getObjeto().getPessoa());
+        getObjeto().setPessoa(pessoa);
     }
 
-    public void setClienteSelecionado(PessoaCliente clienteSelecionado) {
-        this.clienteSelecionado = clienteSelecionado;
+    public void instanciaPessoaJuridica(){
+        Pessoa pessoa = instanciaPessoaJuridica(getObjeto().getPessoa());
+        getObjeto().setPessoa(pessoa);
     }
 
     @Override
@@ -144,8 +188,37 @@ public class ClienteControll extends AbstractControll<Cliente> implements Serial
 
     @Override
     protected String getFuncaoBase() {
-        return  "Cliente";
+        return "Cliente";
     }
 
+    public PessoaCliente getClienteSelecionado() {
+        return clienteSelecionado;
+    }
 
+    public void setClienteSelecionado(PessoaCliente clienteSelecionado) {
+        this.clienteSelecionado = clienteSelecionado;
+    }
+
+    public String getCompleto() {
+        return completo;
+    }
+
+    public void setCompleto(String completo) {
+        this.completo = completo;
+    }
+
+    @Override
+    public Pessoa getPessoa() {
+        return getObjeto().getPessoa();
+    }
+
+    @Override
+    public void setPessoa(Pessoa pessoa) {
+        getObjeto().setPessoa(pessoa);
+    }
+
+    @Override
+    public String getTela() {
+        return TelaPessoa.CLIENTE.getCodigo();
+    }
 }

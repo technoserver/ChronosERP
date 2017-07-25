@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:cc="http://java.sun.com/jsf/composite"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
 
     <!-- INTERFACE -->
     <cc:interface>
@@ -13,26 +14,20 @@
         <cc:attribute name="styleClass" />
         <cc:attribute name="styleClassInput" default="form-control cpf" />  
         <cc:attribute name="exibir"  default="#{true}"/>
+        <cc:attribute name="desabilitado"  default="#{false}"/>
 
     </cc:interface>
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
-        <script type="text/javascript">
-            $(function () {             
-                $(".cpf").mask("999.999.999-99");
-            });
-        </script>
         <h:panelGroup layout="block" class="#{cc.attrs.styleClass}" rendered="#{cc.attrs.exibir}">
-            <h:outputLabel value="#{cc.attrs.label}"
+            <p:outputLabel value="#{cc.attrs.label}"
                            for="#{cc.attrs.idComponente}" />
-
-            <h:inputText id        = "#{cc.attrs.idComponente}"
-                         value     = "#{cc.attrs.nomeAtributo}" 
-                         required  = "#{cc.attrs.requerido}"                    
-                         class     = "#{cc.attrs.styleClassInput}"
-                         validator = "cpfValidator"
-                         />
+            <p:inputMask id="#{cc.attrs.idComponente}" styleClass="#{cc.attrs.styleClassInput}"
+                         value="#{cc.attrs.nomeAtributo}" style="width: 100%"
+                         required="#{cc.attrs.requerido}" mask="999.999.999-99"
+                         validator="cpfValidator" converter="onlyNumberConverter"
+                         disabled="#{cc.attrs.desabilitado}"/>
         </h:panelGroup>
     </cc:implementation>
 </html>

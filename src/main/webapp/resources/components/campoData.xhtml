@@ -15,6 +15,7 @@
         <cc:attribute name="somenteLeitura"  default="false"/>
         <cc:attribute name="formato"  default="dd/MM/yyyy"/>
         <cc:attribute name="formatoConverte"  default="dd/MM/yyyy"/>
+        <cc:attribute name="desabilitado"  default="false"/>
     </cc:interface>
 
     <!-- IMPLEMENTATION -->
@@ -27,7 +28,9 @@
 
             <p:calendar id="#{cc.attrs.idComponente}"  
                         value="#{cc.attrs.nomeAtributo}" style="width: 100% !important;"
-                        required="#{cc.attrs.requerido}" pattern="#{cc.attrs.formato}"  readonly="#{cc.attrs.somenteLeitura}" />
+                        required="#{cc.attrs.requerido}" pattern="#{cc.attrs.formato}"
+                        readonly="#{cc.attrs.somenteLeitura}"
+                        disabled="#{cc.attrs.desabilitado}"/>
         </div>
     </cc:implementation>
 </html>

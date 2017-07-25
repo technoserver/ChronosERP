@@ -1,0 +1,129 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+    <h:panelGroup layout="block" styleClass="row" rendered="#{clienteControll.completo eq 'N'}">
+        <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
+                          label="Pessoa"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{clienteControll}"
+                          completeMethod="getListaPessoa"
+                          nomeAtributo="#{clienteControll.objeto.pessoa}"
+                          idComponente="clientePessoa"
+                          requerido="false"/>
+
+    </h:panelGroup>
+
+    <div class="row">
+        <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
+                          label="Tabela Preco"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{clienteControll}"
+                          completeMethod="getListaTabelaPreco"
+                          nomeAtributo="#{clienteControll.objeto.tabelaPreco}"
+                          idComponente="clienteTabelaPreco"
+                          requerido="false"/>
+        <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
+                          label="Convenio"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{clienteControll}"
+                          completeMethod="getListaConvenio"
+                          nomeAtributo="#{clienteControll.objeto.convenio}"
+                          idComponente="clienteConvenio"
+                          requerido="false"/>
+        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                       idComponente="clienteDesde" label="Desde"
+                       nomeAtributo="#{clienteControll.objeto.desde}"
+                       somenteLeitura="true"
+                       desabilitado="true"/>
+        
+
+    </div>
+    <div class="row">
+        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                          label="Atividade"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{clienteControll}"
+                          completeMethod="getListaAtividadeForCli"
+                          nomeAtributo="#{clienteControll.objeto.atividadeForCli}"
+                          idComponente="clienteAtividadeForCli"/>
+        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                          label="Situacao"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{clienteControll}"
+                          completeMethod="getListaSituacaoForCli"
+                          nomeAtributo="#{clienteControll.objeto.situacaoForCli}"
+                          idComponente="clienteSituacaoForCli"/>
+
+        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                          label="Operacao Fiscal"
+                          itemLabel="#{objeto.descricao}"
+                          controller="#{clienteControll}"
+                          completeMethod="getListaOperacaoFiscal"
+                          nomeAtributo="#{clienteControll.objeto.tributOperacaoFiscal}"
+                          idComponente="clienteOperacaoFiscal"
+                          requerido="false"/>
+    </div>
+
+
+    <div class="row">
+        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                         idComponente="clienteTipoFrete" label="Tipo Frete"
+                         nomeAtributo="#{clienteControll.objeto.tipoFrete}"
+                         itens="#{clienteControll.clienteTipoFrete}"/>
+
+        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                         idComponente="clienteGeraFinanceiro" label="Gera Financeiro"
+                         nomeAtributo="#{clienteControll.objeto.geraFinanceiro}"
+                         itens="#{clienteControll.simNao}"/>
+        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                         idComponente="clienteIndicadorPreco" label="Indicador Preco"
+                         nomeAtributo="#{clienteControll.objeto.indicadorPreco}"
+                         itens="#{clienteControll.clienteIndicadorPreco}"/>
+        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                         idComponente="clienteFormaDesconto" label="Forma Desconto"
+                         nomeAtributo="#{clienteControll.objeto.formaDesconto}"
+                         itens="#{clienteControll.clienteFormaDesconto}"/>
+        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                          idComponente="clientePorcentoDesconto" label="% Desconto"
+                          nomeAtributo="#{clienteControll.objeto.porcentoDesconto}"/>
+        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                         idComponente="clienteBloqueado" label="Bloqueado"
+                         nomeAtributo="#{clienteControll.objeto.bloqueado}"
+                         itens="#{clienteControll.simNao}"/>
+
+
+    </div>
+    <div class="row">
+        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                        idComponente="clienteContaTomador" label="Conta Tomador"
+                        nomeAtributo="#{clienteControll.objeto.contaTomador}"
+                        tamanhoMaximo="30"/>
+
+        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                          idComponente="clienteLimiteCredito" label="Limite Credito"
+                          nomeAtributo="#{clienteControll.objeto.limiteCredito}"/>
+
+        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                          idComponente="clienteDiasBloqueio" label="Dias Bloqueio"
+                          nomeAtributo="#{clienteControll.objeto.diasBloqueio}"/>
+
+
+        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                        idComponente="clienteClassificacaoContabilConta" label="Classificacao Contabil Conta"
+                        nomeAtributo="#{clienteControll.objeto.classificacaoContabilConta}"
+                        tamanhoMaximo="30"/>
+    </div>
+
+    <div class="row">
+        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                            idComponente="clienteObservacao" label="Observacao"
+                            nomeAtributo="#{clienteControll.objeto.observacao}"/>
+    </div>
+
+</ui:composition>

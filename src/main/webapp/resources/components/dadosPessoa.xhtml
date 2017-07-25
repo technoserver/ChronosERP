@@ -1,0 +1,254 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:erp="http://java.sun.com/jsf/composite/components">
+
+<!-- INTERFACE -->
+<cc:interface>
+    <cc:attribute name="controller" type="com.chronos.controll.cadastros.PessoaControll" required="true"/>
+</cc:interface>
+<cc:implementation>
+    <div class="row">
+        <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                        idComponente="pessoaNome" label="Nome"
+                        nomeAtributo="#{cc.attrs.controller.objeto.pessoa.nome}"
+                        tamanhoMaximo="150" requerido="true"
+                        exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'F'}"/>
+
+        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                        idComponente="pessoaNome" label="Razão Social"
+                        nomeAtributo="#{cc.attrs.controller.objeto.pessoa.nome}"
+                        tamanhoMaximo="150" requerido="true"
+                        exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'J'}"/>
+
+
+        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                        idComponente="pessoaJuridicaFantasia" label="Fantasia"
+                        nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.fantasia}"
+                        tamanhoMaximo="150"
+                        exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'J'}"/>
+        <div class="col-xs-12 col-sm-2 col-md-2">
+            <h:outputLabel value="Tipo"
+                           for="pessoaTipo"/>
+            <h:selectOneMenu id="pessoaTipo"
+                             class="form-control"
+                             value="#{cc.attrs.controller.objeto.pessoa.tipo}">
+                <f:selectItems value="#{cc.attrs.controller.tipoPessoa}"/>
+                <p:ajax event="change" update=":formCentro:telaDetalhe:tabCliente:dadosPrincipais,:formCentro:telaDetalhe:tabCliente:dadosPessoa:panelPessoaFisicaJuridica"
+                        process="@this" listener="#{cc.attrs.controller.definirTipo()}"
+                        oncomplete="addClass()"/>
+            </h:selectOneMenu>
+        </div>
+
+
+    </div>
+    <h:panelGroup layout="block" id="panelPessoaFisicaJuridica">
+
+        <h:panelGroup layout="block" id="dadosPessoaFisica"
+                      rendered="#{cc.attrs.controller.objeto.pessoa.tipo == 'F'}">
+
+            <erp:separador label="Dados Pessoa Física"/>
+
+            <div class="row">
+                <erp:campoCpf styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="pessoaFisicaCpf" label="CPF"
+                              nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.cpf}"
+                              requerido="true" desabilitado="true"/>
+
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                               idComponente="pessoaFisicaDataNascimento"
+                               label="Data Nascimento"
+                               nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.dataNascimento}"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="pessoaFisicaSexo" label="Sexo"
+                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.sexo}"
+                                 itens="#{cc.attrs.controller.sexo}"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="pessoaFisicaRaca" label="Raca"
+                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.raca}"
+                                 itens="#{cc.attrs.controller.racaCor}"
+                                 exibir="#{cc.attrs.controller.tela eq 'CL'}"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="pessoaFisicaTipoSangue" label="Tipo Sangue"
+                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.tipoSangue}"
+                                 itens="#{cc.attrs.controller.tipoSangue}"
+                                 exibir="#{cc.attrs.controller.tela eq 'CL'}"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="rg" label="RG"
+                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.rg}"
+                                tamanhoMaximo="20"
+                                exibir="#{cc.attrs.controller.tela eq 'C'}"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="orgaoRg" label="Orgao RG"
+                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.orgaoRg}"
+                                tamanhoMaximo="20"
+                                exibir="#{cc.attrs.controller.tela eq 'C'}"/>
+            </div>
+
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  label="Estado Civil"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{cc.attrs.controller}"
+                                  completeMethod="getListaEstadoCivil"
+                                  nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.estadoCivil}"
+                                  idComponente="pessoaFisicaEstadoCivil"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="pessoaFisicaNaturalidade" label="Naturalidade"
+                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.naturalidade}"
+                                tamanhoMaximo="100"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="pessoaFisicaNacionalidade"
+                                label="Nacionalidade"
+                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.nacionalidade}"
+                                tamanhoMaximo="100"/>
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="pessoaFisicaNomeMae" label="Nome Mae"
+                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.nomeMae}"
+                                tamanhoMaximo="100"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="pessoaFisicaNomePai" label="Nome Pai"
+                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.nomePai}"
+                                tamanhoMaximo="100"/>
+            </div>
+
+
+            <h:panelGroup layout="block" id="panelDocumentos"
+                          rendered="#{cc.attrs.controller.tela eq 'CL'}">
+                <erp:separador label="Documentos"/>
+
+                <div class="row">
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    idComponente="pessoaFisicaRg" label="RG"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.rg}"
+                                    tamanhoMaximo="20"
+                    />
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    idComponente="pessoaFisicaOrgaoRg" label="Orgao RG"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.orgaoRg}"
+                                    tamanhoMaximo="20"
+                    />
+                    <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                   idComponente="pessoaFisicaDataEmissaoRg"
+                                   label="Data Emissao Rg"
+                                   nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.dataEmissaoRg}"/>
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    idComponente="pessoaFisicaCnhNumero" label="CNH Numero"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.cnhNumero}"
+                                    tamanhoMaximo="20"/>
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    idComponente="pessoaFisicaCnhCategoria" label="CNH Categoria"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.cnhCategoria}"
+                                    tamanhoMaximo="2"/>
+                    <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                   idComponente="pessoaFisicaCnhVencimento"
+                                   label="CNH Vencimento"
+                                   nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.cnhVencimento}"/>
+                </div>
+
+                <div class="row">
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    idComponente="pessoaFisicaTituloEleitoralNumero"
+                                    label="Titulo Eleitoral Numero"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.tituloEleitoralNumero}"
+                                    tamanhoMaximo="20"/>
+                    <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="pessoaFisicaTituloEleitoralZona" label="Zona"
+                                      nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.tituloEleitoralZona}"/>
+                    <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="pessoaFisicaTituloEleitoralSecao" label="Secao"
+                                      nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.tituloEleitoralSecao}"/>
+
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    idComponente="pessoaFisicaReservistaNumero"
+                                    label="Reservista Numero"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.reservistaNumero}"
+                                    tamanhoMaximo="20"/>
+                    <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="pessoaFisicaReservistaCategoria"
+                                      label="Reservista Categoria"
+                                      nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.reservistaCategoria}"/>
+                </div>
+
+
+
+
+            </h:panelGroup>
+
+
+        </h:panelGroup>
+
+        <h:panelGroup layout="block" id="dadosPessoaJuridica"
+                      rendered="#{cc.attrs.controller.objeto.pessoa.tipo == 'J'}">
+
+            <erp:separador label="Dados Pessoa Jurídica"/>
+
+            <div class="row">
+                <erp:campoCnpj styleClass="col-xs-12 col-sm-10 col-md-2"
+                               idComponente="pessoaJuridicaCnpj" label="CNPJ"
+                               nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.cnpj}"
+                               requerido="true"
+                               desabilitado="true"/>
+
+
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-3"
+                                idComponente="pessoaJuridicaInscricaoMunicipal"
+                                label="Inscricao Municipal"
+                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.inscricaoMunicipal}"
+                                tamanhoMaximo="30"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-3"
+                                idComponente="pessoaJuridicaInscricaoEstadual"
+                                label="Inscricao Estadual"
+                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.inscricaoEstadual}"
+                                tamanhoMaximo="30"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-3"
+                                idComponente="pessoaJuridicaSuframa" label="Suframa"
+                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.suframa}"
+                                tamanhoMaximo="9"/>
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-3"
+                               idComponente="pessoaJuridicaDataConstituicao"
+                               label="Data Constituicao"
+                               nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.dataConstituicao}"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="pessoaJuridicaCrt" label="CRT"
+                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.crt}"
+                                 itens="#{cc.attrs.controller.crt}"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="pessoaJuridicaTipoRegime" label="Tipo Regime"
+                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.tipoRegime}"
+                                 itens="#{cc.attrs.controller.tipoRegimeEmpresa}"/>
+            </div>
+
+
+
+
+
+
+
+        </h:panelGroup>
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                            idComponente="pessoaEmail" label="Email"
+                            nomeAtributo="#{cc.attrs.controller.objeto.pessoa.email}"
+                            tamanhoMaximo="250"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                            idComponente="pessoaSite" label="Site"
+                            nomeAtributo="#{cc.attrs.controller.objeto.pessoa.site}"
+                            tamanhoMaximo="250"/>
+        </div>
+
+
+        <cc:insertChildren/>
+
+    </h:panelGroup>
+</cc:implementation>
+</html>

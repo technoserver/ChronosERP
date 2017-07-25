@@ -50,6 +50,7 @@ public abstract class AbstractControll<T> implements Serializable {
     protected Object[] joinFetch;
 
     private Map<String, String> simNao;
+    private Map<String, String> naoSim;
     private Map<String, String> tipoPessoa;
     private Map<String, String> sexo;
     private Map<String, String> tipoSangue;
@@ -90,6 +91,11 @@ public abstract class AbstractControll<T> implements Serializable {
         simNao = new LinkedHashMap<>();
         simNao.put("Sim", "S");
         simNao.put("Não", "N");
+
+        naoSim = new LinkedHashMap<>();
+        naoSim.put("Não", "N");
+        naoSim.put("Sim", "S");
+
 
         tipoPessoa = new LinkedHashMap<>();
         tipoPessoa.put("Fisica", "F");
@@ -505,4 +511,7 @@ public abstract class AbstractControll<T> implements Serializable {
         return feriadoAbrangencia;
     }
 
+    public Map<String, String> getNaoSim() {
+        return naoSim;
+    }
 }

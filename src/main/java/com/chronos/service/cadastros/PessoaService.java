@@ -3,7 +3,10 @@ package com.chronos.service.cadastros;
 import com.chronos.modelo.entidades.Cliente;
 import com.chronos.modelo.entidades.Pessoa;
 import com.chronos.modelo.entidades.PessoaFisica;
+import com.chronos.modelo.entidades.PessoaJuridica;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
+import com.chronos.util.Biblioteca;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -14,19 +17,7 @@ import java.io.Serializable;
 public class PessoaService implements Serializable {
 
 
-    @Inject
-    private Repository<Cliente> clientes;
-    @Inject
-    private Repository<PessoaFisica> pessoasFisica;
-
-    private String cpf;
-    private String cnpj;
-
-    private Pessoa novo(){
-        Pessoa pessoa = null;
 
 
-        return pessoa;
-    }
 
 }

@@ -4,7 +4,8 @@
 <html xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:cc="http://java.sun.com/jsf/composite">
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui">
 
 <!-- INTERFACE -->
 <cc:interface>
@@ -13,16 +14,16 @@
     <cc:attribute name="nomeAtributo"/>
     <cc:attribute name="requerido"/>
     <cc:attribute name="styleClass"/>
-    <cc:attribute name="exibir" default="#{true}"/>
     .
     <cc:attribute name="itens"/>
     <cc:attribute name="desabilitado" default="false"/>
-
+    <cc:attribute name="atualizar" required=""/>
+    <cc:attribute name="processar" required=""/>
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
 <cc:implementation>
-    <h:panelGroup layout="block" class="#{cc.attrs.styleClass}" rendered="#{cc.attrs.exibir}" id="#{cc.id}">
+    <div class="#{cc.attrs.styleClass}">
         <h:outputLabel value="#{cc.attrs.label}"
                        for="#{cc.attrs.idComponente}"/>
 
@@ -32,7 +33,10 @@
                          required="#{cc.attrs.requerido}"
                          disabled="#{cc.attrs.desabilitado}">
             <f:selectItems value="#{cc.attrs.itens}"/>
+            <p:ajax  event="change"  update="#{cc.attrs.atualizar}"
+                     process="#{cc.attrs.processar}"
+                     />
         </h:selectOneMenu>
-    </h:panelGroup>
+    </div>
 </cc:implementation>
 </html>
