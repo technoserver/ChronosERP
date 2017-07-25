@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: br.com.autocom:nfe-xsd:8.i.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/br/com/autocom/nfe-xsd/8.i.2/nfe-xsd-8.i.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/br/com/autocom/nfe-xsd/8.i.2/nfe-xsd-8.i.2-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/br/com/autocom/nfe-xsd/8.i.2/nfe-xsd-8.i.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
