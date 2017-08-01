@@ -1,4 +1,19 @@
 -- ------------------------------------------------------------
+-- 4.3.14 - Tabela Operações com Isenção da Contribuição Social (CST 07) 
+-- ------------------------------------------------------------
+
+CREATE TABLE EFD_TABELA_4314 (
+  ID SERIAL  NOT NULL ,
+  CODIGO INTEGER    ,
+  DESCRICAO TEXT    ,
+  OBSERVACAO TEXT    ,
+  INICIO_VIGENCIA DATE    ,
+  FIM_VIGENCIA DATE      ,
+PRIMARY KEY(ID));
+
+
+
+-- ------------------------------------------------------------
 -- Tabela 4.3.13 Produtos Sujeitos à Alíquota Zero da Contribuição Social (CST 06)
 -- ------------------------------------------------------------
 
@@ -29,10 +44,10 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- 4.3.14 - Tabela Operações com Isenção da Contribuição Social (CST 07) 
+-- 4.3.16 – Tabela Operações com Suspensão da Contribuição Social (CST 09)
 -- ------------------------------------------------------------
 
-CREATE TABLE EFD_TABELA_4314 (
+CREATE TABLE EFD_TABELA_4316 (
   ID SERIAL  NOT NULL ,
   CODIGO INTEGER    ,
   DESCRICAO TEXT    ,
@@ -70,50 +85,31 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Armazena o detallhe das vendas.
+-- Armazena os tipos de pagamentos de determinada venda.
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_VENDA_DETALHE (
+CREATE TABLE ECF_TOTAL_TIPO_PAGAMENTO (
   ID SERIAL  NOT NULL ,
   NOME_CAIXA VARCHAR(30)    ,
   ID_GERADO_CAIXA INTEGER    ,
   ID_EMPRESA INTEGER    ,
-  ID_ECF_PRODUTO INTEGER    ,
   ID_ECF_VENDA_CABECALHO INTEGER    ,
-  CFOP INTEGER    ,
-  GTIN VARCHAR(14)    ,
-  CCF INTEGER    ,
-  COO INTEGER    ,
+  ID_ECF_TIPO_PAGAMENTO INTEGER    ,
   SERIE_ECF VARCHAR(20)    ,
-  ITEM INTEGER    ,
-  QUANTIDADE DECIMAL(18,6)    ,
-  VALOR_UNITARIO DECIMAL(18,6)    ,
-  VALOR_TOTAL DECIMAL(18,6)    ,
-  TOTAL_ITEM DECIMAL(18,6)    ,
-  BASE_ICMS DECIMAL(18,6)    ,
-  TAXA_ICMS DECIMAL(18,6)    ,
-  ICMS DECIMAL(18,6)    ,
-  TAXA_DESCONTO DECIMAL(18,6)    ,
-  DESCONTO DECIMAL(18,6)    ,
-  TAXA_ISSQN DECIMAL(18,6)    ,
-  ISSQN DECIMAL(18,6)    ,
-  TAXA_PIS DECIMAL(18,6)    ,
-  PIS DECIMAL(18,6)    ,
-  TAXA_COFINS DECIMAL(18,6)    ,
-  COFINS DECIMAL(18,6)    ,
-  TAXA_ACRESCIMO DECIMAL(18,6)    ,
-  ACRESCIMO DECIMAL(18,6)    ,
-  ACRESCIMO_RATEIO DECIMAL(18,6)    ,
-  DESCONTO_RATEIO DECIMAL(18,6)    ,
-  TOTALIZADOR_PARCIAL VARCHAR(10)    ,
-  CST CHAR(3)    ,
-  CANCELADO CHAR(1)    ,
-  MOVIMENTA_ESTOQUE CHAR(1)    ,
-  ECF_ICMS_ST VARCHAR(4)    ,
+  COO INTEGER    ,
+  CCF INTEGER    ,
+  GNF INTEGER    ,
+  VALOR DECIMAL(18,6)    ,
+  NSU VARCHAR(30)    ,
+  ESTORNO CHAR(1)    ,
+  REDE VARCHAR(10)    ,
+  CARTAO_DC CHAR(1)    ,
+  DATA_VENDA DATE    ,
   LOGSS VARCHAR(32)    ,
   DATA_SINCRONIZACAO DATE    ,
   HORA_SINCRONIZACAO VARCHAR(8)      ,
 PRIMARY KEY(ID));
+
 
 
 
@@ -165,31 +161,50 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Armazena os tipos de pagamentos de determinada venda.
+-- Armazena o detallhe das vendas.
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_TOTAL_TIPO_PAGAMENTO (
+CREATE TABLE ECF_VENDA_DETALHE (
   ID SERIAL  NOT NULL ,
   NOME_CAIXA VARCHAR(30)    ,
   ID_GERADO_CAIXA INTEGER    ,
   ID_EMPRESA INTEGER    ,
+  ID_ECF_PRODUTO INTEGER    ,
   ID_ECF_VENDA_CABECALHO INTEGER    ,
-  ID_ECF_TIPO_PAGAMENTO INTEGER    ,
-  SERIE_ECF VARCHAR(20)    ,
-  COO INTEGER    ,
+  CFOP INTEGER    ,
+  GTIN VARCHAR(14)    ,
   CCF INTEGER    ,
-  GNF INTEGER    ,
-  VALOR DECIMAL(18,6)    ,
-  NSU VARCHAR(30)    ,
-  ESTORNO CHAR(1)    ,
-  REDE VARCHAR(10)    ,
-  CARTAO_DC CHAR(1)    ,
-  DATA_VENDA DATE    ,
+  COO INTEGER    ,
+  SERIE_ECF VARCHAR(20)    ,
+  ITEM INTEGER    ,
+  QUANTIDADE DECIMAL(18,6)    ,
+  VALOR_UNITARIO DECIMAL(18,6)    ,
+  VALOR_TOTAL DECIMAL(18,6)    ,
+  TOTAL_ITEM DECIMAL(18,6)    ,
+  BASE_ICMS DECIMAL(18,6)    ,
+  TAXA_ICMS DECIMAL(18,6)    ,
+  ICMS DECIMAL(18,6)    ,
+  TAXA_DESCONTO DECIMAL(18,6)    ,
+  DESCONTO DECIMAL(18,6)    ,
+  TAXA_ISSQN DECIMAL(18,6)    ,
+  ISSQN DECIMAL(18,6)    ,
+  TAXA_PIS DECIMAL(18,6)    ,
+  PIS DECIMAL(18,6)    ,
+  TAXA_COFINS DECIMAL(18,6)    ,
+  COFINS DECIMAL(18,6)    ,
+  TAXA_ACRESCIMO DECIMAL(18,6)    ,
+  ACRESCIMO DECIMAL(18,6)    ,
+  ACRESCIMO_RATEIO DECIMAL(18,6)    ,
+  DESCONTO_RATEIO DECIMAL(18,6)    ,
+  TOTALIZADOR_PARCIAL VARCHAR(10)    ,
+  CST CHAR(3)    ,
+  CANCELADO CHAR(1)    ,
+  MOVIMENTA_ESTOQUE CHAR(1)    ,
+  ECF_ICMS_ST VARCHAR(4)    ,
   LOGSS VARCHAR(32)    ,
   DATA_SINCRONIZACAO DATE    ,
   HORA_SINCRONIZACAO VARCHAR(8)      ,
 PRIMARY KEY(ID));
-
 
 
 
@@ -264,17 +279,12 @@ PRIMARY KEY(ID));
 
 
 
--- ------------------------------------------------------------
--- 4.3.16 – Tabela Operações com Suspensão da Contribuição Social (CST 09)
--- ------------------------------------------------------------
-
-CREATE TABLE EFD_TABELA_4316 (
+CREATE TABLE LOG_IMPORTACAO (
   ID SERIAL  NOT NULL ,
-  CODIGO INTEGER    ,
-  DESCRICAO TEXT    ,
-  OBSERVACAO TEXT    ,
-  INICIO_VIGENCIA DATE    ,
-  FIM_VIGENCIA DATE      ,
+  DATA_IMPORTACAO DATE    ,
+  HORA_IMPORTACAO VARCHAR(8)    ,
+  ERRO TEXT    ,
+  REGISTRO TEXT      ,
 PRIMARY KEY(ID));
 
 
@@ -303,12 +313,17 @@ PRIMARY KEY(ID));
 
 
 
-CREATE TABLE LOG_IMPORTACAO (
+-- ------------------------------------------------------------
+-- Controla o tamanho dos produtos.
+-- ------------------------------------------------------------
+
+CREATE TABLE ESTOQUE_TAMANHO (
   ID SERIAL  NOT NULL ,
-  DATA_IMPORTACAO DATE    ,
-  HORA_IMPORTACAO VARCHAR(8)    ,
-  ERRO TEXT    ,
-  REGISTRO TEXT      ,
+  CODIGO CHAR(4)    ,
+  NOME VARCHAR(20)    ,
+  ALTURA DECIMAL(18,6)    ,
+  COMPRIMENTO DECIMAL(18,6)    ,
+  LARGURA DECIMAL(18,6)      ,
 PRIMARY KEY(ID));
 
 
@@ -336,19 +351,16 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Armazena os possíveis estados civis. De acordo com as leis brasileiras, os possíveis estados civis são:
--- 
---     * Solteiro(a) - quem nunca se casou, ou que teve o casamento anulado
---     * Casado(a) - quem contraiu matrimônio, independente do regime de bens adotado
---     * Separado(a) judicialmente - quem não vive mais com o cônjuge (vive em separação física dele), mas que ainda não obteve o divórcio, todavia obteve sentença que deliberou por decretar a separação judicial dos cônjuges, cessando, assim, os deveres oriundos da sociedade conjugal.
---     * Divorciado(a) - após a homologação do divórcio pela justiça
---     * Viúvo(a) - pessoa cujo cônjuge faleceu.
+-- Tabela 4.3.9 – Tabela de Alíquotas de Créditos Presumidos da Agroindústria
 -- ------------------------------------------------------------
 
-CREATE TABLE ESTADO_CIVIL (
+CREATE TABLE EFD_TABELA_439 (
   ID SERIAL  NOT NULL ,
-  NOME VARCHAR(50)    ,
-  DESCRICAO TEXT      ,
+  CODIGO INTEGER    ,
+  DESCRICAO TEXT    ,
+  OBSERVACAO TEXT    ,
+  INICIO_VIGENCIA DATE    ,
+  FIM_VIGENCIA DATE      ,
 PRIMARY KEY(ID));
 
 
@@ -378,16 +390,19 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Tabela 4.3.9 – Tabela de Alíquotas de Créditos Presumidos da Agroindústria
+-- Armazena os possíveis estados civis. De acordo com as leis brasileiras, os possíveis estados civis são:
+-- 
+--     * Solteiro(a) - quem nunca se casou, ou que teve o casamento anulado
+--     * Casado(a) - quem contraiu matrimônio, independente do regime de bens adotado
+--     * Separado(a) judicialmente - quem não vive mais com o cônjuge (vive em separação física dele), mas que ainda não obteve o divórcio, todavia obteve sentença que deliberou por decretar a separação judicial dos cônjuges, cessando, assim, os deveres oriundos da sociedade conjugal.
+--     * Divorciado(a) - após a homologação do divórcio pela justiça
+--     * Viúvo(a) - pessoa cujo cônjuge faleceu.
 -- ------------------------------------------------------------
 
-CREATE TABLE EFD_TABELA_439 (
+CREATE TABLE ESTADO_CIVIL (
   ID SERIAL  NOT NULL ,
-  CODIGO INTEGER    ,
-  DESCRICAO TEXT    ,
-  OBSERVACAO TEXT    ,
-  INICIO_VIGENCIA DATE    ,
-  FIM_VIGENCIA DATE      ,
+  NOME VARCHAR(50)    ,
+  DESCRICAO TEXT      ,
 PRIMARY KEY(ID));
 
 
@@ -419,27 +434,47 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Representa o registro 60M do sintegra.
+-- Armazena os movimentos para determinado caixa. Podem haver vários movimentos durante um dia. Um movimento deve ter obrigatoriamente:
+-- 
+-- -Operador
+-- -Caixa (terminal)
+-- -Impressora
+-- -Turno
+-- -Status
+-- 
+-- É através dessa tabela que o caixa deve funcionar. Sem um movimento aberto não pode haver movimentação no caixa.
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_SINTEGRA_60M (
+CREATE TABLE ECF_MOVIMENTO (
   ID SERIAL  NOT NULL ,
-  NOME_CAIXA VARCHAR(8)    ,
+  NOME_CAIXA VARCHAR(30)    ,
   ID_GERADO_CAIXA INTEGER    ,
-  ID_EMPRESA INTEGER    ,
-  DATA_EMISSAO DATE    ,
-  NUMERO_SERIE_ECF VARCHAR(20)    ,
-  NUMERO_EQUIPAMENTO INTEGER    ,
-  MODELO_DOCUMENTO_FISCAL CHAR(2)    ,
-  COO_INICIAL INTEGER    ,
-  COO_FINAL INTEGER    ,
-  CRZ INTEGER    ,
-  CRO INTEGER    ,
-  VALOR_VENDA_BRUTA DECIMAL(18,6)    ,
-  VALOR_GRANDE_TOTAL DECIMAL(18,6)    ,
+  ID_ECF_EMPRESA INTEGER    ,
+  ID_ECF_TURNO INTEGER    ,
+  ID_ECF_IMPRESSORA INTEGER    ,
+  ID_ECF_OPERADOR INTEGER    ,
+  ID_ECF_CAIXA INTEGER    ,
+  ID_GERENTE_SUPERVISOR INTEGER   NOT NULL ,
+  DATA_ABERTURA DATE    ,
+  HORA_ABERTURA VARCHAR(8)    ,
+  DATA_FECHAMENTO DATE    ,
+  HORA_FECHAMENTO VARCHAR(8)    ,
+  TOTAL_SUPRIMENTO DECIMAL(18,6)    ,
+  TOTAL_SANGRIA DECIMAL(18,6)    ,
+  TOTAL_NAO_FISCAL DECIMAL(18,6)    ,
+  TOTAL_VENDA DECIMAL(18,6)    ,
+  TOTAL_DESCONTO DECIMAL(18,6)    ,
+  TOTAL_ACRESCIMO DECIMAL(18,6)    ,
+  TOTAL_FINAL DECIMAL(18,6)    ,
+  TOTAL_RECEBIDO DECIMAL(18,6)    ,
+  TOTAL_TROCO DECIMAL(18,6)    ,
+  TOTAL_CANCELADO DECIMAL(18,6)    ,
+  STATUS_MOVIMENTO CHAR(1)   NOT NULL ,
   DATA_SINCRONIZACAO DATE    ,
   HORA_SINCRONIZACAO VARCHAR(8)      ,
 PRIMARY KEY(ID));
+
+
 
 
 
@@ -532,45 +567,24 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Armazena os movimentos para determinado caixa. Podem haver vários movimentos durante um dia. Um movimento deve ter obrigatoriamente:
--- 
--- -Operador
--- -Caixa (terminal)
--- -Impressora
--- -Turno
--- -Status
--- 
--- É através dessa tabela que o caixa deve funcionar. Sem um movimento aberto não pode haver movimentação no caixa.
+-- Armazena os dados necessários para a geração do Registro E3 do PAF. REGISTRO TIPO E3 - IDENTIFICAÇÃO DO ECF QUE EMITIU O DOCUMENTO BASE PARA A ATUALIZAÇÃO DO ESTOQUE
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_MOVIMENTO (
+CREATE TABLE ECF_E3 (
   ID SERIAL  NOT NULL ,
-  NOME_CAIXA VARCHAR(30)    ,
-  ID_GERADO_CAIXA INTEGER    ,
-  ID_ECF_EMPRESA INTEGER    ,
-  ID_ECF_TURNO INTEGER    ,
-  ID_ECF_IMPRESSORA INTEGER    ,
-  ID_ECF_OPERADOR INTEGER    ,
-  ID_ECF_CAIXA INTEGER    ,
-  ID_GERENTE_SUPERVISOR INTEGER   NOT NULL ,
-  DATA_ABERTURA DATE    ,
-  HORA_ABERTURA VARCHAR(8)    ,
-  DATA_FECHAMENTO DATE    ,
-  HORA_FECHAMENTO VARCHAR(8)    ,
-  TOTAL_SUPRIMENTO DECIMAL(18,6)    ,
-  TOTAL_SANGRIA DECIMAL(18,6)    ,
-  TOTAL_NAO_FISCAL DECIMAL(18,6)    ,
-  TOTAL_VENDA DECIMAL(18,6)    ,
-  TOTAL_DESCONTO DECIMAL(18,6)    ,
-  TOTAL_ACRESCIMO DECIMAL(18,6)    ,
-  TOTAL_FINAL DECIMAL(18,6)    ,
-  TOTAL_RECEBIDO DECIMAL(18,6)    ,
-  TOTAL_TROCO DECIMAL(18,6)    ,
-  TOTAL_CANCELADO DECIMAL(18,6)    ,
-  STATUS_MOVIMENTO CHAR(1)   NOT NULL ,
-  DATA_SINCRONIZACAO DATE    ,
-  HORA_SINCRONIZACAO VARCHAR(8)      ,
+  SERIE_ECF VARCHAR(20)    ,
+  MF_ADICIONAL CHAR(1)    ,
+  TIPO_ECF VARCHAR(7)    ,
+  MARCA_ECF VARCHAR(20)    ,
+  MODELO_ECF VARCHAR(20)    ,
+  DATA_ESTOQUE DATE    ,
+  HORA_ESTOQUE VARCHAR(8)      ,
 PRIMARY KEY(ID));
+
+
+
+
+
 
 
 
@@ -630,25 +644,31 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Armazena os dados dos componentes para que sejam arrumados na tela de acordo com a resolução selecionada.
+-- Demais documentos emitidos pelo ECF;
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_POSICAO_COMPONENTES (
+CREATE TABLE ECF_R06 (
   ID SERIAL  NOT NULL ,
   NOME_CAIXA VARCHAR(30)    ,
   ID_GERADO_CAIXA INTEGER    ,
   ID_EMPRESA INTEGER    ,
-  ID_ECF_RESOLUCAO INTEGER    ,
-  NOME VARCHAR(100)    ,
-  ALTURA INTEGER    ,
-  LARGURA INTEGER    ,
-  TOPO INTEGER    ,
-  ESQUERDA INTEGER    ,
-  TAMANHO_FONTE INTEGER  DEFAULT 0  ,
-  TEXTO VARCHAR(250)    ,
+  ID_OPERADOR INTEGER   NOT NULL ,
+  ID_IMPRESSORA INTEGER   NOT NULL ,
+  ID_ECF_CAIXA INTEGER    ,
+  SERIE_ECF VARCHAR(20)    ,
+  COO INTEGER    ,
+  GNF INTEGER    ,
+  GRG INTEGER    ,
+  CDC INTEGER    ,
+  DENOMINACAO CHAR(2)    ,
+  DATA_EMISSAO DATE    ,
+  HORA_EMISSAO VARCHAR(8)    ,
+  LOGSS VARCHAR(32)    ,
   DATA_SINCRONIZACAO DATE    ,
   HORA_SINCRONIZACAO VARCHAR(8)      ,
 PRIMARY KEY(ID));
+
+
 
 
 
@@ -694,31 +714,25 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Demais documentos emitidos pelo ECF;
+-- Armazena os dados dos componentes para que sejam arrumados na tela de acordo com a resolução selecionada.
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_R06 (
+CREATE TABLE ECF_POSICAO_COMPONENTES (
   ID SERIAL  NOT NULL ,
   NOME_CAIXA VARCHAR(30)    ,
   ID_GERADO_CAIXA INTEGER    ,
   ID_EMPRESA INTEGER    ,
-  ID_OPERADOR INTEGER   NOT NULL ,
-  ID_IMPRESSORA INTEGER   NOT NULL ,
-  ID_ECF_CAIXA INTEGER    ,
-  SERIE_ECF VARCHAR(20)    ,
-  COO INTEGER    ,
-  GNF INTEGER    ,
-  GRG INTEGER    ,
-  CDC INTEGER    ,
-  DENOMINACAO CHAR(2)    ,
-  DATA_EMISSAO DATE    ,
-  HORA_EMISSAO VARCHAR(8)    ,
-  LOGSS VARCHAR(32)    ,
+  ID_ECF_RESOLUCAO INTEGER    ,
+  NOME VARCHAR(100)    ,
+  ALTURA INTEGER    ,
+  LARGURA INTEGER    ,
+  TOPO INTEGER    ,
+  ESQUERDA INTEGER    ,
+  TAMANHO_FONTE INTEGER  DEFAULT 0  ,
+  TEXTO VARCHAR(250)    ,
   DATA_SINCRONIZACAO DATE    ,
   HORA_SINCRONIZACAO VARCHAR(8)      ,
 PRIMARY KEY(ID));
-
-
 
 
 
@@ -773,26 +787,20 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Armazena os dados necessários para a geração do Registro E3 do PAF. REGISTRO TIPO E3 - IDENTIFICAÇÃO DO ECF QUE EMITIU O DOCUMENTO BASE PARA A ATUALIZAÇÃO DO ESTOQUE
+-- Representa o registro 60A do sintegra.
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_E3 (
+CREATE TABLE ECF_SINTEGRA_60A (
   ID SERIAL  NOT NULL ,
-  SERIE_ECF VARCHAR(20)    ,
-  MF_ADICIONAL CHAR(1)    ,
-  TIPO_ECF VARCHAR(7)    ,
-  MARCA_ECF VARCHAR(20)    ,
-  MODELO_ECF VARCHAR(20)    ,
-  DATA_ESTOQUE DATE    ,
-  HORA_ESTOQUE VARCHAR(8)      ,
+  NOME_CAIXA VARCHAR(8)    ,
+  ID_GERADO_CAIXA INTEGER    ,
+  ID_EMPRESA INTEGER    ,
+  ID_SINTEGRA_60M INTEGER    ,
+  SITUACAO_TRIBUTARIA VARCHAR(4)    ,
+  VALOR DECIMAL(18,6)    ,
+  DATA_SINCRONIZACAO DATE    ,
+  HORA_SINCRONIZACAO VARCHAR(32)      ,
 PRIMARY KEY(ID));
-
-
-
-
-
-
-
 
 
 
@@ -832,19 +840,26 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Representa o registro 60A do sintegra.
+-- Representa o registro 60M do sintegra.
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_SINTEGRA_60A (
+CREATE TABLE ECF_SINTEGRA_60M (
   ID SERIAL  NOT NULL ,
   NOME_CAIXA VARCHAR(8)    ,
   ID_GERADO_CAIXA INTEGER    ,
   ID_EMPRESA INTEGER    ,
-  ID_SINTEGRA_60M INTEGER    ,
-  SITUACAO_TRIBUTARIA VARCHAR(4)    ,
-  VALOR DECIMAL(18,6)    ,
+  DATA_EMISSAO DATE    ,
+  NUMERO_SERIE_ECF VARCHAR(20)    ,
+  NUMERO_EQUIPAMENTO INTEGER    ,
+  MODELO_DOCUMENTO_FISCAL CHAR(2)    ,
+  COO_INICIAL INTEGER    ,
+  COO_FINAL INTEGER    ,
+  CRZ INTEGER    ,
+  CRO INTEGER    ,
+  VALOR_VENDA_BRUTA DECIMAL(18,6)    ,
+  VALOR_GRANDE_TOTAL DECIMAL(18,6)    ,
   DATA_SINCRONIZACAO DATE    ,
-  HORA_SINCRONIZACAO VARCHAR(32)      ,
+  HORA_SINCRONIZACAO VARCHAR(8)      ,
 PRIMARY KEY(ID));
 
 
@@ -889,33 +904,13 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Armazena as resoluções que podem ser trabalhadas pelo terminal de caixa.
+-- Armazena os dados dos terminais de caixa.
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_RESOLUCAO (
+CREATE TABLE ECF_CAIXA (
   ID SERIAL  NOT NULL ,
-  NOME_CAIXA VARCHAR(30)    ,
-  ID_GERADO_CAIXA INTEGER    ,
-  ID_EMPRESA INTEGER    ,
-  RESOLUCAO_TELA VARCHAR(20)    ,
-  LARGURA INTEGER    ,
-  ALTURA INTEGER    ,
-  IMAGEM_TELA VARCHAR(50)    ,
-  IMAGEM_MENU VARCHAR(50)    ,
-  IMAGEM_SUBMENU VARCHAR(50)    ,
-  HOTTRACK_COLOR VARCHAR(20)    ,
-  ITEM_STYLE_FONT_NAME VARCHAR(20)    ,
-  ITEM_STYLE_FONT_COLOR VARCHAR(20)    ,
-  ITEM_SEL_STYLE_COLOR VARCHAR(20)    ,
-  LABEL_TOTAL_GERAL_FONT_COLOR VARCHAR(20)    ,
-  ITEM_STYLE_FONT_STYLE VARCHAR(20)    ,
-  EDITS_COLOR VARCHAR(20)    ,
-  EDITS_FONT_COLOR VARCHAR(20)    ,
-  EDITS_DISABLED_COLOR VARCHAR(20)    ,
-  EDITS_FONT_NAME VARCHAR(20)    ,
-  EDITS_FONT_STYLE VARCHAR(20)    ,
-  DATA_SINCRONIZACAO DATE    ,
-  HORA_SINCRONIZACAO VARCHAR(8)      ,
+  NOME VARCHAR(30)    ,
+  DATA_CADASTRO DATE      ,
 PRIMARY KEY(ID));
 
 
@@ -1003,13 +998,33 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Armazena os dados dos terminais de caixa.
+-- Armazena as resoluções que podem ser trabalhadas pelo terminal de caixa.
 -- ------------------------------------------------------------
 
-CREATE TABLE ECF_CAIXA (
+CREATE TABLE ECF_RESOLUCAO (
   ID SERIAL  NOT NULL ,
-  NOME VARCHAR(30)    ,
-  DATA_CADASTRO DATE      ,
+  NOME_CAIXA VARCHAR(30)    ,
+  ID_GERADO_CAIXA INTEGER    ,
+  ID_EMPRESA INTEGER    ,
+  RESOLUCAO_TELA VARCHAR(20)    ,
+  LARGURA INTEGER    ,
+  ALTURA INTEGER    ,
+  IMAGEM_TELA VARCHAR(50)    ,
+  IMAGEM_MENU VARCHAR(50)    ,
+  IMAGEM_SUBMENU VARCHAR(50)    ,
+  HOTTRACK_COLOR VARCHAR(20)    ,
+  ITEM_STYLE_FONT_NAME VARCHAR(20)    ,
+  ITEM_STYLE_FONT_COLOR VARCHAR(20)    ,
+  ITEM_SEL_STYLE_COLOR VARCHAR(20)    ,
+  LABEL_TOTAL_GERAL_FONT_COLOR VARCHAR(20)    ,
+  ITEM_STYLE_FONT_STYLE VARCHAR(20)    ,
+  EDITS_COLOR VARCHAR(20)    ,
+  EDITS_FONT_COLOR VARCHAR(20)    ,
+  EDITS_DISABLED_COLOR VARCHAR(20)    ,
+  EDITS_FONT_NAME VARCHAR(20)    ,
+  EDITS_FONT_STYLE VARCHAR(20)    ,
+  DATA_SINCRONIZACAO DATE    ,
+  HORA_SINCRONIZACAO VARCHAR(8)      ,
 PRIMARY KEY(ID));
 
 
@@ -1033,21 +1048,6 @@ CREATE TABLE ECF_ALIQUOTAS (
   TOTALIZADOR_PARCIAL VARCHAR(10)    ,
   ECF_ICMS_ST VARCHAR(4)    ,
   PAF_P_ST CHAR(1)      ,
-PRIMARY KEY(ID));
-
-
-
--- ------------------------------------------------------------
--- Controla o tamanho dos produtos.
--- ------------------------------------------------------------
-
-CREATE TABLE ESTOQUE_TAMANHO (
-  ID SERIAL  NOT NULL ,
-  CODIGO CHAR(4)    ,
-  NOME VARCHAR(20)    ,
-  ALTURA DECIMAL(18,6)    ,
-  COMPRIMENTO DECIMAL(18,6)    ,
-  LARGURA DECIMAL(18,6)      ,
 PRIMARY KEY(ID));
 
 
@@ -1154,16 +1154,15 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Tabela com as unidades de produto.
+-- Tabela que define os papéis do sistema.
 -- ------------------------------------------------------------
 
-CREATE TABLE UNIDADE_PRODUTO (
+CREATE TABLE PAPEL (
   ID SERIAL  NOT NULL ,
-  SIGLA VARCHAR(10)    ,
+  NOME VARCHAR(20)    ,
   DESCRICAO TEXT    ,
-  PODE_FRACIONAR CHAR(1)      ,
+  ACESSO_COMPLETO CHAR(1)      ,
 PRIMARY KEY(ID));
-
 
 
 
@@ -1203,16 +1202,15 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Tabela que define os papéis do sistema.
+-- Contém os modelos definidos no Ato Cotepe 46/10.
 -- ------------------------------------------------------------
 
-CREATE TABLE PAPEL (
+CREATE TABLE NOTA_FISCAL_MODELO (
   ID SERIAL  NOT NULL ,
-  NOME VARCHAR(20)    ,
-  DESCRICAO TEXT    ,
-  ACESSO_COMPLETO CHAR(1)      ,
+  CODIGO CHAR(2)    ,
+  DESCRICAO VARCHAR(100)    ,
+  MODELO VARCHAR(10)      ,
 PRIMARY KEY(ID));
-
 
 
 
@@ -1245,21 +1243,17 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- A CNAE - Classificação Nacional de Atividades Econômicas é o instrumento de padronização nacional dos códigos de atividade econômica e dos critérios de enquadramento utilizados pelos diversos órgãos da Administração Tributária do país.
--- 
--- EX.:
---    Seção:  A  AGRICULTURA, PECUÁRIA, PRODUÇÃO FLORESTAL, PESCA E AQÜICULTURA
---    Divisão:  01  AGRICULTURA, PECUÁRIA E SERVIÇOS RELACIONADOS
---    Grupo:  011  PRODUÇÃO DE LAVOURAS TEMPORÁRIAS
---    Classe:  0111-3  CULTIVO DE CEREAIS
---    Subclasse  0111-3/01  CULTIVO DE ARROZ
+-- Tabela com as unidades de produto.
 -- ------------------------------------------------------------
 
-CREATE TABLE CNAE (
+CREATE TABLE UNIDADE_PRODUTO (
   ID SERIAL  NOT NULL ,
-  CODIGO VARCHAR(7)    ,
-  DENOMINACAO TEXT      ,
+  SIGLA VARCHAR(10)    ,
+  DESCRICAO TEXT    ,
+  PODE_FRACIONAR CHAR(1)      ,
 PRIMARY KEY(ID));
+
+
 
 
 
@@ -1355,15 +1349,22 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- CÓDIGO FISCAL DE OPERAÇÕES E PRESTAÇÕES - CFOP
+-- Armazena as tabelas de preço da aplicação.
 -- ------------------------------------------------------------
 
-CREATE TABLE CFOP (
+CREATE TABLE TABELA_PRECO (
   ID SERIAL  NOT NULL ,
-  CFOP INTEGER    ,
-  DESCRICAO TEXT    ,
-  APLICACAO TEXT      ,
+  NOME VARCHAR(100)    ,
+  COEFICIENTE DECIMAL(18,6)    ,
+  PRINCIPAL CHAR(1)    ,
+  BASE_CUSTO CHAR(1)    ,
+  METODO_UTILIZACAO CHAR(1)    ,
+  COMISSAO_VENDEDOR DECIMAL(18,6)      ,
 PRIMARY KEY(ID));
+
+
+
+
 
 
 
@@ -1390,22 +1391,21 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Armazena as tabelas de preço da aplicação.
+-- A CNAE - Classificação Nacional de Atividades Econômicas é o instrumento de padronização nacional dos códigos de atividade econômica e dos critérios de enquadramento utilizados pelos diversos órgãos da Administração Tributária do país.
+-- 
+-- EX.:
+--    Seção:  A  AGRICULTURA, PECUÁRIA, PRODUÇÃO FLORESTAL, PESCA E AQÜICULTURA
+--    Divisão:  01  AGRICULTURA, PECUÁRIA E SERVIÇOS RELACIONADOS
+--    Grupo:  011  PRODUÇÃO DE LAVOURAS TEMPORÁRIAS
+--    Classe:  0111-3  CULTIVO DE CEREAIS
+--    Subclasse  0111-3/01  CULTIVO DE ARROZ
 -- ------------------------------------------------------------
 
-CREATE TABLE TABELA_PRECO (
+CREATE TABLE CNAE (
   ID SERIAL  NOT NULL ,
-  NOME VARCHAR(100)    ,
-  COEFICIENTE DECIMAL(18,6)    ,
-  PRINCIPAL CHAR(1)    ,
-  BASE_CUSTO CHAR(1)    ,
-  METODO_UTILIZACAO CHAR(1)    ,
-  COMISSAO_VENDEDOR DECIMAL(18,6)      ,
+  CODIGO VARCHAR(7)    ,
+  DENOMINACAO TEXT      ,
 PRIMARY KEY(ID));
-
-
-
-
 
 
 
@@ -1423,7 +1423,7 @@ PRIMARY KEY(ID));
 
 CREATE TABLE CEST (
   ID SERIAL  NOT NULL ,
-  ITEM VARCHAR(10),
+  ITEM VARCHAR(10)    ,
   CEST VARCHAR(10)    ,
   NCM_SH VARCHAR(15)    ,
   DESCRICAO_SEGMENTO VARCHAR(100)    ,
@@ -1435,14 +1435,14 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
--- Contém os modelos definidos no Ato Cotepe 46/10.
+-- CÓDIGO FISCAL DE OPERAÇÕES E PRESTAÇÕES - CFOP
 -- ------------------------------------------------------------
 
-CREATE TABLE NOTA_FISCAL_MODELO (
+CREATE TABLE CFOP (
   ID SERIAL  NOT NULL ,
-  CODIGO CHAR(2)    ,
-  DESCRICAO VARCHAR(100)    ,
-  MODELO VARCHAR(10)      ,
+  CFOP INTEGER    ,
+  DESCRICAO TEXT    ,
+  APLICACAO TEXT      ,
 PRIMARY KEY(ID));
 
 
@@ -1481,6 +1481,15 @@ CREATE TABLE SINDICATO (
   CLASSIFICACAO_CONTABIL_CONTA VARCHAR(30)      ,
 PRIMARY KEY(ID));
 
+
+
+
+CREATE TABLE CSOSN_B (
+  ID SERIAL  NOT NULL ,
+  CODIGO CHAR(3)    ,
+  DESCRICAO VARCHAR(250)    ,
+  OBSERVACAO TEXT      ,
+PRIMARY KEY(ID));
 
 
 
@@ -1557,43 +1566,6 @@ PRIMARY KEY(ID));
 
 
 
-CREATE TABLE CSOSN_B (
-  ID SERIAL  NOT NULL ,
-  CODIGO CHAR(3)    ,
-  DESCRICAO VARCHAR(250)    ,
-  OBSERVACAO TEXT      ,
-PRIMARY KEY(ID));
-
-
-
-CREATE TABLE TIPO_RECEITA_DIPI (
-  ID SERIAL  NOT NULL ,
-  DESCRICAO VARCHAR(100)      ,
-PRIMARY KEY(ID));
-
-
-
--- ------------------------------------------------------------
--- Armazena os feriados.
--- ------------------------------------------------------------
-
-CREATE TABLE FERIADOS (
-  ID SERIAL  NOT NULL ,
-  ANO CHAR(4)    ,
-  NOME VARCHAR(50)    ,
-  ABRANGENCIA CHAR(1)    ,
-  UF CHAR(2)    ,
-  MUNICIPIO_IBGE INTEGER    ,
-  TIPO CHAR(1)    ,
-  DATA_FERIADO DATE      ,
-PRIMARY KEY(ID));
-
-
-
-
-
-
-
 -- ------------------------------------------------------------
 -- Armazena os dados do contador da empresa. 
 -- ------------------------------------------------------------
@@ -1618,6 +1590,41 @@ CREATE TABLE CONTADOR (
   EMAIL VARCHAR(250)    ,
   SITE VARCHAR(250)      ,
 PRIMARY KEY(ID));
+
+
+
+CREATE TABLE TIPO_RECEITA_DIPI (
+  ID SERIAL  NOT NULL ,
+  DESCRICAO VARCHAR(100)      ,
+PRIMARY KEY(ID));
+
+
+
+-- ------------------------------------------------------------
+-- Contas contábeis da empresa.
+-- ------------------------------------------------------------
+
+CREATE TABLE CONTABIL_CONTA (
+  ID SERIAL  NOT NULL ,
+  CLASSIFICACAO VARCHAR(30)    ,
+  TIPO CHAR(1)    ,
+  DESCRICAO VARCHAR(100)    ,
+  DATA_INCLUSAO DATE    ,
+  SITUACAO CHAR(1)    ,
+  NATUREZA CHAR(1)    ,
+  PATRIMONIO_RESULTADO CHAR(1)    ,
+  LIVRO_CAIXA CHAR(1)    ,
+  DFC CHAR(1)    ,
+  ORDEM VARCHAR(20)    ,
+  CODIGO_REDUZIDO VARCHAR(10)    ,
+  CODIGO_EFD CHAR(2)      ,
+PRIMARY KEY(ID));
+
+
+
+
+
+
 
 
 
@@ -1655,6 +1662,36 @@ PRIMARY KEY(ID));
 
 
 -- ------------------------------------------------------------
+-- Armazena os feriados.
+-- ------------------------------------------------------------
+
+CREATE TABLE FERIADOS (
+  ID SERIAL  NOT NULL ,
+  ANO CHAR(4)    ,
+  NOME VARCHAR(50)    ,
+  ABRANGENCIA CHAR(1)    ,
+  UF CHAR(2)    ,
+  MUNICIPIO_IBGE INTEGER    ,
+  TIPO CHAR(1)    ,
+  DATA_FERIADO DATE      ,
+PRIMARY KEY(ID));
+
+
+
+
+
+
+
+CREATE TABLE INTEGRACAO_PDV (
+  ID SERIAL  NOT NULL ,
+  IDENTIFICA VARCHAR(50)    ,
+  DATA_INTEGRACAO DATE    ,
+  HORA_INTEGRACAO VARCHAR(8)      ,
+PRIMARY KEY(ID));
+
+
+
+-- ------------------------------------------------------------
 -- Tabela com os tipos de relacionamento.
 -- ------------------------------------------------------------
 
@@ -1673,15 +1710,6 @@ CREATE TABLE CSOSN_A (
   CODIGO CHAR(1)    ,
   DESCRICAO VARCHAR(250)    ,
   OBSERVACAO TEXT      ,
-PRIMARY KEY(ID));
-
-
-
-CREATE TABLE INTEGRACAO_PDV (
-  ID SERIAL  NOT NULL ,
-  IDENTIFICA VARCHAR(50)    ,
-  DATA_INTEGRACAO DATE    ,
-  HORA_INTEGRACAO VARCHAR(8)      ,
 PRIMARY KEY(ID));
 
 
@@ -2531,27 +2559,6 @@ CREATE INDEX FK_EMPRESA_CONT_ESTOQUE ON INVENTARIO_CONTAGEM_CAB (ID_EMPRESA);
 
 
 -- ------------------------------------------------------------
--- Tabela com as cidades de determinado Estado.
--- ------------------------------------------------------------
-
-CREATE TABLE MUNICIPIO (
-  ID SERIAL  NOT NULL ,
-  ID_UF INTEGER   NOT NULL ,
-  NOME VARCHAR(100)    ,
-  CODIGO_IBGE INTEGER    ,
-  CODIGO_RECEITA_FEDERAL INTEGER    ,
-  CODIGO_ESTADUAL INTEGER    ,
-  UF_SIGLA CHAR(2)      ,
-PRIMARY KEY(ID)  ,
-  FOREIGN KEY(ID_UF)
-    REFERENCES UF(ID));
-
-
-CREATE INDEX FK_UF_MUNICIPIO ON MUNICIPIO (ID_UF);
-
-
-
--- ------------------------------------------------------------
 -- Armazena as configurações do leitor serial.
 -- ------------------------------------------------------------
 
@@ -2603,24 +2610,6 @@ CREATE INDEX FK_NFCE_MOV_FECHA ON NFCE_FECHAMENTO (ID_NFCE_MOVIMENTO);
 
 
 -- ------------------------------------------------------------
--- Tabela de setores/departamentos.
--- ------------------------------------------------------------
-
-CREATE TABLE SETOR (
-  ID SERIAL  NOT NULL ,
-  ID_EMPRESA INTEGER   NOT NULL ,
-  NOME VARCHAR(50)    ,
-  DESCRICAO TEXT      ,
-PRIMARY KEY(ID)  ,
-  FOREIGN KEY(ID_EMPRESA)
-    REFERENCES EMPRESA(ID));
-
-
-CREATE INDEX FK_EMPRESA_SETOR ON SETOR (ID_EMPRESA);
-
-
-
--- ------------------------------------------------------------
 -- Armazena as configurações da balança.
 -- ------------------------------------------------------------
 
@@ -2648,6 +2637,45 @@ CREATE INDEX FK_CONF_BALANCA ON NFCE_CONFIGURACAO_BALANCA (ID_NFCE_CONFIGURACAO)
 
 
 
+
+
+
+-- ------------------------------------------------------------
+-- Tabela com as cidades de determinado Estado.
+-- ------------------------------------------------------------
+
+CREATE TABLE MUNICIPIO (
+  ID SERIAL  NOT NULL ,
+  ID_UF INTEGER   NOT NULL ,
+  NOME VARCHAR(100)    ,
+  CODIGO_IBGE INTEGER    ,
+  CODIGO_RECEITA_FEDERAL INTEGER    ,
+  CODIGO_ESTADUAL INTEGER    ,
+  UF_SIGLA CHAR(2)      ,
+PRIMARY KEY(ID)  ,
+  FOREIGN KEY(ID_UF)
+    REFERENCES UF(ID));
+
+
+CREATE INDEX FK_UF_MUNICIPIO ON MUNICIPIO (ID_UF);
+
+
+
+-- ------------------------------------------------------------
+-- Tabela de setores/departamentos.
+-- ------------------------------------------------------------
+
+CREATE TABLE SETOR (
+  ID SERIAL  NOT NULL ,
+  ID_EMPRESA INTEGER   NOT NULL ,
+  NOME VARCHAR(50)    ,
+  DESCRICAO TEXT      ,
+PRIMARY KEY(ID)  ,
+  FOREIGN KEY(ID_EMPRESA)
+    REFERENCES EMPRESA(ID));
+
+
+CREATE INDEX FK_EMPRESA_SETOR ON SETOR (ID_EMPRESA);
 
 
 
@@ -2919,7 +2947,7 @@ CREATE TABLE CTE_CABECALHO (
   MODELO CHAR(2)    ,
   SERIE CHAR(3)    ,
   NUMERO VARCHAR(9)    ,
-  DATA_HORA_EMISSAO TIMESTAMP    ,
+  DATA_HORA_EMISSAO DATETIME    ,
   FORMATO_IMPRESSAO_DACTE INTEGER    ,
   TIPO_EMISSAO INTEGER    ,
   CHAVE_ACESSO VARCHAR(44)    ,
@@ -2942,7 +2970,7 @@ CREATE TABLE CTE_CABECALHO (
   RETIRA INTEGER    ,
   RETIRA_DETALHE VARCHAR(160)    ,
   TOMADOR INTEGER    ,
-  DATA_ENTRADA_CONTINGENCIA TIMESTAMP    ,
+  DATA_ENTRADA_CONTINGENCIA DATETIME    ,
   JUSTIFICATIVA_CONTINGENCIA VARCHAR(255)    ,
   CARAC_ADICIONAL_TRANSPORTE VARCHAR(15)    ,
   CARAC_ADICIONAL_SERVICO VARCHAR(30)    ,
@@ -2985,27 +3013,34 @@ CREATE TABLE CTE_CABECALHO (
   INDICADOR_CTE_GLOBALIZADO INTEGER    ,
   INDICADOR_PAPEL_TOMADOR INTEGER    ,
   VALOR_BC_UF_FIM DECIMAL(18,6)    ,
-  PERCENTUAL_FPC_UF_FIM DECIMAL(18,6)    ,
+  PERCENTUAL_FCP_UF_FIM DECIMAL(18,6)    ,
   ALIQUOTA_ICMS_UF_FIM DECIMAL(18,6)    ,
   ALIQUOTA_INTERESTADUAL_UF_FIM DECIMAL(18,6)    ,
   PERCENTUAL_PARTILHA_UF_FIM DECIMAL(18,6)    ,
-  VALOR_ICMS_FPC_UF_FIM DECIMAL(18,6)    ,
+  VALOR_ICMS_FCP_UF_FIM DECIMAL(18,6)    ,
   VALOR_ICMS_PARTILHA_UF_FIM DECIMAL(18,6)    ,
   VALOR_ICMS_PARTILHA_UF_INI DECIMAL(18,6)    ,
-  VALOR_CARGA_AVERBACAO DECIMAL(18,6)      ,
+  VALOR_CARGA_AVERBACAO DECIMAL(18,6)    ,
   VERSAO_APLICATIVO VARCHAR(20)    ,
-  DATA_HORA_PROCESSAMENTO TIMESTAMP    ,
+  DATA_HORA_PROCESSAMENTO DATETIME    ,
   NUMERO_PROTOCOLO VARCHAR(15)    ,
   DIGEST_VALUE VARCHAR(28)    ,
   CODIGO_STATUS_RESPOSTA CHAR(3)    ,
   DESCRICAO_MOTIVO_RESPOSTA TEXT    ,
-  JUSTIFICATIVA_CANCELAMENTO VARCHAR(255)    ,
+  JUSTIFICATIVA_CANCELAMENTO VARCHAR(255)      ,
 PRIMARY KEY(ID)  ,
   FOREIGN KEY(ID_EMPRESA)
     REFERENCES EMPRESA(ID));
 
 
 CREATE INDEX FK_EMPRESA_CTE_CABECALHO ON CTE_CABECALHO (ID_EMPRESA);
+
+
+
+
+
+
+
 
 
 
@@ -3213,7 +3248,7 @@ CREATE TABLE CTE_EXPEDIDOR (
   ID SERIAL  NOT NULL ,
   ID_CTE_CABECALHO INTEGER   NOT NULL ,
   CNPJ VARCHAR(14)    ,
-  CPF Varchar(11)    ,
+  CPF VARCHAR(11)    ,
   IE VARCHAR(20)    ,
   NOME VARCHAR(60)    ,
   FANTASIA VARCHAR(60)    ,
@@ -4011,7 +4046,7 @@ CREATE TABLE CTE_REMETENTE (
   ID SERIAL  NOT NULL ,
   ID_CTE_CABECALHO INTEGER   NOT NULL ,
   CNPJ VARCHAR(14)    ,
-  CPF INTEGER    ,
+  CPF VARCHAR(11)    ,
   IE VARCHAR(20)    ,
   NOME VARCHAR(60)    ,
   FANTASIA VARCHAR(60)    ,
@@ -4082,7 +4117,7 @@ CREATE TABLE CTE_RECEBEDOR (
   ID SERIAL  NOT NULL ,
   ID_CTE_CABECALHO INTEGER   NOT NULL ,
   CNPJ VARCHAR(14)    ,
-  CPF Varchar(11)    ,
+  CPF VARCHAR(11)    ,
   IE VARCHAR(20)    ,
   NOME VARCHAR(60)    ,
   FANTASIA VARCHAR(60)    ,
@@ -4918,7 +4953,6 @@ CREATE TABLE PRODUTO (
   GTIN VARCHAR(14)    ,
   CODIGO_INTERNO VARCHAR(60)    ,
   NCM VARCHAR(8)    ,
-  CEST VARCHAR(7)    ,
   NOME VARCHAR(100)    ,
   DESCRICAO TEXT    ,
   DESCRICAO_PDV VARCHAR(30)    ,
@@ -4958,7 +4992,8 @@ CREATE TABLE PRODUTO (
   CODIGO_BALANCA INTEGER    ,
   DATA_ALTERACAO DATE    ,
   TIPO CHAR(1)    ,
-  SERVICO CHAR(1)      ,
+  SERVICO CHAR(1)    ,
+  CEST VARCHAR(10)      ,
 PRIMARY KEY(ID)            ,
   FOREIGN KEY(ID_UNIDADE_PRODUTO)
     REFERENCES UNIDADE_PRODUTO(ID),
@@ -5279,7 +5314,7 @@ CREATE TABLE CTE_DOCUMENTO_ANTERIOR (
   ID SERIAL  NOT NULL ,
   ID_CTE_CABECALHO INTEGER   NOT NULL ,
   CNPJ VARCHAR(14)    ,
-  CPF Varchar(11)    ,
+  CPF VARCHAR(11)    ,
   IE VARCHAR(20)    ,
   UF CHAR(2)    ,
   NOME VARCHAR(60)      ,
@@ -5808,7 +5843,8 @@ CREATE TABLE UNIDADE_CONVERSAO (
   ID_UNIDADE_PRODUTO INTEGER   NOT NULL ,
   SIGLA VARCHAR(10)    ,
   DESCRICAO TEXT    ,
-  FATOR_CONVERSAO DECIMAL(18,6)      ,
+  FATOR_CONVERSAO DECIMAL(18,6)    ,
+  ACAO CHAR(1)      ,
 PRIMARY KEY(ID)    ,
   FOREIGN KEY(ID_UNIDADE_PRODUTO)
     REFERENCES UNIDADE_PRODUTO(ID),
@@ -5818,6 +5854,7 @@ PRIMARY KEY(ID)    ,
 
 CREATE INDEX FK_UNIDADE_CONVERSAO ON UNIDADE_CONVERSAO (ID_UNIDADE_PRODUTO);
 CREATE INDEX FK_PRODUTO_CONVERSAO_UND ON UNIDADE_CONVERSAO (ID_PRODUTO);
+
 
 
 
@@ -5851,7 +5888,7 @@ CREATE TABLE USUARIO (
   ID_COLABORADOR INTEGER   NOT NULL ,
   ID_PAPEL INTEGER   NOT NULL ,
   LOGIN VARCHAR(20)    ,
-  SENHA VARCHAR(255)    ,
+  SENHA VARCHAR(40)    ,
   DATA_CADASTRO DATE    ,
   ADMINISTRADOR CHAR(1)      ,
 PRIMARY KEY(ID)    ,
@@ -6934,8 +6971,8 @@ CREATE TABLE NFE_CABECALHO (
   CODIGO_MODELO CHAR(2)    ,
   SERIE CHAR(3)    ,
   NUMERO VARCHAR(9)    ,
-  DATA_HORA_EMISSAO TIMESTAMP    ,
-  DATA_HORA_ENTRADA_SAIDA TIMESTAMP    ,
+  DATA_HORA_EMISSAO DATETIME    ,
+  DATA_HORA_ENTRADA_SAIDA DATETIME    ,
   TIPO_OPERACAO INTEGER    ,
   LOCAL_DESTINO INTEGER    ,
   CODIGO_MUNICIPIO INTEGER    ,
@@ -6948,7 +6985,7 @@ CREATE TABLE NFE_CABECALHO (
   CONSUMIDOR_OPERACAO INTEGER    ,
   PROCESSO_EMISSAO INTEGER    ,
   VERSAO_PROCESSO_EMISSAO VARCHAR(20)    ,
-  DATA_ENTRADA_CONTINGENCIA TIMESTAMP    ,
+  DATA_ENTRADA_CONTINGENCIA DATETIME    ,
   JUSTIFICATIVA_CONTINGENCIA VARCHAR(255)    ,
   BASE_CALCULO_ICMS DECIMAL(18,6)    ,
   VALOR_ICMS DECIMAL(18,6)    ,
@@ -6996,22 +7033,23 @@ CREATE TABLE NFE_CABECALHO (
   STATUS_NOTA INTEGER    ,
   QUANTIDADE_IMPRESSAO_DANFE INTEGER    ,
   INDICADOR_PRESENCA CHAR(1)    ,
-  VALOR_FPC DECIMAL(18,6)    ,
-  VALOR_FPC_ST DECIMAL(18,6)    ,
-  VALOR_FPC_ST_RETIDO DECIMAL(18,6)    ,
+  VALOR_FCP DECIMAL(18,6)    ,
+  VALOR_FCP_ST DECIMAL(18,6)    ,
+  VALOR_FCP_ST_RETIDO DECIMAL(18,6)    ,
   VALOR_IPI_DEVOLVIDO DECIMAL(18,6)    ,
   VERSAO_APLICATIVO VARCHAR(20)    ,
-  DATA_HORA_PROCESSAMENTO TIMESTAMP    ,
+  DATA_HORA_PROCESSAMENTO DATETIME    ,
   NUMERO_PROTOCOLO VARCHAR(15)    ,
   DIGEST_VALUE VARCHAR(28)    ,
   CODIGO_STATUS_RESPOSTA CHAR(3)    ,
   DESCRICAO_MOTIVO_RESPOSTA TEXT    ,
   JUSTIFICATIVA_CANCELAMENTO VARCHAR(255)    ,
-  VALOR_ICMS_FPC_UF_DESTINO DECIMAL(18,6)    ,
+  VALOR_ICMS_FCP_UF_DESTINO DECIMAL(18,6)    ,
   VALOR_ICMS_INTER_UF_DESTINO DECIMAL(18,6)    ,
   VALOR_ICMS_INTER_UF_REMETENTE DECIMAL(18,6)    ,
   QRCODE TEXT    ,
-  URL_CHAVE VARCHAR(85)      ,
+  URL_CHAVE VARCHAR(85)    ,
+  INDICADOR_FORMA_PAGAMENTO INTEGER      ,
 PRIMARY KEY(ID)              ,
   FOREIGN KEY(ID_CLIENTE)
     REFERENCES CLIENTE(ID),
@@ -7585,7 +7623,7 @@ CREATE TABLE NFE_DETALHE (
   VALOR_TOTAL_TRIBUTOS DECIMAL(18,6)    ,
   PERCENTUAL_DEVOLVIDO DECIMAL(18,6)    ,
   VALOR_IPI_DEVOLVIDO DECIMAL(18,6)    ,
-  CEST INTEGER    ,
+  CEST VARCHAR(10)    ,
   INDICADOR_ESCALA_RELEVANTE CHAR(1)    ,
   CNPJ_FABRICANTE VARCHAR(14)    ,
   CODIGO_BENEFICIO_FISCAL VARCHAR(10)      ,
@@ -8142,23 +8180,23 @@ CREATE TABLE NFE_DETALHE_IMPOSTO_ICMS (
   VALOR_CREDITO_ICMS_SN DECIMAL(18,6)    ,
   PERCENTUAL_BC_OPERACAO_PROPRIA DECIMAL(18,6)    ,
   UF_ST CHAR(2)    ,
-  VALOR_BC_FPC DECIMAL(18,6)    ,
-  PERCENTUAL_FPC DECIMAL(18,6)    ,
-  VALOR_FPC DECIMAL(18,6)    ,
-  VALOR_BC_FPC_ST DECIMAL(18,6)    ,
-  PERCENTUAL_BC_FPC_ST DECIMAL(18,6)    ,
-  VALOR_FPC_ST DECIMAL(18,6)    ,
-  FPC_CONSUMIDOR_FINAL DECIMAL(18,6)    ,
-  VALOR_BC_FPC_RETIDO DECIMAL(18,6)    ,
-  PERCENTUAL_BC_FPC_RETIDO DECIMAL(18,6)    ,
-  VALOR_FPC_RETIDO DECIMAL(18,6)    ,
-  VALOR_BC_FPC_UF_DESTINO DECIMAL(18,6)    ,
+  VALOR_BC_FCP DECIMAL(18,6)    ,
+  PERCENTUAL_FCP DECIMAL(18,6)    ,
+  VALOR_FCP DECIMAL(18,6)    ,
+  VALOR_BC_FCP_ST DECIMAL(18,6)    ,
+  PERCENTUAL_BC_FCP_ST DECIMAL(18,6)    ,
+  VALOR_FCP_ST DECIMAL(18,6)    ,
+  FCP_CONSUMIDOR_FINAL DECIMAL(18,6)    ,
+  VALOR_BC_FCP_RETIDO DECIMAL(18,6)    ,
+  PERCENTUAL_BC_FCP_RETIDO DECIMAL(18,6)    ,
+  VALOR_FCP_RETIDO DECIMAL(18,6)    ,
+  VALOR_BC_FCP_UF_DESTINO DECIMAL(18,6)    ,
   VALOR_BC_ICMS_UF_DESTINO DECIMAL(18,6)    ,
-  PERCENTUAL_FPC_UF_DESTINO DECIMAL(18,6)    ,
+  PERCENTUAL_FCP_UF_DESTINO DECIMAL(18,6)    ,
   ALIQUOTA_INTERNA_UF_DESTINO DECIMAL(18,6)    ,
   ALIQUOTA_INTERESTADUAL_UFS DECIMAL(18,6)    ,
   PERCENTUAL_PROVISORIO_PARTILHA DECIMAL(18,6)    ,
-  VALOR_ICMS_FPC_UF_DESTINO DECIMAL(18,6)    ,
+  VALOR_ICMS_FCP_UF_DESTINO DECIMAL(18,6)    ,
   VALOR_ICMS_INTER_UF_DESTINO DECIMAL(18,6)    ,
   VALOR_ICMS_INTER_UF_REMETENTE DECIMAL(18,6)      ,
 PRIMARY KEY(ID)  ,
