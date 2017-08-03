@@ -13,6 +13,7 @@
     <cc:attribute name="controller" type="com.chronos.controll.cadastros.PessoaControll" required="true"/>
 </cc:interface>
 <cc:implementation>
+
     <div class="row">
         <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
                         idComponente="pessoaNome" label="Nome"
@@ -39,7 +40,7 @@
                              class="form-control"
                              value="#{cc.attrs.controller.objeto.pessoa.tipo}">
                 <f:selectItems value="#{cc.attrs.controller.tipoPessoa}"/>
-                <p:ajax event="change" update=":formCentro:telaDetalhe:tabCliente:dadosPrincipais,:formCentro:telaDetalhe:tabCliente:dadosPessoa:panelPessoaFisicaJuridica"
+                <p:ajax event="change" update=":formCentro:telaDetalhe:tabCliente:dadosPessoa:panelPessoaFisicaJuridica"
                         process="@this" listener="#{cc.attrs.controller.definirTipo()}"
                         oncomplete="addClass()"/>
             </h:selectOneMenu>
@@ -47,6 +48,7 @@
 
 
     </div>
+
     <h:panelGroup layout="block" id="panelPessoaFisicaJuridica">
 
         <h:panelGroup layout="block" id="dadosPessoaFisica"
@@ -58,7 +60,7 @@
                 <erp:campoCpf styleClass="col-xs-12 col-sm-2 col-md-2"
                               idComponente="pessoaFisicaCpf" label="CPF"
                               nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.cpf}"
-                              requerido="true" desabilitado="true"/>
+                              requerido="true" desabilitado="#{not empty cc.attrs.controller.objeto.pessoa.id}"/>
 
                 <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                                idComponente="pessoaFisicaDataNascimento"
@@ -88,25 +90,29 @@
                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.orgaoRg}"
                                 tamanhoMaximo="20"
                                 exibir="#{cc.attrs.controller.tela eq 'C'}"/>
-            </div>
-
-            <div class="row">
                 <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
                                   label="Estado Civil"
                                   itemLabel="#{objeto.nome}"
                                   controller="#{cc.attrs.controller}"
                                   completeMethod="getListaEstadoCivil"
                                   nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.estadoCivil}"
-                                  idComponente="pessoaFisicaEstadoCivil"/>
+                                  idComponente="pessoaFisicaEstadoCivil"
+                                  rendered="#{cc.attrs.controller.tela eq 'C'}"/>
+            </div>
+
+
+            <div class="row">
                 <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                 idComponente="pessoaFisicaNaturalidade" label="Naturalidade"
                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.naturalidade}"
-                                tamanhoMaximo="100"/>
+                                tamanhoMaximo="100"
+                                exibir="#{cc.attrs.controller.tela eq 'CL'}"/>
                 <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                 idComponente="pessoaFisicaNacionalidade"
                                 label="Nacionalidade"
                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.nacionalidade}"
-                                tamanhoMaximo="100"/>
+                                tamanhoMaximo="100"
+                                exibir="#{cc.attrs.controller.tela eq 'CL'}"/>
             </div>
             <div class="row">
                 <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
@@ -176,10 +182,6 @@
                                       label="Reservista Categoria"
                                       nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.reservistaCategoria}"/>
                 </div>
-
-
-
-
             </h:panelGroup>
 
 
@@ -190,34 +192,34 @@
 
             <erp:separador label="Dados Pessoa Jurídica"/>
 
+
             <div class="row">
-                <erp:campoCnpj styleClass="col-xs-12 col-sm-10 col-md-2"
+                <erp:campoCnpj styleClass="col-xs-12 col-sm-2 col-md-2"
                                idComponente="pessoaJuridicaCnpj" label="CNPJ"
                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.cnpj}"
                                requerido="true"
-                               desabilitado="true"/>
-
-
-            </div>
-            <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-3"
+                               desabilitado="#{not empty cc.attrs.controller.objeto.pessoa.id}"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                 idComponente="pessoaJuridicaInscricaoMunicipal"
                                 label="Inscricao Municipal"
                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.inscricaoMunicipal}"
                                 tamanhoMaximo="30"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-3"
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                 idComponente="pessoaJuridicaInscricaoEstadual"
                                 label="Inscricao Estadual"
                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.inscricaoEstadual}"
                                 tamanhoMaximo="30"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-3"
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                 idComponente="pessoaJuridicaSuframa" label="Suframa"
                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.suframa}"
                                 tamanhoMaximo="9"/>
-                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-3"
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                                idComponente="pessoaJuridicaDataConstituicao"
                                label="Data Constituicao"
                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.dataConstituicao}"/>
+
+            </div>
+            <div class="row">
                 <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                  idComponente="pessoaJuridicaCrt" label="CRT"
                                  nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.crt}"
@@ -229,26 +231,89 @@
             </div>
 
 
-
-
-
-
-
         </h:panelGroup>
-        <div class="row">
-            <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
-                            idComponente="pessoaEmail" label="Email"
-                            nomeAtributo="#{cc.attrs.controller.objeto.pessoa.email}"
-                            tamanhoMaximo="250"/>
-            <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
-                            idComponente="pessoaSite" label="Site"
-                            nomeAtributo="#{cc.attrs.controller.objeto.pessoa.site}"
-                            tamanhoMaximo="250"/>
-        </div>
+
+
 
 
         <cc:insertChildren/>
 
     </h:panelGroup>
+
+    <p:outputPanel id="panelPessoaEndereco">
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-10"
+                            idComponente="pessoaEnderecoLogradouro" label="Logradouro"
+                            nomeAtributo="#{cc.attrs.controller.endereco.logradouro}"
+                            tamanhoMaximo="60"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                            idComponente="pessoaEnderecoNumero" label="Numero"
+                            nomeAtributo="#{cc.attrs.controller.endereco.numero}"
+                            tamanhoMaximo="10"/>
+        </div>
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                            idComponente="pessoaEnderecoComplemento" label="Complemento"
+                            nomeAtributo="#{cc.attrs.controller.endereco.complemento}"
+                            tamanhoMaximo="60"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                            idComponente="pessoaEnderecoBairro" label="Bairro"
+                            nomeAtributo="#{cc.attrs.controller.endereco.bairro}"
+                            tamanhoMaximo="60"/>
+
+            <erp:campoMascara styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="pessoaEnderecoCep" label="Cep"
+                              nomeAtributo="#{cc.attrs.controller.endereco.cep}"
+                              mascara="99.999-999"/>
+
+        </div>
+        <div class="row">
+
+
+            <div class="col-xs-12 col-sm-2 col-md-2">
+                <h:outputLabel value="UF :" for="pessoaEnderecoUf"/>
+                <h:selectOneMenu value="#{cc.attrs.controller.endereco.uf}"
+                                 class="form-control" id="pessoaEnderecoUf">
+                    <f:selectItem itemValue="selecione" value="#{null}"/>
+                    <f:selectItems var="uf" value="#{cc.attrs.controller.estado}"/>
+                    <p:ajax event="valueChange"
+                            process="@this" update="Municipio"
+                            listener="#{cc.attrs.controller.instanciaCidade()}"
+                            oncomplete="addClass()"/>
+                </h:selectOneMenu>
+            </div>
+            <div class="col-xs-12 col-sm-10 col-md-10">
+                <h:outputLabel value="Municipio :"/>
+                <br/>
+                <p:autoComplete id="Municipio" value="#{cc.attrs.controller.cidade}"
+                                completeMethod="#{cc.attrs.controller.getMunicipios}"
+                                var="municipio" itemLabel="#{municipio.getNome()}"
+                                itemValue="#{municipio}" converter="defaultConverter"
+                                forceSelection="true" minQueryLength="3" maxResults="10"
+                                emptyMessage="Nenhum registro encontrado" style="width: 100%">
+                    <p:ajax event="itemSelect" process="@this"
+                            listener="#{cc.attrs.controller.atualizarCodIbge()}"/>
+                </p:autoComplete>
+            </div>
+
+
+        </div>
+    </p:outputPanel>
+
+    <div class="row">
+        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                        idComponente="pessoaEmail" label="Email"
+                        nomeAtributo="#{cc.attrs.controller.objeto.pessoa.email}"
+                        tamanhoMaximo="250"/>
+        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                        idComponente="pessoaSite" label="Site"
+                        nomeAtributo="#{cc.attrs.controller.objeto.pessoa.site}"
+                        tamanhoMaximo="250"/>
+
+        <erp:campoTelefone styleClass="col-xs-12 col-sm-5 col-md-2"
+                        idComponente="pessoaEnderecoFone" label="Fone"
+                        nomeAtributo="#{cc.attrs.controller.endereco.fone}"
+                        tamanhoMaximo="14"/>
+    </div>
 </cc:implementation>
 </html>

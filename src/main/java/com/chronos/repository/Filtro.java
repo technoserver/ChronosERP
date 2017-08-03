@@ -32,58 +32,79 @@ import java.io.Serializable;
 
 public class Filtro implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	public static final String AND = "AND";
-	public static final String OR = "OR";
-	public static final String NOT = "NOT";
-	public static final String IGUAL = "=";
-	public static final String DIFERENTE = "<>";
-	public static final String MENOR = "<";
-	public static final String MENOR_OU_IGUAL = "<=";
-	public static final String MAIOR = ">";
-	public static final String MAIOR_OU_IGUAL = ">=";
-	public static final String NAO_NULO = "IS NOT NULL";
-        public static final String LIKE = " like";      
-	private String operadorLogico;
-	private String atributo;
-	private String operadorRelacional;
-	private Object valor;
-       
-	
-	public Filtro() {
-	}
-	
-	public Filtro(String operadorLogico, String atributo, String operadorRelacional, Object valor) {
-		this.operadorLogico = operadorLogico;
-		this.atributo = atributo;
-		this.operadorRelacional = operadorRelacional;
-		this.valor = valor;
-	}
-      
-	
-	public String getOperadorLogico() {
-		return operadorLogico;
-	}
-	public void setOperadorLogico(String operadorLogico) {
-		this.operadorLogico = operadorLogico;
-	}
-	public String getAtributo() {
-		return atributo;
-	}
-	public void setAtributo(String atributo) {
-		this.atributo = atributo;
-	}
-	public String getOperadorRelacional() {
-		return operadorRelacional;
-	}
-	public void setOperadorRelacional(String operadorRelacional) {
-		this.operadorRelacional = operadorRelacional;
-	}
-	public Object getValor() {
-		return valor;
-	}
-	public void setValor(Object valor) {
-		this.valor = valor;
-	}
-	
+    private static final long serialVersionUID = 1L;
+    public static final String AND = "AND";
+    public static final String OR = "OR";
+    public static final String NOT = "NOT";
+    public static final String IGUAL = "=";
+    public static final String DIFERENTE = "<>";
+    public static final String MENOR = "<";
+    public static final String MENOR_OU_IGUAL = "<=";
+    public static final String MAIOR = ">";
+    public static final String MAIOR_OU_IGUAL = ">=";
+    public static final String NAO_NULO = "IS NOT NULL";
+    public static final String LIKE = " like";
+    private String operadorLogico;
+    private String atributo;
+    private String operadorRelacional;
+    private Object valor;
+
+
+    public Filtro() {
+    }
+
+    public Filtro(String operadorLogico, String atributo, String operadorRelacional, Object valor) {
+        this.operadorLogico = operadorLogico;
+        this.atributo = atributo;
+        this.operadorRelacional = operadorRelacional;
+        this.valor = valor;
+    }
+
+    public Filtro(String atributo, String operadorRelacional, Object valor) {
+        this.operadorLogico = AND;
+        this.atributo = atributo;
+        this.operadorRelacional = operadorRelacional;
+        this.valor = valor;
+    }
+
+    public Filtro(String atributo, Object valor) {
+        this.operadorLogico = AND;
+        this.atributo = atributo;
+        this.operadorRelacional = IGUAL;
+        this.valor = valor;
+    }
+
+
+    public String getOperadorLogico() {
+        return operadorLogico;
+    }
+
+    public void setOperadorLogico(String operadorLogico) {
+        this.operadorLogico = operadorLogico;
+    }
+
+    public String getAtributo() {
+        return atributo;
+    }
+
+    public void setAtributo(String atributo) {
+        this.atributo = atributo;
+    }
+
+    public String getOperadorRelacional() {
+        return operadorRelacional;
+    }
+
+    public void setOperadorRelacional(String operadorRelacional) {
+        this.operadorRelacional = operadorRelacional;
+    }
+
+    public Object getValor() {
+        return valor;
+    }
+
+    public void setValor(Object valor) {
+        this.valor = valor;
+    }
+
 }

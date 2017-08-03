@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<!-- INTERFACE -->
+<cc:interface>
+    <cc:attribute name="controller" type="com.chronos.controll.cadastros.PessoaControll" required="true"/>
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <h:commandLink title="Cadastrar" class="btn btn-primary"
+                           actionListener="#{cc.attrs.controller.incluirEndereco()}">
+                <i class="fa fa-plus"></i>
+                <p:ajax process="dataTablePessoaEndereco"
+                        oncomplete="PF('dialogEndereco').show()"
+                        update=":campoPessoaEndereco:formOutrasTelas2:panelPessoaEndereco,dataTablePessoaEndereco"/>
+            </h:commandLink>
+        </div>
+    </div>
+    <p:dataTable id="dataTablePessoaEndereco" var="obj"
+                 value="#{cc.attrs.controller.objeto.pessoa.listaPessoaEndereco}"
+                 paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
+                 rowKey="#{obj.id}" reflow="true" paginatorPosition="bottom">
+
+        <p:column headerText="Cidade">
+            <h:outputLabel value="#{obj.cidade}"/>
+        </p:column>
+        <p:column headerText="Uf">
+            <h:outputLabel value="#{obj.uf}"/>
+        </p:column>
+        <p:column headerText="Fone">
+            <h:outputLabel value="#{obj.fone}"/>
+        </p:column>
+        <p:column headerText="Principal">
+            <h:outputLabel
+                    value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.simNao, obj.principal)}"/>
+        </p:column>
+        <p:column headerText="Entrega">
+            <h:outputLabel
+                    value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.simNao, obj.entrega)}"/>
+        </p:column>
+        <p:column headerText="Cobranca">
+            <h:outputLabel
+                    value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.simNao, obj.cobranca)}"/>
+        </p:column>
+        <p:column headerText="Correspondencia">
+            <h:outputLabel
+                    value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.simNao, obj.correspondencia)}"/>
+        </p:column>
+        <p:column headerText="Ações" width="110">
+            <p:commandLink title="Alterar" actionListener="#{cc.attrs.controller.alterarTelefone()}"
+                           class=" btn btn-default"
+                           process="dataTablePessoaEndereco"
+                           oncomplete="PF('dialogEndereco').show()"
+                           update=":campoPessoaEndereco:formOutrasTelas2:panelPessoaEndereco,:campoPessoaEndereco:formOutrasTelas2:dialogEndereco">
+                <i class="fa fa-file-text-o"></i>
+                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.pessoaEnderecoSelecionado}"/>
+            </p:commandLink>
+            &nbsp;
+            <p:commandLink title="Excluir" actionListener="#{cc.attrs.controller.excluirTelefone()}"
+                           update="dataTablePessoaEndereco"
+                           process="dataTablePessoaEndereco"
+                           oncomplete="atualizarMsg();"
+                           class="btn btn-default">
+                <i class="fa fa-times"></i>
+                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.controller.pessoaEnderecoSelecionado}"/>
+            </p:commandLink>
+        </p:column>
+    </p:dataTable>
+</cc:implementation>
+</html>

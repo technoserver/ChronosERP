@@ -58,6 +58,12 @@ public class Municipio implements Serializable {
     public Municipio() {
     }
 
+    public Municipio(Integer id, String nome, Integer codigoIbge) {
+        this.id = id;
+        this.nome = nome;
+        this.codigoIbge = codigoIbge;
+    }
+
     public Integer getId() {
         return id;
     }

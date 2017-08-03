@@ -91,9 +91,20 @@
                     <p:tabView id="tabCliente">
                         <p:tab title="Dados Principais" id="dadosPrincipais">
                             <erp:dadosPessoa controller="#{clienteControll}" id="dadosPessoa"/>
+
+
                         </p:tab>
                         <p:tab title="Dados Genreciais" id="dadosGerenciais">
                             <ui:include src="formCliente.xhtml"/>
+                        </p:tab>
+                        <p:tab title="Endereços" id="enderecos">
+                            <erp:gridPessoaEndereco controller="#{clienteControll}" />
+                        </p:tab>
+                        <p:tab title="Contatos" id="contatos">
+
+                        </p:tab>
+                        <p:tab title="Telefones" id="telefones">
+                            <erp:gridPessoaTelefone controller="#{clienteControll}" />
                         </p:tab>
                     </p:tabView>
                 </h:panelGroup>
@@ -101,6 +112,16 @@
 
 
         </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas2" >
+        <erp:dadosPessoaEndereco id="campoPessoaEndereco"
+                             controller="#{clienteControll}" />
+    </ui:define>
+
+    <ui:define name="outrasTelas3" >
+        <erp:dadosPessoaTelefone id="campoPessoaTelefone"
+                             controller="#{clienteControll}" />
     </ui:define>
 
 </ui:composition>

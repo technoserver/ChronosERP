@@ -30,6 +30,12 @@
             <url>http://repository.primefaces.org</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <id>chronos</id>
+            <name>Chronos Software</name>
+            <url>http://167.114.103.6:8081/repository/chronos/</url>
+            <layout>default</layout>
+        </repository>
     </repositories>
     <dependencies>
         

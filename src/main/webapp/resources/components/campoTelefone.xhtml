@@ -10,7 +10,7 @@
         <cc:attribute name="label" />
         <cc:attribute name="nomeAtributo" />
         <cc:attribute name="requerido" />
-        <cc:attribute name="styleClassDiv" />
+        <cc:attribute name="styleClass" />
         <cc:attribute name="styleClassInput" default="form-control telefone" />
         <cc:attribute name="tamanhoMaximo" default="18"/>
         <cc:attribute name="desabilitado" default="false" />
@@ -24,7 +24,7 @@
                 $(".telefone").mask("(999)99999-9999");
             });
         </script>
-        <div class="#{cc.attrs.styleClassDiv}" >
+        <div class="#{cc.attrs.styleClass}" >
             <h:outputLabel value="#{cc.attrs.label}"
                            for="#{cc.attrs.idComponente}" />
 

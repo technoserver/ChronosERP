@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:erp="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="controller"  type="com.chronos.controll.cadastros.PessoaControll" required="true" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <h:form id="formOutrasTelas2">
+            <p:dialog id="dialogEndereco" header="Inclusão/Alteração de Endereço"
+                      widgetVar="dialogEndereco" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" responsive="true">
+
+                <p:outputPanel id="panelPessoaEndereco">
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                        idComponente="pessoaEnderecoLogradouro" label="Logradouro"
+                                        nomeAtributo="#{cc.attrs.controller.pessoaEndereco.logradouro}"
+                                        tamanhoMaximo="60" />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaEnderecoNumero" label="Numero"
+                                        nomeAtributo="#{cc.attrs.controller.pessoaEndereco.numero}"
+                                        tamanhoMaximo="10" />
+                    </div>
+
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                        idComponente="pessoaEnderecoComplemento" label="Complemento"
+                                        nomeAtributo="#{cc.attrs.controller.pessoaEndereco.complemento}"
+                                        tamanhoMaximo="60" />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                        idComponente="pessoaEnderecoBairro" label="Bairro"
+                                        nomeAtributo="#{cc.attrs.controller.pessoaEndereco.bairro}"
+                                        tamanhoMaximo="60" />
+                        <erp:campoMascara styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="pessoaEnderecoCep" label="Cep"
+                                          nomeAtributo="#{cc.attrs.controller.pessoaEndereco.cep}"
+                                          mascara="99.999-999" />
+                    </div>
+                    <div class="row">
+
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaEnderecoUf" label="Uf"
+                                        nomeAtributo="#{cc.attrs.controller.pessoaEndereco.uf}"
+                                        tamanhoMaximo="2" />
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                        idComponente="pessoaEnderecoCidade" label="Cidade"
+                                        nomeAtributo="#{cc.attrs.controller.pessoaEndereco.cidade}"
+                                        tamanhoMaximo="60" />
+
+                    </div>
+                    <div class="row">
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaEnderecoFone" label="Fone"
+                                        nomeAtributo="#{cc.attrs.controller.pessoaEndereco.fone}"
+                                        tamanhoMaximo="14" />
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="pessoaEnderecoPrincipal" label="Principal"
+                                         nomeAtributo="#{cc.attrs.controller.pessoaEndereco.principal}"
+                                         itens="#{pessoaController.simNao}" />
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="pessoaEnderecoEntrega" label="Entrega"
+                                         nomeAtributo="#{cc.attrs.controller.pessoaEndereco.entrega}"
+                                         itens="#{pessoaController.simNao}" />
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="pessoaEnderecoCobranca" label="Cobranca"
+                                         nomeAtributo="#{cc.attrs.controller.pessoaEndereco.cobranca}"
+                                         itens="#{pessoaController.simNao}" />
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="pessoaEnderecoCorrespondencia"
+                                         label="Correspondencia"
+                                         nomeAtributo="#{cc.attrs.controller.pessoaEndereco.correspondencia}"
+                                         itens="#{pessoaController.simNao}" />
+                    </div>
+
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+
+                    <div class="row">
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             actionListener="#{cc.attrs.controller.salvarEndereco}">
+                                <p:ajax process="@form"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogEndereco').hide();}"
+                                        update=":campoPessoaEndereco:formOutrasTelas2:panelPessoaEndereco,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                        />
+                            </h:commandButton>
+                        </div>
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             oncomplete="PF('dialogEndereco').hide();"
+                            />
+                        </div>
+                    </div>
+
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </cc:implementation>
+</html>

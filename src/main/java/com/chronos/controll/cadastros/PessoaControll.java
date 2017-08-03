@@ -7,12 +7,14 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -26,10 +28,16 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     private PessoaContato pessoaContato;
     private PessoaEndereco pessoaEnderecoSelecionado;
     private PessoaEndereco pessoaEndereco;
+    private PessoaEndereco endereco;
     private PessoaTelefone pessoaTelefoneSelecionado;
     private PessoaTelefone pessoaTelefone;
 
+    private Municipio cidade;
+    private List<Municipio> cidades;
 
+
+    @Inject
+    private Repository<Municipio> municipios;
     @Inject
     private Repository<Pessoa> pessoas;
     @Inject
@@ -48,6 +56,9 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         getPessoa().setListaPessoaContato(new HashSet<>());
         getPessoa().setListaPessoaEndereco(new HashSet<>());
         getPessoa().setListaPessoaTelefone(new HashSet<>());
+
+        endereco = new PessoaEndereco();
+        endereco.setPrincipal("S");
     }
 
     @Override
@@ -56,6 +67,9 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         Class<Pessoa> classToCast = Pessoa.class;
         Pessoa p = pessoas.getEntityJoinFetch(getPessoa().getId(), Pessoa.class);
         setPessoa(p);
+
+        endereco = getPessoa().getListaPessoaEndereco().stream().filter((e) -> e.getPrincipal().equals("S")).findFirst().orElse(new PessoaEndereco());
+        cidade = new Municipio(0, endereco.getCidade(), endereco.getMunicipioIbge());
     }
 
     public void definirTipo() {
@@ -195,10 +209,99 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         return pessoa;
     }
 
+    public void atualizarCodIbge() {
+        endereco.setMunicipioIbge(cidade.getCodigoIbge());
+        endereco.setCidade(cidade.getNome());
+    }
+
+    public void instanciaCidade() {
+        cidade = new Municipio();
+    }
+
+    public List<Municipio> getMunicipios(String nome) {
+        cidades = new LinkedList<>();
+        try {
+
+            List<Filtro> filtros = new LinkedList<>();
+            filtros.add(new Filtro("uf.sigla", endereco.getUf()));
+            filtros.add(new Filtro("nome", Filtro.LIKE, nome));
+            atributos = new Object[]{"nome", "codigoIbge"};
+            cidades = municipios.getEntitys(Municipio.class, filtros, atributos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cidades;
+    }
+
+
     public abstract Pessoa getPessoa();
 
     public abstract void setPessoa(Pessoa pessoa);
 
     public abstract String getTela();
 
+    public PessoaEndereco getPessoaEndereco() {
+        return pessoaEndereco;
+    }
+
+    public void setPessoaEndereco(PessoaEndereco pessoaEndereco) {
+        this.pessoaEndereco = pessoaEndereco;
+    }
+
+    public PessoaEndereco getEndereco() {
+        return endereco;
+    }
+
+    public PessoaContato getPessoaContatoSelecionado() {
+        return pessoaContatoSelecionado;
+    }
+
+    public void setPessoaContatoSelecionado(PessoaContato pessoaContatoSelecionado) {
+        this.pessoaContatoSelecionado = pessoaContatoSelecionado;
+    }
+
+    public PessoaContato getPessoaContato() {
+        return pessoaContato;
+    }
+
+    public void setPessoaContato(PessoaContato pessoaContato) {
+        this.pessoaContato = pessoaContato;
+    }
+
+    public PessoaEndereco getPessoaEnderecoSelecionado() {
+        return pessoaEnderecoSelecionado;
+    }
+
+    public void setPessoaEnderecoSelecionado(PessoaEndereco pessoaEnderecoSelecionado) {
+        this.pessoaEnderecoSelecionado = pessoaEnderecoSelecionado;
+    }
+
+    public PessoaTelefone getPessoaTelefoneSelecionado() {
+        return pessoaTelefoneSelecionado;
+    }
+
+    public void setPessoaTelefoneSelecionado(PessoaTelefone pessoaTelefoneSelecionado) {
+        this.pessoaTelefoneSelecionado = pessoaTelefoneSelecionado;
+    }
+
+    public PessoaTelefone getPessoaTelefone() {
+        return pessoaTelefone;
+    }
+
+    public void setPessoaTelefone(PessoaTelefone pessoaTelefone) {
+        this.pessoaTelefone = pessoaTelefone;
+    }
+
+    public void setEndereco(PessoaEndereco endereco) {
+        this.endereco = endereco;
+    }
+
+    public Municipio getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(Municipio cidade) {
+        this.cidade = cidade;
+    }
 }

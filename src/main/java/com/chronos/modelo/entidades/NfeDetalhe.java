@@ -3,6 +3,7 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity
@@ -495,6 +496,26 @@ public class NfeDetalhe implements Serializable {
 
     public void setProdutoCadastrado(boolean produtoCadastrado) {
         this.produtoCadastrado = produtoCadastrado;
+    }
+
+
+
+    public BigDecimal calcularSubTotalProduto(){
+
+        BigDecimal subTotal = this.quantidadeComercial.multiply(this.valorBrutoProduto);
+        return subTotal;
+    }
+
+
+    public BigDecimal calcularValorTotalProduto(){
+        BigDecimal valorTotal = Optional.ofNullable(calcularSubTotalProduto()).orElse(BigDecimal.ZERO);
+        valorTotal = valorTotal
+                .add(Optional.ofNullable(this.valorFrete).orElse(BigDecimal.ZERO))
+                .add(Optional.ofNullable(this.valorOutrasDespesas).orElse(BigDecimal.ZERO))
+                .add(Optional.ofNullable(this.valorSeguro).orElse(BigDecimal.ZERO))
+                .subtract(Optional.ofNullable(this.valorDesconto).orElse(BigDecimal.ZERO));
+
+        return valorTotal;
     }
 
 }

@@ -152,7 +152,7 @@
     <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-core:0.7.2" level="project" />
     <orderEntry type="library" name="Maven: br.com.autocom:nfe-xsd:8.i.2" level="project" />
     <orderEntry type="library" name="Maven: br.com.samuelweb:cte-wsdl:3.0.1" level="project" />
-    <orderEntry type="library" name="Maven: br.com.samuelweb:cte-xsd:2.00a.0_3.00.6" level="project" />
+    <orderEntry type="library" name="Maven: br.com.samuelweb:cte-xsd:2.00a.0_3.00.5" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-transport-local:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-transport-http:1.6.2" level="project" />
