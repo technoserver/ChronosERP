@@ -9,6 +9,7 @@ import org.primefaces.model.SortOrder;
 
 import javax.persistence.PersistenceException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -22,6 +23,8 @@ public interface Repository<T> {
     void salvar(T bean) throws PersistenceException;
 
     T atualizar(T bean) throws PersistenceException;
+
+    boolean updateNativo(Class<T> clazz,List<Filtro> filtros,Map<String,Object> atributos);
 
     void excluir(Class<T> clazz) throws PersistenceException;
 
@@ -64,6 +67,8 @@ public interface Repository<T> {
     List<T> getEntitys(Class<T> clazz, List<Filtro> filters) throws PersistenceException;
     
     List<T> getEntitys(Class<T> clazz, List<Filtro> filters, Object[] atributos) throws PersistenceException;
+
+    List<T> getEntitys(Class<T> clazz, List<Filtro> filters, Object[] atributos,Object[] joinFetch) throws PersistenceException;
     
     List<T> getEntitys(Class<T> clazz, List<Filtro> filters,int qtdRegistro) throws PersistenceException;
     

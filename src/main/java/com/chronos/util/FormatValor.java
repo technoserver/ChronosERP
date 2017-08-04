@@ -87,6 +87,11 @@ public class FormatValor {
         return formatoQuantidade.parse(valor);
     }
 
+    public BigDecimal formatarQuantidadeToBigDecimal(String valor) throws ParseException {
+        BigDecimal vlr = valor==null?null: BigDecimal.valueOf(formatarQuantidadeToNumber(valor).doubleValue());
+        return vlr;
+    }
+
 
     public String formatarValorToString(Object valor) {
 

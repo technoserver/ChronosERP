@@ -14,7 +14,7 @@
         <cc:attribute name="idDataTable" required="true" />
         <cc:attribute name="somenteConsulta" default="false" />
         <cc:attribute name="dataModel"  default="#{cc.attrs.controller.dataModel}" />
-
+        <cc:attribute name="objetoSelecionado"  default="#{cc.attrs.controller.objetoSelecionado}" required="true"/>
     </cc:interface>
 
     <!-- IMPLEMENTATION -->
@@ -38,7 +38,7 @@
                                            update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                                            >
                                 <i class="fa fa-file-text-o"></i>   
-                                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.controller.objetoSelecionado}"/>
+                                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.objetoSelecionado}"/>
                             </p:commandLink>
                             &nbsp;
                             <p:commandLink title="Excluir"   action="#{cc.attrs.controller.remover()}" style="position: relative; right: 7px"
@@ -51,7 +51,7 @@
                                 <i class="fa fa-times"></i> 
                                 <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
-                                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.controller.objetoSelecionado}"/>
+                                <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.objetoSelecionado}"/>
                             </p:commandLink>
                         </p:column>
 

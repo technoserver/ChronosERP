@@ -6,25 +6,30 @@
 package com.chronos.repository;
 
 import com.chronos.util.jpa.Transactional;
+import com.itextpdf.text.log.Logger;
+import com.itextpdf.text.log.LoggerFactory;
 import org.primefaces.model.SortOrder;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
- *
  * @author john
  */
 public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger logger = LoggerFactory.getLogger(RepositoryImp.class);
 
     @Inject
     private EntityManager em;
@@ -44,8 +49,30 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Transactional
     @Override
     public T atualizar(T bean) throws PersistenceException {
-        return  em.merge(bean);
+        return em.merge(bean);
 
+    }
+
+    @Transactional
+    @Override
+    public boolean updateNativo(Class<T> clazz, List<Filtro> filtros, Map<String, Object> atributos) {
+        String sql = "update " + clazz.getAnnotation(Table.class).name() + " set ";
+
+        for (String atributo : atributos.keySet()) {
+            Object valor = atributos.get(atributo);
+
+            sql += atributo + " = " + ((valor.getClass() == String.class) ? "'" + valor + "'," : valor + ",");
+        }
+        sql = sql.substring(0, sql.length() - 1);
+
+        sql += " where 1=1 ";
+        for (Filtro f : filtros) {
+            sql += f.getOperadorLogico() + " " + f.getAtributo() + " " + f.getOperadorRelacional() +
+                    ((f.getValor().getClass() == String.class) ? "'" + f.getValor() + "'" : f.getValor());
+        }
+
+
+        return executarQueryNativa(sql);
     }
 
     @Transactional
@@ -82,14 +109,13 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Override
     public T get(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
-        return getEntitys(clazz,atributo,valor).get(0);
+        return getEntitys(clazz, atributo, valor).get(0);
     }
 
     @Override
     public T get(Class<T> clazz, List<Filtro> filtros) throws PersistenceException {
-        return getEntitys(clazz,filtros).get(0);
+        return getEntitys(clazz, filtros).get(0);
     }
-
 
 
     @SuppressWarnings("unchecked")
@@ -132,7 +158,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
             filtros.add(new Filtro(Filtro.AND, atributo, Filtro.IGUAL, valor));
         }
 
-        return getTotalRegistros(clazz,filtros);
+        return getTotalRegistros(clazz, filtros);
     }
 
     @Override
@@ -209,6 +235,13 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
+    public List<T> getEntitys(Class<T> clazz, List<Filtro> filtros, Object[] atributos, Object[] joinFetch) throws PersistenceException {
+
+        return getEntitys(clazz, filtros, 0, 0, null, null, joinFetch, atributos);
+    }
+
+
+    @Override
     public List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int qtdRegistro) throws PersistenceException {
         Object atributos[] = null;
         return getEntitys(clazz, filters, qtdRegistro, atributos);
@@ -266,7 +299,6 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     /**
-     *
      * @param clazz
      * @param classToCast
      * @param filters
@@ -302,7 +334,6 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         Query qr = createQuery(query, values);
         return qr.executeUpdate();
     }
-
 
 
     protected Query createQuery(String query, Object... values) {
@@ -373,5 +404,41 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
             }
         }
         return query;
+    }
+
+    private boolean executarQueryNativa(String query) {
+        boolean result = false;
+        try{
+            em.getTransaction().begin();
+            result =  em.createNativeQuery(query).executeUpdate() > 0;
+        }catch (Exception ex){
+            logger.error("Erro ao Executa sql " + ex.getMessage().toString());
+            em.getTransaction().commit();
+        }finally {
+            fecharConexao();
+        }
+
+        return result;
+    }
+
+    private void fecharConexao() {
+        if (em != null && em.isOpen()) {
+            try {
+                if (em.getTransaction() != null && em.getTransaction().isActive()) {
+                    if (em.getTransaction().getRollbackOnly()) {
+                        em.getTransaction().rollback();
+                    } else {
+                        em.getTransaction().commit();
+                    }
+                }
+            } catch (Exception e) {
+                if (em.getTransaction() != null && em.getTransaction().isActive()) {
+                    em.getTransaction().rollback();
+                }
+                throw e;
+            } finally {
+                em.close();
+            }
+        }
     }
 }

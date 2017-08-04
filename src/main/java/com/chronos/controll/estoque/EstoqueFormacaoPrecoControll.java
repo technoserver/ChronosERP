@@ -1,8 +1,10 @@
 package com.chronos.controll.estoque;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.Produto;
 import com.chronos.modelo.entidades.ProdutoSubGrupo;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
@@ -12,7 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 02/08/17.
@@ -30,8 +32,31 @@ public class EstoqueFormacaoPrecoControll extends AbstractControll<ProdutoSubGru
     @Inject
     private Repository<Produto> produtos;
 
+    @Override
+    public ERPLazyDataModel<ProdutoSubGrupo> getDataModel() {
+        if(dataModel==null){
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(ProdutoSubGrupo.class);
+            dataModel.setDao(dao);
 
+        }
+        Object[] joins = new Object[]{"produtoGrupo"};
+        dataModel.setJoinFetch(joins);
 
+        return  dataModel;
+    }
+
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        buscaGrupoProdutos();
+    }
+
+    @Override
+    public void salvar() {
+        salvarCalculos();
+
+    }
 
     public void efetuarCalculos() {
         try {
@@ -57,22 +82,15 @@ public class EstoqueFormacaoPrecoControll extends AbstractControll<ProdutoSubGru
                 return;
             }
             BigDecimal valorVenda;
-            BigDecimal valorCompra;
-            BigDecimal encargo = Biblioteca.divide(this.encargos, BigDecimal.valueOf(100));
-            BigDecimal markup = Biblioteca.divide(this.markup, BigDecimal.valueOf(100));
+            BigDecimal encargo = Biblioteca.divide(this.markup, BigDecimal.valueOf(100));
+            BigDecimal markup1 = Biblioteca.divide(this.encargos, BigDecimal.valueOf(100));
             for (Produto p : listaProduto) {
                 if (p.getValorCompra() != null) {
-                    valorCompra = p.getValorCompra();
-                    valorVenda = valorCompra.multiply(BigDecimal.ONE.add(markup));
-                    valorVenda = valorCompra.divide(BigDecimal.ONE.subtract(encargo), 2, RoundingMode.DOWN);
+                    valorVenda = p.getValorCompra().multiply(BigDecimal.ONE.add(markup1)).divide(BigDecimal.ONE.subtract(encargo), 2, RoundingMode.DOWN);
 
                     p.setValorVenda(valorVenda);
-                    p.setMarkup(markup);
-                    p.setEncargosVenda(encargo);
-                }else{
-                    p.setValorVenda(BigDecimal.ZERO);
-                    p.setMarkup(BigDecimal.ZERO);
-                    p.setEncargosVenda(BigDecimal.ZERO);
+                    p.setMarkup(markup1);
+                    p.setEncargosVenda(encargos);
                 }
             }
             Mensagem.addInfoMessage("Cálculos Efetuados.");
@@ -84,7 +102,11 @@ public class EstoqueFormacaoPrecoControll extends AbstractControll<ProdutoSubGru
 
     public void buscaGrupoProdutos() {
         try {
-            listaProduto = produtos.getEntitys(Produto.class, "produtoSubgrupo", getObjeto(),atributos);
+            joinFetch = new Object[]{"unidadeProduto","produtoSubGrupo"};
+            List<Filtro> filtros = new LinkedList<>();
+            filtros.add(new Filtro("produtoSubGrupo.id",getObjeto().getId()));
+            atributos = new Object[]{"nome","valorCompra","valorVenda","markup"};
+            listaProduto = produtos.getEntitys(Produto.class,filtros,atributos);
         } catch (Exception e) {
             Mensagem.addErrorMessage("Ocorreu um erro.", e);
         }
@@ -96,7 +118,13 @@ public class EstoqueFormacaoPrecoControll extends AbstractControll<ProdutoSubGru
                 Mensagem.addInfoMessage("Nenhum produto na lista");
             } else {
                 for (Produto p : listaProduto) {
-                    produtos.atualizar(p);
+                    List<Filtro> filtros = new ArrayList<>();
+                    filtros.add(new Filtro("id",p.getId()));
+                    Map<String,Object> atributos = new HashMap();
+                    atributos.put("markup",p.getMarkup());
+                    atributos.put("valor_venda",p.getValorVenda());
+                    produtos.updateNativo(Produto.class,filtros,atributos);
+
                 }
             }
             Mensagem.addInfoMessage("Preços formados com sucesso!");
@@ -114,5 +142,26 @@ public class EstoqueFormacaoPrecoControll extends AbstractControll<ProdutoSubGru
     @Override
     protected String getFuncaoBase() {
         return "ESTOQUE_FORMACAO_PRECO";
+    }
+
+
+    public List<Produto> getListaProduto() {
+        return listaProduto;
+    }
+
+    public BigDecimal getEncargos() {
+        return encargos;
+    }
+
+    public void setEncargos(BigDecimal encargos) {
+        this.encargos = encargos;
+    }
+
+    public BigDecimal getMarkup() {
+        return markup;
+    }
+
+    public void setMarkup(BigDecimal markup) {
+        this.markup = markup;
     }
 }

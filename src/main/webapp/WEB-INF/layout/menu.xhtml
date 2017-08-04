@@ -185,6 +185,22 @@
                     </ul>
                 </li>
 
+
+                <li class="${fn:contains(view.viewId,'estoque')?'active':''}">
+                    <a href="#">
+                        <i class="fa fa-th-large"></i>
+                        <span class="nav-label">Estoque</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse ">
+                        <li class="${fn:contains(view.viewId,'modulo/estoque/')?'active':''}">
+                            <erp:subMenu caminho="/modulo/estoque/estoqueFormacaoPreco"
+                                         label="Formação Preço"
+                                         funcao="formacao"/>
+                        </li>
+                    </ul>
+                </li>
+
                 <li>
                     <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label">Menu Levels </span><span
                             class="fa arrow"></span></a>
