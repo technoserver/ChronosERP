@@ -139,8 +139,17 @@ public class Colaborador implements Serializable {
     private Sindicato sindicato;
     @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")
     private String classificacaoContabilConta;
+    @Transient
+    private String nome;
+
 
     public Colaborador() {
+    }
+
+    public Colaborador(Integer id,Integer idpessoa,String nome) {
+        this.id = id;
+        this.nome = nome;
+        this.pessoa = new Pessoa(idpessoa,nome);
     }
 
     public Integer getId() {
@@ -527,7 +536,11 @@ public class Colaborador implements Serializable {
         this.classificacaoContabilConta = classificacaoContabilConta;
     }
 
-   
+    public String getNome() {
+        return nome;
+    }
 
-
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 }

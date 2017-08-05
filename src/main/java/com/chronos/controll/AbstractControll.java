@@ -75,6 +75,9 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, String> tipoFeriado;
     private Map<String, String> feriadoAbrangencia;
 
+    //Compras
+    private Map<String, String> requisicaoInternaSituacao;
+
     protected abstract Class<T> getClazz();
 
     protected abstract String getFuncaoBase();
@@ -226,6 +229,12 @@ public abstract class AbstractControll<T> implements Serializable {
         feriadoAbrangencia.put("Estadual", "E");
         feriadoAbrangencia.put("Municipal", "M");
 
+        //Compras
+        requisicaoInternaSituacao = new LinkedHashMap<>();
+        requisicaoInternaSituacao.put("Aberta", "A");
+        requisicaoInternaSituacao.put("Deferida", "D");
+        requisicaoInternaSituacao.put("Indeferida", "I");
+
     }
 
     public void voltar() {
@@ -280,7 +289,7 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public void salvar() {
-       // salvar(null);
+        salvar(null);
 
     }
 
@@ -513,5 +522,9 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public Map<String, String> getNaoSim() {
         return naoSim;
+    }
+
+    public Map<String, String> getRequisicaoInternaSituacao() {
+        return requisicaoInternaSituacao;
     }
 }

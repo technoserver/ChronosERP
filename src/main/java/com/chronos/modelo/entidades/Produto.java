@@ -161,6 +161,11 @@ public class Produto implements Serializable {
     public Produto() {
     }
 
+    public Produto(Integer id,String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public Produto(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, UnidadeProduto unidadeProduto) {
         this.id = id;
         this.nome = nome;

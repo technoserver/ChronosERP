@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Requisição Interna
+    </ui:define>
+
+    <ui:define name="tela">
+        #{requisicaoInternaCabecalhoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Requisição Interna
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{requisicaoInternaCabecalhoControll}"
+                       idDataTable="dataTableRequisicaoInternaCabecalho"
+                       nomeFuncao="Requisição Interna"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Colaborador">
+                <h:outputLabel value="#{row.colaborador.pessoa.nome}"/>
+            </p:column>
+            <p:column headerText="Data Requisicao">
+                <h:outputLabel value="#{row.dataRequisicao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Situacao">
+                <h:outputLabel
+                        value="#{requisicaoInternaCabecalhoControll.keyFromValue(requisicaoInternaCabecalhoControll.requisicaoInternaSituacao, row.situacao)}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{requisicaoInternaCabecalhoControll}"
+                                   nomeFuncao="Requisição Interna"
+                                   id="telaDetalhe">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <h:commandButton value="Deferir" class="btn btn-default"
+                                     actionListener="#{requisicaoInternaCabecalhoControll.deferirRequisicao}">
+                        <p:ajax update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                process="@this"/>
+                    </h:commandButton>
+                    &nbsp;
+                    <h:commandButton value="Indeferir" class="btn btn-default"
+                                     actionListener="#{requisicaoInternaCabecalhoControll.indeferirRequisicao}">
+                        <p:ajax update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                process="@this"/>
+                    </h:commandButton>
+                </div>
+            </div>
+            <br/>
+            <p:tabView id="tabViewDetalhes" style="border: 0px;">
+                <p:tab title="Dados Principais">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-10 col-md-10"
+                                          label="Colaborador"
+                                          itemLabel="#{objeto.pessoa.nome}"
+                                          controller="#{requisicaoInternaCabecalhoControll}"
+                                          completeMethod="getListaColaborador"
+                                          nomeAtributo="#{requisicaoInternaCabecalhoControll.objeto.colaborador}"
+                                          idComponente="requisicaoInternaCabecalhoColaborador"
+                                          requerido="true"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="requisicaoInternaCabecalhoDataRequisicao"
+                                       label="Data Requisicao"
+                                       nomeAtributo="#{requisicaoInternaCabecalhoControll.objeto.dataRequisicao}"
+                                       requerido="true"/>
+                    </div>
+                </p:tab>
+                <p:tab title="Itens" disabled="#{empty requisicaoInternaCabecalhoControll.objeto.id}">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <h:commandLink title="Cadastrar" class="btn btn-default"
+                                           actionListener="#{requisicaoInternaCabecalhoControll.incluirRequisicaoInternaDetalhe}">
+                                <i class="fa fa-plus"></i>
+                                <p:ajax process="@this,dataTableRequisicaoInternaDetalhe"
+                                        oncomplete="PF('dialogRequisicaoInternaDetalhe').show()"
+                                        update=":formOutrasTelas:panelRequisicaoInternaDetalhe,dataTableRequisicaoInternaDetalhe"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+                    <br/>
+                    <p:dataTable id="dataTableRequisicaoInternaDetalhe" var="obj"
+                                 value="#{requisicaoInternaCabecalhoControll.objeto.listaRequisicaoInternaDetalhe}"
+                                 rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                                 resizableColumns="true"
+                                 rowKey="#{obj.id}">
+
+                        <p:column headerText="Produto">
+                            <h:outputLabel value="#{obj.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="GTIN">
+                            <h:outputLabel value="#{obj.produto.gtin}"/>
+                        </p:column>
+                        <p:column headerText="Quantidade">
+                            <h:outputLabel value="#{obj.quantidade}">
+                                <f:convertNumber pattern="0.000"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Ações" width="110">
+                            <p:commandLink title="Alterar" class=" btn btn-default"
+                                           action="#{requisicaoInternaCabecalhoControll.alterarRequisicaoInternaDetalhe}"
+                                           process="dataTableRequisicaoInternaDetalhe"
+                                           oncomplete="PF('dialogRequisicaoInternaDetalhe').show()"
+                                           update=":formOutrasTelas:panelRequisicaoInternaDetalhe,dataTableRequisicaoInternaDetalhe">
+                                <i class="fa fa-file-text-o"></i>
+                                <f:setPropertyActionListener value="#{obj}"
+                                                             target="#{requisicaoInternaCabecalhoControll.requisicaoInternaDetalheSelecionado}"/>
+                            </p:commandLink>
+                            &nbsp;
+                            <p:commandLink title="Excluir"
+                                           action="#{requisicaoInternaCabecalhoControll.excluirRequisicaoInternaDetalhe}"
+                                           update=":formCentro:growl,dataTableRequisicaoInternaDetalhe,"
+                                           process="dataTableRequisicaoInternaDetalhe"
+                                           oncomplete="atualizarMsg();"
+                                           class="btn btn-default"
+                            >
+                                <i class="fa fa-times"></i>
+                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                <f:setPropertyActionListener value="#{obj}"
+                                                             target="#{requisicaoInternaCabecalhoControll.requisicaoInternaDetalheSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+
+                </p:tab>
+            </p:tabView>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogRequisicaoInternaDetalhe"
+                      header="Inclusão/Alteração Item Requisicao Interna"
+                      widgetVar="dialogRequisicaoInternaDetalhe" showEffect="slide" responsive="true"
+                      hideEffect="slide" resizable="true" modal="true" closable="false" width="800">
+
+                <p:outputPanel id="panelRequisicaoInternaDetalhe">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-10 col-md-10"
+                                          label="Produto"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{requisicaoInternaCabecalhoControll}"
+                                          completeMethod="getListaProduto"
+                                          nomeAtributo="#{requisicaoInternaCabecalhoControll.requisicaoInternaDetalhe.produto}"
+                                          idComponente="requisicaoInternaDetalheProduto"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="requisicaoInternaDetalheQuantidade"
+                                          label="Quantidade"
+                                          nomeAtributo="#{requisicaoInternaCabecalhoControll.requisicaoInternaDetalhe.quantidade}"
+                                          requerido="true"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             actionListener="#{requisicaoInternaCabecalhoControll.salvarRequisicaoInternaDetalhe}">
+                                <p:ajax process="@form"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogRequisicaoInternaDetalhe').hide();}"
+                                        update=":formOutrasTelas:panelRequisicaoInternaDetalhe,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             oncomplete="PF('dialogEndereco').hide();">
+                                <p:ajax process="@form"
+                                        oncomplete="PF('dialogRequisicaoInternaDetalhe').hide();"
+                                />
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

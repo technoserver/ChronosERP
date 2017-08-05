@@ -39,7 +39,7 @@ public class RequisicaoInternaCabecalhoControll extends AbstractControll<Requisi
     }
 
     @Override
-    public void doEdit()  {
+    public void doEdit() {
 
         super.doEdit(); //To change body of generated methods, choose Tools | Templates.
         RequisicaoInternaCabecalho r = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
@@ -53,6 +53,13 @@ public class RequisicaoInternaCabecalhoControll extends AbstractControll<Requisi
 
     public void alterarRequisicaoInternaDetalhe() {
         requisicaoInternaDetalhe = requisicaoInternaDetalheSelecionado;
+    }
+
+    public void excluirRequisicaoInternaDetalhe() {
+
+        getObjeto().getListaRequisicaoInternaDetalhe().remove(requisicaoInternaDetalheSelecionado);
+        salvar("Registro excluído com sucesso!");
+
     }
 
     public void salvarRequisicaoInternaDetalhe() {
@@ -93,7 +100,8 @@ public class RequisicaoInternaCabecalhoControll extends AbstractControll<Requisi
     public List<Produto> getListaProduto(String nome) {
         List<Produto> listaProduto = new ArrayList<>();
         try {
-            listaProduto = produtos.getEntitys(Produto.class, "nome", nome,atributos);
+            atributos = new Object[]{"nome"};
+            listaProduto = produtos.getEntitys(Produto.class, "nome", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -103,13 +111,13 @@ public class RequisicaoInternaCabecalhoControll extends AbstractControll<Requisi
     public List<Colaborador> getListaColaborador(String nome) {
         List<Colaborador> listaColaborador = new ArrayList<>();
         try {
-            listaColaborador = colaboradores.getEntitys(Colaborador.class, "pessoa.nome", nome,atributos);
+            atributos = new Object[]{"pessoa.id","pessoa.nome"};
+            listaColaborador = colaboradores.getEntitys(Colaborador.class, "pessoa.nome", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
         return listaColaborador;
     }
-
 
 
     @Override

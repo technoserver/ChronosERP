@@ -102,8 +102,10 @@
                         </div>
                         <div  class="col-xs-6 col-lg-6">
                             <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                                             oncomplete="PF('dialogEndereco').hide();"
-                            />
+                                             oncomplete="PF('dialogEndereco').hide();">
+                                <p:ajax process="@this"
+                                        oncomplete="PF('dialogEndereco').hide();"/>
+                            </h:commandButton>
                         </div>
                     </div>
 
