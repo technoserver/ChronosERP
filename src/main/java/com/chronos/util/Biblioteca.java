@@ -9,9 +9,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @author john
@@ -212,6 +216,75 @@ public class Biblioteca {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static Object nullToEmpty(Object objeto, boolean relacionamentos) {
+        Object atributo;
+        try {
+            Field fields[] = objeto.getClass().getDeclaredFields();
+            for (Field f : fields) {
+                if (!(f.getName().equals("serialVersionUID") || f.getName().equals("bag"))) {
+                    if (f.getType() == String.class || f.getType() == Integer.class || f.getType() == BigDecimal.class || f.getType() == Double.class || f.getType() == Date.class || f.getType() == Long.class) {
+
+                        Method metodo = objeto.getClass().getDeclaredMethod("get" + primeiraMaiuscula(f.getName()));
+                        atributo = metodo.invoke(objeto);
+                        if (atributo == null) {
+                            if (f.getType() == String.class) {
+                                metodo = objeto.getClass().getDeclaredMethod("set" + primeiraMaiuscula(f.getName()), String.class);
+                                metodo.invoke(objeto, "");
+                            }
+                            if (f.getType() == Integer.class) {
+                                metodo = objeto.getClass().getDeclaredMethod("set" + primeiraMaiuscula(f.getName()), Integer.class);
+                                metodo.invoke(objeto, 0);
+                            }
+                            if (f.getType() == BigDecimal.class) {
+                                metodo = objeto.getClass().getDeclaredMethod("set" + primeiraMaiuscula(f.getName()), BigDecimal.class);
+                                metodo.invoke(objeto, BigDecimal.ZERO);
+                            }
+                            if (f.getType() == Double.class) {
+                                metodo = objeto.getClass().getDeclaredMethod("set" + primeiraMaiuscula(f.getName()), Double.class);
+                                metodo.invoke(objeto, 0.0);
+                            }
+                            if (f.getType() == Date.class) {
+                                metodo = objeto.getClass().getDeclaredMethod("set" + primeiraMaiuscula(f.getName()), Date.class);
+                                metodo.invoke(objeto, new Date(0l));
+                            }
+                            if (f.getType() == Long.class) {
+                                metodo = objeto.getClass().getDeclaredMethod("set" + primeiraMaiuscula(f.getName()), Long.class);
+                                metodo.invoke(objeto, 0l);
+                            }
+                        }
+                    } else if (relacionamentos) {
+                        if (!objeto.getClass().getName().equals(f.getType().getName())) {
+                            Method metodo = objeto.getClass().getDeclaredMethod("get" + primeiraMaiuscula(f.getName()));
+                            atributo = metodo.invoke(objeto);
+                            if (atributo != null) {
+                                if (atributo.getClass() != ArrayList.class) {
+                                    nullToEmpty(atributo, relacionamentos);
+                                }
+                            } else {
+                                if (f.getType() != ArrayList.class || !(f.getType().isArray())) {
+                                    metodo = objeto.getClass().getDeclaredMethod("set" + primeiraMaiuscula(f.getName()), f.getType());
+                                    metodo.invoke(objeto, Class.forName(f.getType().getName()).newInstance());
+
+                                    metodo = objeto.getClass().getDeclaredMethod("get" + primeiraMaiuscula(f.getName()));
+                                    atributo = metodo.invoke(objeto);
+
+                                    nullToEmpty(atributo, relacionamentos);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            // ex.printStackTrace();
+        }
+        return objeto;
+    }
+
+    public static String primeiraMaiuscula(String texto) {
+        return Character.toUpperCase(texto.charAt(0)) + texto.substring(1);
     }
 
     public static BigDecimal soma(BigDecimal valor1, BigDecimal valor2) {

@@ -6,34 +6,46 @@
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
 >
 
     <ui:define name="title">
-        Grupo de Produtos
+        Reajuste de Estoque
     </ui:define>
 
     <ui:define name="tela">
-        #{produtoGrupoControll.titulo}
+        #{estoqueReajusteCabecalhoControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        Grupo de Produtos
+        Reajuste de Estoque
     </ui:define>
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{produtoGrupoControll}"
-                       idDataTable="dataTableGrupo"
-                       nomeFuncao="Grupo"
+        <erp:gridDados controller="#{estoqueReajusteCabecalhoControll}"
+                       idDataTable="dataTableEstoqueReajusteCabecalho"
+                       nomeFuncao="Reajuste de Estoque"
                        id="telaGrid"
         >
 
-            <p:column headerText="Nome">
-                <h:outputLabel value="#{row.nome}"/>
+            <p:column headerText="Colaborador">
+                <h:outputLabel value="#{row.colaborador.pessoa.nome}"/>
             </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}"/>
+            <p:column headerText="Data Reajuste">
+                <h:outputLabel value="#{row.dataReajuste}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Porcentagem">
+                <h:outputLabel value="#{row.porcentagem}">
+                    <f:convertNumber pattern="0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Tipo Reajuste">
+                <h:outputLabel
+                        value="#{EstoqueReajusteCabecalhoControll.keyFromValue(EstoqueReajusteCabecalhoControll.tipoReajuste, row.tipoReajuste)}"/>
             </p:column>
 
 
@@ -42,26 +54,73 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{produtoGrupoControll}"
-                                   nomeFuncao="CFOP"
-                                   id="telaDetalhe"
-                                   >
+        <erp:telaInclusaoAlteracao controller="#{estoqueReajusteCabecalhoControll}"
+                                   nomeFuncao="Reajuste de Estoque"
+                                   id="telaDetalhe">
 
             <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="SubGrupo"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{estoqueReajusteCabecalhoControll}"
+                                  completeMethod="getListaSubGrupo"
+                                  nomeAtributo="#{estoqueReajusteCabecalhoControll.produtoSubgrupo}"
+                                  idComponente="produtoSubGrupo">
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                idComponente="nome" label="Nome"
-                                nomeAtributo="#{produtoGrupoControll.objeto.nome}"
-                                tamanhoMaximo="100"
-                                requerido="true"/>
+                    <p:ajax event="itemSelecionado"
+                            listener="#{estoqueReajusteCabecalhoControll.buscaGrupoProdutos}"
+                            update=":formCentro:telaDetalhe:outputPanelDetalhe"/>
+                </erp:autoComplete>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="nomeGrupo"
+                                label="Grupo"
+                                nomeAtributo="#{estoqueReajusteCabecalhoControll.produtoSubgrupo.produtoGrupo.nome}"
+                                somenteLeitura="true"
+                                tamanhoMaximo="100"/>
             </div>
             <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Colaborador"
+                                  itemLabel="#{objeto.pessoa.nome}"
+                                  controller="#{estoqueReajusteCabecalhoControll}"
+                                  completeMethod="getListaColaborador"
+                                  nomeAtributo="#{estoqueReajusteCabecalhoControll.objeto.colaborador}"
+                                  idComponente="estoqueReajusteCabecalhoColaborador"/>
 
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="descricao" label="Descricao"
-                                    nomeAtributo="#{produtoGrupoControll.objeto.descricao}"/>
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                               idComponente="estoqueReajusteCabecalhoDataReajuste"
+                               label="Data Reajuste"
+                               nomeAtributo="#{estoqueReajusteCabecalhoControll.objeto.dataReajuste}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="estoqueReajusteCabecalhoPorcentagem"
+                                  label="Porcentagem" requerido="true"
+                                  nomeAtributo="#{estoqueReajusteCabecalhoControll.objeto.porcentagem}"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="estoqueReajusteCabecalhoTipoReajuste"
+                                 label="Tipo Reajuste"
+                                 nomeAtributo="#{estoqueReajusteCabecalhoControll.objeto.tipoReajuste}"
+                                 itens="#{estoqueReajusteCabecalhoControll.tipoReajuste}"/>
             </div>
+            <erp:separador label="Produtos"/>
+            <p:dataTable id="dataTableEstoqueReajusteDetalhe" var="obj"
+                         value="#{estoqueReajusteCabecalhoControll.objeto.listaEstoqueReajusteDetalhe}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         resizableColumns="true" paginatorPosition="bottom" reflow="true">
 
+                <p:column headerText="Produto">
+                    <h:outputLabel value="#{obj.produto.nome}"/>
+                </p:column>
+                <p:column headerText="Valor Original">
+                    <h:outputLabel value="#{obj.valorOriginal}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor Reajuste">
+                    <h:outputLabel value="#{obj.valorReajuste}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+            </p:dataTable>
 
         </erp:telaInclusaoAlteracao>
     </ui:define>

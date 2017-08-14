@@ -16,11 +16,13 @@ public class EntradaNotaFiscalService implements Serializable {
 
 
     private static final long serialVersionUID = 1L;
+    private Empresa empresa;
 
 
-
-    public NfeCabecalho iniciar(){
+    public NfeCabecalho iniciar(Empresa empresa){
+        this.empresa = empresa;
         NfeCabecalho nfe = new NfeCabecalho();
+        nfe.setEmpresa(empresa);
         nfe.setEmitente(new NfeEmitente());
         nfe.getEmitente().setNfeCabecalho(nfe);
         nfe.setLocalEntrega(new NfeLocalEntrega());
@@ -52,14 +54,13 @@ public class EntradaNotaFiscalService implements Serializable {
         nfe.setStatusNota(0);
         nfe.setFormatoImpressaoDanfe(1);
         nfe.setConsumidorOperacao(1);
-        nfe.setConsumidorPresenca(1);
         nfe.setTipoEmissao(1);
         nfe.setFinalidadeEmissao(1);
         nfe.setLocalDestino(1);
         nfe.getTransporte().setModalidadeFrete(0);
 
         Date dataAtual = new Date();
-        nfe.setUfEmitente(nfe.getEmpresa().getCodigoIbgeUf());
+        nfe.setUfEmitente(empresa.getCodigoIbgeUf());
         nfe.setDataHoraEmissao(dataAtual);
         nfe.setDataHoraEntradaSaida(dataAtual);
 

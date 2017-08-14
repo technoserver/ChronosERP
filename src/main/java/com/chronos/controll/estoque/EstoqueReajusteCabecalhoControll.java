@@ -40,7 +40,8 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
     public void doCreate() {
         super.doCreate();
         getObjeto().setListaEstoqueReajusteDetalhe(new HashSet<>());
-
+        getObjeto().setDataReajuste(new Date());
+        getObjeto().setColaborador(usuario.getColaborador());
         produtoSubgrupo = new ProdutoSubGrupo();
     }
 
@@ -64,7 +65,7 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
             getObjeto().getListaEstoqueReajusteDetalhe().clear();
             atributos = new Object[]{"nome","valorVenda"};
             List<Filtro> filtros = new LinkedList<>();
-            filtros.add(new Filtro("produtoSubGrupo.id","subGrupo.getId()"));
+            filtros.add(new Filtro("produtoSubGrupo.id",subGrupo.getId()));
             List<Produto> listaProduto = produtos.getEntitys(Produto.class, filtros,atributos);
 
             if (listaProduto.isEmpty()) {
@@ -103,7 +104,7 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
     }
 
     private BigDecimal calcularReajuste(BigDecimal valorOriginal,String tipo) {
-        if(Optional.ofNullable(valorOriginal).isPresent()){
+        if(!Optional.ofNullable(valorOriginal).isPresent()){
             return BigDecimal.ZERO;
         }
         BigDecimal reajuste = tipo.equals("A") ? valorOriginal.multiply(BigDecimal.ONE.subtract(getObjeto().getPorcentagem().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_DOWN))) : valorOriginal.multiply(BigDecimal.ONE.add(getObjeto().getPorcentagem().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_DOWN)));
@@ -124,9 +125,10 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
     public List<ProdutoSubGrupo> getListaSubGrupo(String nome) {
         List<ProdutoSubGrupo> listaProdutoSubGrupo = new ArrayList<>();
         try {
+            atributos = null;
             listaProdutoSubGrupo = subgrupos.getEntitys(ProdutoSubGrupo.class, "nome", nome,atributos);
         } catch (Exception e) {
-            // e.printStackTrace();
+             e.printStackTrace();
         }
         return listaProdutoSubGrupo;
     }
@@ -139,5 +141,13 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
     @Override
     protected String getFuncaoBase() {
         return "ESTOQUE_REAJUSTE_CABECALHO";
+    }
+
+    public ProdutoSubGrupo getProdutoSubgrupo() {
+        return produtoSubgrupo;
+    }
+
+    public void setProdutoSubgrupo(ProdutoSubGrupo produtoSubgrupo) {
+        this.produtoSubgrupo = produtoSubgrupo;
     }
 }

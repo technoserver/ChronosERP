@@ -14,9 +14,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by john on 02/08/17.
@@ -41,9 +39,12 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private NfeDetalheImpostoIpi nfeDetalheImpostoIpi;
     private NfeDetalheImpostoCofins nfeDetalheImpostoCofins;
     private NfeDetalheImpostoPis nfeDetalheImpostoPis;
+    private NfeDuplicata duplicata;
+    private NfeDuplicata duplicataSelecionada;
 
     private Produto produto;
     private Fornecedor fornecedor;
+    private VendaCondicoesPagamento condicao;
 
 
     private BigDecimal valorTotalFrete;
@@ -76,6 +77,12 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         }
         return dataModel;
+    }
+
+    @Override
+    public void doCreate() {
+        setObjeto(entradaService.iniciar(empresa));
+        setTelaGrid(false);
     }
 
 
@@ -265,11 +272,17 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     }
 
-    @Override
-    public void doCreate() {
-        setObjeto(entradaService.iniciar());
-        getObjeto().setEmpresa(empresa);
+
+
+
+    private Map getCodigoEnquadramentoIPI(){
+        Map<String,String> map = new HashMap<>();
+
+        return map;
     }
+
+
+
 
     @Override
     protected Class<NfeCabecalho> getClazz() {
@@ -279,5 +292,181 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     @Override
     protected String getFuncaoBase() {
         return "NFE_CABECALHO";
+    }
+
+    public VendaCondicoesPagamento getCondicao() {
+        return condicao;
+    }
+
+    public void setCondicao(VendaCondicoesPagamento condicao) {
+        this.condicao = condicao;
+    }
+
+    public NfeDuplicata getDuplicata() {
+        return duplicata;
+    }
+
+    public void setDuplicata(NfeDuplicata duplicata) {
+        this.duplicata = duplicata;
+    }
+
+    public NfeDuplicata getDuplicataSelecionada() {
+        return duplicataSelecionada;
+    }
+
+    public void setDuplicataSelecionada(NfeDuplicata duplicataSelecionada) {
+        this.duplicataSelecionada = duplicataSelecionada;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+    public BigDecimal getValorTotalFrete() {
+        return valorTotalFrete;
+    }
+
+    public void setValorTotalFrete(BigDecimal valorTotalFrete) {
+        this.valorTotalFrete = valorTotalFrete;
+    }
+
+    public BigDecimal getValorTotalDesconto() {
+        return valorTotalDesconto;
+    }
+
+    public void setValorTotalDesconto(BigDecimal valorTotalDesconto) {
+        this.valorTotalDesconto = valorTotalDesconto;
+    }
+
+    public BigDecimal getValorTotalProdutos() {
+        return valorTotalProdutos;
+    }
+
+    public void setValorTotalProdutos(BigDecimal valorTotalProdutos) {
+        this.valorTotalProdutos = valorTotalProdutos;
+    }
+
+    public BigDecimal getValorTotalBaseCalcIcms() {
+        return valorTotalBaseCalcIcms;
+    }
+
+    public void setValorTotalBaseCalcIcms(BigDecimal valorTotalBaseCalcIcms) {
+        this.valorTotalBaseCalcIcms = valorTotalBaseCalcIcms;
+    }
+
+    public BigDecimal getValorTotalIcms() {
+        return valorTotalIcms;
+    }
+
+    public void setValorTotalIcms(BigDecimal valorTotalIcms) {
+        this.valorTotalIcms = valorTotalIcms;
+    }
+
+    public BigDecimal getValorTotalBaseCalcIcmsST() {
+        return valorTotalBaseCalcIcmsST;
+    }
+
+    public void setValorTotalBaseCalcIcmsST(BigDecimal valorTotalBaseCalcIcmsST) {
+        this.valorTotalBaseCalcIcmsST = valorTotalBaseCalcIcmsST;
+    }
+
+    public BigDecimal getValorTotalIcmsST() {
+        return valorTotalIcmsST;
+    }
+
+    public void setValorTotalIcmsST(BigDecimal valorTotalIcmsST) {
+        this.valorTotalIcmsST = valorTotalIcmsST;
+    }
+
+    public BigDecimal getValorTotalBaseCalcPis() {
+        return valorTotalBaseCalcPis;
+    }
+
+    public void setValorTotalBaseCalcPis(BigDecimal valorTotalBaseCalcPis) {
+        this.valorTotalBaseCalcPis = valorTotalBaseCalcPis;
+    }
+
+    public BigDecimal getValorTotalPis() {
+        return valorTotalPis;
+    }
+
+    public void setValorTotalPis(BigDecimal valorTotalPis) {
+        this.valorTotalPis = valorTotalPis;
+    }
+
+    public BigDecimal getValorTotalBaseCalcCofins() {
+        return valorTotalBaseCalcCofins;
+    }
+
+    public void setValorTotalBaseCalcCofins(BigDecimal valorTotalBaseCalcCofins) {
+        this.valorTotalBaseCalcCofins = valorTotalBaseCalcCofins;
+    }
+
+    public BigDecimal getValorTotalCofins() {
+        return valorTotalCofins;
+    }
+
+    public void setValorTotalCofins(BigDecimal valorTotalCofins) {
+        this.valorTotalCofins = valorTotalCofins;
+    }
+
+    public BigDecimal getValorTotalIpi() {
+        return valorTotalIpi;
+    }
+
+    public void setValorTotalIpi(BigDecimal valorTotalIpi) {
+        this.valorTotalIpi = valorTotalIpi;
+    }
+
+    public BigDecimal getValorTotalNF() {
+        return valorTotalNF;
+    }
+
+    public void setValorTotalNF(BigDecimal valorTotalNF) {
+        this.valorTotalNF = valorTotalNF;
+    }
+
+    public NfeDetalheImpostoIcms getNfeDetalheImpostoIcms() {
+        return nfeDetalheImpostoIcms;
+    }
+
+    public void setNfeDetalheImpostoIcms(NfeDetalheImpostoIcms nfeDetalheImpostoIcms) {
+        this.nfeDetalheImpostoIcms = nfeDetalheImpostoIcms;
+    }
+
+    public NfeDetalheImpostoIpi getNfeDetalheImpostoIpi() {
+        return nfeDetalheImpostoIpi;
+    }
+
+    public void setNfeDetalheImpostoIpi(NfeDetalheImpostoIpi nfeDetalheImpostoIpi) {
+        this.nfeDetalheImpostoIpi = nfeDetalheImpostoIpi;
+    }
+
+    public NfeDetalheImpostoCofins getNfeDetalheImpostoCofins() {
+        return nfeDetalheImpostoCofins;
+    }
+
+    public void setNfeDetalheImpostoCofins(NfeDetalheImpostoCofins nfeDetalheImpostoCofins) {
+        this.nfeDetalheImpostoCofins = nfeDetalheImpostoCofins;
+    }
+
+    public NfeDetalheImpostoPis getNfeDetalheImpostoPis() {
+        return nfeDetalheImpostoPis;
+    }
+
+    public void setNfeDetalheImpostoPis(NfeDetalheImpostoPis nfeDetalheImpostoPis) {
+        this.nfeDetalheImpostoPis = nfeDetalheImpostoPis;
+    }
+
+    public NfeDetalhe getNfeDetalhe() {
+        return nfeDetalhe;
+    }
+
+    public void setNfeDetalhe(NfeDetalhe nfeDetalhe) {
+        this.nfeDetalhe = nfeDetalhe;
     }
 }

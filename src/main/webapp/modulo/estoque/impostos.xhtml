@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components">
+
+    <p:tabView id="tabViewDetalheImposto" style="border: none"
+               scrollable="true">
+        <p:tab title="ICMS">
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                 idComponente="nfeDetalheImpostoIcmsOrigemMercadoria"
+                                 label="Origem Mercadoria"
+                                 nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.origemMercadoria}"
+                                 itens="#{entradaNotaFiscalControll.origemMercadoriaNfe}"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="nfeDetalheImpostoIcmsCstIcms" label="Cst Icms"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.cstIcms}"
+                                tamanhoMaximo="2"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="nfeDetalheImpostoIcmsCsosn" label="Csosn"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.csosn}"
+                                tamanhoMaximo="3"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsModalidadeBcIcms"
+                                  label="Modalidade Bc Icms"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.modalidadeBcIcms}"/>
+            </div>
+
+
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsTaxaReducaoBcIcms"
+                                  label="Taxa Reducao Bc Icms"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.taxaReducaoBcIcms}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="nfeDetalheImpostoIcmsAliquotaIcms"
+                                  label="Aliquota Icms"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.aliquotaIcms}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsBaseCalculoIcms"
+                                  label="Base Calculo Icms"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.baseCalculoIcms}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="nfeDetalheImpostoIcmsValorIcms" label="Valor Icms"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorIcms}"/>
+            </div>
+
+
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorIcmsOperacao"
+                                  label="Valor Operacao"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorIcmsOperacao}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsPercentualDiferimento"
+                                  label="Percentual Diferimento"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.percentualDiferimento}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="nfeDetalheImpostoIcmsValorIcmsDiferido"
+                                  label="Valor Diferido"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorIcmsDiferido}"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsMotivoDesoneracaoIcms"
+                                  label="Motivo Desoneracao"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.motivoDesoneracaoIcms}"/>
+            </div>
+
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorIcmsDesonerado"
+                                  label="Valor Desonerado"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorIcmsDesonerado}"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsModalidadeBcIcmsSt"
+                                  label="Modalidade Bc St"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.modalidadeBcIcmsSt}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsPercentualMvaIcmsSt"
+                                  label="Percentual Mva St"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.percentualMvaIcmsSt}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsPercentualReducaoBcIcmsSt"
+                                  label="Percentual Reducao Bc St"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.percentualReducaoBcIcmsSt}"/>
+            </div>
+
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorBaseCalculoIcmsSt"
+                                  label="Valor Base Calculo Icms St"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorBaseCalculoIcmsSt}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsAliquotaIcmsSt"
+                                  label="Aliquota Icms St"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.aliquotaIcmsSt}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorIcmsSt"
+                                  label="Valor Icms St"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorIcmsSt}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorBcIcmsStRetido"
+                                  label="Valor Bc Icms St Retido"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorBcIcmsStRetido}"/>
+            </div>
+
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorIcmsStRetido"
+                                  label="Valor Icms St Retido"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorIcmsStRetido}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorBcIcmsStDestino"
+                                  label="Valor Bc Icms St Destino"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorBcIcmsStDestino}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="nfeDetalheImpostoIcmsAliquotaCreditoIcmsSn"
+                                  label="Aliquota Credito Icms Sn"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.aliquotaCreditoIcmsSn}"/>
+            </div>
+
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorIcmsStDestino"
+                                  label="Valor Icms St Destino"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorIcmsStDestino}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorCreditoIcmsSn"
+                                  label="Valor Credito Icms Sn"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.valorCreditoIcmsSn}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="nfeDetalheImpostoIcmsPercentualBcOperacaoPropria"
+                                  label="Percentual Bc Operacao Propria"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.percentualBcOperacaoPropria}"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="nfeDetalheImpostoIcmsUfSt" label="Uf St"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.ufSt}"
+                                tamanhoMaximo="2"/>
+            </div>
+
+
+        </p:tab>
+
+        <p:tab title="IPI">
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="nfeDetalheImpostoIpiCst" label="CST"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.cstIpi}"
+                                somenteLeitura="true"
+                                tamanhoMaximo="2"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIpiAliquota"
+                                  label="Aqliquota"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.aliquotaIpi}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIpiBaseCaluclo"
+                                  label="Base Calculo"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.valorBaseCalculoIpi}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIpiValor"
+                                  label="Aqliquota"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.valorIpi}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="nfeDetalheImpostoIpiQtdUnidade" label="Qtd UN"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.quantidadeUnidadeTributavel}"
+                                  somenteLeitura="true"/>
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="nfeDetalheImpostoIpiCnpjProduto" label="CNPJ Produto"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.cnpjProdutor}"
+                                somenteLeitura="true"
+                                tamanhoMaximo="14"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-4"
+                                idComponente="nfeDetalheImpostoIpiEnquadramento" label="Enquadramento"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.enquadramentoIpi}"
+                                somenteLeitura="true" tamanhoMaximo="5"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-4"
+                                idComponente="nfeDetalheImpostoIpiEnquadramentoLegal" label="Enquadramento Legal"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.enquadramentoLegalIpi}"
+                                somenteLeitura="true" tamanhoMaximo="3"/>
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-2"
+                                idComponente="nfeDetalheImpostoIpiCodSelo" label="Código Selo"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.codigoSeloIpi}"
+                                somenteLeitura="true" tamanhoMaximo="60"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-12 col-md-2"
+                                  idComponente="nfeDetalheImpostoIpiCodSelo" label="Qtd Selo"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.quantidadeSeloIpi}"
+                                  somenteLeitura="true"/>
+            </div>
+        </p:tab>
+
+        <p:tab title="COFINS">
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-1"
+                                idComponente="nfeDetalheImpostoCofinsCst" label="CST"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoCofins.cstCofins}"
+                                somenteLeitura="true" tamanhoMaximo="2"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
+                                  idComponente="nfeDetalheImpostoCofinsQtdVendida" label="Qtd Vendida"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoCofins.quantidadeVendida}"
+                                  somenteLeitura="true"/>
+            </div>
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-2"
+                                  idComponente="nfeDetalheImpostoCofinsBaseCalculo" label="Base Calculo"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoCofins.baseCalculoCofins}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-2"
+                                  idComponente="nfeDetalheImpostoCofinsAliqPerc" label="Aliquota (%)"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoCofins.aliquotaCofinsPercentual}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-2"
+                                  idComponente="nfeDetalheImpostoCofinsAliqReal" label="Aliquota (R$)"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoCofins.aliquotaCofinsReais}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
+                                  idComponente="nfeDetalheImpostoCofinsValor" label="Valor"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoCofins.valorCofins}"
+                                  somenteLeitura="true"/>
+            </div>
+
+        </p:tab>
+
+        <p:tab title="PIS">
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-1"
+                                idComponente="nfeDetalheImpostoPisCst" label="CST"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoPis.cstPis}"
+                                somenteLeitura="true" tamanhoMaximo="2"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
+                                  idComponente="nfeDetalheImpostoPisQtdVendida" label="Qtd Vendida"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoPis.quantidadeVendida}"
+                                  somenteLeitura="true"/>
+            </div>
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-2"
+                                  idComponente="nfeDetalheImpostoPisBaseCalculo" label="Base Calculo"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoPis.valorBaseCalculoPis}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-2"
+                                  idComponente="nfeDetalheImpostoPisAliqPerc" label="Aliquota (%)"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoPis.aliquotaPisPercentual}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-2"
+                                  idComponente="nfeDetalheImpostoPisAliqReal" label="Aliquota (R$)"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoPis.aliquotaPisReais}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
+                                  idComponente="nfeDetalheImpostoPisValor" label="Valor"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoPis.valorPis}"
+                                  somenteLeitura="true"/>
+            </div>
+        </p:tab>
+
+    </p:tabView>
+
+</ui:composition>

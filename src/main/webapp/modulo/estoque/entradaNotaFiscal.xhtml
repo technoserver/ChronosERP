@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Entrada de NFe
+    </ui:define>
+
+    <ui:define name="tela">
+        #{entradaNotaFiscalControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Entrada de NFe
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{entradaNotaFiscalControll}"
+                       idDataTable="dataTableGrupo"
+                       nomeFuncao="Entrada de NFe"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Fornecedor">
+                <h:outputLabel value="#{row.fornecedor.pessoa.nome}"/>
+            </p:column>
+            <p:column headerText="Serie" width="60">
+                <h:outputLabel value="#{row.serie}"/>
+            </p:column>
+            <p:column headerText="Numero" width="75">
+                <h:outputLabel value="#{row.numero}"/>
+            </p:column>
+            <p:column headerText="Data Emissao" width="140">
+                <h:outputLabel value="#{row.dataHoraEmissao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Valor Total" width="100" style="text-align: right">
+                <h:outputLabel value="#{row.valorTotal}">
+                    <f:convertNumber pattern="#,###,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{entradaNotaFiscalControll}"
+                                   nomeFuncao="Entrada de NFe"
+                                   id="telaDetalhe"
+        >
+
+            <ui:include src="formEntradaNotaFiscal.xhtml"/>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogNfeDetalhe"
+                      header="Inclusão/Alteração de Produto/Serviço"
+                      widgetVar="dialogNfeDetalhe" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+
+                <p:outputPanel id="panelNfeDetalhe">
+
+
+                </p:outputPanel>
+
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             action="#{entradaNotaFiscalControll.salvaProduto}"
+                                             class="btn btn-danger center-block"
+                            >
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogNfeDetalhe').hide();}"
+                                        process="@form"
+                                        update=":formOutrasTelas:panelNfeDetalhe,:formCentro:growl"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogNfeDetalhe').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas1">
+        <h:form id="formOutrasTelas1">
+            <p:dialog id="dialogDuplicata" header="Cadastro de Duplicatas"
+                      widgetVar="dialogDuplicata" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="900">
+                <p:outputPanel id="panelDuplicatas">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <p:outputLabel value="Codição pagamento" for="condicaoPagamento"/>
+                            <br/>
+                            <p:autoComplete id="condicaoPagamento"
+                                            value="#{entradaNotaFiscalControll.condicao}"
+                                            completeMethod="#{entradaNotaFiscalControll.getListaVendaCondicoesPagamento}"
+                                            var="condicao" itemLabel="#{condicao.nome}"
+                                            itemValue="#{condicao}"
+                                            converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="100"
+                                            required="true" style="width: 100%"
+                                            emptyMessage="Nenhum registro encontrado"/>
+                        </div>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="valorParcela" label="Valor Venda"
+                                          nomeAtributo="#{entradaNotaFiscalControll.duplicata.valor}"
+                        />
+                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                       idComponente="dataVencimento"
+                                       label="Data Emissao"
+                                       nomeAtributo="#{entradaNotaFiscalControll.duplicata.dataVencimento}"
+                                       formato="dd/mm/yyyy"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             action="#{entradaNotaFiscalControll.salvarDuplicata()}"
+                                             styleClass="btn btn-danger center-block"
+                            >
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogDuplicata').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,formCentro:mensagem,:formCentro:mensagem"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogDuplicata').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formUploadArquivo" enctype="multipart/form-data">
+            <p:dialog id="dialogUploadArquivo" header="Selecionar Arquivo"
+                      widgetVar="dialogUploadArquivo" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelUploadArquivo">
+                    <div class="row">
+                        <p:fileUpload
+                                fileUploadListener="#{entradaNotaFiscalControll.importaXML}"
+                                mode="advanced" fileLimit="1" allowTypes="/(\.|\/)(xml)$/"
+                                update=":formCentro:growl,formCentro:mensagem,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                oncomplete="PF('dialogUploadArquivo').hide()"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Cancelar"
+                                     oncomplete="PF('dialogUploadArquivo').hide();" process="@this"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+</ui:composition>

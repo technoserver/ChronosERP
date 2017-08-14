@@ -182,6 +182,12 @@ public class Produto implements Serializable {
         this.markup = markup;
     }
 
+    public Produto(Integer id, String nome,  BigDecimal valorVenda) {
+        this.id = id;
+        this.nome = nome;
+        this.valorVenda = valorVenda;
+    }
+
     public Integer getId() {
         return id;
     }

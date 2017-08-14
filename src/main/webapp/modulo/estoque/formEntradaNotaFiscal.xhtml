@@ -1,0 +1,296 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:erp="http://java.sun.com/jsf/composite/components">
+
+<div class="row">
+    <div class="col-lg-12">
+
+        <h:commandLink title="Importar NF-e" class="btn btn-default"
+                       type="button"
+                       rendered="#{empty nfeDevolucaoControll.nfe.id}">
+            <i class="glyphicon glyphicon-import"/>
+            <p:ajax  update=":formUploadArquivo:dialogUploadArquivo" oncomplete="PF('dialogUploadArquivo').show()" />
+        </h:commandLink>
+    </div>
+</div>
+    <p:tabView id="tabNfe">
+        <p:tab title="Dados Principais">
+            <p:outputPanel
+                    rendered="#{!entradaNotaFiscalControll.telaGrid}">
+
+
+                <p:outputPanel
+                        rendered="#{not empty entradaNotaFiscalControll.objeto}">
+
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <p:outputLabel value="Fornecedor" for="compraPedidoFornecedor" />
+                            <br />
+                            <p:autoComplete id="compraPedidoFornecedor"
+                                            value="#{entradaNotaFiscalControll.objeto.fornecedor}"
+                                            completeMethod="#{entradaNotaFiscalControll.getListaFornecedor}"
+                                            var="fornecedor" itemLabel="#{fornecedor.pessoa.nome}"
+                                            itemValue="#{fornecedor}"
+                                            converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="100"
+                                            required="true" style="width: 100%"
+                                            emptyMessage="Nenhum registro encontrado" />
+                        </div>
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="nfeCabecalhoDataHoraEmissao"
+                                       label="Data Emissao"
+                                       nomeAtributo="#{entradaNotaFiscalControll.objeto.dataHoraEmissao}"
+                                       formato="dd/mm/yyyy"
+                                       requerido="true"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="nfeCabecalhoDataHoraEntradaSaida"
+                                       label="Data Entrada"
+                                       nomeAtributo="#{entradaNotaFiscalControll.objeto.dataHoraEntradaSaida}"
+                                       formato="dd/mm/yyyy" />
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        idComponente="nfeCabecalhoChaveAcesso" label="Chave Acesso"
+                                        nomeAtributo="#{entradaNotaFiscalControll.objeto.chaveAcesso}"
+                                        tamanhoMaximo="44"  />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="nfeCabecalhoSerie" label="Serie"
+                                        nomeAtributo="#{entradaNotaFiscalControll.objeto.serie}"
+                                        tamanhoMaximo="3"
+                                        requerido=""/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="nfeCabecalhoNumero" label="Numero"
+                                        nomeAtributo="#{entradaNotaFiscalControll.objeto.numero}"
+                                        tamanhoMaximo="9"
+                                        requerido="true"/>
+                    </div>
+
+
+
+
+
+                    <p:outputPanel id="outputPanelTotais">
+                        <erp:separador label="Totais" />
+                        <div class="row">
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoBaseCalculoIcms"
+                                              label="Base Calc. Icms"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.baseCalculoIcms}" />
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorIcms" label="Valor Icms"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorIcms}" />
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoBaseCalculoIcmsSt"
+                                              label="Base Calc. Icms St"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.baseCalculoIcmsSt}" />
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorIcmsSt" label="Valor Icms St"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorIcmsSt}" />
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorPis" label="Valor Pis"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorPis}" />
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorCofins" label="Valor Cofins"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorCofins}" />
+
+                        </div>
+                        <div class="row">
+
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorIpi" label="Valor Ipi"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorIpi}" />
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorFrete" label="Valor Frete"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorFrete}" />
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorSeguro" label="Valor Seguro"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorSeguro}" />
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorDesconto"
+                                              label="Valor Desconto"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorDesconto}" />
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              idComponente="nfeCabecalhoValorDespesasAcessorias"
+                                              label="Valor Despesas Acessorias"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorDespesasAcessorias}" />
+
+                        </div>
+
+
+                        <div class="row">
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              idComponente="nfeCabecalhoValorTotalProdutos"
+                                              label="Valor Total Produtos"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorTotalProdutos}"
+                                              requerido="true"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              idComponente="nfeCabecalhoValorTotal" label="Valor Total"
+                                              nomeAtributo="#{entradaNotaFiscalControll.objeto.valorTotal}"
+                                              requerido="true"/>
+                        </div>
+                    </p:outputPanel>
+
+                    <erp:separador label="Informações Adicionais" />
+                    <div class="row">
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                            idComponente="nfeCabecalhoInformacoesAddFisco"
+                                            label="Informacoes Add Fisco"
+                                            nomeAtributo="#{entradaNotaFiscalControll.objeto.informacoesAddFisco}" />
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                            idComponente="nfeCabecalhoInformacoesAddContribuinte"
+                                            label="Informacoes Add Contribuinte"
+                                            nomeAtributo="#{entradaNotaFiscalControll.objeto.informacoesAddContribuinte}" />
+                    </div>
+
+
+                </p:outputPanel>
+
+            </p:outputPanel>
+        </p:tab>
+
+
+
+        <p:tab title="Produtos/Serviços">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h:commandLink title="Novo" class="btn btn-default margem-bottom-10"
+                                   action="#{entradaNotaFiscalControll.incluiProduto()}"
+                                   type="button">
+                        <i class="glyphicon glyphicon-plus"/>
+                        <p:ajax update=":formCentro:growl,:formOutrasTelas:panelNfeDetalhe,:formOutrasTelas:dialogNfeDetalhe"
+                                oncomplete="PF('dialogNfeDetalhe').show()"
+                                process="@this"/>
+                    </h:commandLink>
+                </div>
+
+            </div>
+            <p:dataTable id="dataTableNfeDetalhe" var="obj"
+                         value="#{entradaNotaFiscalControll.objeto.listaNfeDetalhe}"
+                         paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+                         paginatorPosition="bottom"  reflow="true" resizableColumns="true"
+                         emptyMessage="Nenhuma produto cadastrado"
+            >
+
+
+
+                <p:column headerText="CodProd" width="60">
+                    <h:outputLabel value="#{obj.produto == null ? 0 : obj.produto.id}" />
+                </p:column>
+                <p:column headerText="Produto" width="200">
+                    <h:outputLabel value="#{obj.nomeProduto}" />
+                </p:column>
+                <p:column headerText="Und" width="65">
+                    <h:outputLabel value="#{obj.unidadeComercial}" />
+                </p:column>
+                <p:column headerText="Qtde" width="75"  style="text-align: right">
+                    <h:outputLabel value="#{obj.quantidadeComercial}">
+                        <f:convertNumber pattern="#,###,##0.000" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Vlr Unit" width="80"  style="text-align: right">
+                    <h:outputLabel value="#{obj.valorUnitarioComercial}">
+                        <f:convertNumber pattern="#,###,##0.00" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Vlr Total" width="80"  style="text-align: right">
+                    <h:outputLabel value="#{obj.valorTotal}">
+                        <f:convertNumber pattern="#,###,##0.00" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Ações" width="200" rendered="#{empty entradaNotaFiscalControll.objeto.id}">
+                    <p:commandLink process="dataTableNfeDetalhe" title="Alterar"   style="margin-right: 4px"
+                                   oncomplete="PF('dialogNfeDetalhe').show()" styleClass="btn btn-default"
+                                   action="#{entradaNotaFiscalControll.alteraProduto}"
+                                   update=":formOutrasTelas:panelNfeDetalhe" >
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink process="dataTableNfeDetalhe" title="Excluir" styleClass="btn btn-default"
+                                   action="#{entradaNotaFiscalControll.excluirProduto}"
+                                   update="dataTableNfeDetalhe,:formCentro:tabNfe:outputPanelTotais">
+                        <i class="fa fa-close"/>
+                        <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                                   icon="ui-icon-alert" />
+                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink process="dataTableNfeDetalhe" title="Vincular Produto"
+                                   oncomplete="PF('dialogVincularProduto').show()" styleClass="btn btn-default"
+                                   action="#{entradaNotaFiscalControll.exibirVinculoProduto()}"
+                                   update=":formOutrasTelas5:panelVincularProduto"
+                                   disabled="#{not empty obj.produto.id}">
+                        <i class="glyphicon glyphicon-check"></i>
+                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink process="dataTableNfeDetalhe" title="Cadastrar Produto"
+                                   oncomplete="PF('dialogCadastrarProduto').show()" styleClass="btn btn-default"
+                                   action="#{entradaNotaFiscalControll.cadastrarProduto()}"
+                                   update=":formOutrasTelas3:panelCadastrarProduto"
+                                   disabled="#{not empty obj.produto.id}">
+                        <i class="fa fa-file-powerpoint-o"></i>
+                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+
+        </p:tab>
+
+        <p:tab title="Cobrança">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h:commandLink title="Novo" class="btn btn-default margem-bottom-10"
+                                   action="#{entradaNotaFiscalControll.incluirDuplicata()}"
+                                   type="button">
+                        <i class="glyphicon glyphicon-plus"/>
+                        <p:ajax update=":formCentro:growl,:formOutrasTelas1:panelDuplicatas,:formOutrasTelas1:panelDuplicatas"
+                                oncomplete="PF('dialogDuplicata').show()"
+                                process="@this"/>
+                    </h:commandLink>
+                </div>
+            </div>
+            <p:dataTable id="dataTableDuplicata" var="obj"
+                         value="#{entradaNotaFiscalControll.objeto.listaDuplicata}"
+                         paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
+                         paginatorPosition="bottom"  reflow="true" resizableColumns="true"
+                         emptyMessage="Nenhuma produto cadastrado">
+
+                <p:column headerText="Produto">
+                    <h:outputLabel value="#{obj.numero}" />
+                </p:column>
+                <p:column headerText="Data Vencimento">
+                    <h:outputLabel value="#{obj.dataVencimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor"  style="text-align: right">
+                    <h:outputLabel value="#{obj.valor}">
+                        <f:convertNumber pattern="#,###,##0.00" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Ações" rendered="#{empty entradaNotaFiscalControll.objeto.id}">
+                    <p:commandLink process="dataTableDuplicata" title="Excluir" styleClass="btn btn-default"
+                                   action="#{entradaNotaFiscalControll.excluirProduto}"
+                                   update="dataTableDuplicata,:formCentro:tabNfe:outputPanelTotais">
+                        <i class="fa fa-close"/>
+                        <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                                   icon="ui-icon-alert" />
+                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+
+        </p:tab>
+
+    </p:tabView>
+
+
+
+</ui:composition>
