@@ -388,6 +388,38 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return jpql;
     }
 
+    private String addCondicao(List<Filtro> filters, String andOr) throws Exception {
+        String jpql = "";
+        if (!filters.isEmpty()) {
+            jpql = " AND (";
+            boolean primeiraCondicao = true;
+            for (Filtro f : filters) {
+                String atributo = f.getAtributo();
+                Object valor = f.getValor();
+                if (valor != null) {
+                    if (valor.getClass() == String.class) {
+                        if (primeiraCondicao) {
+                            jpql += " LOWER(o." + atributo + ") like :" + atributo.replaceAll("\\.", "");
+                            primeiraCondicao = false;
+                        } else {
+                            jpql += " " + andOr + " LOWER(o." + atributo + ") like :" + atributo.replaceAll("\\.", "");
+                        }
+                    } else {
+                        if (primeiraCondicao) {
+                            jpql += " o." + atributo + " = :" + atributo.replaceAll("\\.", "");
+                            primeiraCondicao = false;
+                        } else {
+                            jpql += " " + andOr + " o." + atributo + " = :" + atributo.replaceAll("\\.", "");
+                        }
+                    }
+                }
+            }
+            jpql += ")";
+        }
+
+        return jpql;
+    }
+
     private Query queryPrepared(String jpql, List<Filtro> filters) {
         Query query = em.createQuery(jpql);
 

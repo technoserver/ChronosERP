@@ -11,9 +11,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Embeddable
-public class ViewFinFluxoCaixa implements Serializable {
+public class ViewFinMovimentoCaixaBanco implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Column(name = "ID")
+    private String id;
     @Column(name = "ID_CONTA_CAIXA")
     private Integer idContaCaixa;
     @Column(name = "NOME_CONTA_CAIXA")
@@ -24,18 +26,26 @@ public class ViewFinFluxoCaixa implements Serializable {
     @Column(name = "DATA_LANCAMENTO")
     private Date dataLancamento;
     @Temporal(TemporalType.DATE)
-    @Column(name = "DATA_VENCIMENTO")
-    private Date dataVencimento;
+    @Column(name = "DATA_PAGO_RECEBIDO")
+    private Date dataPagoRecebido;
+    @Column(name = "HISTORICO")
+    private String historico;
     @Column(name = "VALOR")
     private BigDecimal valor;
-    @Column(name = "CODIGO_SITUACAO")
-    private String codigoSituacao;
-    @Column(name = "DESCRICAO_SITUACAO")
-    private String descricaoSituacao;
+    @Column(name = "DESCRICAO_DOCUMENTO_ORIGEM")
+    private String descricaoDocumentoOrigem;
     @Column(name = "OPERACAO")
     private String operacao;
 
-    public ViewFinFluxoCaixa() {
+    public ViewFinMovimentoCaixaBanco() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public Integer getIdContaCaixa() {
@@ -70,12 +80,20 @@ public class ViewFinFluxoCaixa implements Serializable {
         this.dataLancamento = dataLancamento;
     }
 
-    public Date getDataVencimento() {
-        return dataVencimento;
+    public Date getDataPagoRecebido() {
+        return dataPagoRecebido;
     }
 
-    public void setDataVencimento(Date dataVencimento) {
-        this.dataVencimento = dataVencimento;
+    public void setDataPagoRecebido(Date dataPagoRecebido) {
+        this.dataPagoRecebido = dataPagoRecebido;
+    }
+
+    public String getHistorico() {
+        return historico;
+    }
+
+    public void setHistorico(String historico) {
+        this.historico = historico;
     }
 
     public BigDecimal getValor() {
@@ -86,20 +104,12 @@ public class ViewFinFluxoCaixa implements Serializable {
         this.valor = valor;
     }
 
-    public String getCodigoSituacao() {
-        return codigoSituacao;
+    public String getDescricaoDocumentoOrigem() {
+        return descricaoDocumentoOrigem;
     }
 
-    public void setCodigoSituacao(String codigoSituacao) {
-        this.codigoSituacao = codigoSituacao;
-    }
-
-    public String getDescricaoSituacao() {
-        return descricaoSituacao;
-    }
-
-    public void setDescricaoSituacao(String descricaoSituacao) {
-        this.descricaoSituacao = descricaoSituacao;
+    public void setDescricaoDocumentoOrigem(String descricaoDocumentoOrigem) {
+        this.descricaoDocumentoOrigem = descricaoDocumentoOrigem;
     }
 
     public String getOperacao() {
