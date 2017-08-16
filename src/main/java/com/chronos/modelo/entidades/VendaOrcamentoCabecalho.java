@@ -82,6 +82,7 @@ public class VendaOrcamentoCabecalho implements Serializable {
     @NotNull
     private Empresa empresa;
 
+
     public VendaOrcamentoCabecalho() {
     }
 

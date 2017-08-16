@@ -3,6 +3,7 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class VendaCondicoesPagamento implements Serializable {
     @ManyToOne(optional = false)
     private Empresa empresa;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "vendaCondicoesPagamento", cascade = CascadeType.ALL, orphanRemoval = true)    
-    private Set<VendaCondicoesParcelas> parcelas;
+    private List<VendaCondicoesParcelas> parcelas;
 
 
     public VendaCondicoesPagamento() {
@@ -210,11 +211,11 @@ public class VendaCondicoesPagamento implements Serializable {
         this.empresa = empresa;
     }
 
-    public Set<VendaCondicoesParcelas> getParcelas() {
+    public List<VendaCondicoesParcelas> getParcelas() {
         return parcelas;
     }
 
-    public void setParcelas(Set<VendaCondicoesParcelas> parcelas) {
+    public void setParcelas(List<VendaCondicoesParcelas> parcelas) {
         this.parcelas = parcelas;
     }
 

@@ -29,9 +29,6 @@ public class SetorControll extends AbstractControll<Setor> implements Serializab
         getObjeto().setEmpresa(empresa);
     }
     
-    
-    
-    
 
     @Override
     protected Class<Setor> getClazz() {
