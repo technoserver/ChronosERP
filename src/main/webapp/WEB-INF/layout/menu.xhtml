@@ -185,6 +185,85 @@
                     </ul>
                 </li>
 
+                <li class="${fn:contains(view.viewId,'financeiro')?'active':''}">
+                    <a href="#">
+                        <i class="fa fa-th-large"></i>
+                        <span class="nav-label">Financeiro</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse ">
+                        <li class="${fn:contains(view.viewId,'modulo/tributacao/')?'active':''}">
+                            <erp:subMenu caminho="/modulos/financeiro/diversos/finTipoPagamento.jsf"
+                                         label="Tipo Pagamento"
+                                         funcao="TipoPagamento"/>
+                            <erp:subMenu caminho="/modulos/financeiro/diversos/finTipoRecebimento.jsf"
+                                         label="Tipo Recebimento"
+                                         funcao="TipoRecebimento"/>
+                            <erp:subMenu caminho="/modulos/financeiro/diversos/finStatusParcela.jsf"
+                                         label="Status Parcela"
+                                         funcao="StatusParcela"/>
+                            <erp:subMenu caminho="/modulos/financeiro/diversos/planoCentroResultado.jsf"
+                                         label="Plano Centro Resultado"
+                                         funcao="PlanoCentroResultado"/>
+                            <erp:subMenu caminho="/modulos/financeiro/diversos/centroResultado.jsf"
+                                         label="Centro Resultado"
+                                         funcao="CentroResultado"/>
+                            <erp:subMenu caminho="/modulos/financeiro/diversos/planoNaturezaFinanceira.jsf"
+                                         label="Plano Natureza Financeira"
+                                         funcao="PlanoNaturezaFinanceira"/>
+                            <erp:subMenu caminho="/modulos/financeiro/diversos/naturezaFinanceira.jsf"
+                                         label="Natureza Financeira"
+                                         funcao="NaturezaFinanceira"/>
+                            <erp:subMenu caminho="/modulos/financeiro/diversos/finDocumentoOrigem.jsf"
+                                         label="Documento Origem"
+                                         funcao="DocumentoOrigem"/>
+                            <erp:subMenu caminho="/modulos/financeiro/diversos/finConfiguracaoBoleto.jsf"
+                                         label="ConfiguraçãoBoleto"
+                                         funcao="ConfiguraçãoBoleto"/>
+                            <erp:subMenu caminho="/modulos/financeiro/pagamento/finLancamentoPagar.jsf"
+                                         label="Lançamento a Pagar"
+                                         funcao="LançamentoPagar"/>
+                            <erp:subMenu caminho="/modulos/financeiro/pagamento/finParcelaPagamento.jsf"
+                                         label="Pagamento"
+                                         funcao="Pagamento"/>
+                            <erp:subMenu caminho="/modulos/financeiro/pagamento/finPagamentoFixo.jsf"
+                                         label="Pagamento Fixo/Recorrente"
+                                         funcao="PagamentoFixo/Recorrente"/>
+                            <erp:subMenu caminho="/modulos/financeiro/recebimento/finLancamentoReceber.jsf"
+                                         label="Lançamento a Receber"
+                                         funcao="LançamentoReceber"/>
+                            <erp:subMenu caminho="/modulos/financeiro/recebimento/finParcelaRecebimento.jsf"
+                                         label="Recebimento"
+                                         funcao="Recebimento"/>
+                            <erp:subMenu caminho="/modulos/financeiro/recebimento/finCobranca.jsf"
+                                         label="Cobrança"
+                                         funcao="Cobrança"/>
+
+                            <erp:subMenu caminho="/modulos/financeiro/finFluxoCaixa.jsf"
+                                         label="Fluxo Caixa"
+                                         funcao="FluxoCaixa"/>
+                            <erp:subMenu caminho="/modulos/financeiro/finMovimentoCaixaBanco.jsf"
+                                         label="Movimento Caixa Banco"
+                                         funcao="MovimentoCaixaBanco"/>
+                            <erp:subMenu caminho="/modulos/financeiro/finParcelaPagamento.jsf"
+                                         label="Emissão de Cheque"
+                                         funcao="Emissão de Cheque"/>
+                            <erp:subMenu caminho="/modulos/financeiro/finResumoTesouraria.jsf"
+                                         label="Resumo Tesouraria"
+                                         funcao="ResumoTesouraria"/>
+                            <erp:subMenu caminho="/modulos/financeiro/finChequeRecebido.jsf"
+                                         label="Custódia de Cheque"
+                                         funcao="CustódiaCheque"/>
+                            <erp:subMenu caminho="/modulos/financeiro/edid/finExtratoContaBanco.jsf"
+                                         label="Extrato Conta Banco"
+                                         funcao="ExtratoContaBanco"/>
+                            <erp:subMenu caminho="/modulos/financeiro/edi/finProcessaArquivoRetorno.jsf"
+                                         label="Processa Retorno"
+                                         funcao="ProcessaRetorno"/>
+                        </li>
+                    </ul>
+                </li>
+
 
                 <li class="${fn:contains(view.viewId,'estoque')?'active':''}">
                     <a href="#">
@@ -206,6 +285,33 @@
                             <erp:subMenu caminho="/modulo/estoque/entradaNotaFiscal"
                                          label="Entra NFe"
                                          funcao="entrada nfe"/>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="${fn:contains(view.viewId,'tributacao')?'active':''}">
+                    <a href="#">
+                        <i class="fa fa-th-large"></i>
+                        <span class="nav-label">Tributação</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse ">
+                        <li class="${fn:contains(view.viewId,'modulo/tributacao/')?'active':''}">
+                            <erp:subMenu caminho="/modulo/tributacao/tributOperacaoFiscal"
+                                         label="Operação Fiscal"
+                                         funcao="OperaçãoFiscal"/>
+                            <erp:subMenu caminho="/modulo/tributacao/tributGrupoTributario"
+                                         label="Grupo Tributário"
+                                         funcao="GrupoTributário"/>
+                            <erp:subMenu caminho="/modulo/tributacao/tributConfiguraOfGt"
+                                         label="Configura Tributação"
+                                         funcao="ConfiguraTributação"/>
+                            <erp:subMenu caminho="/modulo/tributacao/tributIcmsCustom"
+                                         label="ICMS Customizado"
+                                         funcao="ICMSCustomizado"/>
+                            <erp:subMenu caminho="/modulo/tributacao/tributIss"
+                                         label="ISS - Imposto Sobre Serviços"
+                                         funcao="tributIss"/>
                         </li>
                     </ul>
                 </li>
