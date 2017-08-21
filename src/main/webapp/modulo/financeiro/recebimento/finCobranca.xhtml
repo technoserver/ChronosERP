@@ -74,7 +74,10 @@
                                           controller="#{finCobrancaControll}"
                                           completeMethod="getListaCliente"
                                           nomeAtributo="#{finCobrancaControll.objeto.cliente}"
-                                          idComponente="finCobrancaCliente" />
+                                          idComponente="finCobrancaCliente"
+                                          requerido="true">
+                            <p:ajax process="@this" event="itemSelecionado"/>
+                        </erp:autoComplete>
                     </div>
                     <div class="row">
                         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -108,12 +111,12 @@
                     <div class="row">
                         <div class="col-lg-12 col-lg-12">
                             <h:commandLink title="Buscar parcelas vencidas"
-                                           class="btn btn-default margem-bottom-10"
+                                           class="btn btn-default"
                                            actionListener="#{finCobrancaControll.buscaParcelaVencida}">
                                 <i class="glyphicon glyphicon-search"/>
                                 <p:ajax
                                         process="@this"
-                                        update="dataTableFinParcelaReceber"/>
+                                        update="dataTableFinParcelaReceber,:formCentro:growl"/>
                             </h:commandLink>
                         </div>
                     </div>
@@ -121,6 +124,7 @@
                     <p:dataTable id="dataTableFinParcelaReceber" var="obj"
                                  value="#{finCobrancaControll.parcelasVencidas}"
                                  paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 paginatorPosition="bottom"
                                  resizableColumns="true" editable="true" editMode="row">
 
 
@@ -181,21 +185,33 @@
                 </p:tab>
 
                 <p:tab title="Parcelas Simulado/Acordo">
+                    <div class="row">
+                        <div class="col-lg-12 col-lg-12">
+                            <h:commandLink title="Calcular Juros/Multa"
+                                           class="btn btn-default "
+                                           actionListener="#{finCobrancaControll.calcularJurosMulta}">
+                                <i class="fa fa-calculator"/>
+                                <p:ajax
+                                        process="@this,dataTableFinCobrancaParcelaReceber"
+                                        update="dataTableFinCobrancaParcelaReceber,:formCentro:growl"/>
+                            </h:commandLink>
+                            &nbsp;
+                            <h:commandLink title="Simular Acordo"
+                                           class="btn btn-default"
+                                           actionListener="#{finCobrancaControll.simulaValores}">
+                                <i class="glyphicon glyphicon-pencil"/>
+                                <p:ajax
+                                        process="@this,dataTableFinCobrancaParcelaReceber"
+                                        update=":formCentro:telaDetalhe:outputPanelDetalhe,:formCentro:growl"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+                    <br/>
                     <p:dataTable id="dataTableFinCobrancaParcelaReceber" var="obj"
                                  value="#{finCobrancaControll.objeto.listaFinCobrancaParcelaReceber}"
                                  paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 paginatorPosition="bottom" reflow="true"
                                  resizableColumns="true" editable="true" editMode="row">
-
-                        <f:facet name="header">
-                            <p:commandButton process="dataTableFinCobrancaParcelaReceber"
-                                             title="Calcular Juros/Multa" icon="ui-icon-calculator"
-                                             actionListener="#{finCobrancaControll.calcularJurosMulta}"
-                                             update="dataTableFinCobrancaParcelaReceber" />
-                            <p:commandButton process="dataTableFinCobrancaParcelaReceber"
-                                             title="Simular Acordo" icon="ui-icon-pencil"
-                                             actionListener="#{finCobrancaControll.simulaValores}"
-                                             update=":formCentro:telaDetalhe:outputPanelDetalhe" />
-                        </f:facet>
 
 
                         <p:ajax event="rowEdit" listener="#{finCobrancaControll.alteraParcelaCobranca}"
@@ -255,7 +271,7 @@
                                 <f:convertNumber pattern="#,##0.00" />
                             </h:outputLabel>
                         </p:column>
-                        <p:column width="2%">
+                        <p:column >
                             <p:rowEditor />
                         </p:column>
                     </p:dataTable>

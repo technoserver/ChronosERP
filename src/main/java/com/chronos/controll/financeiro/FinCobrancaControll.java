@@ -56,13 +56,29 @@ public class FinCobrancaControll extends AbstractControll<FinCobranca> implement
     }
 
     @Override
+    public void salvar() {
+
+        if(getObjeto().getListaFinCobrancaParcelaReceber().isEmpty()){
+            Mensagem.addWarnMessage("Não foram definidas parcelas para cobrança");
+        }else{
+            super.salvar();
+        }
+    }
+
+    @Override
     public void voltar() {
         parcelasVencidas = new ArrayList<>();
         super.voltar();
     }
 
+
+
     public void buscaParcelaVencida() {
         try {
+            if(getObjeto().getCliente()==null){
+                Mensagem.addWarnMessage("Cliente não informado!!!");
+                return;
+            }
             List<Filtro> filtros = new ArrayList<>();
 
             filtros.add(new Filtro(Filtro.AND, "empresa", Filtro.IGUAL, empresa));
@@ -124,7 +140,7 @@ public class FinCobrancaControll extends AbstractControll<FinCobranca> implement
     public void calcularJurosMulta() {
         try {
             if (parcelasVencidas == null || parcelasVencidas.isEmpty()) {
-                Mensagem.addInfoMessage("Nenhuma parcela vencida!");
+                Mensagem.addWarnMessage("Nenhuma parcela vencida!");
 
             } else {
                 BigDecimal juros = BigDecimal.ZERO;
@@ -182,7 +198,10 @@ public class FinCobrancaControll extends AbstractControll<FinCobranca> implement
             BigDecimal juros = BigDecimal.ZERO;
             BigDecimal multa = BigDecimal.ZERO;
             BigDecimal total = BigDecimal.ZERO;
-
+            if(getObjeto().getListaFinCobrancaParcelaReceber()==null || getObjeto().getListaFinCobrancaParcelaReceber().isEmpty()){
+                Mensagem.addWarnMessage("Nenhuma parcela vencida!");
+                return;
+            }
             for (FinCobrancaParcelaReceber p : getObjeto().getListaFinCobrancaParcelaReceber()) {
                 p = (FinCobrancaParcelaReceber) Biblioteca.nullToEmpty(p, false);
 
