@@ -1,0 +1,263 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components">
+
+    <ui:define name="title">
+        Lançamentos a Pagar
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finLancamentoPagarControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Lançamentos Pagar
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{finLancamentoPagarControll}"
+                       idDataTable="dataTableFinLancamentoPagar"
+                       nomeFuncao="Lancamento Pagar"
+                       id="telaGrid"
+                       >
+
+            <p:column headerText="Doc Origem">
+                <h:outputLabel value="#{row.finDocumentoOrigem.siglaDocumento}"/>
+            </p:column>
+            <p:column headerText="Fornecedor">
+                <h:outputLabel value="#{row.fornecedor.pessoa.nome}"/>
+            </p:column>
+            <p:column headerText="Qtde Parcela">
+                <h:outputLabel value="#{row.quantidadeParcela}"/>
+            </p:column>
+            <p:column headerText="Valor A Pagar">
+                <h:outputLabel value="#{row.valorAPagar}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Data Lcto">
+                <h:outputLabel value="#{row.dataLancamento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="1º Vencimento">
+                <h:outputLabel value="#{row.primeiroVencimento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Mesclado">
+                <h:outputLabel value="#{row.mescladoPara}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finLancamentoPagarControll}"
+                                   nomeFuncao="Lancamento Pagar"
+                                   id="telaDetalhe">
+
+
+            <p:tabView id="dadosPrincipais" scrollable="true" activeIndex="#{finLancamentoPagarControll.activeTabIndex}">
+                <p:ajax event="tabChange"  listener="#{finLancamentoPagarControll.onTabChange}"/>
+                <p:tab title="Dados Principais">
+                    <div class="row">
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Fornecedor"
+                                          itemLabel="#{objeto.pessoa.nome}"
+                                          controller="#{finLancamentoPagarControll}"
+                                          completeMethod="getListaFornecedor"
+                                          nomeAtributo="#{finLancamentoPagarControll.objeto.fornecedor}"
+                                          idComponente="finLancamentoPagarFornecedor"/>
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Documento Origem"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{finLancamentoPagarControll}"
+                                          completeMethod="getListaFinDocumentoOrigem"
+                                          nomeAtributo="#{finLancamentoPagarControll.objeto.finDocumentoOrigem}"
+                                          idComponente="finLancamentoPagarFinDocumentoOrigem"/>
+
+
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="finLancamentoPagarNumeroDocumento"
+                                        label="Num. Doc."
+                                        nomeAtributo="#{finLancamentoPagarControll.objeto.numeroDocumento}"
+                                        tamanhoMaximo="50" requerido="true"/>
+
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="qtdParcelas" label="Qtde Parcela"
+                                          requerido="true" thousandSeparator=""
+                                          nomeAtributo="#{finLancamentoPagarControll.objeto.quantidadeParcela}"/>
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3" thousandSeparator=""
+                                          idComponente="finLancamentoPagarIntervaloEntreParcelas"
+                                          label="Intervalo Entre Parcelas" requerido="true"
+                                          nomeAtributo="#{finLancamentoPagarControll.objeto.intervaloEntreParcelas}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="finLancamentoPagarPagamentoCompartilhado"
+                                         label="Pag.Compatilhado."
+                                         nomeAtributo="#{finLancamentoPagarControll.objeto.pagamentoCompartilhado}"
+                                         itens="#{finLancamentoPagarControll.simNao}"/>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                       idComponente="DataLancamento" label="Data Lanc."
+                                       nomeAtributo="#{finLancamentoPagarControll.objeto.dataLancamento}"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                       idComponente="PrimeiroVencimento" label="Primeiro Venc."
+                                       requerido="true"
+                                       nomeAtributo="#{finLancamentoPagarControll.objeto.primeiroVencimento}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="finLancamentoPagarValorTotal" label="Valor Total"
+                                          requerido="true"
+                                          nomeAtributo="#{finLancamentoPagarControll.objeto.valorTotal}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="finLancamentoPagarValorAPagar"
+                                          label="Valor A Pagar"
+                                          nomeAtributo="#{finLancamentoPagarControll.objeto.valorAPagar}"/>
+                    </div>
+                    <erp:separador label="Dados para geração das parcelas"/>
+                    <div class="row">
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                                label="Conta Caixa"
+                                                itemLabel="#{objeto.nome}"
+                                                controller="#{finLancamentoPagarControll}"
+                                                completeMethod="getListaContaCaixa"
+                                                nomeAtributo="#{finLancamentoPagarControll.contaCaixa}"
+                                                idComponente="finLancamentoPagarContaCaixa"
+                                                requerido="#{empty finLancamentoPagarControll.objeto.id}"/>
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                                label="Natureza Financeira"
+                                                itemLabel="#{objeto.descricao}"
+                                                controller="#{finLancamentoPagarControll}"
+                                                completeMethod="getListaNaturezaFinanceira"
+                                                nomeAtributo="#{finLancamentoPagarControll.naturezaFinanceira}"
+                                                idComponente="finLancamentoPagarNaturezaFinanceira"
+                                                requerido="#{empty finLancamentoPagarControll.objeto.id}"/>
+
+
+                    </div>
+                </p:tab>
+                <p:tab title="Parcelas" disabled="#{empty finLancamentoPagarControll.objeto.id}">
+
+                    <p:dataTable id="dataTableFinParcelaPagar" var="obj" reflow="true"
+                                 value="#{finLancamentoPagarControll.objeto.listaFinParcelaPagar}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 resizableColumns="true" paginatorPosition="bottom"
+                                 rowKey="#{obj.id}">
+
+
+                        <p:column headerText="Numero Parcela">
+                            <h:outputLabel value="#{obj.numeroParcela}"/>
+                        </p:column>
+                        <p:column headerText="Data Emissao">
+                            <h:outputLabel value="#{obj.dataEmissao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Data Vencimento" sortBy="#{obj.dataVencimento}">
+                            <h:outputLabel value="#{obj.dataVencimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Desconto Ate">
+                            <h:outputLabel value="#{obj.descontoAte}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor">
+                            <h:outputLabel value="#{obj.valor}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Status">
+                            <h:outputLabel value="#{obj.finStatusParcela.descricao}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Natureza Financeira"
+                       disabled="#{empty finLancamentoPagarControll.objeto.id}">
+                    <div class="row">
+                        <div class="col-lg-12 col-lg-12">
+                            <h:commandLink title="Novo"
+                                           class="btn btn-default margem-bottom-10"
+                                           actionListener="#{finLancamentoPagarControll.incluirFinLctoPagarNtFinanceira}">
+                                <i class="glyphicon glyphicon-plus"/>
+                                <p:ajax
+                                        oncomplete="PF('dialogFinLctoPagarNtFinanceira').show()"
+                                        update=":formOutrasTelas2:panelFinLctoPagarNtFinanceira,dataTableFinLctoPagarNtFinanceira"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+                    <p:dataTable id="dataTableFinLctoPagarNtFinanceira" var="obj"
+                                 value="#{finLancamentoPagarControll.objeto.listaFinLctoPagarNtFinanceira}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 resizableColumns="true" paginatorPosition="bottom"
+                                 rowKey="#{obj.id}">
+                        <p:column headerText="Natureza Financeira">
+                            <h:outputLabel value="#{obj.naturezaFinanceira.descricao}"/>
+                        </p:column>
+                        <p:column headerText="Data Inclusao">
+                            <h:outputLabel value="#{obj.dataInclusao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor">
+                            <h:outputLabel value="#{obj.valor}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogFinParcelaPagar"
+                      header="Inclusão/Alteração Fin Parcela Pagar" class="outras-telas"
+                      widgetVar="dialogFinParcelaPagar" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true">
+                <p:outputPanel id="panelFinParcelaPagar">
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+            <p:dialog id="dialogFinLctoPagarNtFinanceira" class="outras-telas"
+                      header="Inclusão/Alteração Natureza Financeira"
+                      widgetVar="dialogFinLctoPagarNtFinanceira" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true">
+
+                <p:outputPanel id="panelFinLctoPagarNtFinanceira">
+
+                </p:outputPanel>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

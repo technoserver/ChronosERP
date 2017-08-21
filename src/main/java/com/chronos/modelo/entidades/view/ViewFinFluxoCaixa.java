@@ -110,4 +110,19 @@ public class ViewFinFluxoCaixa implements Serializable {
         this.operacao = operacao;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewFinFluxoCaixa)) return false;
+
+        ViewFinFluxoCaixa that = (ViewFinFluxoCaixa) o;
+
+        return getIdContaCaixa().equals(that.getIdContaCaixa());
+    }
+
+    @Override
+    public int hashCode() {
+        return getIdContaCaixa().hashCode();
+    }
 }

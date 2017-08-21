@@ -7,6 +7,7 @@ import com.chronos.modelo.entidades.Fornecedor;
 import com.chronos.repository.Repository;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,8 +21,9 @@ import java.util.List;
 public class FinPagamentoFixoControll  extends AbstractControll<FinPagamentoFixo> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @Inject
     private Repository<Fornecedor> fornecedores;
+    @Inject
     private Repository<FinDocumentoOrigem> documentos;
 
 
@@ -31,7 +33,7 @@ public class FinPagamentoFixoControll  extends AbstractControll<FinPagamentoFixo
         try {
             listaFornecedor = fornecedores.getEntitys(Fornecedor.class, "pessoa.nome", nome);
         } catch (Exception e) {
-            // e.printStackTrace();
+             e.printStackTrace();
         }
         return listaFornecedor;
     }
@@ -39,9 +41,9 @@ public class FinPagamentoFixoControll  extends AbstractControll<FinPagamentoFixo
     public List<FinDocumentoOrigem> getListaFinDocumentoOrigem(String nome) {
         List<FinDocumentoOrigem> listaFinDocumentoOrigem = new ArrayList<>();
         try {
-            listaFinDocumentoOrigem = documentos.getEntitys(FinDocumentoOrigem.class, "nome", nome);
+            listaFinDocumentoOrigem = documentos.getEntitys(FinDocumentoOrigem.class, "descricao", nome);
         } catch (Exception e) {
-            // e.printStackTrace();
+             e.printStackTrace();
         }
         return listaFinDocumentoOrigem;
     }

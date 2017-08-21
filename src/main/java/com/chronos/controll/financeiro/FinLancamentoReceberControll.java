@@ -4,10 +4,12 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.util.Constantes;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
 import java.io.Serializable;
@@ -25,15 +27,21 @@ import java.util.*;
 public class FinLancamentoReceberControll extends AbstractControll<FinLancamentoReceber> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @Inject
     private Repository<FinDocumentoOrigem> documentos;
+    @Inject
     private Repository<Cliente> clientes;
+    @Inject
     private Repository<ContaCaixa> contas;
+    @Inject
     private Repository<NaturezaFinanceira> naturezas;
-    private Repository<AdmParametro> paramentros;
+    @Inject
     private Repository<FinStatusParcela> status;
+    @Inject
     private Repository<FinParcelaReceber> parcelas;
+    @Inject
     private Repository<FinConfiguracaoBoleto> configuracoes;
+    @Inject
     private Repository<Pessoa> pessoas;
 
     private List<FinLancamentoReceber> lancamentosSelecionados;
@@ -54,10 +62,13 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
         super.doCreate();
         getObjeto().setListaFinParcelaReceber(new HashSet<>());
         getObjeto().setListaFinLctoReceberNtFinanceira(new HashSet<>());
+        getObjeto().setDataLancamento(new Date());
+        getObjeto().setPrimeiroVencimento(new Date());
     }
 
     @Override
     public void salvar() {
+        getObjeto().setValorAReceber(getObjeto().getValorTotal());
         try {
             if (getObjeto().getId() == null) {
                 gerarParcelas();
@@ -72,15 +83,10 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     }
 
     public void gerarParcelas() throws Exception {
-        AdmParametro admParametro = paramentros.get(AdmParametro.class, "empresa", empresa);
 
-        FinStatusParcela statusParcela = null;
-        if (admParametro != null) {
-            statusParcela = status.get(admParametro.getFinParcelaAberto(), FinStatusParcela.class);
-        }
-        if (statusParcela == null) {
-            throw new Exception("O status de parcela em aberto não está cadastrado.\nEntre em contato com a Software House.");
-        }
+
+        FinStatusParcela statusParcela = Constantes.FIN.STATUS_ABERTO;
+
 
         if (contaCaixa == null || contaCaixa.getId() == null) {
             throw new Exception("É necessário informar a conta caixa para previsão das parcelas.");

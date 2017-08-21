@@ -5,10 +5,14 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
+import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.RowEditEvent;
 import sun.plugin2.message.Message;
 
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -20,12 +24,14 @@ import java.util.List;
 /**
  * Created by john on 14/08/17.
  */
+@Named
+@ViewScoped
 public class FinCobrancaControll extends AbstractControll<FinCobranca> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @Inject
     private Repository<Cliente> clientes;
-    private Repository<AdmParametro> parametros;
+    @Inject
     private Repository<FinParcelaReceber> parcelas;
 
     private FinParcelaReceber finParcelaReceber;
@@ -60,13 +66,10 @@ public class FinCobrancaControll extends AbstractControll<FinCobranca> implement
             List<Filtro> filtros = new ArrayList<>();
 
             filtros.add(new Filtro(Filtro.AND, "empresa", Filtro.IGUAL, empresa));
-            AdmParametro admParametro = parametros.get(AdmParametro.class, filtros);
-            if (admParametro == null) {
-                throw new Exception("Parâmetros administrativos não cadastrados.\nEntre em contato com a Software House.");
-            }
+
 
             filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND, "finStatusParcela.id", Filtro.IGUAL, admParametro.getFinParcelaAberto()));
+            filtros.add(new Filtro(Filtro.AND, "finStatusParcela.id", Filtro.IGUAL, Constantes.FIN.STATUS_ABERTO.getId()));
 
             Cliente cliente = getObjeto().getCliente();
             filtros.add(new Filtro(Filtro.AND, "finLancamentoReceber.cliente", Filtro.IGUAL, cliente));
@@ -201,9 +204,9 @@ public class FinCobrancaControll extends AbstractControll<FinCobranca> implement
     public List<Cliente> getListaCliente(String nome) {
         List<Cliente> listaCliente = new ArrayList<>();
         try {
-            listaCliente = clientes.getEntitys(Cliente.class, "pessoa.nome", nome,atributos);
+            listaCliente = clientes.getEntitys(Cliente.class, "pessoa.nome", nome);
         } catch (Exception e) {
-            // e.printStackTrace();
+             e.printStackTrace();
         }
         return listaCliente;
     }

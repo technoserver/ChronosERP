@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Pagamento Fixo/Recorrente
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finPagamentoFixoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Pagamento Fixo/Recorrente
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{finPagamentoFixoControll}"
+                       idDataTable="dataTableFinPagamentoFixo"
+                       nomeFuncao="Pagamento Fixo/Recorrente"
+                       id="telaGrid"
+                       >
+
+            <p:column headerText="Doc Origem">
+                <h:outputLabel value="#{row.finDocumentoOrigem.descricao}" />
+            </p:column>
+            <p:column headerText="Fornecedor">
+                <h:outputLabel value="#{row.fornecedor.pessoa.nome}" />
+            </p:column>
+            <p:column headerText="Qtde Parcela">
+                <h:outputLabel value="#{row.quantidadeParcela}" />
+            </p:column>
+            <p:column headerText="Valor A Pagar">
+                <h:outputLabel value="#{row.valorAPagar}">
+                    <f:convertNumber pattern="#,##0.00" />
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Data Lcto">
+                <h:outputLabel value="#{row.dataLancamento}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="1º Vencimento">
+                <h:outputLabel value="#{row.primeiroVencimento}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finPagamentoFixoControll}"
+                                   nomeFuncao="Pagamento Fixo/Recorrente"
+                                   id="telaDetalhe"
+                                   >
+
+
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        label="Fornecedor"
+                                        itemLabel="#{objeto.pessoa.nome}"
+                                        controller="#{finPagamentoFixoControll}"
+                                        completeMethod="getListaFornecedor"
+                                        nomeAtributo="#{finPagamentoFixoControll.objeto.fornecedor}"
+                                        idComponente="finPagamentoFixoFornecedor" />
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        label="Documento Origem"
+                                        itemLabel="#{objeto.descricao}"
+                                        controller="#{finPagamentoFixoControll}"
+                                        completeMethod="getListaFinDocumentoOrigem"
+                                        nomeAtributo="#{finPagamentoFixoControll.objeto.finDocumentoOrigem}"
+                                        idComponente="finPagamentoFixoFinDocumentoOrigem" />
+
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                 idComponente="finPagamentoFixoNumeroDocumento"
+                                 label="Numero Documento"
+                                 nomeAtributo="#{finPagamentoFixoControll.objeto.numeroDocumento}"
+                                 tamanhoMaximo="50" requerido="true" />
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="finPagamentoFixoPagamentoCompartilhado"
+                                  label="Pgto Compartilhado"
+                                  nomeAtributo="#{finPagamentoFixoControll.objeto.pagamentoCompartilhado}"
+                                  itens="#{finPagamentoFixoControll.simNao}" />
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                   idComponente="finPagamentoFixoQuantidadeParcela"
+                                   label="Qtde Parcela" requerido="true"
+                                   nomeAtributo="#{finPagamentoFixoControll.objeto.quantidadeParcela}" />
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                   idComponente="finPagamentoFixoIntervaloEntreParcelas"
+                                   label="Intervalo Entre Parcelas" requerido="true"
+                                   nomeAtributo="#{finPagamentoFixoControll.objeto.intervaloEntreParcelas}" />
+            </div>
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                   idComponente="finPagamentoFixoValorTotal" label="Valor Total"
+                                   requerido="true"
+                                   nomeAtributo="#{finPagamentoFixoControll.objeto.valorTotal}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                   idComponente="finPagamentoFixoValorAPagar"
+                                   label="Valor A Pagar"
+                                   nomeAtributo="#{finPagamentoFixoControll.objeto.valorAPagar}" />
+
+                <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="finPagamentoFixoDataLancamento"
+                                label="Data Lancamento"
+                                nomeAtributo="#{finPagamentoFixoControll.objeto.dataLancamento}" />
+                <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="finPagamentoFixoPrimeiroVencimento"
+                                label="Primeiro Vencimento"
+                                nomeAtributo="#{finPagamentoFixoControll.objeto.primeiroVencimento}" />
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

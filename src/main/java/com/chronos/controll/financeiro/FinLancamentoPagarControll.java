@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
@@ -61,8 +62,13 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
     }
 
     @Override
+    public void doEdit() {
+        super.doEdit();
+    }
+
+    @Override
     public void salvar(String mensagem) {
-        super.salvar(mensagem);
+
         try {
             if (getObjeto().getId() == null) {
                 gerarParcelas();
@@ -77,15 +83,9 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
     }
 
     public void gerarParcelas() throws Exception {
-        AdmParametro admParametro = parametros.get(AdmParametro.class, "empresa", empresa);
 
-        FinStatusParcela statusParcela = null;
-        if (admParametro != null) {
-            statusParcela = status.get(admParametro.getFinParcelaAberto(), FinStatusParcela.class);
-        }
-        if (statusParcela == null) {
-            throw new Exception("O status de parcela em aberto não está cadastrado.\nEntre em contato com a Software House.");
-        }
+        FinStatusParcela statusParcela = Constantes.FIN.STATUS_ABERTO;
+
 
         if (contaCaixa == null || contaCaixa.getId() == null) {
             throw new Exception("É necessário informar a conta caixa para previsão das parcelas.");
@@ -260,9 +260,10 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
     public List<FinDocumentoOrigem> getListaFinDocumentoOrigem(String nome) {
         List<FinDocumentoOrigem> listaFinDocumentoOrigem = new ArrayList<>();
         try {
-            listaFinDocumentoOrigem = documentos.getEntitys(FinDocumentoOrigem.class, "siglaDocumento", nome,atributos);
+            atributos = new Object[]{"descricao"};
+            listaFinDocumentoOrigem = documentos.getEntitys(FinDocumentoOrigem.class, "siglaDocumento", nome, atributos);
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return listaFinDocumentoOrigem;
     }
@@ -270,9 +271,10 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
     public List<Fornecedor> getListaFornecedor(String nome) {
         List<Fornecedor> listaFornecedor = new ArrayList<>();
         try {
-            listaFornecedor = fornecedores.getEntitys(Fornecedor.class, "pessoa.nome", nome,atributos);
+            atributos = new Object[]{"pessoa.nome"};
+            listaFornecedor = fornecedores.getEntitys(Fornecedor.class, "pessoa.nome", nome, atributos);
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return listaFornecedor;
     }
@@ -280,7 +282,8 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
     public List<ContaCaixa> getListaContaCaixa(String nome) {
         List<ContaCaixa> listaContaCaixa = new ArrayList<>();
         try {
-            listaContaCaixa = contas.getEntitys(ContaCaixa.class, "descricao", nome,atributos);
+            atributos = new Object[]{"nome"};
+            listaContaCaixa = contas.getEntitys(ContaCaixa.class, "descricao", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -290,7 +293,8 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
     public List<NaturezaFinanceira> getListaNaturezaFinanceira(String nome) {
         List<NaturezaFinanceira> listaNaturezaFinanceira = new ArrayList<>();
         try {
-            listaNaturezaFinanceira = naturezas.getEntitys(NaturezaFinanceira.class, "descricao", nome,atributos);
+            atributos = new Object[]{"descricao"};
+            listaNaturezaFinanceira = naturezas.getEntitys(NaturezaFinanceira.class, "descricao", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }

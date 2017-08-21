@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:erp="http://xmlns.jcp.org/jsf/composite/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<!-- INTERFACE -->
+<cc:interface>
+    <cc:attribute name="controller" type="com.chronos.controll.AbstractControll" required="true"/>
+    <cc:attribute name="idDataTable" required="true"/>
+    <cc:attribute name="somenteConsulta" default="false"/>
+    <cc:attribute name="dataModel" default="#{cc.attrs.controller.dataModel}"/>
+
+
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+
+    <p:dataTable value="#{cc.attrs.dataModel!=null? cc.attrs.dataModel :cc.attrs.controller.dataModel}"
+                 var="row" id="#{cc.attrs.idDataTable}" paginator="true"
+                 rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                 reflow="true" rendered="#{cc.attrs.controller.podeConsultar()}"
+                 resizableColumns="true" lazy="true"
+                 class="js-data-table">
+
+        <cc:insertChildren/>
+
+        <p:column headerText="Ações" width="110">
+            <p:commandLink title="Alterar" action="#{cc.attrs.controller.doEdit()}" class=" btn btn-default"
+                           oncomplete="addClass()"
+                           update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+            >
+                <i class="fa fa-file-text-o"></i>
+                <f:setPropertyActionListener value="#{row}"
+                                             target="#{cc.attrs.controller.objetoSelecionado}"/>
+            </p:commandLink>
+            &nbsp;
+            <p:commandLink title="Excluir" action="#{cc.attrs.controller.remover()}"
+                           style="position: relative; right: 7px"
+                           update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                           process="#{cc.attrs.idDataTable}"
+                           oncomplete="atualizarMsg();"
+                           class="btn btn-default"
+                           rendered="#{!cc.attrs.somenteConsulta}"
+                           disabled="#{!cc.attrs.controller.podeExcluir()}">
+                <i class="fa fa-times"></i>
+                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                <f:setPropertyActionListener value="#{row}"
+                                             target="#{cc.attrs.controller.objetoSelecionado}"/>
+            </p:commandLink>
+        </p:column>
+
+    </p:dataTable>
+
+</cc:implementation>
+</html>

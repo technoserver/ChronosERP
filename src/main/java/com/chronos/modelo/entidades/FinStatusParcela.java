@@ -29,6 +29,8 @@
 package com.chronos.modelo.entidades;
 
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -47,10 +49,10 @@ public class FinStatusParcela implements Serializable {
     @Column(name = "ID")
     private Integer id;
     @Column(name = "SITUACAO")
- //   @NotEmpty(message = "Situação Obrigatória")
+    @NotBlank(message = "Situação Obrigatória")
     private String situacao;
     @Column(name = "DESCRICAO")
- //   @NotEmpty(message = "Descrição Obrigatória")
+    @NotBlank(message = "Descrição Obrigatória")
     private String descricao;
     @Column(name = "PROCEDIMENTO")
     private String procedimento;

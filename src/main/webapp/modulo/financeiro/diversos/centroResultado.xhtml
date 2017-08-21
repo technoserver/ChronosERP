@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Centro Resultado
+    </ui:define>
+
+    <ui:define name="tela">
+        #{centroResultadoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Centro Resultado
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{centroResultadoControll}"
+                       idDataTable="dataTableCentroResultado"
+                       nomeFuncao="Centro Resultado"
+                       id="telaGrid"
+                       >
+
+            <p:column headerText="Classificacao">
+                <h:outputLabel value="#{row.classificacao}" />
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}" />
+            </p:column>
+            <p:column headerText="Sofre Rateio">
+                <h:outputLabel value="#{centroResultadoControll.keyFromValue(centroResultadoControll.simNao, row.sofreRateiro)}" />
+            </p:column>
+            <p:column headerText="Plano Centro Resultado">
+                <h:outputLabel value="#{row.planoCentroResultado.nome}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{centroResultadoControll}"
+                                   nomeFuncao="Centro Resultado"
+                                   id="telaDetalhe"
+                                   >
+
+            <div class="row">
+
+
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        label="Plano Centro Resultado"
+                                        itemLabel="#{objeto.nome}"
+                                        controller="#{centroResultadoControll}"
+                                        completeMethod="getListaPlanoCentroResultado"
+                                        nomeAtributo="#{centroResultadoControll.objeto.planoCentroResultado}"
+                                        idComponente="centroResultadoPlanoCentroResultado" />
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                 idComponente="centroResultadoDescricao" label="Descricao"
+                                 nomeAtributo="#{centroResultadoControll.objeto.descricao}"
+                                 tamanhoMaximo="100" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="centroResultadoClassificacao" label="Classificacao"
+                                 nomeAtributo="#{centroResultadoControll.objeto.classificacao}"
+                                 tamanhoMaximo="30" />
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="centroResultadoSofreRateio" label="Sofre Rateio"
+                                  nomeAtributo="#{centroResultadoControll.objeto.sofreRateiro}"
+                                  itens="#{centroResultadoControll.simNao}" />
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

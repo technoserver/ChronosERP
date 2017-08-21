@@ -56,14 +56,16 @@ public class NaturezaFinanceira implements Serializable {
     private String apareceAPagar;
     @Column(name = "APARECE_A_RECEBER")
     private String apareceAReceber;
-    @JoinColumn(name = "ID_CONTABIL_CONTA", referencedColumnName = "ID")
-    @ManyToOne
-    private ContabilConta contabilConta;
     @JoinColumn(name = "ID_PLANO_NATUREZA_FINANCEIRA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private PlanoNaturezaFinanceira planoNaturezaFinanceira;
 
     public NaturezaFinanceira() {
+    }
+
+    public NaturezaFinanceira(Integer id,String descricao) {
+        this.id = id;
+        this.descricao = descricao;
     }
 
     public Integer getId() {
@@ -122,13 +124,7 @@ public class NaturezaFinanceira implements Serializable {
         this.apareceAReceber = apareceAReceber;
     }
 
-    public ContabilConta getContabilConta() {
-        return contabilConta;
-    }
 
-    public void setContabilConta(ContabilConta contabilConta) {
-        this.contabilConta = contabilConta;
-    }
 
     public PlanoNaturezaFinanceira getPlanoNaturezaFinanceira() {
         return planoNaturezaFinanceira;

@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Status Parcela
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finStatusParcelaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Status Parcela
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{finStatusParcelaControll}"
+                       idDataTable="dataTableFinStatusParcela"
+                       nomeFuncao="Status Parcela"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="Situacao">
+                <h:outputLabel value="#{row.situacao}" />
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}" />
+            </p:column>
+            <p:column headerText="Procedimento">
+                <h:outputLabel value="#{row.procedimento}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finStatusParcelaControll}"
+                                   nomeFuncao="CFOP"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="finStatusParcelaSituacao" label="Situacao"
+                                nomeAtributo="#{finStatusParcelaControll.objeto.situacao}"
+                                tamanhoMaximo="2" requerido="true"
+                                desabilitado="true" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-9 col-md-10"
+                                idComponente="finStatusParcelaDescricao" label="Descricao"
+                                nomeAtributo="#{finStatusParcelaControll.objeto.descricao}"
+                                tamanhoMaximo="30" requerido="true"
+                                desabilitado="true"/>
+            </div>
+
+            <div  class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                     idComponente="procedimento" label="Procedimento"
+                                     nomeAtributo="#{finStatusParcelaControll.objeto.procedimento}"
+                />
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

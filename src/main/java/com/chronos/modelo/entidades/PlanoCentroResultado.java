@@ -29,6 +29,8 @@
 package com.chronos.modelo.entidades;
 
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -48,10 +50,10 @@ public class PlanoCentroResultado implements Serializable {
     @Column(name = "ID")
     private Integer id;
     @Column(name = "NOME")
- //   @NotEmpty(message = "Nome Obrigatório")
+    @NotBlank(message = "Nome Obrigatório")
     private String nome;
     @Column(name = "MASCARA")
-//    @NotEmpty(message = "Mascara Obrigatória")
+    @NotBlank(message = "Mascara Obrigatória")
     private String mascara;
     @Column(name = "NIVEIS")
     @Min(1)
@@ -65,6 +67,11 @@ public class PlanoCentroResultado implements Serializable {
     private Empresa empresa;
 
     public PlanoCentroResultado() {
+    }
+
+    public PlanoCentroResultado(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
     }
 
     public Integer getId() {

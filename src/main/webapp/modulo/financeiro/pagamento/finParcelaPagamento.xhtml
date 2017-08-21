@@ -1,0 +1,256 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Pagamento de parcela
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finParcelaPagamentoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Pagamento de parcela
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <erp:formularioGrid controller="#{finParcelaPagamentoControll}"
+                            id="telaGrid">
+            <div class="row">
+                <div class="col-lg-12 col-lg-12">
+                    <h:commandLink title="Pagar"
+                                   class="btn btn-default margem-bottom-10"
+                                   actionListener="#{finParcelaPagamentoControll.doEdit}">
+                        <i class="glyphicon glyphicon-usd"/>
+                        <p:ajax
+                                process="@form"
+                                update=":formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"/>
+                    </h:commandLink>
+                </div>
+            </div>
+            <br/>
+            <erp:gridDadosSelecionavelSemForm controller="#{finParcelaPagamentoControll}"
+                                              idDataTable="dataTableFinParcelaPagamento"
+                                              selection="parcelasSelecionadas" selectionMode="multiple">
+                <p:column headerText="Numero Parcela">
+                    <h:outputLabel value="#{row.numeroParcela}"/>
+                </p:column>
+                <p:column headerText="Data Emissao">
+                    <h:outputLabel value="#{row.dataEmissao}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Vencimento">
+                    <h:outputLabel value="#{row.dataVencimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Desconto Ate">
+                    <h:outputLabel value="#{row.descontoAte}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor">
+                    <h:outputLabel value="#{row.valor}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Status">
+                    <h:outputLabel value="#{row.finStatusParcela.descricao}"/>
+                </p:column>
+            </erp:gridDadosSelecionavelSemForm>
+
+        </erp:formularioGrid>
+
+
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finParcelaPagamentoControll}"
+                                   nomeFuncao="Parcela Pagamento"
+                                   id="telaDetalhe"
+                                   >
+
+            <p:tabView id="telasCadastroPessoa" >
+                <p:tab title="Dados Principais">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Tipo Pagamento"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{finParcelaPagamentoControll}"
+                                          completeMethod="getListaFinTipoPagamento"
+                                          nomeAtributo="#{finParcelaPagamentoControll.finParcelaPagamento.finTipoPagamento}"
+                                          idComponente="finParcelaPagamentoFinTipoPagamento"/>
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Conta Caixa"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{finParcelaPagamentoControll}"
+                                          completeMethod="getListaContaCaixa"
+                                          nomeAtributo="#{finParcelaPagamentoControll.finParcelaPagamento.contaCaixa}"
+                                          idComponente="finParcelaPagamentoContaCaixa"/>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="finParcelaPagamentoDataVencimento"
+                                       label="Data Vencimento" somenteLeitura="true"
+                                       nomeAtributo="#{finParcelaPagamentoControll.finParcelaPagamento.finParcelaPagar.dataVencimento}"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="finParcelaPagamentoDataPagamento"
+                                       label="Data Pagamento" requerido="true"
+                                       nomeAtributo="#{finParcelaPagamentoControll.finParcelaPagamento.dataPagamento}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="finParcelaPagamentoValorParcela"
+                                          label="Valor Parcela" somenteLeitura="true"
+                                          nomeAtributo="#{finParcelaPagamentoControll.finParcelaPagamento.finParcelaPagar.valor}"/>
+
+                    </div>
+
+
+                    <div class="row">
+
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        idComponente="finParcelaPagamentoHistorico" label="Historico"
+                                        nomeAtributo="#{finParcelaPagamentoControll.finParcelaPagamento.historico}"
+                                        tamanhoMaximo="250"/>
+                    </div>
+
+
+
+
+                </p:tab>
+
+                <p:tab title="Pagamentos Efetuados"
+                       disabled="#{empty finParcelaPagamentoControll.objeto.id}">
+                    <p:dataTable id="dataTableFinParcelaPagamento" var="obj"
+                                 value="#{finParcelaPagamentoControll.objeto.listaFinParcelaPagamento}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 rowKey="#{obj.id}">
+
+
+
+                        <p:column headerText="Tipo Pagamento">
+                            <h:outputLabel value="#{obj.finTipoPagamento.descricao}"/>
+                        </p:column>
+                        <p:column headerText="Data Pagamento">
+                            <h:outputLabel value="#{obj.dataPagamento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Juro">
+                            <h:outputLabel value="#{obj.valorJuro}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Multa">
+                            <h:outputLabel value="#{obj.valorMulta}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Desconto">
+                            <h:outputLabel value="#{obj.valorDesconto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Pago">
+                            <h:outputLabel value="#{obj.valorPago}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Historico">
+                            <h:outputLabel value="#{obj.historico}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogFinChequeEmitido" header="Emissão de Cheque"
+                      widgetVar="dialogFinChequeEmitido" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="600"
+                      visible="#{finParcelaPagamentoControll.pagamentoCheque}">
+
+                <p:outputPanel id="panelFinChequeEmitido">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Cheque"
+                                          itemLabel="#{objeto.numero}"
+                                          controller="#{finParcelaPagamentoControll}"
+                                          completeMethod="getListaFinCheque"
+                                          nomeAtributo="#{finParcelaPagamentoControll.finChequeEmitido.cheque}"
+                                          idComponente="finParcelaPagamentoFinChequeEmitido"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        idComponente="finChequeEmitidoNominalA" label="Nominal A"
+                                        nomeAtributo="#{finParcelaPagamentoControll.finChequeEmitido.nominalA}"
+                                        tamanhoMaximo="100"/>
+                    </div>
+
+                    <div class="row">
+                        <erp:campoData styleClass="col-xs-12 col-sm-4 col-md-4"
+                                       idComponente="finChequeEmitidoDataEmissao" label="Data Emissao"
+                                       requerido="true"
+                                       nomeAtributo="#{finParcelaPagamentoControll.finChequeEmitido.dataEmissao}"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-4 col-md-4"
+                                       idComponente="finChequeEmitidoBomPara" label="Bom Para"
+                                       requerido="true"
+                                       nomeAtributo="#{finParcelaPagamentoControll.finChequeEmitido.bomPara}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                          idComponente="finChequeEmitidoValor" label="Valor"
+                                          requerido="true"
+                                          nomeAtributo="#{finParcelaPagamentoControll.finChequeEmitido.valor}"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            idComponente="finChequeEmitidoHistorico" label="Historico"
+                                            nomeAtributo="#{finParcelaPagamentoControll.historico}"/>
+                    </div>
+
+
+
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             actionListener="#{finParcelaPagamentoControll.finalizaPagamentoCheque()}">
+                                <p:ajax process="@form"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogEndereco').hide();}"
+                                        update=":formOutrasTelas:panelFinChequeEmitido,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe,dialogFinChequeEmitido,:formCentro:telaGrid:outputPanelGrid"
+                                />
+                            </h:commandButton>
+                        </div>
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             actionListener="#{finParcelaPagamentoControll.cancelaPagamentoCheque()}"
+                                             >
+                                <p:ajax process="@this"
+                                        update="dialogFinChequeEmitido"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -58,9 +58,7 @@ public class FinLctoPagarNtFinanceira implements Serializable {
     @JoinColumn(name = "ID_NATUREZA_FINANCEIRA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private NaturezaFinanceira naturezaFinanceira;
-    @JoinColumn(name = "ID_CONTABIL_LANCAMENTO_DET", referencedColumnName = "ID")
-    @ManyToOne
-    private ContabilLancamentoDetalhe contabilLancamentoDetalhe;
+
 
     public FinLctoPagarNtFinanceira() {
     }
@@ -113,13 +111,6 @@ public class FinLctoPagarNtFinanceira implements Serializable {
         this.naturezaFinanceira = naturezaFinanceira;
     }
 
-    public ContabilLancamentoDetalhe getContabilLancamentoDetalhe() {
-        return contabilLancamentoDetalhe;
-    }
-
-    public void setContabilLancamentoDetalhe(ContabilLancamentoDetalhe contabilLancamentoDetalhe) {
-        this.contabilLancamentoDetalhe = contabilLancamentoDetalhe;
-    }
 
     @Override
     public String toString() {

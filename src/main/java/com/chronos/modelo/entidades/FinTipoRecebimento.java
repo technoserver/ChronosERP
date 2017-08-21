@@ -53,10 +53,10 @@ public class FinTipoRecebimento implements Serializable {
     @NotNull
     @Column(name = "descricao")
     private String descricao;
-    @NotBlank
+    @JoinColumn(name = "ID_CONTA_CAIXA", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
     @NotNull
-    @Column(name = "sigla", length = 2)
-    private String sigla;
+    private ContaCaixa contaCaixa;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
@@ -97,12 +97,12 @@ public class FinTipoRecebimento implements Serializable {
         this.empresa = empresa;
     }
 
-    public String getSigla() {
-        return sigla;
+    public ContaCaixa getContaCaixa() {
+        return contaCaixa;
     }
 
-    public void setSigla(String sigla) {
-        this.sigla = sigla;
+    public void setContaCaixa(ContaCaixa contaCaixa) {
+        this.contaCaixa = contaCaixa;
     }
 
     @Override

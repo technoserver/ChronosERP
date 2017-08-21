@@ -373,8 +373,10 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         for (Filtro f : filters) {
             i++;
 
-            jpqlBuilder.append(" ").append(f.getOperadorLogico()).append(f.getValor().getClass() == String.class ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional()).append(":valor").append(i);
-
+            jpqlBuilder.append(" ").append(f.getOperadorLogico()).append((f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE) ) ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional());
+            if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)){
+                jpqlBuilder.append(":valor").append(i);
+            }
         }
         jpql = jpqlBuilder.toString();
 
@@ -426,14 +428,17 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         int i = 0;
         for (Filtro f : filters) {
             i++;
-            if (f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) {
-                query.setParameter("valor" + i, "%" + String.valueOf(f.getValor()).trim().toLowerCase() + "%");
-            } else if (f.getValor().getClass() == String.class) {
-                query.setParameter("valor" + i, String.valueOf(f.getValor()).trim().toLowerCase());
+            if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)){
+                if (f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) {
+                    query.setParameter("valor" + i, "%" + String.valueOf(f.getValor()).trim().toLowerCase() + "%");
+                } else if (f.getValor().getClass() == String.class) {
+                    query.setParameter("valor" + i, String.valueOf(f.getValor()).trim().toLowerCase());
 
-            } else {
-                query.setParameter("valor" + i, f.getValor());
+                } else {
+                    query.setParameter("valor" + i, f.getValor());
+                }
             }
+
         }
         return query;
     }

@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Tipo Recebimento
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finTipoRecebimentoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Tipo Recebimento
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{finTipoRecebimentoControll}"
+                       idDataTable="dataTableFinTipoRecebimento"
+                       nomeFuncao="Tipo Recebimento"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="Tipo">
+                <h:outputLabel value="#{row.tipo}" />
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}" />
+            </p:column>
+            <p:column headerText="Conta Caixa">
+                <h:outputLabel value="#{row.contaCaixa.nome}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finTipoRecebimentoControll}"
+                                   nomeFuncao="Tipo Recebimento"
+                                   id="telaDetalhe"
+                                   >
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="finTipoRecebimentoTipo" label="Tipo"
+                                nomeAtributo="#{finTipoRecebimentoControll.objeto.tipo}"
+                                tamanhoMaximo="2" requerido="true"
+                                desabilitado="true" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="finTipoRecebimentoDescricao" label="Descricao"
+                                nomeAtributo="#{finTipoRecebimentoControll.objeto.descricao}"
+                                tamanhoMaximo="100" requerido="true"
+                                desabilitado="true"/>
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        label="Conta Caixa"
+                                        itemLabel="#{objeto.nome}"
+                                        controller="#{finTipoRecebimentoControll}"
+                                        completeMethod="getListaContaCaixa"
+                                        nomeAtributo="#{finTipoRecebimentoControll.objeto.contaCaixa}"
+                                        idComponente="finTipoRecebimentoContaCaixa" />
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

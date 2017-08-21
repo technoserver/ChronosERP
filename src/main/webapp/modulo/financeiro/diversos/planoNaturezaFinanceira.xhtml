@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Plano Natureza Financeira
+    </ui:define>
+
+    <ui:define name="tela">
+        #{planoNaturezaFinanceiraControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Plano Natureza Financeira
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{planoNaturezaFinanceiraControll}"
+                       idDataTable="dataTablePlanoNaturezaFinanceira"
+                       nomeFuncao="Plano Natureza Financeira"
+                       id="telaGrid"
+                      >
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}" />
+            </p:column>
+            <p:column headerText="Data Inclusao">
+                <h:outputLabel value="#{row.dataInclusao}" >
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Mascara">
+                <h:outputLabel value="#{row.mascara}" />
+            </p:column>
+            <p:column headerText="Niveis">
+                <h:outputLabel value="#{row.niveis}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{planoNaturezaFinanceiraControll}"
+                                   nomeFuncao="Plano Natureza Financeira"
+                                   id="telaDetalhe"
+                                   >
+
+            <div class="row">
+
+
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                 idComponente="planoNaturezaFinanceiraNome" label="Nome"
+                                 nomeAtributo="#{planoNaturezaFinanceiraControll.objeto.nome}"
+                                 tamanhoMaximo="100"
+                                 requerido="true"/>
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="planoNaturezaFinanceiraDataInclusao" label="Data Inclusao"
+                                nomeAtributo="#{planoNaturezaFinanceiraControll.objeto.dataInclusao}" />
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="planoNaturezaFinanceiraMascara" label="Mascara"
+                                 nomeAtributo="#{planoNaturezaFinanceiraControll.objeto.mascara}"
+                                 tamanhoMaximo="50" />
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                   idComponente="planoNaturezaFinanceiraNiveis" label="Niveis"
+                                   nomeAtributo="#{planoNaturezaFinanceiraControll.objeto.niveis}" />
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

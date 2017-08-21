@@ -61,6 +61,11 @@ public class FinDocumentoOrigem implements Serializable {
     public FinDocumentoOrigem() {
     }
 
+    public FinDocumentoOrigem(Integer id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
+
     public Integer getId() {
         return id;
     }

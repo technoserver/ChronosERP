@@ -97,6 +97,11 @@ public class Cliente implements Serializable {
     public Cliente() {
     }
 
+    public Cliente(Integer id,String nome) {
+        this.id= id;
+        this.pessoa = new Pessoa(nome);
+    }
+
     public Integer getId() {
         return id;
     }

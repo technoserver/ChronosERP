@@ -120,4 +120,18 @@ public class ViewFinMovimentoCaixaBanco implements Serializable {
         this.operacao = operacao;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewFinMovimentoCaixaBanco)) return false;
+
+        ViewFinMovimentoCaixaBanco that = (ViewFinMovimentoCaixaBanco) o;
+
+        return getId().equals(that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }

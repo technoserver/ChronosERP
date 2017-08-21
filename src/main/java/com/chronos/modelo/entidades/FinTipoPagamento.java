@@ -42,7 +42,7 @@ import java.util.Objects;
 @Table(name = "FIN_TIPO_PAGAMENTO")
 public class FinTipoPagamento implements Serializable {
 
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -56,10 +56,6 @@ public class FinTipoPagamento implements Serializable {
     @Column(name = "DESCRICAO")
     @NotBlank
     private String descricao;
-    @NotNull
-    @Column(name = "sigla",length = 2)
-    @NotBlank
-    private String sigla;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)    
     @NotNull(message = "Empresa Obrigatória")
@@ -100,14 +96,8 @@ public class FinTipoPagamento implements Serializable {
         this.empresa = empresa;
     }
 
-      public String getSigla() {
-        return sigla;
-    }
 
-    public void setSigla(String sigla) {
-        this.sigla = sigla;
-    }
-    
+
     @Override
     public String toString() {
         return descricao;

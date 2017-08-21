@@ -48,7 +48,6 @@ public class FinParcelaPagamentoControll extends AbstractControll<FinParcelaPaga
 
     @Override
     public void doEdit() {
-        super.doEdit();
         if (parcelasSelecionadas != null) {
             if (parcelasSelecionadas.isEmpty()) {
                 Mensagem.addWarnMessage("Nenhuma parcela foi selecionada!");
@@ -253,7 +252,7 @@ public class FinParcelaPagamentoControll extends AbstractControll<FinParcelaPaga
         try {
             listaFinCheque = cheques.getEntitys(Cheque.class, "statusCheque", "E");
         } catch (Exception e) {
-            // e.printStackTrace();
+             e.printStackTrace();
         }
         return listaFinCheque;
     }

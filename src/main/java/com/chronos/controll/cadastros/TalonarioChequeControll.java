@@ -50,7 +50,7 @@ public class TalonarioChequeControll extends AbstractControll<TalonarioCheque> i
             filtros.add(new Filtro(Filtro.AND, "agenciaBanco", Filtro.NAO_NULO,""));
             contas = contasCaixa.getEntitys(ContaCaixa.class, filtros, atributos);
         } catch (Exception e) {
-            // e.printStackTrace();
+             e.printStackTrace();
         }
         return contas;
     }

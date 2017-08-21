@@ -1,0 +1,271 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Cobranca
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finCobrancaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Cobranca
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{finCobrancaControll}"
+                       idDataTable="dataTableFinCobranca"
+                       nomeFuncao="Cobranca"
+                       id="telaGrid"
+                       >
+
+            <p:column headerText="Cliente">
+                <h:outputLabel value="#{row.cliente.pessoa.nome}" />
+            </p:column>
+            <p:column headerText="Data Contato">
+                <h:outputLabel value="#{row.dataContato}">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Hora Contato">
+                <h:outputLabel value="#{row.horaContato}" />
+            </p:column>
+            <p:column headerText="Telefone Contato">
+                <h:outputLabel value="#{row.telefoneContato}" />
+            </p:column>
+            <p:column headerText="Data Pagamento">
+                <h:outputLabel value="#{row.dataAcertoPagamento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Total Receber">
+                <h:outputLabel value="#{row.totalReceberNaData}">
+                    <f:convertNumber pattern="#,##0.00" />
+                </h:outputLabel>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finCobrancaControll}"
+                                   nomeFuncao="Cobranca"
+                                   id="telaDetalhe"
+                                   >
+
+            <p:tabView id="tabViewDetalhes" style="border: 0px;">
+                <p:tab title="Dados Principais">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
+                                          label="Cliente"
+                                          itemLabel="#{objeto.pessoa.nome}"
+                                          controller="#{finCobrancaControll}"
+                                          completeMethod="getListaCliente"
+                                          nomeAtributo="#{finCobrancaControll.objeto.cliente}"
+                                          idComponente="finCobrancaCliente" />
+                    </div>
+                    <div class="row">
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="finCobrancaDataContato" label="Data Contato"
+                                       nomeAtributo="#{finCobrancaControll.objeto.dataContato}" />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="finCobrancaHoraContato" label="Hora Contato"
+                                        nomeAtributo="#{finCobrancaControll.objeto.horaContato}"
+                                        tamanhoMaximo="8" />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="finCobrancaTelefoneContato"
+                                        label="Telefone Contato"
+                                        nomeAtributo="#{finCobrancaControll.objeto.telefoneContato}"
+                                        tamanhoMaximo="14" />
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="finCobrancaDataAcertoPagamento"
+                                       label="Data Acerto Pagamento"
+                                       nomeAtributo="#{finCobrancaControll.objeto.dataAcertoPagamento}" />
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="finCobrancaTotalReceberNaData"
+                                          label="Total Receber"
+                                          nomeAtributo="#{finCobrancaControll.objeto.totalReceberNaData}" />
+                    </div>
+
+
+
+                </p:tab>
+
+                <p:tab title="Parcelas Vencidas">
+                    <div class="row">
+                        <div class="col-lg-12 col-lg-12">
+                            <h:commandLink title="Buscar parcelas vencidas"
+                                           class="btn btn-default margem-bottom-10"
+                                           actionListener="#{finCobrancaControll.buscaParcelaVencida}">
+                                <i class="glyphicon glyphicon-search"/>
+                                <p:ajax
+                                        process="@this"
+                                        update="dataTableFinParcelaReceber"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+                    <br/>
+                    <p:dataTable id="dataTableFinParcelaReceber" var="obj"
+                                 value="#{finCobrancaControll.parcelasVencidas}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 resizableColumns="true" editable="true" editMode="row">
+
+
+
+                        <p:ajax event="rowEdit"
+                                listener="#{finCobrancaControll.alteraParcelaVencida}"
+                                update="dataTableFinParcelaReceber" />
+
+                        <p:column headerText="Numero Parcela">
+                            <h:outputLabel value="#{obj.numeroParcela}" />
+                        </p:column>
+                        <p:column headerText="Data Emissao">
+                            <h:outputLabel value="#{obj.dataEmissao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Data Vencimento">
+                            <h:outputLabel value="#{obj.dataVencimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor">
+                            <h:outputLabel value="#{obj.valor}">
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Taxa Juro">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.taxaJuro}">
+                                        <f:convertNumber pattern="#,##0.00" />
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.taxaJuro}" decimalPlaces="2" />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Taxa Multa">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.taxaMulta}">
+                                        <f:convertNumber pattern="#,##0.00" />
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.taxaMulta}" decimalPlaces="2" />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Status">
+                            <h:outputLabel value="#{obj.finStatusParcela.descricao}" />
+                        </p:column>
+                        <p:column>
+                            <p:rowEditor />
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+                <p:tab title="Parcelas Simulado/Acordo">
+                    <p:dataTable id="dataTableFinCobrancaParcelaReceber" var="obj"
+                                 value="#{finCobrancaControll.objeto.listaFinCobrancaParcelaReceber}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 resizableColumns="true" editable="true" editMode="row">
+
+                        <f:facet name="header">
+                            <p:commandButton process="dataTableFinCobrancaParcelaReceber"
+                                             title="Calcular Juros/Multa" icon="ui-icon-calculator"
+                                             actionListener="#{finCobrancaControll.calcularJurosMulta}"
+                                             update="dataTableFinCobrancaParcelaReceber" />
+                            <p:commandButton process="dataTableFinCobrancaParcelaReceber"
+                                             title="Simular Acordo" icon="ui-icon-pencil"
+                                             actionListener="#{finCobrancaControll.simulaValores}"
+                                             update=":formCentro:telaDetalhe:outputPanelDetalhe" />
+                        </f:facet>
+
+
+                        <p:ajax event="rowEdit" listener="#{finCobrancaControll.alteraParcelaCobranca}"
+                                update="dataTableFinCobrancaParcelaReceber" />
+
+                        <p:column headerText="Vencimento">
+                            <h:outputLabel value="#{obj.dataVencimento}" />
+                        </p:column>
+                        <p:column headerText="Vlr Parcela">
+                            <h:outputLabel value="#{obj.valorParcela}">
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Juro Simulado">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.valorJuroSimulado}">
+                                        <f:convertNumber pattern="#,##0.00" />
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.valorJuroSimulado}"
+                                                   decimalPlaces="2" />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Juro Acordo">
+                            <h:outputLabel value="#{obj.valorJuroAcordo}">
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Multa Simulado">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.valorMultaSimulado}">
+                                        <f:convertNumber pattern="#,##0.00" />
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.valorMultaSimulado}"
+                                                   decimalPlaces="2" />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Multa Acordo">
+                            <h:outputLabel value="#{obj.valorMultaAcordo}">
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Vlr Receber Simulado" width="15%">
+                            <h:outputLabel value="#{obj.valorReceberSimulado}">
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Vlr Receber Acordo" width="15%">
+                            <h:outputLabel value="#{obj.valorReceberAcordo}">
+                                <f:convertNumber pattern="#,##0.00" />
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column width="2%">
+                            <p:rowEditor />
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+            </p:tabView>
+
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

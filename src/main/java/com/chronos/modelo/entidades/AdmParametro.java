@@ -54,19 +54,6 @@ public class AdmParametro implements Serializable {
     private Integer finParcelaQuitadoParcial;
     @Column(name = "FIN_TIPO_RECEBIMENTO_EDI")
     private Integer finTipoRecebimentoEdi;
-    @Column(name = "VENDA_CONTA_CAIXA")
-    private Integer vendaContaCaixa;
-    @Column(name = "FIN_DOC_ORIGEM")
-    private Integer FinDocOrigem;
-    @Column(name = "FIN_TAXA_JURO")
-    @DecimalMax(value = "100.0", message = "O deve deve ser igual ou menor que 100")
-    private BigDecimal finTaxaJuro;
-    @Column(name = "FIN_TAXA_MULTA")
-    @DecimalMax(value = "100.0", message = "O deve deve ser igual ou menor que 100")
-    private BigDecimal finTaxaMulta;
-    @Column(name = "FIN_TAXA_DESCONTO")
-    @DecimalMax(value = "100.0", message = "O deve deve ser igual ou menor que 100")
-    private BigDecimal finTaxaDesconto;
     @Column(name = "COMPRA_FIN_DOC_ORIGEM")
     private Integer compraFinDocOrigem;
     @Column(name = "COMPRA_CONTA_CAIXA")
@@ -134,48 +121,6 @@ public class AdmParametro implements Serializable {
         this.compraContaCaixa = compraContaCaixa;
     }
 
-    public Integer getVendaContaCaixa() {
-        return vendaContaCaixa;
-    }
-
-    public void setVendaContaCaixa(Integer vendaContaCaixa) {
-        this.vendaContaCaixa = vendaContaCaixa;
-    }
-
-    public BigDecimal getFinTaxaJuro() {
-        return finTaxaJuro;
-    }
-
-    public void setFinTaxaJuro(BigDecimal finTaxaJuro) {
-        this.finTaxaJuro = finTaxaJuro;
-    }
-
-    public BigDecimal getFinTaxaMulta() {
-        return finTaxaMulta;
-    }
-
-    public void setFinTaxaMulta(BigDecimal finTaxaMulta) {
-        this.finTaxaMulta = finTaxaMulta;
-    }
-
-    public BigDecimal getFinTaxaDesconto() {
-        return finTaxaDesconto;
-    }
-
-    public void setFinTaxaDesconto(BigDecimal finTaxaDesconto) {
-        this.finTaxaDesconto = finTaxaDesconto;
-    }
-
-    public Integer getFinDocOrigem() {
-        return FinDocOrigem;
-    }
-
-    public void setFinDocOrigem(Integer FinDocOrigem) {
-        this.FinDocOrigem = FinDocOrigem;
-    }
-    
-    
-    
     
 
     public Empresa getEmpresa() {

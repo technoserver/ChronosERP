@@ -75,6 +75,12 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, String> tipoFeriado;
     private Map<String, String> feriadoAbrangencia;
 
+    //Financeiro
+    private Map<String, String> tipoNaturazaFinanceira;
+    private Map<String, String> layoutRemessa;
+    private Map<String, String> especieCobranca;
+    private Map<String, String> tipoBaixa;
+
     //Estoque
     private Map<String, String> requisicaoInternaSituacao;
     private Map<String, String> tipoReajuste;
@@ -103,6 +109,7 @@ public abstract class AbstractControll<T> implements Serializable {
         dataModel.setDao(dao);
         usuario = getUsuarioLogado();
         empresa = getEmpresaUsuario();
+        atributos = new Object[]{"nome"};
 
         //Cadastros
         simNao = new LinkedHashMap<>();
@@ -307,6 +314,26 @@ public abstract class AbstractControll<T> implements Serializable {
         statusNfe.put("Enviada", 4);
         statusNfe.put("Autorizada", 5);
         statusNfe.put("Cancelada", 6);
+
+
+        tipoNaturazaFinanceira = new LinkedHashMap<>();
+        tipoNaturazaFinanceira.put("Receita", "R");
+        tipoNaturazaFinanceira.put("Despesa", "D");
+
+        layoutRemessa = new LinkedHashMap<>();
+        layoutRemessa.put("240", "240");
+        layoutRemessa.put("400", "400");
+
+        especieCobranca = new LinkedHashMap<>();
+        especieCobranca.put("Duplicata Mercantil", "DM");
+        especieCobranca.put("Duplicata de Serviços", "DS");
+        especieCobranca.put("Recibo", "RC");
+        especieCobranca.put("Nota Promissória", "NP");
+
+        tipoBaixa = new LinkedHashMap<>();
+        tipoBaixa.put("Total", "T");
+        tipoBaixa.put("Parcial", "P");
+
 
     }
 
@@ -647,5 +674,21 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public Map<String, Integer> getStatusNfe() {
         return statusNfe;
+    }
+
+    public Map<String, String> getTipoNaturazaFinanceira() {
+        return tipoNaturazaFinanceira;
+    }
+
+    public Map<String, String> getLayoutRemessa() {
+        return layoutRemessa;
+    }
+
+    public Map<String, String> getEspecieCobranca() {
+        return especieCobranca;
+    }
+
+    public Map<String, String> getTipoBaixa() {
+        return tipoBaixa;
     }
 }

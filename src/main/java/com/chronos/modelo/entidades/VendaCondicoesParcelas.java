@@ -31,7 +31,7 @@ public class VendaCondicoesParcelas implements Serializable {
   // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
   @Column(name = "taxa", precision = 18, scale = 6)
   private BigDecimal taxa;
-  @JoinColumn(name = "id_venda_condicoes_pagamento", referencedColumnName = "id", nullable = false)
+  @JoinColumn(name = "id_venda_condicoes_pagamento", referencedColumnName = "id")
   @ManyToOne(optional = false)
   private VendaCondicoesPagamento vendaCondicoesPagamento;
 
