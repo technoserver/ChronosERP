@@ -65,6 +65,11 @@ public class FinTipoRecebimento implements Serializable {
     public FinTipoRecebimento() {
     }
 
+    public FinTipoRecebimento(Integer id) {
+        this.id = id;
+    }
+
+
     public Integer getId() {
         return id;
     }

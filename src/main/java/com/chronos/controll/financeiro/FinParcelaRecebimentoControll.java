@@ -3,11 +3,13 @@ package com.chronos.controll.financeiro;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
+import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -25,14 +27,19 @@ import java.util.List;
 public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaReceber> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @Inject
     private Repository<FinParcelaReceber> recebimentos;
+    @Inject
     private Repository<FinTipoRecebimento> tipos;
+    @Inject
     private Repository<FinChequeRecebido> chequesRecebidos;
-    private Repository<ContaCaixa> contas;
+    @Inject
     private Repository<Cheque> cheques;
+    @Inject
     private Repository<FinStatusParcela> status;
+    @Inject
     private Repository<Cliente> clinetes;
+    @Inject
     private Repository<AdmParametro> parametros;
 
     private FinParcelaRecebimento finParcelaRecebimento;
@@ -47,18 +54,19 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
     private Cliente cliente;
 
 
+
     @Override
-    public void doCreate() {
-        super.doCreate();
+    public void doEdit() {
         if (parcelasSelecionadas != null) {
             if (parcelasSelecionadas.isEmpty()) {
                 Mensagem.addWarnMessage("Nenhuma parcela foi selecionada!");
 
             } else if (parcelasSelecionadas.size() == 1) {
                 setObjetoSelecionado(parcelasSelecionadas.get(0));
-                super.doCreate();
+                super.doEdit();
                 novoRecebimento();
             } else if (parcelasSelecionadas.size() > 1) {
+
                 iniciaRecebimentoCheque();
             }
         }
@@ -126,23 +134,16 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
 
     private void incluirRecebimento() {
         try {
-            AdmParametro admParametro = parametros.get(AdmParametro.class, "empresa", empresa);
 
-            FinStatusParcela statusParcela = null;
-            if (admParametro == null) {
-                throw new Exception("Parâmetros administrativos não encontrados. Entre em contato com a Software House.");
-            }
-            statusParcela = status.get(admParametro.getFinParcelaQuitado(), FinStatusParcela.class);
-            if (statusParcela == null) {
-                throw new Exception("O status de parcela 'Quitado' não está cadastrado.\nEntre em contato com a Software House.");
-            }
 
             if (parcelasSelecionadas.size() == 1 && !finParcelaRecebimento.getFinTipoRecebimento().getTipo().equals("02")) {
                 calculaTotalRecebido();
 
+
+                ContaCaixa cc = finParcelaRecebimento.getFinTipoRecebimento().getContaCaixa();
                 FinParcelaRecebimento recebimento = new FinParcelaRecebimento();
                 recebimento.setFinParcelaReceber(finParcelaRecebimento.getFinParcelaReceber());
-                recebimento.setContaCaixa(finParcelaRecebimento.getContaCaixa());
+                recebimento.setContaCaixa(cc);
                 recebimento.setDataRecebimento(finParcelaRecebimento.getDataRecebimento());
                 recebimento.setFinTipoRecebimento(finParcelaRecebimento.getFinTipoRecebimento());
                 recebimento.setHistorico(finParcelaRecebimento.getHistorico());
@@ -154,14 +155,9 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
                 recebimento.setValorMulta(finParcelaRecebimento.getValorMulta());
                 recebimento.setValorRecebido(finParcelaRecebimento.getValorRecebido());
 
-                if (strTipoBaixa.equals("P")) {
-                    statusParcela = status.get(admParametro.getFinParcelaQuitadoParcial(), FinStatusParcela.class);
-                    if (statusParcela == null) {
-                        throw new Exception("O status de parcela 'Quitado Parcial' não está cadastrado.\nEntre em contato com a Software House.");
-                    }
-                }
 
-                getObjeto().setFinStatusParcela(statusParcela);
+
+                getObjeto().setFinStatusParcela(Constantes.FIN.STATUS_ABERTO);
                 getObjeto().getListaFinParcelaRecebimento().add(recebimento);
                 salvar("Recebimento incluído com sucesso!");
                 novoRecebimento();
@@ -170,7 +166,7 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
                 if (tipoRecebimento == null) {
                     throw new Exception("Tipo de recebimento 'CHEQUE' não está cadastrado.\nEntre em contato com a Software House.");
                 }
-
+                finChequeRecebido.setContaCaixa(tipoRecebimento.getContaCaixa());
                 chequesRecebidos.salvar(finChequeRecebido);
 
                 for (FinParcelaReceber p : parcelasSelecionadas) {
@@ -178,12 +174,12 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
                     recebimento.setFinTipoRecebimento(tipoRecebimento);
                     recebimento.setFinParcelaReceber(p);
                     recebimento.setFinChequeRecebido(finChequeRecebido);
-                    recebimento.setContaCaixa(finChequeRecebido.getContaCaixa());
+                    recebimento.setContaCaixa(tipoRecebimento.getContaCaixa());
                     recebimento.setDataRecebimento(finChequeRecebido.getBomPara());
                     recebimento.setHistorico(historico);
                     recebimento.setValorRecebido(p.getValor());
 
-                    p.setFinStatusParcela(statusParcela);
+                    p.setFinStatusParcela(Constantes.FIN.STATUS_QUITADO);
                     p.getListaFinParcelaRecebimento().add(recebimento);
 
                     p = dao.atualizar(p);
@@ -284,15 +280,7 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
         return listaFinChequeRecebido;
     }
 
-    public List<ContaCaixa> getListaContaCaixa(String nome) {
-        List<ContaCaixa> listaContaCaixa = new ArrayList<>();
-        try {
-            listaContaCaixa = contas.getEntitys(ContaCaixa.class,"nome", nome);
-        } catch (Exception e) {
-            // e.printStackTrace();
-        }
-        return listaContaCaixa;
-    }
+
 
     public List<Pessoa> getListaCliente(String nome) {
         List<Pessoa> listaPessoa = new ArrayList<>();

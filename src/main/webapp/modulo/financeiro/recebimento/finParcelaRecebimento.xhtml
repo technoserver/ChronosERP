@@ -1,74 +1,274 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        CFOP 
+        Recebimento de Parcelas
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{finParcelaRecebimentoControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        Recebimento de Parcelas
     </ui:define>
-
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
-                       id="telaGrid"
-                       >
+        <erp:formularioGrid controller="#{finParcelaRecebimentoControll}"
+                            id="telaGrid" somenteConsulta="true">
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}" />
-            </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}" />
-            </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
-            </p:column>
+            <div class="row">
+                <div class="col-lg-12 col-lg-12">
+                    <h:commandLink title="Receber"
+                                   class="btn btn-default margem-bottom-10"
+                                   actionListener="#{finParcelaRecebimentoControll.doEdit}">
+                        <i class="glyphicon glyphicon-usd"/>
+                        <p:ajax
+                                process="@form"
+                                update=":formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"/>
+                    </h:commandLink>
+                </div>
+            </div>
+            <br/>
+            <erp:gridDadosSelecionavelSemForm controller="#{finParcelaRecebimentoControll}"
+                                              idDataTable="dataTableFinParcelaRecebimento"
+                                              selection="parcelasSelecionadas" selectionMode="multiple">
+
+                <p:column headerText="Numero Parcela">
+                    <h:outputLabel value="#{row.numeroParcela}"/>
+                </p:column>
+                <p:column headerText="Data Emissao">
+                    <h:outputLabel value="#{row.dataEmissao}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Vencimento">
+                    <h:outputLabel value="#{row.dataVencimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Desconto Ate">
+                    <h:outputLabel value="#{row.descontoAte}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor">
+                    <h:outputLabel value="#{row.valor}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Status">
+                    <h:outputLabel value="#{row.finStatusParcela.descricao}"/>
+                </p:column>
+
+            </erp:gridDadosSelecionavelSemForm>
+
+        </erp:formularioGrid>
 
 
-        </erp:gridDados>
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{finParcelaRecebimentoControll}"
+                                   nomeFuncao="Recebimento de Parcelas"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+                                   >
 
-            <div class="row">
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
-            </div>
-            <div class="row">
+            <p:tabView id="telasCadastroPessoa" style="border: 0px;">
+                <p:tab title="Dados Principais">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Tipo Recebimento"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{finParcelaRecebimentoControll}"
+                                          completeMethod="getListaFinTipoRecebimento"
+                                          nomeAtributo="#{finParcelaRecebimentoControll.finParcelaRecebimento.finTipoRecebimento}"
+                                          idComponente="finParcelaRecebimentoFinTipoRecebimento"/>
 
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
-            </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
-            </div>
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="finParcelaRecebimentoDataVencimento"
+                                       label="Data Vencimento" somenteLeitura="true"
+                                       nomeAtributo="#{finParcelaRecebimentoControll.finParcelaRecebimento.finParcelaReceber.dataVencimento}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="finParcelaRecebimentoValorParcela"
+                                          label="Valor Parcela" somenteLeitura="true"
+                                          nomeAtributo="#{finParcelaRecebimentoControll.finParcelaRecebimento.finParcelaReceber.valor}"/>
+
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="finParcelaRecebimentoTaxaDesconto"
+                                          label="Taxa Desconto"
+                                          nomeAtributo="#{finParcelaRecebimentoControll.finParcelaRecebimento.taxaDesconto}"/>
+
+                    </div>
+                    <div class="row">
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        idComponente="finParcelaRecebimentoHistorico" label="Historico"
+                                        nomeAtributo="#{finParcelaRecebimentoControll.finParcelaRecebimento.historico}"
+                                        tamanhoMaximo="250"/>
+                    </div>
+
+
+
+                </p:tab>
+
+                <p:tab title="Recebimentos"
+                       disabled="#{empty finParcelaRecebimentoControll.objeto.id}">
+                    <p:dataTable id="dataTableFinParcelaRecebimento" var="obj"
+                                 value="#{finParcelaRecebimentoControll.objeto.listaFinParcelaRecebimento}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 resizableColumns="true"
+                                 rowKey="#{obj.id}">
+
+
+
+                        <p:column headerText="Tipo Recebimento">
+                            <h:outputLabel value="#{obj.finTipoRecebimento.descricao}"/>
+                        </p:column>
+                        <p:column headerText="Data Recebimento">
+                            <h:outputLabel value="#{obj.dataRecebimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Juro">
+                            <h:outputLabel value="#{obj.valorJuro}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Multa">
+                            <h:outputLabel value="#{obj.valorMulta}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Desconto">
+                            <h:outputLabel value="#{obj.valorDesconto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Recebido">
+                            <h:outputLabel value="#{obj.valorRecebido}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Historico">
+                            <h:outputLabel value="#{obj.historico}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+
 
         </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogFinChequeRecebido" header="Recebimento de Cheque"
+                      widgetVar="dialogFinChequeRecebido" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="600" responsive="true"
+                      visible="#{finParcelaRecebimentoControll.recebimentoCheque}">
+
+                <p:outputPanel id="panelFinChequeRecebido">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-8 col-md-8"
+                                          label="Cliente"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{finParcelaRecebimentoControll}"
+                                          completeMethod="getListaCliente"
+                                          nomeAtributo="#{finParcelaRecebimentoControll.finChequeRecebido.pessoa}"
+                                          idComponente="finChequeRecebidoPessoa">
+
+                            <p:ajax event="itemSelecionado"
+                                    listener="#{finParcelaRecebimentoControll.onSelecionaPessoa}"
+                                    update=":formOutrasTelas:panelFinChequeRecebido"/>
+
+                        </erp:autoComplete>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="finChequeRecebidoCpfCnpj" label="Cpf Cnpj"
+                                        nomeAtributo="#{finParcelaRecebimentoControll.finChequeRecebido.cpfCnpj}"
+                                        tamanhoMaximo="14" somenteLeitura="true"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="finChequeRecebidoCodigoBanco" label="Codigo Banco"
+                                        nomeAtributo="#{finParcelaRecebimentoControll.finChequeRecebido.codigoBanco}"
+                                        tamanhoMaximo="10" requerido="true"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="finChequeRecebidoCodigoAgencia"
+                                        label="Codigo Agencia"
+                                        nomeAtributo="#{finParcelaRecebimentoControll.finChequeRecebido.codigoAgencia}"
+                                        tamanhoMaximo="10" requerido="true"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="finChequeRecebidoConta" label="Conta"
+                                        nomeAtributo="#{finParcelaRecebimentoControll.finChequeRecebido.conta}"
+                                        tamanhoMaximo="20" requerido="true"/>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="finChequeRecebidoNumero" label="Numero"
+                                          nomeAtributo="#{finParcelaRecebimentoControll.finChequeRecebido.numero}"
+                                          requerido="true"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="finChequeRecebidoValor" label="Valor"
+                                          nomeAtributo="#{finParcelaRecebimentoControll.finChequeRecebido.valor}"
+                                          requerido="true"/>
+
+                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                       idComponente="finChequeRecebidoDataEmissao" label="Data Emissao"
+                                       nomeAtributo="#{finParcelaRecebimentoControll.finChequeRecebido.dataEmissao}"
+                                       requerido="true"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                       idComponente="finChequeRecebidoBomPara" label="Bom Para"
+                                       nomeAtributo="#{finParcelaRecebimentoControll.finChequeRecebido.bomPara}"
+                                       requerido="true"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            idComponente="finChequeRecebidoHistorico" label="Historico"
+                                            nomeAtributo="#{finParcelaRecebimentoControll.historico}"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+
+
+                    <div class="row">
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             actionListener="#{finParcelaRecebimentoControll.finalizaRecebimentoCheque()}">
+                                <p:ajax process="@form"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogEndereco').hide();}"
+                                        update=":formOutrasTelas:panelFinChequeRecebido,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe,dialogFinChequeRecebido,:formCentro:telaGrid:outputPanelGrid"
+                                />
+                            </h:commandButton>
+                        </div>
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             actionListener="#{finParcelaRecebimentoControll.cancelaRecebimentoCheque()}"
+                            >
+                                <p:ajax update="dialogFinChequeRecebido" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 </ui:composition>
