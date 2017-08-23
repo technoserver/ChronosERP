@@ -7,9 +7,9 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.*;
 
 @Entity
 @Table(name = "VENDA_ORCAMENTO_CABECALHO")
@@ -271,7 +271,7 @@ public class VendaOrcamentoCabecalho implements Serializable {
     }
 
     public Set<VendaOrcamentoDetalhe> getListaVendaOrcamentoDetalhe() {
-        return listaVendaOrcamentoDetalhe;
+        return Optional.ofNullable(listaVendaOrcamentoDetalhe).orElse(new HashSet<>());
     }
 
     public void setListaVendaOrcamentoDetalhe(Set<VendaOrcamentoDetalhe> listaVendaOrcamentoDetalhe) {
@@ -285,8 +285,39 @@ public class VendaOrcamentoCabecalho implements Serializable {
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
-    
-    
+
+    public BigDecimal calcularValorTotal(){
+        valorTotal = getListaVendaOrcamentoDetalhe().stream()
+                          .map(VendaOrcamentoDetalhe::getValorTotal)
+                          .reduce(BigDecimal::add)
+                          .orElse(BigDecimal.ZERO);
+
+        return  valorTotal;
+    }
+
+    public BigDecimal calcularValorProdutos(){
+        valorSubtotal = getListaVendaOrcamentoDetalhe().stream()
+                .map(VendaOrcamentoDetalhe::getValorSubtotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        return valorSubtotal;
+    }
+
+    public String valorSubTotalFormatado(){
+        return formatarValor(calcularValorProdutos());
+    }
+
+    public String valorTotalFormatado(){
+        return formatarValor(calcularValorTotal());
+    }
+
+    private String formatarValor(BigDecimal valor) {
+        DecimalFormatSymbols simboloDecimal = DecimalFormatSymbols.getInstance();
+        simboloDecimal.setDecimalSeparator('.');
+        DecimalFormat formatar = new DecimalFormat("0.00", simboloDecimal);
+
+        return formatar.format(Optional.ofNullable(valor).orElse(BigDecimal.ZERO));
+    }
 
     @Override
     public int hashCode() {

@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -16,6 +18,7 @@ public class ComissaoPerfil implements Serializable {
    private Integer id;
    @Column(name = "CODIGO")
    private String codigo;
+   @NotBlank
    @Column(name = "NOME")
    private String nome;
    @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")

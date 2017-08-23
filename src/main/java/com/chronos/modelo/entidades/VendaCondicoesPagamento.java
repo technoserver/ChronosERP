@@ -35,6 +35,9 @@ public class VendaCondicoesPagamento implements Serializable {
     private Integer prazoMedio;
     @Column(name = "VISTA_PRAZO")
     private String vistaPrazo;
+    @JoinColumn(name = "ID_FIN_TIPO_RECEBIMENTO", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private FinTipoRecebimento finTipoRecebimento;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -217,6 +220,14 @@ public class VendaCondicoesPagamento implements Serializable {
 
     public void setParcelas(List<VendaCondicoesParcelas> parcelas) {
         this.parcelas = parcelas;
+    }
+
+    public FinTipoRecebimento getFinTipoRecebimento() {
+        return finTipoRecebimento;
+    }
+
+    public void setFinTipoRecebimento(FinTipoRecebimento finTipoRecebimento) {
+        this.finTipoRecebimento = finTipoRecebimento;
     }
 
     @Override

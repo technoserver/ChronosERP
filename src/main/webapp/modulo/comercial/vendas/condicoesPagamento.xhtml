@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Condicoes Pagamento
+    </ui:define>
+
+    <ui:define name="tela">
+        #{vendaCondicoesPagamentoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Condicoes Pagamento
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{vendaCondicoesPagamentoControll}"
+                       idDataTable="dataTableCfop"
+                       nomeFuncao="Condicoes Pagamento"
+                       id="telaGrid"
+                       >
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}" />
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}" />
+            </p:column>
+            <p:column headerText="Faturamento Minimo">
+                <h:outputLabel value="#{row.faturamentoMinimo}">
+                    <f:convertNumber pattern="#,##0.00" />
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Faturamento Maximo">
+                <h:outputLabel value="#{row.faturamentoMaximo}">
+                    <f:convertNumber pattern="#,##0.00" />
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Prazo Medio">
+                <h:outputLabel value="#{row.prazoMedio}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{vendaCondicoesPagamentoControll}"
+                                   nomeFuncao="Condicoes Pagamento"
+                                   id="telaDetalhe"
+                                   >
+
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Tipo Recebimento"
+                                  itemLabel="#{objeto.descricao}"
+                                  controller="#{vendaCondicoesPagamentoControll}"
+                                  completeMethod="getListaFinTipoRecebimento"
+                                  nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.finTipoRecebimento}"
+                                  idComponente="vendaCondicoesPagamentoFinTipoRecebimento" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="condicoesPagamentoNome" label="Nome"
+                                nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.nome}"
+                                tamanhoMaximo="50" />
+            </div>
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="condicoesPagamentoFaturamentoMinimo"
+                                  label="Faturamento Minimo"
+                                  nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.faturamentoMinimo}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="condicoesPagamentoFaturamentoMaximo"
+                                  label="Faturamento Maximo"
+                                  nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.faturamentoMaximo}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="condicoesPagamentoIndiceCorrecao"
+                                  label="Indice Correcao"
+                                  nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.indiceCorrecao}" />
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="condicoesPagamentoDiasTolerancia"
+                                  label="Dias Tolerancia"
+                                  nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.diasTolerancia}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="condicoesPagamentoValorTolerancia"
+                                  label="Valor Tolerancia"
+                                  nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.valorTolerancia}" />
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="condicoesPagamentoPrazoMedio" label="Prazo Medio"
+                                  nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.prazoMedio}" />
+            </div>
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="condicoesPagamentoDescricao" label="Descricao"
+                                    nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.descricao}" />
+            </div>
+
+            <erp:separador label="Parcelas" />
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <h:commandLink styleClass="btn btn-default" title="Novo"
+                                   actionListener="#{vendaCondicoesPagamentoControll.incluirVendaCondicoesParcelas}">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        <p:ajax oncomplete="PF('dialogVendaCondicoesParcelas').show()"
+                                process="dataTableVendaCondicoesParcelas"
+                                update=":formOutrasTelas:panelVendaCondicoesParcelas,dataTableVendaCondicoesParcelas"/>
+                    </h:commandLink>
+                </div>
+            </div>
+            <br/>
+
+            <p:dataTable id="dataTableVendaCondicoesParcelas" var="obj"
+                         value="#{vendaCondicoesPagamentoControll.objeto.parcelas}"
+                         resizableColumns="true" reflow="true"
+                         paginator="true"
+                         rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom">
+
+
+
+                <p:column headerText="Parcela">
+                    <h:outputLabel value="#{obj.parcela}" />
+                </p:column>
+                <p:column headerText="Dias a partir da Venda">
+                    <h:outputLabel value="#{obj.dias}" />
+                </p:column>
+                <p:column headerText="Taxa">
+                    <h:outputLabel value="#{obj.taxa}">
+                        <f:convertNumber pattern="#,##0.00" />
+                    </h:outputLabel>
+                </p:column>
+            </p:dataTable>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogVendaCondicoesParcelas"
+                      header="Inclusão/Alteração Parcelas" responsive="true"
+                      widgetVar="dialogVendaCondicoesParcelas" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false" width="800">
+
+                <p:outputPanel id="panelVendaCondicoesParcelas">
+                    <div class="row">
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="vendaCondicoesParcelasParcela" label="Parcela"
+                                          nomeAtributo="#{vendaCondicoesPagamentoControll.vendaCondicoesParcelas.parcela}"
+                                          requerido="true" />
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="vendaCondicoesParcelasDias" label="Dias"
+                                          nomeAtributo="#{vendaCondicoesPagamentoControll.vendaCondicoesParcelas.dias}"
+                                          requerido="true" />
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="vendaCondicoesParcelasTaxa" label="Taxa"
+                                          nomeAtributo="#{vendaCondicoesPagamentoControll.vendaCondicoesParcelas.taxa}"
+                                          requerido="true" />
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             actionListener="#{vendaCondicoesPagamentoControll.salvarVendaCondicoesParcelas}">
+                                <p:ajax process="@form"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogVendaCondicoesParcelas').hide();}"
+                                        update=":formOutrasTelas:panelVendaCondicoesParcelas,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                />
+                            </h:commandButton>
+                        </div>
+                        <div  class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogVendaCondicoesParcelas').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

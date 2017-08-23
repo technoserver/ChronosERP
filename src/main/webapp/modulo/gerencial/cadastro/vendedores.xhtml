@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Vendendores
+    </ui:define>
+
+    <ui:define name="tela">
+        #{cfopControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Vendendores
+    </ui:define>
+
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{vendedorControll}"
+                       idDataTable="dataTableVendendor"
+                       nomeFuncao="Vendedor"
+                       id="telaGrid"
+                       >
+
+            <p:column headerText="Colaborador">
+                <h:outputLabel value="#{row.colaborador.pessoa.nome}" />
+            </p:column>
+            <p:column headerText="Gerente">
+                <h:outputLabel value="#{vendedorControll.keyFromValue(vendedorControll.simNao ,row.gerente)}" />
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{vendedorControll}"
+                                   nomeFuncao="CFOP"
+                                   id="telaDetalhe"
+                                  >
+
+            <div class="row">
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                   idComponente="cfopCfop" label="CFOP"
+                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

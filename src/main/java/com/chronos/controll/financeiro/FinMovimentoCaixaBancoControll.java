@@ -13,6 +13,7 @@ import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -31,10 +32,13 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
 
     private static final long serialVersionUID = 1L;
 
-
+    @Inject
     private Repository<ViewFinMovimentoCaixaBancoID> movimentosBanco;
+    @Inject
     private Repository<FinFechamentoCaixaBanco> fechamentos;
+    @Inject
     private Repository<ContaCaixa> contaCaixaDao;
+    @Inject
     private Repository<ViewFinChequeNaoCompensadoID> cheques;
 
     private FinFechamentoCaixaBanco fechamentoCaixaBanco;

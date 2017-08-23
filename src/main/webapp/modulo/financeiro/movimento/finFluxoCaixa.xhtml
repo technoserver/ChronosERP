@@ -1,72 +1,139 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        CFOP 
+        Fluxo de Caixa
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{finFluxoCaixaControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        Fluxo de Caixa
     </ui:define>
-
 
 
     <ui:define name="gridDados">
+        <erp:formularioGrid controller="#{finFluxoCaixaControll}"
+                            id="telaGrid"
+                            somenteConsulta="true">
+            <div class="row">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
-                       id="telaGrid"
-                       somenteConsulta="true">
+                <div class="col-lg-12 col-lg-3">
+                    <div class="input-group ">
+                        <p:calendar value="#{finFluxoCaixaControll.periodo}"
+                                    placeholder="Informe o Periodo"
+                                    pattern="MM/yyyy"
+                                    required="true"
+                                    mask="true"/>
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}" />
-            </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}" />
-            </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
-            </p:column>
+                        <div class="input-group-btn">
+                            <h:commandLink title="Pagar"
+                                           class="btn btn-default"
+                                           style="height: 34px"
+                                           actionListener="#{finFluxoCaixaControll.buscaDados}">
+                                <i class="fa fa-search" style="padding: 3px"></i>
+                                <p:ajax
+                                        process="@form"
+                                        update=":formCentro:mensagem,formCentro:telaGrid:table:dataTableFinFluxoCaixa"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
 
 
-        </erp:gridDados>
+                </div>
+            </div>
+            <br/>
+            <erp:gridDadosSemForm controller="#{finFluxoCaixaControll}"
+                                  idDataTable="dataTableFinFluxoCaixa"
+                                  id="table"
+                                  dataModel="#{finFluxoCaixaControll.listaFluxoCaixa}">
+
+                <p:column headerText="Operacao">
+                    <h:outputLabel value="#{row.viewFinFluxoCaixa.operacao}"/>
+                </p:column>
+                <p:column headerText="Conta Caixa">
+                    <h:outputLabel value="#{row.viewFinFluxoCaixa.nomeContaCaixa}"/>
+                </p:column>
+                <p:column headerText="Data Lancamento">
+                    <h:outputLabel value="#{row.viewFinFluxoCaixa.dataLancamento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Vencimento">
+                    <h:outputLabel value="#{row.viewFinFluxoCaixa.dataVencimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor">
+                    <h:outputLabel value="#{row.viewFinFluxoCaixa.valor}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Situacao">
+                    <h:outputLabel value="#{row.viewFinFluxoCaixa.descricaoSituacao}"/>
+                </p:column>
+
+            </erp:gridDadosSemForm>
+
+        </erp:formularioGrid>
+
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{finFluxoCaixaControll}"
+                                   nomeFuncao="Fluxo de Caixa"
                                    id="telaDetalhe"
                                    somenteConsulta="true">
 
-            <div class="row">
+            <p:dataTable id="dataTableFinFluxoCaixaDetalhe" var="obj"
+                         value="#{finFluxoCaixaControll.listaFluxoCaixaDetalhe}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         resizableColumns="true" paginatorPosition="bottom">
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
-            </div>
-            <div class="row">
+                <p:column headerText="Operacao">
+                    <h:outputLabel value="#{obj.viewFinFluxoCaixa.operacao}" />
+                </p:column>
+                <p:column headerText="Conta Caixa">
+                    <h:outputLabel value="#{obj.viewFinFluxoCaixa.nomeContaCaixa}" />
+                </p:column>
+                <p:column headerText="Pessoa">
+                    <h:outputLabel value="#{obj.viewFinFluxoCaixa.nomePessoa}" />
+                </p:column>
+                <p:column headerText="Data Lancamento">
+                    <h:outputLabel value="#{obj.viewFinFluxoCaixa.dataLancamento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Pago/Recebido">
+                    <h:outputLabel value="#{obj.viewFinFluxoCaixa.dataVencimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor">
+                    <h:outputLabel value="#{obj.viewFinFluxoCaixa.valor}">
+                        <f:convertNumber pattern="#,##0.00" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Situacao">
+                    <h:outputLabel
+                            value="#{obj.viewFinFluxoCaixa.descricaoSituacao}" />
+                </p:column>
 
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
-            </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
-            </div>
+                <f:facet name="footer">
+                    <p:outputLabel value="#{finFluxoCaixaControll.totais}" />
+                </f:facet>
+            </p:dataTable>
+
 
         </erp:telaInclusaoAlteracao>
     </ui:define>

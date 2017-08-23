@@ -42,6 +42,45 @@
                         IN+
                     </div>
                 </li>
+                <li class="${fn:contains(view.viewId,'gerencial')?'active':''}">
+                    <a href="#">
+                        <i class="fa fa-th-large"></i>
+                        <span class="nav-label">Gerencial</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse ">
+                        <li class="${fn:contains(view.viewId,'modulo/gerencial/cadastro/')?'active':''}">
+                            <a href="#">
+                                <span class="nav-label">Cadastros</span>
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-third-level">
+                                <erp:subMenu caminho="/modulo/gerencial/cadastro/vendedores"
+                                             label="Vendedores"
+                                             funcao="vendedores"/>
+                            </ul>
+                        </li>
+                        <li class="${fn:contains(view.viewId,'modulo/gerencial/comissoes/')?'active':''}">
+                            <a href="#">
+                                <span class="nav-label">Comissões</span>
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-third-level">
+                                <erp:subMenu caminho="/modulo/gerencial/comissoes/comissaoPerfil"
+                                             label="Perfil"
+                                             funcao="comissaoPerfil"/>
+                                <erp:subMenu caminho="/modulo/gerencial/comissoes/comissaoObjetivo"
+                                             label="Objetivo"
+                                             funcao="comissaoObjetivo"/>
+                                <erp:subMenu caminho="/modulo/gerencial/comissoes/comissaoMetas"
+                                             label="Metas"
+                                             funcao="comissaoMetas"/>
+                            </ul>
+                        </li>
+
+                    </ul>
+
+                </li>
                 <li class="${fn:contains(view.viewId,'cadastros')?'active':''}">
                     <a href="#">
                         <i class="fa fa-th-large"></i>
@@ -250,6 +289,7 @@
                                              funcao="finCobranca"/>
                             </ul>
                         </li>
+                        <!--
                         <li class="${fn:contains(view.viewId,'modulo/financeiro/movimento/')?'active':''}">
                             <a href="#">Movimentos <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">
@@ -261,6 +301,7 @@
                                              funcao="finMovimentoCaixaBanco"/>
                             </ul>
                         </li>
+
                         <li class="${fn:contains(view.viewId,'modulo/financeiro/cheque/')?'active':''}">
                             <a href="#">Controle de Chq. <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">
@@ -275,6 +316,7 @@
                                              funcao="CustódiaCheque"/>
                             </ul>
                         </li>
+
                         <li class="${fn:contains(view.viewId,'modulo/financeiro/edi/')?'active':''}">
                             <a href="#">EDI <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">
@@ -289,9 +331,37 @@
                                              funcao="finConfiguracaoBoleto"/>
                             </ul>
                         </li>
+                        -->
                     </ul>
                 </li>
-
+                <li class="${fn:contains(view.viewId,'comercial')?'active':''}">
+                    <a href="#">
+                        <i class="fa fa-th-large"></i>
+                        <span class="nav-label">Comercial</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse ">
+                        <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
+                            <a href="#">
+                                <span class="nav-label">Vendas</span>
+                                <span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-third-level">
+                                <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
+                                    <erp:subMenu caminho="/modulo/comercial/vendas/condicoesPagamento"
+                                                 label="Condições de Pagamento"
+                                                 funcao="condicoesPagamento"/>
+                                    <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
+                                                 label="Orçamento"
+                                                 funcao="orcamento"/>
+                                    <erp:subMenu caminho="/modulo/comercial/vendas/vendas"
+                                                 label="Vendas"
+                                                 funcao="modulo/comercial/vendas/vendas"/>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
 
                 <li class="${fn:contains(view.viewId,'estoque')?'active':''}">
                     <a href="#">
@@ -345,8 +415,11 @@
                 </li>
 
                 <li>
-                    <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label">Menu Levels </span><span
-                            class="fa arrow"></span></a>
+                    <a href="#">
+                        <i class="fa fa-sitemap"></i>
+                        <span class="nav-label">Menu Levels </span>
+                        <span class="fa arrow"></span>
+                    </a>
                     <ul class="nav nav-second-level collapse">
                         <li>
                             <a href="#">Third Level <span class="fa arrow"></span></a>

@@ -6,67 +6,198 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        CFOP 
+        Controle de Caixa e Bancos
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{finMovimentoCaixaBancoControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        Controle de Caixa e Bancos
     </ui:define>
 
 
 
     <ui:define name="gridDados">
+        <erp:formularioGrid controller="#{finMovimentoCaixaBancoControll}"
+                            id="telaGrid"
+                            somenteConsulta="true">
+            <div class="row">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
-                       id="telaGrid"
-                       somenteConsulta="true">
+                <div class="col-lg-12 col-lg-3">
+                    <div class="input-group ">
+                        <p:calendar value="#{finMovimentoCaixaBancoControll.periodo}"
+                                    placeholder="Informe o Periodo"
+                                    pattern="MM/yyyy"
+                                    required="true"
+                                    mask="true"/>
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}" />
-            </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}" />
-            </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
-            </p:column>
+                        <div class="input-group-btn">
+                            <h:commandLink title="Pagar"
+                                           class="btn btn-default"
+                                           style="height: 34px"
+                                           actionListener="#{finMovimentoCaixaBancoControll.buscaDados}">
+                                <i class="fa fa-search" style="padding: 3px"></i>
+                                <p:ajax
+                                        process="@form"
+                                        update=":formCentro:mensagem,formCentro:telaGrid:table:dataTableFinMovimentoCaixaBanco"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
 
 
-        </erp:gridDados>
+                </div>
+            </div>
+            <br/>
+            <erp:gridDadosSemForm controller="#{finMovimentoCaixaBancoControll}"
+                                  idDataTable="dataTableFinMovimentoCaixaBanco"
+                                  id="table" somenteConsulta="true"
+                                  dataModel="#{finMovimentoCaixaBancoControll.listaMovimentoCaixaBanco}">
+
+                <p:column headerText="Operacao">
+                    <h:outputLabel value="#{row.viewFinMovimentoCaixaBanco.operacao}" />
+                </p:column>
+                <p:column headerText="Conta Caixa">
+                    <h:outputLabel
+                            value="#{row.viewFinMovimentoCaixaBanco.nomeContaCaixa}" />
+                </p:column>
+                <p:column headerText="Pessoa">
+                    <h:outputLabel
+                            value="#{row.viewFinMovimentoCaixaBanco.nomePessoa}" />
+                </p:column>
+                <p:column headerText="Data Lancamento">
+                    <h:outputLabel
+                            value="#{row.viewFinMovimentoCaixaBanco.dataLancamento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Pago/Recebido">
+                    <h:outputLabel
+                            value="#{row.viewFinMovimentoCaixaBanco.dataPagoRecebido}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Histórico">
+                    <h:outputLabel
+                            value="#{row.viewFinMovimentoCaixaBanco.historico}" />
+                </p:column>
+                <p:column headerText="Valor">
+                    <h:outputLabel value="#{row.viewFinMovimentoCaixaBanco.valor}">
+                        <f:convertNumber pattern="#,##0.00" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Doc. Origem">
+                    <h:outputLabel
+                            value="#{row.viewFinMovimentoCaixaBanco.descricaoDocumentoOrigem}" />
+                </p:column>
+
+            </erp:gridDadosSemForm>
+
+        </erp:formularioGrid>
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{finMovimentoCaixaBancoControll}"
+                                   nomeFuncao=""
                                    id="telaDetalhe"
                                    somenteConsulta="true">
 
-            <div class="row">
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
+            <p:dataTable id="dataTableFinMovimentoCaixaBancoDetalhe" var="obj"
+                         value="#{finMovimentoCaixaBancoControll.listaMovimentoCaixaBancoDetalhe}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         resizableColumns="true" paginatorPosition="bottom">
+
+                <f:facet name="header">
+
+                </f:facet>
+
+                <p:column headerText="Operacao">
+                    <h:outputLabel
+                            value="#{obj.viewFinMovimentoCaixaBanco.operacao}" />
+                </p:column>
+                <p:column headerText="Conta Caixa">
+                    <h:outputLabel
+                            value="#{obj.viewFinMovimentoCaixaBanco.nomeContaCaixa}" />
+                </p:column>
+                <p:column headerText="Pessoa">
+                    <h:outputLabel
+                            value="#{obj.viewFinMovimentoCaixaBanco.nomePessoa}" />
+                </p:column>
+                <p:column headerText="Data Lancamento">
+                    <h:outputLabel
+                            value="#{obj.viewFinMovimentoCaixaBanco.dataLancamento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Pago/Recebido">
+                    <h:outputLabel
+                            value="#{obj.viewFinMovimentoCaixaBanco.dataPagoRecebido}">
+                        <f:convertDateTime pattern="dd/MM/yyyy" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Histórico">
+                    <h:outputLabel
+                            value="#{obj.viewFinMovimentoCaixaBanco.historico}" />
+                </p:column>
+                <p:column headerText="Valor">
+                    <h:outputLabel value="#{obj.viewFinMovimentoCaixaBanco.valor}">
+                        <f:convertNumber pattern="#,##0.00" />
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Doc. Origem">
+                    <h:outputLabel
+                            value="#{obj.viewFinMovimentoCaixaBanco.descricaoDocumentoOrigem}" />
+                </p:column>
+                <p:column headerText="Ações">
+                    <p:commandButton
+                            process="formCentro:telaDetalhe:dataTableFinMovimentoCaixaBancoDetalhe"
+                            title="Processar Fechamento" icon="ui-icon-document"
+                            actionListener="#{finMovimentoCaixaBancoControll.processaFechamento}"
+                            update=":formCentro:telaDetalhe:outputPanelDetalhe">
+                        <p:confirm header="Confirmação"
+                                   message="Confirma o fechamento do movimento?"
+                                   icon="ui-icon-alert" />
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <erp:separador label="Dados do Fechamento" />
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="finFechamentoCaixaBancoSaldoAnterior"
+                                  label="Saldo Anterior" somenteLeitura="true"
+                                  nomeAtributo="#{finMovimentoCaixaBancoController.fechamentoCaixaBanco.saldoAnterior}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="finFechamentoCaixaBancoRecebimentos"
+                                  label="Recebimentos" somenteLeitura="true"
+                                  nomeAtributo="#{finMovimentoCaixaBancoController.fechamentoCaixaBanco.recebimentos}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="finFechamentoCaixaBancoPagamentos"
+                                  label="Pagamentos" somenteLeitura="true"
+                                  nomeAtributo="#{finMovimentoCaixaBancoController.fechamentoCaixaBanco.pagamentos}" />
             </div>
             <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="finFechamentoCaixaBancoSaldoConta"
+                                  label="Saldo Conta" somenteLeitura="true"
+                                  nomeAtributo="#{finMovimentoCaixaBancoController.fechamentoCaixaBanco.saldoConta}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="finFechamentoCaixaBancoChequeNaoCompensado"
+                                  label="Cheques Nao Compensados" somenteLeitura="true"
+                                  nomeAtributo="#{finMovimentoCaixaBancoController.fechamentoCaixaBanco.chequeNaoCompensado}" />
+                <erp:campoDecimal styleClass="tcol-xs-12 col-sm-4 col-md-4"
+                                  idComponente="finFechamentoCaixaBancoSaldoDisponivel"
+                                  label="Saldo Disponivel" somenteLeitura="true"
+                                  nomeAtributo="#{finMovimentoCaixaBancoController.fechamentoCaixaBanco.saldoDisponivel}" />
+            </div>
 
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
-            </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
-            </div>
+
+
 
         </erp:telaInclusaoAlteracao>
     </ui:define>

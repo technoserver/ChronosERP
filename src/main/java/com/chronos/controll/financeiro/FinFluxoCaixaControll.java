@@ -7,6 +7,7 @@ import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -24,10 +25,13 @@ import java.util.List;
 public class FinFluxoCaixaControll extends AbstractControll<ViewFinFluxoCaixaID> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Inject
+    private Repository<ViewFinFluxoCaixaID> fluxos;
+
     private Date periodo;
     private List<ViewFinFluxoCaixaID> listaFluxoCaixa;
     private List<ViewFinFluxoCaixaID> listaFluxoCaixaDetalhe;
-    private Repository<ViewFinFluxoCaixaID> fluxos;
+
 
 
     @Override

@@ -98,6 +98,24 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, Integer> modalidadeFreteNfe;
     private Map<String, Integer> statusNfe;
 
+    //Compras
+    private Map<String, String> compraSituacaoCotacao;
+    private Map<String, String> compraFormaPagamento;
+    private Map<String, String> compraTipoFrete;
+
+
+
+    //vendas
+    private Map<String, String> vendaOrcamentoTipo;
+    private Map<String, String> vendaOrcamentoSituacao;
+    private Map<String, String> formaPagamento;
+    private Map<String, String> vendaResponsavelFrete;
+    private Map<String, String> vendaRomaneioSituacao;
+
+    //comissao
+    public HashMap<String, String> tipoContagem;
+    public HashMap<String, String> formaPagamentoComissao;
+
     protected abstract Class<T> getClazz();
 
     protected abstract String getFuncaoBase();
@@ -334,6 +352,52 @@ public abstract class AbstractControll<T> implements Serializable {
         tipoBaixa.put("Total", "T");
         tipoBaixa.put("Parcial", "P");
 
+        //Compras
+        compraSituacaoCotacao = new LinkedHashMap<>();
+        compraSituacaoCotacao.put("Aberta", "A");
+        compraSituacaoCotacao.put("Confirmada", "C");
+        compraSituacaoCotacao.put("Fechada", "F");
+
+        compraFormaPagamento = new LinkedHashMap<>();
+        compraFormaPagamento.put("A Vista", "0");
+        compraFormaPagamento.put("A Prazo", "1");
+        compraFormaPagamento.put("Outros", "2");
+
+        compraTipoFrete = new LinkedHashMap<>();
+        compraTipoFrete.put("CIF", "C");
+        compraTipoFrete.put("FOB", "F");
+
+
+        //Vendas
+        vendaOrcamentoTipo = new LinkedHashMap<>();
+        vendaOrcamentoTipo.put("Orçamento", "O");
+        vendaOrcamentoTipo.put("Pedido", "P");
+
+        vendaOrcamentoSituacao = new LinkedHashMap<>();
+        vendaOrcamentoSituacao.put("Digitacao", "D");
+        vendaOrcamentoSituacao.put("Producao", "P");
+        vendaOrcamentoSituacao.put("Expedicao", "X");
+        vendaOrcamentoSituacao.put("Faturado", "F");
+        vendaOrcamentoSituacao.put("Entregue", "E");
+
+        formaPagamento = new LinkedHashMap<>();
+        formaPagamento.put("0 - A Vista", "0");
+        formaPagamento.put("1 - A Prazo", "1");
+        formaPagamento.put("2 - Outros", "2");
+
+        vendaResponsavelFrete = new LinkedHashMap<>();
+        vendaResponsavelFrete.put("Emitente", "1");
+        vendaResponsavelFrete.put("Destinatário", "2");
+
+        vendaRomaneioSituacao = new LinkedHashMap<>();
+        vendaRomaneioSituacao.put("Aberto", "A");
+        vendaRomaneioSituacao.put("Trânsito", "T");
+        vendaRomaneioSituacao.put("Encerrado", "E");
+
+        //comissao
+        formaPagamentoComissao = new HashMap<>();
+        formaPagamentoComissao.put("Fixo", "0");
+        formaPagamentoComissao.put("Percentual", "1");
 
     }
 
@@ -690,5 +754,41 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public Map<String, String> getTipoBaixa() {
         return tipoBaixa;
+    }
+
+    public Map<String, String> getVendaOrcamentoTipo() {
+        return vendaOrcamentoTipo;
+    }
+
+    public Map<String, String> getVendaOrcamentoSituacao() {
+        return vendaOrcamentoSituacao;
+    }
+
+    public Map<String, String> getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public Map<String, String> getVendaResponsavelFrete() {
+        return vendaResponsavelFrete;
+    }
+
+    public Map<String, String> getVendaRomaneioSituacao() {
+        return vendaRomaneioSituacao;
+    }
+
+    public Map<String, String> getCompraSituacaoCotacao() {
+        return compraSituacaoCotacao;
+    }
+
+    public Map<String, String> getCompraFormaPagamento() {
+        return compraFormaPagamento;
+    }
+
+    public Map<String, String> getCompraTipoFrete() {
+        return compraTipoFrete;
+    }
+
+    public HashMap<String, String> getFormaPagamentoComissao() {
+        return formaPagamentoComissao;
     }
 }

@@ -224,4 +224,20 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     protected String getFuncaoBase() {
         return "VENDA_ORCAMENTO_CABECALHO";
     }
+
+    public VendaOrcamentoDetalhe getVendaOrcamentoDetalhe() {
+        return vendaOrcamentoDetalhe;
+    }
+
+    public void setVendaOrcamentoDetalhe(VendaOrcamentoDetalhe vendaOrcamentoDetalhe) {
+        this.vendaOrcamentoDetalhe = vendaOrcamentoDetalhe;
+    }
+
+    public VendaOrcamentoDetalhe getVendaOrcamentoDetalheSelecionado() {
+        return vendaOrcamentoDetalheSelecionado;
+    }
+
+    public void setVendaOrcamentoDetalheSelecionado(VendaOrcamentoDetalhe vendaOrcamentoDetalheSelecionado) {
+        this.vendaOrcamentoDetalheSelecionado = vendaOrcamentoDetalheSelecionado;
+    }
 }

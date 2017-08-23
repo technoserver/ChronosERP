@@ -102,4 +102,6 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
     public void setVendaCondicoesParcelas(VendaCondicoesParcelas vendaCondicoesParcelas) {
         this.vendaCondicoesParcelas = vendaCondicoesParcelas;
     }
+
+
 }
