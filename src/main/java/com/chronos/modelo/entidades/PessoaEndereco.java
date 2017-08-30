@@ -28,7 +28,10 @@
  */
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -42,28 +45,29 @@ public class PessoaEndereco implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;   
-  //  @NotEmpty(message = "Logradouro obrigatório")
+    @NotBlank
     @Column(name = "LOGRADOURO")
     private String logradouro;
+    @NotBlank
     @Column(name = "NUMERO")
     private String numero;
     @Column(name = "COMPLEMENTO")
     private String complemento;
     @Column(name = "BAIRRO")
-  //  @NotEmpty(message = "Bairro obrigatório")
+    @NotBlank
     private String bairro;
     @Column(name = "CIDADE")
-  //  @NotEmpty(message = "Cidade obrigatória")
+    @NotBlank
     private String cidade;
     @Column(name = "CEP")
- //   @NotEmpty(message = "Cep Obrigatório")
+    @NotBlank
     private String cep;
     @Column(name = "FONE")
     private String fone;
     @Column(name = "MUNICIPIO_IBGE")
     private Integer municipioIbge;
     @Column(name = "UF")
-//    @NotEmpty(message = "UF Obrigatório")
+    @NotBlank
     private String uf;
     @Column(name = "PRINCIPAL")
     private String principal;
@@ -75,9 +79,16 @@ public class PessoaEndereco implements Serializable {
     private String correspondencia;
     @JoinColumn(name = "ID_PESSOA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
+    @NotNull
     private Pessoa pessoa;
 
     public PessoaEndereco() {
+    }
+    @PrePersist
+    @PreUpdate
+    private void prePersist(){
+      cep = cep!=null ? cep.replaceAll("\\D",""):"";
+      fone = fone!=null ? fone.replaceAll("\\D",""):"";
     }
 
     public Integer getId() {

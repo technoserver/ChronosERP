@@ -97,13 +97,13 @@
                         <p:tab title="Dados Genreciais" id="dadosGerenciais">
                             <ui:include src="formCliente.xhtml"/>
                         </p:tab>
-                        <p:tab title="Endereços" id="enderecos">
+                        <p:tab title="Endereços" id="enderecos" disabled="#{empty clienteControll.pessoa.id}">
                             <erp:gridPessoaEndereco controller="#{clienteControll}" />
                         </p:tab>
-                        <p:tab title="Contatos" id="contatos">
+                        <p:tab title="Contatos" id="contatos" disabled="#{empty clienteControll.pessoa.id}">
 
                         </p:tab>
-                        <p:tab title="Telefones" id="telefones">
+                        <p:tab title="Telefones" id="telefones" disabled="#{empty clienteControll.pessoa.id}">
                             <erp:gridPessoaTelefone controller="#{clienteControll}" />
                         </p:tab>
                     </p:tabView>

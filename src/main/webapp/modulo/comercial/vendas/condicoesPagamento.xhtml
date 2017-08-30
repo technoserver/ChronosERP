@@ -24,7 +24,7 @@
     <ui:define name="gridDados">
 
         <erp:gridDados controller="#{vendaCondicoesPagamentoControll}"
-                       idDataTable="dataTableCfop"
+                       idDataTable="dataTableVendaCondicoesPagamento"
                        nomeFuncao="Condicoes Pagamento"
                        id="telaGrid"
                        >
@@ -112,7 +112,7 @@
                                    actionListener="#{vendaCondicoesPagamentoControll.incluirVendaCondicoesParcelas}">
                         <i class="glyphicon glyphicon-plus"></i>
                         <p:ajax oncomplete="PF('dialogVendaCondicoesParcelas').show()"
-                                process="dataTableVendaCondicoesParcelas"
+                                process="@this,dataTableVendaCondicoesParcelas"
                                 update=":formOutrasTelas:panelVendaCondicoesParcelas,dataTableVendaCondicoesParcelas"/>
                     </h:commandLink>
                 </div>

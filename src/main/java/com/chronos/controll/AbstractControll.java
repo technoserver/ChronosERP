@@ -113,8 +113,8 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, String> vendaRomaneioSituacao;
 
     //comissao
-    public HashMap<String, String> tipoContagem;
-    public HashMap<String, String> formaPagamentoComissao;
+    private HashMap<String, String> tipoContagem;
+    private HashMap<String, String> formaPagamentoComissao;
 
     protected abstract Class<T> getClazz();
 

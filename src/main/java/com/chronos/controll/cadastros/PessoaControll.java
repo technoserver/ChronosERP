@@ -57,8 +57,6 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         getPessoa().setListaPessoaEndereco(new HashSet<>());
         getPessoa().setListaPessoaTelefone(new HashSet<>());
 
-        endereco = new PessoaEndereco();
-        endereco.setPrincipal("S");
     }
 
     @Override
@@ -163,9 +161,20 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     protected Pessoa novaPessoa(String cliente, String colaborador, String transportadora, String fornecedor) {
 
         Pessoa pessoa = new Pessoa();
+
+        pessoa.setCliente(cliente);
+        pessoa.setFornecedor(fornecedor);
+        pessoa.setColaborador(colaborador);
+        pessoa.setTransportadora(transportadora);
+
         pessoa.setListaPessoaContato(new HashSet<>());
         pessoa.setListaPessoaEndereco(new HashSet<>());
         pessoa.setListaPessoaTelefone(new HashSet<>());
+
+        endereco = new PessoaEndereco();
+        endereco.setPrincipal("S");
+        endereco.setPessoa(pessoa);
+        pessoa.getListaPessoaEndereco().add(endereco);
 
         if (cliente.equals("S")) {
             pessoa.setCliente(cliente);

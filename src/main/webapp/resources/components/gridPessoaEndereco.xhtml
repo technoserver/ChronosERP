@@ -19,7 +19,7 @@
             <h:commandLink title="Cadastrar" class="btn btn-primary"
                            actionListener="#{cc.attrs.controller.incluirEndereco()}">
                 <i class="fa fa-plus"></i>
-                <p:ajax process="dataTablePessoaEndereco"
+                <p:ajax process="@this,dataTablePessoaEndereco"
                         oncomplete="PF('dialogEndereco').show()"
                         update=":campoPessoaEndereco:formOutrasTelas2:panelPessoaEndereco,dataTablePessoaEndereco"/>
             </h:commandLink>

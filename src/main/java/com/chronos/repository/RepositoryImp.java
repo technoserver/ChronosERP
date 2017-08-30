@@ -433,7 +433,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
                 if (f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) {
                     query.setParameter("valor" + i, "%" + String.valueOf(f.getValor()).trim().toLowerCase() + "%");
                 } else if (f.getValor().getClass() == String.class) {
-                    query.setParameter("valor" + i, String.valueOf(f.getValor()).trim().toLowerCase());
+                    query.setParameter("valor" + i, String.valueOf(f.getValor()).trim());
 
                 } else {
                     query.setParameter("valor" + i, f.getValor());

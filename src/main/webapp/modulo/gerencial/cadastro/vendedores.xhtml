@@ -13,7 +13,7 @@
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{vendedorControll.titulo}
     </ui:define>
     <ui:define name="controle">
         Vendendores
@@ -25,7 +25,7 @@
 
         <erp:gridDados controller="#{vendedorControll}"
                        idDataTable="dataTableVendendor"
-                       nomeFuncao="Vendedor"
+                       nomeFuncao="Vendedores"
                        id="telaGrid"
                        >
 
@@ -43,15 +43,39 @@
 
     <ui:define name="telaInclusaoAlteracao">
         <erp:telaInclusaoAlteracao controller="#{vendedorControll}"
-                                   nomeFuncao="CFOP"
+                                   nomeFuncao="Vendedores"
                                    id="telaDetalhe"
                                   >
 
             <div class="row">
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Colaborador"
+                                  itemLabel="#{objeto.pessoa.nome}"
+                                  controller="#{vendedorControll}"
+                                  completeMethod="getListColaborador"
+                                  nomeAtributo="#{vendedorControll.objeto.colaborador}"
+                                  idComponente="colaborador" />
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Perfil"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{vendedorControll}"
+                                  completeMethod="getListPerfil"
+                                  nomeAtributo="#{vendedorControll.objeto.comissaoPerfil}"
+                                  idComponente="comissaoPerfil" />
+
+            </div>
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="gerente"
+                                 label="Gerente"
+                                 nomeAtributo="#{vendedorControll.objeto.gerente}"
+                                 itens="#{vendedorControll.simNao}" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="taxaGerente"
+                                  label="Taxa Gerente"
+                                  nomeAtributo="#{vendedorControll.objeto.taxaGerente}" />
             </div>
 
 

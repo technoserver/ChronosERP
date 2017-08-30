@@ -95,12 +95,20 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
     }
 
+    @Override
+    public void remover() {
+        Cliente cliente = dataModel.getRowData(String.valueOf(clienteSelecionado.getId()));
+        setObjetoSelecionado(cliente);
+        super.remover();
+    }
+
     public List<Pessoa> getListaPessoa(String nome) {
         List<Pessoa> listaPessoa = new ArrayList<>();
         try {
+
             listaPessoa = pessoas.getEntitys(Pessoa.class, "nome", nome, atributos);
         } catch (Exception e) {
-            // e.printStackTrace();
+             e.printStackTrace();
         }
         return listaPessoa;
     }
@@ -150,7 +158,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     public List<AtividadeForCli> getListaAtividadeForCli(String nome) {
         List<AtividadeForCli> listaAtividadeForCli = new ArrayList<>();
         try {
-            listaAtividadeForCli = atividadesClientes.getEntitys(AtividadeForCli.class, "nome", nome, atributos);
+            listaAtividadeForCli = atividadesClientes.getEntitys(AtividadeForCli.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -160,7 +168,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     public List<SituacaoForCli> getListaSituacaoForCli(String nome) {
         List<SituacaoForCli> listaSituacaoForCli = new ArrayList<>();
         try {
-            listaSituacaoForCli = situacoesCliente.getEntitys(SituacaoForCli.class, "nome", nome, atributos);
+            listaSituacaoForCli = situacoesCliente.getEntitys(SituacaoForCli.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }

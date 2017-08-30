@@ -32,9 +32,12 @@ public class ClienteService implements Serializable{
 
     public Cliente salvar(Cliente cliente)  {
         try {
+            validarPessoa(cliente.getPessoa());
+            Pessoa pessoa = cliente.getPessoa().getId()==null? pessoas.atualizar(cliente.getPessoa()):cliente.getPessoa();
+            cliente.setPessoa(pessoa);
             cliente = clientes.atualizar(cliente);
             clientes.getEntityJoinFetch(1,Cliente.class);
-            validarPessoa(cliente.getPessoa());
+
         } catch (Exception ex) {
             Mensagem.addErrorMessage("",ex);
         }
@@ -62,6 +65,11 @@ public class ClienteService implements Serializable{
                 throw new ChronosException("CNPJ invalido");
             }
         }
+
+        if(pessoa.getListaPessoaEndereco()==null || pessoa.getListaPessoaEndereco().isEmpty()){
+            throw new ChronosException("Endereço principal não informado");
+        }
+
 
     }
 }

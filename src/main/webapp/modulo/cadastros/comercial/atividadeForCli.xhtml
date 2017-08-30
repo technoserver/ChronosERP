@@ -22,74 +22,46 @@
 
 
     <ui:define name="gridDados">
-        <h:panelGroup layout="block" id="outputPanelGrid">
-            <h:panelGroup layout="block" rendered="#{atividadeForClienteControll.telaGrid}">
-                
-                <div class="ibox-content">
-                    <erp:msgPermissao permissao="#{atividadeForClienteControll.podeConsultar()}"/>               
-                    <p:dataTable value="#{atividadeForClienteControll.dataModel}" var="row" id="dataTableAtividadeForCli" paginator="true"
-                                 rows="10" rowsPerPageTemplate="10,20,30,40"  paginatorPosition="bottom"                                                                   
-                                 reflow="true"
-                                 resizableColumns="true" lazy="true" 
-                                 rendered="#{atividadeForClienteControll.podeConsultar()}">
+        <erp:gridDados controller="#{atividadeForClienteControll}"
+                       idDataTable="dataTableAtividadeForCli"
+                       nomeFuncao="Atividade Fornecedor/Cliente"
+                       id="telaGrid"
+                        >
 
-                        <p:column headerText="Nome">
-                            <h:outputLabel value="#{row.nome}" />
-                        </p:column>      
-                        
-                        <p:column headerText="Ações" width="100">
-                            <p:commandLink title="Alterar"  action="#{atividadeForClienteControll.doEdit()}" class=" btn btn-default"
-                                           update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
-                                <i class="fa fa-file-text-o"></i>   
-                                <f:setPropertyActionListener value="#{row}" target="#{atividadeForClienteControll.objetoSelecionado}"/>
-                            </p:commandLink>
-                            &nbsp;
-                            <p:commandLink title="Excluir"   action="#{atividadeForClienteControll.remover()}" style="position: relative; right: 7px"
-                                           update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
-                                           process="dataTableAtividadeForCli"
-                                           oncomplete="atualizarMsg();"
-                                           class="btn btn-default">
-                                <i class="fa fa-times"></i> 
-                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
-                                <f:setPropertyActionListener value="#{row}" target="#{atividadeForClienteControll.objetoSelecionado}"/> 
-                            </p:commandLink>
-                        </p:column>
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}" />
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}" />
+            </p:column>
 
-                    </p:dataTable>
 
-                </div><!-- /.box-body -->
-                <div class="ibox-footer">
-                    <div class="row">
-                        <div  class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Cadastrar" class="btn btn-danger center-block"
-                                             actionListener="#{atividadeForClienteControll.doCreate()}"
-                                             disabled="#{!atividadeForClienteControll.podeInserir()}"
-                                             >
-                                <p:ajax process="@form"  update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
-                            </h:commandButton>
-                        </div>
-                        <div  class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                                             action="#{atividadeForClienteControll.doIndex()}" immediate="true"
-                                             />
-                        </div>
-
-                    </div>
-                </div>
-
-            </h:panelGroup>
-        </h:panelGroup>
+        </erp:gridDados>
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <h:panelGroup layout="block" id="outputPanelDetalhe">
-            <h:panelGroup layout="block" rendered="#{!atividadeForClienteControll.telaGrid}">
-                <h:panelGroup layout="block" id="panelCentroDetalhe">
-                    <ui:include src="formAtividadeForCli.xhtml"/>
-                </h:panelGroup>
-            </h:panelGroup>
-        </h:panelGroup>
+        <erp:telaInclusaoAlteracao controller="#{atividadeForClienteControll}"
+                                   nomeFuncao="Atividade Fornecedor/Cliente"
+                                   id="telaDetalhe"
+                                   >
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                 idComponente="atividadeForCliNome" label="Nome"
+                                 nomeAtributo="#{atividadeForClienteControll.objeto.nome}"
+                                 tamanhoMaximo="50" />
+
+            </div>
+
+            <div  class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="descricao" label="Descrição"
+                                    nomeAtributo="#{atividadeForClienteControll.objeto.descricao}" />
+            </div>
+
+        </erp:telaInclusaoAlteracao>
     </ui:define>
 
 </ui:composition>
