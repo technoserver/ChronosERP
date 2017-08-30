@@ -5,15 +5,12 @@
  */
 package com.chronos.controll.cadastros;
 
-import com.chronos.controll.AbstractControll;
-import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.controll.cadastros.datamodel.ClienteDataModel;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.TelaPessoa;
 import com.chronos.modelo.entidades.view.PessoaCliente;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.ClienteService;
-import com.chronos.service.cadastros.PessoaService;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -91,8 +88,8 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     @Override
     public void salvar() {
 
-        service.salvar(getObjeto());
-
+        Cliente cliente = service.salvar(getObjeto());
+        setObjeto(cliente);
     }
 
     @Override

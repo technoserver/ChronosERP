@@ -28,6 +28,8 @@
 */
 package com.chronos.modelo.entidades;
 
+import org.springframework.util.StringUtils;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -65,6 +67,12 @@ public class PessoaJuridica implements Serializable {
     private Pessoa pessoa;
 
     public PessoaJuridica() {
+    }
+
+    @PreUpdate
+    @PrePersist
+    private void prePersit() {
+        cnpj = StringUtils.isEmpty(cnpj) ? "" : cnpj.replaceAll("\\d", "");
     }
 
     public Integer getId() {
@@ -148,8 +156,17 @@ public class PessoaJuridica implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "com.t2tierp.model.bean.cadastros.PessoaJuridica[id=" + id + "]";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PessoaJuridica)) return false;
+
+        PessoaJuridica that = (PessoaJuridica) o;
+
+        return getId().equals(that.getId());
     }
 
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }

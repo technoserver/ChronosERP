@@ -144,9 +144,9 @@ public class Biblioteca {
             // Verifica se os digitos calculados conferem com os digitos
             // informados.
             if ((dig13 == cnpj.charAt(12)) && (dig14 == cnpj.charAt(13))) {
-                return (true);
+                return true;
             } else {
-                return (false);
+                return false;
             }
         } catch (Exception e) {
             return (false);

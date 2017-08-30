@@ -9,6 +9,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -92,7 +93,9 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         if (pessoaContato.getId() == null) {
             getPessoa().getListaPessoaContato().add(pessoaContato);
         }
-        salvar("Contato salvo com sucesso!");
+        pessoas.atualizar(getPessoa());
+        Mensagem.addInfoMessage("Contato salvo com sucesso!");
+
     }
 
     public void excluirContato() {
@@ -118,7 +121,9 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         if (pessoaEndereco.getId() == null) {
             getPessoa().getListaPessoaEndereco().add(pessoaEndereco);
         }
-        salvar("Endereço salvo com sucesso!");
+        pessoas.atualizar(getPessoa());
+        Mensagem.addInfoMessage("Endereço salvo com sucesso!");
+
     }
 
     public void excluirEndereco() {
@@ -173,6 +178,10 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
 
         endereco = new PessoaEndereco();
         endereco.setPrincipal("S");
+        endereco.setCobranca("S");
+        endereco.setCorrespondencia("S");
+        endereco.setEntrega("S");
+
         endereco.setPessoa(pessoa);
         pessoa.getListaPessoaEndereco().add(endereco);
 
@@ -230,7 +239,6 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     public List<Municipio> getMunicipios(String nome) {
         cidades = new LinkedList<>();
         try {
-
             List<Filtro> filtros = new LinkedList<>();
             filtros.add(new Filtro("uf.sigla", endereco.getUf()));
             filtros.add(new Filtro("nome", Filtro.LIKE, nome));

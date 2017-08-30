@@ -25,11 +25,11 @@
     <ui:define name="gridDados">
 
         <erp:gridDadosCustom controller="#{clienteControll}"
-                       idDataTable="dataTableCliente"
-                       nomeFuncao="Cliente"
-                       id="telaGrid"
-                       dataModel="#{clienteControll.clienteDataModel}"
-                       objetoSelecionado="#{clienteControll.clienteSelecionado}">
+                             idDataTable="dataTableCliente"
+                             nomeFuncao="Cliente"
+                             id="telaGrid"
+                             dataModel="#{clienteControll.clienteDataModel}"
+                             objetoSelecionado="#{clienteControll.clienteSelecionado}">
 
             <p:column headerText="Nome">
                 <h:outputLabel value="#{row.nome}"/>
@@ -67,7 +67,6 @@
 
             <div class="row">
 
-
                 <div class="col-xs-12 col-sm-2 col-md-2">
                     <h:outputLabel value="Cadastro completo"
                                    for="clienteBloqueado"/>
@@ -88,25 +87,13 @@
                     <ui:include src="formCliente.xhtml"/>
                 </h:panelGroup>
                 <h:panelGroup layout="block" rendered="#{clienteControll.completo eq 'S'}">
-                    <p:tabView id="tabCliente">
-                        <p:tab title="Dados Principais" id="dadosPrincipais">
-                            <erp:dadosPessoa controller="#{clienteControll}" id="dadosPessoa"/>
 
+                    <erp:dadosPessoa controller="#{clienteControll}" id="dadosPessoa">
 
-                        </p:tab>
-                        <p:tab title="Dados Genreciais" id="dadosGerenciais">
-                            <ui:include src="formCliente.xhtml"/>
-                        </p:tab>
-                        <p:tab title="Endereços" id="enderecos" disabled="#{empty clienteControll.pessoa.id}">
-                            <erp:gridPessoaEndereco controller="#{clienteControll}" />
-                        </p:tab>
-                        <p:tab title="Contatos" id="contatos" disabled="#{empty clienteControll.pessoa.id}">
+                        <ui:include src="formCliente.xhtml"/>
 
-                        </p:tab>
-                        <p:tab title="Telefones" id="telefones" disabled="#{empty clienteControll.pessoa.id}">
-                            <erp:gridPessoaTelefone controller="#{clienteControll}" />
-                        </p:tab>
-                    </p:tabView>
+                    </erp:dadosPessoa>
+
                 </h:panelGroup>
             </h:panelGroup>
 
@@ -114,14 +101,14 @@
         </erp:telaInclusaoAlteracao>
     </ui:define>
 
-    <ui:define name="outrasTelas2" >
+    <ui:define name="outrasTelas2">
         <erp:dadosPessoaEndereco id="campoPessoaEndereco"
-                             controller="#{clienteControll}" />
+                                 controller="#{clienteControll}"/>
     </ui:define>
 
-    <ui:define name="outrasTelas3" >
+    <ui:define name="outrasTelas3">
         <erp:dadosPessoaTelefone id="campoPessoaTelefone"
-                             controller="#{clienteControll}" />
+                                 controller="#{clienteControll}"/>
     </ui:define>
 
 </ui:composition>

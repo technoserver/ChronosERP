@@ -36,7 +36,7 @@ public class ClienteService implements Serializable{
             Pessoa pessoa = cliente.getPessoa().getId()==null? pessoas.atualizar(cliente.getPessoa()):cliente.getPessoa();
             cliente.setPessoa(pessoa);
             cliente = clientes.atualizar(cliente);
-            clientes.getEntityJoinFetch(1,Cliente.class);
+            // clientes.getEntityJoinFetch(1,Cliente.class);
 
         } catch (Exception ex) {
             Mensagem.addErrorMessage("",ex);
@@ -61,7 +61,7 @@ public class ClienteService implements Serializable{
             if (total > 0) {
                 throw new ChronosException("CNPJ ja informado em :" + pessoa.getNome());
             }
-            if(Biblioteca.cnpjValido(pessoa.getIdentificador())){
+            if (!Biblioteca.cnpjValido(pessoa.getIdentificador())) {
                 throw new ChronosException("CNPJ invalido");
             }
         }

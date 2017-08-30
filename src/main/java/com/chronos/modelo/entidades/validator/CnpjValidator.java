@@ -20,7 +20,7 @@ public class CnpjValidator implements Validator {
         String cnpj = String.valueOf(value);
         cnpj = cnpj.replaceAll("\\D", "");
         if (!Biblioteca.cnpjValido(cnpj)) {
-            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "CNPJ inválido!", null));
+            throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "CNPJ inválido!!!", null));
         }
     }
 }
