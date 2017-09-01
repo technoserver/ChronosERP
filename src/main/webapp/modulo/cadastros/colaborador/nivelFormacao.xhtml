@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Nivel Formacao
+    </ui:define>
+
+    <ui:define name="tela">
+        #{nivelFormacaoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Nivel Formacao
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{nivelFormacaoControll}"
+                       idDataTable="dataTableNivelFormacao"
+                       nomeFuncao="Nivel Formacao"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+            <p:column headerText="Grau Instrucao Caged">
+                <h:outputLabel value="#{row.grauInstrucaoCaged}"/>
+            </p:column>
+            <p:column headerText="Grau Instrucao Sefip">
+                <h:outputLabel value="#{row.grauInstrucaoSefip}"/>
+            </p:column>
+            <p:column headerText="Grau Instrucao Rais">
+                <h:outputLabel value="#{row.grauInstrucaoRais}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{nivelFormacaoControll}"
+                                   nomeFuncao="Nivel Formacao"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="nivelFormacaoNome" label="Nome"
+                                nomeAtributo="#{nivelFormacaoControll.objeto.nome}"
+                                tamanhoMaximo="100"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="nivelFormacaoGrauInstrucaoCaged" label="Grau Instrucao Caged"
+                                  nomeAtributo="#{nivelFormacaoControll.objeto.grauInstrucaoCaged}"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="nivelFormacaoGrauInstrucaoSefip" label="Grau Instrucao Sefip"
+                                  nomeAtributo="#{nivelFormacaoControll.objeto.grauInstrucaoSefip}"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="nivelFormacaoGrauInstrucaoRais" label="Grau Instrucao Rais"
+                                  nomeAtributo="#{nivelFormacaoControll.objeto.grauInstrucaoRais}"/>
+            </div>
+
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="nivelFormacaoDescricao" label="Descricao"
+                                    nomeAtributo="#{nivelFormacaoControll.objeto.descricao}"/>
+
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

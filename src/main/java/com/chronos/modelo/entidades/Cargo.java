@@ -28,6 +28,8 @@
 */
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -46,7 +48,7 @@ public class Cargo implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
- //   @NotEmpty(message = "Nome Obrigatório")
+    @NotBlank
     @Column(name = "NOME")
     private String nome;
     @Column(name = "DESCRICAO")

@@ -28,6 +28,8 @@
 */
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -43,10 +45,10 @@ public class SituacaoColaborador implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-//    @NotEmpty(message = "Codigo Obrigatório")
+    //    @NotEmpty(message = "Codigo Obrigatório")
     @Column(name = "CODIGO")
     private String codigo;
- //   @NotEmpty(message = "Nome Obrigatório")
+    @NotBlank
     @Column(name = "NOME")
     private String nome;
     @Column(name = "DESCRICAO")
@@ -91,8 +93,6 @@ public class SituacaoColaborador implements Serializable {
     public int hashCode() {
         int hash = 5;
         hash = 67 * hash + Objects.hashCode(this.id);
-        hash = 67 * hash + Objects.hashCode(this.codigo);
-        hash = 67 * hash + Objects.hashCode(this.nome);
         return hash;
     }
 
@@ -108,17 +108,11 @@ public class SituacaoColaborador implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.codigo, other.codigo)) {
-            return false;
-        }
-        if (!Objects.equals(this.nome, other.nome)) {
-            return false;
-        }
+
         return true;
     }
 
-    
-    
+
     @Override
     public String toString() {
         return nome;

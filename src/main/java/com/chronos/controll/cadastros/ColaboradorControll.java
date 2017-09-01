@@ -23,14 +23,23 @@ public class ColaboradorControll extends AbstractControll<Colaborador> implement
 
     private static final long serialVersionUID = 1L;
 
+    private String completo;
+
     @Override
     protected Class<Colaborador> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Colaborador.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "COLABORADOR";
     }
-    
+
+    public String getCompleto() {
+        return completo;
+    }
+
+    public void setCompleto(String completo) {
+        this.completo = completo;
+    }
 }

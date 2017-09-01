@@ -130,6 +130,29 @@
                                              funcao="cheque"/>
                             </ul>
                         </li>
+                        <li class="${fn:contains(view.viewId,'cadastros/colaborador')?'active':''}">
+                            <a href="#">Colaborador <span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <erp:subMenu caminho="/modulo/cadastros/colaborador/cargo"
+                                             label="Cargo"
+                                             funcao="cargo"/>
+                                <erp:subMenu caminho="/modulo/cadastros/colaborador/nivelFormacao"
+                                             label="Nivel Formação"
+                                             funcao="nivelFormacao"/>
+                                <erp:subMenu caminho="/modulo/cadastros/colaborador/tipoAdmissao"
+                                             label="Tipo Admissao"
+                                             funcao="tipoAdmissao"/>
+                                <erp:subMenu caminho="/modulo/cadastros/colaborador/tipoRelacionamento"
+                                             label="Tipo Relacionamento"
+                                             funcao="tipoRelacionamento"/>
+                                <erp:subMenu caminho="/modulo/cadastros/colaborador/tipoColaborador"
+                                             label="Tipo Colaborador"
+                                             funcao="tipoColaborador"/>
+                                <erp:subMenu caminho="/modulo/cadastros/colaborador/situacaoColaborador"
+                                             label="Situacao Colaborador"
+                                             funcao="situacaoColaborador"/>
+                            </ul>
+                        </li>
 
                         <li class="${fn:contains(view.viewId,'cadastros/produto')?'active':''}">
                             <a href="#">Produto <span class="fa arrow"></span></a>

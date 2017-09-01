@@ -3,76 +3,68 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="title">
-        Cliente
+        Colaborador
     </ui:define>
 
     <ui:define name="tela">
-        #{clienteControll.titulo}
+        #{colaboradorControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        Cliente
+        Colaborador
     </ui:define>
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDadosCustom controller="#{clienteControll}"
-                             idDataTable="dataTableCliente"
-                             nomeFuncao="Cliente"
-                             id="telaGrid"
-                             dataModel="#{clienteControll.clienteDataModel}"
-                             objetoSelecionado="#{clienteControll.clienteSelecionado}">
+        <erp:gridDados controller="#{colaboradorControll}"
+                       idDataTable="dataTableColaborador"
+                       nomeFuncao="Colaborador"
+                       id="telaGrid"
+        >
 
             <p:column headerText="Nome">
-                <h:outputLabel value="#{row.nome}"/>
+                <h:outputLabel value="#{row.pessoa.nome}"/>
             </p:column>
-            <p:column headerText="CPF/CNPJ">
-                <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
-                    <f:converter converterId="cpfCnpjConverter"/>
-                </h:outputLabel>
-                <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'J'}">
-                    <f:converter converterId="cpfCnpjConverter"/>
-                </h:outputLabel>
+            <p:column headerText="Matricula">
+                <h:outputLabel value="#{row.matricula}"/>
             </p:column>
-            <p:column headerText="Endereço">
-                <h:outputLabel value="#{row.logradouro}"/>
+            <p:column headerText="Data Admissao">
+                <h:outputLabel value="#{row.dataAdmissao}"/>
             </p:column>
-            <p:column headerText="Cidade">
-                <h:outputLabel value="#{row.cidade}"/>
+            <p:column headerText="Situacao">
+                <h:outputLabel value="#{row.situacaoColaborador.nome}"/>
             </p:column>
-            <p:column headerText="UF">
-                <h:outputLabel value="#{row.uf}"/>
+            <p:column headerText="Cargo">
+                <h:outputLabel value="#{row.cargo.nome}"/>
             </p:column>
-            <p:column headerText="Fone">
-                <h:outputLabel value="#{row.fone}"/>
+            <p:column headerText="Setor">
+                <h:outputLabel value="#{row.setor.nome}"/>
             </p:column>
 
 
-        </erp:gridDadosCustom>
+        </erp:gridDados>
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{clienteControll}"
-                                   nomeFuncao="Cliente"
+        <erp:telaInclusaoAlteracao controller="#{colaboradorControll}"
+                                   nomeFuncao="Colaborador"
                                    id="telaDetalhe">
 
             <div class="row">
-
                 <div class="col-xs-12 col-sm-2 col-md-2">
                     <h:outputLabel value="Cadastro completo"
                                    for="clienteBloqueado"/>
                     <h:selectOneMenu id="clienteBloqueado"
                                      class="form-control"
-                                     value="#{clienteControll.completo}">
+                                     value="#{colaboradorControll.completo}">
                         <f:selectItems value="#{clienteControll.naoSim}"/>
                         <p:ajax event="change" update=":formCentro:telaDetalhe:tipoCadastro"
                                 process="@this"
@@ -84,13 +76,13 @@
             <br/>
             <h:panelGroup layout="block" id="tipoCadastro">
                 <h:panelGroup layout="block" rendered="#{clienteControll.completo eq 'N'}">
-                    <ui:include src="formCliente.xhtml"/>
+
                 </h:panelGroup>
                 <h:panelGroup layout="block" rendered="#{clienteControll.completo eq 'S'}">
 
                     <erp:dadosPessoa controller="#{clienteControll}" id="dadosPessoa">
-                        <p:tab title="Dados Genreciais" id="dadosGerenciais">
-                            <ui:include src="formCliente.xhtml"/>
+                        <p:tab title="Dados Colaborador" id="dadosGerenciais">
+
                         </p:tab>
                     </erp:dadosPessoa>
 
@@ -99,16 +91,6 @@
 
 
         </erp:telaInclusaoAlteracao>
-    </ui:define>
-
-    <ui:define name="outrasTelas2">
-        <erp:dadosPessoaEndereco id="campoPessoaEndereco"
-                                 controller="#{clienteControll}"/>
-    </ui:define>
-
-    <ui:define name="outrasTelas3">
-        <erp:dadosPessoaTelefone id="campoPessoaTelefone"
-                                 controller="#{clienteControll}"/>
     </ui:define>
 
 </ui:composition>

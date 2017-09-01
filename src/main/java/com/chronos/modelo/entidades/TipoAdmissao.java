@@ -28,6 +28,8 @@
 */
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -46,7 +48,7 @@ public class TipoAdmissao implements Serializable {
  //   @NotEmpty(message = "Codigo Obrigatório")
     @Column(name = "CODIGO")
     private String codigo;
- //   @NotEmpty(message = "Nome Obritatório")
+    @NotBlank
     @Column(name = "NOME")
     private String nome;
     @Column(name = "DESCRICAO")

@@ -23,13 +23,19 @@ public class CargoControll extends AbstractControll<Cargo> implements Serializab
     private static final long serialVersionUID = 1L;
 
     @Override
+    public void doCreate() {
+        super.doCreate();
+        getObjeto().setEmpresa(empresa);
+    }
+
+    @Override
     protected Class<Cargo> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Cargo.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "CARGO";
     }
     
 }

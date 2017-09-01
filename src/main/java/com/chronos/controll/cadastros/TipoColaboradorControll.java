@@ -24,12 +24,13 @@ public class TipoColaboradorControll extends AbstractControll<TipoColaborador> i
 
     @Override
     protected Class<TipoColaborador> getClazz() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return TipoColaborador.class;
+
     }
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "TIPO_COLABORADOR";
     }
     
 }

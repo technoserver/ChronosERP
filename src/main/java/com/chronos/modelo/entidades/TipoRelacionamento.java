@@ -28,6 +28,8 @@
  */
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -45,7 +47,7 @@ public class TipoRelacionamento implements Serializable {
   //  @NotEmpty(message = "Codigo Obrigatório")
     @Column(name = "CODIGO")
     private String codigo;
-  //  @NotEmpty(message = "Nome Obrigatório")
+    @NotBlank
     @Column(name = "NOME")
     private String nome;
     @Column(name = "DESCRICAO")
@@ -90,8 +92,6 @@ public class TipoRelacionamento implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 41 * hash + Objects.hashCode(this.id);
-        hash = 41 * hash + Objects.hashCode(this.codigo);
-        hash = 41 * hash + Objects.hashCode(this.nome);
         return hash;
     }
 
@@ -107,12 +107,7 @@ public class TipoRelacionamento implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.codigo, other.codigo)) {
-            return false;
-        }
-        if (!Objects.equals(this.nome, other.nome)) {
-            return false;
-        }
+
         return true;
     }
 

@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Situacao Colaborador
+    </ui:define>
+
+    <ui:define name="tela">
+        #{situacaoColaboradorControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Situacao Colaborador
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{situacaoColaboradorControll}"
+                       idDataTable="dataTableSituacaoColaborador"
+                       nomeFuncao="Situacao Colaborador"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Codigo">
+                <h:outputLabel value="#{row.codigo}"/>
+            </p:column>
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{situacaoColaboradorControll}"
+                                   nomeFuncao="Situacao Colaborador"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="codigo" label="Codigo"
+                                nomeAtributo="#{situacaoColaboradorControll.objeto.codigo}"
+                                tamanhoMaximo="3"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-9 col-md-10"
+                                idComponente="nome" label="Nome"
+                                nomeAtributo="#{situacaoColaboradorControll.objeto.nome}"
+                                tamanhoMaximo="100"
+                                requerido="true"/>
+
+
+            </div>
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="descricao" label="Descricao"
+                                    nomeAtributo="#{situacaoColaboradorControll.objeto.descricao}"/>
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>
