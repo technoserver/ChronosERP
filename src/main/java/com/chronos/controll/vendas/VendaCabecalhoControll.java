@@ -10,7 +10,9 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -45,11 +47,17 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         super.doCreate();
         getObjeto().setEmpresa(empresa);
         getObjeto().setListaVendaDetalhe(new HashSet<>());
+        getObjeto().setDataVenda(new Date());
     }
 
     public void incluirVendaDetalhe() {
         vendaDetalhe = new VendaDetalhe();
         vendaDetalhe.setVendaCabecalho(getObjeto());
+        vendaDetalhe.setQuantidade(BigDecimal.ONE);
+    }
+
+    public void definirValorProduto() {
+        vendaDetalhe.setValorUnitario(vendaDetalhe.getProduto().getValorVenda());
     }
 
     public void alterarVendaDetalhe() {
@@ -57,7 +65,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
     public void salvarVendaDetalhe() {
-        vendaDetalhe.setValorUnitario(vendaDetalhe.getProduto().getValorVenda());
+
         if (vendaDetalhe.getId() == null) {
             getObjeto().getListaVendaDetalhe().add(vendaDetalhe);
         }

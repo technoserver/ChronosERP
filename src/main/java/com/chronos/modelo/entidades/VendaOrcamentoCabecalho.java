@@ -319,6 +319,7 @@ public class VendaOrcamentoCabecalho implements Serializable {
         return formatar.format(Optional.ofNullable(valor).orElse(BigDecimal.ZERO));
     }
 
+
     @Override
     public int hashCode() {
         int hash = 3;

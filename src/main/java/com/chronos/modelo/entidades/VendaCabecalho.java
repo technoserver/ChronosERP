@@ -252,14 +252,14 @@ public class VendaCabecalho implements Serializable {
         this.observacao = observacao;
     }
     /**
-     *  D=Digitacao | P=Producao | X=Expedicao | F=Faturado | E=Entregue | V=Devolução
+     *  D=Digitacao | P=Producao | X=Expedicao | F=Faturado | E=Entregue | V=Devolução N =Nota Fiscal
      * @return 
      */
     public String getSituacao() {
         return situacao;
     }
     /**
-     * D=Digitacao | P=Producao | X=Expedicao | F=Faturado | E=Entregue | V=Devolução
+     * D=Digitacao | P=Producao | X=Expedicao | F=Faturado | E=Entregue | V=Devolução |N =Nota Fiscal
      * @param situacao 
      */
     public void setSituacao(String situacao) {
@@ -338,6 +338,19 @@ public class VendaCabecalho implements Serializable {
         this.empresa = empresa;
     }
 
+
+    public boolean isFaturado() {
+        return situacao != null && situacao.equals("F");
+    }
+
+    public boolean isEmitido() {
+        return situacao != null && situacao.equals("N");
+    }
+
+    public boolean isCancelado() {
+        return situacao != null && situacao.equals("C");
+    }
+
     public BigDecimal calcularTotalDesconto() {
         valorDesconto = getListaVendaDetalhe().stream()
                 .map(VendaDetalhe::getValorDesconto)
@@ -364,6 +377,10 @@ public class VendaCabecalho implements Serializable {
         return valorTotal;
     }
 
+    public String valorSubTotalFormatado() {
+        return formatarValor(calcularValorProdutos());
+    }
+
     public String valorTotalFormatado() {
         return formatarValor(calcularValorTotal());
     }
@@ -374,6 +391,10 @@ public class VendaCabecalho implements Serializable {
         DecimalFormat formatar = new DecimalFormat("0.00", simboloDecimal);
 
         return formatar.format(Optional.ofNullable(valor).orElse(BigDecimal.ZERO));
+    }
+
+    public boolean temProduto() {
+        return getListaVendaDetalhe().size() > 0;
     }
 
     @Override
