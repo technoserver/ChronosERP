@@ -6,37 +6,48 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        CFOP 
+        Vendas
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{vendaCabecalhoControll .titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        Vendas
     </ui:define>
 
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
+        <erp:gridDados controller="#{vendaCabecalhoControll}"
+                       idDataTable="dataTableVenda"
+                       nomeFuncao="Venda"
                        id="telaGrid"
-                       somenteConsulta="true">
+        >
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}" />
+            <p:column headerText="Cliente">
+                <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
             </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}" />
+            <p:column headerText="Data Venda">
+                <h:outputLabel value="#{row.dataVenda}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
             </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
+            <p:column headerText="Numero Fatura">
+                <h:outputLabel value="#{row.numeroFatura}"/>
+            </p:column>
+            <p:column headerText="Valor Total">
+                <h:outputLabel value="#{row.valorTotal}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Situacao">
+                <h:outputLabel
+                        value="#{vendaCabecalhoControll.keyFromValue(vendaCabecalhoControll.vendaOrcamentoSituacao, obj.situacao)}"/>
             </p:column>
 
 
@@ -45,28 +56,62 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{vendaCabecalhoControll}"
+                                   nomeFuncao="Venda"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+        >
+
+            <div class="row">
+                <div class="col-lg-4 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-gray">
+                        <div class="inner">
+                            <h3>R$<span>#{vendaCabecalhoControll.objeto.valorTotalFormatado()}</span></h3>
+
+                            <p>Valor Total</p>
+                        </div>
+                        <div class="icon" style="top: 0px">
+                            <i class="fa  fa-money"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-gray">
+                        <div class="inner">
+                            <h3>R$<span>#{vendaCabecalhoControll.objeto.valorSubTotalFormatado()}</span></h3>
+
+                            <p>Valor Produtos</p>
+                        </div>
+                        <div class="icon" style="top: 0px">
+                            <i class="fa fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 col-xs-6">
+                    <!-- small box -->
+                    <div class="small-box bg-gray">
+                        <div class="inner">
+                            <h3>R$<span>#{vendaCabecalhoControll.objeto.valorServicoFormatado()}</span></h3>
+
+                            <p>Valor do Serviço</p>
+                        </div>
+                        <div class="icon" style="top: 0px">
+                            <i class="fa  fa-wrench"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="row">
 
                 <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
+                                  idComponente="cfopCfop" label="CFOP"
+                                  nomeAtributo="#{vendaCabecalhoControll.objeto.cfop}"/>
             </div>
-            <div class="row">
 
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
-            </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
-            </div>
 
         </erp:telaInclusaoAlteracao>
     </ui:define>

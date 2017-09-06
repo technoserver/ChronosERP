@@ -144,6 +144,11 @@ public class EstoqueFormacaoPrecoControll extends AbstractControll<ProdutoSubGru
         return "ESTOQUE_FORMACAO_PRECO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 
     public List<Produto> getListaProduto() {
         return listaProduto;

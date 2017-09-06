@@ -11,48 +11,42 @@
 >
 
     <ui:define name="title">
-        Cliente
+        Transportadora
     </ui:define>
 
     <ui:define name="tela">
-        #{clienteControll.titulo}
+        #{transportadoraControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        Cliente
+        Tansportadora
     </ui:define>
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDadosCustom controller="#{clienteControll}"
+        <erp:gridDadosCustom controller="#{transportadoraControll}"
                              idDataTable="dataTableCliente"
                              nomeFuncao="Cliente"
                              id="telaGrid"
-                             dataModel="#{clienteControll.clienteDataModel}"
-                             objetoSelecionado="#{clienteControll.clienteSelecionado}">
+                             dataModel="#{transportadoraControll.clienteDataModel}"
+                             objetoSelecionado="#{transportadoraControll.clienteSelecionado}">
 
             <p:column headerText="Nome">
-                <h:outputLabel value="#{row.nome}"/>
+                <h:outputLabel value="#{row.pessoa.nome}"/>
+            </p:column>
+            <p:column headerText="Data Cadastro">
+                <h:outputLabel value="#{row.dataCadastro}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
             </p:column>
             <p:column headerText="CPF/CNPJ">
-                <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
+                <h:outputLabel value="#{row.pessoa.pessoaFisica.cpf}" rendered="#{not empty obj.pessoa.pessoaFisica}">
                     <f:converter converterId="cpfCnpjConverter"/>
                 </h:outputLabel>
-                <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'J'}">
+                <h:outputLabel value="#{row.pessoa.pessoaJuridica.cnpj}"
+                               rendered="#{not empty obj.pessoa.pessoaJuridica}">
                     <f:converter converterId="cpfCnpjConverter"/>
                 </h:outputLabel>
-            </p:column>
-            <p:column headerText="Endereço">
-                <h:outputLabel value="#{row.logradouro}"/>
-            </p:column>
-            <p:column headerText="Cidade">
-                <h:outputLabel value="#{row.cidade}"/>
-            </p:column>
-            <p:column headerText="UF">
-                <h:outputLabel value="#{row.uf}"/>
-            </p:column>
-            <p:column headerText="Fone">
-                <h:outputLabel value="#{row.fone}"/>
             </p:column>
 
 
@@ -61,7 +55,7 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{clienteControll}"
+        <erp:telaInclusaoAlteracao controller="#{transportadoraControll}"
                                    nomeFuncao="Cliente"
                                    id="telaDetalhe">
 
@@ -72,8 +66,8 @@
                                    for="clienteBloqueado"/>
                     <h:selectOneMenu id="clienteBloqueado"
                                      class="form-control"
-                                     value="#{clienteControll.completo}">
-                        <f:selectItems value="#{clienteControll.naoSim}"/>
+                                     value="#{transportadoraControll.completo}">
+                        <f:selectItems value="#{transportadoraControll.naoSim}"/>
                         <p:ajax event="change" update=":formCentro:telaDetalhe:tipoCadastro"
                                 process="@this"
                                 oncomplete="addClass()"/>
@@ -83,16 +77,10 @@
             </div>
             <br/>
             <h:panelGroup layout="block" id="tipoCadastro">
-                <h:panelGroup layout="block" rendered="#{clienteControll.completo eq 'N'}">
-                    <ui:include src="formCliente.xhtml"/>
-                </h:panelGroup>
-                <h:panelGroup layout="block" rendered="#{clienteControll.completo eq 'S'}">
+                <h:panelGroup layout="block" rendered="#{transportadoraControll.completo eq 'N'}">
 
-                    <erp:dadosPessoa controller="#{clienteControll}" id="dadosPessoa">
-                        <p:tab title="Dados Genreciais" id="dadosGerenciais">
-                            <ui:include src="formCliente.xhtml"/>
-                        </p:tab>
-                    </erp:dadosPessoa>
+                </h:panelGroup>
+                <h:panelGroup layout="block" rendered="#{transportadoraControll.completo eq 'S'}">
 
                 </h:panelGroup>
             </h:panelGroup>
@@ -102,17 +90,17 @@
     </ui:define>
 
     <ui:define name="outrasTelas">
-        <erp:dadosPessoaContato controller="#{clienteControll}" id="campoPessoaContato"/>
+        <erp:dadosPessoaContato controller="#{transportadoraControll}" id="campoPessoaContato"/>
     </ui:define>
 
     <ui:define name="outrasTelas2">
         <erp:dadosPessoaEndereco id="campoPessoaEndereco"
-                                 controller="#{clienteControll}"/>
+                                 controller="#{transportadoraControll}"/>
     </ui:define>
 
     <ui:define name="outrasTelas3">
         <erp:dadosPessoaTelefone id="campoPessoaTelefone"
-                                 controller="#{clienteControll}"/>
+                                 controller="#{transportadoraControll}"/>
     </ui:define>
 
 

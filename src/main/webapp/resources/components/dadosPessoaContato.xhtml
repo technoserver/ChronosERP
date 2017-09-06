@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://java.sun.com/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:erp="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<!-- INTERFACE -->
+<cc:interface>
+    <cc:attribute name="controller" type="com.chronos.controll.cadastros.PessoaControll" required="true"/>
+</cc:interface>
+
+<!-- IMPLEMENTATION -->
+<cc:implementation>
+    <h:form id="formOutrasTelas">
+        <p:dialog id="dialogContato" header="Inclusão/Alteração de Contato"
+                  widgetVar="dialogContato" showEffect="slide" hideEffect="slide"
+                  resizable="true" modal="true" closable="false" responsive="true">
+
+            <p:outputPanel id="panelPessoaContato">
+                <div class="row">
+
+
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                    idComponente="pessoaContatoNome" label="Nome"
+                                    nomeAtributo="#{cc.attrs.controller.pessoaContato.nome}"
+                                    tamanhoMaximo="100"/>
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                    idComponente="pessoaContatoEmail" label="Email"
+                                    nomeAtributo="#{cc.attrs.controller.pessoaContato.email}"
+                                    tamanhoMaximo="250"/>
+                </div>
+                <div class="row">
+
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                    idComponente="pessoaContatoFoneComercial" label="Fone Comercial"
+                                    nomeAtributo="#{cc.attrs.controller.pessoaContato.foneComercial}"
+                                    tamanhoMaximo="14"/>
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                    idComponente="pessoaContatoFoneResidencial"
+                                    label="Fone Residencial"
+                                    nomeAtributo="#{cc.attrs.controller.pessoaContato.foneResidencial}"
+                                    tamanhoMaximo="14"/>
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                    idComponente="pessoaContatoFoneCelular" label="Fone Celular"
+                                    nomeAtributo="#{cc.attrs.controller.pessoaContato.foneCelular}"
+                                    tamanhoMaximo="14"/>
+                </div>
+
+
+            </p:outputPanel>
+            <f:facet name="footer">
+
+
+                <div class="row">
+                    <div class="col-xs-6 col-lg-6">
+                        <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                         actionListener="#{cc.attrs.controller.salvarContato}">
+                            <p:ajax process="@form"
+                                    oncomplete="if (!args.validationFailed) {PF('dialogContato').hide();}"
+                                    update=":campoPessoaContato:formOutrasTelas:panelPessoaContato,:formCentro:growl,:formCentro:telaDetalhe:campoPessoa:telaCadastroPessoa:dataTablePessoaContato"
+                            />
+                        </h:commandButton>
+                    </div>
+                    <div class="col-xs-6 col-lg-6">
+                        <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                         oncomplete="PF('dialogContato').hide();"
+                        />
+                    </div>
+                </div>
+
+            </f:facet>
+
+        </p:dialog>
+    </h:form>
+</cc:implementation>
+</html>

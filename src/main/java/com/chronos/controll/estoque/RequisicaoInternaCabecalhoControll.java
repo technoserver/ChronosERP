@@ -130,6 +130,11 @@ public class RequisicaoInternaCabecalhoControll extends AbstractControll<Requisi
         return "REQUISICAO_INTERNA_CABECALHO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public RequisicaoInternaDetalhe getRequisicaoInternaDetalhe() {
         return requisicaoInternaDetalhe;
     }

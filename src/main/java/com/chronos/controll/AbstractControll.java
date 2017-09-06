@@ -11,7 +11,6 @@ import com.chronos.modelo.entidades.enuns.Estados;
 import com.chronos.repository.Repository;
 import com.chronos.security.UsuarioLogado;
 import com.chronos.security.UsuarioSistema;
-import com.chronos.service.AbstractService;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.component.tabview.TabView;
@@ -119,6 +118,8 @@ public abstract class AbstractControll<T> implements Serializable {
     protected abstract Class<T> getClazz();
 
     protected abstract String getFuncaoBase();
+
+    protected abstract boolean auditar();
 
     @PostConstruct
     public void init() {

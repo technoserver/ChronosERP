@@ -31,5 +31,10 @@ public class OperadoraPlanoSaudeControll extends AbstractControll<OperadoraPlano
     protected String getFuncaoBase() {
         return "OPERADORA_PLANO_SAUDE";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

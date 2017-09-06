@@ -4,9 +4,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.*;
 
 @Entity
 @Table(name = "VENDA_CABECALHO")
@@ -159,7 +160,7 @@ public class VendaCabecalho implements Serializable {
     }
 
     public BigDecimal getTaxaComissao() {
-        return taxaComissao;
+        return Optional.ofNullable(taxaComissao).orElse(BigDecimal.ZERO);
     }
 
     public void setTaxaComissao(BigDecimal taxaComissao) {
@@ -167,6 +168,7 @@ public class VendaCabecalho implements Serializable {
     }
 
     public BigDecimal getValorComissao() {
+        valorComissao = getTaxaComissao().multiply(getValorTotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
         return valorComissao;
     }
 
@@ -321,7 +323,7 @@ public class VendaCabecalho implements Serializable {
     }
 
     public Set<VendaDetalhe> getListaVendaDetalhe() {
-        return listaVendaDetalhe;
+        return Optional.ofNullable(listaVendaDetalhe).orElse(new HashSet<>());
     }
 
     public void setListaVendaDetalhe(Set<VendaDetalhe> listaVendaDetalhe) {
@@ -335,8 +337,44 @@ public class VendaCabecalho implements Serializable {
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
-    
-    
+
+    public BigDecimal calcularTotalDesconto() {
+        valorDesconto = getListaVendaDetalhe().stream()
+                .map(VendaDetalhe::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        return valorDesconto;
+    }
+
+
+    public BigDecimal calcularValorProdutos() {
+        valorSubtotal = getListaVendaDetalhe().stream()
+                .map(VendaDetalhe::getValorSubtotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        return valorSubtotal;
+    }
+
+    public BigDecimal calcularValorTotal() {
+        valorTotal = getListaVendaDetalhe().stream()
+                .map(VendaDetalhe::getValorTotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        return valorTotal;
+    }
+
+    public String valorTotalFormatado() {
+        return formatarValor(calcularValorTotal());
+    }
+
+    private String formatarValor(BigDecimal valor) {
+        DecimalFormatSymbols simboloDecimal = DecimalFormatSymbols.getInstance();
+        simboloDecimal.setDecimalSeparator('.');
+        DecimalFormat formatar = new DecimalFormat("0.00", simboloDecimal);
+
+        return formatar.format(Optional.ofNullable(valor).orElse(BigDecimal.ZERO));
+    }
 
     @Override
     public int hashCode() {

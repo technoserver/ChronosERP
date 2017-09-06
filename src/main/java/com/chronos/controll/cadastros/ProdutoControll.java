@@ -188,6 +188,11 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         return "PRODUTO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public ProdutoGrupo getGrupo() {
         return grupo;
     }

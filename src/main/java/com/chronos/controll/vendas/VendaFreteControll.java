@@ -53,4 +53,9 @@ public class VendaFreteControll extends AbstractControll<VendaFrete> implements 
     protected String getFuncaoBase() {
         return "VENDA_FRETE";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

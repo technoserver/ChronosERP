@@ -92,4 +92,9 @@ public class IbptControll extends AbstractControll<Ibpt> implements Serializable
         return "IBPT";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 }

@@ -25,4 +25,9 @@ public class FinStatusParcelaControll extends AbstractControll<FinStatusParcela>
     protected String getFuncaoBase() {
         return "FIN_STATUS_PARCELA";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

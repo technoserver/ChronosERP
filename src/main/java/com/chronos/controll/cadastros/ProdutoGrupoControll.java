@@ -31,5 +31,10 @@ public class ProdutoGrupoControll  extends AbstractControll<ProdutoGrupo> implem
     protected String getFuncaoBase() {
         return "GRUPO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

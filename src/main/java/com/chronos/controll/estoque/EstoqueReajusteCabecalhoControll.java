@@ -143,6 +143,11 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
         return "ESTOQUE_REAJUSTE_CABECALHO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public ProdutoSubGrupo getProdutoSubgrupo() {
         return produtoSubgrupo;
     }

@@ -242,6 +242,11 @@ public class FinCobrancaControll extends AbstractControll<FinCobranca> implement
         return "FIN_COBRANCA";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public FinParcelaReceber getFinParcelaReceber() {
         return finParcelaReceber;
     }

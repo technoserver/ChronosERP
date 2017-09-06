@@ -187,6 +187,11 @@ public class CompraCotacaoControll extends AbstractControll<CompraCotacao> imple
         return "COMPRA_COTACAO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public CompraFornecedorCotacao getCompraFornecedorCotacao() {
         return compraFornecedorCotacao;
     }

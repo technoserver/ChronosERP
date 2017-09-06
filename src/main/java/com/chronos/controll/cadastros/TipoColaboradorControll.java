@@ -32,5 +32,10 @@ public class TipoColaboradorControll extends AbstractControll<TipoColaborador> i
     protected String getFuncaoBase() {
         return "TIPO_COLABORADOR";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

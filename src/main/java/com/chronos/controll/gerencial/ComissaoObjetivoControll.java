@@ -6,7 +6,6 @@ import com.chronos.modelo.entidades.ComissaoPerfil;
 import com.chronos.modelo.entidades.Produto;
 import com.chronos.repository.Repository;
 
-
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,5 +56,10 @@ public class ComissaoObjetivoControll extends AbstractControll<ComissaoObjetivo>
     @Override
     protected String getFuncaoBase() {
         return "COMISSAO_OBJETIVO";
+    }
+
+    @Override
+    protected boolean auditar() {
+        return false;
     }
 }

@@ -63,4 +63,9 @@ public class AgenciaBancoControll extends AbstractControll<AgenciaBanco> impleme
         return "AGENCIA_BANCO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 }

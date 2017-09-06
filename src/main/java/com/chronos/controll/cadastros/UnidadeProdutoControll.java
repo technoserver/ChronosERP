@@ -31,5 +31,10 @@ public class UnidadeProdutoControll extends AbstractControll<UnidadeProduto> imp
     protected String getFuncaoBase() {
        return "UNIDADE_MEDIDA";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

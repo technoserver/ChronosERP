@@ -31,5 +31,10 @@ public class NivelFormacaoControll extends AbstractControll<NivelFormacao> imple
     protected String getFuncaoBase() {
         return "NIVEl_FORMACAO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

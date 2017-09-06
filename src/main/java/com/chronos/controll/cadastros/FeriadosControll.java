@@ -31,5 +31,10 @@ public class FeriadosControll extends AbstractControll<Feriados> implements Seri
     protected String getFuncaoBase() {
         return "FERIADOS";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

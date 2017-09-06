@@ -196,6 +196,11 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         return "Cliente";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public PessoaCliente getClienteSelecionado() {
         return clienteSelecionado;
     }

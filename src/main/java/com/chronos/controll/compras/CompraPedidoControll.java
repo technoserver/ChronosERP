@@ -199,6 +199,11 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
         return "COMPRA_PEDIDO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public CompraPedidoDetalhe getCompraPedidoDetalheSelecionado() {
         return compraPedidoDetalheSelecionado;
     }

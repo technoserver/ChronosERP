@@ -2,7 +2,6 @@ package com.chronos.controll.gerencial;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Colaborador;
-import com.chronos.modelo.entidades.ComissaoObjetivo;
 import com.chronos.modelo.entidades.ComissaoPerfil;
 import com.chronos.modelo.entidades.Vendedor;
 import com.chronos.repository.Repository;
@@ -58,5 +57,10 @@ public class VendedorControll extends AbstractControll<Vendedor> implements Seri
     @Override
     protected String getFuncaoBase() {
         return "VENDEDOR";
+    }
+
+    @Override
+    protected boolean auditar() {
+        return false;
     }
 }

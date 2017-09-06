@@ -31,5 +31,10 @@ public class ProdutoMarcaControll extends AbstractControll<ProdutoMarca> impleme
     protected String getFuncaoBase() {
         return "MARCA";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

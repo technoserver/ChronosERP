@@ -43,4 +43,9 @@ public class CentroResultadoControll extends AbstractControll<CentroResultado> i
     protected String getFuncaoBase() {
         return "CENTRO_RESULTADO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

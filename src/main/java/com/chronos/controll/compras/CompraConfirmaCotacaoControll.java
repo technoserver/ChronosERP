@@ -230,6 +230,11 @@ public class CompraConfirmaCotacaoControll extends AbstractControll<CompraCotaca
         return "COMPRA_CONFIRMA_COTACAO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public CompraFornecedorCotacao getCompraFornecedorCotacaoSelecionado() {
         return compraFornecedorCotacaoSelecionado;
     }

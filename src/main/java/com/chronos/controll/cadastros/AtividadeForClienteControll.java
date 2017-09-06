@@ -37,4 +37,9 @@ public class AtividadeForClienteControll extends AbstractControll<AtividadeForCl
         return "ATIVIDADE_FOR_CLIENTE";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 }

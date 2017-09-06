@@ -14,7 +14,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by john on 02/08/17.
@@ -292,6 +295,11 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     @Override
     protected String getFuncaoBase() {
         return "NFE_CABECALHO";
+    }
+
+    @Override
+    protected boolean auditar() {
+        return false;
     }
 
     public VendaCondicoesPagamento getCondicao() {

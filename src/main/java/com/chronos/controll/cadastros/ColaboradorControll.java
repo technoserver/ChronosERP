@@ -35,6 +35,11 @@ public class ColaboradorControll extends AbstractControll<Colaborador> implement
         return "COLABORADOR";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public String getCompleto() {
         return completo;
     }

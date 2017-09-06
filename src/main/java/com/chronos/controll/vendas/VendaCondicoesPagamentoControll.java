@@ -95,6 +95,11 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
         return "VENDA_CONDICOES_PAGAMENTO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public VendaCondicoesParcelas getVendaCondicoesParcelas() {
         return vendaCondicoesParcelas;
     }

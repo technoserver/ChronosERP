@@ -117,6 +117,11 @@ public class FinExtratoContaBancoControll extends AbstractControll<ContaCaixa> i
         return "FIN_EXTRATO_CONTA_BANCO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public List<FinExtratoContaBanco> getExtratoContaBanco() {
         return extratoContaBanco;
     }

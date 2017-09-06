@@ -25,4 +25,9 @@ public class FinChequeRecebidoControll extends AbstractControll<FinChequeRecebid
     protected String getFuncaoBase() {
         return "FIN_CHEQUE_RECEBIDO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

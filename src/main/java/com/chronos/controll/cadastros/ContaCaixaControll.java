@@ -58,4 +58,9 @@ public class ContaCaixaControll extends AbstractControll<ContaCaixa> implements 
         return "CONTA_CAIXA";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 }

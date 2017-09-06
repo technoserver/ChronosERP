@@ -31,5 +31,10 @@ public class CepControll extends AbstractControll<Cep> implements Serializable {
     protected String getFuncaoBase() {
         return "CEP";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

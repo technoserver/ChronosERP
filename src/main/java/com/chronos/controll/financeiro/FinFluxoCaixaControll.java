@@ -123,6 +123,11 @@ public class FinFluxoCaixaControll extends AbstractControll<ViewFinFluxoCaixaID>
         return "FIN_FLUXO_CAIXA";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public Date getPeriodo() {
         return periodo;
     }

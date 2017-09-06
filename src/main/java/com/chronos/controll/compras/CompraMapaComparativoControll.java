@@ -4,6 +4,8 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.component.datatable.DataTable;
+import org.primefaces.event.CellEditEvent;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -15,9 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-
-import org.primefaces.component.datatable.DataTable;
-import org.primefaces.event.CellEditEvent;
 
 /**
  * Created by john on 16/08/17.
@@ -225,6 +224,11 @@ public class CompraMapaComparativoControll extends AbstractControll<CompraCotaca
     @Override
     protected String getFuncaoBase() {
         return "COMPRA_MAPA_COMPARATIVO";
+    }
+
+    @Override
+    protected boolean auditar() {
+        return false;
     }
 
     public List<CompraCotacaoDetalhe> getListaCompraCotacaoDetalhe() {

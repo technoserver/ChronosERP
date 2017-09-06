@@ -35,6 +35,11 @@ public class BancoControll extends AbstractControll<Banco> implements Serializab
         return "BANCO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
    
 
 }

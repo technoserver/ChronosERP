@@ -31,4 +31,9 @@ public class TributGrupoTributarioControll extends AbstractControll<TributGrupoT
     protected String getFuncaoBase() {
         return "TRIBUT_GRUPO_TRIBUTARIO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

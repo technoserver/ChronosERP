@@ -122,6 +122,11 @@ public class FinResumoTesourariaControll extends AbstractControll<ViewFinResumoT
         return "FIN_RESUMO_TESOURARIA";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public Date getPeriodo() {
         return periodo;
     }

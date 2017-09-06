@@ -31,5 +31,10 @@ public class TipoRelacionamentoControll extends AbstractControll<TipoRelacioname
     protected String getFuncaoBase() {
         return "TIPO_RELCIONAMENTO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

@@ -62,6 +62,11 @@ public class TributIcmsCustomCabControll extends AbstractControll<TributIcmsCust
         return "TRIBUT_ICMS_CUSTOM_CAB";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public TributIcmsCustomDet getTributIcmsCustomDet() {
         return tributIcmsCustomDet;
     }

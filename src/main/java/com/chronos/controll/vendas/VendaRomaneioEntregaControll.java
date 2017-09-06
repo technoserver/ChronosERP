@@ -73,6 +73,11 @@ public class VendaRomaneioEntregaControll extends AbstractControll<VendaRomaneio
         return "VENDA_ROMANEIO_ENTREGA";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public Integer getNumeroFatura() {
         return numeroFatura;
     }

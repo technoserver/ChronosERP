@@ -33,4 +33,9 @@ public class SituacaoForClienteControll extends AbstractControll<SituacaoForCli>
         return "SITUACAO_FOR_CLIENTE";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 }

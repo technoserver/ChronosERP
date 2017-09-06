@@ -288,6 +288,11 @@ public class FinParcelaPagamentoControll extends AbstractControll<FinParcelaPaga
         return "FIN_PARCELA_PAGAMENTO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public List<FinParcelaPagar> getParcelasSelecionadas() {
         return parcelasSelecionadas;
     }

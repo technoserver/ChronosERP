@@ -46,5 +46,10 @@ public class UfControll extends AbstractControll<Uf> implements Serializable {
     protected String getFuncaoBase() {
         return "UF";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

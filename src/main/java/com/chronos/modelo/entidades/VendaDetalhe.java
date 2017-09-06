@@ -6,7 +6,9 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Table(name = "VENDA_DETALHE")
@@ -60,7 +62,7 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getQuantidade() {
-        return quantidade;
+        return Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO);
     }
 
     public void setQuantidade(BigDecimal quantidade) {
@@ -68,7 +70,7 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorUnitario() {
-        return valorUnitario;
+        return Optional.ofNullable(valorUnitario).orElse(BigDecimal.ZERO);
     }
 
     public void setValorUnitario(BigDecimal valorUnitario) {
@@ -76,6 +78,7 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorSubtotal() {
+        valorSubtotal = getQuantidade().multiply(getValorUnitario());
         return valorSubtotal;
     }
 
@@ -84,7 +87,7 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getTaxaDesconto() {
-        return taxaDesconto;
+        return Optional.ofNullable(taxaDesconto).orElse(BigDecimal.ZERO);
     }
 
     public void setTaxaDesconto(BigDecimal taxaDesconto) {
@@ -92,6 +95,7 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorDesconto() {
+        valorDesconto = getTaxaDesconto().multiply(getValorSubtotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
         return valorDesconto;
     }
 

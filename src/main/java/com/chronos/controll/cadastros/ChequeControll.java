@@ -50,4 +50,9 @@ public class ChequeControll extends AbstractControll<Cheque> implements Serializ
         return "CHEQUE";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 }

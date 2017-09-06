@@ -65,5 +65,10 @@ public class ProdutoSubgrupoControll extends AbstractControll<ProdutoSubGrupo> i
     protected String getFuncaoBase() {
         return "SUBGRUPO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

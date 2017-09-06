@@ -326,6 +326,11 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
         return "FIN_LANCAMENTO_RECEBER";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 
     public FinParcelaReceber getFinParcelaReceber() {
         return finParcelaReceber;

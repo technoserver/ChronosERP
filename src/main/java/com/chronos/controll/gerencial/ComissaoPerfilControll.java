@@ -31,4 +31,9 @@ public class ComissaoPerfilControll extends AbstractControll<ComissaoPerfil> imp
     protected String getFuncaoBase() {
         return "Comissao_Perfil";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

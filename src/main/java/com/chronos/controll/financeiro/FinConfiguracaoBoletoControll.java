@@ -48,4 +48,9 @@ public class FinConfiguracaoBoletoControll extends AbstractControll<FinConfigura
     protected String getFuncaoBase() {
         return "FIN_CONFIGURACAO_BOLETO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

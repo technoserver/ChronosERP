@@ -206,6 +206,11 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
         return "FIN_MOVIMENTO_CAIXA_BANCO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public Date getPeriodo() {
         return periodo;
     }

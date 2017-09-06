@@ -41,5 +41,10 @@ public class AlmoxarifadoControll extends AbstractControll<Almoxarifado> impleme
     protected String getFuncaoBase() {
         return "ALMOXARIFADO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

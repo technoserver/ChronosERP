@@ -37,5 +37,10 @@ public class CargoControll extends AbstractControll<Cargo> implements Serializab
     protected String getFuncaoBase() {
         return "CARGO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

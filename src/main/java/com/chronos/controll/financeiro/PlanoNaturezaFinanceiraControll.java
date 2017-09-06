@@ -32,4 +32,10 @@ public class PlanoNaturezaFinanceiraControll extends AbstractControll<PlanoNatur
     protected String getFuncaoBase() {
         return "PLANO_NATUREZA_FINANCEIRA";
     }
+
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

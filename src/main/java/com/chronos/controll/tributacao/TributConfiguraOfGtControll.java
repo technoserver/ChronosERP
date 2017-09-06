@@ -113,6 +113,11 @@ public class TributConfiguraOfGtControll extends AbstractControll<TributConfigur
         return "TRIBUT_CONFIGURA_OF_GT";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public TributIcmsUf getTributIcmsUf() {
         return tributIcmsUf;
     }

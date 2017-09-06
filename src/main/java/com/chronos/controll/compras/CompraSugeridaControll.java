@@ -109,6 +109,11 @@ public class CompraSugeridaControll extends AbstractControll<CompraPedido> imple
         return "COMPRA_SUGERIDA";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public String getTipoCompraSugerida() {
         return tipoCompraSugerida;
     }

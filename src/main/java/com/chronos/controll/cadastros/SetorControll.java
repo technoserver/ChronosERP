@@ -39,5 +39,10 @@ public class SetorControll extends AbstractControll<Setor> implements Serializab
     protected String getFuncaoBase() {
         return "SETOR";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

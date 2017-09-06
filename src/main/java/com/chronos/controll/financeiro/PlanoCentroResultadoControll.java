@@ -31,4 +31,9 @@ public class PlanoCentroResultadoControll extends AbstractControll<PlanoCentroRe
     protected String getFuncaoBase() {
         return "PLANO_CENTRO_RESULTADO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

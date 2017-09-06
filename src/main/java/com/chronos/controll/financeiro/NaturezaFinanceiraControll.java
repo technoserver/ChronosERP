@@ -43,4 +43,9 @@ public class NaturezaFinanceiraControll extends AbstractControll<NaturezaFinance
     protected String getFuncaoBase() {
         return "NATUREZA_FINANCEIRA";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

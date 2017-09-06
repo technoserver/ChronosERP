@@ -31,5 +31,10 @@ public class CfopControll extends AbstractControll<Cfop> implements Serializable
     protected String getFuncaoBase() {
         return "CFOP";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

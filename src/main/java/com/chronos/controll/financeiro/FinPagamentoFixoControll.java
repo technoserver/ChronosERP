@@ -62,4 +62,9 @@ public class FinPagamentoFixoControll  extends AbstractControll<FinPagamentoFixo
     protected String getFuncaoBase() {
         return "FIN_PAGAMENTO_FIXO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

@@ -31,5 +31,10 @@ public class TipoAdmissaoControll extends AbstractControll<TipoAdmissao> impleme
     protected String getFuncaoBase() {
         return "TIPO_ADIMISSAO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

@@ -311,6 +311,11 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
         return "FIN_LANCAMENTO_PAGAR";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public FinParcelaPagar getFinParcelaPagar() {
         return finParcelaPagar;
     }

@@ -2,7 +2,6 @@ package com.chronos.controll.financeiro;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.ContaCaixa;
-import com.chronos.modelo.entidades.FinTipoPagamento;
 import com.chronos.modelo.entidades.FinTipoRecebimento;
 import com.chronos.repository.Repository;
 
@@ -42,5 +41,10 @@ public class FinTipoRecebimentoControll extends AbstractControll<FinTipoRecebime
     @Override
     protected String getFuncaoBase() {
         return "FIN_TIPO_RECEBIMENTO";
+    }
+
+    @Override
+    protected boolean auditar() {
+        return false;
     }
 }

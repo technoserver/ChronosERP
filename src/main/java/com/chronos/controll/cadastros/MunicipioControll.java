@@ -45,5 +45,10 @@ public class MunicipioControll extends AbstractControll<Municipio> implements Se
     protected String getFuncaoBase() {
         return "MUNICIPIO";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

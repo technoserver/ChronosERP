@@ -56,4 +56,9 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
         return "OPERADORA_CARTAO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 }

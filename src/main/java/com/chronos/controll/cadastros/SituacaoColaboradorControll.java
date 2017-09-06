@@ -31,5 +31,10 @@ public class SituacaoColaboradorControll extends AbstractControll<SituacaoColabo
     protected String getFuncaoBase() {
        return "SITUACAO_COLBORADOR";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

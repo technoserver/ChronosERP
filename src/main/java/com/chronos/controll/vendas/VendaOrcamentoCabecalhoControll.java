@@ -225,6 +225,11 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         return "VENDA_ORCAMENTO_CABECALHO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public VendaOrcamentoDetalhe getVendaOrcamentoDetalhe() {
         return vendaOrcamentoDetalhe;
     }

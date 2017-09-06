@@ -42,4 +42,9 @@ public class TributIssControll extends AbstractControll<TributIss> implements Se
     protected String getFuncaoBase() {
         return "TRIBUT_ISS";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
 }

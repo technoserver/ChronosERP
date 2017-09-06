@@ -65,4 +65,9 @@ public class TalonarioChequeControll extends AbstractControll<TalonarioCheque> i
         return "TALONARIO_CHEQUE";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
 }

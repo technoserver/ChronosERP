@@ -31,5 +31,10 @@ public class NcmControll  extends AbstractControll<Ncm> implements Serializable 
     protected String getFuncaoBase() {
         return "NCM";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

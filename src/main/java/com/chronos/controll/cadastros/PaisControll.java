@@ -6,7 +6,6 @@
 package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
-import com.chronos.modelo.entidades.Cheque;
 import com.chronos.modelo.entidades.Pais;
 
 import javax.faces.view.ViewScoped;
@@ -31,6 +30,11 @@ public class PaisControll extends AbstractControll<Pais> implements Serializable
     @Override
     protected String getFuncaoBase() {
         return "PAIS";
+    }
+
+    @Override
+    protected boolean auditar() {
+        return false;
     }
     
 }

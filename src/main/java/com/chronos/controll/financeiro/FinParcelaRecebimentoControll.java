@@ -306,6 +306,11 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
         return "FIN_PARCELA_RECEBIMENTO";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public FinParcelaRecebimento getFinParcelaRecebimento() {
         return finParcelaRecebimento;
     }

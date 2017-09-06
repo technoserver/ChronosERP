@@ -56,6 +56,11 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
         return "TRIBUT_OPERACAO_FISCAL";
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public Cfop getCfop() {
         return cfop;
     }

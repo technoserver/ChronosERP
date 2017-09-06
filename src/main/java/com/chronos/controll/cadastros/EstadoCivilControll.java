@@ -31,5 +31,10 @@ public class EstadoCivilControll extends AbstractControll<EstadoCivil> implement
     protected String getFuncaoBase() {
         return "ESTADO_CIVIL";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

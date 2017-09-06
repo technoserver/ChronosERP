@@ -31,5 +31,10 @@ public class CestControll extends AbstractControll<Cest> implements Serializable
     protected String getFuncaoBase() {
         return "CEST";
     }
+
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
     
 }

@@ -134,6 +134,11 @@ public class CompraRequisicaoControll extends AbstractControll<CompraRequisicao>
         return null;
     }
 
+    @Override
+    protected boolean auditar() {
+        return false;
+    }
+
     public CompraRequisicaoDetalhe getDetalheSelecionado() {
         return detalheSelecionado;
     }
