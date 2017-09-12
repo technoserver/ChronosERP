@@ -135,4 +135,8 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     public void setAtributos(Object[] atributos) {
         this.atributos = atributos;
     }
+
+    public List<Filtro> getFiltros() {
+        return filtros;
+    }
 }

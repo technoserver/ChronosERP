@@ -17,7 +17,6 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +98,11 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Override
     public boolean existeRegisro(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
-        return false;
+        String jpql = "select count(o.id) from " + clazz.getName() + " o where o." + atributo + "=:valor";
+        Query query = em.createQuery(jpql.toString());
+        query.setParameter("valor", valor);
+        return (Long) query.getSingleResult() > 0;
+
     }
 
     @Override

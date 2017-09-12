@@ -31,6 +31,7 @@ public class VendaDetalhe implements Serializable {
     @Column(name = "VALOR_SUBTOTAL")
     private BigDecimal valorSubtotal;
     @Column(name = "TAXA_DESCONTO")
+    @DecimalMax(value = "99.99", message = "O valor  deve ser menor que R$99,99")
     private BigDecimal taxaDesconto;
     @Column(name = "VALOR_DESCONTO")
     private BigDecimal valorDesconto;
@@ -104,6 +105,7 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorTotal() {
+        valorTotal = getValorSubtotal().subtract(getValorDesconto());
         return valorTotal;
     }
 

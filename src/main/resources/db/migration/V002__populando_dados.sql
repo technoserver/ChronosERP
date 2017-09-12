@@ -2356,7 +2356,8 @@ INSERT INTO FIN_DOCUMENTO_ORIGEM (ID, ID_EMPRESA, DESCRICAO, CODIGO, SIGLA_DOCUM
 INSERT INTO FIN_DOCUMENTO_ORIGEM (ID, ID_EMPRESA, DESCRICAO, CODIGO, SIGLA_DOCUMENTO) VALUES (97, 1, 'GRCS- Guia de Recolhimento da Contribuição Sindical', '133', 'GRCS');
 INSERT INTO FIN_DOCUMENTO_ORIGEM (ID, ID_EMPRESA, DESCRICAO, CODIGO, SIGLA_DOCUMENTO) VALUES (98, 1, 'Boleto Bancario', '134', 'BB');
 INSERT INTO FIN_DOCUMENTO_ORIGEM (ID, ID_EMPRESA, DESCRICAO, CODIGO, SIGLA_DOCUMENTO) VALUES (99, 1, 'Declaração de Importacao - DI', '135', 'DI');
-
+INSERT INTO FIN_DOCUMENTO_ORIGEM (ID, ID_EMPRESA, DESCRICAO, CODIGO, SIGLA_DOCUMENTO) VALUES (100, 1, 'ORDEM DE SERVICO  - OS', '136', 'OS');
+INSERT INTO FIN_DOCUMENTO_ORIGEM (ID, ID_EMPRESA, DESCRICAO, CODIGO, SIGLA_DOCUMENTO) VALUES (101, 1, 'Faturamento de Pedido - FAT', '137', 'FAT');
 /*
   ESTADO_CIVIL
   ------------
@@ -20000,7 +20001,7 @@ INSERT INTO PAPEL (ID, NOME, DESCRICAO, ACESSO_COMPLETO) VALUES (2, 'COMUM', 'TE
   USUARIO
   -------
 */
-INSERT INTO USUARIO (ID, ID_COLABORADOR, ID_PAPEL, LOGIN, SENHA, DATA_CADASTRO, ADMINISTRADOR) VALUES (1, 1, 1, 'admin', '$2a$10$6Wfl/vnrspKb63xxLfdldef1JAOZU1GfIcOYcwDPb0qcNzjxIrKSe', '2017-01-01', 'S');
+INSERT INTO USUARIO (ID, ID_COLABORADOR, ID_PAPEL, LOGIN, SENHA, DATA_CADASTRO, ADMINISTRADOR) VALUES (1, 1, 1, 'admin', '$2a$10$g.wT4R0Wnfel1jc/k84OXuwZE02BlACSLfWy6TycGPvvEKvIm86SG', '2017-01-01', 'S');
 
 /*
   EMPRESA_PESSOA
@@ -20043,10 +20044,11 @@ insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('26','26',
 insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('27','27','Nota Fiscal De Transporte Ferroviário De Carga','-');
 insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('28','28','Nota Fiscal/Conta de Fornecimento de Gás Canalizado','-');
 insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('29','29','Nota Fiscal/Conta De Fornecimento DAgua Canalizada','-');
-insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('30','55','Nota Fiscal Eletronica',' ');
+insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('30','55','Nota Fiscal Eletronica - NFe','NF-e');
 insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('31','57','Conhecimento de Transporte Eletronico - CT-e','-');
 insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('32','59','Cupom Fiscal Eletronico - CF-e','-');
-
+insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('33','58','Manifesto de Documento Eletronico - MDF-e','MDF-e');
+insert into NOTA_FISCAL_MODELO (ID, CODIGO, DESCRICAO, MODELO) values('34','65','Nota Fiscal de Cupom Eletronica - NFe','NFC-e');
 /*
 	Dados de teste para tributação
 */
@@ -20132,12 +20134,49 @@ insert into fin_tipo_recebimento (ID, ID_EMPRESA, ID_CONTA_CAIXA, TIPO, DESCRICA
 insert into fin_tipo_recebimento (ID, ID_EMPRESA, ID_CONTA_CAIXA, TIPO, DESCRICAO) values('2','1','1','02','Cheque');
 insert into fin_tipo_recebimento (ID, ID_EMPRESA, ID_CONTA_CAIXA, TIPO, DESCRICAO) values('3','1','1','03','Cartao');
 
-insert into plano_natureza_financeira (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('1','1','PLANO 01','2016-01-01','#.##.###.####','4');
+insert into plano_natureza_financeira (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('1','1','PRIMEIRO NIVEL','2016-01-01','#','1');
+insert into plano_natureza_financeira (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('2','1','SEGUNDO NIVEL','2016-01-01','#.##','2');
+insert into plano_natureza_financeira (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('3','1','TERCEIRO NIVEL','2016-01-01','#.##.###','3');
+insert into plano_natureza_financeira (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('4','1','QUARTO NIVEL','2016-01-01','#.##.###.####','4');
 
-insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('1','1','1.00.000.0001','NATUREZA 01 D','D','NATUREZA 01 D','S','S');
-insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('2','1','1.00.000.0002','NATUREZA 02 D','D','NATUREZA 02 D','S','S');
-insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('3','1','1.00.000.0003','NATUREZA 03 R','R','NATUREZA 03 R','S','S');
-insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('4','1','1.00.000.0004','NATUREZA 04 R','R','NATUREZA 04 R','S','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('1','1','1','RECEITAS','R','RECEITAS','S','N');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('2','2','1.01','VENDA DE PRODUTOS','R','RECEITAS','S','N');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('3','2','1.02','PRESTACAO DE SERVICO','R','PRESTACAO DE SERVICO','S','N');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('4','2','1.03','SALARIOS','R','SALARIOS','S','N');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('5','2','1.04','PRO LABORE','R','PRO LABORE','S','N');
+
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('6','1','2','DESPESAS','D','DESPESAS','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('7','2','2.01','PESSOAIS','D','PESSOAIS','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('8','3','2.01.001','ACADEMIA','D','ACADEMIA','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('9','3','2.01.002','SALAO','D','SALAO','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('10','3','2.01.003','ALUGUEL','D','ALUGUEL','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('11','3','2.01.004','VESTUARIO','D','VESTUARIO','N','S');
+
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('12','2','2.02','MORADIA','D','MORADIA','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('13','3','2.02.001','ALUGUEL','D','ALUGUEL','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('14','3','2.02.002','AGUA','D','AGUA','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('15','3','2.02.003','ENERGIA','D','ENERGIA','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('16','3','2.02.004','IPTU','D','IPTU','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('17','3','2.02.005','LIMPEZA','D','LIMPEZA','N','S');
+
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('18','2','2.03','TRANSPORTE','D','TRANSPORTE','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('19','3','2.03.001','COMBUSTIVEL','D','COMBUSTIVEL','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('20','3','2.03.002','MANUTENCAO','D','MANUTENCAO','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('21','3','2.03.003','SEGURO','D','SEGURO','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('22','3','2.03.004','TAXI','D','TAXI','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('23','3','2.03.005','ONIBUS','D','ONIBUS','N','S');
+
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('24','2','2.04','DESPESAS BANCARIAS','D','DESPESAS BANCARIAS','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('25','3','2.04.001','MANUTENCAO','D','MANUTENCAO','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('26','3','2.04.002','TAXAS E JUROS','D','TAXAS E JUROS','N','S');
+
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('27','2','2.03','ALIMENTACAO','D','ALIMENTACAO','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('28','3','2.03.001','RESTAURANTE','D','RESTAURANTE','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('29','3','2.03.002','PADARIA','D','PADARIA','N','S');
+insert into natureza_financeira (ID, ID_PLANO_NATUREZA_FINANCEIRA, CLASSIFICACAO, DESCRICAO, TIPO, APLICACAO, APARECE_A_PAGAR, APARECE_A_RECEBER) values('30','3','2.03.003','LANCHE','D','LANCHE','N','S');
+
+
+
 
 /*
 	ADM
@@ -21319,5 +21358,83 @@ insert into cest (ITEM, CEST, NCM_SH, DESCRICAO_SEGMENTO, DESCRICAO_CEST, SIGLA_
 
 
 
+/*
+ Condições de Pagamento
+*/
 
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (1,1,1,'30 DIAS',30,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(1,1,30,100);
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (2,1,1,'30/60 DIAS',45,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(2,1,30,50);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(2,2,60,50);
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (3,1,1,'30/60/90 DIAS',60,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(3,1,30,33.34);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(3,2,60,33.33);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(3,3,90,33.33);
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (4,1,1,'30/60/90/120 DIAS',75,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,1,30,25);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,2,60,25);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,3,90,25);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,4,120,25);
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (5,1,1,'30/60/90/120/150 DIAS',90,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,1,30,20);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,2,60,20);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,3,90,20);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,4,120,20);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,5,150,20);
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (6,1,1,'30/60/90/120/150/180 DIAS',105,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,1,30,17);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,2,60,16.6);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,3,90,16.6);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,4,120,16.6);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,5,150,16.6);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,6,180,16.6);
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (7,1,1,'30/60/90/120/150/210 DIAS',120,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,1,30,14.32);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,2,60,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,3,90,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,4,120,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,5,150,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,6,180,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,7,210,14.28);
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (8,1,1,'30/60/90/120/150/210/240 DIAS',135,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,1,30,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,2,60,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,3,90,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,4,120,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,5,150,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,6,180,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,7,210,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,8,240,12.5);
+
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (9,1,1,'30/60/90/120/150/210/240/270 DIAS',150,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,1,30,11.12);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,2,60,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,3,90,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,4,120,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,5,150,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,6,180,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,7,210,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,8,240,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,9,270,11.11);
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (10,1,1,'30/60/90/120/150/210/240/270/300 DIAS',165,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,1,30,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,2,60,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,3,90,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,4,120,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,5,150,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,6,180,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,7,210,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,8,240,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,9,270,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,10,270,10);
 

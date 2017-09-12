@@ -7,21 +7,25 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.controll.cadastros.datamodel.ProdutoEmpresaDataModel;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.view.ViewProdutoEmpresa;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.event.ToggleEvent;
+import org.primefaces.model.Visibility;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- *
  * @author john
  */
 @Named
@@ -43,31 +47,89 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Inject
     private Repository<TributGrupoTributario> gruposTributarios;
     @Inject
+    private Repository<ViewProdutoEmpresa> produtos;
+    @Inject
+    private Repository<EmpresaProduto> produtosEmpresa;
+    @Inject
     private Repository<ProdutoMarca> marcas;
     private ProdutoGrupo grupo;
+    private ProdutoEmpresaDataModel produtoDataModel;
+    private List<EmpresaProduto> listProdutoEmpresa;
 
+    private String produto;
+    private String strGrupo;
+    private String strSubGrupo;
+    private String inativo;
+
+    public void pesquisar() {
+        produtoDataModel.getFiltros().clear();
+        produtoDataModel.addFiltro("nome", produto);
+        produtoDataModel.addFiltro("grupo", strGrupo);
+        produtoDataModel.addFiltro("subgrupo", strSubGrupo);
+        produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
+        produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
+    }
 
     @Override
     public ERPLazyDataModel<Produto> getDataModel() {
-        if(dataModel==null){
+        if (dataModel == null) {
             dataModel = new ERPLazyDataModel<>();
             dataModel.setClazz(getClazz());
             dataModel.setDao(dao);
             joinFetch = new Object[]{"produtoMarca"};
-            Object[] atribs = new Object[]{"nome","valorVenda","quantidadeEstoque","unidadeProduto"};
+            Object[] atribs = new Object[]{"nome", "valorVenda", "quantidadeEstoque", "unidadeProduto"};
             dataModel.setAtributos(atribs);
             dataModel.setJoinFetch(joinFetch);
 
         }
+        dataModel.addFiltro("excluido", "N", Filtro.IGUAL);
+        if (dataModel.getFiltros().isEmpty()) {
+            dataModel.addFiltro("inativo", "N", Filtro.IGUAL);
+        }
+
         return dataModel;
+    }
+
+    public ProdutoEmpresaDataModel getProdutoDataModel() {
+        if (produtoDataModel == null) {
+            produtoDataModel = new ProdutoEmpresaDataModel();
+            produtoDataModel.setClazz(ViewProdutoEmpresa.class);
+            produtoDataModel.setDao(produtos);
+        }
+
+        if (produtoDataModel.getFiltros().isEmpty()) {
+            produtoDataModel.addFiltro("inativo", "N", Filtro.IGUAL);
+            produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
+        }
+        return produtoDataModel;
     }
 
     @Override
     public void doCreate() {
         super.doCreate(); //To change body of generated methods, choose Tools | Templates.
         getObjeto().setExcluido("N");
+        getObjeto().setInativo("N");
         getObjeto().setDataCadastro(new Date());
+        grupo = new ProdutoGrupo();
+        EmpresaProduto produtoEmpresa = new EmpresaProduto();
+        produtoEmpresa.setEmpresa(empresa);
+        produtoEmpresa.setProduto(getObjeto());
+        produtoEmpresa.setQuantidadeEstoque(BigDecimal.ZERO);
+        getObjeto().getProdutosEmpresa().add(produtoEmpresa);
 
+    }
+
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        grupo = getObjeto().getProdutoSubGrupo().getProdutoGrupo();
+    }
+
+    @Override
+    public void remover() {
+        getObjeto().setExcluido("S");
+        dao.atualizar(getObjeto());
+        Mensagem.addInfoMessage("Exclusao realizado com sucesso");
     }
 
     @Override
@@ -82,7 +144,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                 if (getObjeto().getId() != null) {
                     filtros.add(new Filtro(Filtro.AND, "id", Filtro.DIFERENTE, getObjeto().getId()));
                 }
-                Produto p = dao.get(Produto.class,filtros);
+                Produto p = dao.get(Produto.class, filtros);
                 if (p != null) {
                     Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
                 } else {
@@ -94,7 +156,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             Mensagem.addErrorMessage("Ocorreu um erro ao salvar o registro!", ex);
         }
 
-        super.salvar(); //To change body of generated methods, choose Tools | Templates.
+
     }
 
     public void alteraTributacao() {
@@ -105,19 +167,23 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public List<ProdutoSubGrupo> getListaSubgrupo(String nome) {
         List<ProdutoSubGrupo> listaSubgrupo = new ArrayList<>();
         try {
-
-            listaSubgrupo = subGrupos.getEntitys(ProdutoSubGrupo.class, "nome", nome, atributos);
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("nome", Filtro.LIKE, nome));
+            if (grupo != null) {
+                filtros.add(new Filtro("produtoGrupo.id", grupo.getId()));
+            }
+            listaSubgrupo = subGrupos.getEntitys(ProdutoSubGrupo.class, filtros);
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return listaSubgrupo;
     }
 
-    public List<ProdutoSubGrupo> getListaGrupo(String nome) {
-        List<ProdutoSubGrupo> listaGrupo = new ArrayList<>();
+    public List<ProdutoGrupo> getListaGrupo(String nome) {
+        List<ProdutoGrupo> listaGrupo = new ArrayList<>();
         try {
 
-            listaGrupo = subGrupos.getEntitys(ProdutoSubGrupo.class, "nome", nome, atributos);
+            listaGrupo = grupos.getEntitys(ProdutoGrupo.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -171,11 +237,31 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public List<ProdutoMarca> getListaMarcaProduto(String nome) {
         List<ProdutoMarca> listaMarcaProduto = new ArrayList<>();
         try {
-            listaMarcaProduto = marcas.getEntitys(ProdutoMarca.class, "nome", nome, atributos);
+            listaMarcaProduto = marcas.getEntitys(ProdutoMarca.class, "nome", nome);
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return listaMarcaProduto;
+    }
+
+    public void buscarProdutoEmpresas(ToggleEvent event) {
+
+
+        try {
+            if (event.getVisibility() == Visibility.VISIBLE) {
+                ViewProdutoEmpresa view = (ViewProdutoEmpresa) event.getData();
+                List<Filtro> filtros = new ArrayList<>();
+                filtros.add(new Filtro("produto.id", Filtro.IGUAL, view.getId()));
+                atributos = new Object[]{"empresa.id", "empresa.razaoSocial", "quantidadeEstoque"};
+
+                listProdutoEmpresa = produtosEmpresa.getEntitys(EmpresaProduto.class, filtros, atributos);
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Não foi possivel buscar as informações das empresas!", ex);
+        }
+
     }
 
     @Override
@@ -199,5 +285,46 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setGrupo(ProdutoGrupo grupo) {
         this.grupo = grupo;
+    }
+
+
+    public List<EmpresaProduto> getListProdutoEmpresa() {
+        return listProdutoEmpresa;
+    }
+
+    public void setListProdutoEmpresa(List<EmpresaProduto> listProdutoEmpresa) {
+        this.listProdutoEmpresa = listProdutoEmpresa;
+    }
+
+    public String getProduto() {
+        return produto;
+    }
+
+    public void setProduto(String produto) {
+        this.produto = produto;
+    }
+
+    public String getStrGrupo() {
+        return strGrupo;
+    }
+
+    public void setStrGrupo(String strGrupo) {
+        this.strGrupo = strGrupo;
+    }
+
+    public String getStrSubGrupo() {
+        return strSubGrupo;
+    }
+
+    public void setStrSubGrupo(String strSubGrupo) {
+        this.strSubGrupo = strSubGrupo;
+    }
+
+    public String getInativo() {
+        return inativo;
+    }
+
+    public void setInativo(String inativo) {
+        this.inativo = inativo;
     }
 }

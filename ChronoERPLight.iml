@@ -125,6 +125,7 @@
     <orderEntry type="library" name="Maven: org.olap4j:olap4j:0.9.7.309-JS-3" level="project" />
     <orderEntry type="library" name="Maven: net.sf.jasperreports:jasperreports-fonts:6.0.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
+    <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-web-api:7.0" level="project" />
     <orderEntry type="library" name="Maven: com.chronos.chronosnfe:chronosnfe:3.1.3" level="project" />
@@ -152,16 +153,16 @@
     <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-core:0.7.2" level="project" />
     <orderEntry type="library" name="Maven: br.com.autocom:nfe-xsd:8.i.2" level="project" />
     <orderEntry type="library" name="Maven: br.com.samuelweb:cte-wsdl:3.0.1" level="project" />
-    <orderEntry type="library" name="Maven: br.com.samuelweb:cte-xsd:2.00a.0_3.00.5" level="project" />
+    <orderEntry type="library" name="Maven: br.com.samuelweb:cte-xsd:2.00a.0_3.00.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-transport-local:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-transport-http:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore:4.0" level="project" />
     <orderEntry type="library" name="Maven: xalan:xalan:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: net.sourceforge.barbecue:barbecue:1.5-beta1" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:jasperreports-fonts:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:jasperreports-fonts-san-serif:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:lucida-console:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.fontes:courier-new:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.fontes:san-serif:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.fontes:lucida-console:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.ini4j:ini4j:0.5.4" level="project" />
     <orderEntry type="library" name="Maven: com.google.zxing:core:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.zxing:javase:3.2.0" level="project" />

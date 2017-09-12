@@ -3,6 +3,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
@@ -23,38 +24,135 @@
 
 
     <ui:define name="gridDados">
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{produtoControll.telaGrid}">
 
-        <erp:gridDados controller="#{produtoControll}"
-                       idDataTable="dataTableProduto"
-                       nomeFuncao="Produto"
-                       id="telaGrid"
-        >
-            <p:column headerText="Nome">
-                <h:outputLabel value="#{row.id}"/>
-            </p:column>
-            <p:column headerText="Nome">
-                <h:outputLabel value="#{row.nome}"/>
-            </p:column>
-            <p:column headerText="Unidade">
-                <h:outputLabel value="#{row.unidadeProduto.sigla}"/>
-            </p:column>
-            <p:column headerText="Valor">
-                <h:outputLabel value="#{row.valorVenda}">
-                    <f:convertNumber pattern="#,###,##0.00"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Qtde Estoque">
-                <h:outputLabel value="#{row.quantidadeEstoque}">
-                    <f:convertNumber pattern="#,##0.000"/>
-                </h:outputLabel>
-            </p:column>
+                <div class="ibox-content">
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="produto"
+                                        label="Produto"
+                                        tamanhoMaximo="100"
+                                        nomeAtributo="#{produtoControll.produto}"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="produto"
+                                        label="Produto"
+                                        tamanhoMaximo="100"
+                                        nomeAtributo="#{produtoControll.strGrupo}"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="produto"
+                                        label="Produto"
+                                        tamanhoMaximo="100"
+                                        nomeAtributo="#{produtoControll.strSubGrupo}"/>
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <h:outputLabel value="Inativo"/>
+                            <div class="field-action">
+                                <h:selectOneMenu value="#{produtoControll.inativo}" styleClass="form-control">
+                                    <f:selectItems value="#{produtoControll.naoSim}"/>
+                                </h:selectOneMenu>
+                                <div class="field-action__icon">
+                                    <p:commandLink title="Pesquisar" styleClass="btn btn-default"
+                                                   action="#{produtoControll.pesquisar()}"
+                                                   update="dataTableProduto"
+                                    >
 
-            <p:column headerText="Marca">
-                <h:outputLabel value="#{row.produtoMarca.nome}"/>
-            </p:column>
+                                        <i class="glyphicon glyphicon-retweet"></i>
+                                    </p:commandLink>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <p:dataTable value="#{produtoControll.produtoDataModel}"
+                                 var="row" id="dataTableProduto" paginator="true"
+                                 rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                                 reflow="true" rendered="#{produtoControll.podeConsultar()}"
+                                 resizableColumns="true" lazy="true"
+                                 class="js-data-table">
+                        <p:ajax event="rowToggle" listener="#{produtoControll.buscarProdutoEmpresas}"
+                                update=":formCentro:growl"/>
+                        <p:column style="width:32px">
+                            <p:rowToggler/>
+                        </p:column>
+                        <p:column headerText="Cód. Barras" width="130">
+                            <h:outputLabel value="#{row.gtin}"/>
+                        </p:column>
+                        <p:column headerText="Nome">
+                            <h:outputLabel value="#{row.nome}"/>
+                        </p:column>
+                        <p:column headerText="Grupo">
+                            <h:outputLabel value="#{row.grupo}"/>
+                        </p:column>
+                        <p:column headerText="SubGrupo">
+                            <h:outputLabel value="#{row.subgrupo}"/>
+                        </p:column>
+                        <p:column headerText="UN" width="50">
+                            <h:outputLabel value="#{row.sigla}"/>
+                        </p:column>
+                        <p:column headerText="Valor Venda" width="120" class="coluna-monetaria">
+                            <h:outputLabel value="#{row.valorVenda}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Estoque" width="100" class="coluna-quantidade">
+                            <h:outputLabel value="#{row.quantidade}">
+                                <f:convertNumber pattern="#,##0.000"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Ações" width="110">
+                            <p:commandLink title="Alterar" action="#{produtoControll.doEdit()}"
+                                           class=" btn btn-default"
+                                           oncomplete="addClass()"
+                                           update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                            >
+                                <i class="fa fa-file-text-o"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{produtoControll.objetoSelecionado}"/>
+                            </p:commandLink>
+                            &nbsp;
+                            <p:commandLink title="Excluir" action="#{produtoControll.remover()}"
+                                           style="position: relative; right: 7px"
+                                           update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                           process="dataTableProduto"
+                                           oncomplete="atualizarMsg();"
+                                           class="btn btn-default"
+                                           disabled="#{!produtoControll.podeExcluir()}">
+                                <i class="fa fa-times"></i>
+                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{produtoControll.objetoSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+                        <p:rowExpansion>
 
 
-        </erp:gridDados>
+                            <p:panelGrid columns="2">
+                                <h:outputLabel value="Empresa"/>
+                                <h:outputLabel value="Estoque"/>
+
+                                <c:forEach items="#{produtoControll.listProdutoEmpresa}" var="prod">
+
+                                    <h:outputLabel value="#{prod.empresa.razaoSocial}"/>
+
+
+                                    <h:outputLabel value="#{prod.quantidadeEstoque}">
+                                        <f:convertNumber pattern="#,##0.000"/>
+                                    </h:outputLabel>
+
+
+                                </c:forEach>
+
+                            </p:panelGrid>
+                        </p:rowExpansion>
+
+                    </p:dataTable>
+
+                </div>
+
+            </p:outputPanel>
+        </p:outputPanel>
+
     </ui:define>
 
 
@@ -86,7 +184,7 @@
                                           completeMethod="getListaGrupo"
                                           nomeAtributo="#{produtoControll.grupo}"
                                           idComponente="grupo">
-
+                            <p:ajax process="@this" event="itemSelecionado"/>
                         </erp:autoComplete>
 
                         <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
@@ -118,6 +216,7 @@
                             </p:column>
 
                         </erp:autoComplete>
+
                         <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
                                           label="Marca"
                                           itemLabel="#{objeto.nome}"
@@ -202,7 +301,7 @@
                         <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
                                          idComponente="produtoServico" label="Servico"
                                          nomeAtributo="#{produtoControll.objeto.servico}"
-                                         itens="#{produtoControll.simNao}"/>
+                                         itens="#{produtoControll.naoSim}"/>
                         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                          idComponente="produtoTipo" label="Tipo"
                                          nomeAtributo="#{produtoControll.objeto.tipo}"
@@ -210,7 +309,7 @@
                         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                          idComponente="produtoInativo" label="Inativo"
                                          nomeAtributo="#{produtoControll.objeto.inativo}"
-                                         itens="#{produtoControll.simNao}"/>
+                                         itens="#{produtoControll.naoSim}"/>
                         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                                        idComponente="produtoDataCadastro" label="Data Cadastro"
                                        nomeAtributo="#{produtoControll.objeto.dataCadastro}"
@@ -218,8 +317,8 @@
                         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                          idComponente="produtoExcluido" label="Excluido"
                                          nomeAtributo="#{produtoControll.objeto.excluido}"
-                                         itens="#{produtoControll.simNao}"
-                                         desabilitado="true"/>
+                                         itens="#{produtoControll.naoSim}"
+                        />
                     </div>
                     <div class="row">
 
@@ -348,13 +447,13 @@
 
                         </div>
                         <div class="col-xs-12 col-sm-5 col-md-3">
-                            <p:outputLabel value="Imagem" />
+                            <p:outputLabel value="Imagem"/>
                             <p:commandButton title="Selecionar Imagem"
                                              value="Selecionar Imagem" oncomplete="PF('dialogUpload').show()"
-                                             update=":formUpload:panelUpload" />
-                            <br /> <br />
+                                             update=":formUpload:panelUpload"/>
+                            <br/> <br/>
                             <p:outputLabel id="imagemProduto">
-                                <img src="#{produtoController.objeto.imagem}" />
+                                <img alt="" src="#{produtoController.objeto.imagem}"/>
                             </p:outputLabel>
                         </div>
                     </div>
@@ -369,18 +468,18 @@
         <h:form id="formUpload" enctype="multipart/form-data">
             <p:dialog id="dialogUpload" header="Upload Imagem Produto" responsive="true"
                       widgetVar="dialogUpload" showEffect="slide" hideEffect="slide"
-                      resizable="true" modal="true" closable="false" >
-                <p:outputPanel id="panelUpload" >
+                      resizable="true" modal="true" closable="false">
+                <p:outputPanel id="panelUpload">
                     <div class="row">
                         <p:fileUpload
                                 fileUploadListener="#{produtoController.uploadImagem}"
                                 mode="advanced" fileLimit="1"
-                                allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formCentro:growl" />
+                                allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formCentro:growl"/>
                     </div>
                 </p:outputPanel>
                 <f:facet name="footer">
                     <p:commandButton value="Fechar" update=":formCentro:telaDetalhe:tabProduto:imagemProduto"
-                                     oncomplete="PF('dialogUpload').hide();" process="@this" />
+                                     oncomplete="PF('dialogUpload').hide();" process="@this"/>
                 </f:facet>
             </p:dialog>
         </h:form>

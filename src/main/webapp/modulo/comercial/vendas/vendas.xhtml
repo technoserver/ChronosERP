@@ -146,7 +146,7 @@
                                                     <h3>R$<span>#{vendaCabecalhoControll.objeto.valorSubTotalFormatado()}</span>
                                                     </h3>
 
-                                                    <p>Valor Produtos</p>
+                                                    <p>Valor dos Produtos</p>
                                                 </div>
                                                 <div class="icon" style="top: 0px">
                                                     <i class="fa fa-shopping-cart"></i>
@@ -159,12 +159,13 @@
                                             <!-- small box -->
                                             <div class="small-box bg-gray">
                                                 <div class="inner">
-                                                    <h3>R$<span>100</span></h3>
+                                                    <h3>R$<span>#{vendaCabecalhoControll.objeto.valorDescontoFormatado()}</span>
+                                                    </h3>
 
                                                     <p>Valor do Desconto</p>
                                                 </div>
                                                 <div class="icon" style="top: 0px">
-                                                    <i class="fa  fa-wrench"></i>
+                                                    <i class="fa fa-percent" aria-hidden="true"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -173,11 +174,16 @@
                                     <div class="row">
                                         <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
                                                           label="Cliente"
-                                                          itemLabel="#{objeto.pessoa.nome}"
+                                                          itemLabel="#{objeto.nome}"
                                                           controller="#{vendaCabecalhoControll}"
                                                           completeMethod="getListaCliente"
-                                                          nomeAtributo="#{vendaCabecalhoControll.objeto.cliente}"
-                                                          idComponente="vendaCabecalhoCliente"/>
+                                                          nomeAtributo="#{vendaCabecalhoControll.pessoaCliente}"
+                                                          idComponente="vendaCabecalhoCliente">
+                                            <p:ajax event="itemSelecionado"
+                                                    listener="#{vendaCabecalhoControll.definirEnderecoEntrega}"
+                                                    update="formOutrasTelas:campoValor:valorUnitario"/>
+
+                                        </erp:autoComplete>
 
                                         <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
                                                           label="Vendedor"
@@ -185,7 +191,12 @@
                                                           controller="#{vendaCabecalhoControll}"
                                                           completeMethod="getListaVendedor"
                                                           nomeAtributo="#{vendaCabecalhoControll.objeto.vendedor}"
-                                                          idComponente="vendaCabecalhoVendedor"/>
+                                                          idComponente="vendaCabecalhoVendedor">
+                                            <p:ajax event="itemSelecionado"
+                                                    listener="#{vendaCabecalhoControll.definirTaxaComissao}"
+                                                    update="formOutrasTelas:campoValor:valorUnitario"/>
+
+                                        </erp:autoComplete>
 
                                         <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
                                                           label="Venda Condicoes Pagamento"
@@ -226,7 +237,8 @@
                                         <div class="col-md-12">
                                             <h:commandLink title="Novo" class="btn btn-default"
                                                            actionListener="#{vendaCabecalhoControll.incluirVendaDetalhe}"
-                                                           type="button">
+                                                           type="button"
+                                                           rendered="#{not empty vendaCabecalhoControll.objeto.id}">
                                                 <i class="glyphicon glyphicon-plus"/>
                                                 <p:ajax update=":formOutrasTelas:panelVendaDetalhe,dataTableVendaDetalhe"
                                                         oncomplete="PF('dialogVendaDetalhe').show()"
@@ -245,25 +257,62 @@
                                         <p:column headerText="Produto">
                                             <h:outputLabel value="#{obj.produto.nome}"/>
                                         </p:column>
-                                        <p:column headerText="Quantidade">
+                                        <p:column headerText="Quantidade" styleClass="coluna-quantidade">
                                             <h:outputLabel value="#{obj.quantidade}">
                                                 <f:convertNumber pattern="0.000"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Valor Unitario">
-                                            <h:outputLabel value="#{obj.valorUnitario}"/>
+                                        <p:column headerText="Valor Unitario" class="coluna-monetaria">
+                                            <h:outputLabel value="#{obj.valorUnitario}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Valor Subtotal">
-                                            <h:outputLabel value="#{obj.valorSubtotal}"/>
+                                        <p:column headerText="Valor Subtotal" class="coluna-monetaria">
+                                            <h:outputLabel value="#{obj.valorSubtotal}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Taxa Desconto">
-                                            <h:outputLabel value="#{obj.taxaDesconto}"/>
+                                        <p:column headerText="Taxa Desconto" class="coluna-monetaria">
+                                            <h:outputLabel value="#{obj.taxaDesconto}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Valor Desconto">
-                                            <h:outputLabel value="#{obj.valorDesconto}"/>
+                                        <p:column headerText="Valor Desconto" class="coluna-monetaria">
+                                            <h:outputLabel value="#{obj.valorDesconto}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Valor Total">
-                                            <h:outputLabel value="#{obj.valorTotal}"/>
+                                        <p:column headerText="Valor Total" class="coluna-monetaria">
+                                            <h:outputLabel value="#{obj.valorTotal}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputLabel>
+                                        </p:column>
+                                        <p:column headerText="Ações" width="110">
+                                            <p:commandLink title="Alterar"
+                                                           action="#{vendaCabecalhoControll.alterarVendaDetalhe}"
+                                                           class=" btn btn-default"
+                                                           oncomplete="PF('dialogVendaDetalhe').show()"
+                                                           update="dataTableVendaDetalhe,:formOutrasTelas:panelVendaDetalhe"
+                                            >
+                                                <i class="fa fa-file-text-o"></i>
+                                                <f:setPropertyActionListener value="#{obj}"
+                                                                             target="#{vendaCabecalhoControll.vendaDetalheSelecionado}"/>
+                                            </p:commandLink>
+                                            &nbsp;
+                                            <p:commandLink title="Excluir"
+                                                           action="#{vendaCabecalhoControll.excluirVendaDetalhe}"
+                                                           style="position: relative; right: 7px"
+                                                           update=":formCentro:growl,dataTableVendaDetalhe,:formCentro:outputPanelDetalhe"
+                                                           process="dataTableVendaDetalhe"
+                                                           oncomplete="atualizarMsg();"
+                                                           class="btn btn-default"
+                                            >
+                                                <i class="fa fa-times"></i>
+                                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                                <f:setPropertyActionListener value="#{obj}"
+                                                                             target="#{vendaCabecalhoControll.vendaDetalheSelecionado}"/>
+                                            </p:commandLink>
                                         </p:column>
                                     </p:dataTable>
 
@@ -299,7 +348,7 @@
                                                     update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
                                         </h:commandButton>
                                         <c:if test="#{vendaCabecalhoControll.objeto.temProduto()}">
-                                            <button type="button" class="btn btn-danger  dropdown-toggle"
+                                            <button type="button" class="btn btn-primary  dropdown-toggle"
                                                     data-toggle="dropdown">
                                                 <span class="caret"></span>
                                             </button>
@@ -308,7 +357,7 @@
                                                 <c:if test="#{!vendaCabecalhoControll.objeto.faturado}">
                                                     <li>
                                                         <h:commandLink value="Salvar e Faturar"
-                                                                       action="#{vendaCabecalhoControll.faturar()}"
+                                                                       action="#{vendaCabecalhoControll.faturarVenda}"
                                                                        disabled="#{vendaCabecalhoControll.objeto.faturado || osAberturaControll.objeto.emitido}"
 
                                                         >
@@ -398,8 +447,9 @@
                         </div>
                         <div class="col-xs-6 col-lg-6">
                             <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                                             oncomplete="PF('dialogVendaDetalhe').hide();"
-                            />
+                            >
+                                <p:ajax oncomplete="PF('dialogVendaDetalhe').hide();" process="@this"/>
+                            </h:commandButton>
                         </div>
                     </div>
                 </f:facet>

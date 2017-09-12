@@ -152,8 +152,12 @@ public class Produto implements Serializable {
     private Almoxarifado almoxarifado;
     @JoinColumn(name = "ID_TRIBUT_ICMS_CUSTOM_CAB", referencedColumnName = "ID")
     @ManyToOne
-    private TributIcmsCustomCab tributIcmsCustomCab;   
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private TributIcmsCustomCab tributIcmsCustomCab;
+    //@OneToMany(fetch = FetchType.LAZY, mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "EMPRESA_PRODUTO", joinColumns = {
+            @JoinColumn(name = "ID_PRODUTO")}, inverseJoinColumns = {
+            @JoinColumn(name = "ID_EMPRESA")})
     private List<EmpresaProduto> produtosEmpresa;
     @Transient
     private BigDecimal encargosVenda;

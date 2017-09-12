@@ -51,6 +51,7 @@ public class Pessoa implements Serializable {
     @JoinTable(name = "EMPRESA_PESSOA", joinColumns = {
         @JoinColumn(name = "ID_PESSOA")}, inverseJoinColumns = {
         @JoinColumn(name = "ID_EMPRESA")})
+
     private Set<Empresa> listaEmpresa;
 
     public Pessoa() {

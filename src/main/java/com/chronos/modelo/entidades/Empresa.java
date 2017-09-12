@@ -94,6 +94,11 @@ public class Empresa implements Serializable {
     public Empresa() {
     }
 
+    public Empresa(Integer id, String razaoSocial) {
+        this.id = this.id;
+        this.razaoSocial = razaoSocial;
+    }
+
     public Integer getId() {
         return id;
     }

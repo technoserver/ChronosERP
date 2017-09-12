@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -309,5 +310,17 @@ public class Biblioteca {
         BigDecimal resultado = valor1.divide(valor2, MathContext.DECIMAL64);
         resultado = resultado.setScale(2, RoundingMode.HALF_UP);
         return resultado;
+    }
+
+    public static Date addDay(Date dt, int numberDay) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        c.add(Calendar.DATE, numberDay);
+        return c.getTime();
+    }
+
+    public static BigDecimal calcTaxa(BigDecimal total, BigDecimal taxa) {
+        BigDecimal valor = total.multiply(taxa.divide(new BigDecimal(100)));
+        return valor;
     }
 }

@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Vendendores
+    </ui:define>
+
+    <ui:define name="tela">
+        #{vendedorControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Vendendores
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{vendedorControll}"
+                       idDataTable="dataTableVendendor"
+                       nomeFuncao="Vendedores"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Colaborador">
+                <h:outputLabel value="#{row.colaborador.pessoa.nome}"/>
+            </p:column>
+            <p:column headerText="Meta" class="coluna-monetaria">
+                <h:outputLabel value="#{row.metaVendas}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="% Comissao" class="coluna-monetaria">
+                <h:outputLabel value="#{row.comissao}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{vendedorControll}"
+                                   nomeFuncao="Vendedores"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Colaborador"
+                                  itemLabel="#{objeto.pessoa.nome}"
+                                  controller="#{vendedorControll}"
+                                  completeMethod="getListColaborador"
+                                  nomeAtributo="#{vendedorControll.objeto.colaborador}"
+                                  idComponente="colaborador"
+                                  rendered="#{empty vendedorControll.objeto.colaborador.id}"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                label="Colaborador"
+                                tamanhoMaximo="100"
+                                idComponente="colaborador"
+                                nomeAtributo="#{vendedorControll.objeto.colaborador.pessoa.nome}"
+                                desabilitado="true"
+                                rendered="#{not empty vendedorControll.objeto.colaborador.id}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="taxaGerente"
+                                  label="% Comissão"
+                                  nomeAtributo="#{vendedorControll.objeto.comissao}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="taxaGerente"
+                                  label="Meta"
+                                  nomeAtributo="#{vendedorControll.objeto.metaVendas}"/>
+
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

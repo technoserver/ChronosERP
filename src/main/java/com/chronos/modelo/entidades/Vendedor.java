@@ -1,6 +1,8 @@
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -16,22 +18,33 @@ public class Vendedor implements Serializable {
     @Column(name = "ID")
     private Integer id;
     @Column(name = "COMISSAO")
+    @DecimalMax(value = "99.99", message = "A taxa de comissão nao  pode ser superiro a 99.99")
     private BigDecimal comissao;
     @Column(name = "META_VENDAS")
     private BigDecimal metaVendas;
     @Column(name = "taxa_gerente", precision = 18, scale = 6)
+    @DecimalMax(value = "99.99", message = "A taxa de genrente nao  pode ser superiro a 99.99")
     private BigDecimal taxaGerente;
     @Column(name = "gerente")
     private Character gerente;
     @JoinColumn(name = "ID_COLABORADOR", referencedColumnName = "ID")
     @ManyToOne
+    @NotNull
     private Colaborador colaborador;
     @JoinColumn(name = "id_comissao_perfil", referencedColumnName = "id")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private ComissaoPerfil comissaoPerfil;
+    @JoinColumn(name = "ID_REGIAO", referencedColumnName = "ID")
+    @ManyToOne
+    private Regiao regiao;
+    @JoinColumn(name = "ID_TABELA_PRECO", referencedColumnName = "ID")
+    @ManyToOne
+    private TabelaPreco tabelaPreco;
+
 
     public Vendedor() {
     }
+
 
     public Integer getId() {
         return id;
@@ -101,6 +114,22 @@ public class Vendedor implements Serializable {
         this.comissaoPerfil = comissaoPerfil;
     }
 
+    public Regiao getRegiao() {
+        return regiao;
+    }
+
+    public void setRegiao(Regiao regiao) {
+        this.regiao = regiao;
+    }
+
+    public TabelaPreco getTabelaPreco() {
+        return tabelaPreco;
+    }
+
+    public void setTabelaPreco(TabelaPreco tabelaPreco) {
+        this.tabelaPreco = tabelaPreco;
+    }
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -126,10 +155,6 @@ public class Vendedor implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Vendedor{" + "id=" + id + '}';
-    }
     
     
 

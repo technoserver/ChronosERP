@@ -5,11 +5,13 @@ import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.modelo.entidades.ComissaoPerfil;
 import com.chronos.modelo.entidades.Vendedor;
 import com.chronos.repository.Repository;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,25 @@ public class VendedorControll extends AbstractControll<Vendedor> implements Seri
     private Repository<ComissaoPerfil> perfis;
 
 
+    @Override
+    public void doCreate() {
+        super.doCreate();
+        getObjeto().setGerente('N');
+    }
+
+    @Override
+    public void salvar() {
+        getObjeto().setMetaVendas(getObjeto().getMetaVendas() != null ? getObjeto().getMetaVendas() : BigDecimal.ZERO);
+        getObjeto().setComissao(getObjeto().getComissao() != null ? getObjeto().getComissao() : BigDecimal.ZERO);
+        boolean existeColaborador = getObjeto().getId() != null ? false : dao.existeRegisro(Vendedor.class, "colaborador.id", getObjeto().getColaborador().getId());
+
+        if (existeColaborador) {
+            Mensagem.addInfoMessage("Colaborador já definido como vendendor");
+        } else {
+            super.salvar();
+        }
+
+    }
 
     public List<Colaborador> getListColaborador(String nome){
         List<Colaborador> list = new ArrayList<>();

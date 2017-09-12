@@ -1,11 +1,13 @@
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "VENDA_CONDICOES_PAGAMENTO")
@@ -21,15 +23,23 @@ public class VendaCondicoesPagamento implements Serializable {
     private String nome;
     @Column(name = "DESCRICAO")
     private String descricao;
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     @Column(name = "FATURAMENTO_MINIMO")
     private BigDecimal faturamentoMinimo;
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
     @Column(name = "FATURAMENTO_MAXIMO")
+    @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     private BigDecimal faturamentoMaximo;
     @Column(name = "INDICE_CORRECAO")
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
+    @DecimalMax(value = "99.99", message = "O valor  deve ser menor que 99,99")
     private BigDecimal indiceCorrecao;
     @Column(name = "DIAS_TOLERANCIA")
     private Integer diasTolerancia;
     @Column(name = "VALOR_TOLERANCIA")
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     private BigDecimal valorTolerancia;
     @Column(name = "PRAZO_MEDIO")
     private Integer prazoMedio;
@@ -37,7 +47,8 @@ public class VendaCondicoesPagamento implements Serializable {
     private String vistaPrazo;
     @JoinColumn(name = "ID_FIN_TIPO_RECEBIMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private FinTipoRecebimento finTipoRecebimento;
+    @NotNull
+    private FinTipoRecebimento tipoRecebimento;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -206,6 +217,14 @@ public class VendaCondicoesPagamento implements Serializable {
         this.vistaPrazo = vistaPrazo;
     }
 
+    public FinTipoRecebimento getTipoRecebimento() {
+        return tipoRecebimento;
+    }
+
+    public void setTipoRecebimento(FinTipoRecebimento tipoRecebimento) {
+        this.tipoRecebimento = tipoRecebimento;
+    }
+
     public Empresa getEmpresa() {
         return empresa;
     }
@@ -220,14 +239,6 @@ public class VendaCondicoesPagamento implements Serializable {
 
     public void setParcelas(List<VendaCondicoesParcelas> parcelas) {
         this.parcelas = parcelas;
-    }
-
-    public FinTipoRecebimento getFinTipoRecebimento() {
-        return finTipoRecebimento;
-    }
-
-    public void setFinTipoRecebimento(FinTipoRecebimento finTipoRecebimento) {
-        this.finTipoRecebimento = finTipoRecebimento;
     }
 
     @Override

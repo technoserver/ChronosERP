@@ -9,34 +9,38 @@
 >
 
     <ui:define name="title">
-        CFOP 
+        Natureza Financeira
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{naturezaFinanceiraControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        Natureza Financeira
     </ui:define>
 
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
+        <erp:gridDados controller="#{naturezaFinanceiraControll}"
+                       idDataTable="dataTableNaturezaFinanceira"
+                       nomeFuncao="Natureza Financeira"
                        id="telaGrid"
-                       somenteConsulta="true">
+        >
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}" />
+            <p:column headerText="Classificacao">
+                <h:outputLabel value="#{row.classificacao}"/>
             </p:column>
             <p:column headerText="Descricao">
                 <h:outputLabel value="#{row.descricao}" />
             </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
+            <p:column headerText="Tipo">
+                <h:outputLabel
+                        value="#{naturezaFinanceiraControll.keyFromValue(naturezaFinanceiraControll.tipoNaturazaFinanceira, row.tipo)}"/>
+            </p:column>
+            <p:column headerText="Plano Natureza Financeira">
+                <h:outputLabel value="#{row.planoNaturezaFinanceira.nome}"/>
             </p:column>
 
 
@@ -45,28 +49,51 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{naturezaFinanceiraControll}"
+                                   nomeFuncao="Natureza Financeira"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+        >
 
             <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Plano Natureza Financeira"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{naturezaFinanceiraControll}"
+                                  completeMethod="getListaPlanoNaturezaFinanceira"
+                                  nomeAtributo="#{naturezaFinanceiraControll.objeto.planoNaturezaFinanceira}"
+                                  idComponente="naturezaFinanceiraPlanoNaturezaFinanceira"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="naturezaFinanceiraClassificacao" label="Classificacao"
+                                nomeAtributo="#{naturezaFinanceiraControll.objeto.classificacao}"
+                                tamanhoMaximo="30"/>
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="naturezaFinanceiraDescricao" label="Descricao"
+                                nomeAtributo="#{naturezaFinanceiraControll.objeto.descricao}"
+                                tamanhoMaximo="100"/>
             </div>
             <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="naturezaFinanceiraAplicacao" label="Aplicacao"
+                                nomeAtributo="#{naturezaFinanceiraControll.objeto.aplicacao}"
+                                tamanhoMaximo="250"/>
 
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="naturezaFinanceiraTipo" label="Tipo"
+                                 nomeAtributo="#{naturezaFinanceiraControll.objeto.tipo}"
+                                 itens="#{naturezaFinanceiraControll.tipoNaturazaFinanceira}"/>
+
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="naturezaFinanceiraApareceAPagar" label="Aparece A Pagar"
+                                 nomeAtributo="#{naturezaFinanceiraControll.objeto.apareceAPagar}"
+                                 itens="#{naturezaFinanceiraControll.simNao}"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="naturezaFinanceiraApareceAReceber" label="Aparece A Receber"
+                                 nomeAtributo="#{naturezaFinanceiraControll.objeto.apareceAReceber}"
+                                 itens="#{naturezaFinanceiraControll.simNao}"/>
             </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
-            </div>
+
 
         </erp:telaInclusaoAlteracao>
     </ui:define>

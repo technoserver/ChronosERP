@@ -63,6 +63,11 @@ public class NaturezaFinanceira implements Serializable {
     public NaturezaFinanceira() {
     }
 
+    public NaturezaFinanceira(Integer id) {
+        this.id = id;
+
+    }
+
     public NaturezaFinanceira(Integer id,String descricao) {
         this.id = id;
         this.descricao = descricao;

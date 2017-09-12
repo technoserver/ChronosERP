@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -11,6 +13,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "VENDA_CABECALHO")
+@DynamicUpdate
 public class VendaCabecalho implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -78,7 +81,6 @@ public class VendaCabecalho implements Serializable {
     private Vendedor vendedor;
     @JoinColumn(name = "ID_TIPO_NOTA_FISCAL", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    @NotNull
     private NotaFiscalTipo notaFiscalTipo;
     @JoinColumn(name = "ID_TRANSPORTADORA", referencedColumnName = "ID")
     @ManyToOne
@@ -185,7 +187,7 @@ public class VendaCabecalho implements Serializable {
     }
 
     public BigDecimal getValorDesconto() {
-        return valorDesconto;
+        return Optional.ofNullable(valorDesconto).orElse(BigDecimal.ZERO);
     }
 
     public void setValorDesconto(BigDecimal valorDesconto) {
@@ -229,7 +231,7 @@ public class VendaCabecalho implements Serializable {
     }
 
     public BigDecimal getValorFrete() {
-        return valorFrete;
+        return Optional.ofNullable(valorFrete).orElse(BigDecimal.ZERO);
     }
 
     public void setValorFrete(BigDecimal valorFrete) {
@@ -237,7 +239,7 @@ public class VendaCabecalho implements Serializable {
     }
 
     public BigDecimal getValorSeguro() {
-        return valorSeguro;
+        return Optional.ofNullable(valorSeguro).orElse(BigDecimal.ZERO);
     }
 
     public void setValorSeguro(BigDecimal valorSeguro) {
@@ -351,6 +353,7 @@ public class VendaCabecalho implements Serializable {
         return situacao != null && situacao.equals("C");
     }
 
+
     public BigDecimal calcularTotalDesconto() {
         valorDesconto = getListaVendaDetalhe().stream()
                 .map(VendaDetalhe::getValorDesconto)
@@ -365,20 +368,24 @@ public class VendaCabecalho implements Serializable {
                 .map(VendaDetalhe::getValorSubtotal)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
+
         return valorSubtotal;
     }
 
     public BigDecimal calcularValorTotal() {
-        valorTotal = getListaVendaDetalhe().stream()
-                .map(VendaDetalhe::getValorTotal)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-
+        valorTotal = calcularValorProdutos();
+        valorTotal = valorTotal.add(getValorFrete())
+                .add(getValorSeguro())
+                .subtract(calcularTotalDesconto());
         return valorTotal;
     }
 
     public String valorSubTotalFormatado() {
         return formatarValor(calcularValorProdutos());
+    }
+
+    public String valorDescontoFormatado() {
+        return formatarValor(calcularTotalDesconto());
     }
 
     public String valorTotalFormatado() {

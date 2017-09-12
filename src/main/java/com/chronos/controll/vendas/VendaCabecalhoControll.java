@@ -1,8 +1,16 @@
 package com.chronos.controll.vendas;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.dto.LancamentoReceber;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.enuns.FormaPagamento;
+import com.chronos.modelo.entidades.enuns.SituacaoVenda;
+import com.chronos.modelo.entidades.enuns.TipoFrete;
+import com.chronos.modelo.entidades.view.PessoaCliente;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
@@ -11,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -33,14 +42,24 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Inject
     private Repository<NotaFiscalTipo> tipos;
     @Inject
-    private Repository<Cliente> clientes;
+    private Repository<PessoaCliente> clientes;
     @Inject
     private Repository<Vendedor> vendedores;
     @Inject
     private Repository<Produto> produtos;
+    @Inject
+    private Repository<ComissaoObjetivo> objetivos;
+    @Inject
+    private Repository<VendaComissao> comissoes;
+    @Inject
+    private FinLancamentoReceberService recebimentoService;
+
+
 
     private VendaDetalhe vendaDetalhe;
     private VendaDetalhe vendaDetalheSelecionado;
+
+    private PessoaCliente pessoaCliente;
 
     @Override
     public void doCreate() {
@@ -48,6 +67,31 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         getObjeto().setEmpresa(empresa);
         getObjeto().setListaVendaDetalhe(new HashSet<>());
         getObjeto().setDataVenda(new Date());
+        getObjeto().setSituacao(SituacaoVenda.Digitacao.getCodigo());
+        getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
+
+    }
+
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        VendaCabecalho venda = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(venda);
+        pessoaCliente = new PessoaCliente();
+        pessoaCliente.setNome(getObjeto().getCliente().getPessoa().getNome());
+    }
+
+    @Override
+    public void salvar() {
+        if (getObjeto().getCondicoesPagamento() != null) {
+            getObjeto().setFormaPagamento(getObjeto().getCondicoesPagamento().getVistaPrazo().equals("V")
+                    ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
+        }
+        super.salvar();
+        if (getObjeto().getId() == null) {
+            getObjeto().setNumeroFatura(getObjeto().getId());
+            dao.atualizar(getObjeto());
+        }
     }
 
     public void incluirVendaDetalhe() {
@@ -67,7 +111,21 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void salvarVendaDetalhe() {
 
         if (vendaDetalhe.getId() == null) {
-            getObjeto().getListaVendaDetalhe().add(vendaDetalhe);
+            getObjeto().getListaVendaDetalhe().stream()
+                    .filter(p -> p.getProduto().getId() == vendaDetalhe.getProduto().getId())
+                    .forEach(item -> {
+                        item.setQuantidade(vendaDetalhe.getQuantidade());
+                        item.setValorUnitario(vendaDetalhe.getValorUnitario());
+                        item.setTaxaDesconto(vendaDetalhe.getTaxaDesconto());
+                    });
+            boolean encontrou = getObjeto().getListaVendaDetalhe().stream()
+                    .filter(p -> p.getProduto().getId() == vendaDetalhe.getProduto().getId())
+                    .findFirst().isPresent();
+            if (!encontrou) {
+                getObjeto().getListaVendaDetalhe().add(vendaDetalhe);
+            }
+
+
         }
         try {
             getObjeto().calcularValorTotal();
@@ -92,7 +150,23 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
     public void faturarVenda() {
+        try {
+            LancamentoReceber lancamento = new LancamentoReceber();
+            lancamento.setCliente(getObjeto().getCliente());
+            lancamento.setCondicoesPagamento(getObjeto().getCondicoesPagamento());
+            lancamento.setDataLancamento(new Date());
+            lancamento.setValorTotal(getObjeto().getValorTotal());
+            lancamento.setNumDocumento(new DecimalFormat("VD0000000").format(getObjeto().getId()));
+            lancamento.setCodigoModulo("210");
+            recebimentoService.gerarContasReceber(lancamento, Constantes.FIN.NATUREZA_VENDA);
+            getObjeto().setSituacao(SituacaoVenda.Faturado.getCodigo());
+            salvar("Venda faturada com Sucesso");
+            gerarComissao();
 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+        }
     }
 
     public void gerarNFe() {
@@ -184,10 +258,10 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         return listaTipoNotaFiscal;
     }
 
-    public List<Cliente> getListaCliente(String nome) {
-        List<Cliente> listaCliente = new ArrayList<>();
+    public List<PessoaCliente> getListaCliente(String nome) {
+        List<PessoaCliente> listaCliente = new ArrayList<>();
         try {
-            listaCliente = clientes.getEntitys(Cliente.class, "pessoa.nome", nome);
+            listaCliente = clientes.getEntitys(PessoaCliente.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -207,12 +281,49 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public List<Produto> getListaProduto(String nome) {
         List<Produto> listaProduto = new ArrayList<>();
         try {
-            listaProduto = produtos.getEntitys(Produto.class, "nome", nome);
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("nome", Filtro.LIKE, nome));
+            filtros.add(new Filtro("servico", "N"));
+            atributos = new Object[]{"nome", "valorVenda"};
+            listaProduto = produtos.getEntitys(Produto.class, filtros, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
         return listaProduto;
     }
+
+
+    public void definirEnderecoEntrega(SelectEvent event) {
+        PessoaCliente pessoaCliente = (PessoaCliente) event.getObject();
+        ;
+        Cliente cliente = new Cliente();
+        cliente.setId(pessoaCliente.getId());
+        getObjeto().setCliente(cliente);
+        String endereco = "End: " + pessoaCliente.getLogradouro() + "," + pessoaCliente.getNumero() + " ";
+        endereco += "Bairro :" + pessoaCliente.getBairro() + " Cep: " + pessoaCliente.getCep() + " - ";
+        endereco += pessoaCliente.getCidade() + "/" + pessoaCliente.getUf();
+        getObjeto().setLocalEntrega(endereco);
+        getObjeto().setLocalCobranca(endereco);
+    }
+
+
+    public void definirTaxaComissao(SelectEvent event) {
+        Vendedor vendedor = (Vendedor) event.getObject();
+        getObjeto().setTaxaComissao(vendedor.getComissao());
+    }
+
+    private void gerarComissao() {
+        VendaComissao comissao = new VendaComissao();
+        comissao.setDataLancamento(new Date());
+        comissao.setSituacao("A");
+        comissao.setTipoContabil("C");
+        comissao.setValorComissao(getObjeto().getValorComissao());
+        comissao.setValorVenda(getObjeto().getValorTotal());
+        comissao.setVendaCabecalho(getObjeto());
+        comissao.setVendedor(getObjeto().getVendedor());
+        comissoes.salvar(comissao);
+    }
+
 
     @Override
     protected Class<VendaCabecalho> getClazz() {
@@ -243,5 +354,13 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void setVendaDetalheSelecionado(VendaDetalhe vendaDetalheSelecionado) {
         this.vendaDetalheSelecionado = vendaDetalheSelecionado;
+    }
+
+    public PessoaCliente getPessoaCliente() {
+        return pessoaCliente;
+    }
+
+    public void setPessoaCliente(PessoaCliente pessoaCliente) {
+        this.pessoaCliente = pessoaCliente;
     }
 }
