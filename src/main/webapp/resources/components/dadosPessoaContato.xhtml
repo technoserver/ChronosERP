@@ -24,27 +24,30 @@
                 <div class="row">
 
 
-                    <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
                                     idComponente="pessoaContatoNome" label="Nome"
                                     nomeAtributo="#{cc.attrs.controller.pessoaContato.nome}"
                                     tamanhoMaximo="100"/>
-                    <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+
+                </div>
+                <div class="row">
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
                                     idComponente="pessoaContatoEmail" label="Email"
                                     nomeAtributo="#{cc.attrs.controller.pessoaContato.email}"
                                     tamanhoMaximo="250"/>
                 </div>
                 <div class="row">
 
-                    <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                                     idComponente="pessoaContatoFoneComercial" label="Fone Comercial"
                                     nomeAtributo="#{cc.attrs.controller.pessoaContato.foneComercial}"
                                     tamanhoMaximo="14"/>
-                    <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                                     idComponente="pessoaContatoFoneResidencial"
                                     label="Fone Residencial"
                                     nomeAtributo="#{cc.attrs.controller.pessoaContato.foneResidencial}"
                                     tamanhoMaximo="14"/>
-                    <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                                     idComponente="pessoaContatoFoneCelular" label="Fone Celular"
                                     nomeAtributo="#{cc.attrs.controller.pessoaContato.foneCelular}"
                                     tamanhoMaximo="14"/>
@@ -61,14 +64,15 @@
                                          actionListener="#{cc.attrs.controller.salvarContato}">
                             <p:ajax process="@form"
                                     oncomplete="if (!args.validationFailed) {PF('dialogContato').hide();}"
-                                    update=":campoPessoaContato:formOutrasTelas:panelPessoaContato,:formCentro:growl,:formCentro:telaDetalhe:campoPessoa:telaCadastroPessoa:dataTablePessoaContato"
-                            />
+                                    update=":campoPessoaContato:formOutrasTelas:panelPessoaContato,:formCentro:growl,:formCentro:telaDetalhe:dadosPessoa:telaCadastroPessoa:dataTablePessoaContato"
+                            /><!--update=":campoPessoaContato:formOutrasTelas:panelPessoaContato,:formCentro:growl,:formCentro:telaDetalhe:campoPessoa:telaCadastroPessoa:dataTablePessoaContato"-->
                         </h:commandButton>
                     </div>
                     <div class="col-xs-6 col-lg-6">
                         <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                                         oncomplete="PF('dialogContato').hide();"
-                        />
+                        >
+                            <p:ajax oncomplete="PF('dialogContato').hide();" process="@this"/>
+                        </h:commandButton>
                     </div>
                 </div>
 

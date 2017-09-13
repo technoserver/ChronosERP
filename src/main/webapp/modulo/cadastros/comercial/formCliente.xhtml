@@ -15,7 +15,14 @@
                           completeMethod="getListaPessoa"
                           nomeAtributo="#{clienteControll.objeto.pessoa}"
                           idComponente="clientePessoa"
-                          requerido="false"/>
+                          requerido="false"
+                          rendered="#{empty clienteControll.objeto.id}"/>
+        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                        idComponente="clienteContaTomador" label="Cliente"
+                        nomeAtributo="#{clienteControll.objeto.pessoa.nome}"
+                        tamanhoMaximo="30"
+                        desabilitado="true"
+                        rendered="#{not empty clienteControll.objeto.id}"/>
 
     </h:panelGroup>
 

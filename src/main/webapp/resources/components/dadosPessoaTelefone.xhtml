@@ -22,15 +22,15 @@
                 <p:outputPanel id="panelPessoaTelefone">
                     <div class="row">
 
-                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          idComponente="pessoaTelefoneTipo" label="Tipo"
-                                          nomeAtributo="#{cc.attrs.controller.pessoaTelefone.tipo}"
-                                          itens="#{pessoaController.tipoTelefone}" />
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-4 col-md-4"
+                                         idComponente="pessoaTelefoneTipo" label="Tipo"
+                                         nomeAtributo="#{cc.attrs.controller.pessoaTelefone.tipo}"
+                                         itens="#{cc.attrs.controller.tipoTelefone}"/>
 
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
-                                         idComponente="pessoaTelefoneNumero" label="Numero"
-                                         nomeAtributo="#{cc.attrs.controller.pessoaTelefone.numero}"
-                                         tamanhoMaximo="14" />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                        idComponente="pessoaTelefoneNumero" label="Numero"
+                                        nomeAtributo="#{cc.attrs.controller.pessoaTelefone.numero}"
+                                        tamanhoMaximo="14" />
                     </div>
 
                     <div class="row">
@@ -45,7 +45,7 @@
                     <div class="row">
                         <div  class="col-xs-6 col-lg-6">
                             <h:commandButton value="Salvar" class="btn btn-primary center-block"
-                                             actionListener="#{cc.attrs.controller.salvarEndereco}">
+                                             actionListener="#{cc.attrs.controller.salvarTelefone}">
                                 <p:ajax process="@form"
                                         oncomplete="if (!args.validationFailed) {PF('dialogTelefone').hide();}"
                                         update=":campoPessoaTelefone:formOutrasTelas3:panelPessoaTelefone,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
@@ -54,8 +54,10 @@
                         </div>
                         <div  class="col-xs-6 col-lg-6">
                             <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                                             oncomplete="PF('dialogTelefone').hide();"
-                            />
+
+                            >
+                                <p:ajax oncomplete="PF('dialogTelefone').hide();" process="@this"/>
+                            </h:commandButton>
                         </div>
                     </div>
 

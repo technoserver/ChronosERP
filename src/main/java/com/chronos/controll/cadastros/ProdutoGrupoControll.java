@@ -7,7 +7,9 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.ProdutoGrupo;
+import com.chronos.util.jsf.Mensagem;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -21,6 +23,13 @@ import java.io.Serializable;
 public class ProdutoGrupoControll  extends AbstractControll<ProdutoGrupo> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        Mensagem.addInfoMessage("Durante o cadastramento do Grupo de produto é realizado para informar a que grupo os produtos pertencem, facilitando a organização.");
+    }
 
     @Override
     protected Class<ProdutoGrupo> getClazz() {

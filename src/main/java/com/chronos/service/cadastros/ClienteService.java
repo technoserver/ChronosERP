@@ -37,6 +37,7 @@ public class ClienteService implements Serializable{
             cliente.setPessoa(pessoa);
             cliente = clientes.atualizar(cliente);
             // clientes.getEntityJoinFetch(1,Cliente.class);
+            Mensagem.addInfoMessage("Cliente salvo com sucesso");
 
         } catch (Exception ex) {
             Mensagem.addErrorMessage("",ex);
@@ -49,16 +50,20 @@ public class ClienteService implements Serializable{
     private void validarPessoa(Pessoa pessoa) throws Exception {
         Long total;
         if (pessoa.getTipo().equals("F")) {
-            total = pessoasFisica.getTotalRegistros(PessoaFisica.class, "cpf", pessoa.getIdentificador());
-            if (total > 0) {
+            Object[] atributos = new Object[]{"cpf"};
+            PessoaFisica pf = pessoasFisica.get(PessoaFisica.class, "cpf", pessoa.getPessoaFisica().getCpf().replaceAll("\\D", ""), atributos);
+
+            if (pf != null && !pf.equals(pessoa.getPessoaFisica())) {
                 throw new ChronosException("CPF ja informado em :" + pessoa.getNome());
             }
             if(!Biblioteca.cpfValido(pessoa.getIdentificador())){
                 throw new ChronosException("CPF invalido");
             }
         } else {
+            Object[] atributos = new Object[]{"cnpj"};
+            PessoaJuridica pj = pessoasJuridica.get(PessoaJuridica.class, "cnpj", pessoa.getPessoaJuridica().getCnpj().replaceAll("\\D", ""), atributos);
             total = pessoasJuridica.getTotalRegistros(PessoaJuridica.class, "cnpj", pessoa.getIdentificador());
-            if (total > 0) {
+            if (pj != null && !pj.equals(pessoa.getPessoaJuridica())) {
                 throw new ChronosException("CNPJ ja informado em :" + pessoa.getNome());
             }
             if (!Biblioteca.cnpjValido(pessoa.getIdentificador())) {

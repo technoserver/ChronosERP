@@ -154,10 +154,10 @@ public class Produto implements Serializable {
     @ManyToOne
     private TributIcmsCustomCab tributIcmsCustomCab;
     //@OneToMany(fetch = FetchType.LAZY, mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "EMPRESA_PRODUTO", joinColumns = {
-            @JoinColumn(name = "ID_PRODUTO")}, inverseJoinColumns = {
-            @JoinColumn(name = "ID_EMPRESA")})
+            @JoinColumn(name = "ID_EMPRESA")}, inverseJoinColumns = {
+            @JoinColumn(name = "ID_PRODUTO")})
     private List<EmpresaProduto> produtosEmpresa;
     @Transient
     private BigDecimal encargosVenda;

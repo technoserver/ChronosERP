@@ -55,6 +55,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private ProdutoGrupo grupo;
     private ProdutoEmpresaDataModel produtoDataModel;
     private List<EmpresaProduto> listProdutoEmpresa;
+    private ViewProdutoEmpresa produtoSelecionado;
 
     private String produto;
     private String strGrupo;
@@ -111,11 +112,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         getObjeto().setInativo("N");
         getObjeto().setDataCadastro(new Date());
         grupo = new ProdutoGrupo();
-        EmpresaProduto produtoEmpresa = new EmpresaProduto();
-        produtoEmpresa.setEmpresa(empresa);
-        produtoEmpresa.setProduto(getObjeto());
-        produtoEmpresa.setQuantidadeEstoque(BigDecimal.ZERO);
-        getObjeto().getProdutosEmpresa().add(produtoEmpresa);
+
 
     }
 
@@ -123,6 +120,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void doEdit() {
         super.doEdit();
         grupo = getObjeto().getProdutoSubGrupo().getProdutoGrupo();
+
     }
 
     @Override
@@ -149,6 +147,13 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                     Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
                 } else {
                     super.salvar(null);
+                    if (getObjeto().getServico().equals("N")) {
+                        EmpresaProduto produtoEmpresa = new EmpresaProduto();
+                        produtoEmpresa.setEmpresa(empresa);
+                        produtoEmpresa.setProduto(getObjeto());
+                        produtoEmpresa.setQuantidadeEstoque(BigDecimal.ZERO);
+                        produtosEmpresa.salvar(produtoEmpresa);
+                    }
                 }
             }
 
@@ -169,7 +174,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         try {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("nome", Filtro.LIKE, nome));
-            if (grupo != null) {
+            if (grupo.getId() != null) {
                 filtros.add(new Filtro("produtoGrupo.id", grupo.getId()));
             }
             listaSubgrupo = subGrupos.getEntitys(ProdutoSubGrupo.class, filtros);
@@ -327,4 +332,6 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void setInativo(String inativo) {
         this.inativo = inativo;
     }
+
+
 }

@@ -37,7 +37,6 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     
     public ERPLazyDataModel() {
         filtros = new ArrayList<>();
-
     }
 
     @Override

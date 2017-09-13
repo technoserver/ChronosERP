@@ -65,7 +65,7 @@
                     <h:selectOneMenu id="clienteBloqueado"
                                      class="form-control"
                                      value="#{colaboradorControll.completo}">
-                        <f:selectItems value="#{clienteControll.naoSim}"/>
+                        <f:selectItems value="#{colaboradorControll.naoSim}"/>
                         <p:ajax event="change" update=":formCentro:telaDetalhe:tipoCadastro"
                                 process="@this"
                                 oncomplete="addClass()"/>
@@ -75,14 +75,14 @@
             </div>
             <br/>
             <h:panelGroup layout="block" id="tipoCadastro">
-                <h:panelGroup layout="block" rendered="#{clienteControll.completo eq 'N'}">
-
+                <h:panelGroup layout="block" rendered="#{colaboradorControll.completo eq 'N'}">
+                    <ui:include src="formColaborador.xhtml"/>
                 </h:panelGroup>
-                <h:panelGroup layout="block" rendered="#{clienteControll.completo eq 'S'}">
+                <h:panelGroup layout="block" rendered="#{colaboradorControll.completo eq 'S'}">
 
-                    <erp:dadosPessoa controller="#{clienteControll}" id="dadosPessoa">
+                    <erp:dadosPessoa controller="#{colaboradorControll}" id="dadosPessoa">
                         <p:tab title="Dados Colaborador" id="dadosGerenciais">
-
+                            <ui:include src="formColaborador.xhtml"/>
                         </p:tab>
                     </erp:dadosPessoa>
 
@@ -91,6 +91,20 @@
 
 
         </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <erp:dadosPessoaContato controller="#{colaboradorControll}" id="campoPessoaContato"/>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <erp:dadosPessoaEndereco id="campoPessoaEndereco"
+                                 controller="#{colaboradorControll}"/>
+    </ui:define>
+
+    <ui:define name="outrasTelas3">
+        <erp:dadosPessoaTelefone id="campoPessoaTelefone"
+                                 controller="#{colaboradorControll}"/>
     </ui:define>
 
 </ui:composition>

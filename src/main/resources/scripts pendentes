@@ -1,31 +1,11 @@
-CREATE OR REPLACE VIEW public.view_produto_empresa AS
- SELECT p.id,
-    e.id AS idempresa,
-    sg.id AS idsubgrupo,
-    g.id AS idgrupo,
-    m.id AS idmarca,
-    un.id AS idunidade,
-    p.gtin,
-    p.nome,
-    p.ncm,
-    p.cest,
-    p.custo_unitario,
-    p.valor_venda,
-    p.servico,
-    p.tipo,
-    p.quantidade_estoque AS quantidade,
-    p.inativo,
-    sg.nome AS subgrupo,
-    g.nome AS grupo,
-    m.nome AS marca,
-    un.sigla
-   FROM produto p
-     JOIN empresa_produto ep ON ep.id_produto = p.id
-     JOIN empresa e ON ep.id_empresa = e.id
-     JOIN produto_subgrupo sg ON sg.id = p.id_subgrupo
-     JOIN produto_grupo g ON g.id = sg.id_grupo
-     JOIN unidade_produto un ON un.id = p.id_unidade_produto
-     LEFT JOIN produto_marca m ON m.id = p.id_marca_produto
-  ORDER BY p.nome;
+grupos
+
+mensagem ao abri o cadastro de grupos
+
+
+
+
+
+
 
 criar os relacionamento da empresa produto

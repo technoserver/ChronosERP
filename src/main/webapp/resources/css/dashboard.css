@@ -167,3 +167,20 @@ div[id="formCentro:growl_container"] > div[class~="g-info"]{
 .coluna-quantidade {
     text-align: center;
 }
+
+/* Field Action */
+.field-action {
+    display: flex;
+}
+
+.field-action__icon {
+    margin: 6px 0 0 5px;
+}
+
+.glyphicon-large {
+    font-size: 18px;
+}
+
+.ui-outputlabel-rfi {
+    corlo: red;
+}

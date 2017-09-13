@@ -62,9 +62,12 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
 
     @Override
     public void doEdit() {
-        super.doEdit();
+        if (getObjeto() == null) {
+            super.doEdit();
+        }
+
         Class<Pessoa> classToCast = Pessoa.class;
-        Pessoa p = pessoas.getEntityJoinFetch(getPessoa().getId(), Pessoa.class);
+        Pessoa p = pessoas.getJoinFetch(getPessoa().getId(), Pessoa.class);
         setPessoa(p);
 
         endereco = getPessoa().getListaPessoaEndereco().stream().filter((e) -> e.getPrincipal().equals("S")).findFirst().orElse(new PessoaEndereco());
@@ -99,15 +102,18 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     }
 
     public void excluirContato() {
+        Pessoa pessoa = getPessoa();
+        pessoa.getListaPessoaContato().remove(pessoaContatoSelecionado);
+        pessoas.atualizar(pessoa);
+        Mensagem.addInfoMessage("Contato excluído com sucesso!");
 
-        getPessoa().getListaPessoaContato().remove(pessoaContatoSelecionado);
-        salvar("Contato excluído com sucesso!");
 
     }
 
     public void incluirEndereco() {
         pessoaEndereco = new PessoaEndereco();
         pessoaEndereco.setPessoa(getPessoa());
+        pessoaEndereco.setPrincipal("N");
     }
 
     public void alterarEndereco() {
@@ -128,7 +134,9 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
 
     public void excluirEndereco() {
         getPessoa().getListaPessoaEndereco().remove(pessoaEnderecoSelecionado);
-        salvar("Endereço excluído com sucesso!");
+        pessoas.atualizar(getPessoa());
+        Mensagem.addInfoMessage("Endereço excluído com sucesso!");
+
     }
 
     public void incluirTelefone() {
@@ -144,21 +152,26 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         if (pessoaTelefone.getId() == null) {
             getPessoa().getListaPessoaTelefone().add(pessoaTelefone);
         }
-        salvar("Telefone salvo com sucesso!");
+        pessoas.atualizar(getPessoa());
+        Mensagem.addInfoMessage("Telefone salvo com sucesso!");
+
     }
 
     public void excluirTelefone() {
-        getPessoa().getListaPessoaTelefone().remove(pessoaTelefoneSelecionado);
-        salvar("Telefone excluído com sucesso!");
+        Pessoa pessoa = getPessoa();
+        pessoa.getListaPessoaTelefone().remove(pessoaTelefoneSelecionado);
+        pessoas.atualizar(getPessoa());
+        Mensagem.addInfoMessage("Telefone excluído com sucesso!");
+
     }
 
 
     public List<EstadoCivil> getListaEstadoCivil(String nome) {
         List<EstadoCivil> listaEstadoCivil = new ArrayList<>();
         try {
-            listaEstadoCivil = estadosCivis.getEntitys(EstadoCivil.class, "nome", nome, atributos);
+            listaEstadoCivil = estadosCivis.getEntitys(EstadoCivil.class, "nome", nome);
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return listaEstadoCivil;
     }
@@ -198,6 +211,7 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
             pessoa.setFornecedor(fornecedor);
         }
         pessoa = instanciaPessoaFisica(pessoa);
+        setPessoa(pessoa);
         return pessoa;
     }
 

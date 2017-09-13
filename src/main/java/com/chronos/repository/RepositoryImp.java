@@ -116,6 +116,11 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
+    public T get(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException {
+        return getEntitys(clazz, atributo, valor, atributos).get(0);
+    }
+
+    @Override
     public T get(Class<T> clazz, List<Filtro> filtros) throws PersistenceException {
         List<T> objetos = getEntitys(clazz, filtros);
         return objetos.isEmpty()?null:objetos.get(0);

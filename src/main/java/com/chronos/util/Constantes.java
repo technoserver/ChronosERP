@@ -14,7 +14,7 @@ public interface Constantes {
         public static FinStatusParcela STATUS_ABERTO = new FinStatusParcela(1);
         public static FinStatusParcela STATUS_QUITADO = new FinStatusParcela(2);
         public static FinTipoRecebimento CHEQUE = new FinTipoRecebimento(1);
-        public static NaturezaFinanceira NATUREZA_VENDA = new NaturezaFinanceira(2);
+        public static NaturezaFinanceira NATUREZA_VENDA = new NaturezaFinanceira(57);
     }
 
     interface COMERCIAL {

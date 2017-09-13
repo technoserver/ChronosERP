@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+    <h:panelGroup layout="block" styleClass="row" rendered="#{colaboradorControll.completo eq 'N'}">
+        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                          label="Pessoa"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{colaboradorControll}"
+                          completeMethod="getListaPessoa"
+                          nomeAtributo="#{colaboradorControll.objeto.pessoa}"
+                          idComponente="clientePessoa"
+                          requerido="false"
+                          rendered="#{empty colaboradorControll.objeto.id}"/>
+        <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                        idComponente="clienteContaTomador" label="Cliente"
+                        nomeAtributo="#{colaboradorControll.objeto.pessoa.nome}"
+                        tamanhoMaximo="30"
+                        desabilitado="true"
+                        rendered="#{not empty colaboradorControll.objeto.id}"/>
+
+    </h:panelGroup>
+
+    <div class="row">
+        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                          label="Tipo Admissao"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{colaboradorControll}"
+                          completeMethod="getListaTipoAdmissao"
+                          nomeAtributo="#{colaboradorControll.objeto.tipoAdmissao}"
+                          idComponente="colaboradorTipoAdmissao"
+                          requerido="false"/>
+
+        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                          label="Situacao"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{colaboradorControll}"
+                          completeMethod="getListaSituacaoColaborador"
+                          nomeAtributo="#{colaboradorControll.objeto.situacaoColaborador}"
+                          idComponente="colaboradorSituacaoColaborador"/>
+    </div>
+    <div class="row">
+        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                          label="Tipo"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{colaboradorControll}"
+                          completeMethod="getListaTipoColaborador"
+                          nomeAtributo="#{colaboradorControll.objeto.tipoColaborador}"
+                          idComponente="colaboradorTipoColaborador"/>
+
+        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                          label="Nivel Formacao"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{colaboradorControll}"
+                          completeMethod="getListaNivelFormacao"
+                          nomeAtributo="#{colaboradorControll.objeto.nivelFormacao}"
+                          idComponente="colaboradorNivelFormacao"/>
+    </div>
+    <div class="row">
+        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                          label="Cargo"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{colaboradorControll}"
+                          completeMethod="getListaCargo"
+                          nomeAtributo="#{colaboradorControll.objeto.cargo}"
+                          idComponente="colaboradorCargo"/>
+
+        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                          label="Setor"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{colaboradorControll}"
+                          completeMethod="getListaSetor"
+                          nomeAtributo="#{colaboradorControll.objeto.setor}"
+                          idComponente="colaboradorSetor"/>
+    </div>
+
+
+</ui:composition>

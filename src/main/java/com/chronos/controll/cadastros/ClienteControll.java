@@ -80,6 +80,9 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
     @Override
     public void doEdit() {
+
+        Cliente cliente = dao.getJoinFetch(clienteSelecionado.getId(), Cliente.class);
+        setObjeto(cliente);
         super.doEdit();
         setTelaGrid(false);
         completo = "N";

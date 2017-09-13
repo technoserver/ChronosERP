@@ -13,7 +13,7 @@
     <cc:attribute name="controller" type="com.chronos.controll.cadastros.PessoaControll" required="true"/>
 </cc:interface>
 <cc:implementation>
-    <p:tabView id="tabs">
+    <p:tabView id="telaCadastroPessoa">
         <p:tab title="Dados Pessoas" id="dadosPrincipais">
             <div class="row">
                 <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
@@ -34,7 +34,9 @@
                                 nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.fantasia}"
                                 tamanhoMaximo="150"
                                 exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'J'}"/>
-                <div class="col-xs-12 col-sm-2 col-md-2">
+
+                <h:panelGroup layout="block" class="col-xs-12 col-sm-2 col-md-2"
+                              rendered="#{cc.attrs.controller.objeto.pessoa.cliente eq 'S'}">
                     <h:outputLabel value="Tipo"
                                    for="pessoaTipo"/>
                     <h:selectOneMenu id="pessoaTipo"
@@ -42,11 +44,11 @@
                                      value="#{cc.attrs.controller.objeto.pessoa.tipo}">
                         <f:selectItems value="#{cc.attrs.controller.tipoPessoa}"/>
                         <p:ajax event="change"
-                                update=":formCentro:telaDetalhe:dadosPessoa:tabs:panelPessoaFisicaJuridica"
+                                update=":formCentro:telaDetalhe:dadosPessoa:telaCadastroPessoa:panelPessoaFisicaJuridica"
                                 process="@this" listener="#{cc.attrs.controller.definirTipo()}"
                                 oncomplete="addClass()"/>
                     </h:selectOneMenu>
-                </div>
+                </h:panelGroup>
 
 
             </div>
@@ -332,6 +334,7 @@
                         <p:ajax process="@this,dataTablePessoaEndereco"
                                 oncomplete="PF('dialogEndereco').show()"
                                 update=":campoPessoaEndereco:formOutrasTelas2:panelPessoaEndereco,dataTablePessoaEndereco"/>
+                        <!-- -->
                     </h:commandLink>
                 </div>
             </div>
@@ -366,32 +369,102 @@
                             value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.simNao, obj.correspondencia)}"/>
                 </p:column>
                 <p:column headerText="Ações" width="140">
-                    <p:commandLink title="Alterar" actionListener="#{cc.attrs.controller.alterarTelefone()}"
+                    <p:commandLink title="Alterar" action="#{cc.attrs.controller.alterarEndereco}"
                                    class=" btn btn-default"
                                    process="dataTablePessoaEndereco"
                                    oncomplete="PF('dialogEndereco').show()"
                                    update=":campoPessoaEndereco:formOutrasTelas2:panelPessoaEndereco,:campoPessoaEndereco:formOutrasTelas2:dialogEndereco">
                         <i class="fa fa-file-text-o"></i>
-                        <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.pessoaEnderecoSelecionado}"/>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{cc.attrs.controller.pessoaEnderecoSelecionado}"/>
                     </p:commandLink>
                     &nbsp;
-                    <p:commandLink title="Excluir" actionListener="#{cc.attrs.controller.excluirTelefone()}"
-                                   update="dataTablePessoaEndereco"
+                    <p:commandLink title="Excluir" action="#{cc.attrs.controller.excluirEndereco}"
+                                   update="dataTablePessoaEndereco,:formCentro:growl"
                                    process="dataTablePessoaEndereco"
                                    oncomplete="atualizarMsg();"
                                    class="btn btn-default">
                         <i class="fa fa-times"></i>
                         <p:confirm header="Confirmar" message="Deseja excluir ?"/>
-                        <f:setPropertyActionListener value="#{row}"
+                        <f:setPropertyActionListener value="#{obj}"
                                                      target="#{cc.attrs.controller.pessoaEnderecoSelecionado}"/>
                     </p:commandLink>
                 </p:column>
             </p:dataTable>
         </p:tab>
         <p:tab title="Contatos" id="contatos" disabled="#{empty cc.attrs.controller.objeto.pessoa.id}">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <h:commandLink title="Cadastrar" class="btn btn-default"
+                                   actionListener="#{cc.attrs.controller.incluirContato}">
+                        <i class="fa fa-plus"></i>
+                        <p:ajax process="@this,dataTablePessoaContato"
+                                oncomplete="PF('dialogContato').show()"
+                                update=":campoPessoaContato:formOutrasTelas:panelPessoaContato,dataTablePessoaContato"/>
+                    </h:commandLink>
+                </div>
+            </div>
+            <p:dataTable id="dataTablePessoaContato" var="obj"
+                         value="#{cc.attrs.controller.objeto.pessoa.listaPessoaContato}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         selection="#{cc.attrs.controller.pessoaContatoSelecionado}"
+                         rowKey="#{obj.id}" reflow="true" paginatorPosition="bottom">
 
+
+                <p:column headerText="Nome">
+                    <h:outputLabel value="#{obj.nome}"/>
+                </p:column>
+                <p:column headerText="Email">
+                    <h:outputLabel value="#{obj.email}"/>
+                </p:column>
+                <p:column headerText="Fone Comercial">
+                    <h:outputLabel value="#{obj.foneComercial}"/>
+                </p:column>
+                <p:column headerText="Fone Residencial">
+                    <h:outputLabel value="#{obj.foneResidencial}"/>
+                </p:column>
+                <p:column headerText="Fone Celular">
+                    <h:outputLabel value="#{obj.foneCelular}"/>
+                </p:column>
+                <p:column headerText="Ações" width="140">
+                    <p:commandLink title="Alterar" action="#{cc.attrs.controller.alterarContato}"
+                                   class=" btn btn-default"
+                                   process="dataTablePessoaContato"
+                                   oncomplete="PF('dialogContato').show()"
+                                   update=":campoPessoaContato:formOutrasTelas:panelPessoaContato,:campoPessoaContato:formOutrasTelas:dialogContato">
+                        <i class="fa fa-file-text-o"></i>
+                        <!-- -->
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{cc.attrs.controller.pessoaContatoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{cc.attrs.controller.excluirContato}"
+                                   update="dataTablePessoaContato,:formCentro:growl"
+                                   process="dataTablePessoaContato"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default">
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{cc.attrs.controller.pessoaContatoSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
         </p:tab>
         <p:tab title="Telefones" id="telefones" disabled="#{empty cc.attrs.controller.objeto.pessoa.id}">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <h:commandLink title="Cadastrar" class="btn btn-default"
+                                   id="btnIncluirTelefone"
+                                   actionListener="#{cc.attrs.controller.incluirTelefone}">
+                        <i class="fa fa-plus"></i>
+                        <p:ajax process="@this,dataTablePessoaTelefone"
+                                oncomplete="PF('dialogTelefone').show()"
+                                update=":campoPessoaTelefone:formOutrasTelas3:panelPessoaTelefone,dataTablePessoaTelefone"/>
+                        <!-- -->
+                    </h:commandLink>
+                </div>
+            </div>
             <p:dataTable id="dataTablePessoaTelefone" var="obj"
                          value="#{cc.attrs.controller.objeto.pessoa.listaPessoaTelefone}"
                          paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
@@ -407,24 +480,24 @@
                 <p:column headerText="Observacao">
                     <h:outputLabel value="#{obj.observacao}"/>
                 </p:column>
-                <p:column headerText="Ações" width="110">
-                    <p:commandLink title="Alterar" actionListener="#{cc.attrs.controller.alterarTelefone()}"
+                <p:column headerText="Ações" width="140">
+                    <p:commandLink title="Alterar" action="#{cc.attrs.controller.alterarTelefone()}"
                                    class=" btn btn-default"
                                    process="dataTablePessoaTelefone"
                                    oncomplete="PF('dialogTelefone').show()"
                                    update=":campoPessoaTelefone:formOutrasTelas3:panelPessoaTelefone,:campoPessoaTelefone:formOutrasTelas3:dialogTelefone">
                         <i class="fa fa-file-text-o"></i>
-                        <f:setPropertyActionListener value="#{row}" target="#{cc.attrs.objetoSelecionado}"/>
+                        <f:setPropertyActionListener value="#{obj}" target="#{cc.attrs.pessoaTelefoneSelecionado}"/>
                     </p:commandLink>
                     &nbsp;
-                    <p:commandLink title="Excluir" actionListener="#{cc.attrs.controller.excluirTelefone()}"
-                                   update="dataTablePessoaTelefone"
+                    <p:commandLink title="Excluir" action="#{cc.attrs.controller.excluirTelefone()}"
+                                   update="dataTablePessoaTelefone,:formCentro:growl"
                                    process="dataTablePessoaTelefone"
                                    oncomplete="atualizarMsg();"
                                    class="btn btn-default">
                         <i class="fa fa-times"></i>
                         <p:confirm header="Confirmar" message="Deseja excluir ?"/>
-                        <f:setPropertyActionListener value="#{row}"
+                        <f:setPropertyActionListener value="#{obj}"
                                                      target="#{cc.attrs.controller.pessoaTelefoneSelecionado}"/>
                     </p:commandLink>
                 </p:column>
