@@ -10,7 +10,8 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.TelaPessoa;
 import com.chronos.modelo.entidades.view.PessoaCliente;
 import com.chronos.repository.Repository;
-import com.chronos.service.cadastros.ClienteService;
+import com.chronos.service.cadastros.PessoaService;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -48,7 +49,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     private Repository<Pessoa> pessoas;
 
     @Inject
-    private ClienteService service;
+    private PessoaService service;
 
 
 
@@ -74,6 +75,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         Pessoa pessoa = novaPessoa("S","N","N","N");
         getObjeto().setPessoa(pessoa);
         getObjeto().setDesde(new Date());
+
         completo = "N";
 
     }
@@ -91,8 +93,16 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     @Override
     public void salvar() {
 
-        Cliente cliente = service.salvar(getObjeto());
-        setObjeto(cliente);
+        Cliente cliente = null;
+        try {
+            cliente = service.salvarCliente(getObjeto(), empresa);
+            setObjeto(cliente);
+            Mensagem.addInfoMessage("Cliente salvo com sucesso");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagem.addErrorMessage("", e);
+        }
+
     }
 
     @Override

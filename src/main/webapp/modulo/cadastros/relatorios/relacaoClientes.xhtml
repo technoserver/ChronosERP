@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Relação de clientes
+    </ui:define>
+
+    <ui:define name="tela">
+        Filtros
+    </ui:define>
+    <ui:define name="controle">
+        Relação de clientes
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <div class="ibox-content">
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                nomeAtributo="#{clienteRelatorioControll.cliente}"
+                                tamanhoMaximo="100" label="Cliente" idComponente="cliente"/>
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="Tipo" for="tipo"/>
+                    <h:selectOneMenu id="tipo" class="form-control"
+                                     value="#{clienteRelatorioControll.tipo}">
+                        <f:selectItem itemLabel="Todos" itemValue="%"/>
+                        <f:selectItem itemLabel="Fisica" itemValue="F"/>
+                        <f:selectItem itemLabel="Juridica" itemValue="J"/>
+                    </h:selectOneMenu>
+                </div>
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="Cpf/Cnpj" for="cpfCnpj"/>
+                    <div class="field-action">
+                        <h:inputText class="form-control" id="cpfCnpj"
+                                     value="#{clienteRelatorioControll.cpfCnpj}"/>
+                        <div class="field-action__icon">
+                            <p:commandLink title="Gerar relatório"
+                                           styleClass="btn btn-default"
+                                           actionListener="#{clienteRelatorioControll.executarRelatorio}"
+                                           ajax="false">
+                                <i class="glyphicon glyphicon-print"></i>
+                            </p:commandLink>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                nomeAtributo="#{clienteRelatorioControll.cidade}"
+                                tamanhoMaximo="100" label="Cidade" idComponente="cidade"/>
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="UF" for="uf"/>
+                    <h:selectOneMenu id="uf" class="form-control"
+                                     value="#{clienteRelatorioControll.uf}">
+
+                        <f:selectItems value="#{clienteRelatorioControll.estado}"/>
+
+                    </h:selectOneMenu>
+                </div>
+            </div>
+        </div>
+        <div class="ibox-footer">
+
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
+                                     actionListener="index" immediate="true"
+                    >
+                        <p:ajax update="navegacao,:formCentro:mensagem"
+                                process="@this"/>
+                    </h:commandButton>
+                </div>
+            </div>
+
+
+        </div>
+    </ui:define>
+
+</ui:composition>

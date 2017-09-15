@@ -11,10 +11,10 @@
         <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
                           label="Pessoa"
                           itemLabel="#{objeto.nome}"
-                          controller="#{clienteControll}"
+                          controller="#{fornecedorControll}"
                           completeMethod="getListaPessoa"
-                          nomeAtributo="#{clienteControll.objeto.pessoa}"
-                          idComponente="clientePessoa"
+                          nomeAtributo="#{fornecedorControll.objeto.pessoa}"
+                          idComponente="fornecedorPessoa"
                           requerido="false"/>
 
     </h:panelGroup>
@@ -22,72 +22,72 @@
         <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                           label="Atividade For Cli"
                           itemLabel="#{objeto.nome}"
-                          controller="#{fornecedorController}"
+                          controller="#{fornecedorControll}"
                           completeMethod="getListaAtividadeForCli"
-                          nomeAtributo="#{fornecedorController.objeto.atividadeForCli}"
+                          nomeAtributo="#{fornecedorControll.objeto.atividadeForCli}"
                           idComponente="fornecedorAtividadeForCli"/>
 
         <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                           label="Situacao For Cli"
                           itemLabel="#{objeto.nome}"
-                          controller="#{fornecedorController}"
+                          controller="#{fornecedorControll}"
                           completeMethod="getListaSituacaoForCli"
-                          nomeAtributo="#{fornecedorController.objeto.situacaoForCli}"
+                          nomeAtributo="#{fornecedorControll.objeto.situacaoForCli}"
                           idComponente="fornecedorSituacaoForCli"/>
     </div>
     <div class="row">
         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                        idComponente="fornecedorDesde" label="Desde"
-                       nomeAtributo="#{fornecedorController.objeto.desde}"/>
+                       nomeAtributo="#{fornecedorControll.objeto.desde}"/>
         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                          idComponente="fornecedorOptanteSimplesNacional" label="Optante SN"
-                         nomeAtributo="#{fornecedorController.objeto.optanteSimplesNacional}"
-                         itens="#{fornecedorController.simNao}"/>
+                         nomeAtributo="#{fornecedorControll.objeto.optanteSimplesNacional}"
+                         itens="#{fornecedorControll.simNao}"/>
         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                          idComponente="fornecedorLocalizacao" label="Localizacao"
-                         nomeAtributo="#{fornecedorController.objeto.localizacao}"
-                         itens="#{fornecedorController.fornecedorLocalizacao}"/>
+                         nomeAtributo="#{fornecedorControll.objeto.localizacao}"
+                         itens="#{fornecedorControll.fornecedorLocalizacao}"/>
         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                          idComponente="fornecedorSofreRetencao" label="Sofre Retencao"
-                         nomeAtributo="#{fornecedorController.objeto.sofreRetencao}"
-                         itens="#{fornecedorController.simNao}"/>
+                         nomeAtributo="#{fornecedorControll.objeto.sofreRetencao}"
+                         itens="#{fornecedorControll.simNao}"/>
         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                          idComponente="fornecedorGeraFaturamento" label="Gera Faturamento"
-                         nomeAtributo="#{fornecedorController.objeto.geraFaturamento}"
-                         itens="#{fornecedorController.simNao}"/>
+                         nomeAtributo="#{fornecedorControll.objeto.geraFaturamento}"
+                         itens="#{fornecedorControll.simNao}"/>
     </div>
     <div class="row">
         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                         idComponente="fornecedorChequeNominalA" label="Cheque Nominal A"
-                        nomeAtributo="#{fornecedorController.objeto.chequeNominalA}"
+                        nomeAtributo="#{fornecedorControll.objeto.chequeNominalA}"
                         tamanhoMaximo="100"/>
         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                         idComponente="fornecedorContaRemetente" label="Conta Remetente"
-                        nomeAtributo="#{fornecedorController.objeto.contaRemetente}"
+                        nomeAtributo="#{fornecedorControll.objeto.contaRemetente}"
                         tamanhoMaximo="30"/>
         <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
                           idComponente="fornecedorPrazoMedioEntrega" label="Prazo Medio Entrega"
-                          nomeAtributo="#{fornecedorController.objeto.prazoMedioEntrega}"/>
+                          nomeAtributo="#{fornecedorControll.objeto.prazoMedioEntrega}"/>
         <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
                           idComponente="fornecedorNumDiasPrimeiroVencimento" label="Nr. Dias 1º Venc."
-                          nomeAtributo="#{fornecedorController.objeto.numDiasPrimeiroVencimento}"/>
+                          nomeAtributo="#{fornecedorControll.objeto.numDiasPrimeiroVencimento}"/>
     </div>
     <div class="row">
         <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                           idComponente="fornecedorNumDiasIntervalo" label="Num Dias Intervalo"
-                          nomeAtributo="#{fornecedorController.objeto.numDiasIntervalo}"/>
+                          nomeAtributo="#{fornecedorControll.objeto.numDiasIntervalo}"/>
         <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                           idComponente="fornecedorQuantidadeParcelas" label="Quantidade Parcelas"
-                          nomeAtributo="#{fornecedorController.objeto.quantidadeParcelas}"/>
+                          nomeAtributo="#{fornecedorControll.objeto.quantidadeParcelas}"/>
         <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                         idComponente="fornecedorClassificacaoContabilConta" label="Classificacao Contabil Conta"
-                        nomeAtributo="#{fornecedorController.objeto.classificacaoContabilConta}"
+                        nomeAtributo="#{fornecedorControll.objeto.classificacaoContabilConta}"
                         tamanhoMaximo="30"/>
     </div>
     <div class="row">
         <erp:campoAreaTexto styleClass="col-xs-12 col-sm-5 col-md-12"
                             idComponente="fornecedorObservacao" label="Observacao"
-                            nomeAtributo="#{fornecedorController.objeto.observacao}"/>
+                            nomeAtributo="#{fornecedorControll.objeto.observacao}"/>
     </div>
 
 

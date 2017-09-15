@@ -5,6 +5,8 @@
  */
 package com.chronos.util.jpa;
 
+import org.hibernate.Session;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
@@ -28,11 +30,17 @@ public class EntityManagerProducer {
         factory = Persistence.createEntityManagerFactory("ChronosUP");
     }
 
+//    @Produces
+//    @Dependent//@RequestScoped
+//    public EntityManager createEntityManager() {
+//        return factory.createEntityManager();
+//        //return factory.createEntityManager();
+//    }
+
     @Produces
     @RequestScoped
-    public EntityManager createEntityManager() {
-        return factory.createEntityManager();
-        //return factory.createEntityManager();
+    public Session createEntityManager() {
+        return (Session) factory.createEntityManager();
     }
 
     public void closeEntityManager(@Disposes EntityManager manager) {

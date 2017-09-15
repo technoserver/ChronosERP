@@ -19,6 +19,12 @@ public class FornecedorService implements Serializable {
     private Repository<Fornecedor> fornecedores;
     @Inject
     private Repository<Pessoa> pessoas;
+    @Inject
+    private Repository<PessoaFisica> pessoasFisica;
+    @Inject
+    private Repository<PessoaJuridica> pessoasJuridica;
+    @Inject
+    private Repository<EmpresaPessoa> empresaPessoas;
 
     private String cpfCnpj;
 

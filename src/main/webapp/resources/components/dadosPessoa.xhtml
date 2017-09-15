@@ -16,27 +16,33 @@
     <p:tabView id="telaCadastroPessoa">
         <p:tab title="Dados Pessoas" id="dadosPrincipais">
             <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
-                                idComponente="pessoaNome" label="Nome"
-                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.nome}"
-                                tamanhoMaximo="150" requerido="true"
-                                exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'F'}"/>
+                <h:panelGroup layout="block" id="camposNone">
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                    idComponente="pessoaNome" label="Nome"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.nome}"
+                                    tamanhoMaximo="150" requerido="true"
+                                    id="campoNome"
+                                    exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'F'}"/>
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
-                                idComponente="pessoaNome" label="Razão Social"
-                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.nome}"
-                                tamanhoMaximo="150" requerido="true"
-                                exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'J'}"/>
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                    idComponente="pessoaNome" label="Razão Social"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.nome}"
+                                    id="campoRazao"
+                                    tamanhoMaximo="150" requerido="true"
+                                    exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'J'}"/>
 
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
-                                idComponente="pessoaJuridicaFantasia" label="Fantasia"
-                                nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.fantasia}"
-                                tamanhoMaximo="150"
-                                exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'J'}"/>
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                    idComponente="pessoaJuridicaFantasia" label="Fantasia"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.fantasia}"
+                                    tamanhoMaximo="150"
+                                    id="campoFantasia"
+                                    exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'J'}"/>
+                </h:panelGroup>
+
 
                 <h:panelGroup layout="block" class="col-xs-12 col-sm-2 col-md-2"
-                              rendered="#{cc.attrs.controller.objeto.pessoa.cliente eq 'S'}">
+                              rendered="#{cc.attrs.controller.objeto.pessoa.colaborador eq 'N'}">
                     <h:outputLabel value="Tipo"
                                    for="pessoaTipo"/>
                     <h:selectOneMenu id="pessoaTipo"
@@ -44,7 +50,7 @@
                                      value="#{cc.attrs.controller.objeto.pessoa.tipo}">
                         <f:selectItems value="#{cc.attrs.controller.tipoPessoa}"/>
                         <p:ajax event="change"
-                                update=":formCentro:telaDetalhe:dadosPessoa:telaCadastroPessoa:panelPessoaFisicaJuridica"
+                                update=":formCentro:telaDetalhe:dadosPessoa:telaCadastroPessoa:panelPessoaFisicaJuridica,:formCentro:telaDetalhe:dadosPessoa:telaCadastroPessoa:camposNone"
                                 process="@this" listener="#{cc.attrs.controller.definirTipo()}"
                                 oncomplete="addClass()"/>
                     </h:selectOneMenu>

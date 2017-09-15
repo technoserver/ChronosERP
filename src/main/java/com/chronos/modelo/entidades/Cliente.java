@@ -79,7 +79,7 @@ public class Cliente implements Serializable {
     @ManyToOne(optional = false)
     private AtividadeForCli atividadeForCli;
     @JoinColumn(name = "ID_PESSOA", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     private Pessoa pessoa;
     @JoinColumn(name = "ID_OPERACAO_FISCAL", referencedColumnName = "ID")
     @ManyToOne    

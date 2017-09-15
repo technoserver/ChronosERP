@@ -24,22 +24,21 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDadosCustom controller="#{fornecedorControll}"
-                             idDataTable="dataTableFornecedor"
-                             nomeFuncao="Fornecedor"
-                             id="telaGrid"
-                             dataModel="#{fornecedorControll.clienteDataModel}"
-                             objetoSelecionado="#{fornecedorControll.clienteSelecionado}">
+        <erp:gridDados controller="#{fornecedorControll}"
+                       idDataTable="dataTableFornecedor"
+                       nomeFuncao="Fornecedor"
+                       id="telaGrid"
+        >
 
             <p:column headerText="Nome">
                 <h:outputLabel value="#{row.pessoa.nome}"/>
             </p:column>
             <p:column headerText="CPF/CNPJ">
-                <h:outputLabel value="#{row.pessoa.pessoaFisica.cpf}" rendered="#{not empty obj.pessoa.pessoaFisica}">
+                <h:outputLabel value="#{row.pessoa.pessoaFisica.cpf}" rendered="#{not empty row.pessoa.pessoaFisica}">
                     <f:converter converterId="cpfCnpjConverter"/>
                 </h:outputLabel>
                 <h:outputLabel value="#{row.pessoa.pessoaJuridica.cnpj}"
-                               rendered="#{not empty obj.pessoa.pessoaJuridica}">
+                               rendered="#{not empty row.pessoa.pessoaJuridica}">
                     <f:converter converterId="cpfCnpjConverter"/>
                 </h:outputLabel>
             </p:column>
@@ -50,13 +49,13 @@
             </p:column>
             <p:column headerText="Localizacao">
                 <h:outputLabel
-                        value="#{fornecedorControll.keyFromValue(fornecedorControll.fornecedorLocalizacao, obj.localizacao)}"/>
+                        value="#{fornecedorControll.keyFromValue(fornecedorControll.fornecedorLocalizacao, row.localizacao)}"/>
             </p:column>
             <p:column headerText="Atividade">
                 <h:outputLabel value="#{row.atividadeForCli.nome}"/>
             </p:column>
 
-        </erp:gridDadosCustom>
+        </erp:gridDados>
     </ui:define>
 
 
@@ -84,7 +83,7 @@
             <br/>
             <h:panelGroup layout="block" id="tipoCadastro">
                 <h:panelGroup layout="block" rendered="#{fornecedorControll.completo eq 'N'}">
-                    <ui:include src="formCliente.xhtml"/>
+                    <ui:include src="formFornecedor.xhtml"/>
                 </h:panelGroup>
                 <h:panelGroup layout="block" rendered="#{fornecedorControll.completo eq 'S'}">
 

@@ -8,6 +8,8 @@ package com.chronos.controll.cadastros;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.TelaPessoa;
 import com.chronos.repository.Repository;
+import com.chronos.service.cadastros.PessoaService;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -45,6 +47,9 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
 
     private String completo;
 
+    @Inject
+    private PessoaService service;
+
 
     @Override
     public void doCreate() {
@@ -53,7 +58,22 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         getObjeto().setPessoa(pessoa);
         getObjeto().setDataAdmissao(new Date());
         getObjeto().setDataCadastro(new Date());
-        completo = "N";
+        completo = "S";
+    }
+
+    @Override
+    public void salvar() {
+
+        Colaborador colaborador = null;
+        try {
+            colaborador = service.salvarColaborador(getObjeto(), empresa);
+            setObjeto(colaborador);
+            Mensagem.addInfoMessage("Colaborador salvo com sucesso");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagem.addErrorMessage("", e);
+        }
+
     }
 
     public List<Pessoa> getListaPessoa(String nome) {

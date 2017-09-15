@@ -122,7 +122,7 @@ public class Colaborador implements Serializable {
     @NotNull(message = "Nivel de formaçao obrigatória")
     private NivelFormacao nivelFormacao;
     @JoinColumn(name = "ID_PESSOA", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @NotNull(message = "Pessoa Obrigatoria")
     private Pessoa pessoa;
     @JoinColumn(name = "ID_SITUACAO_COLABORADOR", referencedColumnName = "ID")

@@ -160,9 +160,10 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
             lancamento.setCodigoModulo("210");
             recebimentoService.gerarContasReceber(lancamento, Constantes.FIN.NATUREZA_VENDA);
             getObjeto().setSituacao(SituacaoVenda.Faturado.getCodigo());
+            getObjeto().setNumeroFatura(getObjeto().getId());
             salvar("Venda faturada com Sucesso");
             gerarComissao();
-
+            setTelaGrid(true);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro!", ex);

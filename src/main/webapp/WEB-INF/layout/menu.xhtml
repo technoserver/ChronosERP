@@ -226,6 +226,20 @@
 
                             </ul>
                         </li>
+                        <li class="${fn:contains(view.viewId,'cadastros/relatorios')?'active':''}">
+                            <a href="#">Relatórios<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <erp:subMenu caminho="/modulo/cadastros/relatorios/relacaoClientes"
+                                             label="Clientes"
+                                             funcao="relacaoClientes"/>
+                                <erp:subMenu caminho="/modulo/cadastros/relatorios/relacaoFornecedor"
+                                             label="Fornecedor"
+                                             funcao="relacaoProdutos"/>
+                                <erp:subMenu caminho="/modulo/cadastros/relatorios/relacaoProdutos"
+                                             label="Produtos"
+                                             funcao="relacaoProdutos"/>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 

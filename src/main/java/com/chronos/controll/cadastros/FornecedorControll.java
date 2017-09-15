@@ -5,17 +5,21 @@
  */
 package com.chronos.controll.cadastros;
 
-import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.AtividadeForCli;
 import com.chronos.modelo.entidades.Fornecedor;
+import com.chronos.modelo.entidades.Pessoa;
 import com.chronos.modelo.entidades.SituacaoForCli;
+import com.chronos.modelo.entidades.enuns.TelaPessoa;
 import com.chronos.repository.Repository;
+import com.chronos.service.cadastros.PessoaService;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,18 +28,53 @@ import java.util.List;
  */
 @Named
 @ViewScoped
-public class FornecedorControll  extends AbstractControll<Fornecedor> implements Serializable {
+public class FornecedorControll extends PessoaControll<Fornecedor> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Inject
     private Repository<AtividadeForCli> atividades;
     @Inject
     private Repository<SituacaoForCli> situacoes;
+    @Inject
+    private Repository<Pessoa> pessoas;
+    @Inject
+    private PessoaService service;
+
+    private String completo;
 
 
     @Override
+    public void doCreate() {
+        super.doCreate();
+        Pessoa pessoa = novaPessoa("N", "N", "N", "S");
+        getObjeto().setPessoa(pessoa);
+        getObjeto().setDesde(new Date());
+
+        completo = "N";
+    }
+
+    @Override
     public void salvar() {
-        super.salvar();
+        Fornecedor fornecedor = null;
+        try {
+            fornecedor = service.salvarFornecedor(getObjeto(), empresa);
+            setObjeto(fornecedor);
+            Mensagem.addInfoMessage("Cliente salvo com sucesso");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagem.addErrorMessage("", e);
+        }
+    }
+
+    public List<Pessoa> getListaPessoa(String nome) {
+        List<Pessoa> listaPessoa = new ArrayList<>();
+        try {
+
+            listaPessoa = pessoas.getEntitys(Pessoa.class, "nome", nome, atributos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listaPessoa;
     }
 
     public List<AtividadeForCli> getListaAtividadeForCli(String nome) {
@@ -58,6 +97,7 @@ public class FornecedorControll  extends AbstractControll<Fornecedor> implements
         return listaSituacaoForCli;
     }
 
+
     @Override
     protected Class<Fornecedor> getClazz() {
         return Fornecedor.class;
@@ -73,5 +113,27 @@ public class FornecedorControll  extends AbstractControll<Fornecedor> implements
     protected boolean auditar() {
         return false;
     }
-    
+
+    @Override
+    public Pessoa getPessoa() {
+        return getObjeto().getPessoa();
+    }
+
+    @Override
+    public void setPessoa(Pessoa pessoa) {
+        getObjeto().setPessoa(pessoa);
+    }
+
+    @Override
+    public String getTela() {
+        return TelaPessoa.CLIENTE.getCodigo();
+    }
+
+    public String getCompleto() {
+        return completo;
+    }
+
+    public void setCompleto(String completo) {
+        this.completo = completo;
+    }
 }

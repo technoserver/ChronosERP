@@ -82,7 +82,7 @@ public class Fornecedor implements Serializable {
     @ManyToOne(optional = false)
     private AtividadeForCli atividadeForCli;
     @JoinColumn(name = "ID_PESSOA", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @NotNull
     private Pessoa pessoa;
     @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")

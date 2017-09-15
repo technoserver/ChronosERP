@@ -445,11 +445,11 @@ CREATE OR REPLACE VIEW view_nfce_cliente AS
     JOIN pessoa_fisica pf ON pf.id_pessoa = p.id
     JOIN cliente c ON c.id_pessoa = p.id
     JOIN pessoa_endereco e ON e.id_pessoa = p.id
-  WHERE p.cliente = 'S' :: BPCHAR AND e.principal = 'S' :: BPCHAR;
+  WHERE p.cliente = 'S' AND e.principal = 'S';
 
 -- View Estoque
 
-CREATE OR REPLACE VIEW public.view_produto_empresa AS
+CREATE OR REPLACE VIEW view_produto_empresa AS
   SELECT
     p.id,
     e.id                  AS idempresa,

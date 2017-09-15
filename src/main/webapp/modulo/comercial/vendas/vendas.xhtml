@@ -22,7 +22,11 @@
 
 
     <ui:define name="gridDados">
+        <style type="text/css">
+            table ul.dropdown-menu {;
 
+            }
+        </style>
         <p:outputPanel id="outputPanelGrid">
             <p:outputPanel rendered="#{vendaCabecalhoControll.telaGrid}">
 
@@ -34,7 +38,7 @@
                             rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                             reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
                             resizableColumns="true" lazy="true"
-                            class="js-data-table">
+                    >
 
                         <p:column headerText="Cliente">
                             <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
@@ -57,7 +61,7 @@
                                     value="#{vendaCabecalhoControll.keyFromValue(vendaCabecalhoControll.vendaOrcamentoSituacao, obj.situacao)}"/>
                         </p:column>
 
-                        <p:column headerText="Ações" width="110">
+                        <p:column headerText="Ações" width="160">
                             <p:commandLink title="Alterar" action="#{vendaCabecalhoControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
@@ -69,7 +73,7 @@
                             </p:commandLink>
                             &nbsp;
                             <p:commandLink title="Excluir" action="#{vendaCabecalhoControll.remover()}"
-                                           style="position: relative; right: 7px"
+
                                            update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                                            process="#{cc.attrs.idDataTable}"
                                            oncomplete="atualizarMsg();"
@@ -82,6 +86,18 @@
                                 <f:setPropertyActionListener value="#{row}"
                                                              target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                             </p:commandLink>
+                            &nbsp;
+                            <p:menuButton>
+                                <p:menuitem value="Imprimir A4" actionListener="#{vendaCabecalhoControll.remover()}"
+                                            icon="fa fa-print"/>
+                                <p:menuitem value="Imprimir Cupom" actionListener="#{vendaCabecalhoControll.remover()}"
+                                            icon="fa fa-print"/>
+                                <p:menuitem value="Devolução" actionListener="#{vendaCabecalhoControll.remover()}"
+                                            icon="fa fa-reply-all"/>
+                                <p:menuitem value="Emitir NFe" actionListener="#{vendaCabecalhoControll.remover()}"/>
+                                <p:menuitem value="Emitir NFCe" actionListener="#{vendaCabecalhoControll.remover()}"/>
+                            </p:menuButton>
+
                         </p:column>
 
                     </p:dataTable>
@@ -99,11 +115,26 @@
                                         update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
                             </h:commandButton>
                         </div>
-                        <div class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                                             action="#{vendaCabecalhoControll.doIndex()}" immediate="true"
-                            />
-                        </div>
+                        <!--<div class="col-xs-6 col-lg-6">-->
+                        <!--<h:commandButton value="Cancelar" class="btn btn-default center-block"-->
+                        <!--action="#{vendaCabecalhoControll.doIndex()}" immediate="true"-->
+                        <!--/>-->
+                        <!--<div class="btn-group">-->
+                        <!--<button data-placement="top" title="" class="x-tooltip btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false" data-original-title="Mais ações">-->
+                        <!--&nbsp;<span class="caret"></span>&nbsp;-->
+                        <!--</button>-->
+                        <!--<ul class="dropdown-menu" style="right: 0;left: auto;" role="menu">-->
+                        <!--<li><a href="#">Action</a></li>-->
+                        <!--<li><a href="#">Another action</a></li>-->
+                        <!--<li><a href="#">Something else here</a></li>-->
+                        <!--<li role="separator" class="divider"></li>-->
+                        <!--<li><a href="#">Separated link</a></li>-->
+                        <!--<li><h:commandLink>teste</h:commandLink></li>-->
+
+                        <!--</ul>-->
+                        <!--</div>-->
+                        <!--</div>-->
+
 
                     </div>
                 </div>
@@ -349,7 +380,8 @@
                                         </h:commandButton>
                                         <c:if test="#{vendaCabecalhoControll.objeto.temProduto()}">
                                             <button type="button" class="btn btn-primary  dropdown-toggle"
-                                                    data-toggle="dropdown">
+                                                    data-toggle="dropdown"
+                                                    style="padding: 14px 5px;border-color: mediumaquamarine;">
                                                 <span class="caret"></span>
                                             </button>
 

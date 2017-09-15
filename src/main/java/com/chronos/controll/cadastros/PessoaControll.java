@@ -57,6 +57,7 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         getPessoa().setListaPessoaContato(new HashSet<>());
         getPessoa().setListaPessoaEndereco(new HashSet<>());
         getPessoa().setListaPessoaTelefone(new HashSet<>());
+        cidade = new Municipio();
 
     }
 

@@ -24,12 +24,11 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDadosCustom controller="#{transportadoraControll}"
-                             idDataTable="dataTableCliente"
-                             nomeFuncao="Cliente"
-                             id="telaGrid"
-                             dataModel="#{transportadoraControll.clienteDataModel}"
-                             objetoSelecionado="#{transportadoraControll.clienteSelecionado}">
+        <erp:gridDados controller="#{transportadoraControll}"
+                       idDataTable="dataTableTransportadora"
+                       nomeFuncao="Transportadora"
+                       id="telaGrid"
+        >
 
             <p:column headerText="Nome">
                 <h:outputLabel value="#{row.pessoa.nome}"/>
@@ -50,40 +49,16 @@
             </p:column>
 
 
-        </erp:gridDadosCustom>
+        </erp:gridDados>
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
         <erp:telaInclusaoAlteracao controller="#{transportadoraControll}"
-                                   nomeFuncao="Cliente"
+                                   nomeFuncao="Transportadora"
                                    id="telaDetalhe">
 
-            <div class="row">
-
-                <div class="col-xs-12 col-sm-2 col-md-2">
-                    <h:outputLabel value="Cadastro completo"
-                                   for="clienteBloqueado"/>
-                    <h:selectOneMenu id="clienteBloqueado"
-                                     class="form-control"
-                                     value="#{transportadoraControll.completo}">
-                        <f:selectItems value="#{transportadoraControll.naoSim}"/>
-                        <p:ajax event="change" update=":formCentro:telaDetalhe:tipoCadastro"
-                                process="@this"
-                                oncomplete="addClass()"/>
-                    </h:selectOneMenu>
-                </div>
-
-            </div>
-            <br/>
-            <h:panelGroup layout="block" id="tipoCadastro">
-                <h:panelGroup layout="block" rendered="#{transportadoraControll.completo eq 'N'}">
-
-                </h:panelGroup>
-                <h:panelGroup layout="block" rendered="#{transportadoraControll.completo eq 'S'}">
-
-                </h:panelGroup>
-            </h:panelGroup>
+            <erp:dadosPessoa controller="#{transportadoraControll}" id="dadosPessoa"/>
 
 
         </erp:telaInclusaoAlteracao>

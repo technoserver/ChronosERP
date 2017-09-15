@@ -21,6 +21,11 @@ public class Mensagem {
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, message+"\n"+UtilErros.getMensagemErro(e), message));
     }
 
+    public static void addErrorMessage(String message) {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, message, message));
+    }
+
     public static void addInfoMessage(String message) {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_INFO, message, message));
