@@ -1,17 +1,13 @@
 package com.chronos.controll;
 
 import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.Usuario;
 import com.chronos.modelo.entidades.enuns.Estados;
-import com.chronos.security.UsuarioLogado;
-import com.chronos.security.UsuarioSistema;
+import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.util.jsf.Mensagem;
 import com.chronos.util.report.ExecutorRelatorio;
 import org.hibernate.Session;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.util.StringUtils;
 
-import javax.enterprise.inject.Produces;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -37,6 +33,8 @@ public class AbstractRelatorioControll implements Serializable {
 
     @Inject
     protected EntityManager em;
+    @Inject
+    private UsuarioService userService;
 
     protected Map<String, Object> parametros;
 
@@ -68,28 +66,11 @@ public class AbstractRelatorioControll implements Serializable {
     }
 
     protected Empresa getEmpresaUsuario() {
-        empresa = null;
 
-        getUsuarioLogado().getColaborador().getPessoa().getListaEmpresa().stream().forEach((e) -> {
-            empresa = e;
-        });
-        return empresa;
+        return userService.getEmpresaUsuario();
     }
 
-    @Produces
-    @UsuarioLogado
-    private Usuario getUsuarioLogado() {
-        UsuarioSistema user = null;
 
-        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal();
-        Usuario usuario = null;
-        if (auth != null && auth.getPrincipal() != null) {
-            user = (UsuarioSistema) auth.getPrincipal();
-            usuario = user.getUsuario();
-        }
-
-        return usuario;
-    }
 
     protected String retornaValorPadrao(String valor) {
         return StringUtils.isEmpty(valor) ? "%" : "%" + valor + "%";

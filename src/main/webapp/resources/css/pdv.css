@@ -1,0 +1,230 @@
+#pdv {
+    position: relative;
+    margin: 20px auto;
+    width: 90%;
+    padding: 1%;
+    -webkit-box-shadow: 0px 1px 22px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow: 0px 1px 22px 0px rgba(50, 50, 50, 0.75);
+    box-shadow: 0px 1px 22px 0px rgba(50, 50, 50, 0.75);
+    padding-bottom: 50px;
+    min-height: 85vh
+}
+
+#pdv #botao-operacoes {
+    background: #0c1b25;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    color: #FFFFFF;
+    font-size: 30px;
+    padding: 5px 10px;
+    position: fixed;
+    left: 0;
+    top: 50%;
+}
+
+#pdv input[text]:focus, #pdv select:focus {
+    background: #FFFFCC !important;
+}
+
+.ui-inputnumber > input[text]:focus {
+    background: #FFFFCC !important;
+}
+
+#pdv #janela-indicar-cliente, #pdv #janela-indicar-cliente label, #pdv #janela-indicar-cliente legend {
+    font-size: 20px;
+    font-weight: normal !important;
+}
+
+#pdv #janela-indicar-cliente fieldset {
+    margin-bottom: 0;
+}
+
+#pdv #janela-indicar-cliente fieldset label {
+    margin-top: 5px
+}
+
+#token-input-BuscaProduto {
+    width: 100% !important
+}
+
+#pdv label[for="ClienteTipoPF"] {
+    margin-right: 20px
+}
+
+#pdv .tab-content {
+    background: none;
+    border: 0;
+    padding: 0;
+    width: 100%;
+    display: table;
+}
+
+#pdv .small-box {
+    cursor: default;
+}
+
+#pdv .box-cliente a {
+    color: #FFFFFF;
+    text-decoration: underline;
+}
+
+#pdv .box-cliente a:hover {
+    color: #DBDBDB;
+    text-decoration: underline;
+}
+
+#pdv .small-box .icone {
+    bottom: 5px;
+    color: rgba(0, 0, 0, 0.15);
+    font-size: 50px;
+    position: absolute;
+    right: 5px;
+    top: 0;
+    z-index: 0;
+}
+
+#pdv .teclas {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 1%;
+    text-align: center;
+    background: #E9E9E9;
+    left: 0;
+}
+
+#pdv input[type="text"], #pdv select, #pdv .token-input-token {
+    font-size: 20px;
+    height: 60px;
+}
+
+#pdv #mostra-produto input[type="text"], #pdv #mostra-produto select {
+    width: 100%
+}
+
+#pdv .total-pedido {
+    background: #0c1b25;
+    color: #FFFFFF;
+    font-size: 200%;
+    text-align: center;
+    padding: 1%;
+}
+
+div.token-input-dropdown {
+    font-size: 20px
+}
+
+#pdv #produtos-selecionados {
+    padding-bottom: 10px
+}
+
+#pdv #produtos-selecionados #lista {
+    height: 200px;
+    overflow: auto;
+}
+
+#pdv #painel-teclas-atalho .tecla {
+    background: #000000;
+    color: #FFFFFF;
+    padding: 10px 1% 10px 1%;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+#pdv .fa-lg {
+    font-size: 250px;
+    color: #D2D2D2;
+    line-height: normal !important;
+}
+
+#pdv .botao-tela-voltar {
+    position: absolute;
+    right: 5px;
+    top: 5px
+}
+
+#pdv .input-normal {
+    font-size: 14px !important;
+    height: 34px !important;
+}
+
+#pdv .campo-desconto {
+    padding-left: 2px;
+    padding-right: 2px;
+    min-width: 70px !important;
+    text-align: center !important;
+}
+
+@media (max-width: 767px) {
+    #pdv {
+        width: 100%;
+    }
+
+    #pdv input[type="text"], #pdv select, #pdv .token-input-token {
+        font-size: 16px;
+        height: 40px
+    }
+
+    #pdv #janela-indicar-cliente {
+        font-size: 20px;
+    }
+
+    #pdv #produtos-selecionados #lista {
+        height: auto;
+    }
+
+    #pdv .fa-lg {
+        font-size: 100px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    #pdv input[type="text"], #pdv select, #pdv .token-input-token {
+        font-size: 18px;
+        height: 50px
+    }
+
+    .btn-lg {
+        border-radius: 6px;
+        font-size: 14px;
+        line-height: 1;
+        padding: 8px 10px;
+    }
+
+    #pdv #produtos-selecionados {
+        height: 150px;
+        overflow: auto;
+    }
+
+    #pdv #janela-indicar-cliente {
+        font-size: 25px;
+    }
+
+    #pdv .fa-lg {
+        font-size: 150px;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+    #pdv input[type="text"], #pdv select, #pdv .token-input-token {
+        font-size: 20px;
+        height: 50px
+    }
+
+    #pdv #janela-indicar-cliente {
+        font-size: 30px;
+    }
+
+    #pdv .fa-lg {
+        font-size: 200px;
+    }
+
+}
+
+@media (min-width: 1200px) {
+    #pdv .fa-lg {
+        font-size: 250px;
+    }
+}

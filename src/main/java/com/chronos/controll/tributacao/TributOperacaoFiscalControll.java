@@ -27,7 +27,11 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
 
     private Cfop cfop;
 
-
+    @Override
+    public void doCreate() {
+        super.doCreate();
+        getObjeto().setEmpresa(empresa);
+    }
 
     public void selecionaCFOP(SelectEvent event) {
         Cfop cfopSelecionado = (Cfop) event.getObject();

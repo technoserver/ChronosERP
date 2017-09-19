@@ -97,6 +97,19 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, Integer> modalidadeFreteNfe;
     private Map<String, Integer> statusNfe;
 
+    //Tributacao
+    // tributacao
+    private HashMap<String, String> origemMercadoria;
+    private HashMap<String, String> issModalidadeBaseCalculo;
+    private HashMap<String, String> issCodigoTributacao;
+    private HashMap<String, String> tributIcmsStBaseCalculo;
+    private HashMap<String, String> tributIcmsBaseCalculo;
+    private HashMap<String, String> pisModalidadeBaseCalculo;
+    private HashMap<String, String> tipoDepreciacao;
+    private HashMap<String, Integer> indicadorExigibilidadeIss;
+    private HashMap<String, Integer> indicadorIncentivoIss;
+
+
     //Compras
     private Map<String, String> compraSituacaoCotacao;
     private Map<String, String> compraFormaPagamento;
@@ -399,6 +412,53 @@ public abstract class AbstractControll<T> implements Serializable {
         formaPagamentoComissao = new HashMap<>();
         formaPagamentoComissao.put("Fixo", "0");
         formaPagamentoComissao.put("Percentual", "1");
+
+        // tributação
+        origemMercadoria = new HashMap<>();
+        origemMercadoria.put("Nacional", "0");
+        origemMercadoria.put("Estrangeira - Importação direta", "1");
+        origemMercadoria.put("Estrangeira - Adquirida no mercado interno", "2");
+
+        issModalidadeBaseCalculo = new HashMap<>();
+        issModalidadeBaseCalculo.put("Valor Operação", "0");
+        issModalidadeBaseCalculo.put("Outros", "9");
+
+        issCodigoTributacao = new HashMap<>();
+        issCodigoTributacao.put("Normal", "N");
+        issCodigoTributacao.put("Retida", "R");
+        issCodigoTributacao.put("Substituta", "S");
+        issCodigoTributacao.put("Isenta", "I");
+
+        tributIcmsStBaseCalculo = new HashMap<>();
+        tributIcmsStBaseCalculo.put("Preço tabelado ou máximo sugerido", "0");
+        tributIcmsStBaseCalculo.put("Lista Negativa (valor)", "1");
+        tributIcmsStBaseCalculo.put("Lista Positiva (valor)", "2");
+        tributIcmsStBaseCalculo.put("Lista Neutra (valor)", "3");
+        tributIcmsStBaseCalculo.put("Margem Valor Agregado(%)", "4");
+        tributIcmsStBaseCalculo.put("Pauta (valor)", "5");
+
+        tributIcmsBaseCalculo = new HashMap<>();
+        tributIcmsBaseCalculo.put("Margem Valor Agregado (%)", "0");
+        tributIcmsBaseCalculo.put("Pauta (Valor)", "1");
+        tributIcmsBaseCalculo.put("Preço Tabelado Máx. (valor)", "2");
+        tributIcmsBaseCalculo.put("Valor da Operação", "3");
+
+        pisModalidadeBaseCalculo = new HashMap<>();
+        pisModalidadeBaseCalculo.put("Percentual", "0");
+        pisModalidadeBaseCalculo.put("Unidade", "0");
+
+        indicadorExigibilidadeIss = new HashMap<>();
+        indicadorExigibilidadeIss.put("Exigível", 1);
+        indicadorExigibilidadeIss.put("Não incidência", 2);
+        indicadorExigibilidadeIss.put("Isenção", 3);
+        indicadorExigibilidadeIss.put("Exportação", 4);
+        indicadorExigibilidadeIss.put("Imunidade", 5);
+        indicadorExigibilidadeIss.put("Exigibilidade Suspensa por Decisão Judicial", 6);
+        indicadorExigibilidadeIss.put("Exigibilidade Suspensa por Processo Administrativo", 7);
+
+        indicadorIncentivoIss = new HashMap<>();
+        indicadorIncentivoIss.put("Sim", 1);
+        indicadorIncentivoIss.put("Não", 2);
 
     }
 
@@ -791,5 +851,45 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, String> getFormaPagamentoComissao() {
         return formaPagamentoComissao;
+    }
+
+    public HashMap<String, String> getOrigemMercadoria() {
+        return origemMercadoria;
+    }
+
+    public HashMap<String, String> getIssModalidadeBaseCalculo() {
+        return issModalidadeBaseCalculo;
+    }
+
+    public HashMap<String, String> getIssCodigoTributacao() {
+        return issCodigoTributacao;
+    }
+
+    public HashMap<String, String> getTributIcmsStBaseCalculo() {
+        return tributIcmsStBaseCalculo;
+    }
+
+    public HashMap<String, String> getTributIcmsBaseCalculo() {
+        return tributIcmsBaseCalculo;
+    }
+
+    public HashMap<String, String> getPisModalidadeBaseCalculo() {
+        return pisModalidadeBaseCalculo;
+    }
+
+    public HashMap<String, String> getTipoDepreciacao() {
+        return tipoDepreciacao;
+    }
+
+    public HashMap<String, Integer> getIndicadorExigibilidadeIss() {
+        return indicadorExigibilidadeIss;
+    }
+
+    public HashMap<String, Integer> getIndicadorIncentivoIss() {
+        return indicadorIncentivoIss;
+    }
+
+    public HashMap<String, String> getTipoContagem() {
+        return tipoContagem;
     }
 }

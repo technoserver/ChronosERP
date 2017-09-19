@@ -51,7 +51,7 @@
                         <p:column headerText="Numero Fatura">
                             <h:outputLabel value="#{row.numeroFatura}"/>
                         </p:column>
-                        <p:column headerText="Valor Total">
+                        <p:column headerText="Valor Total" class="coluna-monetaria">
                             <h:outputLabel value="#{row.valorTotal}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
@@ -88,10 +88,12 @@
                             </p:commandLink>
                             &nbsp;
                             <p:menuButton>
-                                <p:menuitem value="Imprimir A4" actionListener="#{vendaCabecalhoControll.remover()}"
-                                            icon="fa fa-print"/>
-                                <p:menuitem value="Imprimir Cupom" actionListener="#{vendaCabecalhoControll.remover()}"
-                                            icon="fa fa-print"/>
+                                <p:menuitem value="Imprimir A4"
+                                            actionListener="#{vendaRelatorioControll.imprimirPedido(row.id)}"
+                                            icon="fa fa-print" ajax="false"/>
+                                <p:menuitem value="Imprimir Cupom"
+                                            actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(row.id)}"
+                                            icon="fa fa-print" ajax="false"/>
                                 <p:menuitem value="Devolução" actionListener="#{vendaCabecalhoControll.remover()}"
                                             icon="fa fa-reply-all"/>
                                 <p:menuitem value="Emitir NFe" actionListener="#{vendaCabecalhoControll.remover()}"/>

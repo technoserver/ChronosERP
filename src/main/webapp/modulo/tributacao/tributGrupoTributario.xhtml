@@ -9,34 +9,35 @@
 >
 
     <ui:define name="title">
-        CFOP 
+        Grupo Tributário
     </ui:define>
 
     <ui:define name="tela">
         #{cfopControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        Grupo Tributário
     </ui:define>
 
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
+        <erp:gridDados controller="#{tributGrupoTributarioControll}"
+                       idDataTable="dataTableGrupoTributario"
+                       nomeFuncao="Grupo Tributário"
                        id="telaGrid"
-                       somenteConsulta="true">
+        >
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}" />
-            </p:column>
             <p:column headerText="Descricao">
                 <h:outputLabel value="#{row.descricao}" />
             </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
+            <p:column headerText="Origem Mercadoria">
+                <h:outputLabel
+                        value="#{tributGrupoTributarioControll.keyFromValue(tributGrupoTributarioControll.origemMercadoria, row.origemMercadoria)}"/>
+            </p:column>
+            <p:column headerText="Observacao">
+                <h:outputLabel value="#{row.observacao}"/>
             </p:column>
 
 
@@ -45,27 +46,28 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{tributGrupoTributarioControll}"
+                                   nomeFuncao="Grupo Tributário"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+        >
 
             <div class="row">
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                idComponente="tributGrupoTributarioDescricao" label="Descricao"
+                                nomeAtributo="#{tributGrupoTributarioControll.objeto.descricao}"
+                                tamanhoMaximo="100"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="tributGrupoTributarioOrigemMercadoria"
+                                 label="Origem Mercadoria"
+                                 nomeAtributo="#{tributGrupoTributarioControll.objeto.origemMercadoria}"
+                                 itens="#{tributGrupoTributarioControll.origemMercadoria}"/>
             </div>
-            <div class="row">
 
+            <div class="row">
                 <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
-            </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
+                                    idComponente="observacao" label="Obervação "
+                                    nomeAtributo="#{tributGrupoTributarioControll.objeto.observacao}"/>
             </div>
 
         </erp:telaInclusaoAlteracao>

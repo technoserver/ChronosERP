@@ -130,6 +130,12 @@ public class Vendedor implements Serializable {
         this.tabelaPreco = tabelaPreco;
     }
 
+
+    @Override
+    public String toString() {
+        return colaborador.getNome();
+    }
+
     @Override
     public int hashCode() {
         int hash = 3;

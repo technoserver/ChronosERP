@@ -26,7 +26,9 @@
 
         <h:outputScript library="js" name="validadores.js"/>
         <h:outputScript library="primefaces" name="jquery/jquery.js" />
-
+        <h:outputStylesheet library="css" name="iconFont.css"/>
+        <h:outputStylesheet library="css" name="whhg.css"/>
+        <ui:insert name="css"/>
     </h:head>
 
     <h:body class="pace-done fixed-sidebar">
@@ -159,6 +161,7 @@
             }
 
         </script>
+        <ui:insert name="javaScript"/>
 
     </h:body>
 

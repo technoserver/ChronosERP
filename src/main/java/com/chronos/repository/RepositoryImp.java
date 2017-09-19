@@ -112,7 +112,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Override
     public T get(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
-        return getEntitys(clazz, atributo, valor).get(0);
+        return get(clazz, atributo, valor, null);
     }
 
     @Override

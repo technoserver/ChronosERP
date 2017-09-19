@@ -1,0 +1,585 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Balcão
+    </ui:define>
+
+    <ui:define name="tela">
+        Balcão
+    </ui:define>
+    <ui:define name="controle">
+        Balcão
+    </ui:define>
+    <ui:define name="css">
+
+        <h:outputStylesheet library="css" name="pdv.css"/>
+        <style type="text/css">
+            li.token-input-token p, li.token-input-token span {
+                padding-top: 12px
+            }
+
+            .padding-top-10px {
+                padding-top: 10px;
+            }
+
+            .margin-right-10px {
+                margin-right: 10px;
+            }
+
+            .margin-top-10px {
+                margin-top: 10px;
+            }
+
+            .margin-bottom-20px {
+                margin-bottom: 20px;
+            }
+
+            .margin-bottom-0 {
+                margin-bottom: 0;
+            }
+
+            .form-control-table {
+                min-width: 120px;
+                width: 100%;
+                display: block;
+                height: 34px;
+                padding: 6px 12px;
+                font-size: 14px;
+                line-height: 1.428571429;
+                color: #555555;
+                vertical-align: middle;
+                background-color: #ffffff;
+                background-image: none;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+                -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+                transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+            }
+
+            .small-box {
+                position: relative;
+                display: block;
+                -webkit-border-radius: 2px;
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+                margin-bottom: 15px;
+                cursor: pointer;
+            }
+
+            .bg-green {
+                background-color: #00a65a !important;
+            }
+
+            .form-control-table[disabled], .form-control-table[readonly], fieldset[disabled] .form-control-table {
+                cursor: not-allowed;
+                background-color: #eeeeee;
+            }
+
+        </style>
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <p:focus context="formCentro:produto"/>
+        <div id="pdv" class="row">
+            <div id="botao-operacoes">
+                <i class="fa fa-cogs"></i>
+            </div>
+            <div id="tela-inicial" class="etapa" style="display: block;">
+                <div class="col-sm-8 col-md-8 col-lg-8">
+                    <label>
+                        <h3 class="margin-top-0">LOCALIZE UM PRODUTO/SERVIÇO ABAIXO</h3>
+                    </label>
+                    <p:autoComplete value="#{balcaoControll.produto}"
+                                    id="produto"
+                                    converter="defaultConverter" minQueryLength="3"
+                                    completeMethod="#{balcaoControll.getListProduto}"
+                                    maxResults="20" emptyMessage="Nenhum Produto localizado"
+                                    itemLabel="#{objeto.produto.nome}" itemValue="#{objeto}" var="objeto"
+                                    style="width: 100%;margin-bottom: 10px" onfocus="true">
+                        <p:column headerText="Nome">
+                            <p:outputLabel value="#{objeto.produto.descricaoPdv}"/>
+                        </p:column>
+                        <p:column headerText="Estoque">
+                            <p:outputLabel value="#{objeto.quantidadeEstoque}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </p:outputLabel>
+                        </p:column>
+                        <p:ajax event="itemSelect" listener="#{balcaoControll.selecionarProduto}"
+                                update="formCentro:mostra-produto"
+                                oncomplete="document.getElementById('formCentro:quantidade_input').focus()"/>
+                    </p:autoComplete>
+                    <br/>
+
+                    <h:panelGroup layout="block" id="mostra-produto" class="margin-top-20px row">
+                        <div id="fotos" class="col-sm-3 col-md-3 col-lg-3">
+                            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner" role="listbox">
+                                    <div class="hidden-xs item active">
+                                        <p:graphicImage value="/resources/images/produto-sem-foto.png" width="100%"/>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-9 col-md-9 col-lg-9">
+                            <table cellpadding="0" cellspacing="0" width="100%" border="0">
+                                <tbody>
+                                <tr>
+                                    <th class="hidden-xs nowrap">
+                                        <h4 class="margin-right-10px">CÓDIGO</h4>
+                                    </th>
+                                    <td class="padding-top-10px">
+                                        <h:inputText disabled="true"
+                                                     class="codigo col-sm-12 col-md-12 col-lg-12 form-control-table"
+                                                     value="#{balcaoControll.item.produto.id}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="hidden-xs nowrap">
+                                        <h4 class="margin-right-10px">QUANTIDADE</h4>
+                                    </th>
+                                    <td class="padding-top-10px">
+                                        <p:inputNumber id="quantidade"
+                                                       decimalPlaces="2"
+                                                       minValue="0.001" maxValue="999"
+                                                       value="#{balcaoControll.item.quantidade}"
+                                                       required="true"
+                                                       requiredMessage="Informe a quantidade"
+                                                       class="inputs"
+                                                       dir="rtl"
+                                                       disabled="#{empty balcaoControll.item.produto}"
+                                                       onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:valorUnitario_input').focus(); return false;}"
+                                                       style="width: 100%"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="hidden-xs nowrap">
+                                        <h4 class="margin-right-10px">VALOR UNITÁRIO</h4>
+                                    </th>
+                                    <td class="padding-top-10px">
+                                        <label class="visible-xs">VALOR UNITÁRIO</label>
+                                        <p:inputNumber id="valorUnitario"
+                                                       decimalPlaces="2"
+                                                       minValue="0.001" maxValue="999"
+                                                       value="#{balcaoControll.item.valorUnitario}"
+                                                       required="true"
+                                                       dir="rtl"
+                                                       requiredMessage="Informe o valor"
+                                                       class="inputs"
+                                                       disabled="#{empty balcaoControll.item.produto}"
+                                                       onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:desconto_input').focus(); return false;}"
+                                                       style="width: 100%"/>
+
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="hidden-xs nowrap">
+                                        <h4 class="margin-right-10px">DESCONTO</h4>
+                                    </th>
+                                    <td class="padding-top-10px">
+                                        <div class="input-group">
+                                            <p:inputNumber id="desconto"
+                                                           decimalPlaces="2"
+                                                           minValue="0.01" maxValue="99.99"
+                                                           value="#{balcaoControll.desconto}"
+                                                           class="inputs"
+                                                           dir="rtl"
+                                                           decimalSeparator="," thousandSeparator="."
+                                                           disabled="#{empty balcaoControll.item.produto}"
+                                                           onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:salva-produto').focus(); return false;}"
+                                                           style="width: 100%">
+                                                <p:ajax event="blur" listener="#{balcaoControll.calcularDesconto}"
+                                                        process="@form"
+                                                        update="formCentro:mostra-produto"/>
+                                            </p:inputNumber>
+                                            <span class="input-group-btn">
+                                                <h:selectOneMenu id="tipoDesconto"
+                                                                 value="#{balcaoControll.tipoDesconto}"
+                                                                 class="campo-desconto form-control-table ">
+                                                    <f:selectItem itemValue="D" itemLabel="R$"/>
+                                                    <f:selectItem itemValue="P" itemLabel="%"/>
+                                                </h:selectOneMenu>
+
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="hidden-xs nowrap">
+                                        <h4 class="margin-right-10px">VALOR TOTAL</h4>
+                                    </th>
+                                    <td class="padding-top-10px">
+                                        <h:inputText value="#{balcaoControll.item.valorTotal}" disabled="true"
+                                                     class="valor-total mascara-valor col-sm-12 col-md-12 col-lg-12 form-control-table">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:inputText>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="hidden-xs nowrap"/>
+                                    <td class="padding-top-10px">
+                                        <h:commandButton id="salva-produto" class="btn btn-primary btn-lg"
+                                                         style="width:100%"
+                                                         value="ADICIONAR PRODUTO"
+                                                         action="#{balcaoControll.addProduto}">
+                                            <p:ajax process="@form"
+                                                    update="formCentro:tableProduto,formCentro:growl,formCentro:produto,formCentro:mostra-produto"
+                                                    oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
+                                        </h:commandButton>
+
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </h:panelGroup>
+                </div>
+
+
+                <!--Lado Esquerdo do PDV-->
+                <div class="margin-top-10px-xs col-sm-4 col-md-4 col-lg-4">
+                    <div class="box-cliente small-box bg-green">
+                        <div class="inner">
+                            <div>CLIENTE:
+                                <p:commandLink id="botao-indicar-cliente"
+                                               action="#{balcaoControll.buscarCliente}"
+                                               oncomplete="PF('dialogCliente').show()"
+                                               update=":formOutrasTelas1:panelCliente">
+                                    #{empty balcaoControll.cliente?'Não Informado' : balcaoControll.cliente.pessoa.nome}
+                                </p:commandLink>
+                            </div>
+                            <div>VENDEDOR:
+                                <p:commandLink id="botao-indicar-vendedor"
+                                               action="#{balcaoControll.buscarVendedores}"
+                                               oncomplete="PF('dialogVendedor').show()"
+                                               update=":formOutrasTelas:panelVendedor">
+                                    #{balcaoControll.vendedor.colaborador.pessoa.nome}
+                                </p:commandLink>
+                            </div>
+                        </div>
+                        <div class="icone">
+                            <i class="fa fa-users"></i>
+                        </div>
+                    </div>
+                    <div id="produtos-selecionados">
+                        <div id="lista" class="table-responsive">
+                            <h:dataTable var="row" value="#{balcaoControll.venda.listaVendaDetalhe}"
+                                         class="table table-striped" id="tableProduto">
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Qtd."/>
+                                    </f:facet>
+                                    <h:outputText value="#{row.quantidade}"/>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Produto"/>
+                                    </f:facet>
+                                    <h:outputText value="#{row.produto.descricaoPdv}"/>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Desc."/>
+                                    </f:facet>
+                                    <h:outputText value="#{row.valorDesconto}"/>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">
+                                        <h:outputText value="Preço"/>
+                                    </f:facet>
+                                    <h:outputText value="#{row.valorUnitario}"/>
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+                        <h4>TOTAL DO PEDIDO</h4>
+                        <div class="total-pedido">
+                            R$ 0,00
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
+                            <button id="aguardar" type="button" class="btn btn-warning btn-lg" onclick="aguardar();"
+                                    style="width:100%">AGUARDAR
+                            </button>
+                        </div>
+                        <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
+                            <button id="cancelar" type="button" class="btn btn-danger btn-lg"
+                                    onclick="cancelarPedido();" style="width:100%">CANCELAR
+                            </button>
+                        </div>
+                        <div class="margin-top-10px col-sm-12 col-md-12 col-lg-12">
+                            <button id="botao-pagar" type="button" class="btn btn-success btn-lg" onclick="pagar();"
+                                    style="width:100%">FINALIZAR VENDA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden-xs teclas">
+                    <b>F1</b> = Ver Atalhos <b>|</b> <b>F2</b> = Nova Busca <b>|</b> <b>F3</b> = Mudar Quantidade
+                    <b>|</b> <b>F4</b> = Adicionar Produto <b>|</b> <b>F6</b> = Finalizar Venda <b>|</b>
+                    <b>Shift + C</b> = Indicar Cliente <b>|</b> <b>Shift + V</b> = Indicar Vendedor
+                </div>
+            </div>
+
+            <!--Modal Teclas-->
+            <div class="modal" id="painel-teclas-atalho" tabindex="-1" role="dialog" aria-hidden="false"
+                 style="display: none;">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" style="opacity:0.8;margin-top: 10px"
+                                    data-dismiss="modal" aria-label="Close">
+                            <span class="btn btn-xs btn-danger">
+                                <i class="glyphicon glyphicon-remove"></i>
+                            </span>
+                            </button>
+                            <h2 class="margin-top-10px"><i class="fa fa-keyboard-o"></i> TECLAS DE ATALHO</h2>
+                            <p>CONHEÇA OS ATALHOS DE TECLADO QUE PODEM AGILIZAR SUAS OPERAÇÕES DENTRO DO PDV</p>
+                        </div>
+                        <div class="modal-body margin-top-10px" style="overflow-y: auto">
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">F1</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        TECLAS DE ATALHO
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">F2</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        BUSCAR PRODUTO
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">F3</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        MUDAR QUANTIDADE
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">F4</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        ADICIONAR PRODUTO
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">F6</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        FINALIZAR VENDA
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">F7</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        AGUARDAR VENDA
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">F8</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        CANCELAR VENDA
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">SHIFT+C</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        INDICAR CLIENTE
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">SHIFT+V</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        INDICAR VENDEDOR
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">SHIFT+S</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        REALIZAR SANGRIA
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">SHIFT+R</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        REALIZAR REFORÇO
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">SHIFT+D</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        REALIZAR DEVOLUÇÃO
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                <div class="row">
+                                    <div class="col-sm-4 col-md-4 col-lg-4">
+                                        <div class="tecla">SHIFT+F</div>
+                                    </div>
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
+                                        FECHAR CAIXA
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogVendedor"
+                      header="INDICAR VENDEDOR"
+                      widgetVar="dialogVendedor" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="500">
+                <p:outputPanel id="panelVendedor">
+                    <div class="row">
+                        <erp:campoSelectConverter styleClass="col-xs-12 col-md-12"
+                                                  idComponente="vendedorSelecionado"
+                                                  label="Vendedor"
+                                                  nomeAtributo="#{balcaoControll.vendedor}"
+                                                  itens="#{balcaoControll.listVendedores}"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-6 text-center">
+                            <h:commandButton class="btn btn-primary"
+                                             action="#{balcaoControll.selecionarVendedor}"
+                                             value="salvar">
+                                <p:ajax update=":formOutrasTelas:panelVendedor,formCentro:botao-indicar-vendedor,:formCentro"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogVendedor').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6 text-right">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                            >
+                                <p:ajax oncomplete="PF('dialogVendedor').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas1">
+        <h:form id="formOutrasTelas1">
+            <p:dialog id="dialogCliente"
+                      header="INDICAR CLIENTE"
+                      widgetVar="dialogCliente" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="500">
+                <p:outputPanel id="panelCliente">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
+                                          label="Produto"
+                                          itemLabel="#{objeto.pessoa.nome}"
+                                          controller="#{balcaoControll}"
+                                          completeMethod="getListCliente"
+                                          nomeAtributo="#{balcaoControll.cliente}"
+                                          idComponente="clienteSelecionado">
+
+                        </erp:autoComplete>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-6 text-center">
+                            <h:commandButton class="btn btn-primary"
+                                             action="#{balcaoControll.selecionarCliente}"
+                                             value="salvar">
+                                <p:ajax update=":formOutrasTelas1:panelCliente,formCentro:botao-indicar-cliente,:formCentro"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogCliente').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6 text-right">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogCliente').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="javaScript">
+        <h:outputScript library="js" name="pdv.js"/>
+    </ui:define>
+
+</ui:composition>

@@ -537,7 +537,7 @@ public class Colaborador implements Serializable {
     }
 
     public String getNome() {
-        return nome;
+        return pessoa != null ? pessoa.getNome() : "";
     }
 
     public void setNome(String nome) {

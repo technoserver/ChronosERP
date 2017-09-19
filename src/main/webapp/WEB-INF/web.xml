@@ -41,10 +41,14 @@
     </resource-env-ref>
     <welcome-file-list>
         <welcome-file>index.xhtml</welcome-file>
-    </welcome-file-list>   
+    </welcome-file-list>
+    <!--<mime-mapping>-->
+    <!--<extension>ttf</extension>-->
+    <!--<mime-type>application/ttf</mime-type>-->
+    <!--</mime-mapping>-->
     <mime-mapping>
         <extension>ttf</extension>
-        <mime-type>application/ttf</mime-type>
+        <mime-type>application/x-font-ttf</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>eot</extension>

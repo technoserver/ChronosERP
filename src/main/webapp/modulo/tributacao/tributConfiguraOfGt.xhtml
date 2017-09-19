@@ -1,42 +1,39 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        CFOP 
+        Definições Grupo Tributário
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{tributConfiguraOfGtControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        Definições Grupo Tributário
     </ui:define>
-
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
+        <erp:gridDados controller="#{tributConfiguraOfGtControll}"
+                       idDataTable="dataTableTributConfiguraOfGt"
+                       nomeFuncao="Definições Grupo Tributário"
                        id="telaGrid"
-                       somenteConsulta="true">
+        >
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}" />
+            <p:column headerText="Grupo Tributario">
+                <h:outputLabel value="#{row.tributGrupoTributario.descricao}"/>
             </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}" />
-            </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
+            <p:column headerText="Operacao Fiscal">
+                <h:outputLabel value="#{row.tributOperacaoFiscal.descricao}"/>
             </p:column>
 
 
@@ -46,29 +43,134 @@
 
     <ui:define name="telaInclusaoAlteracao">
         <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+                                   nomeFuncao="Definições Grupo Tributário"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+        >
 
             <div class="row">
 
                 <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
+                                  idComponente="cfopCfop" label="CFOP"
+                                  nomeAtributo="#{cfopControll.objeto.cfop}"/>
             </div>
             <div class="row">
 
                 <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
+                                    idComponente="cfopDescricao" label="Descricao"
+                                    nomeAtributo="#{cfopControll.objeto.descricao}"/>
             </div>
-            <div  class="row">
+            <div class="row">
                 <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
+                                    idComponente="cfopAplicacao" label="Aplicacao"
+                                    nomeAtributo="#{cfopControll.objeto.aplicacao}"/>
             </div>
 
         </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogTributIcmsUf"
+                      header="Inclusão/Alteração de ICMS UF" responsive="true"
+                      widgetVar="dialogTributIcmsUf" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+                <h:panelGroup layout="block" id="panelTributIcmsUf">
+
+
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="tributIcmsUfUfDestino" label="UF Destino"
+                                         nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.ufDestino}"
+                                         itens="#{tributConfiguraOfGtControll.allEstado}"/>
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <h:outputLabel value="CFOP" for="cfop"/>
+                            <div class="input-group">
+                                <h:inputText
+                                        value="#{tributConfiguraOfGtControll.tributIcmsUf.cfop}"
+                                        id="cfop" class="form-control input-sm" maxlength="4" style="z-index: 0">
+                                </h:inputText>
+                                <span class="input-group-btn">
+                                    <p:commandLink
+                                            class="btn btn-default"
+                                            action="#{cfopControll.abrirDialogo}"
+                                            style="padding: 7px 12px !important;font-size: 14px !important"
+                                            process="@this" update="@none">
+
+                                        <p:ajax event="dialogReturn"
+                                                listener="#{tributConfiguraOfGtControll.cfopSelecionado}"
+                                                process="@this" update="cfop"/>
+                                        <p:resetInput target="cfop"/>
+                                        <i class="glyphicon glyphicon-search"></i>
+                                    </p:commandLink>
+                                </span>
+                            </div>
+                        </div>
+                        <erp:campoSelect styleClass="ccol-xs-12 col-sm-8 col-md-8"
+                                         idComponente="tributIcmsUfCsosnB" label="CSOSN"
+                                         nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.csosnB}"
+                                         itens="#{tributConfiguraOfGtControll.listaCsosnB}"
+                                         rendered="#{tributConfiguraOfGtControll.simplesNascional}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-8 col-md-8"
+                                         idComponente="tributIcmsUfCstB" label="CST"
+                                         nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.cstB}"
+                                         itens="#{tributConfiguraOfGtControll.listaCstB}"
+                                         rendered="#{!tributConfiguraOfGtControll.simplesNascional}"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="tributIcmsUfAliquota" label="Aliquota"
+                                          nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.aliquota}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="tributIcmsUfMva" label="MVA"
+                                          nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.mva}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfPorcentoBc" label="% Redução da BC"
+                                          nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.porcentoBc}"/>
+                        <erp:campoDecimal styleClass="ccol-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfPorcentoBcSt" label="% Redução da  BC ST "
+                                          nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.porcentoBcSt}"/>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfAliquotaIcmsSt"
+                                          label="Aliquota ICMS St"
+                                          nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.aliquotaIcmsSt}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfAliquotaInternaSt"
+                                          label="Aliq. Interna ST"
+                                          nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.aliquotaInternaSt}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfAliquotaInterestadualSt"
+                                          label="Aliq. Interestadual ST"
+                                          nomeAtributo="#{tributConfiguraOfGtControll.tributIcmsUf.aliquotaInterestadualSt}"/>
+
+                    </div>
+
+
+                </h:panelGroup>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             actionListener="#{tributConfiguraOfGtControll.salvarTributIcmsUf}"
+                                             class="btn btn-danger center-block">
+                                <p:ajax
+                                        update=":formOutrasTelas:panelTributIcmsUf,:formCentro:growl,:formCentro:outputPanelDetalhe"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogTributIcmsUf').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogTributIcmsUf').hide();"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 </ui:composition>

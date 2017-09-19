@@ -136,6 +136,7 @@ div[id="formCentro:growl_container"] > div[class~="g-info"]{
     font-size: 90px;
     color: rgba(0, 0, 0, 0.15);
 }
+
 .small-box:hover {
     text-decoration: none;
     color: #f9f9f9;
@@ -183,4 +184,8 @@ div[id="formCentro:growl_container"] > div[class~="g-info"]{
 
 .ui-outputlabel-rfi {
     corlo: red;
+}
+
+.mascara-quantidade, .mascara-valor, .mascara-valor-padrao, .mascara-numero, .mascara-peso {
+    text-align: right;
 }

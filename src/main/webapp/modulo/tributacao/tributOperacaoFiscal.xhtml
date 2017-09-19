@@ -9,25 +9,25 @@
 >
 
     <ui:define name="title">
-        CFOP 
+        Operação Fiscal
     </ui:define>
 
     <ui:define name="tela">
         #{cfopControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        Operação Fiscal
     </ui:define>
 
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
+        <erp:gridDados controller="#{tributOperacaoFiscalControll}"
+                       idDataTable="dataTableOperacaoFiscal"
+                       nomeFuncao="Operação Fiscal"
                        id="telaGrid"
-                       somenteConsulta="true">
+        >
 
             <p:column headerText="CFOP">
                 <h:outputLabel value="#{row.cfop}" />
@@ -35,9 +35,10 @@
             <p:column headerText="Descricao">
                 <h:outputLabel value="#{row.descricao}" />
             </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
+            <p:column headerText="Descricao NF">
+                <h:outputLabel value="#{row.descricaoNaNf}"/>
             </p:column>
+
 
 
         </erp:gridDados>
@@ -45,27 +46,31 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{tributOperacaoFiscalControll}"
+                                   nomeFuncao="Operação Fiscal"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
-
+        >
             <div class="row">
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="cfop" label="CFOP"
+                                  nomeAtributo="#{tributOperacaoFiscalControll.objeto.cfop}"
+                />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                idComponente="descricao" label="Descrição :"
+                                nomeAtributo="#{tributOperacaoFiscalControll.objeto.descricao}"
+                                tamanhoMaximo="100"/>
             </div>
             <div class="row">
-
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                idComponente="descricaoNf" label="Descrição da NF"
+                                nomeAtributo="#{tributOperacaoFiscalControll.objeto.descricaoNaNf}"
+                                tamanhoMaximo="100"/>
             </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
+            <div class="row">
+                <erp:campoAreaTexto label="Observação"
+                                    styleClass="colcol-xs-12 col-sm-10 col-md-10" idComponente="descricao"
+                                    nomeAtributo="#{tributOperacaoFiscalControll.objeto.observacao}"/>
             </div>
 
         </erp:telaInclusaoAlteracao>

@@ -2,7 +2,12 @@
 package com.chronos.modelo.entidades;
 
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -17,16 +22,21 @@ public class TributOperacaoFiscal implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @NotBlank
     @Column(name = "DESCRICAO")
     private String descricao;
+    @NotBlank
     @Column(name = "DESCRICAO_NA_NF")
     private String descricaoNaNf;
     @Column(name = "CFOP")
+    @Min(message = "CFOP invalido", value = 1000)
+    @Max(message = "CFOP invalido", value = 9999)
     private Integer cfop;
     @Column(name = "OBSERVACAO")
     private String observacao;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
+    @NotNull
     private Empresa empresa;
    
     
