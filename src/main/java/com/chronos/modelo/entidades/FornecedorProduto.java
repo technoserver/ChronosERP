@@ -41,6 +41,11 @@ public class FornecedorProduto  implements Serializable {
     public FornecedorProduto() {
     }
 
+    public FornecedorProduto(Integer id, Integer idproduto, String produto) {
+        this.id = id;
+        this.produto = new Produto(idproduto, produto);
+    }
+
     public Integer getId() {
         return id;
     }

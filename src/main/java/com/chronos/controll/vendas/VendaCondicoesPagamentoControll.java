@@ -36,6 +36,14 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
     }
 
     @Override
+    public void doEdit() {
+        super.doEdit();
+        VendaCondicoesPagamento condicoes = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(condicoes);
+
+    }
+
+    @Override
     public void salvar() {
         try {
             verificaParcelas();

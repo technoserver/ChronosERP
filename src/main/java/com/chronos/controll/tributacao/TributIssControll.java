@@ -6,8 +6,10 @@ import com.chronos.modelo.entidades.TributOperacaoFiscal;
 import com.chronos.repository.Repository;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,18 +21,32 @@ import java.util.List;
 public class TributIssControll extends AbstractControll<TributIss> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @Inject
     private Repository<TributOperacaoFiscal> operacoes;
 
 
     public List<TributOperacaoFiscal> getListaTributOperacaoFiscal(String nome) {
         List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
         try {
-            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class,"descricao", nome);
+
+            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, "descricao", nome, new Object[]{"descricao"});
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return listaTributOperacaoFiscal;
+    }
+
+    @Override
+    public void doCreate() {
+        super.doCreate();
+
+        getObjeto().setAliquotaPorcento(BigDecimal.ZERO);
+        getObjeto().setAliquotaUnidade(BigDecimal.ZERO);
+        getObjeto().setItemListaServico(0);
+        getObjeto().setModalidadeBaseCalculo('0');
+        getObjeto().setPorcentoBaseCalculo(BigDecimal.ZERO);
+        getObjeto().setValorPautaFiscal(BigDecimal.ZERO);
+        getObjeto().setValorPrecoMaximo(BigDecimal.ZERO);
     }
 
     @Override

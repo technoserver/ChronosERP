@@ -5,6 +5,7 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,11 +36,32 @@ public class CompraRequisicaoControll extends AbstractControll<CompraRequisicao>
     private CompraSugeridaControll compraSugeridaController;
     private Set<CompraRequisicaoDetalhe> listaCompraSugerida;
 
+    private List<CompraTipoRequisicao> tipoRquisicoes;
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+
+        tipoRquisicoes = new ArrayList<>();
+        tipoRquisicoes.add(new CompraTipoRequisicao(1, "INTERNA"));
+        tipoRquisicoes.add(new CompraTipoRequisicao(2, "EXTERNA"));
+    }
+
     @Override
     public void doCreate() {
         super.doCreate();
         getObjeto().setDataRequisicao(new Date());
         getObjeto().setListaCompraRequisicaoDetalhe(new HashSet<>());
+    }
+
+    @Override
+    public void doEdit() {
+        super.doEdit();
+
+        CompraRequisicao req = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(req);
+
     }
 
     @Override
@@ -126,12 +148,12 @@ public class CompraRequisicaoControll extends AbstractControll<CompraRequisicao>
 
     @Override
     protected Class<CompraRequisicao> getClazz() {
-        return null;
+        return CompraRequisicao.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "COMPRA_REQUISICAO";
     }
 
     @Override
@@ -163,4 +185,11 @@ public class CompraRequisicaoControll extends AbstractControll<CompraRequisicao>
         this.parametroCompraSugerida = parametroCompraSugerida;
     }
 
+    public List<CompraTipoRequisicao> getTipoRquisicoes() {
+        return tipoRquisicoes;
+    }
+
+    public void setTipoRquisicoes(List<CompraTipoRequisicao> tipoRquisicoes) {
+        this.tipoRquisicoes = tipoRquisicoes;
+    }
 }

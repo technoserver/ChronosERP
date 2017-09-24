@@ -1,8 +1,11 @@
 package com.chronos.modelo.entidades;
 
+import org.springframework.util.StringUtils;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -175,8 +178,6 @@ public class NfeDetalhe implements Serializable {
     public void setCest(String cest) {
         this.cest = cest;
     }
-    
-    
 
     public String getNve() {
         return nve;
@@ -211,7 +212,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getQuantidadeComercial() {
-        return quantidadeComercial;
+        return Optional.ofNullable(quantidadeComercial).orElse(BigDecimal.ZERO);
     }
 
     public void setQuantidadeComercial(BigDecimal quantidadeComercial) {
@@ -219,7 +220,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorUnitarioComercial() {
-        return valorUnitarioComercial;
+        return Optional.ofNullable(valorUnitarioComercial).orElse(BigDecimal.ZERO);
     }
 
     public void setValorUnitarioComercial(BigDecimal valorUnitarioComercial) {
@@ -227,7 +228,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorBrutoProduto() {
-        return valorBrutoProduto;
+        return valorBrutoProduto = getQuantidadeComercial().multiply(getValorUnitarioComercial());
     }
 
     public void setValorBrutoProduto(BigDecimal valorBrutoProduto) {
@@ -235,7 +236,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public String getGtinUnidadeTributavel() {
-        return gtinUnidadeTributavel;
+        return gtinUnidadeTributavel = getUnidadeComercial();
     }
 
     public void setGtinUnidadeTributavel(String gtinUnidadeTributavel) {
@@ -251,7 +252,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getQuantidadeTributavel() {
-        return quantidadeTributavel;
+        return quantidadeTributavel = getQuantidadeComercial();
     }
 
     public void setQuantidadeTributavel(BigDecimal quantidadeTributavel) {
@@ -259,7 +260,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorUnitarioTributavel() {
-        return valorUnitarioTributavel;
+        return valorUnitarioTributavel = getValorUnitarioComercial();
     }
 
     public void setValorUnitarioTributavel(BigDecimal valorUnitarioTributavel) {
@@ -267,7 +268,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorFrete() {
-        return valorFrete;
+        return Optional.ofNullable(valorFrete).orElse(BigDecimal.ZERO);
     }
 
     public void setValorFrete(BigDecimal valorFrete) {
@@ -275,7 +276,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorSeguro() {
-        return valorSeguro;
+        return Optional.ofNullable(valorSeguro).orElse(BigDecimal.ZERO);
     }
 
     public void setValorSeguro(BigDecimal valorSeguro) {
@@ -283,7 +284,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorDesconto() {
-        return valorDesconto;
+        return Optional.ofNullable(valorDesconto).orElse(BigDecimal.ZERO);
     }
 
     public void setValorDesconto(BigDecimal valorDesconto) {
@@ -291,7 +292,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorOutrasDespesas() {
-        return valorOutrasDespesas;
+        return Optional.ofNullable(valorOutrasDespesas).orElse(BigDecimal.ZERO);
     }
 
     public void setValorOutrasDespesas(BigDecimal valorOutrasDespesas) {
@@ -307,6 +308,8 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorSubtotal() {
+        valorSubtotal = BigDecimal.ZERO;
+        valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial());
         return valorSubtotal;
     }
 
@@ -498,7 +501,19 @@ public class NfeDetalhe implements Serializable {
         this.produtoCadastrado = produtoCadastrado;
     }
 
+    public void pegarInfoProduto() {
+        if (produto != null) {
+            nomeProduto = produto.getNome();
+            ncm = produto.getNcm();
+            exTipi = produto.getExTipi() != null ? Integer.valueOf(produto.getExTipi()) : exTipi;
+            cest = produto.getCest();
+            gtin = produto.getGtin();
+            unidadeComercial = produto.getUnidadeProduto().getSigla();
+            unidadeTributavel = unidadeComercial;
+            codigoProduto = StringUtils.isEmpty(gtin) ? produto.getId().toString() : gtin;
+        }
 
+    }
 
     public BigDecimal calcularSubTotalProduto(){
 
@@ -516,6 +531,43 @@ public class NfeDetalhe implements Serializable {
                 .subtract(Optional.ofNullable(this.valorDesconto).orElse(BigDecimal.ZERO));
 
         return valorTotal;
+    }
+
+    public BigDecimal calcularTotal() {
+        BigDecimal valor = BigDecimal.ZERO;
+        valor = valor.add(getValorSubtotal())
+                .add(getValorFrete())
+                .add(getValorSeguro())
+                .subtract(getValorDesconto());
+        valorTotal = valor;
+        return valorTotal;
+    }
+
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+
+        hash = 61 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NfeDetalhe other = (NfeDetalhe) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 
 }

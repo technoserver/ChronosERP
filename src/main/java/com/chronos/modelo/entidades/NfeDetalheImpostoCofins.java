@@ -3,6 +3,7 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Entity
 @Table(name = "NFE_DETALHE_IMPOSTO_COFINS")
@@ -58,7 +59,7 @@ public class NfeDetalheImpostoCofins implements Serializable {
     }
 
     public BigDecimal getBaseCalculoCofins() {
-        return baseCalculoCofins;
+        return Optional.ofNullable(baseCalculoCofins).orElse(BigDecimal.ZERO);
     }
 
     public void setBaseCalculoCofins(BigDecimal baseCalculoCofins) {
@@ -82,7 +83,7 @@ public class NfeDetalheImpostoCofins implements Serializable {
     }
 
     public BigDecimal getValorCofins() {
-        return valorCofins;
+        return Optional.ofNullable(valorCofins).orElse(BigDecimal.ZERO);
     }
 
     public void setValorCofins(BigDecimal valorCofins) {

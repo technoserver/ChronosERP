@@ -29,6 +29,14 @@ public class TributIcmsCustomCabControll extends AbstractControll<TributIcmsCust
         getObjeto().setListaTributIcmsCustomDet(new HashSet<>());
     }
 
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        TributIcmsCustomCab trib = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(trib);
+
+    }
+
     public void incluirTributIcmsCustomDet() {
         tributIcmsCustomDet = new TributIcmsCustomDet();
         tributIcmsCustomDet.setTributIcmsCustomCab(getObjeto());
@@ -51,6 +59,7 @@ public class TributIcmsCustomCabControll extends AbstractControll<TributIcmsCust
         salvar("Registro excluído com sucesso!");
 
     }
+
 
     @Override
     protected Class<TributIcmsCustomCab> getClazz() {
@@ -81,6 +90,10 @@ public class TributIcmsCustomCabControll extends AbstractControll<TributIcmsCust
 
     public void setTributIcmsCustomDetSelecionado(TributIcmsCustomDet tributIcmsCustomDetSelecionado) {
         this.tributIcmsCustomDetSelecionado = tributIcmsCustomDetSelecionado;
+    }
+
+    public boolean isSimplesNascional() {
+        return empresa.getCrt() != null && empresa.getCrt().equals("1");
     }
 
 }

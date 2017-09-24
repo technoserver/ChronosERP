@@ -445,7 +445,7 @@ public abstract class AbstractControll<T> implements Serializable {
 
         pisModalidadeBaseCalculo = new HashMap<>();
         pisModalidadeBaseCalculo.put("Percentual", "0");
-        pisModalidadeBaseCalculo.put("Unidade", "0");
+        pisModalidadeBaseCalculo.put("Unidade", "1");
 
         indicadorExigibilidadeIss = new HashMap<>();
         indicadorExigibilidadeIss.put("Exigível", 1);
@@ -563,11 +563,110 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public Empresa getEmpresaUsuario() {
         empresa = null;
+        usuario = getUsuarioLogado();
 
-        getUsuarioLogado().getColaborador().getPessoa().getListaEmpresa().stream().forEach((e) -> {
-            empresa = e;
-        });
+        if (usuario != null) {
+            usuario.getColaborador().getPessoa().getListaEmpresa().stream().forEach((e) -> {
+                empresa = e;
+            });
+        }
+
         return empresa;
+    }
+
+    public HashMap getListaCsosnB() {
+        HashMap<String, String> csosnb = new LinkedHashMap<>();
+
+        csosnb.put("101 - Tributada pelo Simples Nacional com permissão de crédito", "101");
+        csosnb.put("102 - Tributada pelo Simples Nacional sem permissão de crédito", "102");
+        csosnb.put("103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta", "103");
+        csosnb.put("201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária", "201");
+        csosnb.put("202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária", "202");
+        csosnb.put("203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária", "203");
+        csosnb.put("300 - Imune", "300");
+        csosnb.put("400 - Não tributada pelo Simples Nacional", "400");
+        csosnb.put("500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação", "500");
+        csosnb.put("900 - Outros", "900");
+        return csosnb;
+    }
+
+    public HashMap getListaCstB() {
+        HashMap<String, String> cst = new LinkedHashMap<>();
+
+        cst.put("00 - Tributada Integralmente", "00");
+        cst.put("10 - Tributada e com Cobrança do ICMS  por Substituicao Tributária", "10");
+        cst.put("20 - Com redução de Base de Calculo", "20");
+        cst.put("30 - Isenta ou Não Tributada e com cobrança do ICMS por Substituição tributária", "30");
+        cst.put("40 - Isenta", "40");
+        cst.put("41 - Não Tributada", "41");
+        cst.put("50 - Suspensão", "50");
+        cst.put("51 - Direrimento", "51");
+        cst.put("60 - ICMS cobrado anteriormente por substituição tributária", "60");
+        cst.put("70 - Com redução de base de cálculo e cobrança do ICMS por substituicão tributária", "70");
+        cst.put("90 - Outros", "90");
+
+        return cst;
+    }
+
+    public HashMap getListaCstIpi() {
+        HashMap<String, String> cst = new HashMap<>();
+        cst.put("00 - Entrada com Recuperação de Crédito", "00");
+        cst.put("01 - Entrada Tributável com Aliquota Zero", "01");
+        cst.put("02 - Entrada Isenta", "02");
+        cst.put("03 - Entrada Não-Tributada", "03");
+        cst.put("04 - Entrada Imune", "04");
+        cst.put("05 - Entrada com Suspensão", "05");
+        cst.put("49 - Outras Entradas", "49");
+        cst.put("50 - Saída Tributada", "50");
+        cst.put("51 - Saída Tributável com aliquota Zero", "51");
+        cst.put("52 - Saida Isenta", "52");
+        cst.put("53 - Saida Não-Tributada", "53");
+        cst.put("54 - Saida Imune", "54");
+        cst.put("55 - Saida com Suspensão", "55");
+        cst.put("99 - Outras Saídas", "99");
+
+        return cst;
+    }
+
+
+    public HashMap getListaCstPis() {
+        HashMap<String, String> cst = new HashMap<>();
+
+        cst.put("01 - Operacao Tributavel com Aliquota Basica", "01");
+        cst.put("02 - Operacao Tributavel com Aliquota Diferenciada", "02");
+        cst.put("03 - Operacao Tributavel com Aliquota por Unidade de Medida de Produto", "03");
+        cst.put("04 - Operacao Tributavel Monofasica - Revenda a Aliquota Zero", "04");
+        cst.put("05 - Operacao Tributavel por Substituicao Tributaria", "05");
+        cst.put("06 - Operacao Tributavel a Aliquota Zero", "06");
+        cst.put("07 - Operacao Isenta da Contribuicao", "07");
+        cst.put("08 - Operacao sem Incidencia da Contribuicao", "08");
+        cst.put("09 - Operacao com Suspensao da Contribuicao", "09");
+        cst.put("49 - Outras Operacões de Saida", "49");
+        cst.put("50 - Operacao com Direito a Credito - Vinculada Exclusivamente a Receita Tributada no Mercado Interno", "50");
+        cst.put("51 - Operacao com Direito a Credito – Vinculada Exclusivamente a Receita Nao Tributada no Mercado Interno", "51");
+        cst.put("52 - Operacao com Direito a Credito - Vinculada Exclusivamente a Receita de Exportacao", "52");
+        cst.put("53 - Operacao com Direito a Credito - Vinculada a Receitas Tributadas e Nao-Tributadas no Mercado Interno", "53");
+        cst.put("54 - Operacao com Direito a Credito - Vinculada a Receitas Tributadas no Mercado Interno e de Exportacao", "54");
+        cst.put("55 - Operacao com Direito a Credito - Vinculada a Receitas Nao-Tributadas no Mercado Interno e de Exportacao", "55");
+        cst.put("56 - Operacao com Direito a Credito - Vinculada a Receitas Tributadas e Nao-Tributadas no Mercado Interno, e de Exportacao", "56");
+        cst.put("60 - Credito Presumido - Operacao de Aquisicao Vinculada Exclusivamente a Receita Tributada no Mercado Interno", "60");
+        cst.put("61 - Credito Presumido - Operacao de Aquisicao Vinculada Exclusivamente a Receita Nao-Tributada no Mercado Interno", "61");
+        cst.put("62 - Credito Presumido - Operacao de Aquisicao Vinculada Exclusivamente a Receita de Exportacao", "62");
+        cst.put("63 - Credito Presumido - Operacao de Aquisicao Vinculada a Receitas Tributadas e Nao-Tributadas no Mercado Interno", "63");
+        cst.put("64 - Credito Presumido - Operacao de Aquisicao Vinculada a Receitas Tributadas no Mercado Interno e de Exportacao", "64");
+        cst.put("65 - Credito Presumido - Operacao de Aquisicao Vinculada a Receitas Nao-Tributadas no Mercado Interno e de Exportacao", "65");
+        cst.put("66 - Credito Presumido - Operacao de Aquisicao Vinculada a Receitas Tributadas e Nao-Tributadas no Mercado Interno, e de Exportacao", "66");
+        cst.put("67 - Credito Presumido - Outras Operacões", "67");
+        cst.put("70 - Operacao de Aquisicao sem Direito a Credito", "70");
+        cst.put("71 - Operacao de Aquisicao com Isencao", "71");
+        cst.put("72 - Operacao de Aquisicao com Suspensao", "72");
+        cst.put("73 - Operacao de Aquisicao a Aliquota Zero", "73");
+        cst.put("74 - Operacao de Aquisicao sem Incidencia da Contribuicao", "74");
+        cst.put("75 - Operacao de Aquisicao por Substituicao Tributaria", "75");
+        cst.put("98 - Outras Operacões de Entrada", "98");
+        cst.put("99 - Outras Operacões", "99");
+
+        return cst;
     }
 
     public boolean podeConsultar() {
@@ -856,7 +955,6 @@ public abstract class AbstractControll<T> implements Serializable {
     public HashMap<String, String> getOrigemMercadoria() {
         return origemMercadoria;
     }
-
     public HashMap<String, String> getIssModalidadeBaseCalculo() {
         return issModalidadeBaseCalculo;
     }

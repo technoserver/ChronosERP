@@ -4,6 +4,7 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 
 @Entity
@@ -134,7 +135,7 @@ public class NfeDetalheImpostoIpi implements Serializable {
     }
 
     public BigDecimal getValorIpi() {
-        return valorIpi;
+        return Optional.ofNullable(valorIpi).orElse(BigDecimal.ZERO);
     }
 
     public void setValorIpi(BigDecimal valorIpi) {

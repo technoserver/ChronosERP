@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Mapa Comparativo
+    </ui:define>
+
+    <ui:define name="tela">
+        #{compraMapaComparativoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Mapa Comparativo
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{compraMapaComparativoControll}"
+                       idDataTable="dataTableCompraCotacao"
+                       nomeFuncao="Mapa Comparativo"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Data Cotacao">
+                <h:outputLabel value="#{row.dataCotacao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+            <p:column headerText="Situacao">
+                <h:outputLabel
+                        value="#{compraMapaComparativoControll.keyFromValue(compraMapaComparativoControll.compraSituacaoCotacao, row.situacao)}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{compraMapaComparativoControll}"
+                                   nomeFuncao="Mapa Comparativo"
+                                   id="telaDetalhe"
+        >
+
+
+            <p:tabView id="tabviewCompraCotacao" style="border: 0px;">
+                <p:tab title="Dados Principais">
+                    <p:outputPanel rendered="#{not empty compraMapaComparativoControll.objeto}">
+                        <div class="row">
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                            idComponente="compraCotacaoDescricao" label="Descricao"
+                                            nomeAtributo="#{compraMapaComparativoControll.objeto.descricao}"
+                                            tamanhoMaximo="100" somenteLeitura="true"/>
+
+                            <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                           idComponente="compraCotacaoDataCotacao" label="Data Cotacao"
+                                           nomeAtributo="#{compraMapaComparativoControll.objeto.dataCotacao}"
+                                           somenteLeitura="true"/>
+
+                            <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                             idComponente="compraCotacaoSituacao" label="Situacao"
+                                             nomeAtributo="#{compraMapaComparativoControll.objeto.situacao}"
+                                             itens="#{compraMapaComparativoControll.compraSituacaoCotacao}"
+                                             desabilitado="true"/>
+                        </div>
+
+                    </p:outputPanel>
+                </p:tab>
+
+                <p:tab title="Fornecedores/Itens">
+                    <p:dataTable id="dataTableCompraFornecedorCotacao" var="obj"
+                                 value="#{compraMapaComparativoControll.objeto.listaCompraFornecedorCotacao}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 resizableColumns="true" reflow="true" paginatorPosition="bottom">
+
+                        <p:column headerText="Fornecedor">
+                            <h:outputLabel value="#{obj.fornecedor.pessoa.nome}"/>
+                        </p:column>
+                        <p:column headerText="Prazo Entrega">
+                            <h:outputLabel value="#{obj.prazoEntrega}"/>
+                        </p:column>
+                        <p:column headerText="Condicoes Pagamento">
+                            <h:outputLabel value="#{obj.condicoesPagamento}"/>
+                        </p:column>
+                        <p:column headerText="Valor Subtotal">
+                            <h:outputLabel value="#{obj.valorSubtotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Desconto">
+                            <h:outputLabel value="#{obj.valorDesconto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Total">
+                            <h:outputLabel value="#{obj.total}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                    </p:dataTable>
+
+                    <erp:separador label="Itens"/>
+
+                    <p:dataTable id="dataTableCompraCotacaoDetalhe" var="obj"
+                                 value="#{compraMapaComparativoControll.listaCompraCotacaoDetalhe}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 resizableColumns="true" editable="true" editMode="cell"
+                                 emptyMessage="Nenhum fornecedor selecionado" reflow="true" paginatorPosition="bottom">
+
+                        <p:ajax event="cellEdit"
+                                listener="#{compraMapaComparativoControll.alteraItemFornecedor}"
+                                update="dataTableCompraCotacaoDetalhe"/>
+
+                        <p:column headerText="Fornecedor" width="15%">
+                            <h:outputLabel
+                                    value="#{obj.compraFornecedorCotacao.fornecedor.pessoa.nome}"/>
+                        </p:column>
+                        <p:column headerText="Produto" width="25%">
+                            <h:outputLabel value="#{obj.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="Quantidade">
+                            <h:outputLabel value="#{obj.quantidade}">
+                                <f:convertNumber pattern="0.000"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Qtde Pedida">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.quantidadePedida}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.quantidadePedida}"
+                                                   decimalPlaces="2"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Vlr Unitario">
+                            <h:outputLabel value="#{obj.valorUnitario}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Desconto">
+                            <h:outputLabel value="#{obj.valorDesconto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Total">
+                            <h:outputLabel value="#{obj.valorTotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+            </p:tabView>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

@@ -242,7 +242,7 @@
                                                          value="ADICIONAR PRODUTO"
                                                          action="#{balcaoControll.addProduto}">
                                             <p:ajax process="@form"
-                                                    update="formCentro:tableProduto,formCentro:growl,formCentro:produto,formCentro:mostra-produto"
+                                                    update="formCentro:tableProduto,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido"
                                                     oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
                                         </h:commandButton>
 
@@ -280,6 +280,7 @@
                             <i class="fa fa-users"></i>
                         </div>
                     </div>
+                    <!--Inicio Produtos Selecionado -->
                     <div id="produtos-selecionados">
                         <div id="lista" class="table-responsive">
                             <h:dataTable var="row" value="#{balcaoControll.venda.listaVendaDetalhe}"
@@ -288,7 +289,9 @@
                                     <f:facet name="header">
                                         <h:outputText value="Qtd."/>
                                     </f:facet>
-                                    <h:outputText value="#{row.quantidade}"/>
+                                    <h:outputText value="#{row.quantidade}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
@@ -300,21 +303,31 @@
                                     <f:facet name="header">
                                         <h:outputText value="Desc."/>
                                     </f:facet>
-                                    <h:outputText value="#{row.valorDesconto}"/>
+                                    <h:outputText value="#{row.valorDesconto}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
                                 </h:column>
                                 <h:column>
                                     <f:facet name="header">
                                         <h:outputText value="Preço"/>
                                     </f:facet>
-                                    <h:outputText value="#{row.valorUnitario}"/>
+                                    <h:outputText value="#{row.valorUnitario}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
                                 </h:column>
                             </h:dataTable>
                         </div>
                         <h4>TOTAL DO PEDIDO</h4>
                         <div class="total-pedido">
-                            R$ 0,00
+                            <h:panelGroup layout="block" id="totalPedido">
+                                R$ #{balcaoControll.venda.valorTotalFormatado()}
+                            </h:panelGroup>
+
                         </div>
                     </div>
+
+                    <!-- Fim produtos Selecionados -->
+
                     <div class="row">
                         <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
                             <button id="aguardar" type="button" class="btn btn-warning btn-lg" onclick="aguardar();"

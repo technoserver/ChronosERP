@@ -7,12 +7,10 @@ import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by john on 16/08/17.
@@ -22,9 +20,11 @@ import java.util.Set;
 public class CompraCotacaoControll extends AbstractControll<CompraCotacao> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @Inject
     private Repository<Fornecedor> fornecedores;
+    @Inject
     private Repository<CompraRequisicaoDetalhe> requisicoes;
+    @Inject
     private Repository<CompraCotacaoDetalhe> cotacoes;
 
 
@@ -40,7 +40,9 @@ public class CompraCotacaoControll extends AbstractControll<CompraCotacao> imple
         getObjeto().setListaCompraFornecedorCotacao(new HashSet<>());
         getObjeto().setListaCompraReqCotacaoDetalhe(new HashSet<>());
         getObjeto().setSituacao("A");
+        getObjeto().setDataCotacao(new Date());
         listaCompraCotacaoDetalhe = new HashSet<>();
+
     }
 
     @Override

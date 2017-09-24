@@ -4,6 +4,7 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 
 @Entity
@@ -60,7 +61,7 @@ public class NfeDetalheImpostoPis implements Serializable {
     }
 
     public BigDecimal getValorBaseCalculoPis() {
-        return valorBaseCalculoPis;
+        return Optional.ofNullable(valorBaseCalculoPis).orElse(BigDecimal.ZERO);
     }
 
     public void setValorBaseCalculoPis(BigDecimal valorBaseCalculoPis) {
@@ -84,7 +85,7 @@ public class NfeDetalheImpostoPis implements Serializable {
     }
 
     public BigDecimal getValorPis() {
-        return valorPis;
+        return Optional.ofNullable(valorPis).orElse(BigDecimal.ZERO);
     }
 
     public void setValorPis(BigDecimal valorPis) {

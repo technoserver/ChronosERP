@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -65,7 +64,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
-        getObjeto().setListaVendaDetalhe(new HashSet<>());
+        getObjeto().setListaVendaDetalhe(new ArrayList<>());
         getObjeto().setDataVenda(new Date());
         getObjeto().setSituacao(SituacaoVenda.Digitacao.getCodigo());
         getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
@@ -182,7 +181,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         try {
             VendaOrcamentoCabecalho orcamento = (VendaOrcamentoCabecalho) event.getObject();
             VendaDetalhe itemVenda;
-            getObjeto().setListaVendaDetalhe(new HashSet<>());
+            getObjeto().setListaVendaDetalhe(new ArrayList<>());
             getObjeto().setVendaOrcamentoCabecalho(orcamentos.getEntityJoinFetch(orcamento.getId(), VendaOrcamentoCabecalho.class));
             for (VendaOrcamentoDetalhe d : getObjeto().getVendaOrcamentoCabecalho().getListaVendaOrcamentoDetalhe()) {
                 itemVenda = new VendaDetalhe();

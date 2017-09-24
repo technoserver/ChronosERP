@@ -40,9 +40,9 @@ public class CompraSugeridaControll extends AbstractControll<CompraPedido> imple
                 throw new Exception("Nenhum produto com estoque menor que o mínimo!");
             }
             if (tipoCompraSugerida.equals("Requisicao")) {
-                return "compraRequisicao.jsf?faces-redirect=true&compraSugerida=true";
+                return "compraRequisicao.xhtml?faces-redirect=true&compraSugerida=true";
             } else if (tipoCompraSugerida.equals("Pedido")) {
-                return "compraPedido.jsf?faces-redirect=true&compraSugerida=true";
+                return "compraPedido.xhtml?faces-redirect=true&compraSugerida=true";
             }
 
             return null;

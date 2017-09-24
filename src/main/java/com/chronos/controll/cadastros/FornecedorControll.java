@@ -14,6 +14,7 @@ import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -42,6 +43,12 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
 
     private String completo;
 
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        completo = "N";
+    }
 
     @Override
     public void doCreate() {
@@ -52,6 +59,7 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
 
         completo = "N";
     }
+
 
     @Override
     public void salvar() {

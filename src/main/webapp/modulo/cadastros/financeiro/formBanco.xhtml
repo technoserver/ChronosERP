@@ -42,14 +42,14 @@
         <h:panelGroup layout="block" rendered="#{not empty bancoControll.objeto}">
             <div class="row" >
                 <div class="col-xs-6 col-lg-6">
-                    <h:commandButton value="Salvar" class="btn btn-danger center-block"
+                    <h:commandButton value="Salvar" class="btn btn-primary center-block"
                                      rendered="#{empty bancoControll.objeto.id}"
                                      action="#{bancoControll.salvar()}"
 
                                      >
                         <p:ajax process="@form" update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem" />
                     </h:commandButton>
-                    <h:commandButton value="Salvar" class="btn btn-danger center-block"
+                    <h:commandButton value="Salvar" class="btn btn-primary center-block"
                                      rendered="#{not empty bancoControll.objeto.id}"
                                      actionListener="#{bancoControll.salvar()}"
 

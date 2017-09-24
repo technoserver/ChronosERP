@@ -58,6 +58,11 @@ public class CompraTipoRequisicao implements Serializable {
     public CompraTipoRequisicao() {
     }
 
+    public CompraTipoRequisicao(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

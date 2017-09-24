@@ -32,7 +32,7 @@ public class FornecedorService implements Serializable {
 
 
     @Transactional
-    public Fornecedor cadastrarFornecedor(NfeEmitente emitente,Empresa empresa) throws Exception {
+    public Fornecedor cadastrarFornecedor(NfeEmitente emitente, Empresa empresa) throws Exception {
 
         Pessoa pessoa = new Pessoa();
         pessoa.setListaPessoaContato(new HashSet<>());
@@ -40,11 +40,8 @@ public class FornecedorService implements Serializable {
         pessoa.setListaPessoaTelefone(new HashSet<>());
 
 
-
-
         PessoaEndereco end = new PessoaEndereco();
         Fornecedor fornecedor = new Fornecedor();
-
 
 
         end.setBairro(emitente.getBairro());
@@ -69,11 +66,20 @@ public class FornecedorService implements Serializable {
         pessoa.setListaEmpresa(new HashSet<>());
         pessoa.getListaEmpresa().add(empresa);
 
-        pessoa  = pessoa.getTipo().equals("F")?instanciaPessoaFisica(pessoa):instanciaPessoaJuridica(pessoa);
+        pessoa = pessoa.getTipo().equals("F") ? instanciaPessoaFisica(pessoa) : instanciaPessoaJuridica(pessoa);
 
         end.setPessoa(pessoa);
 
         pessoa = pessoas.atualizar(pessoa);
+
+
+        EmpresaPessoa empresaPessoa = new EmpresaPessoa();
+        empresaPessoa.setPessoa(pessoa);
+        empresaPessoa.setEmpresa(empresa);
+        empresaPessoa.setResponsavelLegal("N");
+        empresaPessoas.salvar(empresaPessoa);
+
+
         fornecedor.setPessoa(pessoa);
         fornecedor.setDataCadastro(new Date());
         fornecedor.setSituacaoForCli(new SituacaoForCli(1, "NORMAL", "SEM RESTRICAO"));
@@ -86,8 +92,6 @@ public class FornecedorService implements Serializable {
 
         return fornecedor;
     }
-
-
 
 
     private Pessoa instanciaPessoaFisica(Pessoa pessoa) {
@@ -111,6 +115,17 @@ public class FornecedorService implements Serializable {
         pj.setPessoa(pessoa);
         pj.setCnpj(cpfCnpj);
         return pessoa;
+    }
+
+
+    public boolean existeFornecedorByCpfCnj(String cpfCnpj) {
+        String atributo = cpfCnpj.length() > 11 ? "pessoa.pessoaJuridica.cnpj" : "pessoa.pessoaFisica.cpf";
+        return fornecedores.existeRegisro(Fornecedor.class, atributo, cpfCnpj);
+    }
+
+    public Fornecedor getFornecedor(String cpfCnpj) {
+        Fornecedor fornecedor = fornecedores.get(Fornecedor.class, "pessoa.pessoaJuridica.cnpj", cpfCnpj, new Object[]{"pessoa.nome"});
+        return fornecedor;
     }
 
 }

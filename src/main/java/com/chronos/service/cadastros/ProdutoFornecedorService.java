@@ -22,6 +22,7 @@ public class ProdutoFornecedorService implements Serializable {
     private Repository<Produto> produtos;
     @Inject
     private Repository<Fornecedor> fornecedores;
+    @Inject
     private Repository<FornecedorProduto> repository;
 
     @Transactional
@@ -43,5 +44,18 @@ public class ProdutoFornecedorService implements Serializable {
         }
         return repository.atualizar(forProd);
     }
+
+    public boolean existeProduto(String codigo) {
+        return repository.existeRegisro(FornecedorProduto.class, "codigoFornecedorProduto", codigo);
+    }
+
+
+    public Produto getProduto(String codigo) {
+        Produto produto = repository.get(FornecedorProduto.class, "codigoFornecedorProduto", codigo, new Object[]{"produto.id,produto.nome"}).getProduto();
+
+        return produto;
+    }
+
+
 
 }

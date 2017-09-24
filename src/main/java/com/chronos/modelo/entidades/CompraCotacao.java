@@ -31,7 +31,6 @@ package com.chronos.modelo.entidades;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -49,7 +48,6 @@ public class CompraCotacao implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_COTACAO")
     private Date dataCotacao;
-    @NotNull
     @NotBlank
     @Column(name = "DESCRICAO")
     private String descricao;

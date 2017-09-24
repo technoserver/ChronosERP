@@ -44,17 +44,23 @@ public class Seguranca {
     }
 
     public String getFotoFuncionario() {
+        String foto = "";
         usuario = getUsuarioLogado();
-        empresa = getEmpresaUsuario(getUsuarioLogado().getUsuario());
-        String foto = ArquivoUtil.getInstance().getFotoFuncionario(empresa.getCnpj(), usuario.getUsuario().getColaborador().getPessoa().getPessoaFisica().getCpf());
+        if (usuario != null) {
+            empresa = getEmpresaUsuario(getUsuarioLogado().getUsuario());
+            foto = ArquivoUtil.getInstance().getFotoFuncionario(empresa.getCnpj(), usuario.getUsuario().getColaborador().getPessoa().getPessoaFisica().getCpf());
+        }
+
 
         return new File(foto).exists() ? foto : null;
     }
 
     public String getNomeEmpresa() {
         usuario = getUsuarioLogado();
-        empresa = getEmpresaUsuario(getUsuarioLogado().getUsuario());
-        return empresa.getRazaoSocial();
+        String nomeEmpresa;
+        nomeEmpresa = usuario != null ? getEmpresaUsuario(usuario.getUsuario()).getRazaoSocial() : "";
+
+        return nomeEmpresa;
     }
 
     @Produces
@@ -73,10 +79,11 @@ public class Seguranca {
 
     public Empresa getEmpresaUsuario(Usuario usuario) {
         empresa = null;
-
-        usuario.getColaborador().getPessoa().getListaEmpresa().stream().forEach((e) -> {
-            empresa = e;
-        });
+        if (usuario != null) {
+            usuario.getColaborador().getPessoa().getListaEmpresa().stream().forEach((e) -> {
+                empresa = e;
+            });
+        }
         return empresa;
     }
 

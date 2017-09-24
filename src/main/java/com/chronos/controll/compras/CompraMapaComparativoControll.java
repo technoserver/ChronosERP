@@ -32,6 +32,7 @@ public class CompraMapaComparativoControll extends AbstractControll<CompraCotaca
     private Repository<CompraTipoPedido> tipos;
     @Inject
     private Repository<CompraPedido> pedidos;
+    @Inject
     private Repository<CompraCotacaoPedidoDetalhe> compraCotacaoPedidoDetalheDao;
 
     private List<CompraCotacaoDetalhe> listaCompraCotacaoDetalhe;
@@ -41,7 +42,8 @@ public class CompraMapaComparativoControll extends AbstractControll<CompraCotaca
 
         try {
             super.doEdit();
-
+            CompraCotacao cotacao = dataModel.getRowData(getObjeto().getId().toString());
+            setObjeto(cotacao);
             buscaListaCompraCotacaoDetalhe();
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +53,7 @@ public class CompraMapaComparativoControll extends AbstractControll<CompraCotaca
     }
 
     private void buscaListaCompraCotacaoDetalhe() throws Exception {
-        super.doEdit();
+
 
         listaCompraCotacaoDetalhe = cotacoes.getEntitys(CompraCotacaoDetalhe.class, "compraFornecedorCotacao.compraCotacao", getObjeto());
     }

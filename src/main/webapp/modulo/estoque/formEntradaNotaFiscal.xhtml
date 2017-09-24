@@ -13,6 +13,7 @@
 
         <h:commandLink title="Importar NF-e" class="btn btn-default"
                        type="button"
+                       id="btnBuscarXml"
                        rendered="#{empty nfeDevolucaoControll.nfe.id}">
             <i class="glyphicon glyphicon-import"/>
             <p:ajax  update=":formUploadArquivo:dialogUploadArquivo" oncomplete="PF('dialogUploadArquivo').show()" />
@@ -159,7 +160,9 @@
         <p:tab title="Produtos/Serviços">
             <div class="row">
                 <div class="col-lg-12">
-                    <h:commandLink title="Novo" class="btn btn-default margem-bottom-10"
+                    <h:commandLink title="Novo"
+                                   id="btnNovoProduto"
+                                   class="btn btn-default margem-bottom-10"
                                    action="#{entradaNotaFiscalControll.incluiProduto()}"
                                    type="button">
                         <i class="glyphicon glyphicon-plus"/>
@@ -204,7 +207,8 @@
                     </h:outputLabel>
                 </p:column>
                 <p:column headerText="Ações" width="200" rendered="#{empty entradaNotaFiscalControll.objeto.id}">
-                    <p:commandLink process="dataTableNfeDetalhe" title="Alterar"   style="margin-right: 4px"
+                    <p:commandLink process="dataTableNfeDetalhe" title="Alterar" style="margin-right: 4px"
+                                   id="btnAlterarProduto"
                                    oncomplete="PF('dialogNfeDetalhe').show()" styleClass="btn btn-default"
                                    action="#{entradaNotaFiscalControll.alteraProduto}"
                                    update=":formOutrasTelas:panelNfeDetalhe" >
@@ -213,8 +217,9 @@
                     </p:commandLink>
                     &nbsp;
                     <p:commandLink process="dataTableNfeDetalhe" title="Excluir" styleClass="btn btn-default"
+                                   id="btnExcluirProduto"
                                    action="#{entradaNotaFiscalControll.excluirProduto}"
-                                   update="dataTableNfeDetalhe,:formCentro:tabNfe:outputPanelTotais">
+                                   update="dataTableNfeDetalhe,formCentro:telaDetalhe:tabNfe:outputPanelTotais">
                         <i class="fa fa-close"/>
                         <p:confirm header="Confirmação" message="Confirma Exclusão?"
                                    icon="ui-icon-alert" />
@@ -222,6 +227,7 @@
                     </p:commandLink>
                     &nbsp;
                     <p:commandLink process="dataTableNfeDetalhe" title="Vincular Produto"
+                                   id="btnVincularProduto"
                                    oncomplete="PF('dialogVincularProduto').show()" styleClass="btn btn-default"
                                    action="#{entradaNotaFiscalControll.exibirVinculoProduto()}"
                                    update=":formOutrasTelas5:panelVincularProduto"
@@ -231,6 +237,7 @@
                     </p:commandLink>
                     &nbsp;
                     <p:commandLink process="dataTableNfeDetalhe" title="Cadastrar Produto"
+                                   id="btnCadastraProduto"
                                    oncomplete="PF('dialogCadastrarProduto').show()" styleClass="btn btn-default"
                                    action="#{entradaNotaFiscalControll.cadastrarProduto()}"
                                    update=":formOutrasTelas3:panelCadastrarProduto"
@@ -247,6 +254,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h:commandLink title="Novo" class="btn btn-default margem-bottom-10"
+                                   id="btnNovaDuplicata"
                                    action="#{entradaNotaFiscalControll.incluirDuplicata()}"
                                    type="button">
                         <i class="glyphicon glyphicon-plus"/>
@@ -277,8 +285,9 @@
                 </p:column>
                 <p:column headerText="Ações" rendered="#{empty entradaNotaFiscalControll.objeto.id}">
                     <p:commandLink process="dataTableDuplicata" title="Excluir" styleClass="btn btn-default"
+                                   id="btnExcluirDuplicata"
                                    action="#{entradaNotaFiscalControll.excluirProduto}"
-                                   update="dataTableDuplicata,:formCentro:tabNfe:outputPanelTotais">
+                                   update="dataTableDuplicata,formCentro:telaDetalhe:tabNfe:outputPanelTotais">
                         <i class="fa fa-close"/>
                         <p:confirm header="Confirmação" message="Confirma Exclusão?"
                                    icon="ui-icon-alert" />

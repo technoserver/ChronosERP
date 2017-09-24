@@ -53,6 +53,11 @@ public class CompraTipoPedido implements Serializable {
     public CompraTipoPedido() {
     }
 
+    public CompraTipoPedido(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

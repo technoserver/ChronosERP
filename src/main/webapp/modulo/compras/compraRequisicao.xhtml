@@ -1,0 +1,220 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Requisicao
+    </ui:define>
+
+    <ui:define name="tela">
+        #{compraRequisicaoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Requisicao
+    </ui:define>
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="compraSugerida" value="#{compraRequisicaoControll.parametroCompraSugerida}"/>
+            <f:viewAction action="#{compraRequisicaoControll.carregaCompraSugerida()}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{compraRequisicaoControll}"
+                       idDataTable="dataTableCompraRequisicao"
+                       nomeFuncao="Requisicao"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Código" width="5%">
+                <h:outputLabel value="#{row.id}"/>
+            </p:column>
+            <p:column headerText="Data Requisicao">
+                <h:outputLabel value="#{row.dataRequisicao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Tipo Requisicao">
+                <h:outputLabel value="#{row.compraTipoRequisicao.nome}"/>
+            </p:column>
+            <p:column headerText="Colaborador">
+                <h:outputLabel value="#{row.colaborador.pessoa.nome}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{compraRequisicaoControll}"
+                                   nomeFuncao="Requisicao"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+                <erp:autoComplete id="colaborador"
+                                  styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Colaborador"
+                                  itemLabel="#{objeto.pessoa.nome}"
+                                  controller="#{compraRequisicaoControll}"
+                                  completeMethod="getListaColaborador"
+                                  nomeAtributo="#{compraRequisicaoControll.objeto.colaborador}"
+                                  idComponente="compraRequisicaoColaborador"/>
+
+
+                <erp:campoSelectConverter id="tipoRequisicao"
+                                          label="Tipo Requisicao"
+                                          labelItens="#{obj.nome}"
+                                          itens="#{compraRequisicaoControll.tipoRquisicoes}"
+                                          idComponente="compraRequisicaoCompraTipoRequisicao"
+                                          nomeAtributo="#{compraRequisicaoControll.objeto.compraTipoRequisicao}"
+                                          styleClass="col-xs-12 col-sm-4 col-md-4"/>
+
+
+                <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-2"
+                               idComponente="compraRequisicaoDataRequisicao"
+                               label="Data Requisicao"
+                               nomeAtributo="#{compraRequisicaoControll.objeto.dataRequisicao}"
+                               somenteLeitura="true"/>
+
+            </div>
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="compraRequisicaoObservacao" label="Observacao"
+                                    nomeAtributo="#{compraRequisicaoControll.objeto.observacao}"/>
+            </div>
+            <erp:separador label="Itens"/>
+            <div class="row">
+                <div class="col-md-12">
+                    <h:commandLink title="Novo" class="btn btn-default"
+                                   actionListener="#{compraRequisicaoControll.incluirItemRequisicao()}"
+                                   type="button" id="btnIcluirIcmsCustom"
+                                   rendered="#{not empty compraRequisicaoControll.objeto.id}">
+                        <i class="glyphicon glyphicon-plus"/>
+                        <p:ajax update=":formOutrasTelas:panelCompraRequisicaoDetalhe,dataTableCompraRequisicaoDetalhe"
+                                oncomplete="PF('dialogCompraRequisicaoDetalhe').show()"
+                                process="@this,dataTableCompraRequisicaoDetalhe"/>
+                    </h:commandLink>
+                </div>
+            </div>
+            <p:dataTable id="dataTableCompraRequisicaoDetalhe" var="obj"
+                         value="#{compraRequisicaoControll.objeto.listaCompraRequisicaoDetalhe}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         resizableColumns="true" paginatorPosition="bottom" reflow="true"
+                         rowKey="#{obj.id}" styleClass="t2ti-campo-100">
+
+
+                <p:column headerText="Produto">
+                    <h:outputLabel value="#{obj.produto.nome}"/>
+                </p:column>
+                <p:column headerText="Quantidade" class="coluna-quantidade" width="150">
+                    <h:outputLabel value="#{obj.quantidade}"/>
+                </p:column>
+                <p:column headerText="Quantidade Cotada" class="coluna-quantidade" width="200">
+                    <h:outputLabel value="#{obj.quantidadeCotada}"/>
+                </p:column>
+                <p:column headerText="Item Cotado" width="120">
+                    <h:outputLabel
+                            value="#{compraRequisicaoControll.keyFromValue(compraRequisicaoControll.simNao, obj.itemCotado)}"/>
+                </p:column>
+                <p:column headerText="Ações" width="110">
+                    <p:commandLink title="Alterar" id="btnAlterarIcmsCustom"
+                                   action="#{compraRequisicaoControll.alterarItemRequisicao()}"
+                                   class=" btn btn-default"
+                                   oncomplete="PF('dialogCompraRequisicaoDetalhe').show()"
+                                   update=":formOutrasTelas:panelCompraRequisicaoDetalhe,dataTableCompraRequisicaoDetalhe"
+                                   process="dataTableCompraRequisicaoDetalhe">
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{compraRequisicaoControll.detalheSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir"
+                                   id="btnExcluitIcmsCustom"
+                                   action="#{compraRequisicaoControll.excluirItemRequisicao()}"
+                                   update="dataTableCompraRequisicaoDetalhe"
+                                   process="dataTableCompraRequisicaoDetalhe"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default"
+                    >
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{compraRequisicaoControll.detalheSelecionado}"/>
+                    </p:commandLink>
+
+                </p:column>
+            </p:dataTable>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogCompraRequisicaoDetalhe"
+                      header="Inclusão/Alteração de Item"
+                      widgetVar="dialogCompraRequisicaoDetalhe" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false" width="800">
+
+                <p:outputPanel id="panelCompraRequisicaoDetalhe">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-8 col-md-8"
+                                          label="Produto"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{compraRequisicaoControll}"
+                                          completeMethod="getListaProduto"
+                                          nomeAtributo="#{compraRequisicaoControll.compraRequisicaoDetalhe.produto}"
+                                          idComponente="compraRequisicaoDetalheProduto"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                          idComponente="compraRequisicaoDetalheQuantidade"
+                                          label="Quantidade"
+                                          nomeAtributo="#{compraRequisicaoControll.compraRequisicaoDetalhe.quantidade}"
+                                          requerido="true"/>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarProduto"
+                                             actionListener="#{compraRequisicaoControll.salvarItemRequisicao()}"
+                                             class="btn btn-primary center-block">
+                                <p:ajax
+                                        update=":formOutrasTelas:panelCompraRequisicaoDetalhe,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogCompraRequisicaoDetalhe').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             id="btnCancelar"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogCompraRequisicaoDetalhe').hide();"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

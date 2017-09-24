@@ -1,0 +1,265 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Cotacao
+    </ui:define>
+
+    <ui:define name="tela">
+        #{compraCotacaoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Cotacao
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{compraCotacaoControll}"
+                       idDataTable="dataTableCompraCotacao"
+                       nomeFuncao="Cotacao"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Data Cotacao">
+                <h:outputLabel value="#{row.dataCotacao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+            <p:column headerText="Situacao">
+                <h:outputLabel
+                        value="#{compraCotacaoControll.keyFromValue(compraCotacaoControll.compraSituacaoCotacao, row.situacao)}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{compraCotacaoControll}"
+                                   nomeFuncao="Cotacao"
+                                   id="telaDetalhe"
+        >
+
+            <p:tabView id="tabviewCompraCotacao" style="border: 0px;">
+                <p:tab title="Dados Principais">
+                    <p:outputPanel
+                            rendered="#{not empty compraCotacaoControll.objeto}">
+                        <div class="row">
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                            idComponente="compraCotacaoDescricao" label="Descricao"
+                                            nomeAtributo="#{compraCotacaoControll.objeto.descricao}"
+                                            tamanhoMaximo="100" requerido="true"/>
+                            <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                           idComponente="compraCotacaoDataCotacao" label="Data Cotacao"
+                                           nomeAtributo="#{compraCotacaoControll.objeto.dataCotacao}"
+                                           requerido="true"/>
+
+                            <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                             idComponente="compraCotacaoSituacao" label="Situacao"
+                                             nomeAtributo="#{compraCotacaoControll.objeto.situacao}"
+                                             itens="#{compraCotacaoControll.compraSituacaoCotacao}"
+                                             desabilitado="true"/>
+                        </div>
+
+                    </p:outputPanel>
+                </p:tab>
+
+                <p:tab title="Fornecedores">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h:commandLink title="Novo" class="btn btn-default"
+                                           actionListener="#{compraCotacaoControll.incluirFornecedor()}"
+                                           type="button" id="btnIcluirFornecedor"
+                            >
+                                <i class="glyphicon glyphicon-plus"/>
+                                <p:ajax update=":formOutrasTelas:dialogCompraFornecedorCotacao,dataTableCompraFornecedorCotacao"
+                                        oncomplete="PF('dialogCompraFornecedorCotacao').show()"
+                                        process="@this,dataTableCompraFornecedorCotacao"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+
+                    <p:dataTable id="dataTableCompraFornecedorCotacao" var="obj"
+                                 value="#{compraCotacaoControll.objeto.listaCompraFornecedorCotacao}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 paginatorPosition="bottom" reflow="true"
+                                 resizableColumns="true">
+                        <p:column headerText="Fornecedor">
+                            <h:outputLabel value="#{obj.fornecedor.pessoa.nome}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+
+                <p:tab title="Itens">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h:commandLink title="Novo" class="btn btn-default"
+                                           actionListener="#{compraCotacaoControll.incluirItem()}"
+                                           type="button" id="btnIcluirItem"
+                            >
+                                <i class="glyphicon glyphicon-plus"/>
+                                <p:ajax update=":formOutrasTelas2:dialogCompraCotacaoDetalhe,dataTableCompraCotacaoDetalhe"
+                                        oncomplete="PF('dialogCompraCotacaoDetalhe').show()"
+                                        process="@this,dataTableCompraCotacaoDetalhe"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+
+
+                    <p:dataTable id="dataTableCompraCotacaoDetalhe" var="obj"
+                                 value="#{compraCotacaoControll.listaCompraCotacaoDetalhe}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 resizableColumns="true" reflow="true" paginatorPosition="bottom">
+
+                        <p:column headerText="Produto" width="80%">
+                            <h:outputLabel value="#{obj.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="Quantidade">
+                            <h:outputLabel value="#{obj.quantidade}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogCompraFornecedorCotacao" responsive="true"
+                      header="Inclusão/Alteração de Fornecedor"
+                      widgetVar="dialogCompraFornecedorCotacao" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+
+                <p:outputPanel id="panelCompraFornecedorCotacao">
+
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
+                                          label="Fornecedor"
+                                          itemLabel="#{objeto.pessoa.nome}"
+                                          controller="#{compraCotacaoControll}"
+                                          completeMethod="getListaFornecedor"
+                                          nomeAtributo="#{compraCotacaoControll.compraFornecedorCotacao.fornecedor}"
+                                          idComponente="compraFornecedorCotacaoFornecedor"/>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarFornecedor"
+                                             actionListener="#{compraCotacaoControll.salvarFornecedor()}"
+                                             class="btn btn-primary center-block">
+                                <p:ajax
+                                        update=":formOutrasTelas:panelCompraFornecedorCotacao,:formCentro:growl,:formCentro:telaDetalhe:tabviewCompraCotacao:dataTableCompraFornecedorCotacao"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogCompraFornecedorCotacao').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             id="btnCancelar"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogCompraFornecedorCotacao').hide();"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+
+            <p:dialog id="dialogCompraCotacaoDetalhe"
+                      header="Inclusão/Alteração de Item" responsive="true"
+                      widgetVar="dialogCompraCotacaoDetalhe" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+
+                <p:outputPanel id="panelCompraCotacaoDetalhe">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-9 col-md-9"
+                                          label="Produto"
+                                          itemLabel="#{objeto.produto.nome}"
+                                          controller="#{compraCotacaoControll}"
+                                          completeMethod="getListaItensRequisicao"
+                                          nomeAtributo="#{compraCotacaoControll.compraRequisicaoDetalhe}"
+                                          idComponente="compraCotacaoDetalheItem">
+
+                            <p:column headerText="Requisicao">
+                                <p:outputLabel value="#{objeto.compraRequisicao.id}"/>
+                            </p:column>
+                            <p:column headerText="Produto">
+                                <p:outputLabel value="#{objeto.produto.nome}"/>
+                            </p:column>
+                            <p:column headerText="Quantidade">
+                                <p:outputLabel value="#{objeto.quantidade}">
+                                    <f:convertNumber pattern="#,##0.000"/>
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:ajax event="itemSelecionado"
+                                    listener="#{compraCotacaoControll.onSelecionaProduto}"
+                                    update=":formOutrasTelas2:panelCompraCotacaoDetalhe"/>
+
+                        </erp:autoComplete>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="compraCotacaoDetalheQuantidade" label="Quantidade"
+                                          nomeAtributo="#{compraCotacaoControll.compraCotacaoDetalhe.quantidade}"
+                                          requerido="true"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarItem"
+                                             actionListener="#{compraCotacaoControll.salvarItem()}"
+                                             class="btn btn-primary center-block">
+                                <p:ajax
+                                        update=":formOutrasTelas2:panelCompraCotacaoDetalhe,:formCentro:growl,:formCentro:telaDetalhe:tabviewCompraCotacao:dataTableCompraCotacaoDetalhe"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogCompraCotacaoDetalhe').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             id="btnCancelarItem"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogCompraCotacaoDetalhe').hide();"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

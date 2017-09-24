@@ -6,7 +6,6 @@ import com.chronos.modelo.entidades.enuns.TipoFrete;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.UsuarioService;
-import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
@@ -19,8 +18,9 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 /**
  * Created by john on 19/09/17.
@@ -66,7 +66,7 @@ public class BalcaoControll implements Serializable {
         usuario = userService.getUsuarioLogado();
         venda = new VendaCabecalho();
         venda.setEmpresa(empresa);
-        venda.setListaVendaDetalhe(new HashSet<>());
+        venda.setListaVendaDetalhe(new ArrayList<>());
         venda.setDataVenda(new Date());
         venda.setSituacao(SituacaoVenda.Digitacao.getCodigo());
         venda.setTipoFrete(TipoFrete.CIF.getCodigo());
@@ -103,7 +103,6 @@ public class BalcaoControll implements Serializable {
         item.setTaxaComissao(vendedor.getComissao());
         item.setTaxaDesconto(BigDecimal.ZERO);
         item.setValorDesconto(BigDecimal.ZERO);
-
     }
 
     public void calcularDesconto() {
@@ -123,30 +122,38 @@ public class BalcaoControll implements Serializable {
     }
 
     public void addProduto() {
-        if (item.getId() == null) {
-            venda.getListaVendaDetalhe().stream()
-                    .filter(p -> p.getProduto().getId() == item.getProduto().getId())
-                    .forEach(item -> {
-                        item.setQuantidade(item.getQuantidade());
-                        item.setValorUnitario(item.getValorUnitario());
-                        item.setTaxaDesconto(item.getTaxaDesconto());
-                    });
-            boolean encontrou = venda.getListaVendaDetalhe().stream()
-                    .filter(p -> p.getProduto().getId() == item.getProduto().getId())
-                    .findFirst().isPresent();
-            if (!encontrou) {
-                venda.getListaVendaDetalhe().add(item);
-            }
+        Optional<VendaDetalhe> itemOpt = getItemVenda(item.getProduto());
+        BigDecimal quantidade = item.getQuantidade();
+        if (itemOpt.isPresent()) {
+            item = itemOpt.get();
+            item.setQuantidade(quantidade);
+        } else {
+            venda.getListaVendaDetalhe().add(0, item);
+        }
 
+        venda.calcularValorTotal();
+        item = new VendaDetalhe();
+        produto = new EmpresaProduto();
+
+    }
+
+    public void alterarQuantidade(Produto produto, BigDecimal quantidade) {
+        Optional<VendaDetalhe> itemOpt = getItemVenda(produto);
+        if (itemOpt.isPresent()) {
+            itemOpt.get().setQuantidade(quantidade);
         }
-        try {
-            venda.calcularValorTotal();
-            item = new VendaDetalhe();
-            produto = new EmpresaProduto();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", e);
-        }
+    }
+
+    public void excluir(Produto produto) {
+
+        int indice = IntStream.range(0, venda.getListaVendaDetalhe().size()).filter(i -> venda.getListaVendaDetalhe().get(i).getProduto().equals(produto)).findAny()
+                .getAsInt();
+        venda.getListaVendaDetalhe().remove(indice);
+    }
+
+    private Optional<VendaDetalhe> getItemVenda(Produto produto) {
+        return venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().equals(produto)).findAny();
+
     }
 
 

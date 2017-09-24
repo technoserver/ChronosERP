@@ -1,0 +1,398 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core"
+>
+
+    <ui:define name="title">
+        Pedido de Compra
+    </ui:define>
+
+    <ui:define name="tela">
+        #{compraPedidoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Pedido
+    </ui:define>
+
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="compraSugerida" value="#{compraPedidoControll.parametroCompraSugerida}"/>
+            <f:viewAction action="#{compraPedidoControll.carregaCompraSugerida()}"/>
+        </f:metadata>
+    </ui:define>
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{compraPedidoControll}"
+                       idDataTable="dataTableCompraPedido"
+                       nomeFuncao="Pedido de Compra"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Tipo Pedido">
+                <h:outputLabel value="#{row.compraTipoPedido.nome}"/>
+            </p:column>
+            <p:column headerText="Fornecedor">
+                <h:outputLabel value="#{row.fornecedor.pessoa.nome}"/>
+            </p:column>
+            <p:column headerText="Data Pedido">
+                <h:outputLabel value="#{row.dataPedido}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Previsao Entrega">
+                <h:outputLabel value="#{row.dataPrevistaEntrega}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Valor Total" class="coluna-monetaria">
+                <h:outputLabel value="#{row.valorTotalPedido}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{compraPedidoControll}"
+                                   nomeFuncao="Pedido de Compra"
+                                   id="telaDetalhe"
+        >
+
+
+            <p:tabView id="tabviewCompraPedido" style="border: 0px;"
+                       rendered="#{not empty compraPedidoControll.objeto}">
+                <p:tab title="Dados Principais">
+                    <p:outputPanel>
+                        <h:panelGroup layout="block" id="panelFornecedor" class="row">
+                            <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-6"
+                                              label="Fornecedor"
+                                              itemLabel="#{objeto.pessoa.nome}"
+                                              controller="#{compraPedidoControll}"
+                                              completeMethod="getListaFornecedor"
+                                              nomeAtributo="#{compraPedidoControll.objeto.fornecedor}"
+                                              idComponente="compraPedidoFornecedor">
+
+                                <p:ajax event="itemSelecionado"
+                                        update="formCentro:telaDetalhe:tabviewCompraPedido:panelFornecedor,:formCentro:telaDetalhe:tabviewCompraPedido:previsaoEntrega:compraPedidoDataPrevistaEntrega"
+                                        listener="#{compraPedidoControll.selecionarFornecedor}"/>
+                            </erp:autoComplete>
+
+                            <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoQuantidadeParcelas"
+                                              label="Quantidade Parcelas"
+                                              nomeAtributo="#{compraPedidoControll.objeto.quantidadeParcelas}"/>
+                            <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoDiasPrimeiroVencimento"
+                                              label="Dias Primeiro Vencimento"
+                                              nomeAtributo="#{compraPedidoControll.objeto.diasPrimeiroVencimento}"/>
+                            <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoDiasIntervalo" label="Dias Intervalo"
+                                              nomeAtributo="#{compraPedidoControll.objeto.diasIntervalo}"/>
+                        </h:panelGroup>
+                        <div class="row">
+                            <erp:campoSelectConverter id="tipos"
+                                                      label="Tipo Pedido"
+                                                      styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                      labelItens="#{obj.nome}"
+                                                      nomeAtributo="#{compraPedidoControll.objeto.compraTipoPedido}"
+                                                      idComponente="compraPedidoCompraTipoPedido"
+                                                      itens="#{compraPedidoControll.tiposPedido}"/>
+                            <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                           idComponente="compraPedidoDataPedido" label="Data Pedido"
+                                           nomeAtributo="#{compraPedidoControll.objeto.dataPedido}"/>
+
+                            <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                           id="previsaoEntrega"
+                                           idComponente="compraPedidoDataPrevistaEntrega"
+                                           label="Previsao Entrega"
+                                           nomeAtributo="#{compraPedidoControll.objeto.dataPrevistaEntrega}"/>
+                            <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                           idComponente="compraPedidoDataPrevisaoPagamento"
+                                           label="Previsao Pagamento"
+                                           nomeAtributo="#{compraPedidoControll.objeto.dataPrevisaoPagamento}"/>
+                            <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                             idComponente="compraPedidoFormaPagamento"
+                                             label="Forma Pagamento"
+                                             nomeAtributo="#{compraPedidoControll.objeto.formaPagamento}"
+                                             itens="#{compraPedidoControll.compraFormaPagamento}"/>
+                            <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                             idComponente="compraPedidoTipoFrete" label="Tipo Frete"
+                                             nomeAtributo="#{compraPedidoControll.objeto.tipoFrete}"
+                                             itens="#{compraPedidoControll.compraTipoFrete}"/>
+
+                        </div>
+                        <div class="row">
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                            idComponente="compraPedidoLocalEntrega" label="Local Entrega"
+                                            nomeAtributo="#{compraPedidoControll.objeto.localEntrega}"
+                                            tamanhoMaximo="100"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                            idComponente="compraPedidoLocalCobranca" label="Local Cobranca"
+                                            nomeAtributo="#{compraPedidoControll.objeto.localCobranca}"
+                                            tamanhoMaximo="100"/>
+                        </div>
+                        <div class="row">
+
+
+                        </div>
+                        <div class="row">
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            idComponente="compraPedidoContato" label="Contato"
+                                            nomeAtributo="#{compraPedidoControll.objeto.contato}"
+                                            tamanhoMaximo="30"/>
+                        </div>
+                        <erp:separador label="Totais do Pedido"/>
+                        <div class="row">
+
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorSubtotal" label="Subtotal"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorSubtotal}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoTaxaDesconto" label="Taxa Desconto"
+                                              nomeAtributo="#{compraPedidoControll.objeto.taxaDesconto}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorDesconto" label="Valor Desconto"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorDesconto}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorTotalPedido"
+                                              label="Valor Total Pedido"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorTotalPedido}"/>
+                        </div>
+                        <erp:separador label="Totais NF"/>
+                        <div class="row">
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoBaseCalculoIcms"
+                                              label="Base Calculo Icms"
+                                              nomeAtributo="#{compraPedidoControll.objeto.baseCalculoIcms}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorIcms" label="Valor Icms"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorIcms}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoBaseCalculoIcmsSt"
+                                              label="Base Calculo Icms St"
+                                              nomeAtributo="#{compraPedidoControll.objeto.baseCalculoIcmsSt}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorIcmsSt" label="Valor Icms St"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorIcmsSt}"/>
+                        </div>
+                        <div class="row">
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorIpi" label="Valor Ipi"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorIpi}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorTotalProdutos"
+                                              label="Total Produtos"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorTotalProdutos}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorFrete" label="Frete"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorFrete}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorOutrasDespesas"
+                                              label="Outras Despesas"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorOutrasDespesas}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorSeguro" label="Seguro"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorSeguro}"/>
+
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="compraPedidoValorTotalNf" label="Valor Total NF"
+                                              nomeAtributo="#{compraPedidoControll.objeto.valorTotalNf}"/>
+
+                        </div>
+
+                    </p:outputPanel>
+                </p:tab>
+
+                <p:tab title="Itens"
+                       disabled="#{empty compraPedidoControll.objeto.id}">
+                    <p:outputPanel>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h:commandLink title="Novo" class="btn btn-default"
+                                               actionListener="#{compraPedidoControll.incluirItem}"
+                                               type="button" id="btnIcluirIcmsCustom"
+                                               rendered="#{not empty compraPedidoControll.objeto.id}">
+                                    <i class="glyphicon glyphicon-plus"/>
+                                    <p:ajax update=":formOutrasTelas:panelPedidoDetalhe,dataTableCompraPedidoDetalhe"
+                                            oncomplete="PF('dialogPedidoDetalhe').show()"
+                                            process="@this,dataTableCompraPedidoDetalhe"/>
+                                </h:commandLink>
+                            </div>
+                        </div>
+                        <p:dataTable id="dataTableCompraPedidoDetalhe" var="obj"
+                                     value="#{compraPedidoControll.objeto.listaCompraPedidoDetalhe}"
+                                     paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                     resizableColumns="true"
+                                     rowKey="#{obj.id}" paginatorPosition="bottom" reflow="true">
+
+                            <p:column headerText="Produto" width="30%">
+                                <h:outputLabel value="#{obj.produto.nome}"/>
+                            </p:column>
+                            <p:column headerText="Quantidade">
+                                <h:outputLabel value="#{obj.quantidade}">
+                                    <f:convertNumber pattern="#,##0.000"/>
+                                </h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Valor Unitario">
+                                <h:outputLabel value="#{obj.valorUnitario}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Valor Desconto">
+                                <h:outputLabel value="#{obj.valorDesconto}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Valor Total">
+                                <h:outputLabel value="#{obj.valorTotal}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Ações" width="110" style="text-align: center">
+                                <p:commandLink title="Alterar" id="btnAlterarIcmsCustom"
+                                               action="#{compraPedidoControll.alterarItem}"
+                                               class=" btn btn-default"
+                                               oncomplete="PF('dialogPedidoDetalhe').show()"
+                                               update=":formOutrasTelas:panelPedidoDetalhe,dataTableCompraPedidoDetalhe"
+                                               process="dataTableCompraPedidoDetalhe">
+                                    <i class="fa fa-file-text-o"></i>
+                                    <f:setPropertyActionListener value="#{obj}"
+                                                                 target="#{compraPedidoControll.compraPedidoDetalheSelecionado}"/>
+                                </p:commandLink>
+                                &nbsp;
+                                <p:commandLink title="Excluir"
+                                               id="btnExcluitIcmsCustom"
+                                               action="#{compraPedidoControll.excluirItem}"
+                                               update="dataTableCompraPedidoDetalhe"
+                                               process="dataTableCompraPedidoDetalhe"
+                                               oncomplete="atualizarMsg();"
+                                               class="btn btn-default"
+                                >
+                                    <i class="fa fa-times"></i>
+                                    <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                    <f:setPropertyActionListener value="#{obj}"
+                                                                 target="#{compraPedidoControll.compraPedidoDetalheSelecionado}"/>
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </p:outputPanel>
+
+                </p:tab>
+
+            </p:tabView>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogPedidoDetalhe"
+                      header="Inclusão/Alteração de item" widgetVar="dialogPedidoDetalhe"
+                      showEffect="slide" hideEffect="slide" resizable="true" modal="true"
+                      closable="false" width="800" responsive="true">
+
+                <p:outputPanel id="panelPedidoDetalhe">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
+                                          label="Produto"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{compraPedidoControll}"
+                                          completeMethod="getListaProduto"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.produto}"
+                                          idComponente="compraPedidoDetalheProduto"/>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          requerido="true"
+                                          idComponente="compraPedidoDetalheQuantidade" label="Quantidade"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.quantidade}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="compraPedidoDetalheValorUnitario"
+                                          label="Valor Unitario" requerido="true"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.valorUnitario}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="compraPedidoDetalheValorDesconto"
+                                          label="Desconto"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.valorDesconto}"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                        idComponente="compraPedidoDetalheCstCsosn" label="Cst Csosn"
+                                        nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.cstCsosn}"
+                                        tamanhoMaximo="3"/>
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="compraPedidoDetalheCfop" label="Cfop"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.cfop}"/>
+                    </div>
+
+
+                    <div class="row">
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="compraPedidoDetalheBaseCalculoIcms"
+                                          label="Base Calculo Icms" somenteLeitura="true"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.baseCalculoIcms}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="compraPedidoDetalheValorIcms" label="Valor Icms"
+                                          somenteLeitura="true"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.valorIcms}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="compraPedidoDetalheValorIpi" label="Valor Ipi"
+                                          somenteLeitura="true"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.valorIpi}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="compraPedidoDetalheAliquotaIcms"
+                                          label="Aliquota Icms"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.aliquotaIcms}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="compraPedidoDetalheAliquotaIpi" label="Aliquota Ipi"
+                                          nomeAtributo="#{compraPedidoControll.compraPedidoDetalhe.aliquotaIpi}"/>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarProduto"
+                                             actionListener="#{compraPedidoControll.salvarItem}"
+                                             class="btn btn-primary center-block">
+                                <p:ajax
+                                        update=":formOutrasTelas:panelPedidoDetalhe,:formCentro:growl,:formCentro:telaDetalhe:tabviewCompraPedido:dataTableCompraPedidoDetalhe"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogPedidoDetalhe').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             id="btnCancelar"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogPedidoDetalhe').hide();"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

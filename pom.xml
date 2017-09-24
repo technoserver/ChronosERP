@@ -24,6 +24,9 @@
         <flyway-maven-plugin.version>4.0.2</flyway-maven-plugin.version>
         <!--        JSTL-->
         <jstl.version>1.2</jstl.version>
+        <!--Sped fiscal-->
+        <java-efd-icms.version>2.0.20.0</java-efd-icms.version>
+
     </properties>
     <repositories>
         <repository>
@@ -38,9 +41,19 @@
             <url>http://167.114.103.6:8081/repository/chronos/</url>
             <layout>default</layout>
         </repository>
+        <repository>
+            <name>Repositorio Autocom SnapShot</name>
+            <id>Snapshot</id>
+            <url>http://www.autocomsistemas.com.br:8081/nexus/content/repositories/autocom/</url>
+        </repository>
     </repositories>
     <dependencies>
-        
+
+        <dependency>
+            <groupId>br.com.samuelweb</groupId>
+            <artifactId>java-efd-icms</artifactId>
+            <version>${java-efd-icms.version}</version>
+        </dependency>
 
         
         <dependency>

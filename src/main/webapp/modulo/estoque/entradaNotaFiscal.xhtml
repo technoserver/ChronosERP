@@ -76,7 +76,7 @@
 
                 <p:outputPanel id="panelNfeDetalhe">
 
-
+                    <ui:include src="formProduto.xhtml"/>
                 </p:outputPanel>
 
                 <f:facet name="footer">
@@ -84,8 +84,9 @@
                     <div class="row">
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <h:commandButton value="Salvar"
+                                             id="btnSalvarProduto"
                                              action="#{entradaNotaFiscalControll.salvaProduto}"
-                                             class="btn btn-danger center-block"
+                                             class="btn btn-primary center-block"
                             >
                                 <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogNfeDetalhe').hide();}"
                                         process="@form"
@@ -142,6 +143,7 @@
                     <div class="row">
                         <div class="col-xs-6 col-sm-6 col-md-6">
                             <h:commandButton value="Salvar"
+                                             id="btnSalvarDuplicata"
                                              action="#{entradaNotaFiscalControll.salvarDuplicata()}"
                                              styleClass="btn btn-danger center-block"
                             >
@@ -172,6 +174,7 @@
                 <p:outputPanel id="panelUploadArquivo">
                     <div class="row">
                         <p:fileUpload
+                                id="btnImportarXml"
                                 fileUploadListener="#{entradaNotaFiscalControll.importaXML}"
                                 mode="advanced" fileLimit="1" allowTypes="/(\.|\/)(xml)$/"
                                 update=":formCentro:growl,formCentro:mensagem,:formCentro:telaDetalhe:outputPanelDetalhe"
@@ -180,7 +183,368 @@
                 </p:outputPanel>
                 <f:facet name="footer">
                     <p:commandButton value="Cancelar"
-                                     oncomplete="PF('dialogUploadArquivo').hide();" process="@this"/>
+                                     id="btnCancelarImportacaoXml"
+                                     oncomplete="PF('dialogUploadArquivo').hide();"
+                                     process="@this"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formOutrasTelas3">
+            <p:dialog id="dialogCadastrarProduto" header="Cadastrar Produto"
+                      widgetVar="dialogCadastrarProduto" showEffect="slide" responsive="true"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="800">
+                <p:outputPanel id="panelCadastrarProduto">
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-12"
+                                        idComponente="produtoNome" label="Nome"
+                                        nomeAtributo="#{entradaNotaFiscalControll.produto.nome}"
+                                        tamanhoMaximo="100" requerido="true"/>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-3 col-md-6">
+                            <p:outputLabel value="Sub Grupo" for="produtoSubGrupo"/>
+                            <br/>
+                            <p:autoComplete id="produtoSubGrupo"
+                                            value="#{entradaNotaFiscalControll.produto.produtoSubGrupo}"
+                                            completeMethod="#{entradaNotaFiscalControll.getListaSubGrupo}"
+                                            var="subGrupo" itemLabel="#{subGrupo.nome}"
+                                            itemValue="#{subGrupo}"
+                                            converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="100"
+                                            required="true" style="width: 58%; padding-right: 2%;"
+                                            emptyMessage="Nenhum registro encontrado">
+
+                                <p:ajax event="itemSelect" update="nomeGrupo"/>
+
+                            </p:autoComplete>
+                        </div>
+                        <div class="col-xs-12 col-sm-3 col-md-6">
+                            <h:outputLabel value="Grupo :"/>
+                            <h:inputText id="nomeGrupo" class="form-control"
+                                         value="#{entradaNotaFiscalControll.produto.produtoSubGrupo.produtoGrupo.nome}"
+                                         readonly="true"/>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-3 col-md-2">
+                            <p:outputLabel value="Unidade" for="produtoUnidadeProduto"/>
+                            <br/>
+                            <p:autoComplete id="produtoUnidadeProduto"
+                                            value="#{entradaNotaFiscalControll.produto.unidadeProduto}"
+                                            completeMethod="#{entradaNotaFiscalControll.getListaUnidadeProduto}"
+                                            var="unidadeProduto" itemLabel="#{unidadeProduto.sigla}"
+                                            itemValue="#{unidadeProduto}"
+                                            converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="100"
+                                            required="true" style="width: 100%"
+                                            emptyMessage="Nenhum registro encontrado"/>
+                        </div>
+                        <div class="col-xs-12 col-sm-3 col-md-4">
+                            <p:outputLabel value="Marca" for="produtoMarcaProduto"/>
+                            <br/>
+                            <p:autoComplete id="produtoMarcaProduto"
+                                            value="#{entradaNotaFiscalControll.produto.produtoMarca}"
+                                            completeMethod="#{entradaNotaFiscalControll.getListaProdutoMarca}"
+                                            var="marcaProduto" itemLabel="#{marcaProduto.nome}"
+                                            itemValue="#{marcaProduto}"
+                                            converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="100"
+                                            required="false" style="width: 100%"
+                                            emptyMessage="Nenhum registro encontrado"/>
+                        </div>
+                        <div class="col-xs-12 col-sm-3 col-md-6">
+                            <h:outputLabel value="Almoxarifado" for="produtoAlmoxarifado"/>
+                            <br/>
+                            <p:autoComplete id="produtoAlmoxarifado"
+                                            value="#{entradaNotaFiscalControll.produto.almoxarifado}"
+                                            completeMethod="#{entradaNotaFiscalControll.getListaAlmoxarifado}"
+                                            var="almoxarifado" itemLabel="#{almoxarifado.nome}"
+                                            itemValue="#{almoxarifado}"
+                                            converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="100"
+                                            required="false" style="width: 100%"
+                                            emptyMessage="Nenhum registro encontrado"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="produtoTipo" label="Tipo"
+                                         nomeAtributo="#{entradaNotaFiscalControll.produto.tipo}"
+                                         itens="#{entradaNotaFiscalControll.produtoTipo}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="produtoValorCompra" label="Valor Compra"
+                                          nomeAtributo="#{entradaNotaFiscalControll.produto.valorCompra}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="produtoValorVenda" label="Valor Venda"
+                                          nomeAtributo="#{entradaNotaFiscalControll.produto.valorVenda}"
+                        />
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="produtoTipoItemSped" label="Tipo Item Sped"
+                                         nomeAtributo="#{entradaNotaFiscalControll.produto.tipoItemSped}"
+                                         itens="#{entradaNotaFiscalControll.tipoItemSped}"/>
+                    </div>
+
+                    <div class="row">
+
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar"
+                                             action="#{entradaNotaFiscalControll.salvarNovoProduto()}"
+                                             styleClass="btn btn-primary center-block"
+                                             id="btnSalvarNovoProduto">
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogCadastrarProduto').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogCadastrarProduto').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas4">
+        <h:form id="formDetalheImposto">
+            <p:dialog id="dialogDetalheImposto" header="Detalhe Imposto"
+                      widgetVar="dialogDetalheImposto" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="900">
+                <p:outputPanel id="panelDetalheImposto">
+                    <ui:include src="impostos.xhtml"/>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas5">
+        <h:form id="formOutrasTelas5">
+            <p:dialog id="dialogVincularProduto" header="Vicular Produto"
+                      widgetVar="dialogVincularProduto" showEffect="slide" responsive="true"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="500">
+                <p:outputPanel id="panelVincularProduto">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-3 col-md-12">
+                            <p:outputLabel value="Produto" for="nfeDetalheProduto"/>
+                            <br/>
+                            <p:autoComplete id="nfeDetalheProduto"
+                                            value="#{entradaNotaFiscalControll.produto}"
+                                            completeMethod="#{entradaNotaFiscalControll.getListaProduto}"
+                                            var="produto" itemLabel="#{produto.nome}"
+                                            itemValue="#{produto}"
+                                            converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="20"
+                                            required="true" style="width: 100%"
+                                            emptyMessage="Nenhum registro encontrado">
+
+                            </p:autoComplete>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-12"
+                                        idComponente="nfeDetalheProduto"
+                                        tamanhoMaximo="100"
+                                        label="Produto NFe"
+                                        nomeAtributo="#{entradaNotaFiscalControll.nfeDetalhe.nomeProduto}"
+                                        somenteLeitura="true"
+                        />
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar"
+                                             action="#{entradaNotaFiscalControll.vincularProduto()}"
+                                             styleClass="btn btn-danger center-block"
+                                             id="btnSalvarProdutoVinculado">
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogVincularProduto').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogVincularProduto').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas6">
+        <h:form id="formOutrasTelas6">
+            <p:dialog id="dialogFechamento" header="Detalhe Imposto"
+                      widgetVar="dialogFechamento" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="600" responsive="true">
+                <p:outputPanel id="panelFechamento">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12">
+                            <p:panelGrid columns="4"
+                                         columnClasses="ui-grid-col-4,ui-grid-col-2,ui-grid-col-3,ui-grid-col-3"
+                                         layout="grid" styleClass="ui-panelgrid-blank">
+                                <h:outputLabel value="Valor Produtos"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.valorTotalProdutos}"
+                                >
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalProdutos}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.valorTotalProdutos, entradaNotaFiscalControll.valorTotalProdutos) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+                                <h:outputLabel value="Valor Total"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.valorTotal}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalNF}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.valorTotal, entradaNotaFiscalControll.valorTotalNF) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+                                <h:outputLabel value="Frete"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.valorFrete}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalFrete}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.valorFrete, entradaNotaFiscalControll.valorTotalFrete) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+                                <h:outputLabel value="Desconto"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.valorDesconto}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalDesconto}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.valorDesconto, entradaNotaFiscalControll.valorTotalDesconto) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+                                <h:outputLabel value="Base Calc. ICMS"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.baseCalculoIcms}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalBaseCalcIcms}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.baseCalculoIcms, entradaNotaFiscalControll.valorTotalBaseCalcIcms) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+                                <h:outputLabel value="Valor ICMS"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.valorIcms}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalIcms}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.valorIcms, entradaNotaFiscalControll.valorTotalIcms) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+
+                                <h:outputLabel value="Base Calc. ICMS ST"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.baseCalculoIcmsSt}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalBaseCalcIcmsST}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.baseCalculoIcmsSt, entradaNotaFiscalControll.valorTotalBaseCalcIcmsST) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+                                <h:outputLabel value="Valor ICMS ST"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.valorIcmsSt}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalIcmsST}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.valorIcmsSt, entradaNotaFiscalControll.valorTotalIcmsST) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+                                <h:outputLabel value="Valor IPI"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.valorIpi}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalIpi}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.valorIpi, entradaNotaFiscalControll.valorTotalIpi) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+                                <h:outputLabel value="Valor PIS"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.valorPis}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalPis}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.valorPis, entradaNotaFiscalControll.valorTotalPis) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+
+
+                                <h:outputLabel value="Valor Cofins"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.objeto.valorCofins}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <h:outputLabel value="Valor Informado"/>
+                                <h:outputLabel value="#{entradaNotaFiscalControll.valorTotalCofins}"
+                                               style="color: #{entradaNotaFiscalControll.validarValor(entradaNotaFiscalControll.objeto.valorCofins, entradaNotaFiscalControll.valorTotalCofins) ? 'black':'red'}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                            </p:panelGrid>
+
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar"
+                                             action="#{entradaNotaFiscalControll.doFinishCreate()}"
+                                             styleClass="btn btn-danger center-block"
+                                             id="btnSalvarNfe">
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogFechamento').hide();}"
+                                        update=":formCentro:growl,:formCentro:mensagem,:formCentro:outputPanelDetalhe"
+                                        process="@form"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogFechamento').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
                 </f:facet>
             </p:dialog>
         </h:form>

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Compra Sugerida
+    </ui:define>
+
+    <ui:define name="tela">
+        #{cfopControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Compra Sugerida
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel>
+                <div class="ibox-content">
+                    <erp:msgPermissao permissao="#{compraSugeridaControll.podeConsultar()}"/>
+                    <div class="row">
+                        <h:panelGrid columns="3">
+                            <h:outputLabel for="escolha" value="Gerar:" style="margin-right: 5px"/>
+                            <h:selectOneMenu id="escolha" class="form-control"
+                                             value="#{compraSugeridaControll.tipoCompraSugerida}">
+                                <f:selectItem itemLabel="Requisição de Compra" itemValue="Requisicao"/>
+                                <f:selectItem itemLabel="Pedido de Compra" itemValue="Pedido"/>
+                            </h:selectOneMenu>
+
+                            <h:commandButton value="Confirmar" class="btn btn-primary"
+                                             action="#{compraSugeridaControll.confirma()}"
+                                             style="margin-left: 5px">
+                                <p:ajax process="@form"
+                                        oncomplete="addClass()"
+                                        update=":formCentro:outputPanelGrid,navegacao,:formCentro:mensagem"/>
+                            </h:commandButton>
+
+                        </h:panelGrid>
+
+
+                    </div>
+
+
+                </div>
+
+            </p:outputPanel>
+        </p:outputPanel>
+    </ui:define>
+
+
+</ui:composition>

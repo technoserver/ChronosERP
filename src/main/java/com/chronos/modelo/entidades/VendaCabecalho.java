@@ -91,8 +91,8 @@ public class VendaCabecalho implements Serializable {
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<VendaDetalhe> listaVendaDetalhe;
+    @OneToMany(mappedBy = "vendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VendaDetalhe> listaVendaDetalhe;
 
     public VendaCabecalho() {
     }
@@ -324,11 +324,11 @@ public class VendaCabecalho implements Serializable {
         this.vendaRomaneioEntrega = vendaRomaneioEntrega;
     }
 
-    public Set<VendaDetalhe> getListaVendaDetalhe() {
-        return Optional.ofNullable(listaVendaDetalhe).orElse(new HashSet<>());
+    public List<VendaDetalhe> getListaVendaDetalhe() {
+        return Optional.ofNullable(listaVendaDetalhe).orElse(new ArrayList<>());
     }
 
-    public void setListaVendaDetalhe(Set<VendaDetalhe> listaVendaDetalhe) {
+    public void setListaVendaDetalhe(List<VendaDetalhe> listaVendaDetalhe) {
         this.listaVendaDetalhe = listaVendaDetalhe;
     }
 

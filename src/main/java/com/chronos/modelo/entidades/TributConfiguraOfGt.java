@@ -28,8 +28,9 @@ public class TributConfiguraOfGt implements Serializable {
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "tributConfiguraOfGt", cascade = CascadeType.ALL)
     private TributCofinsCodApuracao tributCofinsCodApuracao;
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "tributConfiguraOfGt", cascade = CascadeType.ALL)
-    private TributIpiDipi tributIpiDipi;   
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "tributConfiguraOfGt", cascade = CascadeType.ALL)
+    private TributIpiDipi tributIpiDipi;
+    //@OneToOne(fetch = FetchType.EAGER, mappedBy = "tributConfiguraOfGt", cascade = CascadeType.ALL)
+    @Transient
     private TributIss tributIss;
     
 

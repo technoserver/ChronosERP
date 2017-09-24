@@ -4,6 +4,8 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Entity
@@ -70,12 +72,51 @@ public class NfeDetalheImpostoIcms implements Serializable {
     private BigDecimal percentualBcOperacaoPropria;
     @Column(name = "UF_ST")
     private String ufSt;
+    @Column(name = "VALOR_BC_FCP")
+    private BigDecimal valorBcFcp;
+    @Column(name = "PERCENTUAL_FCP")
+    private BigDecimal percentualFcp;
+    @Column(name = "VALOR_FCP")
+    private BigDecimal valorFcp;
+    @Column(name = "VALOR_BC_FCP_ST")
+    private BigDecimal valorBcFcpSt;
+    @Column(name = "PERCENTUAL_BC_FCP_ST")
+    private BigDecimal percentualBcFcpSt;
+    @Column(name = "VALOR_FCP_ST")
+    private BigDecimal valorFcpSt;
+    @Column(name = "FCP_CONSUMIDOR_FINAL")
+    private BigDecimal fpcConsumidorFinal;
+    @Column(name = "VALOR_BC_FCP_RETIDO")
+    private BigDecimal valorBcFcpRetido;
+    @Column(name = "PERCENTUAL_BC_FCP_RETIDO")
+    private BigDecimal percentualBcFcpRetido;
+    @Column(name = "VALOR_FCP_RETIDO")
+    private BigDecimal valorFcpRetido;
+    @Column(name = "VALOR_BC_FCP_UF_DESTINO")
+    private BigDecimal valorBcFcpUfDestino;
+    @Column(name = "VALOR_BC_ICMS_UF_DESTINO")
+    private BigDecimal valorBsIcmsUfDestino;
+    @Column(name = "PERCENTUAL_FCP_UF_DESTINO")
+    private BigDecimal percentualFcpUfDestino;
+    @Column(name = "ALIQUOTA_INTERNA_UF_DESTINO")
+    private BigDecimal aliquotaInternaUfDestino;
+    @Column(name = "ALIQUOTA_INTERESTADUAL_UFS")
+    private BigDecimal aliquotaInterestadualUfs;
+    @Column(name = "PERCENTUAL_PROVISORIO_PARTILHA")
+    private BigDecimal percentualProvisorioPartilha;
+    @Column(name = "VALOR_ICMS_FCP_UF_DESTINO")
+    private BigDecimal valorIcmsFcpUfDestino;
+    @Column(name = "VALOR_ICMS_INTER_UF_DESTINO")
+    private BigDecimal valorIcmsInterUfDestino;
+    @Column(name = "VALOR_ICMS_INTER_UF_REMETENTE")
+    private BigDecimal valorIcmsInterUfRemetente;
     @JoinColumn(name = "ID_NFE_DETALHE", referencedColumnName = "ID")
     @OneToOne(optional = false)
     private NfeDetalhe nfeDetalhe;
 
     public NfeDetalheImpostoIcms() {
     }
+
 
     public Integer getId() {
         return id;
@@ -126,7 +167,7 @@ public class NfeDetalheImpostoIcms implements Serializable {
     }
 
     public BigDecimal getBaseCalculoIcms() {
-        return baseCalculoIcms;
+        return Optional.ofNullable(baseCalculoIcms).orElse(BigDecimal.ZERO);
     }
 
     public void setBaseCalculoIcms(BigDecimal baseCalculoIcms) {
@@ -142,7 +183,7 @@ public class NfeDetalheImpostoIcms implements Serializable {
     }
 
     public BigDecimal getValorIcms() {
-        return valorIcms;
+        return Optional.ofNullable(valorIcms).orElse(BigDecimal.ZERO);
     }
 
     public void setValorIcms(BigDecimal valorIcms) {
@@ -214,7 +255,7 @@ public class NfeDetalheImpostoIcms implements Serializable {
     }
 
     public BigDecimal getValorBaseCalculoIcmsSt() {
-        return valorBaseCalculoIcmsSt;
+        return Optional.ofNullable(valorBaseCalculoIcmsSt).orElse(BigDecimal.ZERO);
     }
 
     public void setValorBaseCalculoIcmsSt(BigDecimal valorBaseCalculoIcmsSt) {
@@ -230,7 +271,7 @@ public class NfeDetalheImpostoIcms implements Serializable {
     }
 
     public BigDecimal getValorIcmsSt() {
-        return valorIcmsSt;
+        return Optional.ofNullable(valorIcmsSt).orElse(BigDecimal.ZERO);
     }
 
     public void setValorIcmsSt(BigDecimal valorIcmsSt) {
@@ -309,6 +350,169 @@ public class NfeDetalheImpostoIcms implements Serializable {
         this.nfeDetalhe = nfeDetalhe;
     }
 
+    public BigDecimal getValorBcFcp() {
+        return valorBcFcp;
+    }
+
+    public void setValorBcFcp(BigDecimal valorBcFcp) {
+        this.valorBcFcp = valorBcFcp;
+    }
+
+    public BigDecimal getPercentualFcp() {
+        return percentualFcp;
+    }
+
+    public void setPercentualFcp(BigDecimal percentualFcp) {
+        this.percentualFcp = percentualFcp;
+    }
+
+    public BigDecimal getValorFcp() {
+        return valorFcp;
+    }
+
+    public void setValorFcp(BigDecimal valorFcp) {
+        this.valorFcp = valorFcp;
+    }
+
+    public BigDecimal getValorBcFcpSt() {
+        return valorBcFcpSt;
+    }
+
+    public void setValorBcFcpSt(BigDecimal valorBcFcpSt) {
+        this.valorBcFcpSt = valorBcFcpSt;
+    }
+
+    public BigDecimal getPercentualBcFcpSt() {
+        return percentualBcFcpSt;
+    }
+
+    public void setPercentualBcFcpSt(BigDecimal percentualBcFcpSt) {
+        this.percentualBcFcpSt = percentualBcFcpSt;
+    }
+
+    public BigDecimal getValorFcpSt() {
+        return valorFcpSt;
+    }
+
+    public void setValorFcpSt(BigDecimal valorFcpSt) {
+        this.valorFcpSt = valorFcpSt;
+    }
+
+    public BigDecimal getFcpConsumidorFinal() {
+        return fpcConsumidorFinal;
+    }
+
+    public void setFcpConsumidorFinal(BigDecimal fpcConsumidorFinal) {
+        this.fpcConsumidorFinal = fpcConsumidorFinal;
+    }
+
+    public BigDecimal getValorBcFcpRetido() {
+        return valorBcFcpRetido;
+    }
+
+    public void setValorBcFcpRetido(BigDecimal valorBcFcpRetido) {
+        this.valorBcFcpRetido = valorBcFcpRetido;
+    }
+
+    public BigDecimal getPercentualBcFcpRetido() {
+        return percentualBcFcpRetido;
+    }
+
+    public void setPercentualBcFcpRetido(BigDecimal percentualBcFcpRetido) {
+        this.percentualBcFcpRetido = percentualBcFcpRetido;
+    }
+
+    public BigDecimal getValorFcpRetido() {
+        return valorFcpRetido;
+    }
+
+    public void setValorFcpRetido(BigDecimal valorFcpRetido) {
+        this.valorFcpRetido = valorFcpRetido;
+    }
+
+    public BigDecimal getValorBcFcpUfDestino() {
+        return valorBcFcpUfDestino;
+    }
+
+    public void setValorBcFcpUfDestino(BigDecimal valorBcFcpUfDestino) {
+        this.valorBcFcpUfDestino = valorBcFcpUfDestino;
+    }
+
+    public BigDecimal getValorBsIcmsUfDestino() {
+        return valorBsIcmsUfDestino;
+    }
+
+    public void setValorBsIcmsUfDestino(BigDecimal valorBsIcmsUfDestino) {
+        this.valorBsIcmsUfDestino = valorBsIcmsUfDestino;
+    }
+
+    public BigDecimal getPercentualFcpUfDestino() {
+        return percentualFcpUfDestino;
+    }
+
+    public void setPercentualFcpUfDestino(BigDecimal percentualFcpUfDestino) {
+        this.percentualFcpUfDestino = percentualFcpUfDestino;
+    }
+
+    public BigDecimal getAliquotaInternaUfDestino() {
+        return aliquotaInternaUfDestino;
+    }
+
+    public void setAliquotaInternaUfDestino(BigDecimal aliquotaInternaUfDestino) {
+        this.aliquotaInternaUfDestino = aliquotaInternaUfDestino;
+    }
+
+    public BigDecimal getAliquotaInterestadualUfs() {
+        return aliquotaInterestadualUfs;
+    }
+
+    public void setAliquotaInterestadualUfs(BigDecimal aliquotaInterestadualUfs) {
+        this.aliquotaInterestadualUfs = aliquotaInterestadualUfs;
+    }
+
+    public BigDecimal getPercentualProvisorioPartilha() {
+        return percentualProvisorioPartilha;
+    }
+
+    public void setPercentualProvisorioPartilha(BigDecimal percentualProvisorioPartilha) {
+        this.percentualProvisorioPartilha = percentualProvisorioPartilha;
+    }
+
+    public BigDecimal getValorIcmsFcpUfDestino() {
+        return valorIcmsFcpUfDestino;
+    }
+
+    public void setValorIcmsFcpUfDestino(BigDecimal valorIcmsFcpUfDestino) {
+        this.valorIcmsFcpUfDestino = valorIcmsFcpUfDestino;
+    }
+
+    public BigDecimal getValorIcmsInterUfDestino() {
+        return valorIcmsInterUfDestino;
+    }
+
+    public void setValorIcmsInterUfDestino(BigDecimal valorIcmsInterUfDestino) {
+        this.valorIcmsInterUfDestino = valorIcmsInterUfDestino;
+    }
+
+    public BigDecimal getValorIcmsInterUfRemetente() {
+        return valorIcmsInterUfRemetente;
+    }
+
+    public void setValorIcmsInterUfRemetente(BigDecimal valorIcmsInterUfRemetente) {
+        this.valorIcmsInterUfRemetente = valorIcmsInterUfRemetente;
+    }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NfeDetalheImpostoIcms)) return false;
+        NfeDetalheImpostoIcms that = (NfeDetalheImpostoIcms) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

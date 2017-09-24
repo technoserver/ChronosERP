@@ -6,37 +6,35 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        CFOP 
+        ICMS Customizado
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{tributIcmsCustomCabControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        ICMS Customizado
     </ui:define>
 
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cfopControll}"
+        <erp:gridDados controller="#{tributIcmsCustomCabControll}"
                        idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
+                       nomeFuncao="ICMS Customizado"
                        id="telaGrid"
-                       somenteConsulta="true">
+        >
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}" />
-            </p:column>
             <p:column headerText="Descricao">
                 <h:outputLabel value="#{row.descricao}" />
             </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
+            <p:column headerText="Origem Mercadoria">
+                <h:outputLabel
+                        value="#{tributIcmsCustomCabControll.keyFromValue(tributIcmsCustomCabControll.origemMercadoria, row.origemMercadoria)}"/>
             </p:column>
 
 
@@ -45,30 +43,201 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{tributIcmsCustomCabControll}"
+                                   nomeFuncao="ICMS Customizado"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+        >
 
             <div class="row">
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
-            </div>
-            <div class="row">
 
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                idComponente="tributIcmsCustomCabDescricao" label="Descricao"
+                                nomeAtributo="#{tributIcmsCustomCabControll.objeto.descricao}"
+                                tamanhoMaximo="100" requerido="true"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                                 idComponente="tributIcmsCustomCabOrigemMercadoria"
+                                 label="Origem Mercadoria"
+                                 nomeAtributo="#{tributIcmsCustomCabControll.objeto.origemMercadoria}"
+                                 itens="#{tributIcmsCustomCabControll.origemMercadoria}"
+                                 requerido="true"/>
+
             </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
+            <erp:separador label="ICMS UF"/>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <h:commandLink title="Novo" class="btn btn-default"
+                                   actionListener="#{tributIcmsCustomCabControll.incluirTributIcmsCustomDet}"
+                                   type="button" id="btnIcluirIcmsCustom"
+                                   rendered="#{not empty tributIcmsCustomCabControll.objeto.id}">
+                        <i class="glyphicon glyphicon-plus"/>
+                        <p:ajax update=":formOutrasTelas:panelTributIcmsCustomDet,dataTableTributIcmsCustomDet"
+                                oncomplete="PF('dialogtributIcmsCustomDet').show()"
+                                process="@this"/>
+                    </h:commandLink>
+                </div>
             </div>
+
+            <p:dataTable id="dataTableTributIcmsCustomDet" var="obj"
+                         value="#{tributIcmsCustomCabControll.objeto.listaTributIcmsCustomDet}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         paginatorPosition="bottom" reflow="true"
+                         resizableColumns="true"
+                         rowKey="#{obj.id}">
+
+
+                <p:column headerText="UF Destino">
+                    <h:outputLabel value="#{obj.ufDestino}"/>
+                </p:column>
+                <p:column headerText="CFOP">
+                    <h:outputLabel value="#{obj.cfop}"/>
+                </p:column>
+                <p:column headerText="CSOSN B">
+                    <h:outputLabel value="#{obj.csosnB}"/>
+                </p:column>
+                <p:column headerText="CST B">
+                    <h:outputLabel value="#{obj.cstB}"/>
+                </p:column>
+                <p:column headerText="Aliquota">
+                    <h:outputLabel value="#{obj.aliquota}"/>
+                </p:column>
+                <p:column headerText="Valor Pauta">
+                    <h:outputLabel value="#{obj.valorPauta}"/>
+                </p:column>
+                <p:column headerText="MVA">
+                    <h:outputLabel value="#{obj.mva}"/>
+                </p:column>
+                <p:column headerText="Ações" width="110">
+                    <p:commandLink title="Alterar" id="btnAlterarIcmsCustom"
+                                   action="#{tributIcmsCustomCabControll.alterarTributIcmsCustomDet}"
+                                   class=" btn btn-default"
+                                   oncomplete="PF('dialogtributIcmsCustomDet').show()"
+                                   update=":formOutrasTelas:panelTributIcmsCustomDet,dataTableTributIcmsCustomDet"
+                                   process="dataTableTributIcmsCustomDet">
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{tributIcmsCustomCabControll.tributIcmsCustomDetSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir"
+                                   id="btnExcluitIcmsCustom"
+                                   action="#{tributIcmsCustomCabControll.excluirTributIcmsCustomDet}"
+                                   style="position: relative; right: 7px"
+                                   update="dataTableTributIcmsCustomDet"
+                                   process="dataTableTributIcmsCustomDet"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default"
+                    >
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{tributIcmsCustomCabControll.tributIcmsCustomDetSelecionado}"/>
+                    </p:commandLink>
+
+                </p:column>
+            </p:dataTable>
+
 
         </erp:telaInclusaoAlteracao>
     </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogtributIcmsCustomDet"
+                      header="Inclusão/Alteração de ICMS UF" responsive="true"
+                      widgetVar="dialogtributIcmsCustomDet" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+
+                <h:panelGroup layout="block" id="panelTributIcmsCustomDet">
+
+
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="tributIcmsCustomDetUfDestino" label="UF Destino"
+                                         nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.ufDestino}"
+                                         itens="#{tributIcmsCustomCabControll.estado}"/>
+
+                        <erp:campoInteiro idComponente="cfop" styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          label="CFOP"
+                                          nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.cfop}"/>
+                        <erp:campoSelect styleClass="ccol-xs-12 col-sm-8 col-md-8"
+                                         idComponente="tributIcmsCustomDetCsosnB" label="CSOSN"
+                                         nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.csosnB}"
+                                         itens="#{tributIcmsCustomCabControll.listaCsosnB}"
+                                         rendered="#{tributIcmsCustomCabControll.simplesNascional}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-8 col-md-8"
+                                         idComponente="tributIcmsCustomDetCstB" label="CST"
+                                         nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.cstB}"
+                                         itens="#{tributIcmsCustomCabControll.listaCstB}"
+                                         rendered="#{!tributIcmsCustomCabControll.simplesNascional}"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="tributIcmsCustomDetAliquota" label="Aliquota ICMS"
+                                          nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.aliquota}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsCustomDetPorcentoBc" label="% Redução da BC"
+                                          nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.porcentoBc}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsCustomDetAliquotaIcmsSt"
+                                          label="Aliquota ICMS ST"
+                                          nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.aliquotaIcmsSt}"/>
+
+
+                        <erp:campoDecimal styleClass="ccol-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsCustomDetPorcentoBcSt" label="% Redução da  BC ST "
+                                          nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.porcentoBcSt}"/>
+
+
+                    </div>
+                    <div class="row">
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="tributIcmsCustomDetMva" label="MVA"
+                                          nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.mva}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsCustomDetAliquotaInternaSt"
+                                          label="Aliq. Interna"
+                                          nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.aliquotaInternaSt}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsCustomDetAliquotaInterestadualSt"
+                                          label="Aliq. Interestadual"
+                                          nomeAtributo="#{tributIcmsCustomCabControll.tributIcmsCustomDet.aliquotaInterestadualSt}"/>
+
+                    </div>
+
+
+                </h:panelGroup>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarIcmsCustom"
+                                             actionListener="#{tributIcmsCustomCabControll.salvartributIcmsCustomDet}"
+                                             class="btn btn-primary center-block">
+                                <p:ajax
+                                        update=":formOutrasTelas:panelTributIcmsCustomDet,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogtributIcmsCustomDet').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             id="btnCancelar"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogtributIcmsCustomDet').hide();"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
 
 </ui:composition>

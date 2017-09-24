@@ -6,37 +6,50 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        CFOP 
+        ISS
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{tributIssControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP 
+        ISS
     </ui:define>
 
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
+        <erp:gridDados controller="#{tributIssControll}"
+                       idDataTable="dataTableTributIss"
+                       nomeFuncao="ISS"
                        id="telaGrid"
-                       somenteConsulta="true">
+        >
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}" />
+            <p:column headerText="Tribut Operacao Fiscal">
+                <h:outputLabel value="#{row.tributOperacaoFiscal.descricao}"/>
             </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}" />
+            <p:column headerText="Modalidade BC">
+                <h:outputLabel
+                        value="#{tributIssControll.keyFromValue(tributIssControll.issModalidadeBaseCalculo, row.modalidadeBaseCalculo)}"/>
             </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}" />
+            <p:column headerText="Porcento BC">
+                <h:outputLabel value="#{row.porcentoBaseCalculo}" style="float: right;">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Aliquota Porcento">
+                <h:outputLabel value="#{row.aliquotaPorcento}" style="float: right;">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Aliquota Unidade">
+                <h:outputLabel value="#{row.aliquotaUnidade}" style="float: right;">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
             </p:column>
 
 
@@ -45,27 +58,32 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{tributIssControll}"
+                                   nomeFuncao="ISS"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+        >
+
 
             <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Operacao Fiscal"
+                                  itemLabel="#{objeto.descricao}"
+                                  controller="#{tributIssControll}"
+                                  completeMethod="getListaTributOperacaoFiscal"
+                                  nomeAtributo="#{tributIssControll.objeto.tributOperacaoFiscal}"
+                                  idComponente="tributIssTributOperacaoFiscal"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="tributIssAliquotaPorcento" label="Aliquota %"
+                                  nomeAtributo="#{tributIssControll.objeto.aliquotaPorcento}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="tributIssPorcentoBaseCalculo" label="% Base Calc."
+                                  nomeAtributo="#{tributIssControll.objeto.porcentoBaseCalculo}"/>
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="cfopCfop" label="CFOP"
-                                   nomeAtributo="#{cfopControll.objeto.cfop}" />
-            </div>
-            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                                 idComponente="tributIssCodigoTributacao" label="Codigo Tributacao"
+                                 nomeAtributo="#{tributIssControll.objeto.codigoTributacao}"
+                                 itens="#{tributIssControll.issCodigoTributacao}"/>
 
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopDescricao" label="Descricao"
-                                     nomeAtributo="#{cfopControll.objeto.descricao}" />
-            </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                     idComponente="cfopAplicacao" label="Aplicacao"
-                                     nomeAtributo="#{cfopControll.objeto.aplicacao}" />
             </div>
 
         </erp:telaInclusaoAlteracao>

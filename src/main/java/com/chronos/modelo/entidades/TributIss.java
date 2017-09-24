@@ -40,13 +40,19 @@ public class TributIss implements Serializable {
     private Integer itemListaServico;
     @Column(name = "codigo_tributacao")
     private Character codigoTributacao;
-    @Column(name = "indicador_incentivo_fiscal")
+    //@Column(name = "indicador_incentivo_fiscal")
+    @Transient
     private Integer indicadorIncentivoFiscal;
-    @Column(name = "indicador_exigibilidade")
+    // @Column(name = "indicador_exigibilidade")
+    @Transient
     private Integer indicadorExigibilidade;
-    @JoinColumn(name = "ID_TRIBUT_CONFIGURA_OF_GT", referencedColumnName = "ID")
-    @OneToOne(optional = false)
+    // @JoinColumn(name = "ID_TRIBUT_CONFIGURA_OF_GT", referencedColumnName = "ID")
+    //  @OneToOne(optional = false)
+    @Transient
     private TributConfiguraOfGt tributConfiguraOfGt;
+    @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private TributOperacaoFiscal tributOperacaoFiscal;
 
     public TributIss() {
     }
@@ -151,8 +157,14 @@ public class TributIss implements Serializable {
         this.tributConfiguraOfGt = tributConfiguraOfGt;
     }
 
-    
- 
+    public TributOperacaoFiscal getTributOperacaoFiscal() {
+        return tributOperacaoFiscal;
+    }
+
+    public void setTributOperacaoFiscal(TributOperacaoFiscal tributOperacaoFiscal) {
+        this.tributOperacaoFiscal = tributOperacaoFiscal;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

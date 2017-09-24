@@ -3,18 +3,18 @@ package com.chronos.controll.compras;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.event.SelectEvent;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by john on 16/08/17.
@@ -39,10 +39,33 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
     private CompraSugeridaControll compraSugeridaController;
     private Set<CompraPedidoDetalhe> listaCompraSugerida;
 
+    private List<CompraTipoPedido> tiposPedido;
+
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        tiposPedido = new ArrayList<>();
+        tiposPedido.add(new CompraTipoPedido(1, "NORMAL"));
+        tiposPedido.add(new CompraTipoPedido(2, "PLANEJADO"));
+        tiposPedido.add(new CompraTipoPedido(3, "ABERTO"));
+    }
+
     @Override
     public void doCreate() {
         super.doCreate();
+        getObjeto().setDataPedido(new Date());
         getObjeto().setListaCompraPedidoDetalhe(new HashSet<>());
+    }
+
+    @Override
+    public void doEdit() {
+        super.doEdit();
+
+        CompraPedido pedido = dataModel.getRowData(getObjeto().getId().toString());
+
+        setObjeto(pedido);
     }
 
     @Override
@@ -71,6 +94,7 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
         compraPedidoDetalhe = compraPedidoDetalheSelecionado;
     }
 
+    //TODO Calcular a taxa de desconto do item e o subtotal
     public void salvarItem() {
         if (compraPedidoDetalhe.getId() == null) {
             getObjeto().getListaCompraPedidoDetalhe().add(compraPedidoDetalhe);
@@ -177,6 +201,16 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
         return listaFornecedor;
     }
 
+    public void selecionarFornecedor(SelectEvent event) {
+        Fornecedor fornecedor = (Fornecedor) event.getObject();
+        getObjeto().setQuantidadeParcelas(fornecedor.getQuantidadeParcelas());
+        getObjeto().setDiasIntervalo(fornecedor.getNumDiasIntervalo());
+        getObjeto().setDiasPrimeiroVencimento(fornecedor.getNumDiasPrimeiroVencimento());
+
+        Date previsaoEntrega = Biblioteca.addDay(new Date(), Optional.ofNullable(fornecedor.getPrazoMedioEntrega()).orElse(0));
+        getObjeto().setDataPrevistaEntrega(previsaoEntrega);
+    }
+
     public List<Produto> getListaProduto(String nome) {
         List<Produto> listaProduto = new ArrayList<>();
         try {
@@ -226,5 +260,13 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
 
     public void setParametroCompraSugerida(Boolean parametroCompraSugerida) {
         this.parametroCompraSugerida = parametroCompraSugerida;
+    }
+
+    public List<CompraTipoPedido> getTiposPedido() {
+        return tiposPedido;
+    }
+
+    public void setTiposPedido(List<CompraTipoPedido> tiposPedido) {
+        this.tiposPedido = tiposPedido;
     }
 }

@@ -1,20 +1,16 @@
 package com.chronos.bo.nfe;
 
+import br.inf.portalfiscal.nfe.schema.procnfe.TIpi;
+import br.inf.portalfiscal.nfe.schema.procnfe.TNFe;
+import br.inf.portalfiscal.nfe.schema.procnfe.TNfeProc;
+import br.inf.portalfiscal.nfe.schema.procnfe.TProtNFe;
 import com.chronos.modelo.entidades.*;
+import com.chronos.util.FormatValor;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-
-
-import br.inf.portalfiscal.nfe.schema.procnfe.TIpi;
-import br.inf.portalfiscal.nfe.schema.procnfe.TNFe;
-import br.inf.portalfiscal.nfe.schema.procnfe.TNfeProc;
-import br.inf.portalfiscal.nfe.schema.procnfe.TProtNFe;
-import com.chronos.util.Biblioteca;
-import com.chronos.util.FormatValor;
-
 import java.io.File;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -24,7 +20,7 @@ import java.util.*;
  * Created by john on 02/08/17.
  */
 public class ImportaXMLNFe {
-
+    private String imp;
 
     public Map importarXmlNFe(File arquiXml) throws Exception {
 
@@ -157,7 +153,7 @@ public class ImportaXMLNFe {
 
         //Duplicatas
         TNFe.InfNFe.Cobr cobr = infNfe.getCobr();
-        List<TNFe.InfNFe.Cobr.Dup> duplicatas = cobr.getDup();
+        List<TNFe.InfNFe.Cobr.Dup> duplicatas = cobr != null ? cobr.getDup() : new ArrayList<>();
         for(TNFe.InfNFe.Cobr.Dup duplicata : duplicatas){
             NfeDuplicata dup = new NfeDuplicata();
             dup.setNumero(duplicata.getNDup());
@@ -270,8 +266,9 @@ public class ImportaXMLNFe {
     private <T> T getTipoImposto(Class<T> imposto, List<JAXBElement<?>> classToCast) throws JAXBException {
 
 
-        String imp = imposto.getSimpleName();
-        JAXBElement<?> element = classToCast.stream().filter(i -> i.getName().equals(imp)).findFirst().get();
+        imp = imposto.getSimpleName();
+        imp = imp.equals("TIpi") ? "IPI" : imp;
+        JAXBElement<?> element = classToCast.stream().filter(i -> i.getName().toString().contains(imp)).findFirst().get();
         return (T) element.getValue();
     }
 
@@ -461,15 +458,26 @@ public class ImportaXMLNFe {
         }
 
         TIpi.IPITrib ipiTrib = ipi.getIPITrib();
+        TIpi.IPINT ipInt = ipi.getIPINT();
 
+        String cst = ipiTrib != null ? ipiTrib.getCST() : ipInt.getCST();
         impostoIpi.setEnquadramentoIpi(ipi.getCEnq());
-        impostoIpi.setCstIpi(ipiTrib.getCST());
+        impostoIpi.setCstIpi(cst);
+        if (ipiTrib != null) {
+            impostoIpi.setValorBaseCalculoIpi(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getVBC()));
+            impostoIpi.setAliquotaIpi(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getPIPI()));
+            impostoIpi.setQuantidadeUnidadeTributavel(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getQUnid()));
+            ;
+            impostoIpi.setValorUnidadeTributavel(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getVUnid()));
+            impostoIpi.setValorIpi(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getVIPI()));
+        } else {
+            impostoIpi.setValorBaseCalculoIpi(BigDecimal.ZERO);
+            impostoIpi.setAliquotaIpi(BigDecimal.ZERO);
+            impostoIpi.setQuantidadeUnidadeTributavel(BigDecimal.ZERO);
+            impostoIpi.setValorUnidadeTributavel(BigDecimal.ZERO);
+            impostoIpi.setValorIpi(BigDecimal.ZERO);
+        }
 
-        impostoIpi.setValorBaseCalculoIpi(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getVBC()));
-        impostoIpi.setAliquotaIpi(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getPIPI()));
-        impostoIpi.setQuantidadeUnidadeTributavel(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getQUnid())) ;    ;
-        impostoIpi.setValorUnidadeTributavel(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getVUnid()));
-        impostoIpi.setValorIpi(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getVIPI()));
 
         return impostoIpi;
     }

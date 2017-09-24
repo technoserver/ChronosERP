@@ -26,31 +26,31 @@
                                             emptyMessage="Nenhum registro encontrado" />
                         </div>
                     </div>
-                    <div class="row">                                            
-                        <erp:campoTexto styleClassDiv="col-lg-8" styleClassInput="form-control" 
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-lg-8" styleClassInput="form-control"
                                         idComponente="agenciaBancoNome" label="Nome"
                                         nomeAtributo="#{agenciaBancoControll.objeto.nome}"
                                         tamanhoMaximo="100" />
-                        <erp:campoTexto styleClassDiv="col-lg-2" styleClassInput="form-control" 
+                        <erp:campoTexto styleClass="col-lg-2" styleClassInput="form-control"
                                         idComponente="agenciaBancoCodigo" label="Código"
                                         nomeAtributo="#{agenciaBancoControll.objeto.codigo}"
                                         tamanhoMaximo="10" requerido="true" />
-                        <erp:campoTexto styleClassDiv="col-lg-2" styleClassInput="form-control" 
+                        <erp:campoTexto styleClass="col-lg-2" styleClassInput="form-control"
                                         idComponente="agenciaBancoDigito" label="Digito"
                                         nomeAtributo="#{agenciaBancoControll.objeto.digito}"
                                         tamanhoMaximo="1" requerido="true" />
 
                     </div> 
-                    <div class="row">                                            
-                        <erp:campoTexto styleClassDiv="col-lg-8" styleClassInput="form-control" 
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-lg-8" styleClassInput="form-control"
                                         idComponente="agenciaBancoLogradouro" label="Logradouro"
                                         nomeAtributo="#{agenciaBancoControll.objeto.logradouro}"
                                         tamanhoMaximo="100" />
-                        <erp:campoTexto styleClassDiv="col-lg-2" styleClassInput="form-control" 
+                        <erp:campoTexto styleClass="col-lg-2" styleClassInput="form-control"
                                         idComponente="agenciaBancoNumero" label="Numero"
                                         nomeAtributo="#{agenciaBancoControll.objeto.numero}"
                                         tamanhoMaximo="10" />
-                        <erp:campoMascara styleClassDiv="col-lg-2" styleClassInput="form-control"
+                        <erp:campoMascara styleClass="col-lg-2" styleClassInput="form-control"
                                           idComponente="agenciaBancoCep" label="Cep"
                                           nomeAtributo="#{agenciaBancoControll.objeto.cep}"
                                           mascara="99999-999" />
@@ -61,7 +61,7 @@
                             <h:outputLabel value="UF :" />
                             <h:selectOneMenu value="#{agenciaBancoControll.objeto.uf}" class="form-control">
                                 <f:selectItem itemValue="selecione" value="#{null}" />
-                                <f:selectItems var="uf" value="#{cepControll.allEstado}"  />
+                                <f:selectItems var="uf" value="#{cepControll.estado}"/>
                                 <f:ajax event="valueChange" execute="@this" />
                             </h:selectOneMenu>
                         </div>
@@ -79,31 +79,31 @@
                         </div>
 
 
-                        <erp:campoTexto styleClassDiv="col-lg-4" styleClassInput="form-control" 
+                        <erp:campoTexto styleClass="col-lg-4" styleClassInput="form-control"
                                         idComponente="agenciaBancoBairro" label="Bairro"
                                         nomeAtributo="#{agenciaBancoControll.objeto.bairro}"
                                         tamanhoMaximo="60" />
 
                     </div>
 
-                    <div class="row">                                            
-                        <erp:campoTexto styleClassDiv="col-lg-4" styleClassInput="form-control" 
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-lg-4" styleClassInput="form-control"
                                         idComponente="agenciaBancoTelefone" label="Telefone"
                                         nomeAtributo="#{agenciaBancoControll.objeto.telefone}"
                                         tamanhoMaximo="14" />
-                        <erp:campoTexto styleClassDiv="col-lg-4" styleClassInput="form-control" 
+                        <erp:campoTexto styleClass="col-lg-4" styleClassInput="form-control"
                                         idComponente="agenciaBancoGerente" label="Gerente"
                                         nomeAtributo="#{agenciaBancoControll.objeto.gerente}"
                                         tamanhoMaximo="30" />
-                        <erp:campoTexto styleClassDiv="col-lg-4" styleClassInput="form-control" 
+                        <erp:campoTexto styleClass="col-lg-4" styleClassInput="form-control"
                                         idComponente="agenciaBancoEmpresaContato" label="Empresa Contato"
                                         nomeAtributo="#{agenciaBancoControll.objeto.contato}"
                                         tamanhoMaximo="30" />
 
 
                     </div> 
-                    <div class="row">                                            
-                        <erp:campoAreaTexto styleClassDiv="col-lg-12" styleClassInput="form-control" 
+                    <div class="row">
+                        <erp:campoAreaTexto styleClass="col-lg-12" styleClassInput="form-control"
                                             idComponente="agenciaBancoObservacao" label="Observacao"
                                             nomeAtributo="#{agenciaBancoControll.objeto.observacao}" />
 
@@ -118,7 +118,7 @@
         <h:panelGroup layout="block" rendered="#{not empty agenciaBancoControll.objeto}">
             <div class="row" >
                 <div class="col-xs-6 col-lg-6">
-                    <h:commandButton value="Salvar" class="btn btn-danger center-block"
+                    <h:commandButton value="Salvar" class="btn btn-primary center-block"
                                      rendered="#{empty agenciaBancoControll.objeto.id}"
                                      action="#{agenciaBancoControll.salvar()}"
 
@@ -127,7 +127,7 @@
                                 oncomplete="atualizarMsg();"
                                 update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem" />
                     </h:commandButton>
-                    <h:commandButton value="Salvar" class="btn btn-danger center-block"
+                    <h:commandButton value="Salvar" class="btn btn-primary center-block"
                                      rendered="#{not empty agenciaBancoControll.objeto.id}"
                                      actionListener="#{agenciaBancoControll.salvar()}"
 
