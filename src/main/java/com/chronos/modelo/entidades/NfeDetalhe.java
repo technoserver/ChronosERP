@@ -308,9 +308,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorSubtotal() {
-        valorSubtotal = BigDecimal.ZERO;
-        valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial());
-        return valorSubtotal;
+        return Optional.ofNullable(valorSubtotal).orElse(BigDecimal.ZERO);
     }
 
     public void setValorSubtotal(BigDecimal valorSubtotal) {
@@ -516,9 +514,9 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal calcularSubTotalProduto(){
-
-        BigDecimal subTotal = this.quantidadeComercial.multiply(this.valorBrutoProduto);
-        return subTotal;
+        this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial());
+        ;
+        return valorSubtotal;
     }
 
 

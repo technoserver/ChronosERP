@@ -3,7 +3,6 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Entity
 @Table(name = "NFE_DET_ESPECIFICO_MEDICAMENTO")
@@ -15,16 +14,8 @@ public class NfeDetEspecificoMedicamento implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "NUMERO_LOTE")
-    private String numeroLote;
-    @Column(name = "QUANTIDADE_LOTE")
-    private BigDecimal quantidadeLote;
-    @Temporal(TemporalType.DATE)
-    @Column(name = "DATA_FABRICACAO")
-    private Date dataFabricacao;
-    @Temporal(TemporalType.DATE)
-    @Column(name = "DATA_VALIDADE")
-    private Date dataValidade;
+    @Column(name = "CODIGO_PRODUTO_ANVISA")
+    private String codigoProdutoAnvisa;
     @Column(name = "PRECO_MAXIMO_CONSUMIDOR")
     private BigDecimal precoMaximoConsumidor;
     @JoinColumn(name = "ID_NFE_DETALHE", referencedColumnName = "ID")
@@ -42,36 +33,12 @@ public class NfeDetEspecificoMedicamento implements Serializable {
         this.id = id;
     }
 
-    public String getNumeroLote() {
-        return numeroLote;
+    public String getCodigoProdutoAnvisa() {
+        return codigoProdutoAnvisa;
     }
 
-    public void setNumeroLote(String numeroLote) {
-        this.numeroLote = numeroLote;
-    }
-
-    public BigDecimal getQuantidadeLote() {
-        return quantidadeLote;
-    }
-
-    public void setQuantidadeLote(BigDecimal quantidadeLote) {
-        this.quantidadeLote = quantidadeLote;
-    }
-
-    public Date getDataFabricacao() {
-        return dataFabricacao;
-    }
-
-    public void setDataFabricacao(Date dataFabricacao) {
-        this.dataFabricacao = dataFabricacao;
-    }
-
-    public Date getDataValidade() {
-        return dataValidade;
-    }
-
-    public void setDataValidade(Date dataValidade) {
-        this.dataValidade = dataValidade;
+    public void setCodigoProdutoAnvisa(String codigoProdutoAnvisa) {
+        this.codigoProdutoAnvisa = codigoProdutoAnvisa;
     }
 
     public BigDecimal getPrecoMaximoConsumidor() {

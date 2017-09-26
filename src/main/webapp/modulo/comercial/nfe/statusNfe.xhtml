@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Status NFe
+    </ui:define>
+
+    <ui:define name="tela">
+        #{statusNfeControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Statu NFe
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel>
+
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 margem-bottom-10">
+
+
+                            <p:commandLink title="Consultar Status"
+                                           class="btn btn-default"
+                                           actionListener="#{statusNfeControll.consultaStatus()}"
+                                           update=":formCentro:growl,:formCentro:outputPanelGrid">
+                                <i class="fa fa-search"></i>
+                            </p:commandLink>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <erp:campoAreaTexto idComponente="statusServico" label="Status"
+                                                nomeAtributo="#{statusNfeControll.status}"/>
+                        </div>
+                    </div>
+                </div>
+
+            </p:outputPanel>
+        </p:outputPanel>
+
+    </ui:define>
+
+
+</ui:composition>

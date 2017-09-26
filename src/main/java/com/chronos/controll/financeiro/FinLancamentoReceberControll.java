@@ -67,6 +67,13 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     }
 
     @Override
+    public void doEdit() {
+        super.doEdit();
+        FinLancamentoReceber lancamento = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(lancamento);
+    }
+
+    @Override
     public void salvar() {
         getObjeto().setValorAReceber(getObjeto().getValorTotal());
         try {

@@ -70,11 +70,20 @@ public class NfeConfiguracao implements Serializable {
     private String emailAutenticaSsl;
     @Column(name = "EMAIL_TEXTO")
     private String emailTexto;
+    //@Column(name = "observacao", columnDefinition = "text")
+    @Transient
+    private String observacao;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
 
     public NfeConfiguracao() {
+    }
+
+    public NfeConfiguracao(Integer id, String certificadoDigitalSenha, Integer webserviceAmbiente) {
+        this.id = id;
+        this.certificadoDigitalSenha = certificadoDigitalSenha;
+        this.webserviceAmbiente = webserviceAmbiente;
     }
 
     public Integer getId() {
@@ -309,5 +318,11 @@ public class NfeConfiguracao implements Serializable {
         this.empresa = empresa;
     }
 
- 
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
+    }
 }

@@ -10,14 +10,15 @@
 
 
     <div class="sidebar-collapse">
-        <h:form>
+        <h:form id="formMenu">
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element"> 
                         <span>
-                            <h:graphicImage id="imgPadrap" library="images" name="pessoa.png" class="img-circle"
+                            <h:graphicImage id="imgPadrao" library="images" name="pessoa.png" class="img-circle"
                                             rendered="#{seguranca.fotoFuncionario==null}"/>
-                            <h:graphicImage id="imfFuncionario" value="#{seguranca.fotoFuncionario}" class="img-circle"
+                            <h:graphicImage id="imfFuncionario" value="/image/perfil?foto=#{seguranca.fotoFuncionario}"
+                                            class="img-circle"
                                             rendered="#{seguranca.fotoFuncionario!=null}"/>
 
                         </span>
@@ -359,30 +360,7 @@
                         <span class="nav-label">Comercial</span>
                         <span class="fa arrow"></span>
                     </a>
-                    <ul class="nav nav-second-level collapse ">
-                        <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
-                            <a href="#">
-                                <span class="nav-label">Vendas</span>
-                                <span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-third-level">
-                                <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
-                                    <erp:subMenu caminho="/modulo/comercial/vendas/condicoesPagamento"
-                                                 label="Condições de Pagamento"
-                                                 funcao="condicoesPagamento"/>
-                                    <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
-                                                 label="Orçamento"
-                                                 funcao="orcamento"/>
-                                    <erp:subMenu caminho="/modulo/comercial/vendas/vendas"
-                                                 label="Vendas"
-                                                 funcao="modulo/comercial/vendas/vendas"/>
-                                    <erp:subMenu caminho="/modulo/comercial/vendas/balcao"
-                                                 label="Balcao"
-                                                 funcao="modulo/comercial/vendas/balcao"/>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <ui:include src="menuComercial.xhtml"/>
                 </li>
 
                 <li class="${fn:contains(view.viewId,'estoque')?'active':''}">
@@ -395,16 +373,16 @@
                         <li class="${fn:contains(view.viewId,'modulo/estoque/')?'active':''}">
                             <erp:subMenu caminho="/modulo/estoque/estoqueFormacaoPreco"
                                          label="Formação Preço"
-                                         funcao="formacao"/>
+                                         funcao="estoqueFormacaoPreco"/>
                             <erp:subMenu caminho="/modulo/estoque/requisicaoInternaCabecalho"
                                          label="Requisição Interna"
-                                         funcao="requisicao"/>
+                                         funcao="requisicaoInternaCabecalho"/>
                             <erp:subMenu caminho="/modulo/estoque/estoqueReajuste"
                                          label="Reajuste"
-                                         funcao="reajuste"/>
+                                         funcao="estoqueReajuste"/>
                             <erp:subMenu caminho="/modulo/estoque/entradaNotaFiscal"
                                          label="Entra NFe"
-                                         funcao="entrada nfe"/>
+                                         funcao="entradaNotaFiscal"/>
                         </li>
                     </ul>
                 </li>
@@ -462,6 +440,25 @@
                             <erp:subMenu caminho="/modulo/tributacao/tributIss"
                                          label="ISS - Imposto Sobre Serviços"
                                          funcao="tributIss"/>
+                        </li>
+                    </ul>
+                </li>
+
+                <!--Configuracoes-->
+                <li class="${fn:contains(view.viewId,'configuracoes')?'active':''}">
+                    <a href="#">
+                        <i class="fa fa-th-large"></i>
+                        <span class="nav-label">Configuracoes</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level collapse ">
+                        <li class="${fn:contains(view.viewId,'modulo/configuracoes/')?'active':''}">
+
+
+                            <erp:subMenu caminho="/modulo/configuracoes/notaFiscalTipo"
+                                         label="Modelos Doc Fiscais"
+                                         funcao="notaFiscalTipo"/>
+
                         </li>
                     </ul>
                 </li>

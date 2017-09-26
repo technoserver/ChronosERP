@@ -237,6 +237,12 @@ public class NfeCabecalho implements Serializable {
     public NfeCabecalho() {
     }
 
+    public NfeCabecalho(Integer id, String numero) {
+        this.id = id;
+        this.numero = numero;
+    }
+
+
     public NfeCabecalho(Integer id, Cliente cliente, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota) {
         this.id = id;
         this.cliente = cliente;

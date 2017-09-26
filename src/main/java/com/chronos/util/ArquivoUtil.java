@@ -5,17 +5,20 @@
  */
 package com.chronos.util;
 
+import com.chronos.modelo.entidades.enuns.TipoArquivo;
+import org.primefaces.model.UploadedFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
 import static java.nio.file.FileSystems.getDefault;
-
-import org.primefaces.model.UploadedFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author john
@@ -37,23 +40,20 @@ public class ArquivoUtil {
         criarPastas();
     }
 
-    private void criarPastas() {
-        try {
 
-            Files.createDirectories(this.local);
-            this.localTemporario = getDefault().getPath(this.local.toString(), "temp");
-            Files.createDirectories(this.localTemporario);
+    public String escrever(TipoArquivo tipoArquivo, String cnpj, InputStream origem, String nomeArquivo) throws IOException {
 
-            if (logger.isDebugEnabled()) {
-                logger.debug("Pastas criadas para salvar fotos.");
-                logger.debug("Pasta default: " + this.local.toAbsolutePath());
-                logger.debug("Pasta temporária: " + this.localTemporario.toAbsolutePath());
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException("Erro criando pasta", e);
-        }
+        String arquivo = getDestino(tipoArquivo, cnpj) + System.getProperty("file.separator") + nomeArquivo;
+        FileOutputStream out = new FileOutputStream(arquivo);
+        byte[] bb = new byte[origem.available()];
+        origem.read(bb);
+        out.write(bb);
+        out.close();
+        origem.close();
+        return arquivo;
     }
+
+
 
     private static String diretorioRaiz() {
 
@@ -63,9 +63,7 @@ public class ArquivoUtil {
 
 
 
-    private String diretorio() {
-        return getDefault().getPath(diretorioRaiz(), ".chronos").toString();
-    }
+
 
     public static ArquivoUtil getInstance() {
         if (instance == null) {
@@ -78,6 +76,10 @@ public class ArquivoUtil {
     public String getDiretorioCnpj(String cnpj) {
 
         return diretorio() + System.getProperty("file.separator") + cnpj;
+    }
+
+    public String getCertificado(String cnpj) {
+        return getPastaCertificado(cnpj) + System.getProperty("file.separator") + cnpj + ".pfx";
     }
 
     public String getPastaCertificado(String cnpj) {
@@ -147,6 +149,47 @@ public class ArquivoUtil {
 
         return novoNome;
 
+    }
+
+
+    private void criarPastas() {
+        try {
+
+            Files.createDirectories(this.local);
+            this.localTemporario = getDefault().getPath(this.local.toString(), "temp");
+            Files.createDirectories(this.localTemporario);
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("Pastas criadas para salvar fotos.");
+                logger.debug("Pasta default: " + this.local.toAbsolutePath());
+                logger.debug("Pasta temporária: " + this.localTemporario.toAbsolutePath());
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Erro criando pasta", e);
+        }
+    }
+
+    private String getDestino(TipoArquivo tipoArquivo, String cnpj) {
+        String destino = "";
+        switch (tipoArquivo) {
+            case LogoTransmissao:
+                destino = getPastaImagens(cnpj);
+                break;
+
+            case Certificado:
+                destino = getPastaCertificado(cnpj);
+                break;
+
+            default:
+                destino = local.toString();
+        }
+
+        return destino;
+    }
+
+    private String diretorio() {
+        return getDefault().getPath(diretorioRaiz(), ".chronos").toString();
     }
 
 }

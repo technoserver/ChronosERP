@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:erp="http://java.sun.com/jsf/composite/components">
+
+
+    <ul class="nav nav-second-level collapse ">
+        <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
+            <a href="#">
+                <span class="nav-label">Vendas</span>
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-third-level">
+                <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
+                    <erp:subMenu caminho="/modulo/comercial/vendas/condicoesPagamento"
+                                 label="Condições de Pagamento"
+                                 funcao="condicoesPagamento"/>
+                    <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
+                                 label="Orçamento"
+                                 funcao="orcamento"/>
+                    <erp:subMenu caminho="/modulo/comercial/vendas/vendas"
+                                 label="Vendas"
+                                 funcao="modulo/comercial/vendas/vendas"/>
+                    <erp:subMenu caminho="/modulo/comercial/vendas/balcao"
+                                 label="Balcao"
+                                 funcao="modulo/comercial/vendas/balcao"/>
+                </li>
+            </ul>
+        </li>
+        <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/')?'active':''}">
+            <a href="#">NFe<span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+
+                <erp:subMenu caminho="/modulo/comercial/nfe/statusNfe"
+                             label="Status Serviço"
+                             funcao="statusNfe"/>
+
+                <erp:subMenu caminho="/modulo/comercial/nfe/nfeConfiguracao"
+                             label="Configuração"
+                             funcao="nfeConfiguracao"/>
+
+
+            </ul>
+        </li>
+    </ul>
+
+
+</ui:composition>

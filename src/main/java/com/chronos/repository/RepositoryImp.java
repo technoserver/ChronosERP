@@ -123,8 +123,15 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Override
     public T get(Class<T> clazz, List<Filtro> filtros) throws PersistenceException {
         List<T> objetos = getEntitys(clazz, filtros);
-        return objetos.isEmpty()?null:objetos.get(0);
+        return objetos.stream().findFirst().orElse(null);
     }
+
+    @Override
+    public T get(Class<T> clazz, List<Filtro> filtros, Object[] atributos) throws PersistenceException {
+        List<T> objetos = getEntitys(clazz, filtros, atributos);
+        return objetos.stream().findFirst().orElse(null);
+    }
+
 
 
     @SuppressWarnings("unchecked")
@@ -382,7 +389,9 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         for (Filtro f : filters) {
             i++;
 
-            jpqlBuilder.append(" ").append(f.getOperadorLogico()).append((f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE) ) ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional());
+            jpqlBuilder.append(" ")
+                    .append(f.getOperadorLogico())
+                    .append((f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional());
             if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)){
                 jpqlBuilder.append(":valor").append(i);
             }
