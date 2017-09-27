@@ -62,9 +62,13 @@ public class ConfigurarAmbienteEmissor {
         if (certificado == null) {
             throw new Exception("É Necessário informar os dados do certificado antes do envio !");
         }
+        if (!certificado.isValido()) {
+            throw new Exception("Certificado não é valido data de validade " + certificado.getVencimento());
+        }
         if (configuracoes == null) {
             throw new Exception("É Nescessário iniciar as configurações de transmissao!");
         }
+
     }
 
     public void validarConfiguracoes() throws Exception {

@@ -5,6 +5,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -90,6 +91,12 @@ public class Empresa implements Serializable {
     private Set<Pessoa> listaPessoa;
     @Transient
     private byte[] imagem;
+
+    @PrePersist
+    @PreUpdate
+    private void prePersist() {
+        this.cnpj = cnpj == null ? "" : cnpj.replaceAll("\\D", "");
+    }
 
     public Empresa() {
     }
@@ -449,6 +456,31 @@ public class Empresa implements Serializable {
 	@Override
     public String toString() {
         return razaoSocial;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Empresa other = (Empresa) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 
 }

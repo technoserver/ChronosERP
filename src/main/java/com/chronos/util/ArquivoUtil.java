@@ -106,6 +106,10 @@ public class ArquivoUtil {
         return dir.getAbsolutePath();
     }
 
+    public String getLogoEmpresa(String cnpj, String extensao) {
+        return getPastaImagens(cnpj) + System.getProperty("file.separator") + "logo_empresa_" + cnpj + extensao;
+    }
+
     public String getImagemEmpresa(String cnpj) {
         return getPastaImagens(cnpj) + System.getProperty("file.separator") + "logo_empresa_" + cnpj + ".png";
     }
