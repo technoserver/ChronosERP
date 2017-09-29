@@ -26,7 +26,7 @@
         <jstl.version>1.2</jstl.version>
         <!--Sped fiscal-->
         <java-efd-icms.version>2.0.20.0</java-efd-icms.version>
-
+        <java-sped.version>1.0.0</java-sped.version>
     </properties>
     <repositories>
         <repository>
@@ -53,6 +53,12 @@
             <groupId>br.com.samuelweb</groupId>
             <artifactId>java-efd-icms</artifactId>
             <version>${java-efd-icms.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.chronos.sped</groupId>
+            <artifactId>ChronosEfdIcms</artifactId>
+            <version>${java-sped.version}</version>
         </dependency>
 
         

@@ -271,6 +271,118 @@ CREATE OR REPLACE VIEW view_pessoa_colaborador AS
     JOIN pessoa_endereco e ON e.id_pessoa = p.id
   WHERE p.colaborador = 'S' AND e.principal = 'S';
 
+
+CREATE OR REPLACE VIEW view_pessoa_cliente_empresa AS
+  SELECT
+    c.id,
+    c.id_operacao_fiscal,
+    c.id_pessoa,
+    c.id_atividade_for_cli,
+    c.id_situacao_for_cli,
+    empresa.id                   AS id_empresa,
+    c.desde,
+    c.data_cadastro,
+    c.observacao,
+    c.conta_tomador,
+    c.gera_financeiro,
+    c.indicador_preco,
+    c.porcento_desconto,
+    c.forma_desconto,
+    c.limite_credito,
+    c.tipo_frete,
+    e.logradouro,
+    e.numero,
+    e.complemento,
+    e.bairro,
+    e.cidade,
+    e.cep,
+    e.municipio_ibge,
+    e.uf,
+    e.fone,
+    p.nome,
+    p.tipo,
+    p.email,
+    p.site,
+    pf.cpf                       AS cpf_cnpj,
+    pf.rg                        AS rg_ie,
+    empresa.razao_social         AS empresa_razao_social,
+    empresa.nome_fantasia        AS empresa_nome_fantasia,
+    empresa.cnpj                 AS empresa_cnpj,
+    empresa.inscricao_estadual   AS empresa_inscricao_estadual,
+    empresa.imagem_logotipo      AS empresa_imagem_logotipo,
+    empresa_endereco.logradouro  AS empresa_endereco_logradouro,
+    empresa_endereco.numero      AS empresa_endereco_numero,
+    empresa_endereco.complemento AS empresa_endereco_complemento,
+    empresa_endereco.bairro      AS empresa_endereco_bairro,
+    empresa_endereco.cidade      AS empresa_endereco_cidade,
+    empresa_endereco.cep         AS empresa_endereco_cep,
+    empresa_endereco.fone        AS empresa_endereco_fone,
+    empresa_endereco.uf          AS empresa_endereco_uf,
+    empresa.email                AS empresa_email
+  FROM pessoa p
+    INNER JOIN pessoa_fisica pf ON pf.id_pessoa = p.id
+    INNER JOIN cliente c ON c.id_pessoa = p.id
+    INNER JOIN pessoa_endereco e ON e.id_pessoa = p.id
+    INNER JOIN empresa_pessoa ep ON ep.id_pessoa = p.id
+    INNER JOIN empresa empresa ON ep.id_empresa = empresa.id
+    INNER JOIN empresa_endereco empresa_endereco ON empresa_endereco.id_empresa = empresa.id
+  WHERE empresa_endereco.principal = 'S' AND p.cliente = 'S' AND e.principal = 'S'
+  UNION
+  SELECT
+    c.id,
+    c.id_operacao_fiscal,
+    c.id_pessoa,
+    c.id_atividade_for_cli,
+    c.id_situacao_for_cli,
+    empresa.id                   AS id_empresa,
+    c.desde,
+    c.data_cadastro,
+    c.observacao,
+    c.conta_tomador,
+    c.gera_financeiro,
+    c.indicador_preco,
+    c.porcento_desconto,
+    c.forma_desconto,
+    c.limite_credito,
+    c.tipo_frete,
+    e.logradouro,
+    e.numero,
+    e.complemento,
+    e.bairro,
+    e.cidade,
+    e.cep,
+    e.municipio_ibge,
+    e.uf,
+    e.fone,
+    p.nome,
+    p.tipo,
+    p.email,
+    p.site,
+    pj.cnpj                      AS cpf_cnpj,
+    pj.inscricao_estadual,
+    empresa.razao_social         AS empresa_razao_social,
+    empresa.nome_fantasia        AS empresa_nome_fantasia,
+    empresa.cnpj                 AS empresa_cnpj,
+    empresa.inscricao_estadual   AS empresa_inscricao_estadual,
+    empresa.imagem_logotipo      AS empresa_imagem_logotipo,
+    empresa_endereco.logradouro  AS empresa_endereco_logradouro,
+    empresa_endereco.numero      AS empresa_endereco_numero,
+    empresa_endereco.complemento AS empresa_endereco_complemento,
+    empresa_endereco.bairro      AS empresa_endereco_bairro,
+    empresa_endereco.cidade      AS empresa_endereco_cidade,
+    empresa_endereco.cep         AS empresa_endereco_cep,
+    empresa_endereco.fone        AS empresa_endereco_fone,
+    empresa_endereco.uf          AS empresa_endereco_uf,
+    empresa.email                AS empresa_email
+  FROM pessoa p
+    INNER JOIN pessoa_juridica pj ON pj.id_pessoa = p.id
+    INNER JOIN cliente c ON c.id_pessoa = p.id
+    INNER JOIN pessoa_endereco e ON e.id_pessoa = p.id
+    INNER JOIN empresa_pessoa ep ON ep.id_pessoa = p.id
+    INNER JOIN empresa empresa ON ep.id_empresa = empresa.id
+    INNER JOIN empresa_endereco empresa_endereco ON empresa_endereco.id_empresa = empresa.id
+  WHERE empresa_endereco.principal = 'S' AND p.cliente = 'S' AND e.principal = 'S';
+
 --View FInanceiro
 CREATE OR REPLACE VIEW view_fin_resumo_tesouraria AS
   SELECT
@@ -480,3 +592,195 @@ CREATE OR REPLACE VIEW view_produto_empresa AS
     JOIN unidade_produto un ON un.id = p.id_unidade_produto
     LEFT JOIN produto_marca m ON m.id = p.id_marca_produto
   ORDER BY p.nome;
+
+--View para o SPED
+
+CREATE VIEW VIEW_SPED_NFE_DETALHE AS
+  SELECT
+    NFED.*,
+    NFEC.ID_TRIBUT_OPERACAO_FISCAL,
+    P.ID_UNIDADE_PRODUTO,
+    COFINS.CST_COFINS,
+    COFINS.QUANTIDADE_VENDIDA AS QUANTIDADE_VENDIDA_COFINS,
+    COFINS.BASE_CALCULO_COFINS,
+    COFINS.ALIQUOTA_COFINS_PERCENTUAL,
+    COFINS.ALIQUOTA_COFINS_REAIS,
+    COFINS.VALOR_COFINS,
+    ICMS.ORIGEM_MERCADORIA,
+    ICMS.CST_ICMS,
+    ICMS.CSOSN,
+    ICMS.MODALIDADE_BC_ICMS,
+    ICMS.TAXA_REDUCAO_BC_ICMS,
+    ICMS.BASE_CALCULO_ICMS,
+    ICMS.ALIQUOTA_ICMS,
+    ICMS.VALOR_ICMS,
+    ICMS.MOTIVO_DESONERACAO_ICMS,
+    ICMS.MODALIDADE_BC_ICMS_ST,
+    ICMS.PERCENTUAL_MVA_ICMS_ST,
+    ICMS.PERCENTUAL_REDUCAO_BC_ICMS_ST,
+    ICMS.VALOR_BASE_CALCULO_ICMS_ST,
+    ICMS.ALIQUOTA_ICMS_ST,
+    ICMS.VALOR_ICMS_ST,
+    ICMS.VALOR_BC_ICMS_ST_RETIDO,
+    ICMS.VALOR_ICMS_ST_RETIDO,
+    ICMS.VALOR_BC_ICMS_ST_DESTINO,
+    ICMS.VALOR_ICMS_ST_DESTINO,
+    ICMS.ALIQUOTA_CREDITO_ICMS_SN,
+    ICMS.VALOR_CREDITO_ICMS_SN,
+    ICMS.PERCENTUAL_BC_OPERACAO_PROPRIA,
+    ICMS.UF_ST,
+    II.VALOR_BC_II,
+    II.VALOR_DESPESAS_ADUANEIRAS,
+    II.VALOR_IMPOSTO_IMPORTACAO,
+    II.VALOR_IOF,
+    IPI.ENQUADRAMENTO_IPI,
+    IPI.CNPJ_PRODUTOR,
+    IPI.CODIGO_SELO_IPI,
+    IPI.QUANTIDADE_SELO_IPI,
+    IPI.ENQUADRAMENTO_LEGAL_IPI,
+    IPI.CST_IPI,
+    IPI.VALOR_BASE_CALCULO_IPI,
+    IPI.ALIQUOTA_IPI,
+    IPI.QUANTIDADE_UNIDADE_TRIBUTAVEL,
+    IPI.VALOR_UNIDADE_TRIBUTAVEL,
+    IPI.VALOR_IPI,
+    ISSQN.BASE_CALCULO_ISSQN,
+    ISSQN.ALIQUOTA_ISSQN,
+    ISSQN.VALOR_ISSQN,
+    ISSQN.MUNICIPIO_ISSQN,
+    ISSQN.ITEM_LISTA_SERVICOS,
+    PIS.CST_PIS,
+    PIS.QUANTIDADE_VENDIDA    AS QUANTIDADE_VENDIDA_PIS,
+    PIS.VALOR_BASE_CALCULO_PIS,
+    PIS.ALIQUOTA_PIS_PERCENTUAL,
+    PIS.ALIQUOTA_PIS_REAIS,
+    PIS.VALOR_PIS
+  FROM
+    NFE_DETALHE NFED
+    LEFT JOIN NFE_DETALHE_IMPOSTO_COFINS COFINS ON (COFINS.ID_NFE_DETALHE = NFED.ID)
+    LEFT JOIN NFE_DETALHE_IMPOSTO_ICMS ICMS ON (ICMS.ID_NFE_DETALHE = NFED.ID)
+    LEFT JOIN NFE_DETALHE_IMPOSTO_II II ON (II.ID_NFE_DETALHE = NFED.ID)
+    LEFT JOIN NFE_DETALHE_IMPOSTO_IPI IPI ON (IPI.ID_NFE_DETALHE = NFED.ID)
+    LEFT JOIN NFE_DETALHE_IMPOSTO_ISSQN ISSQN ON (ISSQN.ID_NFE_DETALHE = NFED.ID)
+    LEFT JOIN NFE_DETALHE_IMPOSTO_PIS PIS ON (PIS.ID_NFE_DETALHE = NFED.ID)
+    LEFT JOIN PRODUTO P ON (NFED.ID_PRODUTO = P.ID)
+    LEFT JOIN NFE_CABECALHO NFEC ON (NFED.ID_NFE_CABECALHO = NFEC.ID);
+
+
+CREATE VIEW VIEW_SPED_C190 AS
+  SELECT
+    NFEC.ID,
+    NFED.CST_ICMS,
+    NFED.CFOP,
+    NFED.ALIQUOTA_ICMS,
+    NFEC.DATA_HORA_EMISSAO,
+    SUM(NFED.VALOR_TOTAL)                AS SOMA_VALOR_OPERACAO,
+    SUM(NFED.BASE_CALCULO_ICMS)          AS SOMA_BASE_CALCULO_ICMS,
+    SUM(NFED.VALOR_ICMS)                 AS SOMA_VALOR_ICMS,
+    SUM(NFED.VALOR_BASE_CALCULO_ICMS_ST) AS SOMA_BASE_CALCULO_ICMS_ST,
+    SUM(NFED.VALOR_ICMS_ST)              AS SOMA_VALOR_ICMS_ST,
+    SUM(NFED.VALOR_OUTRAS_DESPESAS)      AS SOMA_VL_RED_BC,
+    SUM(NFED.VALOR_IPI)                  AS SOMA_VALOR_IPI
+  FROM
+    VIEW_SPED_NFE_DETALHE NFED
+    INNER JOIN NFE_CABECALHO NFEC ON (NFED.ID_NFE_CABECALHO = NFEC.ID)
+  GROUP BY NFEC.ID, CST_ICMS, CFOP, ALIQUOTA_ICMS, DATA_HORA_EMISSAO;
+
+
+CREATE VIEW VIEW_SPED_C300
+AS
+  SELECT
+    SERIE,
+    SUBSERIE,
+    DATA_EMISSAO,
+    SUM(TOTAL_NF) AS SOMA_TOTAL_NF,
+    SUM(PIS)      AS SOMA_PIS,
+    SUM(COFINS)   AS SOMA_COFINS
+  FROM
+    ECF_NOTA_FISCAL_CABECALHO
+  GROUP BY
+    SERIE, SUBSERIE, DATA_EMISSAO;
+
+CREATE VIEW VIEW_SPED_C321 AS
+  SELECT
+    NF2D.ID_PRODUTO,
+    U.SIGLA               AS DESCRICAO_UNIDADE,
+    NF2C.DATA_EMISSAO,
+    SUM(NF2D.QUANTIDADE)  AS SOMA_QUANTIDADE,
+    SUM(NF2D.VALOR_TOTAL) AS SOMA_ITEM,
+    SUM(NF2D.DESCONTO)    AS SOMA_DESCONTO,
+    SUM(NF2D.BASE_ICMS)   AS SOMA_BASE_ICMS,
+    SUM(NF2D.ICMS)        AS SOMA_ICMS,
+    SUM(NF2D.PIS)         AS SOMA_PIS,
+    SUM(NF2D.COFINS)      AS SOMA_COFINS
+  FROM
+    ECF_NOTA_FISCAL_DETALHE NF2D, ECF_NOTA_FISCAL_CABECALHO NF2C, PRODUTO P, UNIDADE_PRODUTO U
+  WHERE
+    NF2D.ID_NF_CABECALHO = NF2C.ID AND
+    NF2D.ID_PRODUTO = P.ID AND
+    P.ID_UNIDADE_PRODUTO = U.ID
+  GROUP BY ID_PRODUTO, U.SIGLA, NF2C.DATA_EMISSAO;
+
+CREATE VIEW VIEW_SPED_C370 AS
+  SELECT
+    nd.ID_NF_CABECALHO   AS ID_NF_CABECALHO,
+    nc.DATA_EMISSAO      AS DATA_EMISSAO,
+    nd.ID_PRODUTO        AS ID_PRODUTO,
+    nd.ITEM              AS ITEM,
+    p.ID_UNIDADE_PRODUTO AS ID_UNIDADE_PRODUTO,
+    nd.QUANTIDADE        AS QUANTIDADE,
+    nd.VALOR_TOTAL       AS VALOR_TOTAL,
+    nd.CST               AS CST,
+    nd.DESCONTO          AS DESCONTO
+  FROM ecf_nota_fiscal_detalhe nd
+    INNER JOIN ecf_nota_fiscal_cabecalho nc ON (nd.ID_NF_CABECALHO = nc.ID)
+    INNER JOIN produto p ON (nd.ID_PRODUTO = p.ID);
+
+CREATE VIEW VIEW_SPED_C390 AS
+  SELECT
+    NF2D.CST,
+    NF2D.CFOP,
+    NF2D.TAXA_ICMS,
+    NF2C.DATA_EMISSAO,
+    SUM(NF2D.VALOR_TOTAL) AS SOMA_ITEM,
+    SUM(NF2D.BASE_ICMS)   AS SOMA_BASE_ICMS,
+    SUM(NF2D.ICMS)        AS SOMA_ICMS,
+    SUM(NF2D.ICMS_OUTRAS) AS SOMA_ICMS_OUTRAS
+  FROM
+    ECF_NOTA_FISCAL_DETALHE NF2D
+    INNER JOIN ECF_NOTA_FISCAL_CABECALHO NF2C ON NF2D.ID_NF_CABECALHO = NF2C.ID
+  GROUP BY CST, NF2D.CFOP, TAXA_ICMS, NF2C.DATA_EMISSAO;
+
+
+CREATE VIEW VIEW_SPED_C425 AS
+  SELECT
+    VD.ID_ECF_PRODUTO,
+    U.SIGLA             AS DESCRICAO_UNIDADE,
+    VD.TOTALIZADOR_PARCIAL,
+    VC.DATA_VENDA,
+    SUM(VD.QUANTIDADE)  AS SOMA_QUANTIDADE,
+    SUM(VD.VALOR_TOTAL) AS SOMA_ITEM,
+    SUM(VD.PIS)         AS SOMA_PIS,
+    SUM(VD.COFINS)      AS SOMA_COFINS
+  FROM
+    ECF_VENDA_DETALHE VD
+    INNER JOIN ECF_VENDA_CABECALHO VC ON VD.ID_ECF_VENDA_CABECALHO = VC.ID
+    INNER JOIN PRODUTO P ON VD.ID_ECF_PRODUTO = P.ID
+    INNER JOIN UNIDADE_PRODUTO U ON P.ID_UNIDADE_PRODUTO = U.ID
+  GROUP BY
+    ID_ECF_PRODUTO, U.SIGLA, ID_UNIDADE_PRODUTO, VD.TOTALIZADOR_PARCIAL, DATA_VENDA;
+
+CREATE VIEW VIEW_SPED_C490 AS
+  SELECT
+    VD.CST,
+    VD.CFOP,
+    VD.TAXA_ICMS,
+    VC.DATA_VENDA,
+    SUM(VD.VALOR_TOTAL) AS SOMA_ITEM,
+    SUM(VD.BASE_ICMS)   AS SOMA_BASE_ICMS,
+    SUM(VD.ICMS)        AS SOMA_ICMS
+  FROM
+    ECF_VENDA_DETALHE VD
+    INNER JOIN ECF_VENDA_CABECALHO VC ON VD.ID_ECF_VENDA_CABECALHO = VC.ID
+  WHERE VD.CANCELADO = 'N'
+  GROUP BY CST, VD.CFOP, TAXA_ICMS, DATA_VENDA;

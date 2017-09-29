@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        NF-e
+    </ui:define>
+
+    <ui:define name="tela">
+        #{nfeCabecalhoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        NF-e
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:formularioGrid controller="#{nfeCabecalhoControll}" id="telaGrid">
+            <erp:gridDadosSemForm idDataTable="dataTableNfe" controller="#{nfeCabecalhoControll}">
+                <p:column headerText="Cliente" sortBy="#{row.cliente.pessoa.nome}">
+                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                </p:column>
+                <p:column headerText="Número" sortBy="#{row.numero}" width="120">
+                    <h:outputLabel value="#{row.numero}">
+                        <f:convertNumber type="number" parent="0"/>
+                    </h:outputLabel>
+                </p:column>
+
+                <p:column headerText="Chave Acesso">
+                    <h:outputLabel value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
+                </p:column>
+                <p:column headerText="Data Emissão"
+                          sortBy="#{row.dataHoraEmissao}" width="120">
+                    <h:outputLabel value="#{row.dataHoraEmissao}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor Total" style="text-align: right;" width="100">
+                    <h:outputLabel value="#{row.valorTotal}">
+                        <f:convertNumber pattern="#,###,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Status" sortBy="#{row.statusNota}" width="120">
+                    <h:outputLabel
+                            value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
+                </p:column>
+            </erp:gridDadosSemForm>
+        </erp:formularioGrid>
+
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{nfeCabecalhoControll}"
+                                   nomeFuncao="NFe"
+                                   id="telaDetalhe"
+        >
+
+
+            <p:tabView id="tabNfe">
+                <p:tab title="Dados Principais" id="dadosPrincipais">
+                    <ui:include src="dadosPrincipais.xhtml"/>
+                </p:tab>
+                <p:tab title="Destinatário" id="destinatário">
+                    <ui:include src="dadosDestinatario.xhtml"/>
+                </p:tab>
+                <p:tab title="Itens" id="itens">
+
+                </p:tab>
+                <p:tab title="Totais" id="totais">
+
+                </p:tab>
+                <p:tab title="Duplicatas" id="duplicatas">
+
+                </p:tab>
+                <p:tab title="Transportadora" id="transportadora">
+
+                </p:tab>
+            </p:tabView>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

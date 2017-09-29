@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:panelGroup layout="block" id="panelDadosPrincial">
+        <div class="row">
+
+            <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
+                              id="operacaoFiscal"
+                              label="Operação Fiscal"
+                              itemLabel="#{objeto.descricao}"
+                              controller="#{nfeCabecalhoControll}"
+                              completeMethod="getListaTributOperacaoFiscal"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.tributOperacaoFiscal}"
+                              idComponente="nfeCabecalhoTributOperacaoFiscal"
+                              requerido="true">
+
+            </erp:autoComplete>
+
+            <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                             idComponente="nfeCabecalhoTipoOperacao"
+                             label="Tipo Operacao"
+                             nomeAtributo="#{nfeCabecalhoControll.objeto.tipoOperacao}"
+                             itens="#{nfeCabecalhoControll.tipoOperacaoNfe}"/>
+            <div class="col-xs-12 col-sm-2 col-md-2 group-control">
+                <h:outputLabel value="Finalidade" for="finalidade"/>
+                <h:selectOneMenu class="form-control" id="finalidade"
+                                 value="#{nfeCabecalhoControll.objeto.finalidadeEmissao}">
+                    <f:selectItems value="#{nfeCabecalhoControll.finalidadeEmissaoNfe}"/>
+                    <p:ajax process="@this"/>
+                </h:selectOneMenu>
+            </div>
+            <div class="col-xs-12 col-sm-3 col-md-3">
+                <h:outputLabel value="Numero"
+                               for="nfeCabecalhoNumero"/>
+                <div class="field-action">
+                    <h:inputText class="form-control" id="nfeCabecalhoNumero"
+                                 value="#{nfeCabecalhoControll.objeto.numero}" size="9" readonly="true"/>
+                    <h:commandLink title="Atualizar Numero NFe"
+                                   class="btn btn-default"
+                                   id="btnAtualizarNumNfe"
+                                   action="#{nfeCabecalhoControll.gerarNumeracao}"
+                                   rendered="#{nfeCabecalhoControll.duplicidade}">
+                        <i class="glyphicon glyphicon-refresh"></i>
+                        <p:ajax
+                                update=":formCentro:growl"
+                                process="@form"/>
+                    </h:commandLink>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-5"
+                            idComponente="nfeCabecalhoChaveAcesso" label="Chave Acesso"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.chaveAcessoCompleta}"
+                            tamanhoMaximo="44" somenteLeitura="true"/>
+
+
+            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                            idComponente="nfeCabecalhoSerie" label="Serie"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.serie}"
+                            tamanhoMaximo="3" somenteLeitura="true"/>
+
+
+            <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                             idComponente="nfeCabecalhoIndicadorFormaPagamento"
+                             label="Forma Pagamento"
+                             nomeAtributo="#{nfeCabecalhoControll.objeto.indicadorFormaPagamento}"
+                             itens="#{nfeCabecalhoControll.formaPagamento}"/>
+            <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                           idComponente="nfeCabecalhoDataHoraEntradaSaida"
+                           label="DT/HR Ent/Saida"
+                           nomeAtributo="#{nfeCabecalhoControll.objeto.dataHoraEntradaSaida}"
+                           somenteLeitura="true" formato="dd/MM/yyyy HH:mm"
+                           desabilitado="true"/>
+
+        </div>
+
+        <div class="row">
+            <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-6"
+                                idComponente="nfeCabecalhoInformacoesAddFisco"
+                                label="Informações ao Fisco" linhas="5"
+                                nomeAtributo="#{nfeCabecalhoControll.objeto.informacoesAddFisco}"/>
+            <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-6"
+                                idComponente="nfeCabecalhoInformacoesAddContribuinte"
+                                label="Informações Complementares" linhas="5"
+                                nomeAtributo="#{nfeCabecalhoControll.observacao}"/>
+        </div>
+    </h:panelGroup>
+
+
+</ui:composition>

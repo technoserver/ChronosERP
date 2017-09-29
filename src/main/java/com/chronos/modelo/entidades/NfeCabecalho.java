@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import com.chronos.modelo.entidades.enuns.StatusTransmissao;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -243,7 +245,7 @@ public class NfeCabecalho implements Serializable {
     }
 
 
-    public NfeCabecalho(Integer id, Cliente cliente, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota) {
+    public NfeCabecalho(Integer id, Cliente cliente, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo) {
         this.id = id;
         this.cliente = cliente;
         this.serie = serie;
@@ -253,6 +255,7 @@ public class NfeCabecalho implements Serializable {
         this.digitoChaveAcesso = digitoChaveAcesso;
         this.valorTotal = valorTotal;
         this.statusNota = statusNota;
+        this.codigoModelo = codigoModelo;
     }
 
     public NfeCabecalho(Integer id, Fornecedor fornecedor, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota) {
@@ -265,6 +268,15 @@ public class NfeCabecalho implements Serializable {
         this.digitoChaveAcesso = digitoChaveAcesso;
         this.valorTotal = valorTotal;
         this.statusNota = statusNota;
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void prePersist() {
+        int i = 0;
+        for (NfeDetalhe item : getListaNfeDetalhe()) {
+            item.setNumeroItem(++i);
+        }
     }
 
     public Integer getId() {
@@ -1097,6 +1109,22 @@ public class NfeCabecalho implements Serializable {
         this.urlChave = urlChave;
     }
 
+
+    public String getChaveAcessoCompleta() {
+        return (this.chaveAcesso == null ? "" : this.chaveAcesso) + (this.digitoChaveAcesso == null ? "" : this.digitoChaveAcesso);
+    }
+
+    public String getNomeXml() {
+        String nome = getChaveAcessoCompleta();
+        nome += StatusTransmissao.isAutorizado(this.statusNota) ? "-nfeProc.xml" : "-nfeCanc.xml";
+        return nome;
+    }
+
+    public String getNomePdf() {
+        String nome = getChaveAcessoCompleta();
+        nome += StatusTransmissao.isAutorizado(this.statusNota) ? "-nfeProc.pdf" : "-nfeCanc.pdf";
+        return nome;
+    }
 
     @Override
     public boolean equals(Object o) {

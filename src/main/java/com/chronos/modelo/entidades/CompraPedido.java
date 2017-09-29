@@ -110,6 +110,9 @@ public class CompraPedido implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private Fornecedor fornecedor;
+    @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private Empresa empresa;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "compraPedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CompraPedidoDetalhe> listaCompraPedidoDetalhe;
 
@@ -346,6 +349,14 @@ public class CompraPedido implements Serializable {
 
     public void setListaCompraPedidoDetalhe(Set<CompraPedidoDetalhe> listaCompraPedidoDetalhe) {
         this.listaCompraPedidoDetalhe = listaCompraPedidoDetalhe;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     @Override

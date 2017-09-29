@@ -59,6 +59,7 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
 
         getObjeto().setListaFinParcelaPagar(new HashSet<>());
         getObjeto().setListaFinLctoPagarNtFinanceira(new HashSet<>());
+        getObjeto().setEmpresa(empresa);
     }
 
     @Override

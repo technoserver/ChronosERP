@@ -57,6 +57,7 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
         super.doCreate();
         getObjeto().setDataPedido(new Date());
         getObjeto().setListaCompraPedidoDetalhe(new HashSet<>());
+        getObjeto().setEmpresa(empresa);
     }
 
     @Override
@@ -66,6 +67,7 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
         CompraPedido pedido = dataModel.getRowData(getObjeto().getId().toString());
 
         setObjeto(pedido);
+
     }
 
     @Override

@@ -17,11 +17,14 @@ public class FormatValor {
     private SimpleDateFormat formatoDataUA;
     private SimpleDateFormat formatoDataPTB;
     private SimpleDateFormat formatoDataNota;
+    private SimpleDateFormat formatoAno;
+    private SimpleDateFormat formatoMes;
     private DecimalFormatSymbols simboloDecimal;
 
     private DecimalFormat formatoQuantidade;
     private DecimalFormat formatoValor;
     private DecimalFormat formatoNumeroDocFiscal;
+    private DecimalFormat formatoCodigoNumeroDocFiscal;
     private DecimalFormat formatoSerie;
 
 
@@ -34,7 +37,10 @@ public class FormatValor {
         this.formatoQuantidade = new DecimalFormat("0.0000", simboloDecimal);
         this.formatoValor = new DecimalFormat("0.00", simboloDecimal);
         this.formatoNumeroDocFiscal = new DecimalFormat("000000000");
+        this.formatoCodigoNumeroDocFiscal = new DecimalFormat("00000000");
         this.formatoSerie = new DecimalFormat("000");
+        this.formatoAno = new SimpleDateFormat("yy");
+        this.formatoMes = new SimpleDateFormat("MM");
 
     }
 
@@ -55,6 +61,14 @@ public class FormatValor {
         return formatoDataNota.parse(data);
     }
 
+    public String formatarAno(Date date) {
+        return formatoAno.format(date);
+    }
+
+    public String formatarMes(Date date) {
+        return formatoMes.format(date);
+    }
+
 
     public String formatarSerieToString(Object valor) {
 
@@ -70,6 +84,11 @@ public class FormatValor {
     public String formatarNumeroDocFiscalToString(Object valor) {
 
         return formatoNumeroDocFiscal.format(valor);
+    }
+
+    public String formatarCodigoNumeroDocFiscalToString(Object valor) {
+
+        return formatoCodigoNumeroDocFiscal.format(valor);
     }
 
     public Number formatarNumeroDocFiscalToNumber(String valor) throws ParseException {

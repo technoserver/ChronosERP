@@ -461,16 +461,18 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return query;
     }
 
+    @Transactional
     private boolean executarQueryNativa(String query) {
         boolean result = false;
         try{
-            em.getTransaction().begin();
+            //  em.getTransaction().begin();
             result =  em.createNativeQuery(query).executeUpdate() > 0;
         }catch (Exception ex){
+            ex.printStackTrace();
             logger.error("Erro ao Executa sql " + ex.getMessage().toString());
-            em.getTransaction().commit();
+            // em.getTransaction().commit();
         }finally {
-            fecharConexao();
+            // fecharConexao();
         }
 
         return result;

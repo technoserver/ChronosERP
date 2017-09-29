@@ -4,6 +4,7 @@ package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Optional;
 
 
 @Entity
@@ -35,6 +36,19 @@ public class NotaFiscalTipo implements Serializable {
 
     public NotaFiscalTipo() {
     }
+
+    public NotaFiscalTipo(Integer id, Integer ultimoNumero) {
+        this.id = id;
+        this.ultimoNumero = ultimoNumero;
+    }
+
+    public NotaFiscalTipo(Integer id, String serie, Integer ultimoNumero, Integer idNotaFiscalModelo) {
+        this.id = id;
+        this.serie = serie;
+        this.ultimoNumero = ultimoNumero;
+        this.notaFiscalModelo = new NotaFiscalModelo(idNotaFiscalModelo);
+    }
+
 
     public Integer getId() {
         return id;
@@ -98,6 +112,10 @@ public class NotaFiscalTipo implements Serializable {
 
     public void setNotaFiscalModelo(NotaFiscalModelo notaFiscalModelo) {
         this.notaFiscalModelo = notaFiscalModelo;
+    }
+
+    public Integer proximoNumero() {
+        return Optional.ofNullable(ultimoNumero).orElse(0) + 1;
     }
 
  

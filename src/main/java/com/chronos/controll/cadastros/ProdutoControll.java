@@ -52,6 +52,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private Repository<EmpresaProduto> produtosEmpresa;
     @Inject
     private Repository<ProdutoMarca> marcas;
+    @Inject
+    private Repository<ProdutoAlteracaoItem> produtosAlterado;
     private ProdutoGrupo grupo;
     private ProdutoEmpresaDataModel produtoDataModel;
     private List<EmpresaProduto> listProdutoEmpresa;
@@ -61,6 +63,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private String strGrupo;
     private String strSubGrupo;
     private String inativo;
+    private String nomeProdutoOld;
 
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
@@ -120,7 +123,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void doEdit() {
         super.doEdit();
         grupo = getObjeto().getProdutoSubGrupo().getProdutoGrupo();
-
+        nomeProdutoOld = getObjeto().getNome();
     }
 
     @Override
@@ -153,6 +156,11 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                         produtoEmpresa.setProduto(getObjeto());
                         produtoEmpresa.setQuantidadeEstoque(BigDecimal.ZERO);
                         produtosEmpresa.salvar(produtoEmpresa);
+                    }
+                    //TODO verificar o fluxo de salva produt alterado.
+                    if (!nomeProdutoOld.equals(getObjeto().getNome())) {
+                        ProdutoAlteracaoItem produtoAlteracao = new ProdutoAlteracaoItem();
+
                     }
                 }
             }

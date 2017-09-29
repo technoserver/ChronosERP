@@ -100,4 +100,11 @@ public class FacesUtil {
         return null;
     }
 
+    public static Empresa getEmpresaUsuario() {
+        Usuario user = getUsuarioSessao();
+        return user.getColaborador().getPessoa().getListaEmpresa().stream()
+                .findFirst()
+                .orElse(null);
+    }
+
 }

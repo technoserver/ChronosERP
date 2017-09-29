@@ -25,6 +25,11 @@ public class NotaFiscalModelo implements Serializable {
     public NotaFiscalModelo() {
     }
 
+    public NotaFiscalModelo(Integer id) {
+        this.id = id;
+    }
+
+
     public NotaFiscalModelo(Integer id, String descricao) {
         this.id = id;
         this.descricao = descricao;
