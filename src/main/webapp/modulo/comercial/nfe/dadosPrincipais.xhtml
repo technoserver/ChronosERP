@@ -20,7 +20,7 @@
                               nomeAtributo="#{nfeCabecalhoControll.objeto.tributOperacaoFiscal}"
                               idComponente="nfeCabecalhoTributOperacaoFiscal"
                               requerido="true">
-
+                <p:ajax process="@this" event="itemSelecionado"/>
             </erp:autoComplete>
 
             <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"

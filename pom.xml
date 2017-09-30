@@ -26,7 +26,10 @@
         <jstl.version>1.2</jstl.version>
         <!--Sped fiscal-->
         <java-efd-icms.version>2.0.20.0</java-efd-icms.version>
+        <!--Sped fiscal-->
         <java-sped.version>1.0.0</java-sped.version>
+        <!--Calculo dos tributos-->
+        <chronos-calculoTributario.version>1.0.10</chronos-calculoTributario.version>
     </properties>
     <repositories>
         <repository>
@@ -48,7 +51,12 @@
         </repository>
     </repositories>
     <dependencies>
-
+        <!--Calculo tributario-->
+        <dependency>
+            <groupId>com.chronos.calc</groupId>
+            <artifactId>ChronosCalcTribut</artifactId>
+            <version>${chronos-calculoTributario.version}</version>
+        </dependency>
         <dependency>
             <groupId>br.com.samuelweb</groupId>
             <artifactId>java-efd-icms</artifactId>

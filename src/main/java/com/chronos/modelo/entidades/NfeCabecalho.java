@@ -101,6 +101,8 @@ public class NfeCabecalho implements Serializable {
     private BigDecimal valorTotal;
     @Column(name = "VALOR_SERVICOS")
     private BigDecimal valorServicos;
+    // @Column(name = "VALOR_TOTAL_TRIBUTOS")
+    private BigDecimal valorTotalTributos;
     @Column(name = "BASE_CALCULO_ISSQN")
     private BigDecimal baseCalculoIssqn;
     @Column(name = "VALOR_ISSQN")
@@ -287,122 +289,309 @@ public class NfeCabecalho implements Serializable {
         this.id = id;
     }
 
+
+    /**
+     * cUF - Código da UF do emitente do Documento Fiscal. Utilizar a Tabela do IBGE de código de unidades da federação
+     * (Anexo IX - Tabela de UF, Município e País)
+     *
+     * @return ufEmitente
+     */
     public Integer getUfEmitente() {
         return ufEmitente;
     }
 
+    /**
+     * cUF - Código da UF do emitente do Documento Fiscal. Utilizar a Tabela do IBGE de código de unidades da federação
+     * (Anexo IX - Tabela de UF, Município e País)
+     *
+     * @param ufEmitente
+     */
     public void setUfEmitente(Integer ufEmitente) {
         this.ufEmitente = ufEmitente;
     }
 
+    /**
+     * cNF - Código numérico que compõe a Chave de Acesso. Número aleatório gerado pelo emitente para cada NF-e para
+     * evitar acessos indevidos da NF-e. (v2.0)
+     *
+     * @return
+     */
     public String getCodigoNumerico() {
         return codigoNumerico;
     }
 
+    /**
+     * cNF - Código numérico que compõe a Chave de Acesso. Número aleatório gerado pelo emitente para cada NF-e para
+     * evitar acessos indevidos da NF-e. (v2.0)
+     *
+     * @param codigoNumerico
+     */
     public void setCodigoNumerico(String codigoNumerico) {
         this.codigoNumerico = codigoNumerico;
     }
 
+    /**
+     * natOp - Informar a natureza da operação de que decorrer a saída ou a entrada, tais como: venda, compra,
+     * transferência, devolução, importação, consignação, remessa (para fins de demonstração, de industrialização ou
+     * outra), conforme previsto na alínea 'i', inciso I, art. 19 do CONVÊNIO S/Nº, de 15 de dezembro de 1970.
+     *
+     * @return
+     */
     public String getNaturezaOperacao() {
         return naturezaOperacao;
     }
 
+    /**
+     * natOp - Informar a natureza da operação de que decorrer a saída ou a entrada, tais como: venda, compra,
+     * transferência, devolução, importação, consignação, remessa (para fins de demonstração, de industrialização ou
+     * outra), conforme previsto na alínea 'i', inciso I, art. 19 do CONVÊNIO S/Nº, de 15 de dezembro de 1970.
+     *
+     * @param naturezaOperacao
+     */
     public void setNaturezaOperacao(String naturezaOperacao) {
         this.naturezaOperacao = naturezaOperacao;
     }
 
+    /**
+     * *
+     * indPag - 0=pagamento à vista | 1=pagamento à prazo | 2=outros.
+     *
+     * @return
+     */
     public Integer getIndicadorFormaPagamento() {
         return indicadorFormaPagamento;
     }
 
+    /**
+     * *
+     * indPag - 0=pagamento à vista | 1=pagamento à prazo | 2=outros.
+     *
+     * @param indicadorFormaPagamento
+     */
     public void setIndicadorFormaPagamento(Integer indicadorFormaPagamento) {
         this.indicadorFormaPagamento = indicadorFormaPagamento;
     }
 
+    /**
+     * *
+     * mod - Utilizar o código 55 para identificação da NF-e, emitida em substituição ao modelo 1 ou 1A. 65=NFC-e,
+     * utilizada nas operações de vendas no varejo, onde não for exigida a NF-e por dispositivo legal.
+     */
     public String getCodigoModelo() {
         return codigoModelo;
     }
 
+    /**
+     * *
+     * mod - Utilizar o código 55 para identificação da NF-e, emitida em substituição ao modelo 1 ou 1A. 65=NFC-e,
+     * utilizada nas operações de vendas no varejo, onde não for exigida a NF-e por dispositivo legal.
+     *
+     * @param codigoModelo
+     */
     public void setCodigoModelo(String codigoModelo) {
         this.codigoModelo = codigoModelo;
     }
 
+    /**
+     * serie - Série do Documento Fiscal, preencher com zeros na hipótese de a NF-e não possuir série. (v2.0) Série
+     * 890-899 de uso exclusivo para emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do
+     * site do Fisco (procEmi=2). (v2.0) Serie 900-999 – uso exclusivo de NF-e emitidas no SCAN. (v2.0)
+     *
+     * @return
+     */
     public String getSerie() {
         return serie;
     }
 
+    /**
+     * serie - Série do Documento Fiscal, preencher com zeros na hipótese de a NF-e não possuir série. (v2.0) Série
+     * 890-899 de uso exclusivo para emissão de NF-e avulsa, pelo contribuinte com seu certificado digital, através do
+     * site do Fisco (procEmi=2). (v2.0) Serie 900-999 – uso exclusivo de NF-e emitidas no SCAN. (v2.0)
+     *
+     * @param serie
+     */
     public void setSerie(String serie) {
         this.serie = serie;
     }
 
+    /**
+     * nNF - Número do Documento Fiscal.
+     *
+     * @return
+     */
     public String getNumero() {
         return numero;
     }
 
+    /**
+     * nNF - Número do Documento Fiscal.
+     *
+     * @param numero
+     */
     public void setNumero(String numero) {
         this.numero = numero;
     }
 
+    /**
+     * dhEmi - Data e Hora de emissão do Documento Fiscal
+     *
+     * @return
+     */
     public Date getDataHoraEmissao() {
         return dataHoraEmissao;
     }
 
+    /**
+     * dhEmi - Data e Hora de emissão do Documento Fiscal
+     *
+     * @param dataHoraEmissao
+     */
     public void setDataHoraEmissao(Date dataHoraEmissao) {
         this.dataHoraEmissao = dataHoraEmissao;
     }
 
+    /**
+     * dhSaiEnt - Data e Hora de Saída da Mercadoria/Produto. No caso da NF de entrada, esta é a Data e Hora de entrada.
+     *
+     * @return
+     */
     public Date getDataHoraEntradaSaida() {
         return dataHoraEntradaSaida;
     }
 
+    /**
+     * dhSaiEnt - Data e Hora de Saída da Mercadoria/Produto. No caso da NF de entrada, esta é a Data e Hora de entrada.
+     *
+     * @param dataHoraEntradaSaida
+     */
     public void setDataHoraEntradaSaida(Date dataHoraEntradaSaida) {
         this.dataHoraEntradaSaida = dataHoraEntradaSaida;
     }
 
+    /**
+     * tpNF - 0-entrada / 1-saída
+     *
+     * @return
+     */
     public Integer getTipoOperacao() {
         return tipoOperacao;
     }
 
+    /**
+     * tpNF - 0-entrada / 1-saída
+     *
+     * @param tipoOperacao
+     */
     public void setTipoOperacao(Integer tipoOperacao) {
         this.tipoOperacao = tipoOperacao;
     }
 
+    /**
+     * idDest - Identificador de local de destino da operação - 1=Operação interna; 2=Operação interestadual; 3=Operação
+     * com exterior.
+     *
+     * @return
+     */
     public Integer getLocalDestino() {
         return localDestino;
     }
 
+    /**
+     * idDest - Identificador de local de destino da operação - 1=Operação interna; 2=Operação interestadual; 3=Operação
+     * com exterior.
+     *
+     * @param localDestino
+     */
     public void setLocalDestino(Integer localDestino) {
         this.localDestino = localDestino;
     }
 
+    /**
+     * cMunFG - Informar o município de ocorrência do fato gerador do ICMS. Utilizar a Tabela do IBGE
+     *
+     * @return
+     */
     public Integer getCodigoMunicipio() {
         return codigoMunicipio;
     }
 
+    /**
+     * cMunFG - Informar o município de ocorrência do fato gerador do ICMS. Utilizar a Tabela do IBGE
+     *
+     * @param codigoMunicipio
+     */
     public void setCodigoMunicipio(Integer codigoMunicipio) {
         this.codigoMunicipio = codigoMunicipio;
     }
 
+    /**
+     * tpImp - 0=Sem geração de DANFE; 1=DANFE normal, Retrato; 2=DANFE normal, Paisagem; 3=DANFE Simplificado; 4=DANFE
+     * NFC-e; 5=DANFE NFC-e em mensagem eletrônica. Nota: O envio de mensagem eletrônica pode ser feita de forma
+     * simultânea com a impressão do DANFE. Usar o tpImp=5 na NFC-e quando esta for a única forma de disponibilização do
+     * DANFE.
+     *
+     * @return
+     */
     public Integer getFormatoImpressaoDanfe() {
         return formatoImpressaoDanfe;
     }
 
+    /**
+     * tpImp - 0=Sem geração de DANFE; 1=DANFE normal, Retrato; 2=DANFE normal, Paisagem; 3=DANFE Simplificado; 4=DANFE
+     * NFC-e; 5=DANFE NFC-e em mensagem eletrônica. Nota: O envio de mensagem eletrônica pode ser feita de forma
+     * simultânea com a impressão do DANFE. Usar o tpImp=5 na NFC-e quando esta for a única forma de disponibilização do
+     * DANFE.
+     *
+     * @param formatoImpressaoDanfe
+     */
     public void setFormatoImpressaoDanfe(Integer formatoImpressaoDanfe) {
         this.formatoImpressaoDanfe = formatoImpressaoDanfe;
     }
 
+    /**
+     * tpEmis - 1=Emissão normal (não em contingência); 2=Contingência FS-IA, com impressão do DANFE em formulário de
+     * segurança; 3=Contingência SCAN (Sistema de Contingência do Ambiente Nacional); 4=Contingência DPEC (Declaração
+     * Prévia da Emissão em Contingência); 5=Contingência FS-DA, com impressão do DANFE em formulário de segurança;
+     * 6=Contingência SVC-AN (SEFAZ Virtual de Contingência do AN); 7=Contingência SVC-RS (SEFAZ Virtual de Contingência
+     * do RS); 9=Contingência off-line da NFC-e; Nota: Para a NFC-e somente estão disponíveis e são válidas as opções de
+     * contingência 5 e 9.
+     *
+     * @return
+     */
     public Integer getTipoEmissao() {
         return tipoEmissao;
     }
 
+    /**
+     * tpEmis - 1=Emissão normal (não em contingência); 2=Contingência FS-IA, com impressão do DANFE em formulário de
+     * segurança; 3=Contingência SCAN (Sistema de Contingência do Ambiente Nacional); 4=Contingência DPEC (Declaração
+     * Prévia da Emissão em Contingência); 5=Contingência FS-DA, com impressão do DANFE em formulário de segurança;
+     * 6=Contingência SVC-AN (SEFAZ Virtual de Contingência do AN); 7=Contingência SVC-RS (SEFAZ Virtual de Contingência
+     * do RS); 9=Contingência off-line da NFC-e; Nota: Para a NFC-e somente estão disponíveis e são válidas as opções de
+     * contingência 5 e 9.
+     *
+     * @param tipoEmissao
+     */
     public void setTipoEmissao(Integer tipoEmissao) {
         this.tipoEmissao = tipoEmissao;
     }
 
+    /**
+     * Chave de acesso da NF-e composta por Código da UF + AAMM da emissão + CNPJ do Emitente + Modelo, Série e Número
+     * da NFe + Código Numérico + DV.
+     *
+     * @return
+     */
     public String getChaveAcesso() {
         return chaveAcesso;
     }
 
+    /**
+     * Chave de acesso da NF-e composta por Código da UF + AAMM da emissão + CNPJ do Emitente + Modelo, Série e Número
+     * da NFe + Código Numérico + DV.
+     *
+     * @param chaveAcesso
+     */
     public void setChaveAcesso(String chaveAcesso) {
         this.chaveAcesso = chaveAcesso;
     }
@@ -415,375 +604,844 @@ public class NfeCabecalho implements Serializable {
         this.digitoChaveAcesso = digitoChaveAcesso;
     }
 
+    /**
+     * tpAmb - 1-Produção/ 2-Homologação
+     *
+     * @return
+     */
     public Integer getAmbiente() {
         return ambiente;
     }
 
+    /**
+     * tpAmb - 1-Produção/ 2-Homologação
+     *
+     * @param ambiente
+     */
     public void setAmbiente(Integer ambiente) {
         this.ambiente = ambiente;
     }
 
+    /**
+     * finNFe - 1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução de mercadoria.
+     *
+     * @return
+     */
     public Integer getFinalidadeEmissao() {
         return finalidadeEmissao;
     }
 
+    /**
+     * finNFe - 1=NF-e normal; 2=NF-e complementar; 3=NF-e de ajuste; 4=Devolução de mercadoria.
+     *
+     * @param finalidadeEmissao
+     */
     public void setFinalidadeEmissao(Integer finalidadeEmissao) {
         this.finalidadeEmissao = finalidadeEmissao;
     }
 
+    /**
+     * indFinal - Indica operação com Consumidor final - 0=Normal; 1=Consumidor final;
+     *
+     * @return
+     */
     public Integer getConsumidorOperacao() {
         return consumidorOperacao;
     }
 
+    /**
+     * indFinal - Indica operação com Consumidor final - 0=Normal; 1=Consumidor final;
+     *
+     * @param consumidorOperacao
+     */
     public void setConsumidorOperacao(Integer consumidorOperacao) {
         this.consumidorOperacao = consumidorOperacao;
     }
 
 
+    /**
+     * procEmi - Identificador do processo de emissão da NF-e: 0 - emissão de NF-e com aplicativo do contribuinte; 1 -
+     * emissão de NF-e avulsa pelo Fisco; 2 - emissão de NF-e avulsa, pelo contribuinte com seu certificado digital,
+     * através do site do Fisco; 3- emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
+     *
+     * @return
+     */
     public Integer getProcessoEmissao() {
         return processoEmissao;
     }
 
+    /**
+     * procEmi - Identificador do processo de emissão da NF-e: 0 - emissão de NF-e com aplicativo do contribuinte; 1 -
+     * emissão de NF-e avulsa pelo Fisco; 2 - emissão de NF-e avulsa, pelo contribuinte com seu certificado digital,
+     * através do site do Fisco; 3- emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
+     *
+     * @param processoEmissao
+     */
     public void setProcessoEmissao(Integer processoEmissao) {
         this.processoEmissao = processoEmissao;
     }
 
+    /**
+     *
+     *verProc - Identificador da versão do processo de emissão (informar a versão do aplicativo emissor de NF-e)
+     * @return
+     */
     public String getVersaoProcessoEmissao() {
         return versaoProcessoEmissao;
     }
 
+    /**
+     * verProc - Identificador da versão do processo de emissão (informar a versão do aplicativo emissor de NF-e).
+     *
+     * @param versaoProcessoEmissao
+     */
     public void setVersaoProcessoEmissao(String versaoProcessoEmissao) {
         this.versaoProcessoEmissao = versaoProcessoEmissao;
     }
 
+    /**
+     * dhCont - Informar a data e hora de entrada em contingência no formato AAAA-MM-DDTHH:MM:SS
+     *
+     * @return
+     */
     public Date getDataEntradaContingencia() {
         return dataEntradaContingencia;
     }
 
+    /**
+     * dhCont - Informar a data e hora de entrada em contingência no formato AAAA-MM-DDTHH:MM:SS
+     *
+     * @param dataEntradaContingencia
+     */
     public void setDataEntradaContingencia(Date dataEntradaContingencia) {
         this.dataEntradaContingencia = dataEntradaContingencia;
     }
 
+    /**
+     * xJust - Justificativa da entrada em contingência
+     *
+     * @return
+     */
     public String getJustificativaContingencia() {
         return justificativaContingencia;
     }
 
+    /**
+     * xJust - Justificativa da entrada em contingência
+     *
+     * @param justificativaContingencia
+     */
     public void setJustificativaContingencia(String justificativaContingencia) {
         this.justificativaContingencia = justificativaContingencia;
     }
 
+    /**
+     * vBC - Base de Cálculo do ICMS
+     *
+     * @return
+     */
     public BigDecimal getBaseCalculoIcms() {
         return baseCalculoIcms;
     }
 
+    /**
+     * vBC - Base de Cálculo do ICMS
+     *
+     * @param baseCalculoIcms
+     */
     public void setBaseCalculoIcms(BigDecimal baseCalculoIcms) {
         this.baseCalculoIcms = baseCalculoIcms;
     }
 
+    /**
+     * vICMS - Valor Total do ICMS
+     *
+     * @return
+     */
     public BigDecimal getValorIcms() {
         return valorIcms;
     }
 
+    /**
+     * vICMS - Valor Total do ICMS
+     *
+     * @param valorIcms
+     */
     public void setValorIcms(BigDecimal valorIcms) {
         this.valorIcms = valorIcms;
     }
 
+    /**
+     * vICMSDeson - Valor Total do ICMS desonerado
+     *
+     * @return
+     */
     public BigDecimal getValorIcmsDesonerado() {
         return valorIcmsDesonerado;
     }
 
+    /**
+     * vICMSDeson - Valor Total do ICMS desonerado
+     *
+     * @param valorIcmsDesonerado
+     */
     public void setValorIcmsDesonerado(BigDecimal valorIcmsDesonerado) {
         this.valorIcmsDesonerado = valorIcmsDesonerado;
     }
 
+    /**
+     * vBCST - Base de Cálculo do ICMS ST
+     *
+     * @return
+     */
     public BigDecimal getBaseCalculoIcmsSt() {
         return baseCalculoIcmsSt;
     }
 
+    /**
+     * *
+     * vBCST - Base de Cálculo do ICMS ST
+     *
+     * @param baseCalculoIcmsSt
+     */
     public void setBaseCalculoIcmsSt(BigDecimal baseCalculoIcmsSt) {
         this.baseCalculoIcmsSt = baseCalculoIcmsSt;
     }
 
+    /**
+     * vST - Valor Total do ICMS ST
+     * @return
+     */
     public BigDecimal getValorIcmsSt() {
         return valorIcmsSt;
     }
 
+    /**
+     * vST - Valor Total do ICMS ST
+     *
+     * @param valorIcmsSt
+     */
     public void setValorIcmsSt(BigDecimal valorIcmsSt) {
         this.valorIcmsSt = valorIcmsSt;
     }
 
+    /**
+     * vProd - Valor Total dos produtos e serviços
+     *
+     * @return
+     */
     public BigDecimal getValorTotalProdutos() {
         return valorTotalProdutos;
     }
 
+    /**
+     * vProd - Valor Total dos produtos
+     *
+     * @param valorTotalProdutos
+     */
     public void setValorTotalProdutos(BigDecimal valorTotalProdutos) {
         this.valorTotalProdutos = valorTotalProdutos;
     }
 
+    /**
+     * vFrete - Valor Total do Frete
+     *
+     * @return
+     */
     public BigDecimal getValorFrete() {
         return valorFrete;
     }
 
+    /**
+     * vFrete - Valor Total do Frete
+     *
+     * @param valorFrete
+     */
     public void setValorFrete(BigDecimal valorFrete) {
         this.valorFrete = valorFrete;
     }
 
+    /**
+     * vSeg - Valor Total do Seguro
+     *
+     * @return
+     */
     public BigDecimal getValorSeguro() {
         return valorSeguro;
     }
 
+    /**
+     * vSeg - Valor Total do Seguro
+     *
+     * @param valorSeguro
+     */
     public void setValorSeguro(BigDecimal valorSeguro) {
         this.valorSeguro = valorSeguro;
     }
 
+    /**
+     * vDesc - Valor Total do Desconto
+     *
+     * @return
+     */
     public BigDecimal getValorDesconto() {
         return valorDesconto;
     }
 
+    /**
+     * vDesc - Valor Total do Desconto
+     *
+     * @param valorDesconto
+     */
     public void setValorDesconto(BigDecimal valorDesconto) {
         this.valorDesconto = valorDesconto;
     }
 
+    /**
+     * vII - Valor Total do II
+     *
+     * @return
+     */
     public BigDecimal getValorImpostoImportacao() {
         return valorImpostoImportacao;
     }
 
+    /**
+     * vII - Valor Total do II
+     *
+     * @param valorImpostoImportacao
+     */
     public void setValorImpostoImportacao(BigDecimal valorImpostoImportacao) {
         this.valorImpostoImportacao = valorImpostoImportacao;
     }
 
+    /**
+     * vIPI - Valor Total do IPI
+     *
+     * @return
+     */
     public BigDecimal getValorIpi() {
         return valorIpi;
     }
 
+    /**
+     * vIPI - Valor Total do IPI
+     *
+     * @param valorIpi
+     */
     public void setValorIpi(BigDecimal valorIpi) {
         this.valorIpi = valorIpi;
     }
 
+    /**
+     * vPIS - Valor do PIS
+     *
+     * @return
+     */
     public BigDecimal getValorPis() {
         return valorPis;
     }
 
+    /**
+     * vPIS - Valor do PIS
+     *
+     * @param valorPis
+     */
     public void setValorPis(BigDecimal valorPis) {
         this.valorPis = valorPis;
     }
 
+    /**
+     * vCOFINS - Valor do COFINS - Valor do COFINS
+     *
+     * @return
+     */
     public BigDecimal getValorCofins() {
         return valorCofins;
     }
 
+    /**
+     * vCOFINS - Valor do COFINS - Valor do COFINS
+     *
+     * @param valorCofins
+     */
     public void setValorCofins(BigDecimal valorCofins) {
         this.valorCofins = valorCofins;
     }
 
+    /**
+     * vOutro - Outras Despesas acessórias
+     *
+     * @return
+     */
     public BigDecimal getValorDespesasAcessorias() {
         return valorDespesasAcessorias;
     }
 
+    /**
+     * vOutro - Outras Despesas acessórias
+     *
+     * @param valorDespesasAcessorias
+     */
     public void setValorDespesasAcessorias(BigDecimal valorDespesasAcessorias) {
         this.valorDespesasAcessorias = valorDespesasAcessorias;
     }
 
+    /**
+     * vNF - Valor Total da NF-e [(+) vProd (id:W07) (-) vDesc (id:W10) (+) vICMSST (id:W06) (+) vFrete (id:W09) (+)
+     * vSeg (id:W10) (+) vOutro (id:W15) (+) vII (id:W11) (+) vIPI (id:W12) (+) vServ (id:W19) (NT 2011/004)]
+     *
+     * @return
+     */
     public BigDecimal getValorTotal() {
         return valorTotal;
     }
 
+    /**
+     * vNF - Valor Total da NF-e [(+) vProd (id:W07) (-) vDesc (id:W10) (+) vICMSST (id:W06) (+) vFrete (id:W09) (+)
+     * vSeg (id:W10) (+) vOutro (id:W15) (+) vII (id:W11) (+) vIPI (id:W12) (+) vServ (id:W19) (NT 2011/004)]
+     *
+     * @param valorTotal
+     */
     public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
 
+    /**
+     * vServ - Valor Total dos Serviços sob não-incidência ou não tributados pelo ICMS
+     *
+     * @return
+     */
     public BigDecimal getValorServicos() {
         return valorServicos;
     }
 
+    /**
+     * vServ - Valor Total dos Serviços sob não-incidência ou não tributados pelo ICMS
+     *
+     * @param valorServicos
+     */
     public void setValorServicos(BigDecimal valorServicos) {
         this.valorServicos = valorServicos;
     }
 
+    /**
+     * vBC - Base de Cálculo do ISS
+     *
+     * @return
+     */
     public BigDecimal getBaseCalculoIssqn() {
         return baseCalculoIssqn;
     }
 
+    /**
+     * vBC - Base de Cálculo do ISS
+     *
+     * @param baseCalculoIssqn
+     */
     public void setBaseCalculoIssqn(BigDecimal baseCalculoIssqn) {
         this.baseCalculoIssqn = baseCalculoIssqn;
     }
 
+    /**
+     * vISS - Valor Total do ISS
+     *
+     * @return
+     */
     public BigDecimal getValorIssqn() {
         return valorIssqn;
     }
 
+    /**
+     * vISS - Valor Total do ISS
+     *
+     * @param valorIssqn
+     */
     public void setValorIssqn(BigDecimal valorIssqn) {
         this.valorIssqn = valorIssqn;
     }
 
+    /**
+     * vPIS - Valor do PIS sobre serviços
+     *
+     * @return
+     */
     public BigDecimal getValorPisIssqn() {
         return valorPisIssqn;
     }
 
+    /**
+     * vPIS - Valor do PIS sobre serviços
+     *
+     * @param valorPisIssqn
+     */
     public void setValorPisIssqn(BigDecimal valorPisIssqn) {
         this.valorPisIssqn = valorPisIssqn;
     }
 
+    /**
+     * vCOFINS - Valor do COFINS sobre serviços
+     *
+     * @return
+     */
     public BigDecimal getValorCofinsIssqn() {
         return valorCofinsIssqn;
     }
 
+    /**
+     * vCOFINS - Valor do COFINS sobre serviços
+     *
+     * @param valorCofinsIssqn
+     */
     public void setValorCofinsIssqn(BigDecimal valorCofinsIssqn) {
         this.valorCofinsIssqn = valorCofinsIssqn;
     }
 
+    /**
+     * dCompet - Data da prestação do serviço
+     *
+     * @return
+     */
     public Date getDataPrestacaoServico() {
         return dataPrestacaoServico;
     }
 
+    /**
+     * dCompet - Data da prestação do serviço
+     *
+     * @param dataPrestacaoServico
+     */
     public void setDataPrestacaoServico(Date dataPrestacaoServico) {
         this.dataPrestacaoServico = dataPrestacaoServico;
     }
 
+    /**
+     * vOutro - Valor total outras retenções
+     *
+     * @return
+     */
     public BigDecimal getValorDeducaoIssqn() {
         return valorDeducaoIssqn;
     }
 
+    /**
+     * vOutro - Valor total outras retenções
+     *
+     * @param valorDeducaoIssqn
+     */
     public void setValorDeducaoIssqn(BigDecimal valorDeducaoIssqn) {
         this.valorDeducaoIssqn = valorDeducaoIssqn;
     }
 
+    /**
+     * vDescIncond - Valor total desconto incondicionado
+     *
+     * @return
+     */
     public BigDecimal getOutrasRetencoesIssqn() {
         return outrasRetencoesIssqn;
     }
 
+    /**
+     * vDescIncond - Valor total desconto incondicionado
+     *
+     * @param outrasRetencoesIssqn
+     */
     public void setOutrasRetencoesIssqn(BigDecimal outrasRetencoesIssqn) {
         this.outrasRetencoesIssqn = outrasRetencoesIssqn;
     }
 
+    /**
+     * vDescCond - Valor total desconto condicionado
+     *
+     * @return
+     */
     public BigDecimal getDescontoIncondicionadoIssqn() {
         return descontoIncondicionadoIssqn;
     }
 
+    /**
+     * vDescCond - Valor total desconto incondicionado
+     *
+     * @param descontoIncondicionadoIssqn
+     */
     public void setDescontoIncondicionadoIssqn(BigDecimal descontoIncondicionadoIssqn) {
         this.descontoIncondicionadoIssqn = descontoIncondicionadoIssqn;
     }
 
+    /**
+     * vDescCond - Valor total desconto incondicionado
+     *
+     * @return
+     */
     public BigDecimal getDescontoCondicionadoIssqn() {
         return descontoCondicionadoIssqn;
     }
 
+    /**
+     * vDescCond - Valor total desconto condicionado
+     *
+     * @param descontoCondicionadoIssqn
+     */
     public void setDescontoCondicionadoIssqn(BigDecimal descontoCondicionadoIssqn) {
         this.descontoCondicionadoIssqn = descontoCondicionadoIssqn;
     }
 
+    /**
+     * vISSRet - Valor total retenção ISS
+     *
+     * @return
+     */
     public BigDecimal getTotalRetencaoIssqn() {
         return totalRetencaoIssqn;
     }
 
+    /**
+     * vISSRet - Valor total retenção ISS
+     *
+     * @param totalRetencaoIssqn
+     */
     public void setTotalRetencaoIssqn(BigDecimal totalRetencaoIssqn) {
         this.totalRetencaoIssqn = totalRetencaoIssqn;
     }
 
+    /**
+     * cRegTrib - Código do Regime Especial de Tributação - 1=Microempresa Municipal; 2=Estimativa; 3=Sociedade de
+     * Profissionais; 4=Cooperativa; 5=Microempresário Individual (MEI); 6=Microempresário e Empresa de Pequeno Porte
+     * (ME/EPP)
+     *
+     * @return
+     */
     public Integer getRegimeEspecialTributacao() {
         return regimeEspecialTributacao;
     }
 
+    /**
+     * cRegTrib - Código do Regime Especial de Tributação - 1=Microempresa Municipal; 2=Estimativa; 3=Sociedade de
+     * Profissionais; 4=Cooperativa; 5=Microempresário Individual (MEI); 6=Microempresário e Empresa de Pequeno Porte
+     * (ME/EPP)
+     *
+     * @param regimeEspecialTributacao
+     */
     public void setRegimeEspecialTributacao(Integer regimeEspecialTributacao) {
         this.regimeEspecialTributacao = regimeEspecialTributacao;
     }
 
+    /**
+     * vRetPIS - Valor Retido de PIS
+     *
+     * @return
+     */
     public BigDecimal getValorRetidoPis() {
         return valorRetidoPis;
     }
 
+    /**
+     * vRetPIS - Valor Retido de PIS
+     *
+     * @param valorRetidoPis
+     */
     public void setValorRetidoPis(BigDecimal valorRetidoPis) {
         this.valorRetidoPis = valorRetidoPis;
     }
 
+    /**
+     * vRetCOFINS - Valor Retido de COFINS
+     *
+     * @return
+     */
     public BigDecimal getValorRetidoCofins() {
         return valorRetidoCofins;
     }
 
+    /**
+     * vRetCOFINS - Valor Retido de COFINS
+     *
+     * @param valorRetidoCofins
+     */
     public void setValorRetidoCofins(BigDecimal valorRetidoCofins) {
         this.valorRetidoCofins = valorRetidoCofins;
     }
 
+    /**
+     * vRetCSLL - Valor Retido de CSLL
+     *
+     * @return
+     */
     public BigDecimal getValorRetidoCsll() {
         return valorRetidoCsll;
     }
 
+    /**
+     * vRetCSLL - Valor Retido de CSLL
+     *
+     * @param valorRetidoCsll
+     */
     public void setValorRetidoCsll(BigDecimal valorRetidoCsll) {
         this.valorRetidoCsll = valorRetidoCsll;
     }
 
+    /**
+     * vBCIRRF - Base de Cálculo do IRRF
+     *
+     * @return
+     */
     public BigDecimal getBaseCalculoIrrf() {
         return baseCalculoIrrf;
     }
 
+    /**
+     * vBCIRRF - Base de Cálculo do IRRF
+     *
+     * @param baseCalculoIrrf
+     */
     public void setBaseCalculoIrrf(BigDecimal baseCalculoIrrf) {
         this.baseCalculoIrrf = baseCalculoIrrf;
     }
 
+    /**
+     * vIRRF - Valor Retido do IRRF
+     *
+     * @return
+     */
     public BigDecimal getValorRetidoIrrf() {
         return valorRetidoIrrf;
     }
 
+    /**
+     * vIRRF - Valor Retido do IRRF
+     *
+     * @param valorRetidoIrrf
+     */
     public void setValorRetidoIrrf(BigDecimal valorRetidoIrrf) {
         this.valorRetidoIrrf = valorRetidoIrrf;
     }
 
+    /**
+     * vBCRetPrev - Base de Cálculo da Retenção da Previdência Social
+     *
+     * @return
+     */
     public BigDecimal getBaseCalculoPrevidencia() {
         return baseCalculoPrevidencia;
     }
 
+    /**
+     * vBCRetPrev - Base de Cálculo da Retenção da Previdência Social
+     *
+     * @param baseCalculoPrevidencia
+     */
     public void setBaseCalculoPrevidencia(BigDecimal baseCalculoPrevidencia) {
         this.baseCalculoPrevidencia = baseCalculoPrevidencia;
     }
 
+    /**
+     * vRetPrev - Valor da Retenção da Previdência Social
+     *
+     * @return
+     */
     public BigDecimal getValorRetidoPrevidencia() {
         return valorRetidoPrevidencia;
     }
 
+    /**
+     * vRetPrev - Valor da Retenção da Previdência Social
+     *
+     * @param valorRetidoPrevidencia
+     */
     public void setValorRetidoPrevidencia(BigDecimal valorRetidoPrevidencia) {
         this.valorRetidoPrevidencia = valorRetidoPrevidencia;
     }
 
+    /**
+     * UFSaidaPais - Sigla da UF de Embarque ou de transposição de fronteira (antigo UFEmbarq)
+     *
+     * @return
+     */
     public String getComexUfEmbarque() {
         return comexUfEmbarque;
     }
 
+    /**
+     * UFSaidaPais - Sigla da UF de Embarque ou de transposição de fronteira (antigo UFEmbarq)
+     *
+     * @param comexUfEmbarque
+     */
     public void setComexUfEmbarque(String comexUfEmbarque) {
         this.comexUfEmbarque = comexUfEmbarque;
     }
 
+    /**
+     * xLocExporta - Descrição do Local de Embarque ou de transposição de fronteira (antigo xLocEmbarq)
+     *
+     * @return
+     */
     public String getComexLocalEmbarque() {
         return comexLocalEmbarque;
     }
 
+    /**
+     * xLocExporta - Descrição do Local de Embarque ou de transposição de fronteira (antigo xLocEmbarq)
+     *
+     * @param comexLocalEmbarque
+     */
     public void setComexLocalEmbarque(String comexLocalEmbarque) {
         this.comexLocalEmbarque = comexLocalEmbarque;
     }
 
+    /**
+     * xLocDespacho - Descrição do local de despacho
+     *
+     * @return
+     */
     public String getComexLocalDespacho() {
         return comexLocalDespacho;
     }
 
+    /**
+     * xLocDespacho - Descrição do local de despacho
+     *
+     * @param comexLocalDespacho
+     */
     public void setComexLocalDespacho(String comexLocalDespacho) {
         this.comexLocalDespacho = comexLocalDespacho;
     }
 
+    /**
+     * xNEmp - Informar a identificação da Nota de Empenho, quando se tratar de compras públicas
+     *
+     * @return
+     */
     public String getCompraNotaEmpenho() {
         return compraNotaEmpenho;
     }
 
+    /**
+     * xNEmp - Informar a identificação da Nota de Empenho, quando se tratar de compras públicas
+     *
+     * @param compraNotaEmpenho
+     */
     public void setCompraNotaEmpenho(String compraNotaEmpenho) {
         this.compraNotaEmpenho = compraNotaEmpenho;
     }
 
+    /**
+     * xPed - Informar o pedido.
+     *
+     * @return
+     */
     public String getCompraPedido() {
         return compraPedido;
     }
 
+    /**
+     * xPed - Informar o pedido.
+     *
+     * @param compraPedido
+     */
     public void setCompraPedido(String compraPedido) {
         this.compraPedido = compraPedido;
     }
-
     public String getCompraContrato() {
         return compraContrato;
     }
@@ -1109,6 +1767,13 @@ public class NfeCabecalho implements Serializable {
         this.urlChave = urlChave;
     }
 
+    public BigDecimal getValorTotalTributos() {
+        return valorTotalTributos;
+    }
+
+    public void setValorTotalTributos(BigDecimal valorTotalTributos) {
+        this.valorTotalTributos = valorTotalTributos;
+    }
 
     public String getChaveAcessoCompleta() {
         return (this.chaveAcesso == null ? "" : this.chaveAcesso) + (this.digitoChaveAcesso == null ? "" : this.digitoChaveAcesso);

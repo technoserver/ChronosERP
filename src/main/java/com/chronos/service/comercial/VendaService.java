@@ -1,4 +1,4 @@
-package com.chronos.service.comercial.vendas;
+package com.chronos.service.comercial;
 
 import java.io.Serializable;
 

@@ -73,7 +73,26 @@
                     <ui:include src="dadosDestinatario.xhtml"/>
                 </p:tab>
                 <p:tab title="Itens" id="itens">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h:commandLink title="Novo" class="btn btn-default"
+                                           actionListener="#{nfeCabecalhoControll.inlcuirProduto}"
+                                           type="button" id="btnIcluirProduto"
+                            >
+                                <i class="glyphicon glyphicon-plus"/>
+                                <p:ajax update=":formCentro:growl,:formOutrasTelas:panelNfeDetalhe,:formOutrasTelas:dialogNfeDetalhe"
+                                        process="@this"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+                    <p:dataTable id="dataTableNfeDetalhe" var="obj"
+                                 value="#{nfeCabecalhoControll.objeto.listaNfeDetalhe}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 selection="#{nfeCabecalhoControll.nfeDetalheSelecionado}"
+                                 rowKey="#{obj.numeroItem}" reflow="true" paginatorPosition="bottom"
+                                 resizableColumns="true" sortOrder="numeroitem">
 
+                    </p:dataTable>
                 </p:tab>
                 <p:tab title="Totais" id="totais">
 
@@ -88,6 +107,43 @@
 
 
         </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogNfeDetalhe"
+                      header="Inclusão/Alteração de Produto/Serviço" responsive="true"
+                      widgetVar="dialogNfeDetalhe" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800"
+                      visible="#{nfeCabecalhoControll.podeIncluirProduto}">
+
+                <p:outputPanel id="panelNfeDetalhe">
+                    <ui:include src="dialogProduto.xhtml"/>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar"
+                                             action="#{nfeCabecalhoControll.salvaProduto}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogNfeDetalhe').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,navegacao,:formCentro:mensagem"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogNfeDetalhe').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 </ui:composition>

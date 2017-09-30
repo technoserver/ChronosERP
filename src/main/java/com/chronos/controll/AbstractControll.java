@@ -6,6 +6,7 @@
 package com.chronos.controll;
 
 import com.chronos.modelo.entidades.Empresa;
+import com.chronos.modelo.entidades.EmpresaEndereco;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.modelo.entidades.enuns.Estados;
 import com.chronos.repository.Repository;
@@ -45,6 +46,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private int activeTabIndex;
     protected Usuario usuario;
     protected Empresa empresa;
+    protected EmpresaEndereco enderecoEmpresa;
     protected Object[] atributos;
     protected Object[] joinFetch;
 

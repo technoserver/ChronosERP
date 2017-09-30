@@ -113,6 +113,12 @@ public class NfeDetalhe implements Serializable {
     private Set<NfeDeclaracaoImportacao> listaDeclaracaoImportacao;
     @Transient
     private boolean produtoCadastrado;
+    @Transient
+    private BigDecimal impostoFederal;
+    @Transient
+    private BigDecimal impostoEstadual;
+    @Transient
+    private BigDecimal impostoMunicipal;
 
     public NfeDetalhe() {
     }
@@ -497,6 +503,30 @@ public class NfeDetalhe implements Serializable {
 
     public void setProdutoCadastrado(boolean produtoCadastrado) {
         this.produtoCadastrado = produtoCadastrado;
+    }
+
+    public BigDecimal getImpostoFederal() {
+        return impostoFederal;
+    }
+
+    public void setImpostoFederal(BigDecimal impostoFederal) {
+        this.impostoFederal = impostoFederal;
+    }
+
+    public BigDecimal getImpostoEstadual() {
+        return impostoEstadual;
+    }
+
+    public void setImpostoEstadual(BigDecimal impostoEstadual) {
+        this.impostoEstadual = impostoEstadual;
+    }
+
+    public BigDecimal getImpostoMunicipal() {
+        return impostoMunicipal;
+    }
+
+    public void setImpostoMunicipal(BigDecimal impostoMunicipal) {
+        this.impostoMunicipal = impostoMunicipal;
     }
 
     public void pegarInfoProduto() {

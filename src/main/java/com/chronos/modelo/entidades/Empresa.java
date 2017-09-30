@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -430,8 +431,8 @@ public class Empresa implements Serializable {
     }
 
 	public Set<EmpresaEndereco> getListaEndereco() {
-		return listaEndereco;
-	}
+        return Optional.ofNullable(listaEndereco).orElse(null);
+    }
 
 	public void setListaEndereco(Set<EmpresaEndereco> listaEndereco) {
 		this.listaEndereco = listaEndereco;
@@ -452,6 +453,10 @@ public class Empresa implements Serializable {
 	public void setListaPessoa(Set<Pessoa> listaPessoa) {
 		this.listaPessoa = listaPessoa;
 	}
+
+    public EmpresaEndereco buscarEnderecoPrincipal() {
+        return getListaEndereco().stream().filter(e -> e.getPrincipal().equals("S")).findFirst().orElse(null);
+    }
 
 	@Override
     public String toString() {

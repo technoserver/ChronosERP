@@ -170,12 +170,25 @@ public class Produto implements Serializable {
         this.nome = nome;
     }
 
-    public Produto(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, UnidadeProduto unidadeProduto) {
+
+    public Produto(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, String ncm, UnidadeProduto unidadeProduto) {
+        this.id = id;
+        this.nome = nome;
+        this.valorVenda = valorVenda;
+        this.quantidadeEstoque = quantidadeEstoque;
+        this.ncm = ncm;
+        this.unidadeProduto = unidadeProduto;
+    }
+
+    public Produto(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, String ncm, Integer idgrupotributario, Integer idicms, UnidadeProduto unidadeProduto) {
         this.id = id;
         this.nome = nome;
         this.valorVenda = valorVenda;
         this.quantidadeEstoque = quantidadeEstoque;
         this.unidadeProduto = unidadeProduto;
+        this.ncm = ncm;
+        this.tributGrupoTributario = new TributGrupoTributario(idgrupotributario);
+        this.tributIcmsCustomCab = new TributIcmsCustomCab(idicms);
     }
 
     public Produto(Integer id, String nome, BigDecimal valorCompra, BigDecimal valorVenda,BigDecimal markup) {

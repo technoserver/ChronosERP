@@ -1,7 +1,10 @@
-package com.chronos.service.comercial.vendas.nfe;
+package com.chronos.service.comercial;
 
 import com.chronos.bo.nfe.NfeTransmissao;
+import com.chronos.bo.nfe.NfeUtil;
+import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
+import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.*;
@@ -31,12 +34,62 @@ public class NfeService implements Serializable {
     @Inject
     private Repository<NotaFiscalModelo> modelos;
     @Inject
+    private Repository<NfeConfiguracao> configuracoesNfe;
+    @Inject
+    private Repository<NfceConfiguracao> configuracoesNfce;
+
+    @Inject
+    private EstoqueRepository produtos;
+
+    @Inject
     private ExternalContext context;
+
 
     @PostConstruct
     private void init() {
         empresa = FacesUtil.getEmpresaUsuario();
         context = FacesContext.getCurrentInstance().getExternalContext();
+    }
+
+    public void dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa) throws Exception {
+        NfeUtil nfeUtil = new NfeUtil();
+
+        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa);
+        setarConfiguracoesNFe(nfe, modelo);
+    }
+
+    public void setarConfiguracoesNFe(NfeCabecalho nfe, ModeloDocumento modelo) throws Exception {
+        List<Filtro> filtros = new LinkedList<>();
+        filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
+
+
+        if (modelo == ModeloDocumento.NFE) {
+            NfeConfiguracao configuracao = configuracoesNfe.get(NfeConfiguracao.class, filtros);
+
+            if (configuracao == null) {
+                throw new Exception("Configurações da NF-e  não definidas");
+            }
+            nfe.setAmbiente(configuracao.getWebserviceAmbiente());
+            nfe.setProcessoEmissao(configuracao.getProcessoEmissao());
+            nfe.setVersaoProcessoEmissao(configuracao.getVersaoProcessoEmissao());
+
+            nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
+
+
+        } else {
+            NfceConfiguracao configuracao = configuracoesNfce.get(NfceConfiguracao.class, filtros);
+            if (configuracao == null) {
+                throw new Exception("Configurações da NFC-e  não definidas");
+            }
+
+            nfe.setAmbiente(configuracao.getWebserviceAmbiente());
+            nfe.setProcessoEmissao(configuracao.getProcessoEmissao());
+            nfe.setVersaoProcessoEmissao(configuracao.getVersaoProcessoEmissao());
+            nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
+
+
+        }
+
     }
 
     public String inutilizarNFe(NfeConfiguracao configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
@@ -148,4 +201,38 @@ public class NfeService implements Serializable {
     }
 
 
+    public void validar(NfeCabecalho nfe) throws Exception {
+        if (nfe.getListaNfeDetalhe().isEmpty()) {
+            throw new Exception("Não foi informado nenhum produto");
+        }
+    }
+
+
+    public NfeDetalhe definirTributacao(NfeDetalhe item, TributOperacaoFiscal operacaoFiscal, NfeDestinatario destinatario) throws Exception {
+        NfeUtil nfeUtil = new NfeUtil();
+
+        item = nfeUtil.defineTributacao(item, empresa, operacaoFiscal, destinatario);
+        return item;
+    }
+
+    public NfeCabecalho atualizarTotais(NfeCabecalho nfe) throws Exception {
+
+        NfeUtil nFeUtil = new NfeUtil();
+        return nFeUtil.calcularTotalNFe(nfe);
+    }
+
+    public List<Produto> getListaProduto(String descricao) throws Exception {
+        List<Produto> listaProduto;
+        List<Filtro> filtros = new ArrayList<>();
+        if (org.apache.commons.lang3.StringUtils.isNumeric(descricao)) {
+            filtros.add(new Filtro(Filtro.AND, "id", Filtro.IGUAL, descricao));
+            // listaProduto = produtoDao.getEntitys(Produto.class, filtros);
+        } else {
+            filtros.add(new Filtro(Filtro.AND, "nome", Filtro.LIKE, descricao.trim()));
+            //  listaProduto = produtoDao.getEntitys(Produto.class, filtros);
+        }
+
+        listaProduto = produtos.getProdutoEmpresa(descricao, empresa);
+        return listaProduto;
+    }
 }

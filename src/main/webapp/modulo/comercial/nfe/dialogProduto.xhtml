@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <h:panelGroup rendered="#{nfeCabecalhoControll.objeto.finalidadeEmissao == 1}">
+        <div class="row">
+            <div class="col-xs-12 col-sm-8 col-md-8">
+                <p:outputLabel value="Produto" for="nfeDetalheProduto"/>
+                <br/>
+                <p:autoComplete id="nfeDetalheProduto"
+                                value="#{nfeCabecalhoControll.nfeDetalhe.produto}"
+                                completeMethod="#{nfeCabecalhoControll.getListaProduto}"
+                                var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"
+                                converter="defaultConverter" forceSelection="true"
+                                minQueryLength="3" maxResults="20" required="true"
+                                style="width: 100%" emptyMessage="Nenhum registro encontrado">
+                    <p:ajax event="itemSelect"
+                            listener="#{nfeCabecalhoControll.selecionaValorProduto}"
+                    />
+                </p:autoComplete>
+            </div>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeDetalheQuantidadeComercial" label="Quantidade"
+                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.quantidadeComercial}"
+                              requerido="true"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeDetalheValorUnitarioComercial" label="Valor"
+                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorUnitarioComercial}"
+                              requerido="true"/>
+
+
+        </div>
+        <div class="row">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
+                              idComponente="nfeDetalheValorFrete" label="Valor Frete"
+                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorFrete}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
+                              idComponente="nfeDetalheValorSeguro" label="Valor Seguro"
+                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorSeguro}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
+                              idComponente="nfeDetalheValorDesconto" label="Valor Desconto"
+                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorDesconto}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
+                              idComponente="nfeDetalheValorOutrasDespesas"
+                              label="Outras Despesas"
+                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorOutrasDespesas}"/>
+        </div>
+
+        <div class="row">
+            <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                idComponente="nfeDetalheInformacoesAdcionais"
+                                label="Info. Adcionais"
+                                nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.informacoesAdicionais}"
+                                linhas="5"/>
+        </div>
+    </h:panelGroup>
+
+
+</ui:composition>

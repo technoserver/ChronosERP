@@ -122,6 +122,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Override
     public void doEdit() {
         super.doEdit();
+        Produto produto = dao.getJoinFetch(produtoSelecionado.getId(), Produto.class);
+        setObjeto(produto);
         grupo = getObjeto().getProdutoSubGrupo().getProdutoGrupo();
         nomeProdutoOld = getObjeto().getNome();
     }
@@ -341,5 +343,11 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         this.inativo = inativo;
     }
 
+    public ViewProdutoEmpresa getProdutoSelecionado() {
+        return produtoSelecionado;
+    }
 
+    public void setProdutoSelecionado(ViewProdutoEmpresa produtoSelecionado) {
+        this.produtoSelecionado = produtoSelecionado;
+    }
 }

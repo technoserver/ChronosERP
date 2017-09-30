@@ -82,11 +82,15 @@ public class TributConfiguraOfGtControll extends AbstractControll<TributConfigur
 
     public void incluirTributIcmsUf() {
         tributIcmsUf = new TributIcmsUf();
+        tributIcmsUf.setModalidadeBc("03");
+        tributIcmsUf.setModalidadeBcSt("04");
         tributIcmsUf.setTributConfiguraOfGt(getObjeto());
     }
 
     public void alterarTributIcmsUf() {
         tributIcmsUf = tributIcmsUfSelecionado;
+        tributIcmsUf.setModalidadeBc("3");
+        tributIcmsUf.setModalidadeBcSt("4");
     }
 
     public void salvarTributIcmsUf() {

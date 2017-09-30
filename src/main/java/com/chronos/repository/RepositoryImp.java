@@ -397,14 +397,8 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
             }
         }
         jpql = jpqlBuilder.toString();
-
-        if (sortField != null && sortOrder != null) {
-            if (sortOrder.equals(SortOrder.ASCENDING)) {
-                jpql += " ORDER BY o." + sortField + " ASC";
-            } else if (sortOrder.equals(SortOrder.DESCENDING)) {
-                jpql += " ORDER BY o." + sortField + " DESC";
-            }
-        }
+        QueryUtil queryUtil = new QueryUtil();
+        jpql = queryUtil.definirOrdenacao(jpql, sortField, sortOrder);
         return jpql;
     }
 
@@ -465,37 +459,18 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     private boolean executarQueryNativa(String query) {
         boolean result = false;
         try{
-            //  em.getTransaction().begin();
+
             result =  em.createNativeQuery(query).executeUpdate() > 0;
         }catch (Exception ex){
             ex.printStackTrace();
             logger.error("Erro ao Executa sql " + ex.getMessage().toString());
-            // em.getTransaction().commit();
+
         }finally {
-            // fecharConexao();
+
         }
 
         return result;
     }
 
-    private void fecharConexao() {
-        if (em != null && em.isOpen()) {
-            try {
-                if (em.getTransaction() != null && em.getTransaction().isActive()) {
-                    if (em.getTransaction().getRollbackOnly()) {
-                        em.getTransaction().rollback();
-                    } else {
-                        em.getTransaction().commit();
-                    }
-                }
-            } catch (Exception e) {
-                if (em.getTransaction() != null && em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                throw e;
-            } finally {
-                em.close();
-            }
-        }
-    }
+
 }

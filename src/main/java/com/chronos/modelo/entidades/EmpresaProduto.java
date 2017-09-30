@@ -43,6 +43,12 @@ public class EmpresaProduto implements Serializable {
         this.quantidadeEstoque = quantidadeEstoque;
     }
 
+    public EmpresaProduto(Integer id, BigDecimal quantidadeEstoque, Integer idproduto, String nome, BigDecimal valorVenda) {
+        this.id = id;
+        this.quantidadeEstoque = quantidadeEstoque;
+        this.produto = new Produto(idproduto, nome, valorVenda);
+    }
+
     public EmpresaProduto(Integer id) {
         this.id = id;
     }

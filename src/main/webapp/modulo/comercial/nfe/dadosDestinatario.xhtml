@@ -10,6 +10,7 @@
     <div class="row">
         <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
                           label="Selecione o Cliente:"
+                          id="pessoaCliente"
                           itemLabel="#{objeto.nome}"
                           controller="#{nfeCabecalhoControll}"
                           completeMethod="getListaPessoaCliente"
@@ -19,7 +20,7 @@
 
             <p:ajax event="itemSelecionado"
                     listener="#{nfeCabecalhoControll.selecionaDestinatario}"
-                    update="nfeDestinatarioSelecao,:formCentro:tabNfe:dadosDestinatario"/>
+                    update="nfeDestinatarioSelecao,:formCentro:telaDetalhe:tabNfe:dadosDestinatario"/>
 
         </erp:autoComplete>
     </div>

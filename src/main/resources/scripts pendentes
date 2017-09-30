@@ -4,11 +4,13 @@ mensagem ao abri o cadastro de grupos
 
 
 
-definir a senha padrao do usuaio
+definir a senha padrao do usuario
 
 
-
+definir credito do icms
 
 criar os relacionamento da empresa produto
 
 colocar o crt da empresa na populacao dos dados
+
+cria campo valorTotalTributos em nfecabecalho

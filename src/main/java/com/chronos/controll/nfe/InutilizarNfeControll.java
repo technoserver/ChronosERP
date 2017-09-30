@@ -4,7 +4,7 @@ import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.NfeConfiguracao;
 import com.chronos.modelo.entidades.NotaFiscalTipo;
 import com.chronos.repository.Repository;
-import com.chronos.service.comercial.vendas.nfe.NfeService;
+import com.chronos.service.comercial.NfeService;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 
