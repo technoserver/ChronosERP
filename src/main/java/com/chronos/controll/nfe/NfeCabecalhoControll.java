@@ -2,13 +2,17 @@ package com.chronos.controll.nfe;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.LocalDestino;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.enuns.StatusTransmissao;
 import com.chronos.modelo.entidades.view.PessoaCliente;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.util.ArquivoUtil;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
@@ -16,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -35,6 +40,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private Repository<PessoaCliente> pessoas;
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
+    @Inject
+    private Repository<NfeConfiguracao> configuracoes;
 
 
     @Inject
@@ -46,6 +53,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeReferenciada nfeReferenciada;
     private NfeReferenciada nfeReferenciadaSelecionado;
     private VendaCondicoesPagamento condicoesPagamento;
+    private NfeConfiguracao configuracao;
     private int qtdParcelas;
     private int intervaloParcelas;
     private Date primeiroVencimento;
@@ -53,6 +61,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private boolean podeIncluirProduto;
     private boolean duplicidade;
     private boolean dadosSalvos;
+    private String justificativa;
 
     @PostConstruct
     @Override
@@ -187,7 +196,6 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     }
 
 
-
     public void excluirProduto() {
         try {
             if (nfeDetalheSelecionado == null) {
@@ -245,10 +253,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         nfeDetalhe.getNfeDetalheImpostoIpi().setNfeDetalhe(nfeDetalhe);
         nfeDetalhe.setNfeDetalheImpostoIi(new NfeDetalheImpostoIi());
         nfeDetalhe.getNfeDetalheImpostoIi().setNfeDetalhe(nfeDetalhe);
-
-        nfeDetalhe.setListaArmamento(new HashSet<>());
-        nfeDetalhe.setListaMedicamento(new HashSet<>());
-        nfeDetalhe.setListaDeclaracaoImportacao(new HashSet<>());
+//
+//        nfeDetalhe.setListaArmamento(new HashSet<>());
+//        nfeDetalhe.setListaMedicamento(new HashSet<>());
+//        nfeDetalhe.setListaDeclaracaoImportacao(new HashSet<>());
     }
 
     // </editor-fold>
@@ -318,7 +326,98 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos NFe">
+    public NfeConfiguracao configuraNfe() throws Exception {
+        List<Filtro> filtros = new LinkedList<>();
+        filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
+        configuracao = configuracoes.get(NfeConfiguracao.class, filtros);
+        return configuracao;
+    }
 
+    public void danfe() {
+
+
+        try {
+            String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj());
+            String arquivoPdf = pastaXml + System.getProperty("file.separator") + getObjeto().getNomePdf();
+            String caminhoXml = pastaXml + System.getProperty("file.separator") + getObjeto().getNomeXml();
+            File fileXml = new File(caminhoXml);
+            File filePdf = new File(arquivoPdf);
+
+            if (!filePdf.exists() && !fileXml.exists()) {
+
+            }
+
+            if (filePdf.exists()) {
+                FacesUtil.downloadArquivo(filePdf, filePdf.getName());
+            } else {
+                nfeService.gerarDanfe(getObjeto());
+                FacesUtil.downloadArquivo(filePdf, filePdf.getName());
+            }
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+    }
+
+
+    public void transmitirNfe() {
+        try {
+            if (dadosSalvos) {
+
+                configuracao = configuracao != null ? configuracao : configuraNfe();
+
+                StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), configuracao);
+                if (status == StatusTransmissao.AUTORIZADA) {
+                    Mensagem.addInfoMessage("NFe transmitida com sucesso");
+                } else {
+                    duplicidade = status == StatusTransmissao.DUPLICIDADE;
+                }
+
+            } else {
+                Mensagem.addInfoMessage("Antes de enviar a NF-e é necessário salvar as informações!");
+            }
+        } catch (EmissorException ex) {
+            if (ex.getMessage().contains("Read timed out")) {
+                try {
+                    getObjeto().setStatusNota(StatusTransmissao.ENVIADA.getCodigo());
+                    dao.atualizar(getObjeto());
+                } catch (Exception ex1) {
+
+                }
+            }
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
+        }
+    }
+
+    public void cartaCorrecao() {
+
+    }
+
+    public void visualizarXml() {
+        try {
+            if (dadosSalvos) {
+                configuracao = configuracao != null ? configuracao : configuraNfe();
+                String caminho = nfeService.gerarNfePreProcessada(getObjeto(), configuracao);
+
+                nfeService.visualizarXml(caminho);
+            } else {
+                Mensagem.addInfoMessage("É preciso salvar as informações");
+                return;
+
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+
+    }
 
     // </editor-fold>
 
@@ -539,6 +638,15 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void setPrimeiroVencimento(Date primeiroVencimento) {
         this.primeiroVencimento = primeiroVencimento;
     }
+
+    public boolean isDadosSalvos() {
+        return dadosSalvos;
+    }
+
+    public void setDadosSalvos(boolean dadosSalvos) {
+        this.dadosSalvos = dadosSalvos;
+    }
+
     // </editor-fold>
 
 

@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 @Entity
 @Table(name = "NFE_DETALHE")
@@ -105,12 +104,12 @@ public class NfeDetalhe implements Serializable {
     private NfeDetEspecificoVeiculo veiculo;
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "nfeDetalhe", cascade = CascadeType.ALL)
     private NfeDetEspecificoCombustivel combustivel;
-    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<NfeDetEspecificoMedicamento> listaMedicamento;
-    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<NfeDetEspecificoArmamento> listaArmamento;
-    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<NfeDeclaracaoImportacao> listaDeclaracaoImportacao;
+    //    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+//    private Set<NfeDetEspecificoMedicamento> listaMedicamento;
+//    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+//    private Set<NfeDetEspecificoArmamento> listaArmamento;
+//    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+//    private Set<NfeDeclaracaoImportacao> listaDeclaracaoImportacao;
     @Transient
     private boolean produtoCadastrado;
     @Transient
@@ -473,29 +472,29 @@ public class NfeDetalhe implements Serializable {
         this.combustivel = combustivel;
     }
 
-    public Set<NfeDetEspecificoMedicamento> getListaMedicamento() {
-        return listaMedicamento;
-    }
-
-    public void setListaMedicamento(Set<NfeDetEspecificoMedicamento> listaMedicamento) {
-        this.listaMedicamento = listaMedicamento;
-    }
-
-    public Set<NfeDetEspecificoArmamento> getListaArmamento() {
-        return listaArmamento;
-    }
-
-    public void setListaArmamento(Set<NfeDetEspecificoArmamento> listaArmamento) {
-        this.listaArmamento = listaArmamento;
-    }
-
-    public Set<NfeDeclaracaoImportacao> getListaDeclaracaoImportacao() {
-        return listaDeclaracaoImportacao;
-    }
-
-    public void setListaDeclaracaoImportacao(Set<NfeDeclaracaoImportacao> listaDeclaracaoImportacao) {
-        this.listaDeclaracaoImportacao = listaDeclaracaoImportacao;
-    }
+//    public Set<NfeDetEspecificoMedicamento> getListaMedicamento() {
+//        return listaMedicamento;
+//    }
+//
+//    public void setListaMedicamento(Set<NfeDetEspecificoMedicamento> listaMedicamento) {
+//        this.listaMedicamento = listaMedicamento;
+//    }
+//
+//    public Set<NfeDetEspecificoArmamento> getListaArmamento() {
+//        return listaArmamento;
+//    }
+//
+//    public void setListaArmamento(Set<NfeDetEspecificoArmamento> listaArmamento) {
+//        this.listaArmamento = listaArmamento;
+//    }
+//
+//    public Set<NfeDeclaracaoImportacao> getListaDeclaracaoImportacao() {
+//        return listaDeclaracaoImportacao;
+//    }
+//
+//    public void setListaDeclaracaoImportacao(Set<NfeDeclaracaoImportacao> listaDeclaracaoImportacao) {
+//        this.listaDeclaracaoImportacao = listaDeclaracaoImportacao;
+//    }
 
     public boolean isProdutoCadastrado() {
         return produtoCadastrado;

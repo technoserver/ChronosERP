@@ -1,24 +1,40 @@
 package com.chronos.service.comercial;
 
+import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
+import br.inf.portalfiscal.nfe.schema.envinfe.TRetEnviNFe;
 import com.chronos.bo.nfe.NfeTransmissao;
 import com.chronos.bo.nfe.NfeUtil;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.enuns.StatusTransmissao;
+import com.chronos.modelo.entidades.enuns.TipoArquivo;
+import com.chronos.nfe.Nfe;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.*;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
+import com.chronos.util.report.JasperReportUtil;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JRXmlDataSource;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by john on 26/09/17.
@@ -39,6 +55,10 @@ public class NfeService implements Serializable {
     private Repository<NfeConfiguracao> configuracoesNfe;
     @Inject
     private Repository<NfceConfiguracao> configuracoesNfce;
+    @Inject
+    private Repository<NfeCabecalho> repository;
+    @Inject
+    private Repository<NfeXml> nfeXmlRepository;
 
     @Inject
     private EstoqueRepository produtos;
@@ -46,6 +66,7 @@ public class NfeService implements Serializable {
     @Inject
     private ExternalContext context;
 
+    private boolean salvarXml;
 
     @PostConstruct
     private void init() {
@@ -212,11 +233,15 @@ public class NfeService implements Serializable {
         if (nfe.getListaNfeDetalhe().isEmpty()) {
             throw new Exception("Não foi informado nenhum produto");
         }
-        BigDecimal valorDucplicata = nfe.getListaDuplicata().stream()
-                .map(NfeDuplicata::getValor)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-        ;
+        BigDecimal valorDucplicata = BigDecimal.ZERO;
+        if (nfe.getListaDuplicata() != null && !nfe.getListaDuplicata().isEmpty()) {
+            valorDucplicata = nfe.getListaDuplicata().stream()
+                    .map(NfeDuplicata::getValor)
+                    .reduce(BigDecimal::add)
+                    .orElse(BigDecimal.ZERO);
+        }
+
+
         if (valorDucplicata.signum() == 1 && valorDucplicata.compareTo(nfe.getValorTotal()) != 0) {
             throw new Exception("Soma dos valores da duplicata Invalida");
         }
@@ -306,6 +331,182 @@ public class NfeService implements Serializable {
                 }
                 nfe.getListaDuplicata().add(duplicata);
             }
+        }
+
+
+    }
+
+    public String gerarNfePreProcessada(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+        TEnviNFe nfeEnv = gerarNfeEnv(nfe, configuracao);
+        String schemas = org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : configuracao.getCaminhoSchemas();
+        configuracao.setCaminhoSchemas(schemas);
+        String xml = XmlUtil.objectToXml(nfeEnv);
+        return salvarXml(xml, TipoArquivo.NFePreProcessada, nfe.getChaveAcesso() + nfe.getDigitoChaveAcesso() + ".xml");
+    }
+
+    private String salvarXml(String xml, TipoArquivo tipoArquivo, String nomeArquivo) throws IOException {
+        return ArquivoUtil.getInstance().escrever(tipoArquivo, empresa.getCnpj(), xml.getBytes(), nomeArquivo);
+    }
+
+    public TEnviNFe gerarNfeEnv(NfeCabecalho nfe, NfeConfiguracao confiEmissor) throws Exception {
+        NfeTransmissao transmissao = new NfeTransmissao(empresa);
+        String schemas = org.springframework.util.StringUtils.isEmpty(confiEmissor.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : confiEmissor.getCaminhoSchemas();
+        confiEmissor.setCaminhoSchemas(schemas);
+        TEnviNFe nfeEnv = transmissao.geraNFeEnv(nfe, confiEmissor);
+
+        return nfeEnv;
+    }
+
+    public void visualizarXml(String caminho) throws Exception {
+        File file = new File(caminho);
+        if (!file.exists()) {
+            throw new Exception("Arquivo não encontrado");
+        }
+        FacesContext fc = FacesContext.getCurrentInstance();
+
+        byte[] conteudo = Biblioteca.getBytesFromFile(new File(caminho));
+        HttpServletResponse response = (HttpServletResponse) fc.getExternalContext().getResponse();
+        response.reset();
+        response.setContentType("application/xml");
+        response.setContentLength(conteudo.length);
+        response.setHeader("Content-disposition", "inline; filename=nfe.xml");
+        response.getOutputStream().write(conteudo);
+        response.getOutputStream().flush();
+        response.getOutputStream().flush();
+        fc.responseComplete();
+    }
+
+    public void verificarStatusNota(NfeCabecalho nfe) throws Exception {
+        if (StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
+            throw new Exception("Esta NF-e já foi autorizada. Operação não permitida ");
+        } else if (StatusTransmissao.isCancelada(nfe.getStatusNota())) {
+            throw new Exception("Esta NF-e já foi autorizada. Operação não permitida ");
+        }
+    }
+
+    private void salvaNfeXml(String xml, NfeCabecalho nfe) throws Exception {
+        NfeXml nfeXml = new NfeXml();
+        if (StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
+            nfeXml.setNfeCabecalho(nfe);
+            nfeXml.setXml(xml.getBytes());
+            nfeXmlRepository.salvar(nfeXml);
+        } else {
+            List<Filtro> filtros = new LinkedList<>();
+            filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, nfe.getId()));
+            String atributos[] = null;
+            nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
+            nfeXml.setNfeCabecalho(nfe);
+            nfeXml.setXml(xml.getBytes());
+            nfeXmlRepository.atualizar(nfeXml);
+        }
+    }
+
+
+    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+        ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
+        StatusTransmissao status = StatusTransmissao.ENVIADA;
+        verificarStatusNota(nfe);
+        if (modelo == ModeloDocumento.NFCE && StringUtils.isEmpty(nfe.getCsc())) {
+            throw new Exception("É Necessário informar o CSC!");
+        }
+        String schemas = context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE);
+        configuracao.setCaminhoSchemas(schemas);
+        String tipo = modelo == ModeloDocumento.NFE ? ConstantesNFe.NFE : ConstantesNFe.NFCE;
+        TEnviNFe nfeEnv = gerarNfeEnv(nfe, configuracao);
+        nfe.setQrcode(modelo == ModeloDocumento.NFCE ? nfeEnv.getNFe().get(0).getInfNFeSupl().getQrCode() : "");
+        TRetEnviNFe retorno = Nfe.enviarNfe(nfeEnv, tipo);
+
+        if (retorno.getCStat().equals("104")) {
+            if (retorno.getProtNFe().getInfProt().getCStat().equals("100")) {
+                getNotaFicalTipo(nfe.getCodigoModelo());
+                nfe.setNumeroProtocolo(retorno.getProtNFe().getInfProt().getNProt());
+                nfe.setVersaoAplicativo(retorno.getProtNFe().getInfProt().getVerAplic());
+                nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getProtNFe().getInfProt().getDhRecbto()));
+                String xmlProc = XmlUtil.criaNfeProc(nfeEnv, retorno.getProtNFe());
+                nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
+                nfe = repository.atualizar(nfe);
+                salvaNfeXml(xmlProc, nfe);
+                salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml());
+                status = StatusTransmissao.AUTORIZADA;
+            } else if (retorno.getProtNFe().getInfProt().getCStat().equals("204")
+                    || retorno.getProtNFe().getInfProt().getCStat().equals("539")) {
+                status = StatusTransmissao.DUPLICIDADE;
+                Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getXMotivo());
+            } else {
+                salvarXml = true;
+                Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getXMotivo());
+            }
+        } else if (retorno.getCStat().equals("215") || retorno.getCStat().equals("225")) {
+            status = StatusTransmissao.SCHEMA_INVALIDO;
+            if (org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas())) {
+                Mensagem.addErrorMessage("Preenchimento do xml invalido para mais detalhes informes o camiinho dos schemas para validação");
+            } else {
+                String xml = XmlUtil.objectToXml(nfeEnv);
+                String erroValidacao = ValidarNFe.validaXml(xml, ValidarNFe.ENVIO);
+                Mensagem.addErrorMessage(erroValidacao);
+            }
+
+        }
+
+        if (salvarXml) {
+            String xml = XmlUtil.objectToXml(nfeEnv);
+            salvarXml(xml, TipoArquivo.NFePreProcessada, nfe.getChaveAcessoCompleta() + ".xml");
+
+        }
+
+        return status;
+    }
+
+    public void gerarDanfe(NfeCabecalho nfe) throws IOException, JRException {
+        StatusTransmissao statusTransmissao = StatusTransmissao.valueOfCodigo(nfe.getStatusNota());
+        ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
+        String caminho = statusTransmissao == StatusTransmissao.AUTORIZADA
+                ? ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj()) : ArquivoUtil.getInstance().getPastaXmlNfePreProcessada(empresa.getCnpj());
+
+        caminho += System.getProperty("file.separator") + (statusTransmissao == StatusTransmissao.AUTORIZADA ? nfe.getNomeXml() : nfe.getChaveAcessoCompleta() + ".xml");
+
+        HashMap parametrosRelatorio = new HashMap<>();
+        String camLogo = ArquivoUtil.getInstance().getImagemTransmissao(empresa.getCnpj());
+        camLogo = new File(camLogo).exists() ? camLogo : context.getRealPath("resources/images/logo_nfe_peq.png");
+        Image logo = new ImageIcon(camLogo).getImage();
+        parametrosRelatorio.put("danfe_logo", logo);
+        String expressaoDataSource = "";
+        String nomeRelatorioJasper = "";
+        if (statusTransmissao == StatusTransmissao.AUTORIZADA) {
+            expressaoDataSource = "/nfeProc/NFe/infNFe/det";
+            if (!new File(caminho).exists()) {
+                List<Filtro> filtros = new LinkedList<>();
+                filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, nfe.getId()));
+                String atributos[] = new String[]{"xml"};
+                NfeXml nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
+                if (nfeXml == null) {
+                    throw new RuntimeException("Xml inexistente!");
+                }
+                String xml = new String(nfeXml.getXml(), "UTF-8");
+                salvarXml(xml, TipoArquivo.NFe, nfe.getNomeXml());
+            }
+
+            if (modelo == ModeloDocumento.NFE) {
+                nomeRelatorioJasper = Constantes.JASPERNFE;
+                JRXmlDataSource faturaDataSource = new JRXmlDataSource(caminho, "//dup");
+                InputStream inFt = this.getClass().getResourceAsStream("/com/chronos/relatorio/danfe/danfeDanfeRetratoFatura.jasper");
+                parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
+                parametrosRelatorio.put("danfeRetratoFatura", inFt);
+            } else {
+                nomeRelatorioJasper = Constantes.JASPERNFCE;
+            }
+
+
+        }
+
+        JasperReportUtil report = new JasperReportUtil();
+
+        byte[] pdfFile = report.gerarRelatorio(new JRXmlDataSource(caminho, expressaoDataSource), parametrosRelatorio, Constantes.CAMINHODANFE, nomeRelatorioJasper);
+        String caminhoPdf = null;
+        if (modelo == ModeloDocumento.NFE) {
+            caminhoPdf = ArquivoUtil.getInstance().escrever(TipoArquivo.NFe, empresa.getCnpj(), pdfFile, nfe.getNomePdf());
+        } else {
+
         }
 
 

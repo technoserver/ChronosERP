@@ -224,9 +224,9 @@ public class ImportaXMLNFe {
         item.setUnidadeTributavel(prod.getUTrib());
         item.setQuantidadeTributavel(FormatValor.getInstance().formatarQuantidadeToBigDecimal(prod.getQTrib()));
         item.setValorUnitarioTributavel(FormatValor.getInstance().formatarQuantidadeToBigDecimal(prod.getVUnTrib()));
-        item.setListaArmamento(new HashSet<>());
-        item.setListaMedicamento(new HashSet<>());
-        item.setListaDeclaracaoImportacao(new HashSet<>());
+//        item.setListaArmamento(new HashSet<>());
+//        item.setListaMedicamento(new HashSet<>());
+//        item.setListaDeclaracaoImportacao(new HashSet<>());
         item.setValorFrete(FormatValor.getInstance().formatarValorToBigDecimal(prod.getVFrete()));
         item.setValorSeguro(FormatValor.getInstance().formatarValorToBigDecimal(prod.getVSeg()));
         item.setValorDesconto(FormatValor.getInstance().formatarValorToBigDecimal(prod.getVDesc()));

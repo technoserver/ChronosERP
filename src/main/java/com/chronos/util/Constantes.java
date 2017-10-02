@@ -12,6 +12,9 @@ public interface Constantes {
 
 
     public static String DIRETORIO_SCHEMA_NFE = "/modulo/comercial/nfe/schemas/";
+    public static final String JASPERNFE = "DanfeRetrato";
+    public static final String JASPERNFCE = "danfeNfce";
+    public static final String CAMINHODANFE = "/com/chronos/erplight/relatorios/comercial/nfe";
 
     interface FIN{
         public static FinStatusParcela STATUS_ABERTO = new FinStatusParcela(1);

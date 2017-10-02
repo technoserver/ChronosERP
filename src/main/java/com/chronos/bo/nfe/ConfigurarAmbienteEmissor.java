@@ -2,8 +2,8 @@ package com.chronos.bo.nfe;
 
 import br.com.samuelweb.certificado.Certificado;
 import br.com.samuelweb.certificado.CertificadoService;
-import com.chronos.AmbienteEmissao;
 import com.chronos.exception.EmissorException;
+import com.chronos.infra.enuns.AmbienteEmissao;
 import com.chronos.infra.enuns.Estados;
 import com.chronos.init.Configuracoes;
 import com.chronos.util.ArquivoUtil;

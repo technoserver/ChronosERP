@@ -5,6 +5,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
 
@@ -20,6 +21,22 @@
                                 converter="defaultConverter" forceSelection="true"
                                 minQueryLength="3" maxResults="20" required="true"
                                 style="width: 100%" emptyMessage="Nenhum registro encontrado">
+                    <p:column headerText="Produto">
+                        <p:outputLabel value="#{produto.nome}"/>
+                    </p:column>
+                    <p:column headerText="UN">
+                        <p:outputLabel value="#{produto.unidadeProduto.sigla}"/>
+                    </p:column>
+                    <p:column headerText="Valor Venda" class="coluna-monetaria">
+                        <p:outputLabel value="#{produto.valorVenda}">
+                            <f:convertNumber pattern="#,###,##0.00"/>
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column headerText="Estoque" class="coluna-monetaria">
+                        <p:outputLabel value="#{produto.quantidadeEstoque}">
+                            <f:convertNumber pattern="#,###,##0.00"/>
+                        </p:outputLabel>
+                    </p:column>
                     <p:ajax event="itemSelect"
                             listener="#{nfeCabecalhoControll.selecionaValorProduto}"
                             update="formOutrasTelas:valorVenda:nfeDetalheValorUnitarioComercial"/>

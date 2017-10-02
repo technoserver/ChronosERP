@@ -268,9 +268,9 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         nfeDetalhe = new NfeDetalhe();
 
         nfeDetalhe.setNfeCabecalho(getObjeto());
-        nfeDetalhe.setListaArmamento(new HashSet<>());
-        nfeDetalhe.setListaMedicamento(new HashSet<>());
-        nfeDetalhe.setListaDeclaracaoImportacao(new HashSet<>());
+//        nfeDetalhe.setListaArmamento(new HashSet<>());
+//        nfeDetalhe.setListaMedicamento(new HashSet<>());
+//        nfeDetalhe.setListaDeclaracaoImportacao(new HashSet<>());
 
         nfeDetalheImpostoIcms = new NfeDetalheImpostoIcms();
         nfeDetalheImpostoIpi = new NfeDetalheImpostoIpi();

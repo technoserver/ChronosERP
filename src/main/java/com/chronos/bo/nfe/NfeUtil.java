@@ -42,20 +42,14 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setEmitente(getEmitente(empresa));
         nfe.getEmitente().setNfeCabecalho(nfe);
 
-        nfe.setTransporte(new NfeTransporte());
-        nfe.getTransporte().setNfeCabecalho(nfe);
 
-        nfe.setFatura(new NfeFatura());
-        nfe.getFatura().setNfeCabecalho(nfe);
 
         nfe.setListaNfeReferenciada(new HashSet<>());
         nfe.setListaNfReferenciada(new HashSet<>());
         nfe.setListaCteReferenciado(new HashSet<>());
         nfe.setListaProdRuralReferenciada(new HashSet<>());
         nfe.setListaCupomFiscalReferenciado(new HashSet<>());
-        nfe.getTransporte().setListaTransporteReboque(new HashSet<>());
-        nfe.getTransporte().setListaTransporteVolume(new HashSet<>());
-        nfe.setListaDuplicata(new HashSet<>());
+
         nfe.setListaNfeDetalhe(new ArrayList<>());
         ConsumidorOperacao consumidorOperacao = modelo == ModeloDocumento.NFE ? ConsumidorOperacao.NORMAL : ConsumidorOperacao.FINAL;
         nfe.setConsumidorOperacao(consumidorOperacao.getCodigo());
@@ -63,14 +57,14 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setTipoOperacao(TipoOperacao.SAIDA.ordinal());
         nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
         FormatoImpressaoDanfe formato = modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO : FormatoImpressaoDanfe.DANFE_NFCE;
-        nfe.setFormatoImpressaoDanfe(modelo.getCodigo());
+        nfe.setFormatoImpressaoDanfe(formato.getCodigo());
 
 
         nfe.setFinalidadeEmissao(FinalidadeEmissao.NORMAL.getCodigo());
         nfe.setIndicadorFormaPagamento(IndicadorFormaPagamento.AVISTA.ordinal());
 
         nfe.setLocalDestino(LocalDestino.INTERNA.getCodigo());
-        nfe.getTransporte().setModalidadeFrete(0);
+
         Date dataAtual = new Date();
         nfe.setNaturezaOperacao("VENDA");
         nfe.setEmpresa(empresa);

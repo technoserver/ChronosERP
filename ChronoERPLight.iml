@@ -131,7 +131,7 @@
     <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-web-api:7.0" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:chronosnfe:3.1.9" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:chronosnfe:3.1.10" level="project" />
     <orderEntry type="library" name="Maven: br.com.autocom:nfe-wsdl:3.10c" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-kernel:1.6.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.ws.commons.axiom:axiom-impl:1.2.13" level="project" />

@@ -1,15 +1,18 @@
 package com.chronos.bo.nfe;
 
+import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema.inutnfe.TInutNFe;
 import br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe;
 import br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe.InfInut;
-import com.chronos.AmbienteEmissao;
+import com.chronos.infra.enuns.AmbienteEmissao;
 import com.chronos.infra.enuns.Estados;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.EmpresaEndereco;
+import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.entidades.NfeConfiguracao;
 import com.chronos.nfe.Nfe;
 import com.chronos.util.ConstantesNFe;
+
 
 /**
  * Created by john on 26/09/17.
@@ -25,6 +28,14 @@ public class NfeTransmissao {
         this.endereco = getEnderecoPrincipal(empresa);
     }
 
+
+    public TEnviNFe geraNFeEnv(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+        instanciarConfiguracoes(configuracao);
+        GeraXMLEnvio geraXmlNfe = new GeraXMLEnvio();
+        TEnviNFe nfeEnv = geraXmlNfe.gerarXmlEnvio(empresa, nfe);
+
+        return nfeEnv;
+    }
 
     public InfInut inutilizarNFe(NfeConfiguracao configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
         if (justificativa.trim().length() < 15) {

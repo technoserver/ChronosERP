@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -159,6 +160,28 @@ public class NfeDeclaracaoImportacao implements Serializable {
 
     public void setListaImportacaoDetalhe(Set<NfeImportacaoDetalhe> listaImportacaoDetalhe) {
         this.listaImportacaoDetalhe = listaImportacaoDetalhe;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 67 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NfeDeclaracaoImportacao other = (NfeDeclaracaoImportacao) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 
 }
