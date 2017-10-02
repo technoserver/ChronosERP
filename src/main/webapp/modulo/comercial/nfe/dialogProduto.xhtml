@@ -22,7 +22,7 @@
                                 style="width: 100%" emptyMessage="Nenhum registro encontrado">
                     <p:ajax event="itemSelect"
                             listener="#{nfeCabecalhoControll.selecionaValorProduto}"
-                    />
+                            update="formOutrasTelas:valorVenda:nfeDetalheValorUnitarioComercial"/>
                 </p:autoComplete>
             </div>
             <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -30,6 +30,7 @@
                               nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.quantidadeComercial}"
                               requerido="true"/>
             <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              id="valorVenda"
                               idComponente="nfeDetalheValorUnitarioComercial" label="Valor"
                               nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorUnitarioComercial}"
                               requerido="true"/>

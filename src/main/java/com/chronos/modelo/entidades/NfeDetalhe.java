@@ -551,7 +551,7 @@ public class NfeDetalhe implements Serializable {
 
 
     public BigDecimal calcularValorTotalProduto(){
-        BigDecimal valorTotal = Optional.ofNullable(calcularSubTotalProduto()).orElse(BigDecimal.ZERO);
+        valorTotal = Optional.ofNullable(calcularSubTotalProduto()).orElse(BigDecimal.ZERO);
         valorTotal = valorTotal
                 .add(Optional.ofNullable(this.valorFrete).orElse(BigDecimal.ZERO))
                 .add(Optional.ofNullable(this.valorOutrasDespesas).orElse(BigDecimal.ZERO))
@@ -562,12 +562,13 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal calcularTotal() {
-        BigDecimal valor = BigDecimal.ZERO;
-        valor = valor.add(getValorSubtotal())
+        valorTotal = BigDecimal.ZERO;
+        valorTotal = valorTotal.add(getValorSubtotal())
                 .add(getValorFrete())
                 .add(getValorSeguro())
+                .add(getValorOutrasDespesas())
                 .subtract(getValorDesconto());
-        valorTotal = valor;
+
         return valorTotal;
     }
 

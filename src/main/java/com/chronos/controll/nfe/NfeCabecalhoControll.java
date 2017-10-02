@@ -18,10 +18,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.IntStream;
 
 /**
  * Created by john on 26/09/17.
@@ -35,6 +33,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private Repository<TributOperacaoFiscal> operacoes;
     @Inject
     private Repository<PessoaCliente> pessoas;
+    @Inject
+    private Repository<VendaCondicoesPagamento> condicoes;
 
 
     @Inject
@@ -45,6 +45,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeDetalhe nfeDetalheSelecionado;
     private NfeReferenciada nfeReferenciada;
     private NfeReferenciada nfeReferenciadaSelecionado;
+    private VendaCondicoesPagamento condicoesPagamento;
+    private int qtdParcelas;
+    private int intervaloParcelas;
+    private Date primeiroVencimento;
     private String observacao;
     private boolean podeIncluirProduto;
     private boolean duplicidade;
@@ -151,8 +155,13 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void salvaProduto() {
         try {
             realizaCalculosItem();
-            if (!getObjeto().getListaNfeDetalhe().contains(nfeDetalhe)) {
-                getObjeto().getListaNfeDetalhe().add(nfeDetalhe);
+            Optional<NfeDetalhe> itemNfeOptional = buscarItemPorProduto(nfeDetalhe.getProduto());
+            NfeDetalhe item = null;
+            if (itemNfeOptional.isPresent()) {
+                item = itemNfeOptional.get();
+                item = nfeDetalhe;
+            } else {
+                getObjeto().getListaNfeDetalhe().add(0, nfeDetalhe);
             }
             setObjeto(nfeService.atualizarTotais(getObjeto()));
             Mensagem.addInfoMessage("Registro incluído!");
@@ -163,6 +172,21 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         }
 
     }
+
+    private Optional<NfeDetalhe> buscarItemPorProduto(Produto produto) {
+        return getObjeto().getListaNfeDetalhe().stream()
+                .filter(i -> i.getProduto().equals(produto))
+                .findAny();
+    }
+
+    public void excluirItem(Produto produto) {
+        int indice = IntStream.range(0, getObjeto().getListaNfeDetalhe().size())
+                .filter(i -> getObjeto().getListaNfeDetalhe().get(i).getProduto().equals(produto))
+                .findAny().getAsInt();
+        getObjeto().getListaNfeDetalhe().remove(indice);
+    }
+
+
 
     public void excluirProduto() {
         try {
@@ -178,6 +202,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
         }
+
+    }
+
+    public void detalheImposto() {
 
     }
 
@@ -198,7 +226,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         nfeDetalhe.setValorUnitarioComercial(valorVenda);
         nfeDetalhe.setEntraTotal(1);
         nfeDetalhe.pegarInfoProduto();
-        nfeDetalhe.calcularTotal();
+        nfeDetalhe.calcularValorTotalProduto();
         nfeDetalhe = nfeService.definirTributacao(nfeDetalhe, getObjeto().getTributOperacaoFiscal(), getObjeto().getDestinatario());
 
         return nfeDetalhe;
@@ -263,6 +291,19 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Crud Duplicatas">
 
+    public void gerarDulicatas() {
+
+        try {
+            condicoesPagamento = condicoes.getJoinFetch(condicoesPagamento.getId(), VendaCondicoesPagamento.class);
+            nfeService.gerarDuplicatas(getObjeto(), condicoesPagamento, primeiroVencimento, intervaloParcelas, qtdParcelas);
+            Mensagem.addInfoMessage("Duplicatas geradas com sucesso");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagem.addErrorMessage("", e);
+        }
+
+
+    }
 
     // </editor-fold>
 
@@ -303,6 +344,16 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Pesquisas">
+
+    public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
+        List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
+        try {
+            listaVendaCondicoesPagamento = condicoes.getEntitys(VendaCondicoesPagamento.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaVendaCondicoesPagamento;
+    }
 
     public List<TributOperacaoFiscal> getListaTributOperacaoFiscal(String descricao) {
         List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
@@ -393,6 +444,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     // <editor-fold defaultstate="collapsed" desc="GETS SETS">
 
 
+    public VendaCondicoesPagamento getCondicoesPagamento() {
+        return condicoesPagamento;
+    }
+
+    public void setCondicoesPagamento(VendaCondicoesPagamento condicoesPagamento) {
+        this.condicoesPagamento = condicoesPagamento;
+    }
+
     public PessoaCliente getPessoaCliente() {
         return pessoaCliente;
     }
@@ -457,7 +516,30 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         this.podeIncluirProduto = podeIncluirProduto;
     }
 
-// </editor-fold>
+    public Integer getQtdParcelas() {
+        return qtdParcelas;
+    }
+
+    public void setQtdParcelas(Integer qtdParcelas) {
+        this.qtdParcelas = qtdParcelas;
+    }
+
+    public Integer getIntervaloParcelas() {
+        return intervaloParcelas;
+    }
+
+    public void setIntervaloParcelas(Integer intervaloParcelas) {
+        this.intervaloParcelas = intervaloParcelas;
+    }
+
+    public Date getPrimeiroVencimento() {
+        return primeiroVencimento;
+    }
+
+    public void setPrimeiroVencimento(Date primeiroVencimento) {
+        this.primeiroVencimento = primeiroVencimento;
+    }
+    // </editor-fold>
 
 
 }

@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+
+    <h:panelGroup layout="block" id="panelTotais">
+        <div class="row">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                              idComponente="nfeCabecalhoBaseCalculoIcms"
+                              label="Base Calculo Icms"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.baseCalculoIcms}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorIcms" label="Valor Icms"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorIcms}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                              idComponente="nfeCabecalhoBaseCalculoIcmsSt"
+                              label="Base Calculo Icms St"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.baseCalculoIcmsSt}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorIcmsSt" label="Valor Icms St"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorIcmsSt}"/>
+        </div>
+        <div class="row">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                              idComponente="nfeCabecalhoValorImpostoImportacao"
+                              label="Valor Imposto Importacao"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorImpostoImportacao}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorPis" label="Valor Pis"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorPis}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorCofins" label="Valor Cofins"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorCofins}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2 col-md-offset-1"
+                              idComponente="nfeCabecalhoValorIpi" label="Valor Ipi"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorIpi}"/>
+
+        </div>
+        <div class="row">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                              idComponente="nfeCabecalhoValorDespesasAcessorias"
+                              label="Valor Despesas Acessorias"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorDespesasAcessorias}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorFrete" label="Valor Frete"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorFrete}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorSeguro" label="Valor Seguro"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorSeguro}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2 col-md-offset-1"
+                              idComponente="nfeCabecalhoValorDesconto"
+                              label="Valor Desconto"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorDesconto}"/>
+        </div>
+        <div class="row">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                              idComponente="nfeCabecalhoValorTotalProdutos"
+                              label="Valor Total Produtos"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorTotalProdutos}"
+                              somenteLeitura="true"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorTotal" label="Valor Total"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorTotal}"
+                              somenteLeitura="true"/>
+
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorTotalTributos" label="Valor Total dos Tributos"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorTotalTributos}"
+            />
+        </div>
+        <erp:separador label="DIFAL"/>
+        <div class="row">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorFcp" label="Valor FCP"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorIcmsFcpUfDestino}"
+                              somenteLeitura="true"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                              idComponente="ValorIcmsUfDestino" label="Valor ICM UF Destino"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorIcmsInterUfDestino}"
+                              somenteLeitura="true"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                              idComponente="ValorIcmsRemetente" label="Valor ICMS Remetente"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorIcmsInterUfRemetente}"
+                              somenteLeitura="true"/>
+        </div>
+        <erp:separador label="Outros Totais"/>
+        <div class="row">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoBaseCalculoIssqn"
+                              label="Base Calculo Issqn"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.baseCalculoIssqn}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorIssqn" label="Valor Issqn"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorIssqn}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorPisIssqn"
+                              label="Valor Pis Issqn"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorPisIssqn}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorCofinsIssqn"
+                              label="Valor Cofins Issqn"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorCofinsIssqn}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorServicos"
+                              label="Valor Servicos"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorServicos}"/>
+        </div>
+        <div class="row">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorRetidoPis"
+                              label="Valor Retido Pis"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorRetidoPis}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorRetidoCofins"
+                              label="Valor Retido Cofins"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorRetidoCofins}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorRetidoCsll"
+                              label="Valor Retido Csll"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorRetidoCsll}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoBaseCalculoIrrf"
+                              label="Base Calculo Irrf"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.baseCalculoIrrf}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorRetidoIrrf"
+                              label="Valor Retido Irrf"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorRetidoIrrf}"/>
+        </div>
+        <div class="row">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoBaseCalculoPrevidencia"
+                              label="BSC Previdencia"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.baseCalculoPrevidencia}"/>
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeCabecalhoValorRetidoPrevidencia"
+                              label="VLR Retido Prev."
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.valorRetidoPrevidencia}"/>
+        </div>
+    </h:panelGroup>
+
+</ui:composition>

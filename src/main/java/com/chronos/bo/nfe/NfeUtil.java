@@ -105,7 +105,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setBaseCalculoPrevidencia(BigDecimal.ZERO);
         nfe.setValorRetidoPrevidencia(BigDecimal.ZERO);
         nfe.setValorIcmsDesonerado(BigDecimal.ZERO);
-        nfe.setCodigoModelo(String.valueOf(modelo));
+        nfe.setCodigoModelo(String.valueOf(modelo.getCodigo()));
         nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
 
 
@@ -152,7 +152,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
             valorSeguro = valorSeguro.add(item.getValorSeguro());
             valorOutrasDespesas = valorOutrasDespesas.add(item.getValorOutrasDespesas());
             desconto = desconto.add(item.getValorDesconto());
-            item.calcularTotal();
+            item.calcularValorTotalProduto();
             if (servico) {
                 totalServicos = totalServicos.add(item.getValorBrutoProduto());
                 baseCalculoIssqn = baseCalculoIssqn.add(item.getNfeDetalheImpostoIssqn().getBaseCalculoIssqn());

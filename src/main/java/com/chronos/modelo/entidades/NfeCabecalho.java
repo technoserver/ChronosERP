@@ -3,11 +3,10 @@ package com.chronos.modelo.entidades;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "NFE_CABECALHO")
@@ -23,12 +22,14 @@ public class NfeCabecalho implements Serializable {
     @Column(name = "UF_EMITENTE")
     private Integer ufEmitente;
     @Column(name = "CODIGO_NUMERICO")
+    @Size(max = 8)
     private String codigoNumerico;
     @Column(name = "NATUREZA_OPERACAO")
     private String naturezaOperacao;
     @Column(name = "INDICADOR_FORMA_PAGAMENTO")
     private Integer indicadorFormaPagamento;
     @Column(name = "CODIGO_MODELO")
+    @Size(max = 2)
     private String codigoModelo;
     @Column(name = "SERIE")
     private String serie;
@@ -102,6 +103,8 @@ public class NfeCabecalho implements Serializable {
     @Column(name = "VALOR_SERVICOS")
     private BigDecimal valorServicos;
     // @Column(name = "VALOR_TOTAL_TRIBUTOS")
+    //TODO colocar valor total dos tributos
+    @Transient
     private BigDecimal valorTotalTributos;
     @Column(name = "BASE_CALCULO_ISSQN")
     private BigDecimal baseCalculoIssqn;
@@ -1548,7 +1551,7 @@ public class NfeCabecalho implements Serializable {
     }
 
     public List<NfeDetalhe> getListaNfeDetalhe() {
-        return listaNfeDetalhe;
+        return Optional.ofNullable(listaNfeDetalhe).orElse(new ArrayList<>());
     }
 
     public void setListaNfeDetalhe(List<NfeDetalhe> listaNfeDetalhe) {
@@ -1792,17 +1795,27 @@ public class NfeCabecalho implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof NfeCabecalho)) return false;
-
-        NfeCabecalho that = (NfeCabecalho) o;
-
-        return getId().equals(that.getId());
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.id);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        return getId().hashCode();
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NfeCabecalho other = (NfeCabecalho) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 }

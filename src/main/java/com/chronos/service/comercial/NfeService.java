@@ -16,6 +16,8 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -115,11 +117,7 @@ public class NfeService implements Serializable {
 
                 if (numFinal > notaFiscalTipo.getUltimoNumero()) {
 
-                    List<Filtro> filtros = new LinkedList<>();
-                    filtros.add(new Filtro("id", notaFiscalTipo.getId()));
-                    Map<String, Object> atributos = new HashMap<>();
-                    atributos.put("ultimo_numero", numFinal);
-                    tiposNotaFiscal.updateNativo(NotaFiscalTipo.class, filtros, atributos);
+                    atualizarNumeroNfe(notaFiscalTipo, numFinal);
                 }
                 resultado = infRetorno.getXMotivo();
                 break;
@@ -137,6 +135,14 @@ public class NfeService implements Serializable {
         }
 
         return resultado;
+    }
+
+    private void atualizarNumeroNfe(NotaFiscalTipo notaFiscalTipo, int numero) {
+        List<Filtro> filtros = new LinkedList<>();
+        filtros.add(new Filtro("id", notaFiscalTipo.getId()));
+        Map<String, Object> atributos = new HashMap<>();
+        atributos.put("ultimo_numero", numero);
+        tiposNotaFiscal.updateNativo(NotaFiscalTipo.class, filtros, atributos);
     }
 
     public NotaFiscalTipo getNotaFicalTipoByModelo(String modelo) throws Exception {
@@ -165,8 +171,9 @@ public class NfeService implements Serializable {
             notaFiscalTipo.setNotaFiscalModelo(codigo);
             notaFiscalTipo = tiposNotaFiscal.atualizar(notaFiscalTipo);
         } else {
-            notaFiscalTipo.setUltimoNumero(notaFiscalTipo.getUltimoNumero());
+            notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
             notaFiscalTipo.setEmpresa(empresa);
+            atualizarNumeroNfe(notaFiscalTipo, notaFiscalTipo.proximoNumero());
         }
         return notaFiscalTipo;
     }
@@ -205,6 +212,14 @@ public class NfeService implements Serializable {
         if (nfe.getListaNfeDetalhe().isEmpty()) {
             throw new Exception("Não foi informado nenhum produto");
         }
+        BigDecimal valorDucplicata = nfe.getListaDuplicata().stream()
+                .map(NfeDuplicata::getValor)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        ;
+        if (valorDucplicata.signum() == 1 && valorDucplicata.compareTo(nfe.getValorTotal()) != 0) {
+            throw new Exception("Soma dos valores da duplicata Invalida");
+        }
     }
 
 
@@ -234,5 +249,65 @@ public class NfeService implements Serializable {
 
         listaProduto = produtos.getProdutoEmpresa(descricao, empresa);
         return listaProduto;
+    }
+
+    public void gerarDuplicatas(NfeCabecalho nfe, VendaCondicoesPagamento condicoesPagamento, Date primeiroVencimento, int intervaloParcelas, int qtdParcelas) throws Exception {
+
+        if (nfe.getValorTotal() == null || nfe.getValorTotal().signum() == 0) {
+            throw new Exception("O valor total da NFe deve ser maior que 0");
+        }
+        if (condicoesPagamento == null && (primeiroVencimento == null || intervaloParcelas == 0 || qtdParcelas == 0)) {
+            throw new Exception("Se a condição de pagament não for informada é preciso informa o primeiro vencimento,intervalo de parcelas e a quantidade.");
+        }
+        if (nfe.getListaDuplicata() == null) {
+            nfe.setListaDuplicata(new HashSet<>());
+        }
+        nfe.getListaDuplicata().clear();
+        BigDecimal residuo = BigDecimal.ZERO;
+        BigDecimal somaParcelas = BigDecimal.ZERO;
+        BigDecimal valorParcela = BigDecimal.ZERO;
+        if (condicoesPagamento != null) {
+            int number = 0;
+            for (VendaCondicoesParcelas parcelas : condicoesPagamento.getParcelas()) {
+                NfeDuplicata duplicata = new NfeDuplicata();
+                duplicata.setNfeCabecalho(nfe);
+                valorParcela = Biblioteca.calcTaxa(nfe.getValorTotal(), parcelas.getTaxa());
+                duplicata.setDataVencimento(Biblioteca.addDay(new Date(), parcelas.getDias()));
+                duplicata.setValor(valorParcela);
+                somaParcelas = somaParcelas.add(valorParcela);
+                if (number == (condicoesPagamento.getParcelas().size() - 1)) {
+                    residuo = nfe.getValorTotal().subtract(somaParcelas);
+                    valorParcela = valorParcela.add(residuo);
+                    duplicata.setValor(valorParcela);
+                }
+                duplicata.setNumero(String.format("%3s", String.valueOf(number++ + 1)));
+                nfe.getListaDuplicata().add(duplicata);
+            }
+        } else {
+            Calendar firstVencimento = Calendar.getInstance();
+            firstVencimento.setTime(primeiroVencimento);
+            valorParcela = nfe.getValorTotal().divide(BigDecimal.valueOf(qtdParcelas), RoundingMode.HALF_DOWN);
+
+            for (int i = 0; i < qtdParcelas; i++) {
+                NfeDuplicata duplicata = new NfeDuplicata();
+                duplicata.setNfeCabecalho(nfe);
+                duplicata.setNumero(String.format("%3s", String.valueOf(i + 1)));
+                if (i > 0) {
+                    firstVencimento.add(Calendar.DAY_OF_MONTH, intervaloParcelas);
+                }
+                duplicata.setDataVencimento(firstVencimento.getTime());
+                duplicata.setValor(valorParcela);
+
+                somaParcelas = somaParcelas.add(valorParcela);
+                if (i == (qtdParcelas - 1)) {
+                    residuo = nfe.getValorTotal().subtract(somaParcelas);
+                    valorParcela = valorParcela.add(residuo);
+                    duplicata.setValor(valorParcela);
+                }
+                nfe.getListaDuplicata().add(duplicata);
+            }
+        }
+
+
     }
 }
