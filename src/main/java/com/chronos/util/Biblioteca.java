@@ -323,4 +323,19 @@ public class Biblioteca {
         BigDecimal valor = total.multiply(taxa.divide(new BigDecimal(100)));
         return valor;
     }
+
+    public static Integer modulo11(String codigo) {
+        int total = 0;
+        int peso = 2;
+
+        for (int i = 0; i < codigo.length(); i++) {
+            total += (codigo.charAt((codigo.length() - 1) - i) - '0') * peso;
+            peso++;
+            if (peso == 10) {
+                peso = 2;
+            }
+        }
+        int resto = total % 11;
+        return (resto == 0 || resto == 1) ? 0 : (11 - resto);
+    }
 }

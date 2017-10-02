@@ -64,6 +64,15 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
         getObjeto().setListaFinLctoReceberNtFinanceira(new HashSet<>());
         getObjeto().setDataLancamento(new Date());
         getObjeto().setPrimeiroVencimento(new Date());
+        getObjeto().setEmpresa(empresa);
+
+    }
+
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        FinLancamentoReceber lancamento = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(lancamento);
     }
 
     @Override

@@ -1,0 +1,280 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        NF-e
+    </ui:define>
+
+    <ui:define name="tela">
+        #{nfeCabecalhoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        NF-e
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:formularioGrid controller="#{nfeCabecalhoControll}" id="telaGrid">
+            <erp:gridDadosSemForm idDataTable="dataTableNfe" controller="#{nfeCabecalhoControll}">
+                <p:column headerText="Cliente" sortBy="#{row.cliente.pessoa.nome}">
+                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                </p:column>
+                <p:column headerText="Número" sortBy="#{row.numero}" width="120">
+                    <h:outputLabel value="#{row.numero}">
+                        <f:convertNumber type="number" parent="0"/>
+                    </h:outputLabel>
+                </p:column>
+
+                <p:column headerText="Chave Acesso">
+                    <h:outputLabel value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
+                </p:column>
+                <p:column headerText="Data Emissão"
+                          sortBy="#{row.dataHoraEmissao}" width="120">
+                    <h:outputLabel value="#{row.dataHoraEmissao}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor Total" style="text-align: right;" width="100">
+                    <h:outputLabel value="#{row.valorTotal}">
+                        <f:convertNumber pattern="#,###,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Status" sortBy="#{row.statusNota}" width="120">
+                    <h:outputLabel
+                            value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
+                </p:column>
+            </erp:gridDadosSemForm>
+        </erp:formularioGrid>
+
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{nfeCabecalhoControll}"
+                                   nomeFuncao="NFe"
+                                   id="telaDetalhe"
+        >
+
+
+            <p:tabView id="tabNfe">
+                <p:tab title="Dados Principais" id="dadosPrincipais">
+                    <ui:include src="dadosPrincipais.xhtml"/>
+                </p:tab>
+                <p:tab title="Destinatário" id="destinatário">
+                    <ui:include src="dadosDestinatario.xhtml"/>
+                </p:tab>
+                <p:tab title="Itens" id="itens">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h:commandLink title="Novo" class="btn btn-default"
+                                           actionListener="#{nfeCabecalhoControll.inlcuirProduto}"
+                                           type="button" id="btnIcluirProduto"
+                            >
+                                <i class="glyphicon glyphicon-plus"/>
+                                <p:ajax update=":formCentro:growl,:formOutrasTelas:panelNfeDetalhe,:formOutrasTelas:dialogNfeDetalhe"
+                                        process="@this"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+                    <p:dataTable id="dataTableNfeDetalhe" var="obj"
+                                 value="#{nfeCabecalhoControll.objeto.listaNfeDetalhe}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 selection="#{nfeCabecalhoControll.nfeDetalheSelecionado}"
+                                 rowKey="#{obj.numeroItem}" reflow="true" paginatorPosition="bottom"
+                                 resizableColumns="true" sortOrder="numeroitem">
+
+                        <p:column headerText="Nome Produto/Serviço">
+                            <h:outputLabel value="#{obj.nomeProduto}"/>
+                        </p:column>
+                        <p:column headerText="Und" width="100" style="text-align: center">
+                            <h:outputLabel value="#{obj.unidadeComercial}"/>
+                        </p:column>
+                        <p:column headerText="Qtde" width="150" style="text-align: center">
+                            <h:outputLabel value="#{obj.quantidadeComercial}">
+                                <f:convertNumber pattern="#,###,##0.000"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Vlr Unit" width="150" style="text-align: right">
+                            <h:outputLabel value="#{obj.valorUnitarioComercial}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Vlr Total" width="180" style="text-align: right">
+                            <h:outputLabel value="#{obj.valorTotal}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Ações" width="140" style="text-align: center">
+
+                            <p:commandLink process="dataTableNfeDetalhe" title="Detalhes Impostos"
+                                           oncomplete="PF('dialogDetalheImposto').show()" styleClass="btn btn-default"
+                                           action="#{nfeCabecalhoControll.detalheImposto()}"
+                            >
+                                <i class="fa fa-search"/>
+                                <f:setPropertyActionListener value="#{obj}"
+                                                             target="#{nfeCabecalhoControll.nfeDetalheSelecionado}"/>
+                            </p:commandLink>
+                            &nbsp;
+                            <p:commandLink process="dataTableNfeDetalhe" title="Excluir" styleClass="btn btn-default"
+                                           action="#{nfeCabecalhoControll.excluirProduto}"
+                                           update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe,:formCentro:telaDetalhe:tabNfe:panelTotais">
+                                <i class="fa fa-close"/>
+                                <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                                           icon="ui-icon-alert"/>
+                                <f:setPropertyActionListener value="#{obj}"
+                                                             target="#{nfeCabecalhoControll.nfeDetalheSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Totais" id="totais">
+                    <ui:include src="totaisNfe.xhtml"/>
+                </p:tab>
+                <p:tab title="NFe Referenciadas" id="nfeReferenciadas">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h:commandLink title="Novo" class="btn btn-default"
+                                           actionListener="#{nfeCabecalhoControll.incluiNfeReferenciada}"
+                                           type="button" id="btnIcluirNfeReferenciada"
+                            >
+                                <i class="glyphicon glyphicon-plus"/>
+                                <p:ajax update=":formOutrasTelas1:panelNfeReferenciada"
+                                        oncomplete="PF('dialogNfeReferenciada').show();"
+                                        process="@this"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+                    <p:dataTable id="dataTableNfeReferenciada" var="obj"
+                                 value="#{nfeCabecalhoControll.objeto.listaNfeReferenciada}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 reflow="true" paginatorPosition="bottom"
+                                 resizableColumns="true">
+
+                        <p:column headerText="NFe referenciada">
+                            <h:outputLabel value="#{obj.chaveAcesso}"/>
+                        </p:column>
+                        <p:column headerText="Ações">
+                            <p:commandLink process="dataTableNfeReferenciada"
+                                           title="Excluir" styleClass="btn btn-default"
+                                           action="#{nfeCabecalhoControll.excluirNfeReferenciada}"
+                                           update=":formCentro:growl,dataTableNfeReferenciada">
+                                <i class="fa fa-close"/>
+                                <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                                           icon="ui-icon-alert"/>
+                                <f:setPropertyActionListener value="#{obj}"
+                                                             target="#{nfeCabecalhoControll.nfeReferenciadaSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Duplicatas" id="duplicatas">
+                    <ui:include src="duplicatas.xhtml"/>
+                </p:tab>
+                <p:tab title="Transportadora" id="transportadora">
+
+                </p:tab>
+            </p:tabView>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogNfeDetalhe"
+                      header="Inclusão/Alteração de Produto/Serviço" responsive="true"
+                      widgetVar="dialogNfeDetalhe" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800"
+                      visible="#{nfeCabecalhoControll.podeIncluirProduto}">
+
+                <p:outputPanel id="panelNfeDetalhe">
+                    <ui:include src="dialogProduto.xhtml"/>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar"
+                                             action="#{nfeCabecalhoControll.salvaProduto}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogNfeDetalhe').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe,:formCentro:telaDetalhe:tabNfe:panelTotais"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogNfeDetalhe').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+    <ui:define name="outrasTelas1">
+        <h:form id="formOutrasTelas1">
+            <p:dialog id="dialogNfeReferenciada"
+                      header="Inclusão de NFe referenciada"
+                      widgetVar="dialogNfeReferenciada" showEffect="slide"
+                      hideEffect="slide" resizable="false" modal="true" closable="true"
+                      responsive="true" width="700">
+                <p:outputPanel id="panelNfeReferenciada">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p:outputLabel value="Chave" for="nfeReferenciadaChave"/>
+                            <p:inputText id="nfeReferenciadaChave"
+                                         value="#{nfeCabecalhoControll.nfeReferenciada.chaveAcesso}"
+                                         required="true"
+                                         maxlength="44">
+                                <f:validateLength minimum="44" maximum="44"/>
+                                <p:clientValidator/>
+                            </p:inputText>
+                        </div>
+
+
+                    </div>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             action="#{nfeCabecalhoControll.salvarNferefenciada}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogNfeReferenciada').hide();}"
+                                        process="@form"
+                                        update=":formOutrasTelas1:panelNfeReferenciada,:formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:dataTableNfeReferenciada"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogNfeReferenciada').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

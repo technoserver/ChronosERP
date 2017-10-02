@@ -26,12 +26,14 @@ public class ImportaXMLNFe {
 
         Map map = new HashMap();
         NfeCabecalho nfeCabecalho = new NfeCabecalho();
+
         nfeCabecalho.setListaNfeReferenciada(new HashSet<>());
         nfeCabecalho.setListaNfReferenciada(new HashSet<>());
         nfeCabecalho.setListaCteReferenciado(new HashSet<>());
         nfeCabecalho.setListaCupomFiscalReferenciado(new HashSet<>());
         nfeCabecalho.setListaProdRuralReferenciada(new HashSet<>());
         NfeEmitente emitente = new NfeEmitente();
+
         List<NfeDetalhe> listaNfeDetalhe = new ArrayList();
         Set<NfeDuplicata> listaDuplicatas = new HashSet<>();
 
@@ -139,6 +141,7 @@ public class ImportaXMLNFe {
         //emitente
         emitente = getEmitente(emit);
         emitente.setNfeCabecalho(nfeCabecalho);
+        nfeCabecalho.setEmitente(emitente);
 
         //detalhe
         TNFe.InfNFe.Det det;
@@ -292,6 +295,12 @@ public class ImportaXMLNFe {
             impostoIcms.setBaseCalculoIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS10().getVBC()));
             impostoIcms.setAliquotaIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS10().getPICMS()));
             impostoIcms.setValorIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS10().getVICMS()));
+
+            impostoIcms.setModalidadeBcIcmsSt(Integer.valueOf(icms.getICMS10().getModBCST()));
+            impostoIcms.setPercentualMvaIcmsSt(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS10().getPMVAST()));
+            impostoIcms.setAliquotaIcmsSt(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS10().getPICMSST()));
+            impostoIcms.setValorBaseCalculoIcmsSt(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS10().getVBCST()));
+            impostoIcms.setValorIcmsSt(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS10().getVICMSST()));
         }
         if (icms.getICMS20() != null) {
             impostoIcms.setOrigemMercadoria(Integer.valueOf(icms.getICMS20().getOrig()));

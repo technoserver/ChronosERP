@@ -6,6 +6,7 @@
 package com.chronos.controll;
 
 import com.chronos.modelo.entidades.Empresa;
+import com.chronos.modelo.entidades.EmpresaEndereco;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.modelo.entidades.enuns.Estados;
 import com.chronos.repository.Repository;
@@ -45,6 +46,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private int activeTabIndex;
     protected Usuario usuario;
     protected Empresa empresa;
+    protected EmpresaEndereco enderecoEmpresa;
     protected Object[] atributos;
     protected Object[] joinFetch;
 
@@ -84,21 +86,9 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, String> requisicaoInternaSituacao;
     private Map<String, String> tipoReajuste;
 
-    //NFe
-    private Map<String, Integer> origemMercadoriaNfe;
-    private Map<String, String> codigoModeloNfe;
-    private Map<String, Integer> localDestinoNfe;
-    private Map<String, Integer> consumidorOperacaoNfe;
-    private Map<String, String> consumidorPresencaNfe;
-    private Map<String, Integer> tipoOperacaoNfe;
-    private Map<String, Integer> tipoEmissaoNfe;
-    private Map<String, Integer> finalidadeEmissaoNfe;
-    private Map<String, Integer> formatoImpressaoDanfeNfe;
-    private Map<String, Integer> modalidadeFreteNfe;
-    private Map<String, Integer> statusNfe;
+
 
     //Tributacao
-    // tributacao
     private HashMap<String, String> origemMercadoria;
     private HashMap<String, String> issModalidadeBaseCalculo;
     private HashMap<String, String> issCodigoTributacao;
@@ -127,6 +117,21 @@ public abstract class AbstractControll<T> implements Serializable {
     //comissao
     private HashMap<String, String> tipoContagem;
     private HashMap<String, String> formaPagamentoComissao;
+
+    // NFe
+    private Map<String, Integer> origemMercadoriaNfe;
+    private Map<String, String> codigoModeloNfe;
+    private Map<String, Integer> localDestinoNfe;
+    private Map<String, Integer> consumidorOperacaoNfe;
+    private Map<String, String> consumidorPresencaNfe;
+    private Map<String, Integer> tipoOperacaoNfe;
+    private Map<String, Integer> tipoEmissaoNfe;
+    private Map<String, Integer> finalidadeEmissaoNfe;
+    private Map<String, Integer> formatoImpressaoDanfeNfe;
+    private Map<String, Integer> modalidadeFreteNfe;
+    private Map<String, Integer> statusNfe;
+    private HashMap<String, Integer> webserviceAmbiente;
+
 
     protected abstract Class<T> getClazz();
 
@@ -292,62 +297,7 @@ public abstract class AbstractControll<T> implements Serializable {
         tipoReajuste.put("Aumentar", "A");
         tipoReajuste.put("Diminuir", "D");
 
-        //NFe
-        codigoModeloNfe = new LinkedHashMap<>();
-        codigoModeloNfe.put("Nota Fiscal Eletrônica - NFe", "55");
-
-        localDestinoNfe = new LinkedHashMap<>();
-        localDestinoNfe.put("Operação Interna", 1);
-        localDestinoNfe.put("Operação Interestadual", 2);
-        localDestinoNfe.put("Operação com Exterior", 3);
-
-        consumidorOperacaoNfe = new LinkedHashMap<>();
-        consumidorOperacaoNfe.put("Normal", 0);
-        consumidorOperacaoNfe.put("Consumidor Final", 1);
-
-        consumidorPresencaNfe = new LinkedHashMap<>();
-        consumidorPresencaNfe.put("Operação Presencial", "1");
-        consumidorPresencaNfe.put("Operação não Presencial - Internet", "2");
-        consumidorPresencaNfe.put("Operação não Presencial - Teleatendimento", "3");
-        consumidorPresencaNfe.put("Operação não Presencial - Outros", "9");
-        consumidorPresencaNfe.put("Não se aplica", "0");
-
-        tipoOperacaoNfe = new LinkedHashMap<>();
-        tipoOperacaoNfe.put("Entrada", 0);
-        tipoOperacaoNfe.put("Saída", 1);
-
-        tipoEmissaoNfe = new LinkedHashMap<>();
-        tipoEmissaoNfe.put("Normal", 1);
-        tipoEmissaoNfe.put("Contigência", 2);
-        tipoEmissaoNfe.put("Contingência SCAN", 3);
-        tipoEmissaoNfe.put("Contingência DPEC", 4);
-        tipoEmissaoNfe.put("Contingência FS-DA", 5);
-
-        finalidadeEmissaoNfe = new LinkedHashMap<>();
-        finalidadeEmissaoNfe.put("Normal", 1);
-        finalidadeEmissaoNfe.put("Complementar", 2);
-        finalidadeEmissaoNfe.put("Ajuste", 3);
-
-        formatoImpressaoDanfeNfe = new LinkedHashMap<>();
-        formatoImpressaoDanfeNfe.put("Retrato", 1);
-        formatoImpressaoDanfeNfe.put("Paisagem", 1);
-
-        modalidadeFreteNfe = new LinkedHashMap<>();
-        modalidadeFreteNfe.put("Conta Emitente", 0);
-        modalidadeFreteNfe.put("Conta Destinatário", 1);
-        modalidadeFreteNfe.put("Conta Terceiros", 2);
-        modalidadeFreteNfe.put("Sem Frete", 9);
-
-        statusNfe = new LinkedHashMap<>();
-        statusNfe.put("Em Edição", 0);
-        statusNfe.put("Salva", 1);
-        statusNfe.put("Validada", 2);
-        statusNfe.put("Assinada", 3);
-        statusNfe.put("Enviada", 4);
-        statusNfe.put("Autorizada", 5);
-        statusNfe.put("Cancelada", 6);
-
-
+        //Financeiro
         tipoNaturazaFinanceira = new LinkedHashMap<>();
         tipoNaturazaFinanceira.put("Receita", "R");
         tipoNaturazaFinanceira.put("Despesa", "D");
@@ -459,6 +409,66 @@ public abstract class AbstractControll<T> implements Serializable {
         indicadorIncentivoIss = new HashMap<>();
         indicadorIncentivoIss.put("Sim", 1);
         indicadorIncentivoIss.put("Não", 2);
+
+
+        //NFe
+        codigoModeloNfe = new LinkedHashMap<>();
+        codigoModeloNfe.put("Nota Fiscal Eletrônica - NFe", "55");
+
+        localDestinoNfe = new LinkedHashMap<>();
+        localDestinoNfe.put("Operação Interna", 1);
+        localDestinoNfe.put("Operação Interestadual", 2);
+        localDestinoNfe.put("Operação com Exterior", 3);
+
+        consumidorOperacaoNfe = new LinkedHashMap<>();
+        consumidorOperacaoNfe.put("Normal", 0);
+        consumidorOperacaoNfe.put("Consumidor Final", 1);
+
+        consumidorPresencaNfe = new LinkedHashMap<>();
+        consumidorPresencaNfe.put("Operação Presencial", "1");
+        consumidorPresencaNfe.put("Operação não Presencial - Internet", "2");
+        consumidorPresencaNfe.put("Operação não Presencial - Teleatendimento", "3");
+        consumidorPresencaNfe.put("Operação não Presencial - Outros", "9");
+        consumidorPresencaNfe.put("Não se aplica", "0");
+
+        tipoOperacaoNfe = new LinkedHashMap<>();
+        tipoOperacaoNfe.put("Entrada", 0);
+        tipoOperacaoNfe.put("Saída", 1);
+
+        tipoEmissaoNfe = new LinkedHashMap<>();
+        tipoEmissaoNfe.put("Normal", 1);
+        tipoEmissaoNfe.put("Contigência", 2);
+        tipoEmissaoNfe.put("Contingência SCAN", 3);
+        tipoEmissaoNfe.put("Contingência DPEC", 4);
+        tipoEmissaoNfe.put("Contingência FS-DA", 5);
+
+        finalidadeEmissaoNfe = new LinkedHashMap<>();
+        finalidadeEmissaoNfe.put("Normal", 1);
+        finalidadeEmissaoNfe.put("Complementar", 2);
+        finalidadeEmissaoNfe.put("Ajuste", 3);
+
+        formatoImpressaoDanfeNfe = new LinkedHashMap<>();
+        formatoImpressaoDanfeNfe.put("Retrato", 1);
+        formatoImpressaoDanfeNfe.put("Paisagem", 1);
+
+        modalidadeFreteNfe = new LinkedHashMap<>();
+        modalidadeFreteNfe.put("Conta Emitente", 0);
+        modalidadeFreteNfe.put("Conta Destinatário", 1);
+        modalidadeFreteNfe.put("Conta Terceiros", 2);
+        modalidadeFreteNfe.put("Sem Frete", 9);
+
+        statusNfe = new LinkedHashMap<>();
+        statusNfe.put("Em Edição", 0);
+        statusNfe.put("Salva", 1);
+        statusNfe.put("Validada", 2);
+        statusNfe.put("Assinada", 3);
+        statusNfe.put("Enviada", 4);
+        statusNfe.put("Autorizada", 5);
+        statusNfe.put("Cancelada", 6);
+
+        webserviceAmbiente = new HashMap<>();
+        webserviceAmbiente.put("Produção", 1);
+        webserviceAmbiente.put("Homologação", 2);
 
     }
 
@@ -989,5 +999,9 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, String> getTipoContagem() {
         return tipoContagem;
+    }
+
+    public HashMap<String, Integer> getWebserviceAmbiente() {
+        return webserviceAmbiente;
     }
 }

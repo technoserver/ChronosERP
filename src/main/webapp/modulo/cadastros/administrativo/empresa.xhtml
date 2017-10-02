@@ -7,36 +7,39 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        CFOP
+        Empresa
     </ui:define>
 
     <ui:define name="tela">
-        #{cfopControll.titulo}
+        #{empresaControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CFOP
+        Empresa
     </ui:define>
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cfopControll}"
-                       idDataTable="dataTableCfop"
-                       nomeFuncao="CFOP"
+        <erp:gridDados controller="#{empresaControll}"
+                       idDataTable="dataTableEmpresa"
+                       nomeFuncao="Empresa"
                        id="telaGrid"
-                       somenteConsulta="true">
+        >
 
-            <p:column headerText="CFOP">
-                <h:outputLabel value="#{row.cfop}"/>
+            <p:column headerText="Razão Social">
+                <h:outputLabel value="#{row.razaoSocial}"/>
             </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}"/>
+            <p:column headerText="CNPJ">
+                <h:outputLabel value="#{row.cnpj}"/>
             </p:column>
-            <p:column headerText="Aplicacao">
-                <h:outputLabel value="#{row.aplicacao}"/>
+            <p:column headerText="tipo">
+                <h:outputLabel value="#{row.tipo eq 'M'?'MATRIZ':'FILIAL'}"/>
+            </p:column>
+            <p:column headerText="CRT">
+                <h:outputLabel value="#{empresaControll.keyFromValue(empresaControll.crt, row.crt)}"/>
             </p:column>
 
 
@@ -45,30 +48,191 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
-                                   nomeFuncao="CFOP"
+        <erp:telaInclusaoAlteracao controller="#{empresaControll}"
+                                   nomeFuncao="Empresa"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+        >
 
-            <div class="row">
 
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                                  idComponente="cfopCfop" label="CFOP"
-                                  nomeAtributo="#{cfopControll.objeto.cfop}"/>
-            </div>
-            <div class="row">
+            <p:tabView id="tabEmpresa" style="border: 0px;"
+                       activeIndex="#{empresaControll.activeTabIndex}">
+                <p:ajax event="tabChange"
+                        listener="#{empresaControll.onTabChange}"/>
+                <p:tab title="Dados Principais">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-10">
+                            <div class="row">
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-6"
+                                                idComponente="razaoSocial" label="Razão Social"
+                                                nomeAtributo="#{empresaControll.objeto.razaoSocial}"
+                                                tamanhoMaximo="150" requerido="true"/>
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-6"
+                                                idComponente="fantasia" label="Fantasia"
+                                                nomeAtributo="#{empresaControll.objeto.nomeFantasia}"
+                                                tamanhoMaximo="150"/>
+                            </div>
+                            <div class="row">
+                                <erp:campoCnpj styleClass="col-xs-12 col-sm-3 col-md-3"
+                                               idComponente="cnpj" label="Cnpj"
+                                               nomeAtributo="#{empresaControll.objeto.cnpj}" requerido="true"/>
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                                idComponente="ie" label="IE"
+                                                nomeAtributo="#{empresaControll.objeto.inscricaoEstadual}"
+                                                tamanhoMaximo="30" requerido="true"/>
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                                idComponente="ieSt" label="IE ST"
+                                                nomeAtributo="#{empresaControll.objeto.inscricaoEstadualSt}"
+                                                tamanhoMaximo="30"/>
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                                idComponente="im" label="IM"
+                                                nomeAtributo="#{empresaControll.objeto.inscricaoMunicipal}"
+                                                tamanhoMaximo="30"/>
 
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="cfopDescricao" label="Descricao"
-                                    nomeAtributo="#{cfopControll.objeto.descricao}"/>
-            </div>
-            <div class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="cfopAplicacao" label="Aplicacao"
-                                    nomeAtributo="#{cfopControll.objeto.aplicacao}"/>
-            </div>
+
+                            </div>
+                            <div class="row">
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                                idComponente="inscricaoJuntaComercial" label="Inscrição JUCE"
+                                                nomeAtributo="#{empresaControll.objeto.inscricaoJuntaComercial}"
+                                                tamanhoMaximo="30"/>
+                                <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                               idComponente="dataInscJuntaComercial" label="Data Insc. JUCE"
+                                               nomeAtributo="#{empresaControll.objeto.dataInscJuntaComercial}"
+                                />
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                                idComponente="suframa" label="SUFRAMA"
+                                                nomeAtributo="#{empresaControll.objeto.suframa}"
+                                                tamanhoMaximo="9"/>
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                                idComponente="suframa" label="CNAE Principal"
+                                                nomeAtributo="#{empresaControll.objeto.codigoCnaePrincipal}"
+                                                tamanhoMaximo="7"/>
+
+
+                            </div>
+                            <div class="row">
+                                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3" idComponente="crt"
+                                                 label="CRT" nomeAtributo="#{empresaControll.objeto.crt}"
+                                                 itens="#{empresaControll.crt}"/>
+                                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3" idComponente="tipoRegime"
+                                                 label="Regime" nomeAtributo="#{empresaControll.objeto.tipoRegime}"
+                                                 itens="#{empresaControll.tipoRegimeEmpresa}"/>
+
+
+                            </div>
+                        </div>
+
+                        <h:panelGroup id="containeFoto" layout="block" class="col-xs-12 col-md-2 container-foto">
+
+                            <p:graphicImage value="/image/empresa?logoEmp=#{empresaControll.logo}"
+                                            class="img-responsive foto"
+                                            rendered="#{empresaControll.objeto.imagemLogotipo!=null}"/>
+                            <p:graphicImage name="No-image-found.jpg" library="images" class="img-responsive foto"
+                                            rendered="#{empresaControll.objeto.imagemLogotipo==null}"/>
+                            <h:commandLink class="btn btn-default center-block"
+                                           id="btnPesquisarImagem"
+                                           value="Carregar Imagem"
+                                           style="margin-top: 5px">
+                                <p:ajax oncomplete="PF('dialogUpload').show()"
+                                        update=":formUpload:panelUpload"/>
+                            </h:commandLink>
+                        </h:panelGroup>
+
+                    </div>
+
+                    <div class="row">
+
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-8"
+                                        idComponente="enderecoLogradouro" label="Logradouro"
+                                        nomeAtributo="#{empresaControll.endereco.logradouro}"
+                                        tamanhoMaximo="60" requerido="true"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                        idComponente="enderecoNumero" label="Numero"
+                                        nomeAtributo="#{empresaControll.endereco.numero}"
+                                        tamanhoMaximo="10" requerido="true"/>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-4"
+                                        idComponente="enderecoComplemento" label="Complemento"
+                                        nomeAtributo="#{empresaControll.endereco.complemento}"
+                                        tamanhoMaximo="60"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-6"
+                                        idComponente="enderecoBairro" label="Bairro"
+                                        nomeAtributo="#{empresaControll.endereco.bairro}"
+                                        tamanhoMaximo="60" requerido="true"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                        idComponente="EnderecoCep" label="Cep"
+                                        nomeAtributo="#{empresaControll.endereco.cep}" tamanhoMaximo="8"
+                                        requerido="true"/>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <h:outputLabel value="UF :"/>
+                            <h:selectOneMenu value="#{empresaControll.endereco.uf}"
+                                             class="form-control">
+                                <f:selectItem itemValue="selecione" value="#{null}"/>
+                                <f:selectItems var="uf" value="#{empresaControll.estado}"/>
+                                <f:ajax event="valueChange" execute="@this" render="Municipio"
+                                        listener="#{empresaControll.instanciaCidade()}"/>
+                            </h:selectOneMenu>
+                        </div>
+                        <div class="col-xs-12 col-sm-3 col-md-10">
+                            <h:outputLabel value="Municipio :"/>
+                            <br/>
+                            <p:autoComplete id="Municipio" value="#{empresaControll.cidade}"
+                                            completeMethod="#{empresaControll.getMunicipios}"
+                                            var="municipio" itemLabel="#{municipio.getNome()}"
+                                            itemValue="#{municipio}" converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="10"
+                                            emptyMessage="Nenhum registro encontrado" style="width: 100%">
+                                <p:ajax event="itemSelect" process="@this"
+                                        listener="#{empresaControll.atualizarCodIbge()}"/>
+                            </p:autoComplete>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-5" idComponente="email"
+                                        label="Email" nomeAtributo="#{empresaControll.objeto.email}"
+                                        tamanhoMaximo="250" requerido="true"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-5" idComponente="contato"
+                                        label="Contato" nomeAtributo="#{empresaControll.objeto.contato}"
+                                        tamanhoMaximo="50"/>
+                        <erp:campoTelefone styleClass="col-xs-12 col-sm-3 col-md-2" idComponente="telefone"
+                                           label="Telefone" nomeAtributo="#{empresaControll.endereco.fone}"/>
+
+                    </div>
+                </p:tab>
+            </p:tabView>
+
 
         </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formUpload" enctype="multipart/form-data">
+            <p:dialog id="dialogUpload" header="Upload Logo Empresa" responsive="true"
+                      widgetVar="dialogUpload" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+                <p:outputPanel id="panelUpload">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <p:fileUpload id="uploadImagem"
+                                          fileUploadListener="#{empresaControll.uploadImagem}"
+                                          mode="advanced" fileLimit="1"
+                                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formCentro:growl"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar" update=":formCentro:telaDetalhe:tabEmpresa:containeFoto"
+                                     oncomplete="PF('dialogUpload').hide();" process="@this"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 </ui:composition>

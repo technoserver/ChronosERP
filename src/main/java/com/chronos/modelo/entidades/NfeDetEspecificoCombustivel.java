@@ -16,8 +16,6 @@ public class NfeDetEspecificoCombustivel implements Serializable {
     private Integer id;
     @Column(name = "CODIGO_ANP")
     private Integer codigoAnp;
-    @Column(name = "PERCENTUAL_GAS_NATURAL")
-    private BigDecimal percentualGasNatural;
     @Column(name = "CODIF")
     private String codif;
     @Column(name = "QUANTIDADE_TEMP_AMBIENTE")
@@ -30,6 +28,26 @@ public class NfeDetEspecificoCombustivel implements Serializable {
     private BigDecimal aliquotaCide;
     @Column(name = "VALOR_CIDE")
     private BigDecimal valorCide;
+    @Column(name = "DESCRICAO_PRODUTO_ANP")
+    private String descricaoProdutoAnp;
+    @Column(name = "PERCENTUAL_PETROLEO")
+    private BigDecimal percentualPetroleo;
+    @Column(name = "PERCENTUAL_NACIONAL")
+    private BigDecimal percentualNacional;
+    @Column(name = "PERCENTUAL_IMPORTADO")
+    private BigDecimal percentualImportado;
+    @Column(name = "VALOR_PARTIDA")
+    private BigDecimal valorPartida;
+    @Column(name = "NUMERO_IDENTIFICACAO_BICO")
+    private Integer numeroIdentificacaoBico;
+    @Column(name = "NUMERO_IDENTIFICACAO_BOMBA")
+    private Integer numeroIdentificacaoBomba;
+    @Column(name = "NUMERO_IDENTIFICACAO_TANQUE")
+    private Integer numeroIdentificacaoTanque;
+    @Column(name = "VALOR_ENCERRANTE_INICIO")
+    private BigDecimal valorEncerranteInicio;
+    @Column(name = "VALOR_ENCERRANTE_FIM")
+    private BigDecimal valorEncerranteFim;
     @JoinColumn(name = "ID_NFE_DETALHE", referencedColumnName = "ID")
     @OneToOne(optional = false)
     private NfeDetalhe nfeDetalhe;
@@ -53,12 +71,84 @@ public class NfeDetEspecificoCombustivel implements Serializable {
         this.codigoAnp = codigoAnp;
     }
 
-    public BigDecimal getPercentualGasNatural() {
-        return percentualGasNatural;
+    public String getDescricaoProdutoAnp() {
+        return descricaoProdutoAnp;
     }
 
-    public void setPercentualGasNatural(BigDecimal percentualGasNatural) {
-        this.percentualGasNatural = percentualGasNatural;
+    public void setDescricaoProdutoAnp(String descricaoProdutoAnp) {
+        this.descricaoProdutoAnp = descricaoProdutoAnp;
+    }
+
+    public BigDecimal getPercentualPetroleo() {
+        return percentualPetroleo;
+    }
+
+    public void setPercentualPetroleo(BigDecimal percentualPetroleo) {
+        this.percentualPetroleo = percentualPetroleo;
+    }
+
+    public BigDecimal getPercentualNacional() {
+        return percentualNacional;
+    }
+
+    public void setPercentualNacional(BigDecimal percentualNacional) {
+        this.percentualNacional = percentualNacional;
+    }
+
+    public BigDecimal getPercentualImportado() {
+        return percentualImportado;
+    }
+
+    public void setPercentualImportado(BigDecimal percentualImportado) {
+        this.percentualImportado = percentualImportado;
+    }
+
+    public BigDecimal getValorPartida() {
+        return valorPartida;
+    }
+
+    public void setValorPartida(BigDecimal valorPartida) {
+        this.valorPartida = valorPartida;
+    }
+
+    public Integer getNumeroIdentificacaoBico() {
+        return numeroIdentificacaoBico;
+    }
+
+    public void setNumeroIdentificacaoBico(Integer numeroIdentificacaoBico) {
+        this.numeroIdentificacaoBico = numeroIdentificacaoBico;
+    }
+
+    public Integer getNumeroIdentificacaoBomba() {
+        return numeroIdentificacaoBomba;
+    }
+
+    public void setNumeroIdentificacaoBomba(Integer numeroIdentificacaoBomba) {
+        this.numeroIdentificacaoBomba = numeroIdentificacaoBomba;
+    }
+
+    public Integer getNumeroIdentificacaoTanque() {
+        return numeroIdentificacaoTanque;
+    }
+
+    public void setNumeroIdentificacaoTanque(Integer numeroIdentificacaoTanque) {
+        this.numeroIdentificacaoTanque = numeroIdentificacaoTanque;
+    }
+
+    public BigDecimal getValorEncerranteInicio() {
+        return valorEncerranteInicio;
+    }
+
+    public void setValorEncerranteInicio(BigDecimal valorEncerranteInicio) {
+        this.valorEncerranteInicio = valorEncerranteInicio;
+    }
+
+    public BigDecimal getValorEncerranteFim() {
+        return valorEncerranteFim;
+    }
+
+    public void setValorEncerranteFim(BigDecimal valorEncerranteFim) {
+        this.valorEncerranteFim = valorEncerranteFim;
     }
 
     public String getCodif() {

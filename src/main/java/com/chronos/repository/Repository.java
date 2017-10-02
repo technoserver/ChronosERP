@@ -42,6 +42,8 @@ public interface Repository<T> {
 
     T get(Class<T> clazz, List<Filtro> filtros) throws PersistenceException;
 
+    T get(Class<T> clazz, List<Filtro> filtros, Object[] atributos) throws PersistenceException;
+
     Long getTotalRegistros(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
 
     Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws PersistenceException;

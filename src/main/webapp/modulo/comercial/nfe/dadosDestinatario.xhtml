@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+
+    <div class="row">
+        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
+                          label="Selecione o Cliente:"
+                          id="pessoaCliente"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{nfeCabecalhoControll}"
+                          completeMethod="getListaPessoaCliente"
+                          nomeAtributo="#{nfeCabecalhoControll.pessoaCliente}"
+                          idComponente="nfeDestinatarioSelecao"
+                          requerido="false">
+
+            <p:ajax event="itemSelecionado"
+                    listener="#{nfeCabecalhoControll.selecionaDestinatario}"
+                    update="nfeDestinatarioSelecao,:formCentro:telaDetalhe:tabNfe:dadosDestinatario"/>
+
+        </erp:autoComplete>
+    </div>
+    <h:panelGroup layout="block" id="dadosDestinatario">
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                            idComponente="nfeDestinatarioNome" label="Nome"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.nome}"
+                            tamanhoMaximo="60" somenteLeitura="false" requerido="true"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                            idComponente="nfeDestinatarioCpfCnpj" label="CPF/CNPJ"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.cpfCnpj}"
+                            tamanhoMaximo="14" somenteLeitura="true"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                            idComponente="nfeDestinatarioInscricaoEstadual"
+                            label="Inscricao Estadual"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.inscricaoEstadual}"
+                            tamanhoMaximo="14" somenteLeitura="true"/>
+            <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeDestinatarioSuframa" label="Suframa"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.suframa}"
+                              somenteLeitura="true"/>
+        </div>
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                            idComponente="nfeDestinatarioLogradouro" label="Logradouro"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.logradouro}"
+                            tamanhoMaximo="60" somenteLeitura="true"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                            idComponente="nfeDestinatarioNumero" label="Numero"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.numero}"
+                            tamanhoMaximo="60" somenteLeitura="true"/>
+
+        </div>
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                            idComponente="nfeDestinatarioComplemento" label="Complemento"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.complemento}"
+                            tamanhoMaximo="60" somenteLeitura="true"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                            idComponente="nfeDestinatarioBairro" label="Bairro"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.bairro}"
+                            tamanhoMaximo="60" somenteLeitura="true"/>
+
+            <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                            idComponente="nfeDestinatarioCep" label="Cep"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.cep}"
+                            tamanhoMaximo="8" somenteLeitura="true"/>
+
+
+        </div>
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                            idComponente="nfeDestinatarioUf" label="UF"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.uf}"
+                            tamanhoMaximo="2" somenteLeitura="true"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                            idComponente="nfeDestinatarioNomeMunicipio"
+                            label="Nome Municipio"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.nomeMunicipio}"
+                            tamanhoMaximo="60" somenteLeitura="true"/>
+            <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="nfeDestinatarioCodigoMunicipio"
+                              label="Codigo Municipio"
+                              nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.codigoMunicipio}"
+                              somenteLeitura="true"/>
+
+
+        </div>
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                            idComponente="nfeDestinatarioEmail" label="Email"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.email}"
+                            tamanhoMaximo="60" somenteLeitura="true"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-2"
+                            idComponente="nfeDestinatarioTelefone" label="Telefone"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.telefone}"
+                            tamanhoMaximo="14" somenteLeitura="true"/>
+        </div>
+    </h:panelGroup>
+
+</ui:composition>

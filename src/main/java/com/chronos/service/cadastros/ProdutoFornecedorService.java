@@ -24,24 +24,26 @@ public class ProdutoFornecedorService implements Serializable {
     private Repository<Fornecedor> fornecedores;
     @Inject
     private Repository<FornecedorProduto> repository;
+    @Inject
+    Repository<EmpresaProduto> empresaProdutos;
 
     @Transactional
-    public FornecedorProduto salvar(Produto produto,Fornecedor fornecedor,Empresa empresa,BigDecimal valorCompra,String codigoFornecedor){
-        produto = produto.getId()!=null?produto: produtos.atualizar(produto);
+    public FornecedorProduto salvar(Produto produto, Fornecedor fornecedor, Empresa empresa, BigDecimal valorCompra, String codigoFornecedor) {
+        produto = produto.getId() != null ? produto : produtos.atualizar(produto);
         FornecedorProduto forProd = new FornecedorProduto();
         forProd.setFornecedor(fornecedor);
         forProd.setProduto(produto);
         forProd.setCodigoFornecedorProduto(codigoFornecedor);
         forProd.setDataUltimaCompra(new Date());
         forProd.setPrecoUltimaCompra(valorCompra);
-        if (empresa.getTipoControleEstoque().equals("D")) {
-            EmpresaProduto empProduto = new EmpresaProduto();
-            produto.setProdutosEmpresa(new ArrayList<>());
-            empProduto.setEmpresa(empresa);
-            empProduto.setProduto(produto);
-            empProduto.setQuantidadeEstoque(BigDecimal.ZERO);
-            produto.getProdutosEmpresa().add(empProduto);
-        }
+
+        EmpresaProduto empProduto = new EmpresaProduto();
+        produto.setProdutosEmpresa(new ArrayList<>());
+        empProduto.setEmpresa(empresa);
+        empProduto.setProduto(produto);
+        empProduto.setQuantidadeEstoque(BigDecimal.ZERO);
+        empresaProdutos.salvar(empProduto);
+
         return repository.atualizar(forProd);
     }
 
@@ -55,7 +57,6 @@ public class ProdutoFornecedorService implements Serializable {
 
         return produto;
     }
-
 
 
 }

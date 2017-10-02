@@ -34,7 +34,9 @@
                          maxlength="#{cc.attrs.tamanhoMaximo}"
                          disabled="#{cc.attrs.desabilitado}"
                          readonly="#{cc.attrs.somenteLeitura}"
-                         class="#{cc.attrs.styleClassInput}" />
+                         class="#{cc.attrs.styleClassInput}">
+                <cc:insertChildren/>
+            </p:inputText>
         </h:panelGroup>
     </cc:implementation>
 </html>

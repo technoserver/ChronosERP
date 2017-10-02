@@ -4,7 +4,9 @@ import com.chronos.bo.nfe.ImportaXMLNFe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
+import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
+import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.FornecedorService;
 import com.chronos.service.cadastros.ProdutoFornecedorService;
 import com.chronos.service.estoque.EntradaNotaFiscalService;
@@ -30,6 +32,29 @@ import java.util.*;
 public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+
+    @Inject
+    private Repository<ProdutoMarca> marcas;
+    @Inject
+    private Repository<Almoxarifado> almoxarifados;
+    @Inject
+    private Repository<UnidadeProduto> unidades;
+    @Inject
+    private Repository<ProdutoSubGrupo> subGrupos;
+    @Inject
+    private Repository<TributOperacaoFiscal> operacoesFiscais;
+    @Inject
+    private Repository<Produto> produtos;
+    @Inject
+    private Repository<Fornecedor> fornecedores;
+    @Inject
+    private Repository<NaturezaFinanceira> naturezas;
+    @Inject
+    private Repository<VendaCondicoesPagamento> condicoes;
+    @Inject
+    private EstoqueRepository estoques;
+
 
     @Inject
     private EntradaNotaFiscalService entradaService;
@@ -68,20 +93,21 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private BigDecimal valorTotalNF;
 
     private int tipoCstIcms;
+    private boolean valoresValido;
 
 
     @Override
     public ERPLazyDataModel<NfeCabecalho> getDataModel() {
         if (dataModel == null) {
-            Object[] atribut = new Object[]{"fornecedor", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota"};
             dataModel = new ERPLazyDataModel();
             dataModel.setClazz(getClazz());
-            dataModel.addFiltro("tipoOperacao", 0);
+            dataModel.addFiltro("tipoOperacao", 0, Filtro.IGUAL);
             dataModel.setDao(dao);
-            dataModel.setAtributos(atribut);
-
-
         }
+
+        Object[] atribut = new Object[]{"fornecedor", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota"};
+        dataModel.setAtributos(atribut);
+
         return dataModel;
     }
 
@@ -91,6 +117,35 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         setTelaGrid(false);
     }
 
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        NfeCabecalho nfe = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(nfe);
+
+    }
+
+    @Override
+    public void salvar() {
+        try {
+            if (getObjeto().getId() == null) {
+
+            } else {
+                List<NfeDetalhe> listaNfeDetOld = estoques.getItens(getObjeto());
+                for (NfeDetalhe detalhe : listaNfeDetOld) {
+                    estoques.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+                }
+            }
+
+            estoques.atualizaEstoqueEmpresa(empresa.getId(), getObjeto().getListaNfeDetalhe());
+            super.salvar();
+            setTelaGrid(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+
+    }
 
     public void gerarValores(NfeDetalhe item) {
         valorTotalFrete = Biblioteca.soma(valorTotalFrete, item.getValorFrete());
@@ -168,7 +223,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 List<Filtro> filtro = new LinkedList<>();
                 filtro.add(new Filtro(Filtro.AND, "fornecedor.id", Filtro.IGUAL, fornecedor.getId()));
                 filtro.add(new Filtro(Filtro.AND, "numero", Filtro.IGUAL, getObjeto().getNumero()));
-                NfeCabecalho nfe = dao.get(NfeCabecalho.class, filtro);
+
+                NfeCabecalho nfe = dao.get(NfeCabecalho.class, filtro, new Object[]{"numero"});
                 if (nfe != null) {
                     doCreate();
                     throw new Exception("Essa nota já foi  digitada pra esse fornecedor !");
@@ -307,6 +363,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         produto.setNcm(nfeDetalhe.getNcm());
         produto.setNome(nfeDetalhe.getNomeProduto());
         produto.setValorCompra(nfeDetalhe.getValorUnitarioComercial());
+        produto.setExcluido("N");
+        produto.setInativo("N");
 
     }
 
@@ -372,18 +430,111 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     // </editor-fold>
 
+// <editor-fold defaultstate="collapsed" desc="Diversos">
 
-
-
-
-
-
-
-    private Map getCodigoEnquadramentoIPI(){
-        Map<String,String> map = new HashMap<>();
-
-        return map;
+    public boolean validarValor(BigDecimal valor1, BigDecimal valor2) {
+        if (valor1 == null || valor2 == null) {
+            return true;
+        }
+        valoresValido = valor1.compareTo(valor2) == 0;
+        return valoresValido;
     }
+
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Buscas">
+    public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
+        List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
+        try {
+            listaVendaCondicoesPagamento = condicoes.getEntitys(VendaCondicoesPagamento.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaVendaCondicoesPagamento;
+    }
+
+    public List<Produto> getListaProduto(String descricao) {
+        List<Produto> listaProduto = new ArrayList<>();
+
+        try {
+            listaProduto = produtos.getEntitys(Produto.class, "descricaoPdv", descricao);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listaProduto;
+    }
+
+    public List<ProdutoSubGrupo> getListaSubGrupo(String nome) {
+        List<ProdutoSubGrupo> listaProdutoSubGrupo = new ArrayList<>();
+
+        try {
+            listaProdutoSubGrupo = subGrupos.getEntitys(ProdutoSubGrupo.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaProdutoSubGrupo;
+    }
+
+    public List<UnidadeProduto> getListaUnidadeProduto(String sigla) {
+        List<UnidadeProduto> listaUnidadeProduto = new ArrayList<>();
+
+        try {
+            listaUnidadeProduto = unidades.getEntitys(UnidadeProduto.class, "sigla", sigla);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaUnidadeProduto;
+    }
+
+    public List<Almoxarifado> getListaAlmoxarifado(String nome) {
+        List<Almoxarifado> listaAlmoxarifado = new ArrayList<>();
+
+        try {
+            listaAlmoxarifado = almoxarifados.getEntitys(Almoxarifado.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaAlmoxarifado;
+    }
+
+    public List<ProdutoMarca> getListaProdutoMarca(String nome) {
+        List<ProdutoMarca> listaProdutoMarca = new ArrayList<>();
+
+        try {
+            listaProdutoMarca = marcas.getEntitys(ProdutoMarca.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaProdutoMarca;
+    }
+
+    public List<Fornecedor> getListaFornecedor(String nome) {
+        List<Fornecedor> listaFornecedor = new ArrayList<>();
+
+        try {
+            listaFornecedor = fornecedores.getEntitys(Fornecedor.class, "pessoa.nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaFornecedor;
+    }
+
+    public List<NaturezaFinanceira> getListaNaturezaFinanceira(String nome) {
+        List<NaturezaFinanceira> listaNaturezaFinanceira = new ArrayList<>();
+        try {
+            listaNaturezaFinanceira = naturezas.getEntitys(NaturezaFinanceira.class, "descricao", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaNaturezaFinanceira;
+    }
+
+    // </editor-fold>
+
+
+
+
+
     @Override
     protected Class<NfeCabecalho> getClazz() {
         return NfeCabecalho.class;
@@ -589,5 +740,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setTipoCstIcms(int tipoCstIcms) {
         this.tipoCstIcms = tipoCstIcms;
+    }
+
+    public boolean isValoresValido() {
+        return valoresValido;
+    }
+
+    public void setValoresValido(boolean valoresValido) {
+        this.valoresValido = valoresValido;
     }
 }

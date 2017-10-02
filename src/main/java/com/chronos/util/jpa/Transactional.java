@@ -15,6 +15,7 @@ import java.lang.annotation.Target;
  *
  * @author john
  */
+//@Inherited
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })

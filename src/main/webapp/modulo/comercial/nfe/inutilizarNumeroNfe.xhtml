@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Inutilizar Número NFe
+    </ui:define>
+
+    <ui:define name="tela">
+        #{inutilizarNfeControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Inutilizar Número NFe
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel>
+
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 margem-bottom-10">
+
+
+                            <p:commandLink title="Consultar Status"
+                                           class="btn btn-default"
+                                           actionListener="#{inutilizarNfeControll.inutilizaNumero}"
+                                           update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid">
+                                <i class="fa fa-search"></i>
+                            </p:commandLink>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="nfeCabecalhoCodigoModelo" label="Codigo Modelo"
+                                         nomeAtributo="#{inutilizarNfeControll.modelo}"
+                                         itens="#{inutilizarNfeControll.codigoModeloNfe}"/>
+                        <erp:campoInteiro idComponente="numeroInicial"
+                                          label="Número Inicial:"
+                                          nomeAtributo="#{inutilizarNfeControll.numeroInicial}"
+                                          requerido="true"
+                                          styleClass="col-xs-12 col-sm-2 col-md-2"/>
+                        <erp:campoInteiro idComponente="numeroInicial"
+                                          label="Número Final:"
+                                          nomeAtributo="#{inutilizarNfeControll.numeroFinal}"
+                                          requerido="true"
+                                          styleClass="col-xs-12 col-sm-2 col-md-2"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        idComponente="justificativa" label="Justificativa"
+                                        nomeAtributo="#{inutilizarNfeControll.justificativa}"
+                                        tamanhoMaximo="255" id="campoJustificativa" requerido="true"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoAreaTexto idComponente="resultado" label="Resultado:"
+                                            styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            linhas="5"
+                                            nomeAtributo="#{inutilizarNfeControll.resultado}"/>
+                    </div>
+
+                </div>
+
+            </p:outputPanel>
+        </p:outputPanel>
+
+    </ui:define>
+
+
+</ui:composition>

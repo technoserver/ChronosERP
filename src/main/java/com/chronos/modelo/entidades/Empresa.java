@@ -5,6 +5,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -90,6 +92,12 @@ public class Empresa implements Serializable {
     private Set<Pessoa> listaPessoa;
     @Transient
     private byte[] imagem;
+
+    @PrePersist
+    @PreUpdate
+    private void prePersist() {
+        this.cnpj = cnpj == null ? "" : cnpj.replaceAll("\\D", "");
+    }
 
     public Empresa() {
     }
@@ -423,8 +431,8 @@ public class Empresa implements Serializable {
     }
 
 	public Set<EmpresaEndereco> getListaEndereco() {
-		return listaEndereco;
-	}
+        return Optional.ofNullable(listaEndereco).orElse(null);
+    }
 
 	public void setListaEndereco(Set<EmpresaEndereco> listaEndereco) {
 		this.listaEndereco = listaEndereco;
@@ -446,9 +454,38 @@ public class Empresa implements Serializable {
 		this.listaPessoa = listaPessoa;
 	}
 
+    public EmpresaEndereco buscarEnderecoPrincipal() {
+        return getListaEndereco().stream().filter(e -> e.getPrincipal().equals("S")).findFirst().orElse(null);
+    }
+
 	@Override
     public String toString() {
         return razaoSocial;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 53 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Empresa other = (Empresa) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
     }
 
 }

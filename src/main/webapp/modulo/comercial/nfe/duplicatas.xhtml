@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <h:panelGroup id="panelDuplicatas" layout="block">
+        <div class="row">
+            <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                              label="Venda Condicoes Pagamento"
+                              itemLabel="#{objeto.nome}"
+                              controller="#{nfeCabecalhoControll}"
+                              completeMethod="getListaVendaCondicoesPagamento"
+                              nomeAtributo="#{nfeCabecalhoControll.condicoesPagamento}"
+                              requerido="false"
+                              idComponente="condicoesPagamento"/>
+
+            <erp:campoData label="Primeiro Vencimento"
+                           styleClass="col-xs-12 col-sm-2 col-md-2"
+                           nomeAtributo="#{nfeCabecalhoControll.primeiroVencimento}"
+                           idComponente="primeiroVencimento"/>
+
+            <erp:campoInteiro label="Intervalo"
+                              idComponente="intervaloParcelas"
+                              styleClass="col-xs-12 col-sm-2 col-md-2"
+                              nomeAtributo="#{nfeCabecalhoControll.intervaloParcelas}"/>
+
+            <div class="col-xs-12 col-sm-3 col-md-3">
+                <h:outputLabel value="Qtd de parcelas" for="qtdParcelas"/>
+                <div class="field-action">
+                    <h:inputText class="form-control" id="qtdParcelas" value="#{nfeCabecalhoControll.qtdParcelas}"/>
+                    <div class="field-action__icon">
+                        <h:commandButton value="Gerar Parcelas" class="btn btn-default"
+                                         action="#{nfeCabecalhoControll.gerarDulicatas}"
+                                         id="btnGerarDuplicatas">
+                            <p:ajax process="@this,:formCentro:telaDetalhe:tabNfe:panelDuplicatas"
+                                    update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:panelDuplicatas,:formCentro:telaDetalhe:tabNfe:dataTableNfeDuplicatas"/>
+                        </h:commandButton>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <p:dataTable id="dataTableNfeDuplicatas" var="obj"
+                     value="#{nfeCabecalhoControll.objeto.listaDuplicata}"
+                     paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                     reflow="true" paginatorPosition="bottom"
+                     resizableColumns="true">
+
+            <p:column headerText="Número">
+                <h:outputLabel value="#{obj.numero}"/>
+            </p:column>
+            <p:column headerText="Data Vencimento">
+                <h:outputLabel value="#{obj.dataVencimento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Valor" class="coluna-monetaria">
+                <h:outputLabel value="#{obj.valor}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+
+        </p:dataTable>
+    </h:panelGroup>
+
+</ui:composition>

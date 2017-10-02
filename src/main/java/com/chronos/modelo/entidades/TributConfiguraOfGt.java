@@ -15,6 +15,12 @@ public class TributConfiguraOfGt implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    //@Column(name = "ipi")
+    @Transient
+    private String ipi;
+    //@Column(name = "pis_cofins")
+    @Transient
+    private String pisCofins;
     @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private TributOperacaoFiscal tributOperacaoFiscal;
@@ -35,6 +41,12 @@ public class TributConfiguraOfGt implements Serializable {
     
 
     public TributConfiguraOfGt() {
+    }
+
+    public TributConfiguraOfGt(Integer id) {
+        this.id = id;
+        this.ipi = "N";
+        this.pisCofins = "S";
     }
 
     public Integer getId() {
@@ -101,8 +113,22 @@ public class TributConfiguraOfGt implements Serializable {
     public void setTributIss(TributIss tributIss) {
         this.tributIss = tributIss;
     }
-    
-    
+
+    public String getIpi() {
+        return ipi;
+    }
+
+    public void setIpi(String ipi) {
+        this.ipi = ipi;
+    }
+
+    public String getPisCofins() {
+        return pisCofins;
+    }
+
+    public void setPisCofins(String pisCofins) {
+        this.pisCofins = pisCofins;
+    }
 
     @Override
     public int hashCode() {

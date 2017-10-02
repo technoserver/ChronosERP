@@ -31,7 +31,7 @@ public class EntityManagerProducer {
     }
 
 //    @Produces
-//    @Dependent//@RequestScoped
+//    @RequestScoped
 //    public EntityManager createEntityManager() {
 //        return factory.createEntityManager();
 //        //return factory.createEntityManager();

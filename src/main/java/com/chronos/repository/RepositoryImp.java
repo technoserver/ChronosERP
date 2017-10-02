@@ -123,8 +123,15 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Override
     public T get(Class<T> clazz, List<Filtro> filtros) throws PersistenceException {
         List<T> objetos = getEntitys(clazz, filtros);
-        return objetos.isEmpty()?null:objetos.get(0);
+        return objetos.stream().findFirst().orElse(null);
     }
+
+    @Override
+    public T get(Class<T> clazz, List<Filtro> filtros, Object[] atributos) throws PersistenceException {
+        List<T> objetos = getEntitys(clazz, filtros, atributos);
+        return objetos.stream().findFirst().orElse(null);
+    }
+
 
 
     @SuppressWarnings("unchecked")
@@ -382,20 +389,16 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         for (Filtro f : filters) {
             i++;
 
-            jpqlBuilder.append(" ").append(f.getOperadorLogico()).append((f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE) ) ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional());
+            jpqlBuilder.append(" ")
+                    .append(f.getOperadorLogico())
+                    .append((f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional());
             if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)){
                 jpqlBuilder.append(":valor").append(i);
             }
         }
         jpql = jpqlBuilder.toString();
-
-        if (sortField != null && sortOrder != null) {
-            if (sortOrder.equals(SortOrder.ASCENDING)) {
-                jpql += " ORDER BY o." + sortField + " ASC";
-            } else if (sortOrder.equals(SortOrder.DESCENDING)) {
-                jpql += " ORDER BY o." + sortField + " DESC";
-            }
-        }
+        QueryUtil queryUtil = new QueryUtil();
+        jpql = queryUtil.definirOrdenacao(jpql, sortField, sortOrder);
         return jpql;
     }
 
@@ -452,39 +455,22 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return query;
     }
 
+    @Transactional
     private boolean executarQueryNativa(String query) {
         boolean result = false;
         try{
-            em.getTransaction().begin();
+
             result =  em.createNativeQuery(query).executeUpdate() > 0;
         }catch (Exception ex){
+            ex.printStackTrace();
             logger.error("Erro ao Executa sql " + ex.getMessage().toString());
-            em.getTransaction().commit();
+
         }finally {
-            fecharConexao();
+
         }
 
         return result;
     }
 
-    private void fecharConexao() {
-        if (em != null && em.isOpen()) {
-            try {
-                if (em.getTransaction() != null && em.getTransaction().isActive()) {
-                    if (em.getTransaction().getRollbackOnly()) {
-                        em.getTransaction().rollback();
-                    } else {
-                        em.getTransaction().commit();
-                    }
-                }
-            } catch (Exception e) {
-                if (em.getTransaction() != null && em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                throw e;
-            } finally {
-                em.close();
-            }
-        }
-    }
+
 }

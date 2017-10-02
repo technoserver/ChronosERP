@@ -4,6 +4,7 @@ package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 
 @Entity
@@ -70,11 +71,19 @@ public class NfeConfiguracao implements Serializable {
     private String emailAutenticaSsl;
     @Column(name = "EMAIL_TEXTO")
     private String emailTexto;
+    @Column(name = "observacao_padrao")
+    private String observacaoPadrao;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
 
     public NfeConfiguracao() {
+    }
+
+    public NfeConfiguracao(Integer id, String certificadoDigitalSenha, Integer webserviceAmbiente) {
+        this.id = id;
+        this.certificadoDigitalSenha = certificadoDigitalSenha;
+        this.webserviceAmbiente = webserviceAmbiente;
     }
 
     public Integer getId() {
@@ -309,5 +318,36 @@ public class NfeConfiguracao implements Serializable {
         this.empresa = empresa;
     }
 
- 
+    public String getObservacaoPadrao() {
+        return observacaoPadrao;
+    }
+
+    public void setObservacaoPadrao(String observacaoPadrao) {
+        this.observacaoPadrao = observacaoPadrao;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.id);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final NfeConfiguracao other = (NfeConfiguracao) obj;
+        if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        return true;
+    }
 }

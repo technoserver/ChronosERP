@@ -10,6 +10,9 @@ import com.chronos.modelo.entidades.NotaFiscalTipo;
  */
 public interface Constantes {
 
+
+    public static String DIRETORIO_SCHEMA_NFE = "/modulo/comercial/nfe/schemas/";
+
     interface FIN{
         public static FinStatusParcela STATUS_ABERTO = new FinStatusParcela(1);
         public static FinStatusParcela STATUS_QUITADO = new FinStatusParcela(2);

@@ -46,7 +46,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="library" name="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" level="application" />
+    <orderEntry type="library" name="Maven: com.chronos.calc:ChronosCalcTribut:1.0.10" level="project" />
     <orderEntry type="library" name="Maven: br.com.samuelweb:java-efd-icms:2.0.20.0" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.sped:ChronosEfdIcms:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: postgresql:postgresql:9.1-901-1.jdbc4" level="project" />
     <orderEntry type="library" name="Maven: org.flywaydb:flyway-core:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.primefaces.themes:bootstrap:1.0.10" level="project" />
@@ -129,14 +131,13 @@
     <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-web-api:7.0" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:chronosnfe:3.1.3" level="project" />
-    <orderEntry type="library" name="Maven: br.com.autocom:nfe-wsdl:3.10a" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:chronosnfe:3.1.9" level="project" />
+    <orderEntry type="library" name="Maven: br.com.autocom:nfe-wsdl:3.10c" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-kernel:1.6.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.ws.commons.axiom:axiom-impl:1.2.13" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.codehaus.woodstox:wstx-asl:3.2.9" level="project" />
     <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-ws-metadata_2.0_spec:1.1.2" level="project" />
     <orderEntry type="library" name="Maven: javax.servlet:servlet-api:2.3" level="project" />
-    <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.1" level="project" />
     <orderEntry type="library" name="Maven: commons-fileupload:commons-fileupload:1.2" level="project" />
     <orderEntry type="library" name="Maven: wsdl4j:wsdl4j:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ws.commons.schema:XmlSchema:1.4.7" level="project" />
@@ -152,9 +153,13 @@
     <orderEntry type="library" name="Maven: jaxen:jaxen:1.1.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.geronimo.specs:geronimo-stax-api_1.0_spec:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.james:apache-mime4j-core:0.7.2" level="project" />
-    <orderEntry type="library" name="Maven: br.com.autocom:nfe-xsd:8.i.2" level="project" />
+    <orderEntry type="library" name="Maven: br.com.autocom:nfe-xsd:8.i.2_DFe1.02a" level="project" />
     <orderEntry type="library" name="Maven: br.com.samuelweb:cte-wsdl:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: br.com.samuelweb:cte-xsd:2.00a.0_3.00.6" level="project" />
+    <orderEntry type="library" name="Maven: br.com.samuelweb:java_certificado:1.3" level="project" />
+    <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.1" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.txw2:txw2:20110809" level="project" />
+    <orderEntry type="library" name="Maven: relaxngDatatype:relaxngDatatype:20020414" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-transport-local:1.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-transport-http:1.6.2" level="project" />

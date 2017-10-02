@@ -113,6 +113,12 @@ public class NfeDetalhe implements Serializable {
     private Set<NfeDeclaracaoImportacao> listaDeclaracaoImportacao;
     @Transient
     private boolean produtoCadastrado;
+    @Transient
+    private BigDecimal impostoFederal;
+    @Transient
+    private BigDecimal impostoEstadual;
+    @Transient
+    private BigDecimal impostoMunicipal;
 
     public NfeDetalhe() {
     }
@@ -308,9 +314,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorSubtotal() {
-        valorSubtotal = BigDecimal.ZERO;
-        valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial());
-        return valorSubtotal;
+        return Optional.ofNullable(valorSubtotal).orElse(BigDecimal.ZERO);
     }
 
     public void setValorSubtotal(BigDecimal valorSubtotal) {
@@ -501,6 +505,30 @@ public class NfeDetalhe implements Serializable {
         this.produtoCadastrado = produtoCadastrado;
     }
 
+    public BigDecimal getImpostoFederal() {
+        return impostoFederal;
+    }
+
+    public void setImpostoFederal(BigDecimal impostoFederal) {
+        this.impostoFederal = impostoFederal;
+    }
+
+    public BigDecimal getImpostoEstadual() {
+        return impostoEstadual;
+    }
+
+    public void setImpostoEstadual(BigDecimal impostoEstadual) {
+        this.impostoEstadual = impostoEstadual;
+    }
+
+    public BigDecimal getImpostoMunicipal() {
+        return impostoMunicipal;
+    }
+
+    public void setImpostoMunicipal(BigDecimal impostoMunicipal) {
+        this.impostoMunicipal = impostoMunicipal;
+    }
+
     public void pegarInfoProduto() {
         if (produto != null) {
             nomeProduto = produto.getNome();
@@ -516,14 +544,14 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal calcularSubTotalProduto(){
-
-        BigDecimal subTotal = this.quantidadeComercial.multiply(this.valorBrutoProduto);
-        return subTotal;
+        this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial());
+        ;
+        return valorSubtotal;
     }
 
 
     public BigDecimal calcularValorTotalProduto(){
-        BigDecimal valorTotal = Optional.ofNullable(calcularSubTotalProduto()).orElse(BigDecimal.ZERO);
+        valorTotal = Optional.ofNullable(calcularSubTotalProduto()).orElse(BigDecimal.ZERO);
         valorTotal = valorTotal
                 .add(Optional.ofNullable(this.valorFrete).orElse(BigDecimal.ZERO))
                 .add(Optional.ofNullable(this.valorOutrasDespesas).orElse(BigDecimal.ZERO))
@@ -534,12 +562,13 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal calcularTotal() {
-        BigDecimal valor = BigDecimal.ZERO;
-        valor = valor.add(getValorSubtotal())
+        valorTotal = BigDecimal.ZERO;
+        valorTotal = valorTotal.add(getValorSubtotal())
                 .add(getValorFrete())
                 .add(getValorSeguro())
+                .add(getValorOutrasDespesas())
                 .subtract(getValorDesconto());
-        valorTotal = valor;
+
         return valorTotal;
     }
 
