@@ -396,7 +396,13 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     }
 
     public void cartaCorrecao() {
-
+        try {
+            configuracao = configuracao != null ? configuracao : configuraNfe();
+            nfeService.cartaCorrecao(getObjeto(), justificativa, configuracao);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagem.addErrorMessage("Ocorreu um erro ao enviar a carta de correção!", e);
+        }
     }
 
     public void visualizarXml() {
@@ -647,7 +653,15 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         this.dadosSalvos = dadosSalvos;
     }
 
-    // </editor-fold>
+    public String getJustificativa() {
+        return justificativa;
+    }
+
+    public void setJustificativa(String justificativa) {
+        this.justificativa = justificativa;
+    }
+
+// </editor-fold>
 
 
 }

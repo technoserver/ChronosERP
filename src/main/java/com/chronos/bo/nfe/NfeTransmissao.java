@@ -1,5 +1,6 @@
 package com.chronos.bo.nfe;
 
+import br.inf.portalfiscal.nfe.schema.envcce.TRetEnvEvento;
 import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema.inutnfe.TInutNFe;
 import br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe;
@@ -61,6 +62,16 @@ public class NfeTransmissao {
         status = xmlEnvio.consultarStatus(configuracao.getWebserviceAmbiente().toString(), codigoIBGE, "3.10");
 
         return status;
+    }
+
+    public TRetEnvEvento enviarCartaCorrecao(NfeConfiguracao configuracao, String chave, String correcao) throws Exception {
+        instanciarConfiguracoes(configuracao);
+        GeraXMLEnvio gerar = new GeraXMLEnvio();
+        String codigoIBGE = Estados.getUFbySigla(endereco.getUf()).getCodigoIbge();
+        br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento evento = gerar.cartaCorrecao(chave, configuracao.getWebserviceAmbiente().toString(), codigoIBGE, empresa.getCnpj(), correcao);
+        TRetEnvEvento retorno = Nfe.cce(evento, false, ConstantesNFe.NFE);
+
+        return retorno;
     }
 
     public void instanciarConfiguracoes(NfeConfiguracao configuracao) throws Exception {

@@ -153,6 +153,45 @@ public class GeraXMLEnvio {
         return enviNFe;
     }
 
+    public br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento cartaCorrecao(String chave, String ambiente,
+                                                                          String codigoUf, String cnpj, String correcao) throws ParseException {
+
+        String id = "ID110110" + chave + "01";
+
+        br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento envEvento = new br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento();
+        envEvento.setVersao("1.00");
+        envEvento.setIdLote("1");
+
+        br.inf.portalfiscal.nfe.schema.envcce.TEvento evento = new br.inf.portalfiscal.nfe.schema.envcce.TEvento();
+        evento.setVersao("1.00");
+
+        br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento infEvento = new br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento();
+        infEvento.setId(id);
+        infEvento.setCOrgao(codigoUf);
+        infEvento.setTpAmb(ambiente);
+
+        infEvento.setCNPJ(cnpj);
+        infEvento.setChNFe(chave);
+
+        infEvento.setDhEvento(FormatValor.getInstance().formatarDataNota(new Date()));
+        infEvento.setTpEvento("110110");
+        infEvento.setNSeqEvento("1");
+        infEvento.setVerEvento("1.00");
+
+        br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento.DetEvento detEvento = new br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento.DetEvento();
+        detEvento.setVersao("1.00");
+        detEvento.setDescEvento("Carta de Correcao");
+
+        detEvento.setXCorrecao(correcao);
+        detEvento.setXCondUso(
+                "A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do destinatario; III - a data de emissao ou de saida.");
+        infEvento.setDetEvento(detEvento);
+        evento.setInfEvento(infEvento);
+        envEvento.getEvento().add(evento);
+
+        return envEvento;
+    }
+
 
     public TInutNFe inutilizarNfe(String ambiente, String codigoUf, String modelo, int serie, int numInicial,
                                   int numFinal, String cnpj, String justificativa) {

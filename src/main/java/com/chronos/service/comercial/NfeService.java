@@ -511,4 +511,26 @@ public class NfeService implements Serializable {
 
 
     }
+
+    public String cartaCorrecao(NfeCabecalho nfe, String justificativa, NfeConfiguracao configuracao) throws Exception {
+        if (!StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
+            throw new Exception("NF-e náo autorizada. Cancelamento náo permitido!");
+        }
+        String schemas = org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : configuracao.getCaminhoSchemas();
+        NfeTransmissao transmissao = new NfeTransmissao(empresa);
+        configuracao.setCaminhoSchemas(schemas);
+        br.inf.portalfiscal.nfe.schema.envcce.TRetEnvEvento retorno = transmissao.enviarCartaCorrecao(configuracao, nfe.getChaveAcessoCompleta(), justificativa);
+        if (retorno.getCStat().equals("128")) {
+            if (retorno.getRetEvento().get(0).getInfEvento().getCStat().equals("135")) {
+                Mensagem.addInfoMessage("Carta de correção enviada  com sucesso");
+            } else {
+                Mensagem.addInfoMessage(retorno.getRetEvento().get(0).getInfEvento().getXMotivo());
+            }
+        } else {
+            Mensagem.addInfoMessage(retorno.getXMotivo());
+        }
+
+        return retorno.getXMotivo();
+
+    }
 }
