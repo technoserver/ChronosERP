@@ -1,5 +1,6 @@
 package com.chronos.bo.nfe;
 
+import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento;
 import br.inf.portalfiscal.nfe.schema.envcce.TRetEnvEvento;
 import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema.inutnfe.TInutNFe;
@@ -83,5 +84,26 @@ public class NfeTransmissao {
         return empresa.getListaEndereco().stream()
                 .filter(end -> end.getPrincipal().equals("S"))
                 .findFirst().orElse(new EmpresaEndereco());
+    }
+
+    public TEnvEvento cancelarNFe(NfeConfiguracao configuracao, String protocolo, String uf, String ambiente, String chave, String justificativa) throws Exception {
+        if (justificativa == null) {
+            throw new Exception("É necessário informar uma justificativa para o cancelamento da NF-e.");
+        }
+        if (justificativa.trim().equals("")) {
+            throw new Exception("É necessário informar uma justificativa para o cancelamento da NF-e.");
+        }
+        if (justificativa.trim().length() < 15) {
+            throw new Exception("A justificativa deve ter no mínimo 15 caracteres.");
+        }
+        if (justificativa.trim().length() > 255) {
+            throw new Exception("A justificativa deve ter no máximo 255 caracteres.");
+        }
+        instanciarConfiguracoes(configuracao);
+        GeraXMLEnvio geraXml = new GeraXMLEnvio();
+        String cnpj = empresa.getCnpj();
+        TEnvEvento evento = geraXml.cancelarNfe(chave, protocolo, ambiente, uf, cnpj, justificativa);
+
+        return evento;
     }
 }

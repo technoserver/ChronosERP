@@ -48,7 +48,7 @@
     <orderEntry type="library" name="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" level="application" />
     <orderEntry type="library" name="Maven: com.chronos.calc:ChronosCalcTribut:1.0.10" level="project" />
     <orderEntry type="library" name="Maven: br.com.samuelweb:java-efd-icms:2.0.20.0" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.sped:ChronosEfdIcms:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.sped:ChronosEfdIcms:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: postgresql:postgresql:9.1-901-1.jdbc4" level="project" />
     <orderEntry type="library" name="Maven: org.flywaydb:flyway-core:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.primefaces.themes:bootstrap:1.0.10" level="project" />
@@ -131,7 +131,7 @@
     <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-web-api:7.0" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:chronosnfe:3.1.10" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:chronosnfe:3.1.11" level="project" />
     <orderEntry type="library" name="Maven: br.com.autocom:nfe-wsdl:3.10c" level="project" />
     <orderEntry type="library" name="Maven: org.apache.axis2:axis2-kernel:1.6.2" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.apache.ws.commons.axiom:axiom-impl:1.2.13" level="project" />

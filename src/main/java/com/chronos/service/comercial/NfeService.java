@@ -1,5 +1,8 @@
 package com.chronos.service.comercial;
 
+import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento;
+import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TProcEvento;
+import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TRetEnvEvento;
 import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema.envinfe.TRetEnviNFe;
 import com.chronos.bo.nfe.NfeTransmissao;
@@ -532,5 +535,52 @@ public class NfeService implements Serializable {
 
         return retorno.getXMotivo();
 
+    }
+
+    public boolean cancelarNFe(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+
+        boolean cancelado = false;
+        if (StatusTransmissao.isCancelada(nfe.getStatusNota())) {
+            throw new Exception("NF-e já cancelada. Cancelamento náo permitido!");
+        }
+        if (!StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
+            throw new Exception("NF-e náo autorizada. Cancelamento náo permitido!");
+        }
+        String tipo = nfe.getCodigoModelo().equals("55") ? ConstantesNFe.NFE : ConstantesNFe.NFCE;
+        String schemas = org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : configuracao.getCaminhoSchemas();
+        configuracao.setCaminhoSchemas(schemas);
+        NfeTransmissao transmissao = new NfeTransmissao(empresa);
+        TEnvEvento evento = transmissao.cancelarNFe(configuracao, nfe.getNumeroProtocolo(), nfe.getUfEmitente().toString(), String.valueOf(nfe.getAmbiente()), nfe.getChaveAcessoCompleta(), nfe.getJustificativaCancelamento());
+        TRetEnvEvento retorno = Nfe.cancelarNfe(evento, false, tipo);
+        List<Filtro> filtros = new LinkedList<>();
+        filtros.add(new Filtro("id", nfe.getId()));
+        Map<String, Object> atributos = new HashMap<>();
+        atributos.put("status_nota", StatusTransmissao.CANCELADA.getCodigo());
+        if (retorno.getCStat().equals("128")) {
+            if (retorno.getRetEvento().get(0).getInfEvento().getCStat().equals("135")) {
+                nfe.setNumeroProtocolo(retorno.getRetEvento().get(0).getInfEvento().getNProt());
+                nfe.setVersaoAplicativo(retorno.getRetEvento().get(0).getInfEvento().getVerAplic());
+                nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getRetEvento().get(0).getInfEvento().getDhRegEvento()));
+                String xml = xmlCancelado(retorno, evento);
+                nfe.setStatusNota(StatusTransmissao.CANCELADA.getCodigo());
+
+                cancelado = repository.updateNativo(NfeCabecalho.class, filtros, atributos);
+            } else if (retorno.getRetEvento().get(0).getInfEvento().getCStat().equals("573")) {
+                cancelado = repository.updateNativo(NfeCabecalho.class, filtros, atributos);
+                Mensagem.addInfoMessage(retorno.getRetEvento().get(0).getInfEvento().getXMotivo());
+            }
+        } else {
+            Mensagem.addInfoMessage(retorno.getXMotivo());
+        }
+        return cancelado;
+    }
+
+    private String xmlCancelado(TRetEnvEvento retorno, TEnvEvento evento) throws Exception {
+        TProcEvento procEvento = new TProcEvento();
+        procEvento.setVersao("1.00");
+        procEvento.setEvento(evento.getEvento().get(0));
+        procEvento.setRetEvento(retorno.getRetEvento().get(0));
+        String xml = XmlUtil.objectToXml(procEvento);
+        return xml;
     }
 }
