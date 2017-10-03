@@ -240,6 +240,8 @@ public class NfeCabecalho implements Serializable {
     private Set<NfeCteReferenciado> listaCteReferenciado;
     @OneToMany(mappedBy = "nfeCabecalho", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<NfeProdRuralReferenciada> listaProdRuralReferenciada;
+    @Transient
+    private String csc;
 
     public NfeCabecalho() {
     }
@@ -1778,6 +1780,14 @@ public class NfeCabecalho implements Serializable {
         this.valorTotalTributos = valorTotalTributos;
     }
 
+    public String getCsc() {
+        return csc;
+    }
+
+    public void setCsc(String csc) {
+        this.csc = csc;
+    }
+
     public String getChaveAcessoCompleta() {
         return (this.chaveAcesso == null ? "" : this.chaveAcesso) + (this.digitoChaveAcesso == null ? "" : this.digitoChaveAcesso);
     }
@@ -1792,6 +1802,21 @@ public class NfeCabecalho implements Serializable {
         String nome = getChaveAcessoCompleta();
         nome += StatusTransmissao.isAutorizado(this.statusNota) ? "-nfeProc.pdf" : "-nfeCanc.pdf";
         return nome;
+    }
+
+
+    public boolean isPodeEnviar() {
+        StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
+        return (status != StatusTransmissao.AUTORIZADA) && !(status != StatusTransmissao.CANCELADA);
+    }
+
+    public boolean isPodeCancelar() {
+        return StatusTransmissao.isAutorizado(statusNota);
+    }
+
+    public boolean isPodeExcluir() {
+        StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
+        return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA);
     }
 
     @Override

@@ -64,6 +64,61 @@
                                    id="telaDetalhe"
         >
 
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <h:commandLink class="btn btn-default"
+                                   title="Transmitir NF-e"
+                                   actionListener="#{nfeCabecalhoControll.transmitirNfe}"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeEnviar}"
+                                   id="btnEnviarNfe">
+                        <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe"/>
+                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Gerar DANFE" style="margin-left: 5px;"
+                                   actionListener="#{nfeCabecalhoControll.danfe}"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   id="btnGerardanfe">
+                        <p:ajax disabled="true"/>
+                        <i class="fa fa-print" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Cancelar NF-e" style="margin-left: 5px;"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   id="btnCancelarNfe">
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Carta de correção NF-e" style="margin-left: 5px;"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   id="btnCartaCorrecaoNfe">
+                        <p:ajax update=":formCartaCorrecao:panelCartaCorrecao"
+                                oncomplete="PF('dialogCartaCorrecao').show();"/>
+                        <i class="fa fa-text-width" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Enviar Email" style="margin-left: 5px;"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   id="btnEmail">
+                        <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Visualizar Xml de envio" style="margin-left: 5px;"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeExcluir and nfeCabecalhoControll.dadosSalvos}"
+                                   target="_blank"
+                                   actionListener="#{nfeCabecalhoControll.visualizarXml}"
+                                   id="btnVisualizarXml">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </h:commandLink>
+                </div>
+
+
+            </div>
 
             <p:tabView id="tabNfe">
                 <p:tab title="Dados Principais" id="dadosPrincipais">
@@ -126,7 +181,7 @@
                             &nbsp;
                             <p:commandLink process="dataTableNfeDetalhe" title="Excluir" styleClass="btn btn-default"
                                            action="#{nfeCabecalhoControll.excluirProduto}"
-                                           update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe,:formCentro:telaDetalhe:tabNfe:panelTotais">
+                                           update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe,:formCentro:telaDetalhe:tabNfe:panelTotais,:formCentro:telaDetalhe:panelCentroDetalhe">
                                 <i class="fa fa-close"/>
                                 <p:confirm header="Confirmação" message="Confirma Exclusão?"
                                            icon="ui-icon-alert"/>
@@ -276,5 +331,74 @@
             </p:dialog>
         </h:form>
     </ui:define>
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formJustificativaCancelamento">
+            <p:dialog id="dialogJustificativaCancelamento"
+                      header="Justificativa Cancelamento"
+                      widgetVar="dialogJustificativaCancelamento" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelJustificativaCancelamento">
+                    <erp:campoTexto idComponente="labelJustificativaCancelamento"
+                                    label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    nomeAtributo="#{nfeCabecalhoControll.justificativa}"
+                                    tamanhoMaximo="255" requerido="true"/>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Enviar"
+                                     update="panelJustificativaCancelamento,:formCentro:growl"
+                                     actionListener="#{nfeCabecalhoControll.cancelaNfe()}"
+                                     oncomplete="if (!args.validationFailed) {PF('dialogJustificativaCancelamento').hide();}"/>
+                    <p:commandButton value="Cancelar"
+                                     oncomplete="PF('dialogJustificativaCancelamento').hide();"
+                                     process="@this"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas5">
+        <h:form id="formCartaCorrecao">
+            <p:dialog id="dialogCartaCorrecao" header="Carta de Correção"
+                      widgetVar="dialogCartaCorrecao" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelCartaCorrecao">
+                    <div class="row">
+                        <erp:campoAreaTexto idComponente="labelCartaCorrecao"
+                                            label="Texto:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            linhas="3"
+                                            nomeAtributo="#{nfeCabecalhoControll.justificativa}"
+                                            requerido="true"/>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Enviar"
+                                             actionListener="#{nfeCabecalhoControll.cartaCorrecao}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogCartaCorrecao').hide();}"
+                                        process="@form"
+                                        update="panelCartaCorrecao,:formCentro:growl"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogCartaCorrecao').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
 
 </ui:composition>

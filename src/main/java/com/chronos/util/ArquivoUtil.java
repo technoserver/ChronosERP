@@ -53,6 +53,17 @@ public class ArquivoUtil {
         return arquivo;
     }
 
+    public String escrever(TipoArquivo tipoArquivo, String cnpj, byte[] file, String nomeArquivo) throws IOException {
+
+        String arquivo = getDestino(tipoArquivo, cnpj) + System.getProperty("file.separator") + nomeArquivo;
+        FileOutputStream out = new FileOutputStream(arquivo);
+
+        out.write(file);
+        out.close();
+
+        return arquivo;
+    }
+
 
 
     private static String diretorioRaiz() {
@@ -106,12 +117,40 @@ public class ArquivoUtil {
         return dir.getAbsolutePath();
     }
 
+    public String getPastaXmlNfe(String cnpj) {
+        File dir = new File(getDiretorioCnpj(cnpj) + System.getProperty("file.separator") + "xml", "nfe");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        return dir.getAbsolutePath();
+    }
+
+    public String getPastaXmlNfeProcessada(String cnpj) {
+        File dir = new File(getPastaXmlNfe(cnpj), "processado");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        return dir.getAbsolutePath();
+    }
+
+    public String getPastaXmlNfePreProcessada(String cnpj) {
+        File dir = new File(getPastaXmlNfe(cnpj), "preprocessado");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        return dir.getAbsolutePath();
+    }
+
     public String getLogoEmpresa(String cnpj, String extensao) {
         return getPastaImagens(cnpj) + System.getProperty("file.separator") + "logo_empresa_" + cnpj + extensao;
     }
 
     public String getImagemEmpresa(String cnpj) {
         return getPastaImagens(cnpj) + System.getProperty("file.separator") + "logo_empresa_" + cnpj + ".png";
+    }
+
+    public String getImagemTransmissao(String cnpj) {
+        return getPastaImagens(cnpj) + System.getProperty("file.separator") + "logo_transmissao_" + cnpj + ".png";
     }
 
     public void salvarFotoProdutoTemporariamente(UploadedFile arquivo){
@@ -183,6 +222,12 @@ public class ArquivoUtil {
 
             case Certificado:
                 destino = getPastaCertificado(cnpj);
+                break;
+            case NFe:
+                destino = getPastaXmlNfeProcessada(cnpj);
+                break;
+            case NFePreProcessada:
+                destino = getPastaXmlNfePreProcessada(cnpj);
                 break;
 
             default:

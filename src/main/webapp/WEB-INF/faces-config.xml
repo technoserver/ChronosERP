@@ -8,7 +8,7 @@
         <navigation-handler>org.primefaces.application.DialogNavigationHandler</navigation-handler>
         <view-handler>org.primefaces.application.DialogViewHandler</view-handler>
 
-        <message-bundle>com.chronos.erplitgh.Messages</message-bundle>
+        <message-bundle>com.chronos.erplight.Messages</message-bundle>
             
         <locale-config>
             <default-locale>pt_BR</default-locale>

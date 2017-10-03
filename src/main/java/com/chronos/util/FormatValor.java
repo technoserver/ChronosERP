@@ -57,8 +57,20 @@ public class FormatValor {
         return formatoDataUA.parse(data);
     }
 
+    public String formatarDataEUA(Date data) throws ParseException {
+        return formatoDataUA.format(data);
+    }
+
+    public String formatarData(Date data) throws ParseException {
+        return formatoDataPTB.format(data);
+    }
+
     public Date formatarDataNota(String data) throws ParseException {
         return formatoDataNota.parse(data);
+    }
+
+    public String formatarDataNota(Date data) throws ParseException {
+        return formatoDataNota.format(data);
     }
 
     public String formatarAno(Date date) {
@@ -96,7 +108,7 @@ public class FormatValor {
         return formatoNumeroDocFiscal.parse(valor);
     }
 
-    public String formatarQuantidadeToString(Object valor) {
+    public String formatarQuantidade(Object valor) {
 
         return formatoQuantidade.format(valor);
     }
@@ -112,10 +124,16 @@ public class FormatValor {
     }
 
 
-    public String formatarValorToString(Object valor) {
+    public String formatarValor(Object valor) {
 
-        return formatoQuantidade.format(valor);
+        return formatoValor.format(valor);
     }
+
+    public String formatarValorToNull(Object valor) {
+        BigDecimal vlr = (BigDecimal) valor;
+        return vlr == null || vlr.signum() == 0 ? null : formatoValor.format(valor);
+    }
+
 
     public Number formatarValorToNumber(String valor) throws ParseException {
         return formatoQuantidade.parse(valor);

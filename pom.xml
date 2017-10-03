@@ -18,7 +18,7 @@
         <!-- Logging -->
         <log4j.version>2.6</log4j.version>
         <!--        Chronos Emissor-->
-        <chronosNFe.version>3.1.9</chronosNFe.version>
+        <chronosNFe.version>3.1.10</chronosNFe.version>
         <jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
         <!--        FlyWay-->
         <flyway-maven-plugin.version>4.0.2</flyway-maven-plugin.version>
@@ -27,7 +27,7 @@
         <!--Sped fiscal-->
         <java-efd-icms.version>2.0.20.0</java-efd-icms.version>
         <!--Sped fiscal-->
-        <java-sped.version>1.0.0</java-sped.version>
+        <java-sped.version>1.0.1</java-sped.version>
         <!--Calculo dos tributos-->
         <chronos-calculoTributario.version>1.0.10</chronos-calculoTributario.version>
     </properties>

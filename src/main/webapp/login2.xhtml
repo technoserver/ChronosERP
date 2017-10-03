@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+<h:head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>Chronos ERP - Login</title>
+
+    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+
+    <h:outputStylesheet library="css" name="pages.min.css"/>
+    <h:outputStylesheet library="css" name="themes.min.css"/>
+    <!-- FontAwesome 4.3.0 -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Ionicons 2.0.0 -->
+    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css"/>
+    <!--        <f:event type="preRenderView" listener="#{registroControll.verificarRegistro()}" />-->
+
+
+    <style>
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            color: #292B2C;
+            -webkit-font-smoothing: antialiased;
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            background-color: #EEF2F6;
+        }
+
+        .login-body {
+            overflow: hidden;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .login-body .login-panel {
+            width: 100%;
+            height: 380px;
+            position: absolute;
+            margin-bottom: 0;
+            border-radius: 0;
+            bottom: 0;
+            text-align: center;
+            background-color: #292b2c;
+        }
+
+        .login-body .login-panel .login-panel-content {
+            width: 400px;
+            position: relative;
+            margin-left: -200px;
+            top: 30px;
+            left: 50%;
+            color: #ffffff;
+        }
+
+        .card {
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            background: #ffffff;
+            padding: 16px;
+            box-sizing: border-box;
+            margin-bottom: 16px;
+        }
+
+        .login-body .login-panel .login-panel-content .welcome-text {
+            margin-bottom: 0;
+        }
+
+        .login-body .login-image {
+            height: calc(100% - 380px);
+            background: url(../images/login/bg-login.jpg) no-repeat;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</h:head>
+<h:body class="login-body">
+    <div class="login-image"></div>
+    <div class="card login-panel ui-fluid">
+        <div class="login-panel-content">
+            <div class="ui-g">
+                <div class="ui-g-3" style="text-align:left;">
+                    <img src="../layout/images/login/icon-login.svg"/>
+                </div>
+                <div class="ui-g-9" style="text-align:right;">
+                    <h2 class="welcome-text">Welcome Guest</h2>
+                    <span class="guest-sign-in">Sign in to Avalon Network</span>
+                </div>
+                <div class="ui-g-12" style="text-align:left;">
+                    <label class="login-label">Username</label>
+                    <div class="login-input">
+                        <input type="text" class="ui-inputtext ui-widget ui-state-default ui-corner-all"/>
+                    </div>
+                </div>
+                <div class="ui-g-12" style="text-align:left;">
+                    <label class="login-label">Password</label>
+                    <div class="login-input">
+                        <input type="password" class="ui-inputtext ui-widget ui-state-default ui-corner-all"/>
+                    </div>
+                </div>
+                <div class="ui-g-12 ui-md-6 button-pane">
+                    <button type="button" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"
+                            role="button" aria-disabled="false">
+                        <span class="ui-button-text ui-c">Sign In</span>
+                    </button>
+                </div>
+                <div class="ui-g-12 ui-md-6 link-pane">
+                    <a href="#">Forget Password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</h:body>
+</html>
+
