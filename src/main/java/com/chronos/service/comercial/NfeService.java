@@ -197,7 +197,7 @@ public class NfeService implements Serializable {
         } else {
             notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
             notaFiscalTipo.setEmpresa(empresa);
-            atualizarNumeroNfe(notaFiscalTipo, notaFiscalTipo.proximoNumero());
+            atualizarNumeroNfe(notaFiscalTipo, notaFiscalTipo.getUltimoNumero());
         }
         return notaFiscalTipo;
     }
@@ -421,7 +421,7 @@ public class NfeService implements Serializable {
 
         if (retorno.getCStat().equals("104")) {
             if (retorno.getProtNFe().getInfProt().getCStat().equals("100")) {
-                getNotaFicalTipo(nfe.getCodigoModelo());
+
                 nfe.setNumeroProtocolo(retorno.getProtNFe().getInfProt().getNProt());
                 nfe.setVersaoAplicativo(retorno.getProtNFe().getInfProt().getVerAplic());
                 nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getProtNFe().getInfProt().getDhRecbto()));

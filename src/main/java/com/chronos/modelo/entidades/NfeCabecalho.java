@@ -1,6 +1,7 @@
 package com.chronos.modelo.entidades;
 
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -10,6 +11,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "NFE_CABECALHO")
+@DynamicUpdate
 public class NfeCabecalho implements Serializable {
 
 
@@ -240,6 +242,8 @@ public class NfeCabecalho implements Serializable {
     private Set<NfeCteReferenciado> listaCteReferenciado;
     @OneToMany(mappedBy = "nfeCabecalho", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<NfeProdRuralReferenciada> listaProdRuralReferenciada;
+    @OneToMany(mappedBy = "nfeCabecalho", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<NfeFormaPagamento> listaNfeFormaPagamento;
     @Transient
     private String csc;
 
@@ -1608,8 +1612,13 @@ public class NfeCabecalho implements Serializable {
         this.listaProdRuralReferenciada = listaProdRuralReferenciada;
     }
 
+    public Set<NfeFormaPagamento> getListaNfeFormaPagamento() {
+        return listaNfeFormaPagamento;
+    }
 
-
+    public void setListaNfeFormaPagamento(Set<NfeFormaPagamento> listaNfeFormaPagamento) {
+        this.listaNfeFormaPagamento = listaNfeFormaPagamento;
+    }
 
     public NfeEmitente getEmitente() {
         return emitente;
@@ -1807,7 +1816,7 @@ public class NfeCabecalho implements Serializable {
 
     public boolean isPodeEnviar() {
         StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
-        return (status != StatusTransmissao.AUTORIZADA) && !(status != StatusTransmissao.CANCELADA);
+        return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA);
     }
 
     public boolean isPodeCancelar() {

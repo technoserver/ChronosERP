@@ -150,7 +150,8 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         Query query = em.createQuery(jpql.toString());
         query.setParameter("id", id);
         try {
-            return (T) query.getSingleResult();
+            Object obj = query.getSingleResult();
+            return (T) obj;
         } catch (Exception e) {
             return null;
         }

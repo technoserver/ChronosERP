@@ -68,11 +68,14 @@
                             tamanhoMaximo="3" somenteLeitura="true"/>
 
 
-            <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                             idComponente="nfeCabecalhoIndicadorFormaPagamento"
-                             label="Forma Pagamento"
-                             nomeAtributo="#{nfeCabecalhoControll.objeto.indicadorFormaPagamento}"
-                             itens="#{nfeCabecalhoControll.formaPagamento}"/>
+            <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
+                              label="Forma Pagamento"
+                              itemLabel="#{objeto.descricao}"
+                              controller="#{nfeCabecalhoControll}"
+                              completeMethod="getListaNfceTipoPagamento"
+                              nomeAtributo="#{nfeCabecalhoControll.tipoPagamento}"
+                              idComponente="nfeCabecalhoFormaPagamento"/>
+
             <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                            idComponente="nfeCabecalhoDataHoraEntradaSaida"
                            label="DT/HR Ent/Saida"

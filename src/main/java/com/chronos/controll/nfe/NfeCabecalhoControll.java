@@ -8,6 +8,7 @@ import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
 import com.chronos.modelo.entidades.view.PessoaCliente;
+import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
@@ -42,6 +43,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
     private Repository<NfeConfiguracao> configuracoes;
+    @Inject
+    private EstoqueRepository estoqueRepositoy;
+    @Inject
+    private Repository<NfceTipoPagamento> tipoPagamentoRepository;
 
 
     @Inject
@@ -52,6 +57,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeDetalhe nfeDetalheSelecionado;
     private NfeReferenciada nfeReferenciada;
     private NfeReferenciada nfeReferenciadaSelecionado;
+    private NfceTipoPagamento tipoPagamento;
     private VendaCondicoesPagamento condicoesPagamento;
     private NfeConfiguracao configuracao;
     private int qtdParcelas;
@@ -108,8 +114,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void doEdit() {
         try {
             super.doEdit();
-            NfeCabecalho n = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
-            setObjeto(n);
+            NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+            setObjeto(nfe);
             dadosSalvos = true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -124,6 +130,12 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             nfeService.validar(getObjeto());
             if (getObjeto().getId() == null) {
                 gerarNumeracao(getObjeto());
+                NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
+                nfeFormaPagamento.setNfceTipoPagamento(tipoPagamento);
+                nfeFormaPagamento.setNfeCabecalho(getObjeto());
+                nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
+                nfeFormaPagamento.setValor(getObjeto().getValorTotal());
+                getObjeto().getListaNfeFormaPagamento().add(nfeFormaPagamento);
             }
             String str = getObjeto().getInformacoesAddContribuinte() + " " + observacao;
             getObjeto().setInformacoesAddContribuinte(str);
@@ -370,6 +382,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
                 StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), configuracao);
                 if (status == StatusTransmissao.AUTORIZADA) {
+                    estoqueRepositoy.atualizaEstoqueEmpresa(empresa.getId(), getObjeto().getListaNfeDetalhe());
                     Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 } else {
                     duplicidade = status == StatusTransmissao.DUPLICIDADE;
@@ -402,6 +415,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             configuracao = configuracao != null ? configuracao : configuraNfe();
             boolean cancelado = nfeService.cancelarNFe(getObjeto(), configuracao);
             if (cancelado) {
+                // atualiza o estoque
+                for (NfeDetalhe nfeDetalhe : getObjeto().getListaNfeDetalhe()) {
+
+                    estoqueRepositoy.atualizaEstoqueEmpresa(empresa.getId(), nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial());
+                }
                 Mensagem.addInfoMessage("NFe cancelada com sucesso");
             }
 
@@ -420,6 +438,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao enviar a carta de correção!", e);
         }
+    }
+
+    public void limparJustificativa() {
+        justificativa = "";
     }
 
     public void visualizarXml() {
@@ -543,6 +565,16 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void selecionaValorProduto(SelectEvent event) {
         Produto produto = (Produto) event.getObject();
         nfeDetalhe.setValorUnitarioComercial(Optional.ofNullable(produto.getValorVenda()).orElse(BigDecimal.ZERO));
+    }
+
+    public List<NfceTipoPagamento> getListaNfceTipoPagamento(String nome) {
+        List<NfceTipoPagamento> listaNfceTipoPagamento = new ArrayList<>();
+        try {
+            listaNfceTipoPagamento = tipoPagamentoRepository.getEntitys(NfceTipoPagamento.class, "descricao", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaNfceTipoPagamento;
     }
 
     // </editor-fold>
@@ -676,6 +708,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     public void setJustificativa(String justificativa) {
         this.justificativa = justificativa;
+    }
+
+    public NfceTipoPagamento getTipoPagamento() {
+        return tipoPagamento;
+    }
+
+    public void setTipoPagamento(NfceTipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
     }
 
 // </editor-fold>
