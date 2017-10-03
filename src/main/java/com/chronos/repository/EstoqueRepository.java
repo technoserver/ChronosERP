@@ -18,7 +18,6 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     private static final long serialVersionUID = 1L;
 
 
-
     public void atualizaEstoque(List<NfeDetalhe> listaNfeDetalhe) throws Exception {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             atualizaEstoque(nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
@@ -41,46 +40,63 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     // @Transactional
     public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
         try {
-            //    abrirConexao();
+            abrirConexao();
             String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
             //  execute(jpql, quantidade, idProduto, idEmpresa);
 
             // String jpql = "UPDATE Produto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.id = :id";
-            em.getTransaction().begin();
+
             TypedQuery query = (TypedQuery) em.createQuery(jpql);
             query.setParameter("quantidade", quantidade);
             query.setParameter("idproduto", idProduto);
             query.setParameter("idempresa", idEmpresa);
             query.executeUpdate();
-            em.getTransaction().commit();
 
 
         } catch (Exception e) {
             throw e;
         } finally {
-//            if (isAutoCommit()) {
-//                fecharConexao();
-//            }
+            if (isAutoCommit()) {
+                fecharConexao();
+            }
         }
 
     }
 
     public List<NfeDetalhe> getItens(NfeCabecalho nfeCabecalho) throws Exception {
-        //  abrirConexao();
-        String jpql = "SELECT NEW NfeDetalhe (o.id, o.produto, o.quantidadeComercial) FROM NfeDetalhe o WHERE o.nfeCabecalho.id = ?1";
-        List<NfeDetalhe> itens = getEntity(NfeDetalhe.class, jpql, nfeCabecalho.getId());
-        return itens;
+        try {
+            abrirConexao();
+            String jpql = "SELECT NEW NfeDetalhe (o.id, o.produto, o.quantidadeComercial) FROM NfeDetalhe o WHERE o.nfeCabecalho.id = ?1";
+            List<NfeDetalhe> itens = getEntity(NfeDetalhe.class, jpql, nfeCabecalho.getId());
+            return itens;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (isAutoCommit()) {
+                fecharConexao();
+            }
+        }
 
     }
 
-    public List<Produto> getProdutoEmpresa(String nome, Empresa empresa) {
+    public List<Produto> getProdutoEmpresa(String nome, Empresa empresa) throws Exception {
 
-        String jpql = "select new Produto(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,p.ncm,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,p.unidadeProduto) From Produto p " +
-                "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
-                "where LOWER(p.nome)  like ?1 and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null)";
+        try {
+            abrirConexao();
+            String jpql = "select new Produto(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,p.ncm,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,p.unidadeProduto) From Produto p " +
+                    "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
+                    "where LOWER(p.nome)  like ?1 and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null)";
 
 
-        List<Produto> produtos = getEntity(Produto.class, jpql, "%" + nome.toLowerCase().trim() + "%", empresa.getId());
-        return produtos;
+            List<Produto> produtos = getEntity(Produto.class, jpql, "%" + nome.toLowerCase().trim() + "%", empresa.getId());
+            return produtos;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            if (isAutoCommit()) {
+                fecharConexao();
+            }
+        }
+
     }
 }

@@ -5,6 +5,7 @@ import org.primefaces.model.SortOrder;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.io.Serializable;
@@ -165,6 +166,12 @@ public abstract class AbstractRepository implements Serializable {
         if (em == null || !em.isOpen()) {
             em = ChronosEntityManagerFactory.createEntityManager();
             em.getTransaction().begin();
+        }
+        EntityTransaction trx = em.getTransaction();
+        if (!trx.isActive()) {
+            trx.begin();
+            trx.rollback();
+            trx.begin();
         }
         return em;
     }

@@ -1,6 +1,7 @@
 package com.chronos.util.jpa;
 
-import javax.persistence.EntityManager;
+import org.hibernate.Session;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
@@ -27,10 +28,17 @@ public class ChronosEntityManagerFactory implements ServletContextListener {
         }
     }
 
-    public static EntityManager createEntityManager() throws Exception {
+    public static Session createEntityManager() throws Exception {
         if (factory == null || !factory.isOpen()) {
             throw new Exception("Erro ao criar o Entity Manager.");
         }
-        return factory.createEntityManager();
+        return (Session) factory.createEntityManager();
     }
+
+//    public static EntityManager createEntityManager() throws Exception {
+//        if (factory == null || !factory.isOpen()) {
+//            throw new Exception("Erro ao criar o Entity Manager.");
+//        }
+//        return factory.createEntityManager();
+//    }
 }

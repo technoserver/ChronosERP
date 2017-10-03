@@ -62,7 +62,7 @@
         <erp:telaInclusaoAlteracao controller="#{nfeCabecalhoControll}"
                                    nomeFuncao="NFe"
                                    id="telaDetalhe"
-        >
+                                   somenteConsulta="#{!nfeCabecalhoControll.objeto.podeExcluir}">
 
             <div class="row">
                 <div class="col-xs-12 col-md-12">
@@ -87,13 +87,17 @@
                     <h:commandLink class="btn btn-default"
                                    title="Cancelar NF-e" style="margin-left: 5px;"
                                    rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   action="#{nfeCabecalhoControll.limparJustificativa}"
                                    id="btnCancelarNfe">
+                        <p:ajax update=":formJustificativaCancelamento:panelJustificativaCancelamento"
+                                oncomplete="PF('dialogJustificativaCancelamento').show();"/>
                         <i class="fa fa-ban" aria-hidden="true"></i>
                     </h:commandLink>
 
                     <h:commandLink class="btn btn-default"
                                    title="Carta de correção NF-e" style="margin-left: 5px;"
                                    rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   action="#{nfeCabecalhoControll.limparJustificativa}"
                                    id="btnCartaCorrecaoNfe">
                         <p:ajax update=":formCartaCorrecao:panelCartaCorrecao"
                                 oncomplete="PF('dialogCartaCorrecao').show();"/>
@@ -335,24 +339,44 @@
     <ui:define name="outrasTelas3">
         <h:form id="formJustificativaCancelamento">
             <p:dialog id="dialogJustificativaCancelamento"
-                      header="Justificativa Cancelamento"
+                      header="Justificativa Cancelamento" responsive="true"
                       widgetVar="dialogJustificativaCancelamento" showEffect="slide"
                       hideEffect="slide" resizable="true" modal="true" closable="false"
                       width="800">
                 <p:outputPanel id="panelJustificativaCancelamento">
-                    <erp:campoTexto idComponente="labelJustificativaCancelamento"
-                                    label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    nomeAtributo="#{nfeCabecalhoControll.justificativa}"
-                                    tamanhoMaximo="255" requerido="true"/>
+                    <div class="row">
+
+                        <erp:campoTexto idComponente="labelJustificativaCancelamento"
+                                        label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        nomeAtributo="#{nfeCabecalhoControll.justificativa}"
+                                        tamanhoMaximo="255" requerido="true" tamanhoMinimo="15">
+
+                        </erp:campoTexto>
+                    </div>
+
                 </p:outputPanel>
                 <f:facet name="footer">
-                    <p:commandButton value="Enviar"
-                                     update="panelJustificativaCancelamento,:formCentro:growl"
-                                     actionListener="#{nfeCabecalhoControll.cancelaNfe()}"
-                                     oncomplete="if (!args.validationFailed) {PF('dialogJustificativaCancelamento').hide();}"/>
-                    <p:commandButton value="Cancelar"
-                                     oncomplete="PF('dialogJustificativaCancelamento').hide();"
-                                     process="@this"/>
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Enviar"
+                                             actionListener="#{nfeCabecalhoControll.cancelaNfe()}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogJustificativaCancelamento').hide();}"
+                                        process="@form"
+                                        update="panelJustificativaCancelamento,:formCentro:growl"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogJustificativaCancelamento').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
                 </f:facet>
             </p:dialog>
         </h:form>
@@ -363,7 +387,7 @@
             <p:dialog id="dialogCartaCorrecao" header="Carta de Correção"
                       widgetVar="dialogCartaCorrecao" showEffect="slide"
                       hideEffect="slide" resizable="true" modal="true" closable="false"
-                      width="800">
+                      width="800" responsive="true">
                 <p:outputPanel id="panelCartaCorrecao">
                     <div class="row">
                         <erp:campoAreaTexto idComponente="labelCartaCorrecao"

@@ -43,7 +43,8 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.getEmitente().setNfeCabecalho(nfe);
 
 
-
+        nfe.setListaDuplicata(new HashSet<>());
+        nfe.setListaNfeFormaPagamento(new HashSet<>());
         nfe.setListaNfeReferenciada(new HashSet<>());
         nfe.setListaNfReferenciada(new HashSet<>());
         nfe.setListaCteReferenciado(new HashSet<>());
