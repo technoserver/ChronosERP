@@ -7,6 +7,10 @@ package com.chronos.bo.nfe;
 //pacotes para envio da nfe
 
 import br.inf.portalfiscal.nfe.schema.consstatserv.TConsStatServ;
+import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento;
+import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento;
+import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento;
+import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento.DetEvento;
 import br.inf.portalfiscal.nfe.schema.envinfe.*;
 import br.inf.portalfiscal.nfe.schema.envinfe.TNFe.InfNFe;
 import br.inf.portalfiscal.nfe.schema.envinfe.TNFe.InfNFe.*;
@@ -151,6 +155,44 @@ public class GeraXMLEnvio {
 
 
         return enviNFe;
+    }
+
+    public TEnvEvento cancelarNfe(String chave, String protocolo, String ambiente, String uf, String cnpj,
+                                  String justificativa) throws ParseException {
+
+
+        String id = "ID110111" + chave + "01";
+        Date data = new Date();
+        TEnvEvento enviEvento = new TEnvEvento();
+        enviEvento.setVersao("1.00");
+        enviEvento.setIdLote("1");
+
+        TEvento eventoCancela = new TEvento();
+        eventoCancela.setVersao("1.00");
+
+        InfEvento infoEvento = new InfEvento();
+        infoEvento.setId(id);
+        infoEvento.setChNFe(chave);
+        infoEvento.setCOrgao(uf);
+        infoEvento.setTpAmb(ambiente);
+
+        infoEvento.setCNPJ(cnpj);
+
+        infoEvento.setDhEvento(FormatValor.getInstance().formatarDataNota(data));
+        infoEvento.setTpEvento("110111");
+        infoEvento.setNSeqEvento("1");
+        infoEvento.setVerEvento("1.00");
+
+        DetEvento detEvento = new DetEvento();
+        detEvento.setVersao("1.00");
+        detEvento.setDescEvento("Cancelamento");
+        detEvento.setNProt(protocolo);
+        detEvento.setXJust(justificativa);
+        infoEvento.setDetEvento(detEvento);
+        eventoCancela.setInfEvento(infoEvento);
+        enviEvento.getEvento().add(eventoCancela);
+
+        return enviEvento;
     }
 
     public br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento cartaCorrecao(String chave, String ambiente,

@@ -395,6 +395,23 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         }
     }
 
+    public void cancelaNfe() {
+
+        try {
+            getObjeto().setJustificativaCancelamento(justificativa);
+            configuracao = configuracao != null ? configuracao : configuraNfe();
+            boolean cancelado = nfeService.cancelarNFe(getObjeto(), configuracao);
+            if (cancelado) {
+                Mensagem.addInfoMessage("NFe cancelada com sucesso");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagem.addErrorMessage("Ocorreu um erro ao cancelar a NF-e!\n", e);
+        }
+
+    }
+
     public void cartaCorrecao() {
         try {
             configuracao = configuracao != null ? configuracao : configuraNfe();
