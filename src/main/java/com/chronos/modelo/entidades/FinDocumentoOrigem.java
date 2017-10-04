@@ -30,8 +30,6 @@ package com.chronos.modelo.entidades;
 
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -52,11 +50,7 @@ public class FinDocumentoOrigem implements Serializable {
     private String siglaDocumento;
     @Column(name = "DESCRICAO")
     private String descricao;
-    @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    @NotNull(message = "Empresa Obrigatória")
-    @Valid
-    private Empresa empresa;
+
 
     public FinDocumentoOrigem() {
     }
@@ -102,13 +96,7 @@ public class FinDocumentoOrigem implements Serializable {
         this.descricao = descricao;
     }
 
-    public Empresa getEmpresa() {
-        return empresa;
-    }
 
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
 
     @Override
     public String toString() {

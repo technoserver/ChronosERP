@@ -1,7 +1,6 @@
 package com.chronos.controll.vendas;
 
 import com.chronos.controll.AbstractControll;
-import com.chronos.dto.LancamentoReceber;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.FormaPagamento;
 import com.chronos.modelo.entidades.enuns.SituacaoVenda;
@@ -150,14 +149,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void faturarVenda() {
         try {
-            LancamentoReceber lancamento = new LancamentoReceber();
-            lancamento.setCliente(getObjeto().getCliente());
-            lancamento.setCondicoesPagamento(getObjeto().getCondicoesPagamento());
-            lancamento.setDataLancamento(new Date());
-            lancamento.setValorTotal(getObjeto().getValorTotal());
-            lancamento.setNumDocumento(new DecimalFormat("VD0000000").format(getObjeto().getId()));
-            lancamento.setCodigoModulo("210");
-            recebimentoService.gerarContasReceber(lancamento, Constantes.FIN.NATUREZA_VENDA);
+
+            recebimentoService.gerarLancamento(getObjeto().getValorTotal(), getObjeto().getCliente(),
+                    new DecimalFormat("VD0000000").format(getObjeto().getId()), getObjeto().getCondicoesPagamento(), "210", Constantes.FIN.NATUREZA_VENDA, empresa);
             getObjeto().setSituacao(SituacaoVenda.Faturado.getCodigo());
             getObjeto().setNumeroFatura(getObjeto().getId());
             salvar("Venda faturada com Sucesso");

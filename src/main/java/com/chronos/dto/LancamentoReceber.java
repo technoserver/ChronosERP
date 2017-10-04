@@ -1,6 +1,7 @@
 package com.chronos.dto;
 
 import com.chronos.modelo.entidades.Cliente;
+import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.VendaCondicoesPagamento;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ public class LancamentoReceber {
     private Cliente cliente;
     private String codigoModulo;
     private VendaCondicoesPagamento condicoesPagamento;
+    private Empresa emrpesa;
 
     public LancamentoReceber() {
 
@@ -68,5 +70,13 @@ public class LancamentoReceber {
 
     public void setCodigoModulo(String codigoModulo) {
         this.codigoModulo = codigoModulo;
+    }
+
+    public Empresa getEmrpesa() {
+        return emrpesa;
+    }
+
+    public void setEmrpesa(Empresa emrpesa) {
+        this.emrpesa = emrpesa;
     }
 }

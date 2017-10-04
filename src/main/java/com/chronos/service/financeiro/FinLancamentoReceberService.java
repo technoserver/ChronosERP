@@ -7,6 +7,7 @@ import com.chronos.util.Biblioteca;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -22,6 +23,18 @@ public class FinLancamentoReceberService implements Serializable {
     @Inject
     private Repository<VendaCondicoesParcelas> parcelas;
 
+    public void gerarLancamento(BigDecimal valor, Cliente cliente, String numDocumento, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws Exception {
+        LancamentoReceber lancamento = new LancamentoReceber();
+        lancamento.setCliente(cliente);
+        lancamento.setCondicoesPagamento(condicoesPagamento);
+        lancamento.setDataLancamento(new Date());
+        lancamento.setValorTotal(valor);
+        lancamento.setNumDocumento(numDocumento);
+        lancamento.setCodigoModulo(codModulo);
+        lancamento.setEmrpesa(empresa);
+        gerarContasReceber(lancamento, naturezaFinanceira);
+    }
+
     public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) throws Exception {
         VendaCondicoesPagamento condicoesParcelas = lancamento.getCondicoesPagamento();
         condicoesParcelas.setParcelas(parcelas.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesParcelas.getId()));
@@ -35,6 +48,7 @@ public class FinLancamentoReceberService implements Serializable {
         lancamentoReceber.setDataLancamento(lancamento.getDataLancamento());
         lancamentoReceber.setNumeroDocumento(lancamento.getNumDocumento());
         lancamentoReceber.setCodigoModuloLcto(lancamento.getCodigoModulo());
+        lancamentoReceber.setEmpresa(lancamento.getEmrpesa());
 
         // pega o primeiro vencimento
         lancamentoReceber.setPrimeiroVencimento(lancamento.getDataLancamento());

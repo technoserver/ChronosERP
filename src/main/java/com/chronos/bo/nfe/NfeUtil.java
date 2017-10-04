@@ -11,9 +11,12 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
 import com.chronos.modelo.entidades.view.*;
 import com.chronos.repository.*;
+import com.chronos.util.Biblioteca;
+import com.chronos.util.FormatValor;
 import com.chronos.util.cdi.ManualCDILookup;
 import org.springframework.util.StringUtils;
 
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -33,6 +36,8 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
     private CofinsRepository cofinsRepository;
     private IssRepository issRepository;
     private TributConfiguraOfGtRepository tributConfigRepository;
+    @Inject
+    private Repository<NotaFiscalTipo> tiposNotaFiscal;
 
 
     public NfeCabecalho dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa) {
@@ -105,6 +110,66 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
 
 
         return nfe;
+    }
+
+
+    public NfeCabecalho gerarNumeracao(NfeCabecalho nfe, Empresa empresa) throws Exception {
+
+        Integer numero;
+        String serie;
+
+        NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(nfe.getCodigoModelo(), empresa);
+        numero = notaFiscalTipo.getUltimoNumero();
+        serie = notaFiscalTipo.getSerie();
+
+
+        nfe.setNumero(FormatValor.getInstance().formatarNumeroDocFiscalToString(numero));
+        nfe.setCodigoNumerico(FormatValor.getInstance().formatarCodigoNumeroDocFiscalToString(numero));
+        nfe.setSerie(serie);
+        nfe.setChaveAcesso("" + nfe.getEmpresa().getCodigoIbgeUf()
+                + FormatValor.getInstance().formatarAno(nfe.getDataHoraEmissao())
+                + FormatValor.getInstance().formatarMes(nfe.getDataHoraEmissao())
+                + nfe.getEmpresa().getCnpj()
+                + nfe.getCodigoModelo()
+                + nfe.getSerie()
+                + nfe.getNumero()
+                + "1"
+                + nfe.getCodigoNumerico());
+        nfe.setDigitoChaveAcesso(Biblioteca.modulo11(nfe.getChaveAcesso()).toString());
+
+        return nfe;
+    }
+
+    private NotaFiscalTipo getNotaFicalTipo(String modelo, Empresa empresa) throws Exception {
+        tiposNotaFiscal = getFacadeWithJNDI(Repository.class);
+        List<Filtro> filtros = new LinkedList<>();
+        filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
+        filtros.add(new Filtro(Filtro.AND, "notaFiscalModelo.codigo", Filtro.IGUAL, modelo));
+        Object[] atributos = new String[]{"serie", "ultimoNumero", "notaFiscalModelo.id"};
+        NotaFiscalTipo notaFiscalTipo = tiposNotaFiscal.get(NotaFiscalTipo.class, filtros, atributos);
+        if (notaFiscalTipo == null) {
+            notaFiscalTipo = new NotaFiscalTipo();
+            notaFiscalTipo.setEmpresa(empresa);
+            notaFiscalTipo.setSerie("001");
+            notaFiscalTipo.setUltimoNumero(1);
+            NotaFiscalModelo codigo = new NotaFiscalModelo(modelo.equals("55") ? 30 : 34);
+
+            notaFiscalTipo.setNotaFiscalModelo(codigo);
+            notaFiscalTipo = tiposNotaFiscal.atualizar(notaFiscalTipo);
+        } else {
+            notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
+            notaFiscalTipo.setEmpresa(empresa);
+            atualizarNumeroNfe(notaFiscalTipo, notaFiscalTipo.getUltimoNumero());
+        }
+        return notaFiscalTipo;
+    }
+
+    private void atualizarNumeroNfe(NotaFiscalTipo notaFiscalTipo, int numero) {
+        List<Filtro> filtros = new LinkedList<>();
+        filtros.add(new Filtro("id", notaFiscalTipo.getId()));
+        Map<String, Object> atributos = new HashMap<>();
+        atributos.put("ultimo_numero", numero);
+        tiposNotaFiscal.updateNativo(NotaFiscalTipo.class, filtros, atributos);
     }
 
 
