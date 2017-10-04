@@ -214,6 +214,16 @@ public class Pessoa implements Serializable {
         return identificador!=null?identificador.replaceAll("\\D",""):"";
     }
 
+    public String getRgOrIe() {
+        String identificador;
+        identificador = this.tipo.equals("F") ? this.pessoaFisica.getRg() : this.pessoaJuridica.getInscricaoEstadual();
+        return identificador;
+    }
+
+    public PessoaEndereco buscarEnderecoPrincipal() {
+        return listaPessoaEndereco.stream().filter(e -> e.getPrincipal().equals("S")).findFirst().orElse(null);
+    }
+
     @Override
     public String toString() {
         return nome;
