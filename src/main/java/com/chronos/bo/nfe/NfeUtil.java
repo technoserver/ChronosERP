@@ -370,7 +370,9 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
             // Se o Produto estiver vinculado a uma configuracao de Operacao
             // Fiscal + Grupo Tribut�rio, carrega esses dados
             if (item.getProduto().getTributGrupoTributario() != null) {
-
+                if (operacaoFiscal == null) {
+                    throw new Exception("Operação Fiscal não definida.Operação não realizada.");
+                }
                 String query = "select new TributConfiguraOfGt(o.id) from TributConfiguraOfGt o where o.tributOperacaoFiscal.id=?1 and "
                         + "o.tributGrupoTributario.id =?2";
                 confTrib = tributConfigRepository.get(TributConfiguraOfGt.class, query, operacaoFiscal.getId(), item.getProduto().getTributGrupoTributario().getId());

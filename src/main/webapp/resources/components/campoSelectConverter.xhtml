@@ -13,6 +13,7 @@
     <cc:attribute name="nomeAtributo"/>
     <cc:attribute name="requerido"/>
     <cc:attribute name="styleClass"/>
+    <cc:attribute name="classe"/>
     <cc:attribute name="labelItens" required="true"/>
     <cc:attribute name="itens" required="true"/>
     <cc:attribute name="desabilitado" default="false"/>
@@ -25,7 +26,7 @@
                        for="#{cc.attrs.idComponente}"/>
 
         <h:selectOneMenu id="#{cc.attrs.idComponente}"
-                         class="form-control"
+                         class="form-control #{cc.attrs.classe}"
                          value="#{cc.attrs.nomeAtributo}"
                          required="#{cc.attrs.requerido}"
                          disabled="#{cc.attrs.desabilitado}"

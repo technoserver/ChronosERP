@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <!--Lado Esquerdo do PDV-->
+    <h:panelGroup id="panelLadoEsquerdo" layout="block" class="margin-top-10px-xs col-sm-4 col-md-4 col-lg-4">
+        <div class="box-cliente small-box bg-green">
+            <div class="inner">
+                <div>
+                    <label style="margin-right: 5px;color: #FFFFFF">CLIENTE:</label>
+                    <p:commandLink id="botao-indicar-cliente"
+                                   style="font-size: 14px;font-family: 'Source Sans Pro', sans-serif;"
+                                   action="#{nfceControll.indentificarCliente}"
+                                   oncomplete="PF('dialogCliente').show()"
+                                   update=":formOutrasTelas1:panelCliente">
+                        #{empty nfceControll.cliente?'Não Informado' : nfceControll.cliente.nome.toUpperCase()}
+                    </p:commandLink>
+                </div>
+                <div>
+                    <label style="margin-right: 5px;color: #FFFFFF">VENDEDOR:</label>
+                    <p:commandLink id="botao-indicar-vendedor"
+                                   action="#{nfceControll.buscarVendedores}"
+                                   oncomplete="PF('dialogVendedor').show()"
+                                   update=":formOutrasTelas:panelVendedor">
+                        #{nfceControll.vendedor.colaborador.pessoa.nome}
+                    </p:commandLink>
+                </div>
+            </div>
+            <div class="icone">
+                <i class="fa icon-groups-friends"></i>
+            </div>
+        </div>
+        <!--Inicio Produtos Selecionado -->
+        <div id="produtos-selecionados">
+            <div id="lista" class="table-responsive">
+                <h:dataTable var="row" value="#{nfceControll.venda.listaNfeDetalhe}"
+                             class="table table-striped" id="tableProduto">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Qtd."/>
+                        </f:facet>
+                        <h:outputText value="#{row.quantidadeComercial}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Produto"/>
+                        </f:facet>
+                        <h:outputText value="#{row.produto.descricaoPdv}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Desc."/>
+                        </f:facet>
+                        <h:outputText value="#{row.valorDesconto}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Preço"/>
+                        </f:facet>
+                        <h:outputText value="#{row.valorUnitarioComercial}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </h:column>
+                </h:dataTable>
+            </div>
+            <h4>TOTAL DA VENDA</h4>
+            <div class="total-pedido">
+                <h:panelGroup layout="block" id="totalPedido">
+                    R$ #{nfceControll.venda.valorTotalFormatado()}
+                </h:panelGroup>
+
+            </div>
+        </div>
+
+        <!-- Fim produtos Selecionados -->
+        <h:panelGroup layout="block" id="panelBotoes" class="row">
+            <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
+                <h:commandButton id="aguardar"
+                                 value="AGUARDAR"
+                                 type="button" class="btn btn-warning btn-lg" style="width:100%"
+                                 disabled="true">
+
+                </h:commandButton>
+            </div>
+            <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
+                <h:commandButton id="cancelar"
+                                 value="CANCELAR"
+                                 onclick="$('#confirmarCancelamento').modal('show');"
+                                 type="button" class="btn btn-danger btn-lg" style="width:100%"
+                                 disabled="#{nfceControll.venda.temProduto}">
+
+                </h:commandButton>
+            </div>
+            <div class="margin-top-10px col-sm-12 col-md-12 col-lg-12">
+                <h:commandButton id="botao-pagar"
+                                 value="FINALIZAR VENDA"
+                                 action="#{nfceControll.iniciarPagamentosVenda}"
+                                 class="btn btn-success btn-lg" style="width:100%"
+                                 disabled="#{nfceControll.venda.temProduto}">
+                    <p:ajax update=":formCentro:growl,:formCentro:telaPdv,:formCentro:tela-inicial"/>
+                </h:commandButton>
+            </div>
+        </h:panelGroup>
+    </h:panelGroup>
+
+
+    <div class="bootbox modal fade" id="confirmarCancelamento" tabindex="-1" role="dialog" aria-labelledby="myModal"
+         aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h:form id="formModalCancelaVenda">
+                    <div class="modal-body">
+                        <div class="bootbox-body">
+                            <div class="text-center margin-top-20px">
+                                <span class="text-danger glyphicon glyphicon-remove" style="font-size: 60px"></span>
+                                <div style="font-size: 18px">Deseja cancelar esta venda?</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h:panelGroup layout="block" styleClass="modal-footer">
+                        <p:commandLink value="Não"
+                                       immediate="true"
+                                       styleClass="btn btn-default"
+                                       oncomplete="fecharModalCancelamento()"/>
+                        &nbsp;
+                        <a type="submit"
+                           class="btn btn btn-primary btn-sm"
+                           jsfc="h:commandLink"
+                           action="#{nfceControll.cancelarVenda}">
+                            Sim
+                            <f:passThroughAttribute name="data-dismiss" value="modal"/>
+                            <p:ajax process="@this" update=":formCentro:telaPdv,formCentro:mensagem"
+                                    oncomplete="fecharModalCancelamento()"/>
+
+                        </a>
+
+                    </h:panelGroup>
+                </h:form>
+            </div>
+        </div>
+    </div>
+
+</ui:composition>

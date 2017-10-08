@@ -337,6 +337,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     // </editor-fold>
 
+
     // <editor-fold defaultstate="collapsed" desc="Procedimentos NFe">
     public NfeConfiguracao configuraNfe() throws Exception {
         List<Filtro> filtros = new LinkedList<>();

@@ -54,6 +54,19 @@
 
             </ul>
         </li>
+        <li class="${fn:contains(view.viewId,'modulo/comercial/nfce/')?'active':''}">
+            <a href="#">NFce<span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/comercial/nfce/pdv"
+                             label="PDV"
+                             funcao="pdv"/>
+                <erp:subMenu caminho="/modulo/comercial/nfce/nfceConfiguracao"
+                             label="Configuração"
+                             funcao="nfceConfiguracao"/>
+
+
+            </ul>
+        </li>
     </ul>
 
 

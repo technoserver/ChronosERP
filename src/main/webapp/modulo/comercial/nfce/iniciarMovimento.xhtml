@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <h1 class="margin-top-0">ABERTURA DE CAIXA</h1>
+        <h3 class="margin-top-0 text-center text-primary">
+            Informe os valores disponíveis para iniciar suas operações
+        </h3>
+        <div class="text-center  row">
+            <div class="col-sm-12 col-md-4 col-lg-12">
+                <i class="fa-lg fa fa-laptop"></i>
+            </div>
+        </div>
+        <div class="text-center  row">
+            <div class="col-sm-offset-2 col-md-offset-2 col-lg-offset-2 col-sm-4 col-md-4 col-lg-4">
+
+                <h3 class="margin-top-0">DISPONÍVEL EM CAIXA</h3>
+                <p:inputNumber id="CaixaValor" value="#{nfceControll.valorSuprimento}"/>
+
+                <h3 class="margin-top-0">Turno</h3>
+                <h:selectOneMenu class="form-control"
+                                 value="#{nfceControll.turno}"
+                                 converter="defaultConverter"
+                                 id="turno">
+                    <f:selectItems value="#{nfceControll.listTurno}" var="obj" itemValue="#{obj}"
+                                   itemLabel="#{obj.descricao}"/>
+                </h:selectOneMenu>
+
+
+            </div>
+            <div class="col-sm-4 col-md-2 col-lg-4">
+                <h3 class="margin-top-0">OEPRADOR</h3>
+                <div class="row">
+                    <div class="col-sm-6 col-md-2 col-lg-6">
+                        <p:inputText placeholder="usuario"
+                                     id="operador"
+                                     required="true"
+                                     value="#{nfceControll.userOperador}"/>
+                    </div>
+                    <div class="col-sm-6 col-md-2 col-lg-6">
+                        <p:password placeholder="senha"
+                                    id="senhaOperador"
+                                    required="true"
+                                    value="#{nfceControll.senhaOperador}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <h3 class="margin-top-0">GERENTE</h3>
+                <div class="row">
+                    <div class="col-sm-6 col-md-2 col-lg-6">
+                        <p:inputText placeholder="usuario"
+                                     id="gerente"
+                                     required="true"
+                                     value="#{nfceControll.userGerente}"/>
+                    </div>
+                    <div class="col-sm-6 col-md-2 col-lg-6">
+                        <p:password placeholder="senha"
+                                    id="senhaGerente"
+                                    required="true"
+                                    value="#{nfceControll.senhaGerente}"/>
+
+                    </div>
+                </div>
+            </div>
+            <div class="margin-top-5px margin-bottom-10px col-sm-12 col-md-12 col-lg-12">
+
+
+            </div>
+        </div>
+        <div class="text-center  row">
+            <div class="col-sm-offset-4 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-4 col-lg-4">
+                <h:commandLink class="btn btn-lg btn-success"
+                               action="#{nfceControll.confimarMovimento}"
+                               style="width:100%">
+                    <h3 class="margin-top-0 margin-bottom-0"><i class="fa fa-sign-in"></i> CONFIRMAR ABERTURA</h3>
+                    <p:ajax update="formCentro:growl,:formMovimento:dialogMovimento"
+                            oncomplete="if (args.movimentoIniciado) {PF('dialogMovimento').show(); };"
+                            process="@form"/>
+                </h:commandLink>
+            </div>
+
+        </div>
+    </div>
+
+</ui:composition>

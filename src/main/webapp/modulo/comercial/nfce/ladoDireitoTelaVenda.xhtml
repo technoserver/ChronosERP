@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <div class="col-sm-8 col-md-8 col-lg-8">
+        <label>
+            <h3 class="margin-top-0">LOCALIZE UM PRODUTO/SERVIÇO ABAIXO</h3>
+        </label>
+        <p:autoComplete value="#{nfceControll.item.produto}"
+                        id="produto"
+                        converter="defaultConverter" minQueryLength="3"
+                        completeMethod="#{nfceControll.getListaProduto}"
+                        maxResults="20" emptyMessage="Nenhum Produto localizado"
+                        itemLabel="#{produto.nome}" itemValue="#{objeto}" var="objeto"
+                        style="width: 100%;margin-bottom: 10px" onfocus="true">
+            <p:column headerText="Produto">
+                <p:outputLabel value="#{objeto.nome}"/>
+            </p:column>
+            <p:column headerText="UN">
+                <p:outputLabel value="#{objeto.unidadeProduto.sigla}"/>
+            </p:column>
+            <p:column headerText="Valor Venda" class="coluna-monetaria">
+                <p:outputLabel value="#{objeto.valorVenda}">
+                    <f:convertNumber pattern="#,###,##0.00"/>
+                </p:outputLabel>
+            </p:column>
+            <p:column headerText="Estoque" class="coluna-monetaria">
+                <p:outputLabel value="#{objeto.quantidadeEstoque}">
+                    <f:convertNumber pattern="#,###,##0.00"/>
+                </p:outputLabel>
+            </p:column>
+            <p:ajax event="itemSelect" listener="#{nfceControll.selecionarProduto}"
+                    update="formCentro:mostra-produto"
+                    oncomplete="document.getElementById('formCentro:quantidade_input').focus()"/>
+        </p:autoComplete>
+        <br/>
+
+        <h:panelGroup layout="block" id="mostra-produto" class="margin-top-20px row">
+            <div id="fotos" class="col-sm-3 col-md-3 col-lg-3">
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner" role="listbox">
+                        <div class="hidden-xs item active">
+                            <p:graphicImage value="/resources/images/produto-sem-foto.png" width="100%"/>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-9 col-md-9 col-lg-9">
+                <table cellpadding="0" cellspacing="0" width="100%" border="0">
+                    <tbody>
+                    <tr>
+                        <th class="hidden-xs nowrap">
+                            <h4 class="margin-right-10px">CÓDIGO</h4>
+                        </th>
+                        <td class="padding-top-10px">
+                            <h:inputText disabled="true"
+                                         class="codigo col-sm-12 col-md-12 col-lg-12 form-control-table"
+                                         value="#{nfceControll.item.produto.id}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="hidden-xs nowrap">
+                            <h4 class="margin-right-10px">QUANTIDADE</h4>
+                        </th>
+                        <td class="padding-top-10px">
+                            <p:inputNumber id="quantidade"
+                                           decimalPlaces="2"
+                                           minValue="0.001" maxValue="999"
+                                           value="#{nfceControll.quantidade}"
+                                           required="true"
+                                           requiredMessage="Informe a quantidade"
+                                           class="inputs"
+                                           dir="rtl"
+                                           disabled="#{empty nfceControll.item.produto}"
+                                           onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:valorUnitario_input').focus(); return false;}"
+                                           style="width: 100%"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="hidden-xs nowrap">
+                            <h4 class="margin-right-10px">VALOR UNITÁRIO</h4>
+                        </th>
+                        <td class="padding-top-10px">
+                            <label class="visible-xs">VALOR UNITÁRIO</label>
+                            <p:inputNumber id="valorUnitario"
+                                           decimalPlaces="2"
+                                           minValue="0.001" maxValue="999"
+                                           value="#{nfceControll.item.valorUnitarioComercial}"
+                                           required="true"
+                                           dir="rtl"
+                                           requiredMessage="Informe o valor"
+                                           class="inputs"
+                                           disabled="#{empty nfceControll.item.produto}"
+                                           onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:desconto_input').focus(); return false;}"
+                                           style="width: 100%"/>
+
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="hidden-xs nowrap">
+                            <h4 class="margin-right-10px">DESCONTO</h4>
+                        </th>
+                        <td class="padding-top-10px">
+
+                            <p:inputNumber id="desconto"
+                                           decimalPlaces="2"
+                                           minValue="0.01" maxValue="99.99"
+                                           value="#{nfceControll.item.valorDesconto}"
+                                           class="inputs"
+                                           dir="rtl"
+                                           decimalSeparator="," thousandSeparator="."
+                                           disabled="#{empty nfceControll.item.produto}"
+                                           onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:salva-produto').focus(); return false;}"
+                                           style="width: 100%">
+                                <p:ajax event="blur" listener="#{nfceControll.item.calcularTotal}"
+                                        process="@form"
+                                        update="formCentro:mostra-produto"/>
+                            </p:inputNumber>
+
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="hidden-xs nowrap">
+                            <h4 class="margin-right-10px">VALOR TOTAL</h4>
+                        </th>
+                        <td class="padding-top-10px">
+                            <h:inputText value="#{nfceControll.item.valorTotal}" disabled="true"
+                                         class="valor-total mascara-valor col-sm-12 col-md-12 col-lg-12 form-control-table">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:inputText>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="hidden-xs nowrap"/>
+                        <td class="padding-top-10px">
+                            <h:commandButton id="salva-produto" class="btn btn-primary btn-lg"
+                                             style="width:100%"
+                                             value="ADICIONAR PRODUTO"
+                                             disabled="#{!nfceControll.item.produtoValido}"
+                                             action="#{nfceControll.salvaProduto}">
+                                <p:ajax process="@form"
+                                        update="formCentro:tableProduto,formCentro:mensagem,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,:formCentro:panelBotoes"
+                                        oncomplete="$(function(){PrimeFaces.focus('formCentro:produto');})"/>
+                            </h:commandButton>
+
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </h:panelGroup>
+    </div>
+
+
+</ui:composition>

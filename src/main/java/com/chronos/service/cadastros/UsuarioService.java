@@ -1,6 +1,7 @@
 package com.chronos.service.cadastros;
 
 import com.chronos.modelo.entidades.Empresa;
+import com.chronos.modelo.entidades.NfceMovimento;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.security.UsuarioLogado;
 import com.chronos.security.UsuarioSistema;
@@ -18,7 +19,7 @@ public class UsuarioService implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Empresa empresa;
-
+    private NfceMovimento movimento;
 
     @Produces
     @UsuarioLogado

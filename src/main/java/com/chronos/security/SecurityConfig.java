@@ -83,6 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // ex ROLE_ADMINISTRADORES, caso esteja esteja apenas ADMINISTRADORES é usado hasAuthority
                 .antMatchers("/modulo/cadastros/**").authenticated()
                 .antMatchers("/modulo/comercial/nfe/**").authenticated()
+                .antMatchers("/modulo/comercial/nfce/**").authenticated()
                 .antMatchers("/modulo/comercial/mdfe/**").authenticated()
                 .antMatchers("/modulo/comercial/os/**").authenticated()
                 .antMatchers("/modulo/comercial/vendas/**").authenticated()
@@ -93,7 +94,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/modulo/financeiro/pagamento/**").authenticated()
                 .antMatchers("/modulo/financeiro/recebimento/**").authenticated()
                 .antMatchers("/modulo/gerencial/**").authenticated()
-                .antMatchers("/modulo/tributacao/**").authenticated()
+                .antMatchers("/modulo/fiscal/tributacao/**").authenticated()
+                .antMatchers("/modulo/fiscal/tributacao/**").authenticated()
                 .and()
             .formLogin()
                 .loginPage("/login.xhtml")

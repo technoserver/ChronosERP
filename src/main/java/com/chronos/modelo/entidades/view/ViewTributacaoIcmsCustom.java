@@ -5,10 +5,7 @@
  */
 package com.chronos.modelo.entidades.view;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -62,7 +59,8 @@ public class ViewTributacaoIcmsCustom implements Serializable {
     private BigDecimal valorPautaSt;
     @Column(name = "valor_preco_maximo_st", precision = 18, scale = 6)
     private BigDecimal valorPrecoMaximoSt;
-    @Column(name = "aliquota_fcp", precision = 18, scale = 6)
+    //@Column(name = "aliquota_fcp", precision = 18, scale = 6)
+    @Transient
     private BigDecimal aliquotaFcp;
 
     public ViewTributacaoIcmsCustom() {

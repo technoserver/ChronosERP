@@ -16,12 +16,30 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 
 /**
  * @author john
  */
 public class Biblioteca {
+
+
+    public String retiraAcentos(String string) {
+        String aux = new String(string);
+        aux = aux.replaceAll("[èëÈéêÉÊË]", "e");
+        aux = aux.replaceAll("[ûùüúÛÚÙÜ]", "u");
+        aux = aux.replaceAll("[ïîíìÏÎÍÌ]", "i");
+        aux = aux.replaceAll("[àâáäãÁÀÂÄ]", "a");
+        aux = aux.replaceAll("[óòôöõÓÒÔÖ]", "o");
+        aux = aux.replaceAll("[çÇ]", "c");
+        return aux;
+    }
+
+    public static String repete(String string, int quantidade) {
+        return String.join("", Collections.nCopies(quantidade, string));
+    }
+
 
     /**
      * Busca os bytes de um determinado arquivo

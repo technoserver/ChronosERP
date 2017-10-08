@@ -64,6 +64,17 @@ public class ArquivoUtil {
         return arquivo;
     }
 
+    public String escrever(byte[] file, String nomeArquivo, String caminho) throws IOException {
+
+        String arquivo = caminho + System.getProperty("file.separator") + nomeArquivo;
+        FileOutputStream out = new FileOutputStream(arquivo);
+
+        out.write(file);
+        out.close();
+
+        return arquivo;
+    }
+
 
 
     private static String diretorioRaiz() {

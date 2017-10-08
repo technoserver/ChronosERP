@@ -7,6 +7,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.*;
 
 @Entity
@@ -145,6 +147,8 @@ public class NfeCabecalho implements Serializable {
     private BigDecimal baseCalculoPrevidencia;
     @Column(name = "VALOR_RETIDO_PREVIDENCIA")
     private BigDecimal valorRetidoPrevidencia;
+    @Column(name = "TROCO")
+    private BigDecimal troco;
     @Column(name = "COMEX_UF_EMBARQUE")
     private String comexUfEmbarque;
     @Column(name = "COMEX_LOCAL_EMBARQUE")
@@ -201,16 +205,16 @@ public class NfeCabecalho implements Serializable {
     @Column(name = "URL_CHAVE")
     private String urlChave;
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cliente cliente;
     @JoinColumn(name = "ID_FORNECEDOR", referencedColumnName = "ID")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Fornecedor fornecedor;
     @JoinColumn(name = "ID_VENDA_CABECALHO", referencedColumnName = "ID")
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private VendaCabecalho vendaCabecalho;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Empresa empresa;
     @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
     @ManyToOne
@@ -822,7 +826,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorIcmsSt() {
-        return valorIcmsSt;
+        return Optional.ofNullable(valorIcmsSt).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -840,7 +844,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorTotalProdutos() {
-        return valorTotalProdutos;
+        return Optional.ofNullable(valorTotalProdutos).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -858,7 +862,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorFrete() {
-        return valorFrete;
+        return Optional.ofNullable(valorFrete).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -876,7 +880,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorSeguro() {
-        return valorSeguro;
+        return Optional.ofNullable(valorSeguro).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -894,7 +898,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorDesconto() {
-        return valorDesconto;
+        return Optional.ofNullable(valorDesconto).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -912,7 +916,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorImpostoImportacao() {
-        return valorImpostoImportacao;
+        return Optional.ofNullable(valorImpostoImportacao).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -930,7 +934,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorIpi() {
-        return valorIpi;
+        return Optional.ofNullable(valorIpi).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -984,7 +988,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorDespesasAcessorias() {
-        return valorDespesasAcessorias;
+        return Optional.ofNullable(valorDespesasAcessorias).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -1022,7 +1026,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorServicos() {
-        return valorServicos;
+        return Optional.ofNullable(valorServicos).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -1360,6 +1364,14 @@ public class NfeCabecalho implements Serializable {
      */
     public void setValorRetidoPrevidencia(BigDecimal valorRetidoPrevidencia) {
         this.valorRetidoPrevidencia = valorRetidoPrevidencia;
+    }
+
+    public BigDecimal getTroco() {
+        return troco;
+    }
+
+    public void setTroco(BigDecimal troco) {
+        this.troco = troco;
     }
 
     /**
@@ -1797,6 +1809,37 @@ public class NfeCabecalho implements Serializable {
         this.csc = csc;
     }
 
+    /**
+     * vNF - Valor Total da NF-e [(+) vProd (id:W07) (-) vDesc (id:W10) (+) vICMSST (id:W06) (+) vFrete (id:W09) (+)
+     * vSeg (id:W10) (+) vOutro (id:W15) (+) vII (id:W11) (+) vIPI (id:W12) (+) vServ (id:W19) (NT 2011/004)]
+     */
+    public BigDecimal calcularValorTotal() {
+        valorTotal = BigDecimal.ZERO;
+        valorTotal = valorTotal.add(getValorTotalProdutos())
+                .subtract(getValorDesconto())
+                .add(getValorIcmsSt())
+                .add(getValorFrete())
+                .add(getValorSeguro())
+                .add(getValorDespesasAcessorias())
+                .add(getValorImpostoImportacao())
+                .add(getValorIpi())
+                .add(getValorServicos());
+        return valorTotal;
+    }
+
+    public String valorTotalFormatado() {
+        return formatarValor(calcularValorTotal());
+    }
+
+    private String formatarValor(BigDecimal valor) {
+        DecimalFormatSymbols simboloDecimal = DecimalFormatSymbols.getInstance();
+        simboloDecimal.setDecimalSeparator('.');
+        DecimalFormat formatar = new DecimalFormat("0.00", simboloDecimal);
+
+        return formatar.format(Optional.ofNullable(valor).orElse(BigDecimal.ZERO));
+    }
+
+
     public String getChaveAcessoCompleta() {
         return (this.chaveAcesso == null ? "" : this.chaveAcesso) + (this.digitoChaveAcesso == null ? "" : this.digitoChaveAcesso);
     }
@@ -1826,6 +1869,10 @@ public class NfeCabecalho implements Serializable {
     public boolean isPodeExcluir() {
         StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
         return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA);
+    }
+
+    public boolean isTemProduto() {
+        return getListaNfeDetalhe().isEmpty();
     }
 
     @Override

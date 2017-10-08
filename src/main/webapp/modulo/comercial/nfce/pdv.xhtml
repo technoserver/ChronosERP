@@ -1,0 +1,330 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        PDV
+    </ui:define>
+
+    <ui:define name="tela">
+        PDV
+    </ui:define>
+    <ui:define name="controle">
+        PDV
+    </ui:define>
+    <ui:define name="css">
+
+        <h:outputStylesheet library="css" name="pdv.css"/>
+        <style type="text/css">
+            li.token-input-token p, li.token-input-token span {
+                padding-top: 12px
+            }
+
+            .padding-top-10px {
+                padding-top: 10px;
+            }
+
+            .margin-right-10px {
+                margin-right: 10px;
+            }
+
+            .margin-top-10px {
+                margin-top: 10px;
+            }
+
+            .margin-top-0 {
+                margin-top: 0 !important;
+            }
+
+            .margin-bottom-20px {
+                margin-bottom: 20px;
+            }
+
+            .margin-bottom-0 {
+                margin-bottom: 0;
+            }
+
+            .margin-bottom-10px {
+                margin-bottom: 10px;
+            }
+
+            .border-bottom-1px {
+                border-bottom: 1px solid #ccc;
+            }
+
+            .form-control-table {
+                min-width: 120px;
+                width: 100%;
+                display: block;
+                height: 34px;
+                padding: 6px 12px;
+                font-size: 14px;
+                line-height: 1.428571429;
+                color: #555555;
+                vertical-align: middle;
+                background-color: #ffffff;
+                background-image: none;
+                border: 1px solid #cccccc;
+                border-radius: 4px;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+                -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+                transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+            }
+
+            .small-box {
+                position: relative;
+                display: block;
+                -webkit-border-radius: 2px;
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+                margin-bottom: 15px;
+                cursor: pointer;
+            }
+
+            .bg-green {
+                background-color: #00a65a !important;
+            }
+
+            .form-control-table[disabled], .form-control-table[readonly], fieldset[disabled] .form-control-table {
+                cursor: not-allowed;
+                background-color: #eeeeee;
+            }
+
+            .muted {
+                background-color: #F2F2F2 !important;
+            }
+
+            fieldset {
+                border: 1px solid #dddddd;
+                margin-bottom: 1em;
+                padding: 0 10px 10px 10px;
+                background: #FFFFFF;
+            }
+
+            fieldset legend {
+                color: #0C1B25;
+                font-family: arial;
+                width: inherit;
+                border-bottom: initial;
+            }
+
+            h3 {
+                font-size: 24px;
+            }
+
+            h4 {
+                font-size: 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .nowrap {
+                white-space: nowrap;
+            }
+
+            .input-pdv {
+                font-size: 20px !important;
+                height: 60px !important;
+            }
+
+            .label-pdv > label {
+                font-size: 20px !important;
+                font-weight: normal !important;
+            }
+
+            .input-group .input-group-addon {
+                border-radius: 0;
+                background-color: #f4f4f4;
+            }
+
+            .input-group-addon:last-child {
+                border-left: 0;
+            }
+
+            .btn.btn-primary {
+                background-color: #0C1B25;
+                border-color: #1F4968;
+            }
+
+            .btn.btn-primary {
+                border-color: #0C1B25;
+            }
+
+        </style>
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <h:panelGroup id="telaPdv" layout="block">
+            <div id="pdv" class="row">
+                <div id="botao-operacoes">
+                    <i class="fa fa-cogs"></i>
+                </div>
+                <h:panelGroup layout="block" id="tela-caixa" class="etapa" style="overflow: hidden"
+                              rendered="#{nfceControll.telaCaixa}">
+                    <ui:include src="iniciarMovimento.xhtml"/>
+
+                </h:panelGroup>
+                <h:panelGroup layout="block" id="tela-inicial" class="etapa" style="overflow: hidden"
+                              rendered="#{nfceControll.telaVenda}">
+                    <ui:include src="telaVendaPdv.xhtml"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" id="tela-pagamento" class="etapa" style="overflow: hidden"
+                              rendered="#{nfceControll.telaPagamentos}">
+                    <ui:include src="pagamentos.xhtml"/>
+                </h:panelGroup>
+                <h:panelGroup layout="block" id="tela-impressao" class="etapa" style="overflow: hidden"
+                              rendered="#{nfceControll.telaImpressao}">
+
+                </h:panelGroup>
+            </div>
+
+        </h:panelGroup>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formMovimento">
+            <p:dialog id="dialogMovimento" header="Movimento" widgetVar="dialogMovimento"
+                      showEffect="slide" width="700" height="350" hideEffect="slide" closable="false"
+                      resizable="true" modal="true" dynamic="true" responsive="true">
+                <p:outputPanel id="panelMovimento">
+                    <iframe src="#{facesContext.externalContext.request.contextPath}/temp/#{nfceControll.nomeImpressaoMovimento}"
+                            width="100%" height="100%" scrolling="yes"></iframe>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar"
+                                     oncomplete="PF('dialogMovimento').hide(); "
+                                     update=":formCentro:telaPdv"
+                                     process="@this"/>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogVendedor"
+                      header="INDICAR VENDEDOR"
+                      widgetVar="dialogVendedor" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="500">
+                <p:outputPanel id="panelVendedor">
+                    <div class="row">
+                        <erp:campoSelectConverter styleClass="label-pdv col-xs-12 col-md-12"
+                                                  classe="input-pdv"
+                                                  idComponente="vendedorSelecionado"
+                                                  label="Vendedor"
+                                                  labelItens="#{obj.colaborador.pessoa.nome}"
+                                                  nomeAtributo="#{nfceControll.vendedor}"
+                                                  itens="#{nfceControll.listVendedores}"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-6 text-center">
+                            <h:commandButton class="btn btn-primary btn-lg"
+                                             action="#{balcaoControll.selecionarVendedor}"
+                                             value="salvar">
+                                <p:ajax update=":formOutrasTelas:panelVendedor,formCentro:botao-indicar-vendedor,:formCentro"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogVendedor').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6 text-right">
+                            <h:commandButton value="Cancelar" class="btn btn-default btn-lg center-block"
+                            >
+                                <p:ajax oncomplete="PF('dialogVendedor').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas1">
+        <h:form id="formOutrasTelas1">
+            <p:dialog id="dialogCliente"
+                      header="INDICAR CLIENTE"
+                      widgetVar="dialogCliente" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="500">
+                <p:outputPanel id="panelCliente">
+                    <div class="row">
+                        <erp:campoTexto label="Nome"
+                                        nomeAtributo="#{nfceControll.cliente.nome}"
+                                        tamanhoMaximo="60"
+                                        requerido="true"
+                                        styleClass="label-pdv col-sm-12 col-lg-12 col-md-12"
+                                        idComponente="nomeCliente"
+                                        styleClassInput="input-pdv"/>
+                        <erp:campoCpf label="CPF"
+                                      nomeAtributo="#{nfceControll.cliente.cpf}"
+                                      styleClass="label-pdv col-sm-12 col-lg-12 col-md-12"
+                                      idComponente="cpfCliente"
+                                      requerido="true"
+                                      styleClassInput="input-pdv"/>
+                        <erp:campoTexto label="EMAIL"
+                                        nomeAtributo="#{nfceControll.cliente.email}"
+                                        tamanhoMaximo="60"
+                                        styleClass="label-pdv col-sm-12 col-lg-12 col-md-12"
+                                        idComponente="emailCliente"
+                                        styleClassInput="input-pdv"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-6 col-lg-6 text-center">
+                            <h:commandButton class="btn btn-primary btn-lg"
+                                             action="#{nfceControll.vincularCliente}"
+                                             value="salvar">
+                                <p:ajax update=":formOutrasTelas1:panelCliente,formCentro:botao-indicar-cliente,:formCentro"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogCliente').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-sm-6 col-md-6 col-lg-6 text-right">
+                            <h:commandButton value="Cancelar" class="btn btn-default btn-lg center-block">
+                                <p:ajax oncomplete="PF('dialogCliente').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="javaScript">
+        <h:outputScript library="js" name="pdv.js"/>
+        <script type="application/javascript">
+            function fecharModalCancelamento() {
+                $('#confirmarCancelamento').modal('hide');
+                focusProduto();
+            }
+            function focusProduto() {
+                $(function () {
+                    PrimeFaces.focus('formCentro:produto');
+                });
+            }
+        </script>
+    </ui:define>
+
+</ui:composition>

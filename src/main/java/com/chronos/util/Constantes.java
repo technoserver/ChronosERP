@@ -15,6 +15,8 @@ public interface Constantes {
     public static final String JASPERNFE = "DanfeRetrato";
     public static final String JASPERNFCE = "danfeNfce";
     public static final String CAMINHODANFE = "/com/chronos/erplight/relatorios/comercial/nfe";
+    public static int DECIMAIS_QUANTIDADE = 3;
+    public static int DECIMAIS_VALOR = 2;
 
     interface FIN{
         public static FinStatusParcela STATUS_ABERTO = new FinStatusParcela(1);
