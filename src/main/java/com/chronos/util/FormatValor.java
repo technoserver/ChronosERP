@@ -181,4 +181,7 @@ public class FormatValor {
     }
 
 
+    public String formatarmesAno(Date data) {
+        return new SimpleDateFormat("MM/yyyy").format(data.getTime());
+    }
 }

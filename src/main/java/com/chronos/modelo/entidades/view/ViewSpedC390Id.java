@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "view_c390")
+@Table(name = "view_sped_c390")
 public class ViewSpedC390Id implements Serializable {
 
     private static final long serialVersionUID = 1L;

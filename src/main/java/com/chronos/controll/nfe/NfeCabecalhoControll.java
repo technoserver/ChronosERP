@@ -2,6 +2,7 @@ package com.chronos.controll.nfe;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.LocalDestino;
 import com.chronos.infra.enuns.ModeloDocumento;
@@ -98,7 +99,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             super.doCreate();
             getObjeto().setDestinatario(new NfeDestinatario());
             getObjeto().getDestinatario().setNfeCabecalho(getObjeto());
-            nfeService.dadosPadroes(getObjeto(), ModeloDocumento.NFE, empresa);
+            configuracao = configuraNfe();
+            nfeService.dadosPadroes(getObjeto(), ModeloDocumento.NFE, empresa, new ConfiguracaoEmissorDTO(configuracao));
             dadosSalvos = false;
             observacao = getObjeto().getInformacoesAddContribuinte();
             this.setActiveTabIndex(0);
@@ -381,7 +383,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
                 configuracao = configuracao != null ? configuracao : configuraNfe();
 
-                StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), configuracao);
+                StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
                 if (status == StatusTransmissao.AUTORIZADA) {
                     estoqueRepositoy.atualizaEstoqueEmpresa(empresa.getId(), getObjeto().getListaNfeDetalhe());
                     Mensagem.addInfoMessage("NFe transmitida com sucesso");
@@ -414,7 +416,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         try {
             getObjeto().setJustificativaCancelamento(justificativa);
             configuracao = configuracao != null ? configuracao : configuraNfe();
-            boolean cancelado = nfeService.cancelarNFe(getObjeto(), configuracao);
+            boolean cancelado = nfeService.cancelarNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
             if (cancelado) {
                 // atualiza o estoque
                 for (NfeDetalhe nfeDetalhe : getObjeto().getListaNfeDetalhe()) {
@@ -434,7 +436,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void cartaCorrecao() {
         try {
             configuracao = configuracao != null ? configuracao : configuraNfe();
-            nfeService.cartaCorrecao(getObjeto(), justificativa, configuracao);
+            nfeService.cartaCorrecao(getObjeto(), justificativa, new ConfiguracaoEmissorDTO(configuracao));
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao enviar a carta de correção!", e);
@@ -449,7 +451,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         try {
             if (dadosSalvos) {
                 configuracao = configuracao != null ? configuracao : configuraNfe();
-                String caminho = nfeService.gerarNfePreProcessada(getObjeto(), configuracao);
+                String caminho = nfeService.gerarNfePreProcessada(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
 
                 nfeService.visualizarXml(caminho);
             } else {
@@ -482,7 +484,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     }
 
     public void gerarNumeracao(NfeCabecalho nfe) throws Exception {
-        nfeService.gerarNumeracao(nfe);
+        nfeService.gerarNumeracao(nfe, true);
         duplicidade = false;
     }
 

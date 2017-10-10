@@ -1,10 +1,14 @@
 package com.chronos.controll.nfce;
 
+import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.NivelAutorizacaoCaixa;
 import com.chronos.modelo.entidades.enuns.StatusMovimentoCaixa;
+import com.chronos.modelo.entidades.enuns.StatusTransmissao;
 import com.chronos.modelo.entidades.view.ViewNfceCliente;
+import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
@@ -60,6 +64,12 @@ public class NfceControll implements Serializable {
     private Repository<Vendedor> vendedores;
     @Inject
     private Repository<NfceTipoPagamento> nfceTipoPagamentoRepository;
+    @Inject
+    private Repository<NfceFechamento> nfceFechamentoRepository;
+    @Inject
+    private EstoqueRepository estoqueRepositoy;
+    @Inject
+    private Repository<NfeCabecalho> nfeRepositoy;
 
     @Inject
     protected FacesContext facesContext;
@@ -201,8 +211,8 @@ public class NfceControll implements Serializable {
             if (valorSuprimento != null && valorSuprimento.signum() > 0) {
                 addSuprimento(valorSuprimento);
             }
-
-
+            movimento.calcularTotalFinal();
+            movimentos.atualizar(movimento);
             imprimeAbertura();
 
             telaCaixa = false;
@@ -282,7 +292,8 @@ public class NfceControll implements Serializable {
             venda = new NfeCabecalho();
             venda.setTributOperacaoFiscal(new TributOperacaoFiscal(1));
             item = new NfeDetalhe();
-            nfeService.dadosPadroes(venda, ModeloDocumento.NFCE, empresa);
+            configuracao = getConfiguraNfce();
+            nfeService.dadosPadroes(venda, ModeloDocumento.NFCE, empresa, new ConfiguracaoEmissorDTO(configuracao));
             desconto = BigDecimal.ZERO;
             quantidade = BigDecimal.ZERO;
 
@@ -346,6 +357,7 @@ public class NfceControll implements Serializable {
                 if (tipoPagamento.getGeraParcelas().equals("S")) {
 
                 } else {
+
                     incluiPagamento(tipoPagamento, valorPago);
                 }
             }
@@ -358,25 +370,38 @@ public class NfceControll implements Serializable {
     }
 
     private void incluiPagamento(NfceTipoPagamento tipoPagamento, BigDecimal valor) throws Exception {
-        NfeFormaPagamento formaPagamento = new NfeFormaPagamento();
-        formaPagamento.setNfeCabecalho(venda);
-        formaPagamento.setNfceTipoPagamento(tipoPagamento);
-        formaPagamento.setValor(valor);
-        formaPagamento.setForma(tipoPagamento.getCodigo());
-        formaPagamento.setEstorno("N");
+        Optional<NfeFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
+        if (formaPagamentoOpt.isPresent()) {
+            Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
+        } else {
+            NfeFormaPagamento formaPagamento = new NfeFormaPagamento();
+            formaPagamento.setNfeCabecalho(venda);
+            formaPagamento.setNfceTipoPagamento(tipoPagamento);
+            formaPagamento.setValor(valor);
+            formaPagamento.setForma(tipoPagamento.getCodigo());
+            formaPagamento.setEstorno("N");
 
-        venda.getListaNfeFormaPagamento().add(formaPagamento);
+            venda.getListaNfeFormaPagamento().add(formaPagamento);
 
 
-        totalRecebido = Biblioteca.soma(totalRecebido, valor);
-        troco = Biblioteca.subtrai(totalRecebido, totalReceber);
-        if (troco.compareTo(BigDecimal.ZERO) == -1) {
-            troco = BigDecimal.ZERO;
+            totalRecebido = Biblioteca.soma(totalRecebido, valor);
+            troco = Biblioteca.subtrai(totalRecebido, totalReceber);
+            if (troco.compareTo(BigDecimal.ZERO) == -1) {
+                troco = BigDecimal.ZERO;
+            }
+            verificaSaldoRestante();
         }
-        verificaSaldoRestante();
-
 
     }
+
+    private Optional<NfeFormaPagamento> bucarTipoPagamento(NfceTipoPagamento tipoPagamento) {
+        Optional<NfeFormaPagamento> formaPagamentoOpt = venda.getListaNfeFormaPagamento()
+                .stream()
+                .filter(fp -> fp.getNfceTipoPagamento().equals(tipoPagamento))
+                .findAny();
+        return formaPagamentoOpt;
+    }
+
 
     public void excluirPagamento() {
         if (formaPagamentoSelecionado != null) {
@@ -390,9 +415,26 @@ public class NfceControll implements Serializable {
         verificaSaldoRestante();
         if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
             venda.setTroco(troco);
+            transmitirNfe();
         } else {
             Mensagem.addInfoMessage("Valores informados não são suficientes para finalizar a venda.");
         }
+    }
+
+    public void lancaMovimentos() {
+
+        venda.getListaNfeFormaPagamento().stream()
+                .forEach(p -> {
+                    NfceFechamento fechamento = new NfceFechamento();
+                    fechamento.setNfceMovimento(movimento);
+                    fechamento.setTipoPagamento(p.getNfceTipoPagamento().getDescricao());
+                    fechamento.setValor(p.getValor());
+                    nfceFechamentoRepository.salvar(fechamento);
+
+                });
+        movimento.setTotalVenda(Biblioteca.soma(movimento.getTotalVenda(), totalReceber));
+        movimento.calcularTotalFinal();
+        movimentos.atualizar(movimento);
     }
 
     private void verificaSaldoRestante() {
@@ -553,6 +595,54 @@ public class NfceControll implements Serializable {
         return configuracao;
     }
 
+    private void definirNumeroItens() {
+
+        int i = 0;
+        for (NfeDetalhe item : venda.getListaNfeDetalhe()) {
+            item.setNumeroItem(++i);
+        }
+
+    }
+
+    public void transmitirNfe() {
+        try {
+
+
+            configuracao = getConfiguraNfce();
+            definirNumeroItens();
+            venda.setCsc(configuracao.getCodigoCsc());
+            gerarNumeracao(venda);
+            StatusTransmissao status = nfeService.transmitirNFe(venda, new ConfiguracaoEmissorDTO(configuracao));
+            if (status == StatusTransmissao.AUTORIZADA) {
+                venda = nfeRepositoy.atualizar(venda);
+                estoqueRepositoy.atualizaEstoqueEmpresa(empresa.getId(), venda.getListaNfeDetalhe());
+                lancaMovimentos();
+                Mensagem.addInfoMessage("NFe transmitida com sucesso");
+            }
+
+
+        } catch (EmissorException ex) {
+            if (ex.getMessage().contains("Read timed out")) {
+                try {
+                    venda.setStatusNota(StatusTransmissao.ENVIADA.getCodigo());
+                    nfeRepositoy.atualizar(venda);
+                } catch (Exception ex1) {
+
+                }
+            }
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
+        }
+    }
+
+    public void gerarNumeracao(NfeCabecalho nfe) throws Exception {
+        nfeService.gerarNumeracao(nfe, false);
+
+    }
+
     //</editor-fold>
 
 
@@ -650,6 +740,10 @@ public class NfceControll implements Serializable {
 
     public boolean isPodeLancaPagamento() {
         return valorPago.signum() == 0;
+    }
+
+    public boolean isPodeFinalzarVenda() {
+        return saldoRestante.signum() == 0;
     }
 
     private void append(String texto) {

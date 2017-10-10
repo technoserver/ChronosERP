@@ -6,12 +6,12 @@ import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema.inutnfe.TInutNFe;
 import br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe;
 import br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe.InfInut;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.infra.enuns.AmbienteEmissao;
 import com.chronos.infra.enuns.Estados;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.EmpresaEndereco;
 import com.chronos.modelo.entidades.NfeCabecalho;
-import com.chronos.modelo.entidades.NfeConfiguracao;
 import com.chronos.nfe.Nfe;
 import com.chronos.util.ConstantesNFe;
 
@@ -31,7 +31,7 @@ public class NfeTransmissao {
     }
 
 
-    public TEnviNFe geraNFeEnv(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+    public TEnviNFe geraNFeEnv(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
         instanciarConfiguracoes(configuracao);
         GeraXMLEnvio geraXmlNfe = new GeraXMLEnvio();
         TEnviNFe nfeEnv = geraXmlNfe.gerarXmlEnvio(empresa, nfe);
@@ -39,7 +39,7 @@ public class NfeTransmissao {
         return nfeEnv;
     }
 
-    public InfInut inutilizarNFe(NfeConfiguracao configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
+    public InfInut inutilizarNFe(ConfiguracaoEmissorDTO configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
         if (justificativa.trim().length() < 15) {
             throw new Exception("A justificativa deve ter no mínimo 15 caracteres.");
         }
@@ -55,7 +55,7 @@ public class NfeTransmissao {
         return infRetorno;
     }
 
-    public String statusServico(NfeConfiguracao configuracao) throws Exception {
+    public String statusServico(ConfiguracaoEmissorDTO configuracao) throws Exception {
         String status;
         instanciarConfiguracoes(configuracao);
         GeraXMLEnvio xmlEnvio = new GeraXMLEnvio();
@@ -65,7 +65,7 @@ public class NfeTransmissao {
         return status;
     }
 
-    public TRetEnvEvento enviarCartaCorrecao(NfeConfiguracao configuracao, String chave, String correcao) throws Exception {
+    public TRetEnvEvento enviarCartaCorrecao(ConfiguracaoEmissorDTO configuracao, String chave, String correcao) throws Exception {
         instanciarConfiguracoes(configuracao);
         GeraXMLEnvio gerar = new GeraXMLEnvio();
         String codigoIBGE = Estados.getUFbySigla(endereco.getUf()).getCodigoIbge();
@@ -75,7 +75,7 @@ public class NfeTransmissao {
         return retorno;
     }
 
-    public void instanciarConfiguracoes(NfeConfiguracao configuracao) throws Exception {
+    public void instanciarConfiguracoes(ConfiguracaoEmissorDTO configuracao) throws Exception {
         ConfigurarAmbienteEmissor conf = new ConfigurarAmbienteEmissor(empresa.getCnpj(), "3.10", AmbienteEmissao.getByCodigo(configuracao.getWebserviceAmbiente()), endereco.getUf(), configuracao.getCaminhoSchemas());
         conf.instanciarConfiguracoes(configuracao.getCertificadoDigitalSenha());
     }
@@ -86,7 +86,7 @@ public class NfeTransmissao {
                 .findFirst().orElse(new EmpresaEndereco());
     }
 
-    public TEnvEvento cancelarNFe(NfeConfiguracao configuracao, String protocolo, String uf, String ambiente, String chave, String justificativa) throws Exception {
+    public TEnvEvento cancelarNFe(ConfiguracaoEmissorDTO configuracao, String protocolo, String uf, String ambiente, String chave, String justificativa) throws Exception {
         if (justificativa == null) {
             throw new Exception("É necessário informar uma justificativa para o cancelamento da NF-e.");
         }

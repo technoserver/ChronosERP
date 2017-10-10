@@ -1,7 +1,11 @@
 package com.chronos.service.fiscal;
 
 import com.chronos.infra.efdicms.SpedFiscalIcms;
+import com.chronos.infra.efdicms.bloco1.Registro1010;
 import com.chronos.infra.efdicms.blococ.*;
+import com.chronos.infra.efdicms.blocoe.RegistroE100;
+import com.chronos.infra.efdicms.blocoe.RegistroE110;
+import com.chronos.infra.efdicms.blocoe.RegistroE116;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.view.*;
 import com.chronos.repository.EcfNotaFiscalCabecalhoRepository;
@@ -9,7 +13,10 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.repository.ViewSpedC425Repository;
 import com.chronos.sped.efdicms.bloco0.*;
+import com.chronos.sped.efdicms.blocoh.RegistroH005;
+import com.chronos.sped.efdicms.blocoh.RegistroH010;
 import com.chronos.util.Biblioteca;
+import com.chronos.util.FormatValor;
 import com.chronos.util.jsf.FacesUtil;
 
 import javax.inject.Inject;
@@ -68,6 +75,9 @@ public class SpedIcmsIpiService implements Serializable {
     private Repository<ProdutoAlteracaoItem> produtoAlteradoRepository;
     @Inject
     private Repository<ViewSpedC490Id> viewC490Repository;
+    @Inject
+    private Repository<FiscalApuracaoIcms> fiscalApuracaoIcmsRepository;
+
 
     private Date dataInicio;
     private Date dataFim;
@@ -205,8 +215,8 @@ public class SpedIcmsIpiService implements Serializable {
         NfeEmitente emitente;
         NfeDestinatario destinatario;
         for (NfeCabecalho c : listaNfeCabecalho) {
-            //Exercício: verifique no módulo NF-e porque não está sendo sendo as informações da tabela NfeEmitente.
-            /*registro0150 = new Registro0150();
+
+            registro0150 = new Registro0150();
             emitente = c.getEmitente();
 
             registro0150.setCodPart("F" + emitente.getId());
@@ -244,7 +254,7 @@ public class SpedIcmsIpiService implements Serializable {
             registro0150.setCompl(destinatario.getComplemento());
             registro0150.setBairro(destinatario.getBairro());
 
-            sped.getBloco0().getListaRegistro0150().add(registro0150);*/
+            sped.getBloco0().getListaRegistro0150().add(registro0150);
 
             // REGISTRO 0175: ALTERAÇÃO DA TABELA DE CADASTRO DE PARTICIPANTE
             // Pegar os dados de PESSOA_ALTERACAO para gerar o registro 0175
@@ -467,7 +477,7 @@ public class SpedIcmsIpiService implements Serializable {
                 RegistroC170 registroC170;
                 for (NfeDetalhe nfeDetalhe : nfe.getListaNfeDetalhe()) {
                     registroC170 = new RegistroC170();
-
+                    //info produro
                     registroC170.setNumItem(nfeDetalhe.getNumeroItem().toString());
                     registroC170.setCodItem(nfeDetalhe.getGtin());
                     registroC170.setDescrCompl(nfeDetalhe.getNomeProduto());
@@ -476,6 +486,7 @@ public class SpedIcmsIpiService implements Serializable {
                     registroC170.setVlItem(nfeDetalhe.getValorTotal());
                     registroC170.setVlDesc(nfeDetalhe.getValorDesconto());
                     registroC170.setIndMov(0);
+                    //info icms
                     registroC170.setCstIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getCstIcms());
                     registroC170.setCfop(nfeDetalhe.getCfop().toString());
                     registroC170.setCodNat(nfeDetalhe.getNfeCabecalho().getTributOperacaoFiscal().getId().toString());
@@ -486,23 +497,37 @@ public class SpedIcmsIpiService implements Serializable {
                     registroC170.setAliqSt(nfeDetalhe.getNfeDetalheImpostoIcms().getAliquotaIcmsSt());
                     registroC170.setVlIcmsSt(nfeDetalhe.getNfeDetalheImpostoIcms().getValorIcmsSt());
                     registroC170.setIndApur(0);
-                    registroC170.setCstIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getCstIpi());
-                    registroC170.setCodEnq(nfeDetalhe.getNfeDetalheImpostoIpi().getEnquadramentoIpi());
-                    registroC170.setVlBcIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi());
-                    registroC170.setAliqIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getAliquotaIpi());
-                    registroC170.setVlIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getValorIpi());
-                    registroC170.setCstPis(nfeDetalhe.getNfeDetalheImpostoIpi().getCstIpi());
-                    registroC170.setVlBcPis(nfeDetalhe.getNfeDetalheImpostoPis().getValorBaseCalculoPis());
-                    registroC170.setAliqPisPerc(nfeDetalhe.getNfeDetalheImpostoPis().getAliquotaPisPercentual());
-                    registroC170.setQuantBcPis(nfeDetalhe.getNfeDetalheImpostoPis().getQuantidadeVendida());
-                    registroC170.setAliqPisR(nfeDetalhe.getNfeDetalheImpostoPis().getAliquotaPisReais());
-                    registroC170.setVlPis(nfeDetalhe.getNfeDetalheImpostoPis().getValorPis());
-                    registroC170.setCstCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getCstCofins());
-                    registroC170.setVlBcCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getBaseCalculoCofins());
-                    registroC170.setAliqCofinsPerc(nfeDetalhe.getNfeDetalheImpostoCofins().getAliquotaCofinsPercentual());
-                    registroC170.setQuantBcCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getQuantidadeVendida());
-                    registroC170.setAliqCofinsR(nfeDetalhe.getNfeDetalheImpostoCofins().getAliquotaCofinsReais());
-                    registroC170.setVlCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getValorCofins());
+                    //info IPI
+                    if (nfeDetalhe.getNfeDetalheImpostoIpi() != null) {
+                        registroC170.setCstIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getCstIpi());
+                        registroC170.setCodEnq(nfeDetalhe.getNfeDetalheImpostoIpi().getEnquadramentoIpi());
+                        registroC170.setVlBcIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi());
+                        registroC170.setAliqIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getAliquotaIpi());
+                        registroC170.setVlIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getValorIpi());
+                    }
+
+                    //info PIS
+
+                    if (nfeDetalhe.getNfeDetalheImpostoPis() != null) {
+                        registroC170.setCstPis(nfeDetalhe.getNfeDetalheImpostoPis().getCstPis());
+                        registroC170.setVlBcPis(nfeDetalhe.getNfeDetalheImpostoPis().getValorBaseCalculoPis());
+                        registroC170.setAliqPisPerc(nfeDetalhe.getNfeDetalheImpostoPis().getAliquotaPisPercentual());
+                        registroC170.setQuantBcPis(nfeDetalhe.getNfeDetalheImpostoPis().getQuantidadeVendida());
+                        registroC170.setAliqPisR(nfeDetalhe.getNfeDetalheImpostoPis().getAliquotaPisReais());
+                        registroC170.setVlPis(nfeDetalhe.getNfeDetalheImpostoPis().getValorPis());
+                    }
+
+                    //info COFINS
+                    if (nfeDetalhe.getNfeDetalheImpostoCofins() != null) {
+                        registroC170.setCstCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getCstCofins());
+                        registroC170.setVlBcCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getBaseCalculoCofins());
+                        registroC170.setAliqCofinsPerc(nfeDetalhe.getNfeDetalheImpostoCofins().getAliquotaCofinsPercentual());
+                        registroC170.setQuantBcCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getQuantidadeVendida());
+                        registroC170.setAliqCofinsR(nfeDetalhe.getNfeDetalheImpostoCofins().getAliquotaCofinsReais());
+                        registroC170.setVlCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getValorCofins());
+                    }
+
+
                     registroC170.setCodCta("");
 
                     registroC100.getRegistroC170List().add(registroC170);
@@ -921,12 +946,107 @@ public class SpedIcmsIpiService implements Serializable {
         sped.getBlocoC().getRegistroC001().setIndMov(0);
     }
 
-    private void geraBlocoE() {
+    private void geraBlocoE() throws Exception {
+        // REGISTRO E001: ABERTURA DO BLOCO E
+        sped.getBlocoE().getRegistroE001().setIndMov(0);
+
+        // REGISTRO E100: PERÍODO DA APURAÇÃO DO ICMS.
+        RegistroE100 registroE100 = new RegistroE100();
+        registroE100.setDtIni(dataInicio);
+        registroE100.setDtFin(dataFim);
+        sped.getBlocoE().getListaRegistroE100().add(registroE100);
+
+        // REGISTRO E110: APURAÇÃO DO ICMS – OPERAÇÕES PRÓPRIAS.
+        //TODO buscar as informaões referentes ao Bloco E?
+        List<FiscalApuracaoIcms> listaE110 = fiscalApuracaoIcmsRepository.getEntitys(FiscalApuracaoIcms.class, "competencia", FormatValor.getInstance().formatarmesAno(dataInicio));
+        FiscalApuracaoIcms v;
+        RegistroE110 registroE110;
+        if (!listaE110.isEmpty()) {
+            registroE110 = new RegistroE110();
+            v = listaE110.get(0);
+
+            registroE110.setVlTotDebitos(v.getValorTotalDebito());
+            registroE110.setVlAjDebitos(v.getValorAjusteDebito());
+            registroE110.setVlTotAjDebitos(v.getValorTotalAjusteDebito());
+            registroE110.setVlEstornosCred(v.getValorEstornoCredito());
+            registroE110.setVlTotCreditos(v.getValorTotalCredito());
+            registroE110.setVlAjCreditos(v.getValorAjusteCredito());
+            registroE110.setVlTotAjCreditos(v.getValorTotalAjusteCredito());
+            registroE110.setVlEstornosDeb(v.getValorEstornoDebito());
+            registroE110.setVlSldCredorAnt(v.getValorSaldoCredorAnterior());
+            registroE110.setVlSldApurado(v.getValorSaldoApurado());
+            registroE110.setVlTotDed(v.getValorTotalDeducao());
+            registroE110.setVlIcmsRecolher(v.getValorIcmsRecolher());
+            registroE110.setVlSldCredorTransportar(v.getValorSaldoCredorTransp());
+            registroE110.setDebEsp(v.getValorDebitoEspecial());
+
+            // registro E116
+            RegistroE116 registroE116 = new RegistroE116();
+            registroE116.setCodOr("000");
+            registroE116.setVlOr(v.getValorIcmsRecolher());
+            registroE116.setDtVcto(dataFim);
+            registroE116.setCodRec("1");
+            registroE116.setNumProc("");
+            registroE116.setIndProc("");
+            registroE116.setProc("");
+            registroE116.setTxtCompl("");
+            registroE116.setMesRef("");
+
+            registroE110.getRegistroE116List().add(registroE116);
+
+            registroE100.setRegistroE110(registroE110);
+        }
     }
 
     private void geraBlocoH() {
+        sped.getBlocoH().getRegistroH001().setIndMov(0);// com dados
+
+        List<Produto> listaProduto = produtos.getEntitys(Produto.class);
+        BigDecimal totalGeral = BigDecimal.ZERO;
+        for (int i = 0; i < listaProduto.size(); i++) {
+            totalGeral = Biblioteca.soma(totalGeral, Biblioteca.multiplica(listaProduto.get(i).getValorCompra(), listaProduto.get(i).getQuantidadeEstoque()));
+        }
+
+        // REGISTRO H005: TOTAIS DO INVENTÁRIO
+        RegistroH005 registroH005 = new RegistroH005();
+        registroH005.setDtInv(dataFim);
+        registroH005.setVlInv(totalGeral);
+        registroH005.setMotInv("0" + inventario);
+        sped.getBlocoH().getListaRegistroH005().add(registroH005);
+
+        RegistroH010 registroH010;
+        //TODO implementa o estoque por empresa.
+        for (int i = 0; i < listaProduto.size(); i++) {
+            registroH010 = new RegistroH010();
+
+            registroH010.setCodItem(listaProduto.get(i).getId().toString());
+            registroH010.setUnid(listaProduto.get(i).getUnidadeProduto().getId().toString());
+            registroH010.setQtd(listaProduto.get(i).getQuantidadeEstoque());
+            registroH010.setVlUnit(listaProduto.get(i).getValorCompra());
+            registroH010.setVlItem(Biblioteca.multiplica(listaProduto.get(i).getQuantidadeEstoque(), listaProduto.get(i).getValorCompra()));
+            registroH010.setIndProp("0");
+
+            registroH005.getRegistroH010List().add(registroH010);
+        }
+
+        // REGISTRO H020: Informação complementar do Inventário.
+        //TODO implementa as Informação complementar do Inventário
     }
 
     private void geraBloco1() {
+        sped.getBloco1().getRegistro1001().setIndMov(0);// com dados
+
+        Registro1010 registro1010 = new Registro1010();
+        registro1010.setIndExp("N");
+        registro1010.setIndCcrf("N");
+        registro1010.setIndComb("N");
+        registro1010.setIndUsina("N");
+        registro1010.setIndVa("N");
+        registro1010.setIndEe("N");
+        registro1010.setIndCart("N");
+        registro1010.setIndForm("N");
+        registro1010.setIndAer("N");
+
+        sped.getBloco1().getListaRegistro1010().add(registro1010);
     }
 }

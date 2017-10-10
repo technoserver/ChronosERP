@@ -6,6 +6,7 @@ import com.chronos.calc.enuns.Cst;
 import com.chronos.calc.enuns.CstIpi;
 import com.chronos.calc.enuns.CstPisCofins;
 import com.chronos.controll.nfe.NfeCalculoControll;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.infra.enuns.*;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
@@ -40,7 +41,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
     private Repository<NotaFiscalTipo> tiposNotaFiscal;
 
 
-    public NfeCabecalho dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa) {
+    public NfeCabecalho dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa, ConfiguracaoEmissorDTO configuracao) {
         nfe.setDestinatario(new NfeDestinatario());
         nfe.getDestinatario().setNfeCabecalho(nfe);
 
@@ -107,8 +108,15 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setValorIcmsDesonerado(BigDecimal.ZERO);
         nfe.setCodigoModelo(String.valueOf(modelo.getCodigo()));
         nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
+        nfe.setProcessoEmissao(0);
+        nfe.setVersaoProcessoEmissao("3.1.11");
 
-
+        if (configuracao != null) {
+            nfe.setAmbiente(configuracao.getWebserviceAmbiente());
+            if (StringUtils.isEmpty(nfe.getInformacoesAddContribuinte())) {
+                nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
+            }
+        }
         return nfe;
     }
 

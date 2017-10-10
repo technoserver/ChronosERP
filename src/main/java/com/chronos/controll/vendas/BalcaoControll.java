@@ -1,6 +1,7 @@
 package com.chronos.controll.vendas;
 
 import com.chronos.bo.nfe.VendaToNFe;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.FormaPagamento;
@@ -170,7 +171,7 @@ public class BalcaoControll implements Serializable {
         try {
             VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, venda);
             NfeCabecalho nfe = vendaNfe.gerarNfe();
-            nfeService.transmitirNFe(nfe, new NfeConfiguracao());
+            nfeService.transmitirNFe(nfe, new ConfiguracaoEmissorDTO());
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

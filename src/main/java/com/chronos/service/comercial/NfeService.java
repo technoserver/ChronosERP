@@ -7,6 +7,7 @@ import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema.envinfe.TRetEnviNFe;
 import com.chronos.bo.nfe.NfeTransmissao;
 import com.chronos.bo.nfe.NfeUtil;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
@@ -77,11 +78,11 @@ public class NfeService implements Serializable {
         context = FacesContext.getCurrentInstance().getExternalContext();
     }
 
-    public void dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa) throws Exception {
+    public void dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa, ConfiguracaoEmissorDTO configuacao) throws Exception {
         NfeUtil nfeUtil = new NfeUtil();
 
-        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa);
-        setarConfiguracoesNFe(nfe, modelo);
+        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa, configuacao);
+        //   setarConfiguracoesNFe(nfe, modelo);
     }
 
     public void setarConfiguracoesNFe(NfeCabecalho nfe, ModeloDocumento modelo) throws Exception {
@@ -109,8 +110,6 @@ public class NfeService implements Serializable {
             }
 
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
-            nfe.setProcessoEmissao(configuracao.getProcessoEmissao());
-            nfe.setVersaoProcessoEmissao(configuracao.getVersaoProcessoEmissao());
             nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
 
 
@@ -118,7 +117,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public String inutilizarNFe(NfeConfiguracao configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
+    public String inutilizarNFe(ConfiguracaoEmissorDTO configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
         NotaFiscalTipo notaFiscalTipo = getNotaFicalTipoByModelo(modelo);
         if (notaFiscalTipo == null) {
             throw new Exception("Não foi informando numeração para o modelo " + modelo);
@@ -179,7 +178,7 @@ public class NfeService implements Serializable {
         return notaFiscalTipo;
     }
 
-    private NotaFiscalTipo getNotaFicalTipo(String modelo) throws Exception {
+    private NotaFiscalTipo getNotaFicalTipo(String modelo, boolean atualizarNumero) throws Exception {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
         filtros.add(new Filtro(Filtro.AND, "notaFiscalModelo.codigo", Filtro.IGUAL, modelo));
@@ -197,17 +196,20 @@ public class NfeService implements Serializable {
         } else {
             notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
             notaFiscalTipo.setEmpresa(empresa);
-            atualizarNumeroNfe(notaFiscalTipo, notaFiscalTipo.getUltimoNumero());
+            if (atualizarNumero) {
+                atualizarNumeroNfe(notaFiscalTipo, notaFiscalTipo.getUltimoNumero());
+            }
+
         }
         return notaFiscalTipo;
     }
 
-    public void gerarNumeracao(NfeCabecalho nfe) throws Exception {
+    public void gerarNumeracao(NfeCabecalho nfe, boolean atualizarNumero) throws Exception {
 
         Integer numero;
         String serie;
         if (nfe.getNumero() == null || nfe.getSerie() == null) {
-            NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(nfe.getCodigoModelo());
+            NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(nfe.getCodigoModelo(), atualizarNumero);
             numero = notaFiscalTipo.getUltimoNumero();
             serie = notaFiscalTipo.getSerie();
 
@@ -339,7 +341,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public String gerarNfePreProcessada(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+    public String gerarNfePreProcessada(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
         TEnviNFe nfeEnv = gerarNfeEnv(nfe, configuracao);
         String schemas = org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : configuracao.getCaminhoSchemas();
         configuracao.setCaminhoSchemas(schemas);
@@ -351,7 +353,7 @@ public class NfeService implements Serializable {
         return ArquivoUtil.getInstance().escrever(tipoArquivo, empresa.getCnpj(), xml.getBytes(), nomeArquivo);
     }
 
-    public TEnviNFe gerarNfeEnv(NfeCabecalho nfe, NfeConfiguracao confiEmissor) throws Exception {
+    public TEnviNFe gerarNfeEnv(NfeCabecalho nfe, ConfiguracaoEmissorDTO confiEmissor) throws Exception {
         NfeTransmissao transmissao = new NfeTransmissao(empresa);
         String schemas = org.springframework.util.StringUtils.isEmpty(confiEmissor.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : confiEmissor.getCaminhoSchemas();
         confiEmissor.setCaminhoSchemas(schemas);
@@ -405,7 +407,7 @@ public class NfeService implements Serializable {
     }
 
 
-    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         StatusTransmissao status = StatusTransmissao.ENVIADA;
         verificarStatusNota(nfe);
@@ -515,7 +517,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public String cartaCorrecao(NfeCabecalho nfe, String justificativa, NfeConfiguracao configuracao) throws Exception {
+    public String cartaCorrecao(NfeCabecalho nfe, String justificativa, ConfiguracaoEmissorDTO configuracao) throws Exception {
         if (!StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             throw new Exception("NF-e náo autorizada. Cancelamento náo permitido!");
         }
@@ -537,7 +539,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public boolean cancelarNFe(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+    public boolean cancelarNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
 
         boolean cancelado = false;
         if (StatusTransmissao.isCancelada(nfe.getStatusNota())) {

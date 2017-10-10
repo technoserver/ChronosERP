@@ -1,5 +1,6 @@
 package com.chronos.controll.nfe;
 
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.NfeConfiguracao;
 import com.chronos.modelo.entidades.NotaFiscalTipo;
@@ -56,7 +57,7 @@ public class InutilizarNfeControll implements Serializable {
 
             NotaFiscalTipo notaFiscalTipo = nfeService.getNotaFicalTipoByModelo(modelo);
             int serie = (notaFiscalTipo == null || notaFiscalTipo.getSerie() == null || notaFiscalTipo.getSerie() == null) ? 1 : Integer.valueOf(notaFiscalTipo.getSerie());
-            resultado = nfeService.inutilizarNFe(configuracao, modelo, serie, numeroInicial, numeroFinal, justificativa);
+            resultado = nfeService.inutilizarNFe(new ConfiguracaoEmissorDTO(configuracao), modelo, serie, numeroInicial, numeroFinal, justificativa);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

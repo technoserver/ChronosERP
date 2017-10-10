@@ -197,8 +197,9 @@
                 </table>
             </fieldset>
             <div class="both margin-top-10px text-right">
-                <h:commandLink id="botao-finalizar"
-                               action="#{balcaoControll.faturarVenda}"
+                <h:commandLink id="botao-finalizar" type="button"
+                               action="#{nfceControll.finalizarVenda}"
+                               disabled="#{!nfceControll.podeFinalzarVenda}"
                                class="btn btn-lg btn-success">
                     <span class="glyphicon glyphicon-ok margin-right-10px"></span>Finalizar
                     <p:ajax update=":formCentro:growl,formCentro:tela-pagamento,:formCentro:telaPdv"

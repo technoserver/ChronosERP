@@ -48,7 +48,7 @@ public class VendaToNFe extends ManualCDILookup {
 
     private void valoresPadrao() {
 
-        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa);
+        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa, null);
     }
 
     private void definirOperacaoTributaria() throws java.lang.Exception {

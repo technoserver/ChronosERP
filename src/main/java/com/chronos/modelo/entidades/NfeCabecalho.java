@@ -684,9 +684,12 @@ public class NfeCabecalho implements Serializable {
     }
 
     /**
-     * procEmi - Identificador do processo de emissão da NF-e: 0 - emissão de NF-e com aplicativo do contribuinte; 1 -
-     * emissão de NF-e avulsa pelo Fisco; 2 - emissão de NF-e avulsa, pelo contribuinte com seu certificado digital,
-     * através do site do Fisco; 3- emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
+     * procEmi - Identificador do processo de emissão da NF-e:
+     * 0 - emissão de NF-e com aplicativo do contribuinte;
+     * 1 -emissão de NF-e avulsa pelo Fisco;
+     * 2 - emissão de NF-e avulsa, pelo contribuinte com seu certificado digital,
+     * através do site do Fisco;
+     * 3- emissão NF-e pelo contribuinte com aplicativo fornecido pelo Fisco.
      *
      * @param processoEmissao
      */

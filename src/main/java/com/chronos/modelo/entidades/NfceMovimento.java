@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 
 
 @Entity
@@ -117,7 +118,7 @@ public class NfceMovimento implements Serializable {
     }
 
     public BigDecimal getTotalSuprimento() {
-        return totalSuprimento;
+        return Optional.ofNullable(totalSuprimento).orElse(BigDecimal.ZERO);
     }
 
     public void setTotalSuprimento(BigDecimal totalSuprimento) {
@@ -125,7 +126,7 @@ public class NfceMovimento implements Serializable {
     }
 
     public BigDecimal getTotalSangria() {
-        return totalSangria;
+        return Optional.ofNullable(totalSangria).orElse(BigDecimal.ZERO);
     }
 
     public void setTotalSangria(BigDecimal totalSangria) {
@@ -141,7 +142,7 @@ public class NfceMovimento implements Serializable {
     }
 
     public BigDecimal getTotalVenda() {
-        return totalVenda;
+        return Optional.ofNullable(totalVenda).orElse(BigDecimal.ZERO);
     }
 
     public void setTotalVenda(BigDecimal totalVenda) {
@@ -149,7 +150,7 @@ public class NfceMovimento implements Serializable {
     }
 
     public BigDecimal getTotalDesconto() {
-        return totalDesconto;
+        return Optional.ofNullable(totalDesconto).orElse(BigDecimal.ZERO);
     }
 
     public void setTotalDesconto(BigDecimal totalDesconto) {
@@ -157,7 +158,7 @@ public class NfceMovimento implements Serializable {
     }
 
     public BigDecimal getTotalAcrescimo() {
-        return totalAcrescimo;
+        return Optional.ofNullable(totalAcrescimo).orElse(BigDecimal.ZERO);
     }
 
     public void setTotalAcrescimo(BigDecimal totalAcrescimo) {
@@ -173,7 +174,7 @@ public class NfceMovimento implements Serializable {
     }
 
     public BigDecimal getTotalRecebido() {
-        return totalRecebido;
+        return Optional.ofNullable(totalRecebido).orElse(BigDecimal.ZERO);
     }
 
     public void setTotalRecebido(BigDecimal totalRecebido) {
@@ -246,5 +247,20 @@ public class NfceMovimento implements Serializable {
         this.nfceCaixa = nfceCaixa;
     }
 
+
+    public BigDecimal calcularTotalFinal() {
+        totalFinal = BigDecimal.ZERO;
+
+        totalFinal = totalFinal
+                .add(getTotalAcrescimo())
+                .subtract(getTotalDesconto())
+                .subtract(getTotalSangria())
+                .add(getTotalSuprimento())
+                .add(getTotalRecebido())
+                .add(getTotalVenda());
+
+
+        return totalFinal;
+    }
 
 }

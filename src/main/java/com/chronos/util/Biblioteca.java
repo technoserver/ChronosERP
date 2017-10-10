@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -336,6 +337,49 @@ public class Biblioteca {
         c.add(Calendar.DATE, numberDay);
         return c.getTime();
     }
+
+    /**
+     * Retorna o periodo imediatamente anterior ao informado(mm/aaaa).
+     *
+     * @param periodo periodo
+     * @return String
+     */
+    public static String periodoAnterior(String periodo) throws Exception {
+        String periodoAnterior = "";
+        int mesPeriodo = Integer.valueOf(periodo.substring(0, 2));
+        int anoPeriodo = Integer.valueOf(periodo.substring(3, 7));
+        mesPeriodo--;
+        if (mesPeriodo == 0) {
+            mesPeriodo = 1;
+            anoPeriodo--;
+        }
+        if (mesPeriodo < 10) {
+            periodoAnterior = "0" + String.valueOf(mesPeriodo) + "/" + String.valueOf(mesPeriodo);
+        } else {
+            periodoAnterior = String.valueOf(mesPeriodo) + "/" + String.valueOf(anoPeriodo);
+        }
+        return periodoAnterior;
+    }
+
+    public static Calendar ultimoDiaMes(Calendar dataInicio) {
+        Calendar cData = Calendar.getInstance();
+        cData.setTime(dataInicio.getTime());
+        cData.setLenient(false);
+        cData.set(Calendar.DAY_OF_MONTH, cData.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        return cData;
+    }
+
+    /**
+     * Retorna o mes e ano no formato MM/AAAA
+     *
+     * @param dataA data
+     * @return String
+     */
+    public static String mesAno(Date dataA) throws Exception {
+        return new SimpleDateFormat("MM/yyyy").format(dataA.getTime());
+    }
+
 
     public static BigDecimal calcTaxa(BigDecimal total, BigDecimal taxa) {
         BigDecimal valor = total.multiply(taxa.divide(new BigDecimal(100)));
