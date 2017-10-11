@@ -22,7 +22,7 @@
     top: 50%;
 }
 
-#pdv input[text]:focus, #pdv select:focus {
+#pdv input[text]:focus, #pdv input[password]:focus, #pdv select:focus {
     background: #FFFFCC !important;
 }
 
@@ -93,7 +93,7 @@
     left: 0;
 }
 
-#pdv input[type="text"], #pdv select, #pdv .token-input-token {
+#pdv input[type="text"], input[type="password"], #pdv select, #pdv .token-input-token {
     font-size: 20px;
     height: 60px;
 }
@@ -162,7 +162,7 @@ div.token-input-dropdown {
         width: 100%;
     }
 
-    #pdv input[type="text"], #pdv select, #pdv .token-input-token {
+    #pdv input[type="text"], input[type="password"], #pdv select, #pdv .token-input-token {
         font-size: 16px;
         height: 40px
     }
@@ -181,7 +181,7 @@ div.token-input-dropdown {
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
-    #pdv input[type="text"], #pdv select, #pdv .token-input-token {
+    #pdv input[type="text"], #pdv input[type="password"], #pdv select, #pdv .token-input-token {
         font-size: 18px;
         height: 50px
     }
@@ -208,7 +208,7 @@ div.token-input-dropdown {
 }
 
 @media (min-width: 992px) and (max-width: 1199px) {
-    #pdv input[type="text"], #pdv select, #pdv .token-input-token {
+    #pdv input[type="text"], #pdv input[type="password"], #pdv select, #pdv .token-input-token {
         font-size: 20px;
         height: 50px
     }

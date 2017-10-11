@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:erp="http://java.sun.com/jsf/composite/components">
+
+
+    <ul class="nav nav-second-level collapse ">
+        <li class="${fn:contains(view.viewId,'modulo/fiscal/tributacao/')?'active':''}">
+            <a href="#">
+                <span class="nav-label">Tributação</span>
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-third-level">
+                <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
+                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributOperacaoFiscal"
+                                 label="Operação Fiscal"
+                                 funcao="tributOperacaoFiscal"/>
+                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributGrupoTributario"
+                                 label="Grupo Tributário"
+                                 funcao="tributGrupoTributario"/>
+                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributConfiguraOfGt"
+                                 label="Configura Tributação"
+                                 funcao="tributConfiguraOfGt"/>
+                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributIcmsCustom"
+                                 label="ICMS Customizado"
+                                 funcao="tributIcmsCustom"/>
+                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributIss"
+                                 label="ISS - Imposto Sobre Serviços"
+                                 funcao="tributIss"/>
+                </li>
+            </ul>
+        </li>
+        <li class="${fn:contains(view.viewId,'modulo/fiscal/sped/')?'active':''}">
+            <a href="#">Sped<span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+
+                <erp:subMenu caminho="/modulo/fiscal/apuracao/apuracaoICMS"
+                             label="Apuração ICMS"
+                             funcao="apuracaoICMS"/>
+
+                <erp:subMenu caminho="/modulo/fiscal/sped/spedFiscal"
+                             label="SPED Fiscal"
+                             funcao="spedFiscal"/>
+                <erp:subMenu caminho="/modulo/fiscal/sped/spedContribuicoes"
+                             label="SPED Contribuicoes"
+                             funcao="spedContribuicoes"/>
+
+            </ul>
+        </li>
+    </ul>
+
+
+</ui:composition>

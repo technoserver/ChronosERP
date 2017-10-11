@@ -18,7 +18,7 @@ public class PessoaJuridica implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "CNPJ")
+    @Column(name = "CNPJ", unique = true)
     private String cnpj;
     @Column(name = "FANTASIA")
     private String fantasia;

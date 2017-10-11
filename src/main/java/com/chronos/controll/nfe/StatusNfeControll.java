@@ -1,6 +1,7 @@
 package com.chronos.controll.nfe;
 
 import com.chronos.bo.nfe.NfeTransmissao;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.NfeConfiguracao;
 import com.chronos.repository.Filtro;
@@ -60,7 +61,7 @@ public class StatusNfeControll implements Serializable {
             configuracao.setCaminhoSchemas(schemas);
 
             NfeTransmissao transmissao = new NfeTransmissao(empresa);
-            status = transmissao.statusServico(configuracao);
+            status = transmissao.statusServico(new ConfiguracaoEmissorDTO(configuracao));
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("", e);

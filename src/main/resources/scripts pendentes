@@ -16,4 +16,48 @@ colocar o crt da empresa na populacao dos dados
 cria campo valorTotalTributos em nfecabecalho
 
 
+CREATE OR REPLACE VIEW public.view_sped_c190 AS
+ SELECT nfec.id,
+    nfed.cst_icms,
+    nfed.cfop,
+    nfed.aliquota_icms,
+    nfec.data_hora_emissao,
+    sum(nfed.valor_total) AS soma_valor_operacao,
+    sum(nfed.base_calculo_icms) AS soma_base_calculo_icms,
+    sum(nfed.valor_icms) AS soma_valor_icms,
+    sum(nfed.valor_base_calculo_icms_st) AS soma_base_calculo_icms_st,
+    sum(nfed.valor_icms_st) AS soma_valor_icms_st,
+    sum(nfed.valor_outras_despesas) AS soma_vl_red_bc,
+    COALESCE(sum(nfed.valor_ipi),0) AS soma_valor_ipi
+   FROM view_sped_nfe_detalhe nfed
+     JOIN nfe_cabecalho nfec ON nfed.id_nfe_cabecalho = nfec.id
+  GROUP BY nfec.id, nfed.cst_icms, nfed.cfop, nfed.aliquota_icms, nfec.data_hora_emissao;
+
+
+  CREATE TABLE fiscal_apuracao_icms
+  (
+    id serial NOT NULL,
+    id_empresa integer NOT NULL,
+    competencia character varying(7),
+    valor_total_debito numeric(18,6),
+    valor_ajuste_debito numeric(18,6),
+    valor_total_ajuste_debito numeric(18,6),
+    valor_estorno_credito numeric(18,6),
+    valor_total_credito numeric(18,6),
+    valor_ajuste_credito numeric(18,6),
+    valor_total_ajuste_credito numeric(18,6),
+    valor_estorno_debito numeric(18,6),
+    valor_saldo_credor_anterior numeric(18,6),
+    valor_saldo_apurado numeric(18,6),
+    valor_total_deducao numeric(18,6),
+    valor_icms_recolher numeric(18,6),
+    valor_saldo_credor_transp numeric(18,6),
+    valor_debito_especial numeric(18,6),
+    CONSTRAINT fiscal_apuracao_icms_pkey PRIMARY KEY (id),
+    CONSTRAINT fiscal_apuracao_icms_id_empresa_fkey FOREIGN KEY (id_empresa)
+        REFERENCES public.empresa (id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE NO ACTION
+  );
+
+
 nfe xml

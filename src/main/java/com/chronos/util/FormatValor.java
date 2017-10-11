@@ -17,6 +17,7 @@ public class FormatValor {
     private SimpleDateFormat formatoDataUA;
     private SimpleDateFormat formatoDataPTB;
     private SimpleDateFormat formatoDataNota;
+    private SimpleDateFormat formatoHora;
     private SimpleDateFormat formatoAno;
     private SimpleDateFormat formatoMes;
     private DecimalFormatSymbols simboloDecimal;
@@ -41,6 +42,7 @@ public class FormatValor {
         this.formatoSerie = new DecimalFormat("000");
         this.formatoAno = new SimpleDateFormat("yy");
         this.formatoMes = new SimpleDateFormat("MM");
+        this.formatoHora = new SimpleDateFormat("HH:mm:ss");
 
     }
 
@@ -63,6 +65,17 @@ public class FormatValor {
 
     public String formatarData(Date data) throws ParseException {
         return formatoDataPTB.format(data);
+    }
+
+    /**
+     * Formata a hora no padrao HH::mm:ss
+     *
+     * @param data
+     * @return retorna a hora no padrão HH::mm:ss
+     * @throws ParseException
+     */
+    public String formatarHora(Date data) throws ParseException {
+        return formatoHora.format(data);
     }
 
     public Date formatarDataNota(String data) throws ParseException {
@@ -144,5 +157,31 @@ public class FormatValor {
         return vlr;
     }
 
+    /**
+     * Retorna uma strig formatada de acordo com a configuração do sistema
+     *
+     * @param tipo Q para quantidade ou V para valor
+     * @return string formatada
+     */
+    public String formatoDecimal(String tipo, double valor) {
 
+        String mascara = "#,##0.";
+        if (tipo.equals("Q")) {
+            for (int i = 0; i < Constantes.DECIMAIS_QUANTIDADE; i++) {
+                mascara += "0";
+            }
+        } else if (tipo.equals("V")) {
+            for (int i = 0; i < Constantes.DECIMAIS_VALOR; i++) {
+                mascara += "0";
+            }
+        }
+        DecimalFormat formato = new DecimalFormat(mascara);
+
+        return formato.format(valor);
+    }
+
+
+    public String formatarmesAno(Date data) {
+        return new SimpleDateFormat("MM/yyyy").format(data.getTime());
+    }
 }

@@ -20,6 +20,8 @@ public class JasperReportUtil {
 
         InputStream relatorioStream = this.getClass().getResourceAsStream(caminhoRelatorio + SEPARATOR + nomeRelatorioJasper + PONTO + "jasper");
 
+        String subDiretorio = this.getClass().getResource(caminhoRelatorio + SEPARATOR).getPath();
+        parametrosRelatorio.put("SUBREPORT_DIR", subDiretorio);
         parametrosRelatorio.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
 
         JasperPrint jp = JasperFillManager.fillReport(relatorioStream, parametrosRelatorio, dataSource);

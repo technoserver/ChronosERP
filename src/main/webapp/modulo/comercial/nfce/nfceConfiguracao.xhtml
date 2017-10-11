@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        NFCe configuracao
+    </ui:define>
+
+    <ui:define name="tela">
+        #{nfceConfiguracaoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        NFCe configuracao
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{nfceConfiguracaoControll}"
+                       idDataTable="dataTableNfceConfiguracao"
+                       nomeFuncao="NFCe configuracao"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Empresa">
+                <h:outputLabel value="#{row.empresa.razaoSocial}"/>
+            </p:column>
+
+            <p:column headerText="Processo Emissão">
+                <h:outputLabel
+                        value="#{nfceConfiguracaoControll.keyFromValue(nfceConfiguracaoControll.webserviceAmbiente,row.webserviceAmbiente)}"/>
+            </p:column>
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{nfceConfiguracaoControll}"
+                                   nomeFuncao="NFCe configuracao"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                 idComponente="emissorAmbiente" label="Ambiente"
+                                 nomeAtributo="#{nfceConfiguracaoControll.objeto.webserviceAmbiente}"
+                                 itens="#{nfceConfiguracaoControll.webserviceAmbiente}"/>
+                <erp:campoSenha styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="senhaCertificado" label="Senha certificado"
+                                nomeAtributo="#{nfceConfiguracaoControll.objeto.certificadoDigitalSenha}"
+                                requerido="true" tamanhoMaximo="100"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="csc" label="Csc" requerido="true"
+                                nomeAtributo="#{nfceConfiguracaoControll.objeto.codigoCsc}"
+                                tamanhoMaximo="32" tamanhoMinimo="32"/>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="input-group">
+                        <h:outputLabel value="Caminho Certificado :"
+                                       for="caminhoCertificado"/>
+                        <h:inputText
+                                value="#{nfceConfiguracaoControll.objeto.certificadoDigitalCaminho}"
+                                id="caminhoCertificado" class="form-control input-sm"
+                                maxlength="255" readonly="true"/>
+
+                        <span class="input-group-btn">
+                            <h:commandLink title="Pesquisa"
+                                           id="btnPesquisarCertificado"
+                                           class="btn btn-default"
+                                           style="padding: 7px 12px !important;margin-top: 24px">
+                                <p:ajax update=":formUploadCertificado:dialogUploadCertificado"
+                                        oncomplete="PF('dialogUploadCertificado').show();"
+                                        process="@this"/>
+                                    <p:resetInput target="caminhoCertificado"/>
+                                    <i class="fa fa-search"></i>
+                                </h:commandLink>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <div class="input-group">
+                        <h:outputLabel value="Caminho Logo :" for="caminhoLogo"/>
+                        <h:inputText
+                                value="#{nfceConfiguracaoControll.objeto.caminhoLogomarca}"
+                                id="caminhoLogo" class="form-control input-sm" maxlength="255"
+                                readonly="true"/>
+                        <span class="input-group-btn">
+                            <h:commandLink title="Pesquisa"
+                                           class="btn btn-default"
+                                           id="btnPesquisarLogo"
+                                           style="padding: 7px 12px !important;margin-top: 24px">
+                                <p:ajax update=":formLogo:dialogLogo"
+                                        oncomplete="PF('dialogLogo').show();"
+                                        process="@this"/>
+                                    <p:resetInput target="caminhoLogo"/>
+                                    <i class="fa fa-search"></i>
+                                </h:commandLink>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="emailUsuario" label="Usuário Email"
+                                nomeAtributo="#{nfceConfiguracaoControll.objeto.emailUsuario}"
+                                tamanhoMaximo="100"/>
+                <erp:campoSenha styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="emailSenha" label="Senha Email"
+                                nomeAtributo="#{nfceConfiguracaoControll.objeto.emailSenha}"
+                                tamanhoMaximo="100"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="portaEmail" label="Porta de saída"
+                                  nomeAtributo="#{nfceConfiguracaoControll.objeto.emailPorta}"/>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="ssl" label="SSL"
+                                 nomeAtributo="#{nfceConfiguracaoControll.objeto.emailAutenticaSsl}"
+                                 itens="#{nfceConfiguracaoControll.simNao}"/>
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="servidor" label="Servidor SMTP"
+                                nomeAtributo="#{nfceConfiguracaoControll.objeto.emailServidorSmtp}"
+                                tamanhoMaximo="100"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="emailAssunto" label="Assunto Email"
+                                nomeAtributo="#{nfceConfiguracaoControll.objeto.emailAssunto}"
+                                tamanhoMaximo="100"/>
+
+            </div>
+
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="textoEmail" label="Texto Email"
+                                    nomeAtributo="#{nfceConfiguracaoControll.objeto.emailTexto}"/>
+            </div>
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="obsPadrao" label="Observacão Padrão"
+                                    nomeAtributo="#{nfceConfiguracaoControll.objeto.observacaoPadrao}"/>
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formUploadCertificado" enctype="multipart/form-data">
+            <p:dialog id="dialogUploadCertificado" header="Upload do certificado"
+                      responsive="true" widgetVar="dialogUploadCertificado"
+                      showEffect="slide" hideEffect="slide" resizable="true" modal="true"
+                      closable="false" width="600">
+                <p:outputPanel id="panelUploadCertificado">
+                    <div class="row">
+
+                        <p:fileUpload id="uploadCertificado"
+                                      fileUploadListener="#{nfceConfiguracaoControll.uploadCertificado}"
+                                      mode="advanced" fileLimit="1" allowTypes="/(\.|\/)(pfx|p12)$/"
+                                      update=":formCentro:growl,:formCentro:telaDetalhe:caminhoCertificado"
+                                      oncomplete="PF('dialogUploadCertificado').hide();"
+                                      process="@this"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar"
+                                     oncomplete="PF('dialogUploadCertificado').hide();"/>
+
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+    <ui:define name="outrasTelas2">
+        <h:form id="formLogo" enctype="multipart/form-data">
+            <p:dialog id="dialogLogo" header="Upload Logomarca" responsive="true"
+                      widgetVar="dialogLogo" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+                <p:outputPanel id="panelUploadLogo">
+                    <div class="row">
+
+                        <p:fileUpload id="uploadLogo"
+                                      fileUploadListener="#{nfceConfiguracaoControll.uploadLogomarca}"
+                                      mode="advanced" fileLimit="1" allowTypes="/(\.|\/)(png)$/"
+                                      update=":formCentro:growl,:formCentro:telaDetalhe:caminhoLogo"
+                                      oncomplete="PF('dialogLogo').hide();"
+                                      process="@this"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar"
+                                     oncomplete="PF('dialogLogo').hide();"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

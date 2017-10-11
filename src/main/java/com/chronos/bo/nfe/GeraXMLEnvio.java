@@ -131,6 +131,9 @@ public class GeraXMLEnvio {
         enviNFe.setIndSinc("1");
         enviNFe.getNFe().add(nfe);
 
+        // Monta e Assina o XML
+        enviNFe = Nfe.montaNfe(enviNFe, false);
+
         if (modelo == ModeloDocumento.NFCE) {
             String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_QRCODE);
             // QRCODE
@@ -149,9 +152,6 @@ public class GeraXMLEnvio {
             pag.setVPag(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorTotal()));
             infNfe.getPag().add(pag);
         }
-
-        // Monta e Assina o XML
-        enviNFe = Nfe.montaNfe(enviNFe, false);
 
 
         return enviNFe;

@@ -7,6 +7,8 @@ import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema.envinfe.TRetEnviNFe;
 import com.chronos.bo.nfe.NfeTransmissao;
 import com.chronos.bo.nfe.NfeUtil;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
@@ -19,6 +21,10 @@ import com.chronos.util.*;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import com.chronos.util.report.JasperReportUtil;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.qrcode.QRCodeWriter;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
 import org.springframework.util.StringUtils;
@@ -30,14 +36,18 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
+
+import static java.nio.file.FileSystems.getDefault;
 
 /**
  * Created by john on 26/09/17.
@@ -77,11 +87,11 @@ public class NfeService implements Serializable {
         context = FacesContext.getCurrentInstance().getExternalContext();
     }
 
-    public void dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa) throws Exception {
+    public void dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa, ConfiguracaoEmissorDTO configuacao) throws Exception {
         NfeUtil nfeUtil = new NfeUtil();
 
-        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa);
-        setarConfiguracoesNFe(nfe, modelo);
+        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa, configuacao);
+        //   setarConfiguracoesNFe(nfe, modelo);
     }
 
     public void setarConfiguracoesNFe(NfeCabecalho nfe, ModeloDocumento modelo) throws Exception {
@@ -109,8 +119,6 @@ public class NfeService implements Serializable {
             }
 
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
-            nfe.setProcessoEmissao(configuracao.getProcessoEmissao());
-            nfe.setVersaoProcessoEmissao(configuracao.getVersaoProcessoEmissao());
             nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
 
 
@@ -118,7 +126,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public String inutilizarNFe(NfeConfiguracao configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
+    public String inutilizarNFe(ConfiguracaoEmissorDTO configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
         NotaFiscalTipo notaFiscalTipo = getNotaFicalTipoByModelo(modelo);
         if (notaFiscalTipo == null) {
             throw new Exception("Não foi informando numeração para o modelo " + modelo);
@@ -179,7 +187,7 @@ public class NfeService implements Serializable {
         return notaFiscalTipo;
     }
 
-    private NotaFiscalTipo getNotaFicalTipo(String modelo) throws Exception {
+    private NotaFiscalTipo getNotaFicalTipo(String modelo, boolean atualizarNumero) throws Exception {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
         filtros.add(new Filtro(Filtro.AND, "notaFiscalModelo.codigo", Filtro.IGUAL, modelo));
@@ -197,17 +205,24 @@ public class NfeService implements Serializable {
         } else {
             notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
             notaFiscalTipo.setEmpresa(empresa);
-            atualizarNumeroNfe(notaFiscalTipo, notaFiscalTipo.getUltimoNumero());
+            if (atualizarNumero) {
+                atualizarNumeroNfe(notaFiscalTipo, notaFiscalTipo.getUltimoNumero());
+            }
+
         }
         return notaFiscalTipo;
     }
 
-    public void gerarNumeracao(NfeCabecalho nfe) throws Exception {
+    public void atualizarNumeracao(NfeCabecalho nfe) throws Exception {
+        getNotaFicalTipo(nfe.getCodigoModelo(), true);
+    }
+
+    public void gerarNumeracao(NfeCabecalho nfe, boolean atualizarNumero) throws Exception {
 
         Integer numero;
         String serie;
         if (nfe.getNumero() == null || nfe.getSerie() == null) {
-            NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(nfe.getCodigoModelo());
+            NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(nfe.getCodigoModelo(), atualizarNumero);
             numero = notaFiscalTipo.getUltimoNumero();
             serie = notaFiscalTipo.getSerie();
 
@@ -339,7 +354,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public String gerarNfePreProcessada(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+    public String gerarNfePreProcessada(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
         TEnviNFe nfeEnv = gerarNfeEnv(nfe, configuracao);
         String schemas = org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : configuracao.getCaminhoSchemas();
         configuracao.setCaminhoSchemas(schemas);
@@ -351,7 +366,7 @@ public class NfeService implements Serializable {
         return ArquivoUtil.getInstance().escrever(tipoArquivo, empresa.getCnpj(), xml.getBytes(), nomeArquivo);
     }
 
-    public TEnviNFe gerarNfeEnv(NfeCabecalho nfe, NfeConfiguracao confiEmissor) throws Exception {
+    public TEnviNFe gerarNfeEnv(NfeCabecalho nfe, ConfiguracaoEmissorDTO confiEmissor) throws Exception {
         NfeTransmissao transmissao = new NfeTransmissao(empresa);
         String schemas = org.springframework.util.StringUtils.isEmpty(confiEmissor.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : confiEmissor.getCaminhoSchemas();
         confiEmissor.setCaminhoSchemas(schemas);
@@ -405,7 +420,7 @@ public class NfeService implements Serializable {
     }
 
 
-    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         StatusTransmissao status = StatusTransmissao.ENVIADA;
         verificarStatusNota(nfe);
@@ -460,7 +475,7 @@ public class NfeService implements Serializable {
         return status;
     }
 
-    public void gerarDanfe(NfeCabecalho nfe) throws IOException, JRException {
+    public void gerarDanfe(NfeCabecalho nfe) throws IOException, JRException, EmissorException, WriterException {
         StatusTransmissao statusTransmissao = StatusTransmissao.valueOfCodigo(nfe.getStatusNota());
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         String caminho = statusTransmissao == StatusTransmissao.AUTORIZADA
@@ -497,6 +512,16 @@ public class NfeService implements Serializable {
                 parametrosRelatorio.put("danfeRetratoFatura", inFt);
             } else {
                 nomeRelatorioJasper = Constantes.JASPERNFCE;
+
+                String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_CONSULTANFCE);
+                BufferedImage image = MatrixToImageWriter
+                        .toBufferedImage(new QRCodeWriter().encode(nfe.getQrcode(), BarcodeFormat.QR_CODE, 300, 300));
+                parametrosRelatorio.put("QR_CODE", image);
+                parametrosRelatorio.put("ENDERECO_SEFAZ", url);
+                parametrosRelatorio.put("operador", FacesUtil.getUsuarioSessao().getLogin());
+
+                JRXmlDataSource faturaDataSource = new JRXmlDataSource(caminho, "//pag");
+                parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
             }
 
 
@@ -509,13 +534,18 @@ public class NfeService implements Serializable {
         if (modelo == ModeloDocumento.NFE) {
             caminhoPdf = ArquivoUtil.getInstance().escrever(TipoArquivo.NFe, empresa.getCnpj(), pdfFile, nfe.getNomePdf());
         } else {
-
+            File fileTemp = new File(context.getRealPath("/") + System.getProperty("file.separator") + "temp");
+            if (!fileTemp.exists()) {
+                fileTemp.mkdir();
+            }
+            Path localPdf = getDefault().getPath(fileTemp.getPath(), "cupom" + nfe.getNumero() + ".pdf");
+            ArquivoUtil.getInstance().escreverComCopia(TipoArquivo.NFCe, empresa.getCnpj(), pdfFile, nfe.getNomePdf(), localPdf);
         }
 
 
     }
 
-    public String cartaCorrecao(NfeCabecalho nfe, String justificativa, NfeConfiguracao configuracao) throws Exception {
+    public String cartaCorrecao(NfeCabecalho nfe, String justificativa, ConfiguracaoEmissorDTO configuracao) throws Exception {
         if (!StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             throw new Exception("NF-e náo autorizada. Cancelamento náo permitido!");
         }
@@ -537,7 +567,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public boolean cancelarNFe(NfeCabecalho nfe, NfeConfiguracao configuracao) throws Exception {
+    public boolean cancelarNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
 
         boolean cancelado = false;
         if (StatusTransmissao.isCancelada(nfe.getStatusNota())) {

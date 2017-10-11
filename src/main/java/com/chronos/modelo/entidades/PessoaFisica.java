@@ -18,7 +18,7 @@ public class PessoaFisica implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "CPF")
+    @Column(name = "CPF", unique = true)
     private String cpf;
     @Column(name = "RG")
     private String rg;

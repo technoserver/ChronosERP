@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Apuração ICMS
+    </ui:define>
+
+    <ui:define name="tela">
+        Apuração ICMS
+    </ui:define>
+    <ui:define name="controle">
+        Apuração ICMS
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <div class="ibox-content">
+            <erp:msgPermissao permissao="#{fiscalApuracaoIcmsControll.podeConsultar()}"/>
+            <h:panelGroup id="panelApuracao" rendered="#{fiscalApuracaoIcmsControll.podeConsultar()}" layout="block">
+                <div class="row">
+                    <erp:campoMascara id="divPeriodo" idComponente="periodo"
+                                      label="Periodo" mascara="99/9999"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.periodo}"
+                                      requerido="true" styleClass="col-xs-12 col-sm-3 col-md-2"/>
+                </div>
+
+                <erp:separador label="Valores Apurado"/>
+                <div class="row">
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                    idComponente="fiscalApuracaoIcmsCompetencia" label="Competencia"
+                                    nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.competencia}"
+                                    tamanhoMaximo="7"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorTotalDebito"
+                                      label="Valor Total Debito"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorTotalDebito}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorAjusteDebito"
+                                      label="Valor Ajuste Debito"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorAjusteDebito}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorTotalAjusteDebito"
+                                      label="Valor Total Ajuste Debito"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorTotalAjusteDebito}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorEstornoCredito"
+                                      label="Valor Estorno Credito"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorEstornoCredito}"/>
+                </div>
+
+                <div class="row">
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorTotalCredito"
+                                      label="Valor Total Credito"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorTotalCredito}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorAjusteCredito"
+                                      label="Valor Ajuste Credito"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorAjusteCredito}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorTotalAjusteCredito"
+                                      label="Valor Total Ajuste Credito"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorTotalAjusteCredito}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorEstornoDebito"
+                                      label="Valor Estorno Debito"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorEstornoDebito}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorSaldoCredorAnterior"
+                                      label="Vlr Saldo Credor Anterior"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorSaldoCredorAnterior}"/>
+                </div>
+                <div class="row">
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorSaldoApurado"
+                                      label="Valor Saldo Apurado"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorSaldoApurado}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorTotalDeducao"
+                                      label="Valor Total Deducao"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorTotalDeducao}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorIcmsRecolher"
+                                      label="Valor Icms Recolher"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorIcmsRecolher}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorSaldoCredorTransp"
+                                      label="Valor Saldo Credor Transp"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorSaldoCredorTransp}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fiscalApuracaoIcmsValorDebitoEspecial"
+                                      label="Valor Debito Especial"
+                                      nomeAtributo="#{fiscalApuracaoIcmsControll.objeto.valorDebitoEspecial}"/>
+                </div>
+
+
+            </h:panelGroup>
+        </div>
+        <div class="ibox-footer">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+                    <h:commandButton class="btn btn-primary"
+                                     action="#{fiscalApuracaoIcmsControll.carregaDados}"
+                                     value="Apurar ICMS">
+                        <p:ajax update=":formCentro:mensagem,:formCentro:panelApuracao"
+                                process="@form"/>
+                    </h:commandButton>
+                </div>
+            </div>
+        </div>
+
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+
+    </ui:define>
+
+</ui:composition>

@@ -571,6 +571,18 @@ public class NfeDetalhe implements Serializable {
         return valorTotal;
     }
 
+    public boolean isProdutoValido() {
+        boolean valido = true;
+        if (produto == null) {
+            valido = false;
+        } else if (StringUtils.isEmpty(produto.getNcm())) {
+            valido = false;
+        }
+
+        return valido;
+    }
+
+
 
     @Override
     public int hashCode() {

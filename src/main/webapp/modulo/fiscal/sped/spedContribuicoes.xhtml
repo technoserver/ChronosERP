@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        CFOP
+    </ui:define>
+
+    <ui:define name="tela">
+        #{cfopControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        CFOP
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{cfopControll}"
+                       idDataTable="dataTableCfop"
+                       nomeFuncao="CFOP"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="CFOP">
+                <h:outputLabel value="#{row.cfop}"/>
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+            <p:column headerText="Aplicacao">
+                <h:outputLabel value="#{row.aplicacao}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
+                                   nomeFuncao="CFOP"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="cfopCfop" label="CFOP"
+                                  nomeAtributo="#{cfopControll.objeto.cfop}"/>
+            </div>
+            <div class="row">
+
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="cfopDescricao" label="Descricao"
+                                    nomeAtributo="#{cfopControll.objeto.descricao}"/>
+            </div>
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="cfopAplicacao" label="Aplicacao"
+                                    nomeAtributo="#{cfopControll.objeto.aplicacao}"/>
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

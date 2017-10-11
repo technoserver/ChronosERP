@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+    <div class="row">
+        <div class="col-sm-6 col-md-6 col-lg-6">
+
+
+            <fieldset class="muted">
+                <legend>
+                    <h3 class="margin-top-0">
+                        <i class="fa fa-money margin-right-10px"></i>Forma de pagamento
+                    </h3>
+                </legend>
+                <div class="">
+                    <h:selectOneMenu id="PedidoFormaPagamentoId"
+                                     value="#{nfceControll.tipoPagamento}"
+                                     class="form-control"
+                                     converter="defaultConverter">
+                        <f:selectItems value="#{nfceControll.listTipoPagamento}" var="obj" itemValue="#{obj}"
+                                       itemLabel="#{obj.descricao}"/>
+                    </h:selectOneMenu>
+                </div>
+
+                <div class="margin-top-10px row">
+                    <div class="col-sm-8 col-md-8 col-lg-8">
+                        <h4>TOTAL PAGO</h4>
+                        <div class="input-group">
+                            <p:inputNumber id="PedidoValorPago"
+                                           value="#{nfceControll.valorPago}"/>
+                            <h:commandLink class="input-group-addon btn btn-lg btn-primary"
+                                           action="#{nfceControll.lancaPagamento}"
+                                           disabled="#{nfceControll.podeLancaPagamento}"
+                                           id="botao-confirma-pagamento">
+                                <p:ajax update=":formCentro:botao-confirma-pagamento,:formCentro:mensagem,:formCentro:tablePagamentos,:formCentro:PedidoValorPago,:formCentro:panelValoresPagamento"
+                                        process="@this,:formCentro:PedidoFormaPagamentoId,:formCentro:PedidoValorPago"/>
+                                <h4 style="color:#FFFFFF">
+                                    <i class="fa fa-angle-double-right margin-right-10px"></i>Confirmar
+                                </h4>
+                            </h:commandLink>
+
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+
+            <fieldset class="hidden-xs muted" style="max-height: 300px; overflow: auto;">
+                <legend>
+                    <h3 class="margin-top-0">
+                        <i class="fa fa-barcode margin-right-10px"></i>Itens da compra
+                    </h3>
+                </legend>
+                <div class="table-responsive">
+                    <h:dataTable value="#{nfceControll.venda.listaNfeDetalhe}" var="row"
+                                 class="table table-striped">
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Qtd."/>
+                            </f:facet>
+                            <h:outputText value="#{row.quantidadeComercial}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Produto"/>
+                            </f:facet>
+                            <h:outputText value="#{row.produto.descricaoPdv}"/>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Desc."/>
+                            </f:facet>
+                            <h:outputText value="#{row.valorDesconto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">
+                                <h:outputText value="Preço"/>
+                            </f:facet>
+                            <h:outputText value="#{row.valorUnitarioComercial}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </h:column>
+                    </h:dataTable>
+                </div>
+            </fieldset>
+        </div>
+        <h:panelGroup layout="block" class="col-sm-6 col-md-6 col-lg-6" id="panelValoresPagamento">
+            <fieldset id="box-pagamentos" class="muted" style="padding:0 !important">
+                <legend>
+                    <h3 class="margin-top-0">
+                        <i class="fa icon-resellerhosting margin-right-10px"></i>Pagamentos
+                    </h3>
+                </legend>
+                <h:dataTable id="tablePagamentos" var="pag" value="#{nfceControll.venda.listaNfeFormaPagamento}"
+                             width="100%" cellpadding="5" cellspacing="5">
+                    <h:column>
+                        #{pag.nfceTipoPagamento.descricao}
+                        <small><i class="text-muted">(1x)</i></small>
+                    </h:column>
+                    <h:column class="nowrap" width="1">
+                        R$
+                        <h:outputText value="#{pag.valor}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column width="1">
+                        <p:commandLink type="button"
+                                       process="@this,:formCentro:tablePagamentos"
+                                       update=":formCentro:panelValoresPagamento,:formCentro:tablePagamentos,:formCentro:PedidoValorPago,:formCentro:botao-confirma-pagamento"
+                                       action="#{nfceControll.excluirPagamento}"
+                                       class="btn btn-md btn-danger remove-pagamento">
+                            <i class="glyphicon glyphicon-remove"></i>
+                            <f:setPropertyActionListener value="#{pag}"
+                                                         target="#{nfceControll.formaPagamentoSelecionado}"/>
+                        </p:commandLink>
+                    </h:column>
+                </h:dataTable>
+            </fieldset>
+
+            <fieldset class="muted" style="padding:0 !important">
+                <legend>
+                    <h3 class="margin-top-0">
+                        <i class="fa icon-moneybag margin-right-10px"></i>Total
+                    </h3>
+                </legend>
+                <table width="100%" cellpadding="5" cellspacing="0" class="margin-bottom-10px">
+                    <tbody>
+                    <tr class="border-bottom-1px">
+                        <td>
+                            <h4>SUBTOTAL:</h4>
+                        </td>
+                        <td class="nowrap" width="1">
+                            <h4>R$ <span id="sub-total">#{balcaoControll.venda.valorSubTotalFormatado()}</span></h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>DESCONTOS:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="descontos">#{nfceControll.formatarValor(nfceControll.desconto)}</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>ACRECIMOS:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="acrescimos">#{nfceControll.formatarValor(nfceControll.acrescimo)}</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>PAGAMENTOS:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="pagamentos">#{nfceControll.formatarValor(nfceControll.totalRecebido)}</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>RESTANTE:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="restante">#{nfceControll.formatarValor(nfceControll.saldoRestante)}</span>
+                            </h4>
+                        </td>
+                    </tr>
+
+                    <tr class="border-bottom-1px">
+                        <td><h4>TROCO:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="troco">#{nfceControll.formatarValor(nfceControll.troco)}</span>
+                            </h4>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><h4>TOTAL A PAGAR:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="valor-receber">#{nfceControll.formatarValor(nfceControll.totalReceber)}</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+            <div class="both margin-top-10px text-right">
+                <h:commandLink id="botao-finalizar" type="button"
+                               action="#{nfceControll.finalizarVenda}"
+                               disabled="#{!nfceControll.podeFinalzarVenda}"
+                               class="btn btn-lg btn-success">
+                    <span class="glyphicon glyphicon-ok margin-right-10px"></span>Finalizar
+                    <p:ajax update=":formCentro:growl,formCentro:tela-pagamento,:formCentro:telaPdv,,:formDanfe:dialogDanfe"
+                            oncomplete="if (args.vendaFinalizada) {PF('dialogDanfe').show(); };"
+                            process="@form"/>
+                </h:commandLink>
+                &nbsp;
+                <h:commandLink class="btn btn-lg btn-danger"
+                               action="#{nfceControll.cancelarPagamento}">
+                    <p:ajax update="formCentro:tela-pagamento,:formCentro:telaPdv"/>
+                    <span class="glyphicon glyphicon-remove margin-right-10px"></span>Cancelar
+                </h:commandLink>
+            </div>
+        </h:panelGroup>
+    </div>
+
+</ui:composition>
