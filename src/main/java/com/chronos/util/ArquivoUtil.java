@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 import static java.nio.file.FileSystems.getDefault;
@@ -72,6 +73,18 @@ public class ArquivoUtil {
         out.write(file);
         out.close();
 
+        return arquivo;
+    }
+
+    public String escreverComCopia(TipoArquivo tipoArquivo, String cnpj, byte[] file, String nomeArquivo, Path copia) throws IOException {
+
+        String arquivo = getDestino(tipoArquivo, cnpj) + System.getProperty("file.separator") + nomeArquivo;
+        FileOutputStream out = new FileOutputStream(arquivo);
+
+        out.write(file);
+        out.close();
+        Path localArquivo = getDefault().getPath(arquivo);
+        Files.copy(localArquivo, copia, StandardCopyOption.REPLACE_EXISTING);
         return arquivo;
     }
 

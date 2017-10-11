@@ -152,7 +152,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                     Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
                 } else {
                     super.salvar(null);
-                    if (getObjeto().getServico().equals("N")) {
+                    if (getObjeto().getId() == null && getObjeto().getServico().equals("N")) {
                         EmpresaProduto produtoEmpresa = new EmpresaProduto();
                         produtoEmpresa.setEmpresa(empresa);
                         produtoEmpresa.setProduto(getObjeto());

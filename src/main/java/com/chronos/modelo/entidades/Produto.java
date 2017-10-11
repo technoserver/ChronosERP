@@ -18,7 +18,7 @@ public class Produto implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "GTIN")
+    @Column(name = "GTIN", unique = true)
     private String gtin;
     @Column(name = "CODIGO_INTERNO")
     private String codigoInterno;

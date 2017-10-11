@@ -17,10 +17,7 @@ import com.chronos.util.Biblioteca;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.*;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -31,9 +28,11 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -126,15 +125,13 @@ public class NfceControll implements Serializable {
     private StringBuilder linhasRelatorio;
     private String nomeImpressaoMovimento;
     private ExternalContext context;
+    private String nomeCupom;
 
 
     @PostConstruct
     private void init() {
-        telaVenda = true;
-        telaImpressao = false;
-        telaCaixa = false;
-        telaPagamentos = false;
-        verificarMovimento();
+
+        // verificarMovimento();
         linhasRelatorio = new StringBuilder();
         empresa = FacesUtil.getEmpresaUsuario();
         usuario = FacesUtil.getUsuarioSessao();
@@ -289,6 +286,17 @@ public class NfceControll implements Serializable {
 
     public void novaVenda() {
         try {
+            telaVenda = true;
+            telaImpressao = false;
+            telaCaixa = false;
+            telaPagamentos = false;
+            if (venda != null && venda.getId() != null) {
+                nomeCupom = "cupom" + venda.getNumero() + ".pdf";
+                String caminho = context.getRealPath("/") + System.getProperty("file.separator") + "temp";
+                File fileTemp = new File(context.getRealPath("/") + System.getProperty("file.separator") + "temp");
+                Files.deleteIfExists(getDefault().getPath(fileTemp.getPath(), nomeCupom));
+
+            }
             venda = new NfeCabecalho();
             venda.setTributOperacaoFiscal(new TributOperacaoFiscal(1));
             item = new NfeDetalhe();
@@ -296,7 +304,10 @@ public class NfceControll implements Serializable {
             nfeService.dadosPadroes(venda, ModeloDocumento.NFCE, empresa, new ConfiguracaoEmissorDTO(configuracao));
             desconto = BigDecimal.ZERO;
             quantidade = BigDecimal.ZERO;
-
+            File fileTemp = new File(context.getRealPath("/") + System.getProperty("file.separator") + "temp");
+            if (!fileTemp.exists()) {
+                fileTemp.mkdir();
+            }
         } catch (Exception ex) {
 
         }
@@ -611,13 +622,20 @@ public class NfceControll implements Serializable {
             configuracao = getConfiguraNfce();
             definirNumeroItens();
             venda.setCsc(configuracao.getCodigoCsc());
+            resolveDuplicidade:
             gerarNumeracao(venda);
             StatusTransmissao status = nfeService.transmitirNFe(venda, new ConfiguracaoEmissorDTO(configuracao));
             if (status == StatusTransmissao.AUTORIZADA) {
                 venda = nfeRepositoy.atualizar(venda);
+                nfeService.atualizarNumeracao(venda);
                 estoqueRepositoy.atualizaEstoqueEmpresa(empresa.getId(), venda.getListaNfeDetalhe());
-                lancaMovimentos();
+
+                // lancaMovimentos();
+                gerarCupom();
                 Mensagem.addInfoMessage("NFe transmitida com sucesso");
+                RequestContext.getCurrentInstance().addCallbackParam("vendaFinalizada", true);
+            } else if (status == StatusTransmissao.DUPLICIDADE) {
+
             }
 
 
@@ -638,9 +656,21 @@ public class NfceControll implements Serializable {
         }
     }
 
+
     public void gerarNumeracao(NfeCabecalho nfe) throws Exception {
         nfeService.gerarNumeracao(nfe, false);
 
+    }
+
+    public void gerarCupom() throws JRException, IOException {
+
+        try {
+            nfeService.gerarDanfe(venda);
+            nomeCupom = "cupom" + venda.getNumero() + ".pdf";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
     }
 
     //</editor-fold>
@@ -970,5 +1000,13 @@ public class NfceControll implements Serializable {
 
     public void setFormaPagamentoSelecionado(NfeFormaPagamento formaPagamentoSelecionado) {
         this.formaPagamentoSelecionado = formaPagamentoSelecionado;
+    }
+
+    public String getNomeCupom() {
+        return nomeCupom;
+    }
+
+    public void setNomeCupom(String nomeCupom) {
+        this.nomeCupom = nomeCupom;
     }
 }

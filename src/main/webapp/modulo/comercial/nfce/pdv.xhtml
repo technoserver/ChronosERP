@@ -312,6 +312,28 @@
         </h:form>
     </ui:define>
 
+    <ui:define name="outrasTelas3">
+        <h:form id="formDanfe">
+            <p:dialog id="dialogDanfe" header="Danfe" widgetVar="dialogDanfe"
+                      showEffect="slide" width="700" height="350" hideEffect="slide"
+                      resizable="true" modal="true" dynamic="true" responsive="true" closable="false">
+                <p:outputPanel id="panelDanfe1">
+                    <iframe
+                            src="#{facesContext.externalContext.request.contextPath}/temp/#{nfceControll.nomeCupom}"
+                            width="100%" height="100%" scrolling="yes"></iframe>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar" action="#{nfceControll.novaVenda}"
+                                     oncomplete="PF('dialogDanfe').hide(); "
+                                     update=":formCentro:growl,:formCentro:telaPdv"
+                                     process="@form"/>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
     <ui:define name="javaScript">
         <h:outputScript library="js" name="pdv.js"/>
         <script type="application/javascript">

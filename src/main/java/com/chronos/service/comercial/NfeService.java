@@ -8,6 +8,7 @@ import br.inf.portalfiscal.nfe.schema.envinfe.TRetEnviNFe;
 import com.chronos.bo.nfe.NfeTransmissao;
 import com.chronos.bo.nfe.NfeUtil;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
@@ -20,6 +21,10 @@ import com.chronos.util.*;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import com.chronos.util.report.JasperReportUtil;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.qrcode.QRCodeWriter;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
 import org.springframework.util.StringUtils;
@@ -31,14 +36,18 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
+
+import static java.nio.file.FileSystems.getDefault;
 
 /**
  * Created by john on 26/09/17.
@@ -202,6 +211,10 @@ public class NfeService implements Serializable {
 
         }
         return notaFiscalTipo;
+    }
+
+    public void atualizarNumeracao(NfeCabecalho nfe) throws Exception {
+        getNotaFicalTipo(nfe.getCodigoModelo(), true);
     }
 
     public void gerarNumeracao(NfeCabecalho nfe, boolean atualizarNumero) throws Exception {
@@ -462,7 +475,7 @@ public class NfeService implements Serializable {
         return status;
     }
 
-    public void gerarDanfe(NfeCabecalho nfe) throws IOException, JRException {
+    public void gerarDanfe(NfeCabecalho nfe) throws IOException, JRException, EmissorException, WriterException {
         StatusTransmissao statusTransmissao = StatusTransmissao.valueOfCodigo(nfe.getStatusNota());
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         String caminho = statusTransmissao == StatusTransmissao.AUTORIZADA
@@ -499,6 +512,16 @@ public class NfeService implements Serializable {
                 parametrosRelatorio.put("danfeRetratoFatura", inFt);
             } else {
                 nomeRelatorioJasper = Constantes.JASPERNFCE;
+
+                String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_CONSULTANFCE);
+                BufferedImage image = MatrixToImageWriter
+                        .toBufferedImage(new QRCodeWriter().encode(nfe.getQrcode(), BarcodeFormat.QR_CODE, 300, 300));
+                parametrosRelatorio.put("QR_CODE", image);
+                parametrosRelatorio.put("ENDERECO_SEFAZ", url);
+                parametrosRelatorio.put("operador", FacesUtil.getUsuarioSessao().getLogin());
+
+                JRXmlDataSource faturaDataSource = new JRXmlDataSource(caminho, "//pag");
+                parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
             }
 
 
@@ -511,7 +534,12 @@ public class NfeService implements Serializable {
         if (modelo == ModeloDocumento.NFE) {
             caminhoPdf = ArquivoUtil.getInstance().escrever(TipoArquivo.NFe, empresa.getCnpj(), pdfFile, nfe.getNomePdf());
         } else {
-
+            File fileTemp = new File(context.getRealPath("/") + System.getProperty("file.separator") + "temp");
+            if (!fileTemp.exists()) {
+                fileTemp.mkdir();
+            }
+            Path localPdf = getDefault().getPath(fileTemp.getPath(), "cupom" + nfe.getNumero() + ".pdf");
+            ArquivoUtil.getInstance().escreverComCopia(TipoArquivo.NFCe, empresa.getCnpj(), pdfFile, nfe.getNomePdf(), localPdf);
         }
 
 
