@@ -182,7 +182,7 @@
                                    nomeFuncao="Produto"
                                    id="telaDetalhe"
                                    gridPadrao="false">
-            <p:tabView id="tabProduto">
+            <p:tabView id="tabProduto" activeIndex="#{produtoControll.activeTabIndex}">
                 <p:tab title="Dados Principais" id="dadosPrincipais">
                     <div class="row">
 
@@ -195,7 +195,7 @@
                                         idComponente="produtoDescricaoPdv" label="Descricao PDV"
                                         nomeAtributo="#{produtoControll.objeto.descricaoPdv}"
                                         tamanhoMaximo="30"
-                                        requerido="true"/>
+                        />
                     </div>
                     <div class="row">
 
@@ -282,7 +282,7 @@
                                        nomeAtributo="#{produtoControll.objeto.dataCadastro}"
                                        somenteLeitura="true"/>
 
-                        />
+
                     </div>
                     <div class="row">
 
@@ -348,7 +348,14 @@
                                              update=":formUpload:panelUpload"/>
                             <br/> <br/>
                             <p:outputLabel id="imagemProduto">
-                                <img alt="" src="#{produtoController.objeto.imagem}"/>
+
+                                <h:graphicImage id="imgPadrao" library="images" name="produto-sem-foto.png"
+                                                rendered="#{produtoControll.objeto.imagem==null}"/>
+                                <h:graphicImage id="imgProduto"
+                                                value="/image/produto?foto=#{produtoControll.objeto.imagem}"
+                                                class="img-circle"
+                                                rendered="#{produtoControll.objeto.imagem!=null}"/>
+
                             </p:outputLabel>
                         </div>
                     </div>
@@ -504,7 +511,7 @@
                 <p:outputPanel id="panelUpload">
                     <div class="row">
                         <p:fileUpload
-                                fileUploadListener="#{produtoController.uploadImagem}"
+                                fileUploadListener="#{produtoControll.uploadImagem}"
                                 mode="advanced" fileLimit="1"
                                 allowTypes="/(\.|\/)(gif|jpe?g|png)$/" update=":formCentro:growl"/>
                     </div>

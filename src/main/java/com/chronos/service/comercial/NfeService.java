@@ -16,8 +16,10 @@ import com.chronos.modelo.entidades.enuns.TipoArquivo;
 import com.chronos.nfe.Nfe;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
+import com.chronos.repository.NfeRepository;
 import com.chronos.repository.Repository;
 import com.chronos.util.*;
+import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import com.chronos.util.report.JasperReportUtil;
@@ -72,9 +74,14 @@ public class NfeService implements Serializable {
     private Repository<NfeCabecalho> repository;
     @Inject
     private Repository<NfeXml> nfeXmlRepository;
+    @Inject
+    private EstoqueRepository estoqueRepositoy;
 
     @Inject
     private EstoqueRepository produtos;
+
+    @Inject
+    private NfeRepository nfeRepository;
 
     @Inject
     private ExternalContext context;
@@ -92,6 +99,29 @@ public class NfeService implements Serializable {
 
         nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa, configuacao);
         //   setarConfiguracoesNFe(nfe, modelo);
+    }
+
+    public ConfiguracaoEmissorDTO getConfEmisor(Empresa empresa, ModeloDocumento modelo) throws Exception {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("empresa.id", empresa.getId()));
+
+        ConfiguracaoEmissorDTO configuracaoDTO;
+
+        if (modelo == ModeloDocumento.NFE) {
+            NfeConfiguracao configuracao = configuracoesNfe.get(NfeConfiguracao.class, filtros);
+            if (configuracao == null) {
+                throw new Exception("Configurações da NF-e  não definidas");
+            }
+            configuracaoDTO = new ConfiguracaoEmissorDTO(configuracao);
+        } else {
+            NfceConfiguracao configuracao = configuracoesNfce.get(NfceConfiguracao.class, filtros);
+            if (configuracao == null) {
+                throw new Exception("Configurações da NFC-e  não definidas");
+            }
+            configuracaoDTO = new ConfiguracaoEmissorDTO(configuracao);
+        }
+
+        return configuracaoDTO;
     }
 
     public void setarConfiguracoesNFe(NfeCabecalho nfe, ModeloDocumento modelo) throws Exception {
@@ -402,12 +432,12 @@ public class NfeService implements Serializable {
         }
     }
 
-    private void salvaNfeXml(String xml, NfeCabecalho nfe) throws Exception {
+    private NfeXml salvaNfeXml(String xml, NfeCabecalho nfe) throws Exception {
         NfeXml nfeXml = new NfeXml();
         if (StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             nfeXml.setNfeCabecalho(nfe);
             nfeXml.setXml(xml.getBytes());
-            nfeXmlRepository.salvar(nfeXml);
+            nfeXmlRepository.atualizar(nfeXml);
         } else {
             List<Filtro> filtros = new LinkedList<>();
             filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, nfe.getId()));
@@ -417,9 +447,11 @@ public class NfeService implements Serializable {
             nfeXml.setXml(xml.getBytes());
             nfeXmlRepository.atualizar(nfeXml);
         }
+
+        return nfeXml;
     }
 
-
+    @Transactional
     public StatusTransmissao transmitirNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         StatusTransmissao status = StatusTransmissao.ENVIADA;
@@ -442,10 +474,14 @@ public class NfeService implements Serializable {
                 nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getProtNFe().getInfProt().getDhRecbto()));
                 String xmlProc = XmlUtil.criaNfeProc(nfeEnv, retorno.getProtNFe());
                 nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
-                nfe = repository.atualizar(nfe);
+                nfe = nfeRepository.procedimentoNfeAutorizada(nfe);
+                if (nfe.getVendaCabecalho() != null) {
+                    nfe.getVendaCabecalho().setNumeroFatura(nfe.getId());
+                }
                 salvaNfeXml(xmlProc, nfe);
                 salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml());
                 status = StatusTransmissao.AUTORIZADA;
+
             } else if (retorno.getProtNFe().getInfProt().getCStat().equals("204")
                     || retorno.getProtNFe().getInfProt().getCStat().equals("539")) {
                 status = StatusTransmissao.DUPLICIDADE;

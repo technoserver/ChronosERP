@@ -53,7 +53,7 @@ public class ConfigurarAmbienteEmissor {
     }
 
     public void instanciarConfiguracoes(String senhaCertificado) throws Exception {
-        validarConfiguracoes();
+
         if (StringUtils.isEmpty(senhaCertificado)) {
             throw new Exception("Configurações de transmissão não definidas 'SENHA CERTIFICADO'!");
         }

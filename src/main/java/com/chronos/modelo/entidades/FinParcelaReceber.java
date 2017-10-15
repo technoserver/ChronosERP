@@ -94,6 +94,10 @@ public class FinParcelaReceber implements Serializable {
     public FinParcelaReceber() {
     }
 
+    public FinParcelaReceber(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }

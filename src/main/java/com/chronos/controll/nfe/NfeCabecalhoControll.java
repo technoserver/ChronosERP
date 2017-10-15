@@ -117,6 +117,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         try {
             super.doEdit();
             NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+            tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getNfceTipoPagamento();
             setObjeto(nfe);
             dadosSalvos = true;
         } catch (Exception ex) {

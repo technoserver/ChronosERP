@@ -88,8 +88,6 @@ public class Empresa implements Serializable {
     private Empresa empresa;
     @OneToMany(mappedBy="empresa", fetch = FetchType.EAGER)
     private Set<EmpresaEndereco> listaEndereco;
-    @ManyToMany(fetch=FetchType.LAZY, mappedBy = "listaEmpresa")
-    private Set<Pessoa> listaPessoa;
     @Transient
     private byte[] imagem;
 
@@ -103,7 +101,7 @@ public class Empresa implements Serializable {
     }
 
     public Empresa(Integer id, String razaoSocial) {
-        this.id = this.id;
+        this.id = id;
         this.razaoSocial = razaoSocial;
     }
 
@@ -446,13 +444,7 @@ public class Empresa implements Serializable {
 		this.imagem = imagem;
 	}
 
-	public Set<Pessoa> getListaPessoa() {
-		return listaPessoa;
-	}
 
-	public void setListaPessoa(Set<Pessoa> listaPessoa) {
-		this.listaPessoa = listaPessoa;
-	}
 
     public EmpresaEndereco buscarEnderecoPrincipal() {
         return getListaEndereco().stream().filter(e -> e.getPrincipal().equals("S")).findFirst().orElse(null);

@@ -532,7 +532,7 @@ public class NfeDetalhe implements Serializable {
         if (produto != null) {
             nomeProduto = produto.getNome();
             ncm = produto.getNcm();
-            exTipi = produto.getExTipi() != null ? Integer.valueOf(produto.getExTipi()) : exTipi;
+            exTipi = !StringUtils.isEmpty(produto.getExTipi()) ? !StringUtils.isEmpty(produto.getExTipi().trim()) ? Integer.valueOf(produto.getExTipi()) : exTipi : exTipi;
             cest = produto.getCest();
             gtin = produto.getGtin();
             unidadeComercial = produto.getUnidadeProduto().getSigla();

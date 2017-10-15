@@ -105,4 +105,43 @@ public class ViewSpedC370 implements Serializable {
     public void setDesconto(BigDecimal desconto) {
         this.desconto = desconto;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewSpedC370)) return false;
+
+        ViewSpedC370 that = (ViewSpedC370) o;
+
+        if (getIdNfCabecalho() != null ? !getIdNfCabecalho().equals(that.getIdNfCabecalho()) : that.getIdNfCabecalho() != null)
+            return false;
+        if (getDataEmissao() != null ? !getDataEmissao().equals(that.getDataEmissao()) : that.getDataEmissao() != null)
+            return false;
+        if (getIdProduto() != null ? !getIdProduto().equals(that.getIdProduto()) : that.getIdProduto() != null)
+            return false;
+        if (getItem() != null ? !getItem().equals(that.getItem()) : that.getItem() != null) return false;
+        if (getIdUnidadeProduto() != null ? !getIdUnidadeProduto().equals(that.getIdUnidadeProduto()) : that.getIdUnidadeProduto() != null)
+            return false;
+        if (getQuantidade() != null ? !getQuantidade().equals(that.getQuantidade()) : that.getQuantidade() != null)
+            return false;
+        if (getValorTotal() != null ? !getValorTotal().equals(that.getValorTotal()) : that.getValorTotal() != null)
+            return false;
+        if (getCst() != null ? !getCst().equals(that.getCst()) : that.getCst() != null) return false;
+        return getDesconto() != null ? getDesconto().equals(that.getDesconto()) : that.getDesconto() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getIdNfCabecalho() != null ? getIdNfCabecalho().hashCode() : 0;
+        result = 31 * result + (getDataEmissao() != null ? getDataEmissao().hashCode() : 0);
+        result = 31 * result + (getIdProduto() != null ? getIdProduto().hashCode() : 0);
+        result = 31 * result + (getItem() != null ? getItem().hashCode() : 0);
+        result = 31 * result + (getIdUnidadeProduto() != null ? getIdUnidadeProduto().hashCode() : 0);
+        result = 31 * result + (getQuantidade() != null ? getQuantidade().hashCode() : 0);
+        result = 31 * result + (getValorTotal() != null ? getValorTotal().hashCode() : 0);
+        result = 31 * result + (getCst() != null ? getCst().hashCode() : 0);
+        result = 31 * result + (getDesconto() != null ? getDesconto().hashCode() : 0);
+        return result;
+    }
 }

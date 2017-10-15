@@ -21,6 +21,7 @@ public interface Constantes {
     interface FIN{
         public static FinStatusParcela STATUS_ABERTO = new FinStatusParcela(1);
         public static FinStatusParcela STATUS_QUITADO = new FinStatusParcela(2);
+        public static FinStatusParcela STATUS_PARCIAL = new FinStatusParcela(3);
         public static FinTipoRecebimento CHEQUE = new FinTipoRecebimento(1);
         public static NaturezaFinanceira NATUREZA_VENDA = new NaturezaFinanceira(57);
     }

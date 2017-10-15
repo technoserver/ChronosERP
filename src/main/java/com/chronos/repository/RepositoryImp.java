@@ -30,8 +30,11 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(RepositoryImp.class);
 
+    public RepositoryImp() {
+    }
+
     @Inject
-    private EntityManager em;
+    protected EntityManager em;
 
     @Override
     public void clear() throws PersistenceException {
@@ -248,7 +251,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Override
     public List<T> getEntitys(Class<T> clazz, List<Filtro> filtros, Object[] atributos) throws PersistenceException {
 
-        return getEntitys(clazz, filtros, 20, atributos);
+        return getEntitys(clazz, filtros, 0, atributos);
     }
 
     @Override
@@ -394,7 +397,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
                     .append(f.getOperadorLogico())
                     .append((f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional());
             if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)){
-                jpqlBuilder.append(":valor").append(i);
+                jpqlBuilder.append(" :valor").append(i);
             }
         }
         jpql = jpqlBuilder.toString();

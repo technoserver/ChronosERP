@@ -13,7 +13,7 @@
     <cc:attribute name="controller" type="com.chronos.controll.cadastros.PessoaControll" required="true"/>
 </cc:interface>
 <cc:implementation>
-    <p:tabView id="telaCadastroPessoa">
+    <p:tabView id="telaCadastroPessoa" activeIndex="#{cc.attrs.controller.activeTabIndex}">
         <p:tab title="Dados Pessoas" id="dadosPrincipais">
             <div class="row">
                 <h:panelGroup layout="block" id="camposNone">

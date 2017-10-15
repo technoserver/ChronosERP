@@ -1,5 +1,6 @@
 package com.chronos.bo.nfe;
 
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.TipoVenda;
@@ -24,13 +25,15 @@ public class VendaToNFe extends ManualCDILookup {
     private TipoVenda tipoVenda;
     private TributOperacaoFiscal operacaoFiscal;
     private NfeUtil nfeUtil;
+    private ConfiguracaoEmissorDTO configuracao;
 
-    public VendaToNFe(ModeloDocumento modelo, VendaCabecalho venda) {
+    public VendaToNFe(ModeloDocumento modelo, ConfiguracaoEmissorDTO configuracao, VendaCabecalho venda) {
         this.modelo = modelo;
         this.venda = venda;
         cliente = venda.getCliente();
         empresa = venda.getEmpresa();
         tipoVenda = TipoVenda.VENDA;
+        this.configuracao = configuracao;
         nfeUtil = new NfeUtil();
 
     }
@@ -43,12 +46,13 @@ public class VendaToNFe extends ManualCDILookup {
         gerarItensVenda();
         addItens();
         nfeUtil.gerarNumeracao(nfe, empresa);
+        definirFormaPagamento();
         return nfe;
     }
 
     private void valoresPadrao() {
 
-        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa, null);
+        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa, configuracao);
     }
 
     private void definirOperacaoTributaria() throws java.lang.Exception {
@@ -139,6 +143,18 @@ public class VendaToNFe extends ManualCDILookup {
 
 
         nfeUtil.calcularTotalNFe(nfe);
+    }
+
+    public void definirFormaPagamento() {
+        FinTipoRecebimento tipoRecebimento = venda.getCondicoesPagamento().getTipoRecebimento();
+        NfceTipoPagamento tipoPagamento = new NfceTipoPagamento();
+        tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
+        NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
+        nfeFormaPagamento.setNfceTipoPagamento(tipoPagamento);
+        nfeFormaPagamento.setNfeCabecalho(nfe);
+        nfeFormaPagamento.setForma(tipoRecebimento.getTipo());
+        nfeFormaPagamento.setValor(venda.getValorTotal());
+        nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
     }
 
 

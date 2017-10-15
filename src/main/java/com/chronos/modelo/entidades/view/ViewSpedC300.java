@@ -77,4 +77,32 @@ public class ViewSpedC300 implements Serializable {
         this.somaCofins = somaCofins;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewSpedC300)) return false;
+
+        ViewSpedC300 that = (ViewSpedC300) o;
+
+        if (getSerie() != null ? !getSerie().equals(that.getSerie()) : that.getSerie() != null) return false;
+        if (getSubserie() != null ? !getSubserie().equals(that.getSubserie()) : that.getSubserie() != null)
+            return false;
+        if (getDataEmissao() != null ? !getDataEmissao().equals(that.getDataEmissao()) : that.getDataEmissao() != null)
+            return false;
+        if (getSomaTotalNf() != null ? !getSomaTotalNf().equals(that.getSomaTotalNf()) : that.getSomaTotalNf() != null)
+            return false;
+        if (getSomaPis() != null ? !getSomaPis().equals(that.getSomaPis()) : that.getSomaPis() != null) return false;
+        return getSomaCofins() != null ? getSomaCofins().equals(that.getSomaCofins()) : that.getSomaCofins() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getSerie() != null ? getSerie().hashCode() : 0;
+        result = 31 * result + (getSubserie() != null ? getSubserie().hashCode() : 0);
+        result = 31 * result + (getDataEmissao() != null ? getDataEmissao().hashCode() : 0);
+        result = 31 * result + (getSomaTotalNf() != null ? getSomaTotalNf().hashCode() : 0);
+        result = 31 * result + (getSomaPis() != null ? getSomaPis().hashCode() : 0);
+        result = 31 * result + (getSomaCofins() != null ? getSomaCofins().hashCode() : 0);
+        return result;
+    }
 }

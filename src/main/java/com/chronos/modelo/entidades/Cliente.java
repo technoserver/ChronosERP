@@ -1,31 +1,4 @@
-/*
- * The MIT License
- * 
- * Copyright: Copyright (C) 2014 chronosinfo.COM
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- * The author may be contacted at: chronosinfo.com@gmail.com
- *
- * @author John Vanderson M Lima (chronosinfo.com)
- * @version 2.0
- */
+
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
@@ -134,26 +107,52 @@ public class Cliente implements Serializable {
         this.observacao = observacao;
     }
 
+    /**
+     * Conta vinculada ao plano de contas contábil.
+     *
+     * @return
+     */
     public String getContaTomador() {
         return contaTomador;
     }
 
+    /**
+     * Conta vinculada ao plano de contas contábil.
+     * @param contaTomador
+     */
     public void setContaTomador(String contaTomador) {
         this.contaTomador = contaTomador;
     }
+
+    /**
+     * Indicar se o cliente terá direito de comprar a prazo faturado e parcelado
+     * @return
+     */
 
     public String getGeraFinanceiro() {
         return geraFinanceiro;
     }
 
+    /**
+     * Indicar se o cliente terá direito de comprar a prazo faturado e parcelado
+     * @param geraFinanceiro
+     */
     public void setGeraFinanceiro(String geraFinanceiro) {
         this.geraFinanceiro = geraFinanceiro;
     }
 
+    /**
+     * T=tabela, P=Ultimo pedido: Indicar se os preços deste cliente será pela tabela informada ou ultimo pedido de venda
+     * @return
+     */
     public String getIndicadorPreco() {
         return indicadorPreco;
     }
 
+    /**
+     * T=tabela, P=Ultimo pedido: Indicar se os preços deste cliente será pela tabela informada ou ultimo pedido de venda
+     * @param indicadorPreco
+     */
     public void setIndicadorPreco(String indicadorPreco) {
         this.indicadorPreco = indicadorPreco;
     }
@@ -166,10 +165,18 @@ public class Cliente implements Serializable {
         this.porcentoDesconto = porcentoDesconto;
     }
 
+    /**
+     * P=produto, F= fim do pedido
+     * @return
+     */
     public String getFormaDesconto() {
         return formaDesconto;
     }
 
+    /**
+     * P=produto, F= fim do pedido
+     * @param formaDesconto
+     */
     public void setFormaDesconto(String formaDesconto) {
         this.formaDesconto = formaDesconto;
     }
@@ -182,10 +189,18 @@ public class Cliente implements Serializable {
         this.limiteCredito = limiteCredito;
     }
 
+    /**
+     * E=Emitente | D=Destinatario | S=Sem frete | T=Terceiros
+     * @return
+     */
     public String getTipoFrete() {
         return tipoFrete;
     }
 
+    /**
+     * E=Emitente | D=Destinatario | S=Sem frete | T=Terceiros
+     * @param tipoFrete
+     */
     public void setTipoFrete(String tipoFrete) {
         this.tipoFrete = tipoFrete;
     }
@@ -238,18 +253,34 @@ public class Cliente implements Serializable {
         this.convenio = convenio;
     }
 
+    /**
+     * Cliente bloqueado - inadimplente
+     * @return
+     */
     public String getBloqueado() {
         return bloqueado;
     }
 
+    /**
+     * Cliente bloqueado - inadimplente
+     * @param bloqueado
+     */
     public void setBloqueado(String bloqueado) {
         this.bloqueado = bloqueado;
     }
 
+    /**
+     * Caso inadimplente, será bloqueado essa quantidade de dias dias contando a partir do vencimento
+     * @return
+     */
     public Integer getDiasBloqueio() {
         return diasBloqueio;
     }
 
+    /**
+     * Caso inadimplente, será bloqueado essa quantidade de dias dias contando a partir do vencimento
+     * @param diasBloqueio
+     */
     public void setDiasBloqueio(Integer diasBloqueio) {
         this.diasBloqueio = diasBloqueio;
     }

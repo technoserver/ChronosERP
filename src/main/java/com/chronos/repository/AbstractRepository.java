@@ -4,10 +4,7 @@ import com.chronos.util.jpa.ChronosEntityManagerFactory;
 import org.primefaces.model.SortOrder;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -24,6 +21,14 @@ public abstract class AbstractRepository implements Serializable {
     @Inject
     protected EntityManager em;
 
+    protected <T> void salvar(T bean) {
+        em.persist(bean);
+    }
+
+    protected <T> T atualizar(T bean) throws PersistenceException {
+        return em.merge(bean);
+
+    }
 
     public <T> T get(Class<T> classToCast, String query, Object... values) {
         Query qr = createQuery(query, values);

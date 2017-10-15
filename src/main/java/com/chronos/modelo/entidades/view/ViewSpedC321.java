@@ -117,4 +117,45 @@ public class ViewSpedC321 implements Serializable {
         this.somaCofins = somaCofins;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewSpedC321)) return false;
+
+        ViewSpedC321 that = (ViewSpedC321) o;
+
+        if (getIdProduto() != null ? !getIdProduto().equals(that.getIdProduto()) : that.getIdProduto() != null)
+            return false;
+        if (getDescricaoUnidade() != null ? !getDescricaoUnidade().equals(that.getDescricaoUnidade()) : that.getDescricaoUnidade() != null)
+            return false;
+        if (getDataEmissao() != null ? !getDataEmissao().equals(that.getDataEmissao()) : that.getDataEmissao() != null)
+            return false;
+        if (getSomaQuantidade() != null ? !getSomaQuantidade().equals(that.getSomaQuantidade()) : that.getSomaQuantidade() != null)
+            return false;
+        if (getSomaItem() != null ? !getSomaItem().equals(that.getSomaItem()) : that.getSomaItem() != null)
+            return false;
+        if (getSomaDesconto() != null ? !getSomaDesconto().equals(that.getSomaDesconto()) : that.getSomaDesconto() != null)
+            return false;
+        if (getSomaBaseIcms() != null ? !getSomaBaseIcms().equals(that.getSomaBaseIcms()) : that.getSomaBaseIcms() != null)
+            return false;
+        if (getSomaIcms() != null ? !getSomaIcms().equals(that.getSomaIcms()) : that.getSomaIcms() != null)
+            return false;
+        if (getSomaPis() != null ? !getSomaPis().equals(that.getSomaPis()) : that.getSomaPis() != null) return false;
+        return getSomaCofins() != null ? getSomaCofins().equals(that.getSomaCofins()) : that.getSomaCofins() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getIdProduto() != null ? getIdProduto().hashCode() : 0;
+        result = 31 * result + (getDescricaoUnidade() != null ? getDescricaoUnidade().hashCode() : 0);
+        result = 31 * result + (getDataEmissao() != null ? getDataEmissao().hashCode() : 0);
+        result = 31 * result + (getSomaQuantidade() != null ? getSomaQuantidade().hashCode() : 0);
+        result = 31 * result + (getSomaItem() != null ? getSomaItem().hashCode() : 0);
+        result = 31 * result + (getSomaDesconto() != null ? getSomaDesconto().hashCode() : 0);
+        result = 31 * result + (getSomaBaseIcms() != null ? getSomaBaseIcms().hashCode() : 0);
+        result = 31 * result + (getSomaIcms() != null ? getSomaIcms().hashCode() : 0);
+        result = 31 * result + (getSomaPis() != null ? getSomaPis().hashCode() : 0);
+        result = 31 * result + (getSomaCofins() != null ? getSomaCofins().hashCode() : 0);
+        return result;
+    }
 }

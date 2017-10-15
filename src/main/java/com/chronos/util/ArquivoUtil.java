@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
@@ -28,6 +29,8 @@ public class ArquivoUtil {
 
     private Path local;
     private Path localTemporario;
+    private Path localImagem;
+    private Path localProduto;
     private static final Logger logger = LoggerFactory.getLogger(ArquivoUtil.class);
 
     private static ArquivoUtil instance;
@@ -38,6 +41,9 @@ public class ArquivoUtil {
 
     private ArquivoUtil(Path path) {
         this.local = path;
+        this.localTemporario = getDefault().getPath(local.toString(), "temp");
+        this.localImagem = getDefault().getPath(local.toString(), "imagens");
+        this.localProduto = getDefault().getPath(localImagem.toString(), "produto");
         criarPastas();
     }
 
@@ -133,6 +139,14 @@ public class ArquivoUtil {
         return dir.getAbsolutePath();
     }
 
+    public String getPastaImagens() {
+        File dir = new File(diretorio(), "imagens");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        return dir.getAbsolutePath();
+    }
+
     public String getPastaFotoFuncionario(String cnpj) {
         File dir = new File(getDiretorioCnpj(cnpj), "fotosFuncionario");
         if (!dir.exists()) {
@@ -177,19 +191,31 @@ public class ArquivoUtil {
         return getPastaImagens(cnpj) + System.getProperty("file.separator") + "logo_transmissao_" + cnpj + ".png";
     }
 
-    public void salvarFotoProdutoTemporariamente(UploadedFile arquivo){
+    public String salvarFotoProdutoTemporariamente(UploadedFile arquivo) throws IOException {
         String novoNome = renomearArquivo( arquivo.getFileName());
-      //  String pastaFotoProduto =
-      //  Files.copy(arquivo.getInputstream(), Paths.get(new File(foto3x4).toURI()), StandardCopyOption.REPLACE_EXISTING);
-
+        String caminho = this.localTemporario.toAbsolutePath().toString() + getDefault().getSeparator() + novoNome;
+        logger.debug("Caminho temporario : " + caminho);
+        Files.copy(arquivo.getInputstream(), Paths.get(new File(caminho).toURI()), StandardCopyOption.REPLACE_EXISTING);
+        return novoNome;
     }
 
     public void salvarFotoProduto(String foto) {
         try {
-            Files.move(this.localTemporario.resolve(foto), this.local.resolve(foto));
+
+            Files.move(this.localTemporario.resolve(foto), this.localProduto.resolve(foto), StandardCopyOption.REPLACE_EXISTING);
+            Files.deleteIfExists(this.localTemporario.resolve(foto));
         } catch (IOException e) {
             throw new RuntimeException("Erro movendo a foto para destino final", e);
         }
+    }
+
+    public String getFotoProduto(String foto) {
+        return localProduto.resolve(foto).toString();
+    }
+
+    public void removerFoto(String foto) throws IOException {
+        Path caminhoFoto = localProduto.resolve(foto);
+        Files.deleteIfExists(caminhoFoto);
     }
 
     public String getFotoFuncionario(String cnpj, String cpf) {
@@ -225,11 +251,15 @@ public class ArquivoUtil {
             Files.createDirectories(this.local);
             this.localTemporario = getDefault().getPath(this.local.toString(), "temp");
             Files.createDirectories(this.localTemporario);
+            Files.createDirectories(this.localImagem);
+            Files.createDirectories(this.localProduto);
 
             if (logger.isDebugEnabled()) {
                 logger.debug("Pastas criadas para salvar fotos.");
                 logger.debug("Pasta default: " + this.local.toAbsolutePath());
                 logger.debug("Pasta temporária: " + this.localTemporario.toAbsolutePath());
+                logger.debug("Pasta imagens: " + this.localImagem.toAbsolutePath());
+                logger.debug("Pasta iamgens/produto: " + this.localProduto.toAbsolutePath());
             }
 
         } catch (IOException e) {

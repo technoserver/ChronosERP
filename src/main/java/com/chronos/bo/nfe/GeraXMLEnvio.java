@@ -548,7 +548,7 @@ public class GeraXMLEnvio {
         prod.setCEAN(ean);
         prod.setXProd(nfeDetalhe.getNomeProduto());
         prod.setNCM(nfeDetalhe.getNcm());
-        if (nfeDetalhe.getCest() != null) {
+        if (!StringUtils.isEmpty(nfeDetalhe.getCest())) {
             prod.setCEST(nfeDetalhe.getCest());
         }
         prod.setCFOP(nfeDetalhe.getCfop().toString());
