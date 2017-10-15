@@ -193,10 +193,6 @@ public class FinParcelaRecebimento implements Serializable {
         this.finChequeRecebido = finChequeRecebido;
     }
 
-    @Override
-    public String toString() {
-        return id.toString();
-    }
 
     @Override
     public int hashCode() {

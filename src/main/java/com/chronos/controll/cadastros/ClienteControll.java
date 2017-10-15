@@ -75,7 +75,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         Pessoa pessoa = novaPessoa("S","N","N","N");
         getObjeto().setPessoa(pessoa);
         getObjeto().setDesde(new Date());
-
+        getObjeto().setBloqueado("N");
         completo = "N";
 
     }

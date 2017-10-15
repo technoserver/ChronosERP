@@ -29,4 +29,18 @@ public class ViewSpedC425Id implements Serializable {
         this.viewC425 = viewC425;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewSpedC425Id)) return false;
+
+        ViewSpedC425Id that = (ViewSpedC425Id) o;
+
+        return getViewC425() != null ? getViewC425().equals(that.getViewC425()) : that.getViewC425() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getViewC425() != null ? getViewC425().hashCode() : 0;
+    }
 }

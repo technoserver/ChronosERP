@@ -95,4 +95,6 @@ public class ViewSpedC390 implements Serializable {
     public void setSomaIcmsOutras(BigDecimal somaIcmsOutras) {
         this.somaIcmsOutras = somaIcmsOutras;
     }
+
+
 }

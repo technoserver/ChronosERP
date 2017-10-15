@@ -4,6 +4,7 @@ import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.entidades.NfeDetalhe;
 import com.chronos.modelo.entidades.Produto;
+import com.chronos.util.jpa.Transactional;
 
 import javax.persistence.TypedQuery;
 import java.io.Serializable;
@@ -37,66 +38,42 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         // update(jpql, idProduto, quantidade);
     }
 
-    // @Transactional
+    @Transactional
     public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
-        try {
-            abrirConexao();
-            String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
-            //  execute(jpql, quantidade, idProduto, idEmpresa);
 
-            // String jpql = "UPDATE Produto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.id = :id";
+        String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
+        //  execute(jpql, quantidade, idProduto, idEmpresa);
 
-            TypedQuery query = (TypedQuery) em.createQuery(jpql);
-            query.setParameter("quantidade", quantidade);
-            query.setParameter("idproduto", idProduto);
-            query.setParameter("idempresa", idEmpresa);
-            query.executeUpdate();
+        // String jpql = "UPDATE Produto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.id = :id";
 
-
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            if (isAutoCommit()) {
-                fecharConexao();
-            }
-        }
+        TypedQuery query = (TypedQuery) em.createQuery(jpql);
+        query.setParameter("quantidade", quantidade);
+        query.setParameter("idproduto", idProduto);
+        query.setParameter("idempresa", idEmpresa);
+        query.executeUpdate();
 
     }
 
     public List<NfeDetalhe> getItens(NfeCabecalho nfeCabecalho) throws Exception {
-        try {
-            abrirConexao();
-            String jpql = "SELECT NEW NfeDetalhe (o.id, o.produto, o.quantidadeComercial) FROM NfeDetalhe o WHERE o.nfeCabecalho.id = ?1";
-            List<NfeDetalhe> itens = getEntity(NfeDetalhe.class, jpql, nfeCabecalho.getId());
-            return itens;
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            if (isAutoCommit()) {
-                fecharConexao();
-            }
-        }
 
+        //  abrirConexao();
+        String jpql = "SELECT NEW NfeDetalhe (o.id, o.produto, o.quantidadeComercial) FROM NfeDetalhe o WHERE o.nfeCabecalho.id = ?1";
+        List<NfeDetalhe> itens = getEntity(NfeDetalhe.class, jpql, nfeCabecalho.getId());
+        return itens;
     }
 
     public List<Produto> getProdutoEmpresa(String nome, Empresa empresa) throws Exception {
 
-        try {
-            abrirConexao();
             String jpql = "select new Produto(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,p.ncm,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,p.unidadeProduto) From Produto p " +
                     "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                     "where LOWER(p.nome)  like ?1 and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null)";
 
 
-            List<Produto> produtos = getEntity(Produto.class, jpql, "%" + nome.toLowerCase().trim() + "%", empresa.getId());
+        List<Produto> produtos = getEntity(Produto.class, jpql, "%" + nome.toLowerCase().trim() + "%", empresa.getId());
             return produtos;
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            if (isAutoCommit()) {
-                fecharConexao();
-            }
-        }
+
 
     }
+
+
 }

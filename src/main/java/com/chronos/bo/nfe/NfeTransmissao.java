@@ -77,6 +77,7 @@ public class NfeTransmissao {
 
     public void instanciarConfiguracoes(ConfiguracaoEmissorDTO configuracao) throws Exception {
         ConfigurarAmbienteEmissor conf = new ConfigurarAmbienteEmissor(empresa.getCnpj(), "3.10", AmbienteEmissao.getByCodigo(configuracao.getWebserviceAmbiente()), endereco.getUf(), configuracao.getCaminhoSchemas());
+        conf.validarConfiguracoes();
         conf.instanciarConfiguracoes(configuracao.getCertificadoDigitalSenha());
     }
 

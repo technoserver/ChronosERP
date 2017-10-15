@@ -1,6 +1,7 @@
 package com.chronos.servlet;
 
 import com.chronos.dto.Image;
+import com.chronos.util.ArquivoUtil;
 import com.chronos.util.Biblioteca;
 import org.springframework.util.StringUtils;
 
@@ -71,6 +72,11 @@ public class ImageServet extends HttpServlet {
 
         } else if (url.contains("perfil")) {
             parametro = request.getParameter("foto");
+        } else if (url.contains("produto")) {
+            parametro = request.getParameter("foto");
+            if (!StringUtils.isEmpty(parametro)) {
+                parametro = ArquivoUtil.getInstance().getFotoProduto(parametro);
+            }
         }
 
         return parametro;

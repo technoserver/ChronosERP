@@ -12,9 +12,13 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.view.ViewProdutoEmpresa;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.ToggleEvent;
+import org.primefaces.model.UploadedFile;
 import org.primefaces.model.Visibility;
+import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -130,9 +134,19 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     @Override
     public void remover() {
-        getObjeto().setExcluido("S");
-        dao.atualizar(getObjeto());
-        Mensagem.addInfoMessage("Exclusao realizado com sucesso");
+
+        try {
+            getObjeto().setExcluido("S");
+            dao.atualizar(getObjeto());
+            if (!StringUtils.isEmpty(getObjeto().getImagem())) {
+                ArquivoUtil.getInstance().removerFoto(getObjeto().getImagem());
+            }
+            Mensagem.addInfoMessage("Exclusao realizado com sucesso");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+
     }
 
     @Override
@@ -147,27 +161,39 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                 if (getObjeto().getId() != null) {
                     filtros.add(new Filtro(Filtro.AND, "id", Filtro.DIFERENTE, getObjeto().getId()));
                 }
-                Produto p = dao.get(Produto.class, filtros);
+                Produto p = StringUtils.isEmpty(getObjeto().getGtin()) ? null : dao.get(Produto.class, filtros);
                 if (p != null) {
                     Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
                 } else {
-                    super.salvar(null);
+                    if (StringUtils.isEmpty(getObjeto().getDescricaoPdv())) {
+                        String nomePdv = getObjeto().getNome().length() > 30 ? getObjeto().getNome().substring(0, 30) : getObjeto().getNome();
+                        getObjeto().setDescricaoPdv(nomePdv);
+                    }
+                    if (!StringUtils.isEmpty(getObjeto().getImagem())) {
+                        ArquivoUtil.getInstance().salvarFotoProduto(getObjeto().getImagem());
+                    }
                     if (getObjeto().getId() == null && getObjeto().getServico().equals("N")) {
+                        super.salvar(null);
                         EmpresaProduto produtoEmpresa = new EmpresaProduto();
                         produtoEmpresa.setEmpresa(empresa);
                         produtoEmpresa.setProduto(getObjeto());
                         produtoEmpresa.setQuantidadeEstoque(BigDecimal.ZERO);
                         produtosEmpresa.salvar(produtoEmpresa);
-                    }
-                    //TODO verificar o fluxo de salva produt alterado.
-                    if (!nomeProdutoOld.equals(getObjeto().getNome())) {
-                        ProdutoAlteracaoItem produtoAlteracao = new ProdutoAlteracaoItem();
+                    } else {
+                        super.salvar(null);
+                        //TODO verificar o fluxo de salva produt alterado.
+                        if (nomeProdutoOld != null && !nomeProdutoOld.equals(getObjeto().getNome())) {
+                            ProdutoAlteracaoItem produtoAlteracao = new ProdutoAlteracaoItem();
 
+                        }
                     }
+
+
                 }
             }
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao salvar o registro!", ex);
         }
 
@@ -177,6 +203,24 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void alteraTributacao() {
         getObjeto().setTributIcmsCustomCab(null);
         getObjeto().setTributGrupoTributario(null);
+    }
+
+    public void uploadImagem(FileUploadEvent event) {
+        try {
+//            if (getObjeto().getId() == null) {
+//                throw new Exception("Necessário salvar o produto antes de realizar o upload");
+//            }
+            if (!StringUtils.isEmpty(getObjeto().getImagem())) {
+                ArquivoUtil.getInstance().removerFoto(getObjeto().getImagem());
+            }
+            UploadedFile arquivo = event.getFile();
+            String nomeFoto = ArquivoUtil.getInstance().salvarFotoProdutoTemporariamente(arquivo);
+            getObjeto().setImagem(nomeFoto);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
     }
 
     public List<ProdutoSubGrupo> getListaSubgrupo(String nome) {

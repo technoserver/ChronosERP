@@ -18,6 +18,15 @@ public enum SituacaoVenda {
         this.codigo = codigo;
     }
 
+    public static SituacaoVenda valueOfCodigo(String codigo) {
+        for (final SituacaoVenda situacao : SituacaoVenda.values()) {
+            if (situacao.getCodigo().equals(codigo)) {
+                return situacao;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Situação de venda não definida."));
+    }
+
     public String getCodigo() {
         return codigo;
     }

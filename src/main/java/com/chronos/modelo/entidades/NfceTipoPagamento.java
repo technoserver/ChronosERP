@@ -28,6 +28,10 @@ public class NfceTipoPagamento implements Serializable {
     public NfceTipoPagamento() {
     }
 
+    public NfceTipoPagamento(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -68,6 +72,25 @@ public class NfceTipoPagamento implements Serializable {
         this.geraParcelas = geraParcelas;
     }
 
+    @Transient
+    public NfceTipoPagamento buscarPorCodigo(String codigo) {
+        NfceTipoPagamento tipo;
+        switch (codigo) {
+            case "01":
+                tipo = new NfceTipoPagamento(1);
+            case "02":
+                tipo = new NfceTipoPagamento(2);
+            case "03":
+                tipo = new NfceTipoPagamento(3);
+            case "04":
+                tipo = new NfceTipoPagamento(4);
+            default:
+                tipo = new NfceTipoPagamento(1);
+
+        }
+
+        return tipo;
+    }
 
     @Override
     public int hashCode() {

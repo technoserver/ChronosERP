@@ -214,47 +214,50 @@ public class SpedIcmsIpiService implements Serializable {
         Registro0150 registro0150;
         NfeEmitente emitente;
         NfeDestinatario destinatario;
+
         for (NfeCabecalho c : listaNfeCabecalho) {
 
             registro0150 = new Registro0150();
             emitente = c.getEmitente();
+            if (c.getCliente() != null) {
+                registro0150.setCodPart("F" + emitente.getId());
+                registro0150.setNome(emitente.getNome());
+                registro0150.setCodPais("01058");
+                if (emitente.getCpfCnpj().length() == 11) {
+                    registro0150.setCpf(emitente.getCpfCnpj());
+                } else if (emitente.getCpfCnpj().length() == 14) {
+                    registro0150.setCnpj(emitente.getCpfCnpj());
+                }
+                registro0150.setCodMun(emitente.getCodigoMunicipio());
+                registro0150.setSuframa(String.valueOf(emitente.getSuframa()));
+                registro0150.setEndereco(emitente.getLogradouro());
+                registro0150.setNum(emitente.getNumero());
+                registro0150.setCompl(emitente.getComplemento());
+                registro0150.setBairro(emitente.getBairro());
 
-            registro0150.setCodPart("F" + emitente.getId());
-            registro0150.setNome(emitente.getNome());
-            registro0150.setCodPais("01058");
-            if (emitente.getCpfCnpj().length() == 11) {
-                registro0150.setCpf(emitente.getCpfCnpj());
-            } else if (emitente.getCpfCnpj().length() == 14) {
-                registro0150.setCnpj(emitente.getCpfCnpj());
+                sped.getBloco0().getListaRegistro0150().add(registro0150);
+
+                registro0150 = new Registro0150();
+                destinatario = c.getDestinatario();
+
+                registro0150.setCodPart("C" + c.getCliente().getId());
+                registro0150.setNome(destinatario.getNome());
+                registro0150.setCodPais("01058");
+                if (destinatario.getCpfCnpj().length() == 11) {
+                    registro0150.setCpf(destinatario.getCpfCnpj());
+                } else if (destinatario.getCpfCnpj().length() == 14) {
+                    registro0150.setCnpj(destinatario.getCpfCnpj());
+                }
+                registro0150.setCodMun(destinatario.getCodigoMunicipio());
+                registro0150.setSuframa(String.valueOf(destinatario.getSuframa()));
+                registro0150.setEndereco(destinatario.getLogradouro());
+                registro0150.setNum(destinatario.getNumero());
+                registro0150.setCompl(destinatario.getComplemento());
+                registro0150.setBairro(destinatario.getBairro());
+
+                sped.getBloco0().getListaRegistro0150().add(registro0150);
             }
-            registro0150.setCodMun(emitente.getCodigoMunicipio());
-            registro0150.setSuframa(String.valueOf(emitente.getSuframa()));
-            registro0150.setEndereco(emitente.getLogradouro());
-            registro0150.setNum(emitente.getNumero());
-            registro0150.setCompl(emitente.getComplemento());
-            registro0150.setBairro(emitente.getBairro());
 
-            sped.getBloco0().getListaRegistro0150().add(registro0150);
-
-            registro0150 = new Registro0150();
-            destinatario = c.getDestinatario();
-
-            registro0150.setCodPart("C" + destinatario.getNfeCabecalho().getCliente().getId());
-            registro0150.setNome(destinatario.getNome());
-            registro0150.setCodPais("01058");
-            if (destinatario.getCpfCnpj().length() == 11) {
-                registro0150.setCpf(destinatario.getCpfCnpj());
-            } else if (destinatario.getCpfCnpj().length() == 14) {
-                registro0150.setCnpj(destinatario.getCpfCnpj());
-            }
-            registro0150.setCodMun(destinatario.getCodigoMunicipio());
-            registro0150.setSuframa(String.valueOf(destinatario.getSuframa()));
-            registro0150.setEndereco(destinatario.getLogradouro());
-            registro0150.setNum(destinatario.getNumero());
-            registro0150.setCompl(destinatario.getComplemento());
-            registro0150.setBairro(destinatario.getBairro());
-
-            sped.getBloco0().getListaRegistro0150().add(registro0150);
 
             // REGISTRO 0175: ALTERAÇÃO DA TABELA DE CADASTRO DE PARTICIPANTE
             // Pegar os dados de PESSOA_ALTERACAO para gerar o registro 0175
@@ -350,6 +353,9 @@ public class SpedIcmsIpiService implements Serializable {
         // Implementado a critério do Participante do T2Ti ERP
     }
 
+    /**
+     * // BLOCO C: DOCUMENTOS FISCAIS I - MERCADORIAS (ICMS/IPI)
+     */
     private void geraBlocoC() {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
@@ -560,21 +566,24 @@ public class SpedIcmsIpiService implements Serializable {
                 RegistroC190 registroC190;
                 for (ViewSpedC190Id s : listaNfeAnalitico) {
                     registroC190 = new RegistroC190();
-                    ViewSpedC190 spedC190 = s.getViewSpedC190();
+                    if (s != null) {
+                        ViewSpedC190 spedC190 = s.getViewSpedC190();
 
-                    registroC190.setCstIcms(spedC190.getCstIcms());
-                    registroC190.setCfop(spedC190.getCfop().toString());
-                    registroC190.setAliqIcms(spedC190.getAliquotaIcms());
-                    registroC190.setVlOpr(spedC190.getSomaValorOperacao());
-                    registroC190.setVlBcIcms(spedC190.getSomaBaseCalculoIcms());
-                    registroC190.setVlIcms(spedC190.getSomaValorIcms());
-                    registroC190.setVlBcIcmsSt(spedC190.getSomaBaseCalculoIcmsSt());
-                    registroC190.setVlIcmsSt(spedC190.getSomaValorIcmsSt());
-                    registroC190.setVlRedBc(spedC190.getSomaVlRedBc());
-                    registroC190.setVlIpi(spedC190.getSomaValorIpi());
-                    registroC190.setCodObs("");
+                        registroC190.setCstIcms(spedC190.getCstIcms());
+                        registroC190.setCfop(spedC190.getCfop().toString());
+                        registroC190.setAliqIcms(spedC190.getAliquotaIcms());
+                        registroC190.setVlOpr(spedC190.getSomaValorOperacao());
+                        registroC190.setVlBcIcms(spedC190.getSomaBaseCalculoIcms());
+                        registroC190.setVlIcms(spedC190.getSomaValorIcms());
+                        registroC190.setVlBcIcmsSt(spedC190.getSomaBaseCalculoIcmsSt());
+                        registroC190.setVlIcmsSt(spedC190.getSomaValorIcmsSt());
+                        registroC190.setVlRedBc(spedC190.getSomaVlRedBc());
+                        registroC190.setVlIpi(spedC190.getSomaValorIpi());
+                        registroC190.setCodObs("");
 
-                    registroC100.getRegistroC190List().add(registroC190);
+                        registroC100.getRegistroC190List().add(registroC190);
+                    }
+
                 }
 
                 sped.getBlocoC().getListaRegistroC100().add(registroC100);

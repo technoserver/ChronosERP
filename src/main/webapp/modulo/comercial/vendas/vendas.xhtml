@@ -58,7 +58,7 @@
                         </p:column>
                         <p:column headerText="Situacao">
                             <h:outputLabel
-                                    value="#{vendaCabecalhoControll.keyFromValue(vendaCabecalhoControll.vendaOrcamentoSituacao, obj.situacao)}"/>
+                                    value="#{vendaCabecalhoControll.keyFromValue(vendaCabecalhoControll.vendaOrcamentoSituacao, row.situacao)}"/>
                         </p:column>
 
                         <p:column headerText="Ações" width="160">
@@ -75,10 +75,10 @@
                             <p:commandLink title="Excluir" action="#{vendaCabecalhoControll.remover()}"
 
                                            update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
-                                           process="#{cc.attrs.idDataTable}"
+                                           process="tableVenda"
                                            oncomplete="atualizarMsg();"
                                            class="btn btn-default"
-                                           rendered="#{!cc.attrs.somenteConsulta}"
+
                                            disabled="#{!vendaCabecalhoControll.podeExcluir()}">
                                 <i class="fa fa-times"></i>
                                 <p:confirm header="Confirmar" message="Deseja excluir ?"/>
@@ -96,7 +96,12 @@
                                             icon="fa fa-print" ajax="false"/>
                                 <p:menuitem value="Devolução" actionListener="#{vendaCabecalhoControll.remover()}"
                                             icon="fa fa-reply-all"/>
-                                <p:menuitem value="Emitir NFe" actionListener="#{vendaCabecalhoControll.remover()}"/>
+                                <p:menuitem value="Emitir NFe"
+                                            update=":formCentro:growl,tableVenda"
+                                            action="#{vendaCabecalhoControll.gerarNFe()}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaCabecalhoControll.objetoSelecionado}"/>
+                                </p:menuitem>
                                 <p:menuitem value="Emitir NFCe" actionListener="#{vendaCabecalhoControll.remover()}"/>
                             </p:menuButton>
 

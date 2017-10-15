@@ -1,15 +1,22 @@
 package com.chronos.controll.vendas;
 
+import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.controll.AbstractControll;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.FormaPagamento;
 import com.chronos.modelo.entidades.enuns.SituacaoVenda;
+import com.chronos.modelo.entidades.enuns.StatusTransmissao;
 import com.chronos.modelo.entidades.enuns.TipoFrete;
 import com.chronos.modelo.entidades.view.PessoaCliente;
+import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.comercial.NfeService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.util.Constantes;
+import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
@@ -50,7 +57,13 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Inject
     private Repository<VendaComissao> comissoes;
     @Inject
+    private Repository<NfeCabecalho> nfeRepository;
+    @Inject
     private FinLancamentoReceberService recebimentoService;
+    @Inject
+    private NfeService nfeService;
+    @Inject
+    private EstoqueRepository estoqueRepositoy;
 
 
 
@@ -163,9 +176,34 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         }
     }
 
+    @Transactional
     public void gerarNFe() {
 
+        try {
+            SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(getObjetoSelecionado().getSituacao());
+            if (situacao == SituacaoVenda.NotaFiscal) {
+                throw new Exception("Essa venda já possue NFe");
+            }
+            VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+            setObjeto(venda);
+            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, ModeloDocumento.NFE);
+            NfeCabecalho nfe = new NfeCabecalho();
+            VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFE, configuracao, venda);
+            nfe = vendaNfe.gerarNfe();
+            nfe.setVendaCabecalho(venda);
+            StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao);
+            if (status == StatusTransmissao.AUTORIZADA) {
+                getObjeto().setSituacao(SituacaoVenda.NotaFiscal.getCodigo());
+                getObjeto().setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
+                salvar();
+                Mensagem.addInfoMessage("NFe transmitida com sucesso");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
     }
+
 
     public void cancelarVenda() {
 

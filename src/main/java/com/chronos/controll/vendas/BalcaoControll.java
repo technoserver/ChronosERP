@@ -169,7 +169,7 @@ public class BalcaoControll implements Serializable {
 
 
         try {
-            VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, venda);
+            VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, null, venda);
             NfeCabecalho nfe = vendaNfe.gerarNfe();
             nfeService.transmitirNFe(nfe, new ConfiguracaoEmissorDTO());
         } catch (Exception ex) {
