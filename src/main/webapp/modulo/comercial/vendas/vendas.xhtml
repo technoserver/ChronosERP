@@ -33,40 +33,42 @@
                 <div class="ibox-content">
                     <erp:msgPermissao permissao="#{vendaCabecalhoControll.podeConsultar()}"/>
                     <p:dataTable
-                            value="#{cc.attrs.dataModel!=null? cc.attrs.dataModel :vendaCabecalhoControll.dataModel}"
+                            value="#{vendaCabecalhoControll.dataModel}"
                             var="row" id="tableVenda" paginator="true"
                             rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                             reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
-                            resizableColumns="true" lazy="true"
+                            resizableColumns="true" lazy="true" sortBy="#{row.id}" sortOrder="descending"
                     >
-
+                        <p:column headerText="Código" width="100">
+                            <h:outputLabel value="#{row.id}"/>
+                        </p:column>
                         <p:column headerText="Cliente">
                             <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
                         </p:column>
-                        <p:column headerText="Data Venda">
+                        <p:column headerText="Data Venda" width="130">
                             <h:outputLabel value="#{row.dataVenda}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Numero Fatura">
+                        <p:column headerText="Numero Fatura" width="140">
                             <h:outputLabel value="#{row.numeroFatura}"/>
                         </p:column>
-                        <p:column headerText="Valor Total" class="coluna-monetaria">
+                        <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
                             <h:outputLabel value="#{row.valorTotal}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Situacao">
+                        <p:column headerText="Situacao" sortBy="#{row.situacao}" width="130">
                             <h:outputLabel
                                     value="#{vendaCabecalhoControll.keyFromValue(vendaCabecalhoControll.vendaOrcamentoSituacao, row.situacao)}"/>
                         </p:column>
 
-                        <p:column headerText="Ações" width="160">
+                        <p:column headerText="Ações" width="160" class="text-center">
                             <p:commandLink title="Alterar" action="#{vendaCabecalhoControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
                                            update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
-                            >
+                                           rendered="#{row.podeExcluir}">
                                 <i class="fa fa-file-text-o"></i>
                                 <f:setPropertyActionListener value="#{row}"
                                                              target="#{vendaCabecalhoControll.objetoSelecionado}"/>
@@ -78,7 +80,7 @@
                                            process="tableVenda"
                                            oncomplete="atualizarMsg();"
                                            class="btn btn-default"
-
+                                           rendered="#{row.podeExcluir}"
                                            disabled="#{!vendaCabecalhoControll.podeExcluir()}">
                                 <i class="fa fa-times"></i>
                                 <p:confirm header="Confirmar" message="Deseja excluir ?"/>
@@ -98,12 +100,53 @@
                                             icon="fa fa-reply-all"/>
                                 <p:menuitem value="Emitir NFe"
                                             update=":formCentro:growl,tableVenda"
+                                            rendered="#{empty row.numeroFatura}"
                                             action="#{vendaCabecalhoControll.gerarNFe()}">
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                                 </p:menuitem>
-                                <p:menuitem value="Emitir NFCe" actionListener="#{vendaCabecalhoControll.remover()}"/>
+                                <p:menuitem value="Emitir NFCe"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{empty row.numeroFatura}"
+                                            action="#{vendaCabecalhoControll.gerarNfce}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaCabecalhoControll.objetoSelecionado}"/>
+                                </p:menuitem>
+
+                                <p:menuitem value="Danfe"
+                                            icon="fa fa-print" ajax="false"
+                                            rendered="#{not empty row.numeroFatura}"
+                                            action="#{vendaCabecalhoControll.danfe}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaCabecalhoControll.objetoSelecionado}"/>
+                                </p:menuitem>
                             </p:menuButton>
+                            &nbsp;
+                            <p:commandLink title="Cancelar" action="#{vendaCabecalhoControll.cancelarVenda}"
+
+                                           update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                                           process="tableVenda"
+                                           class="btn btn-default"
+                                           rendered="#{!row.podeCancelar and row.situacao eq 'F'}"
+                                           disabled="#{!vendaCabecalhoControll.podeExcluir()}">
+                                <i class="fa fa-ban"></i>
+                                <p:confirm header="Confirmar" message="Deseja realizar o cancelamento ?"/>
+
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{vendaCabecalhoControll.objetoSelecionado}"/>
+                            </p:commandLink>
+
+                            <p:commandLink title="Cancelar"
+                                           update=":formJustificativaCancelamento:panelJustificativaCancelamento"
+                                           oncomplete="PF('dialogJustificativaCancelamento').show();"
+                                           process="tableVenda"
+                                           class="btn btn-default"
+                                           rendered="#{!row.podeCancelar and row.situacao eq 'N'}"
+                                           disabled="#{!vendaCabecalhoControll.podeExcluir()}">
+                                <i class="fa fa-ban"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{vendaCabecalhoControll.objetoSelecionado}"/>
+                            </p:commandLink>
 
                         </p:column>
 
@@ -115,7 +158,6 @@
                             <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
                                              actionListener="#{vendaCabecalhoControll.doCreate()}"
                                              disabled="#{!vendaCabecalhoControll.podeInserir()}"
-                                             rendered="#{!cc.attrs.somenteConsulta}"
                             >
                                 <p:ajax process="@form"
                                         oncomplete="addClass()"
@@ -219,13 +261,13 @@
                                                           idComponente="vendaCabecalhoCliente">
                                             <p:ajax event="itemSelecionado"
                                                     listener="#{vendaCabecalhoControll.definirEnderecoEntrega}"
-                                                    update="formOutrasTelas:campoValor:valorUnitario"/>
+                                            />
 
                                         </erp:autoComplete>
 
                                         <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
                                                           label="Vendedor"
-                                                          itemLabel="#{objeto.colaborador.pessoa.nome}"
+                                                          itemLabel="#{objeto.nome}"
                                                           controller="#{vendaCabecalhoControll}"
                                                           completeMethod="getListaVendedor"
                                                           nomeAtributo="#{vendaCabecalhoControll.objeto.vendedor}"
@@ -242,7 +284,8 @@
                                                           controller="#{vendaCabecalhoControll}"
                                                           completeMethod="getListaVendaCondicoesPagamento"
                                                           nomeAtributo="#{vendaCabecalhoControll.objeto.condicoesPagamento}"
-                                                          idComponente="vendaCabecalhoVendaCondicoesPagamento"/>
+                                                          idComponente="vendaCabecalhoVendaCondicoesPagamento"
+                                        />
 
                                     </div>
                                     <div class="row">
@@ -385,7 +428,7 @@
                                                     oncomplete="addClass()"
                                                     update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
                                         </h:commandButton>
-                                        <c:if test="#{vendaCabecalhoControll.objeto.temProduto()}">
+                                        <c:if test="#{!vendaCabecalhoControll.telaGrid and vendaCabecalhoControll.objeto.temProduto()}">
                                             <button type="button" class="btn btn-primary  dropdown-toggle"
                                                     data-toggle="dropdown"
                                                     style="padding: 14px 5px;border-color: mediumaquamarine;">
@@ -454,8 +497,30 @@
                                           itemLabel="#{objeto.nome}"
                                           controller="#{vendaCabecalhoControll}"
                                           completeMethod="getListaProduto"
-                                          nomeAtributo="#{vendaCabecalhoControll.vendaDetalhe.produto}"
+                                          nomeAtributo="#{vendaCabecalhoControll.produto}"
                                           idComponente="vendaDetalheProduto">
+
+                            <p:column headerText="Produto">
+                                <p:outputLabel value="#{objeto.nome}"/>
+                            </p:column>
+                            <p:column headerText="UN">
+                                <p:outputLabel value="#{objeto.unidade}"/>
+                            </p:column>
+                            <p:column headerText="Valor Venda" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.valorVenda}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Estoque" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.quantidadeEstoque}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Controle" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.controle}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
                             <p:ajax event="itemSelecionado" listener="#{vendaCabecalhoControll.definirValorProduto}"
                                     update="formOutrasTelas:campoValor:valorUnitario"/>
                         </erp:autoComplete>
@@ -493,6 +558,52 @@
                     </div>
                 </f:facet>
 
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formJustificativaCancelamento">
+            <p:dialog id="dialogJustificativaCancelamento"
+                      header="Justificativa Cancelamento" responsive="true"
+                      widgetVar="dialogJustificativaCancelamento" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelJustificativaCancelamento">
+                    <div class="row">
+
+                        <erp:campoTexto idComponente="labelJustificativaCancelamento"
+                                        label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        nomeAtributo="#{vendaCabecalhoControll.justificativa}"
+                                        tamanhoMaximo="255" requerido="true" tamanhoMinimo="15">
+
+                        </erp:campoTexto>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Enviar"
+                                             actionListener="#{vendaCabecalhoControll.cancelarVenda}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogJustificativaCancelamento').hide();}"
+                                        process="@form"
+                                        update="panelJustificativaCancelamento,:formCentro:growl"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogJustificativaCancelamento').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
             </p:dialog>
         </h:form>
     </ui:define>

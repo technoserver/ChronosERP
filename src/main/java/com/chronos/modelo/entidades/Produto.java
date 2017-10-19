@@ -136,6 +136,8 @@ public class Produto implements Serializable {
     private UnidadeConversao unidadeConversao;
     @Transient
     private BigDecimal encargosVenda;
+    @Transient
+    private BigDecimal controle;
 
     public Produto() {
     }
@@ -155,13 +157,15 @@ public class Produto implements Serializable {
         this.unidadeProduto = unidadeProduto;
     }
 
-    public Produto(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, String ncm, Integer idgrupotributario, Integer idicms, UnidadeProduto unidadeProduto) {
+    public Produto(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal controle, String ncm, String imagem, Integer idgrupotributario, Integer idicms, UnidadeProduto unidadeProduto) {
         this.id = id;
         this.nome = nome;
         this.valorVenda = valorVenda;
         this.quantidadeEstoque = quantidadeEstoque;
+        this.controle = controle;
         this.unidadeProduto = unidadeProduto;
         this.ncm = ncm;
+        this.imagem = imagem;
         this.tributGrupoTributario = new TributGrupoTributario(idgrupotributario);
         this.tributIcmsCustomCab = new TributIcmsCustomCab(idicms);
     }
@@ -610,6 +614,14 @@ public class Produto implements Serializable {
 
     public void setCest(String cest) {
         this.cest = cest;
+    }
+
+    public BigDecimal getControle() {
+        return controle;
+    }
+
+    public void setControle(BigDecimal controle) {
+        this.controle = controle;
     }
 
     @Override

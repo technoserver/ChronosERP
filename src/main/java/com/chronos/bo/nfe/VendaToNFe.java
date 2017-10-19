@@ -1,10 +1,14 @@
 package com.chronos.bo.nfe;
 
 import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.infra.enuns.ConsumidorOperacao;
+import com.chronos.infra.enuns.IndicadorIe;
+import com.chronos.infra.enuns.LocalDestino;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.TipoVenda;
 import com.chronos.util.cdi.ManualCDILookup;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -82,6 +86,38 @@ public class VendaToNFe extends ManualCDILookup {
         nfe.getDestinatario().setEmail(cliente.getPessoa().getEmail());
         nfe.getDestinatario().setCodigoPais(1058);
         nfe.getDestinatario().setNomePais("Brazil");
+
+        String ufDestino = nfe.getDestinatario() != null && !StringUtils.isEmpty(nfe.getDestinatario().getUf()) ? nfe.getDestinatario().getUf() : nfe.getEmitente().getUf();
+        LocalDestino localDestino = getLocalDestino(nfe.getEmitente().getUf(), ufDestino);
+
+
+        // NFC-e não pode ser emitida para contribuinte do ICMS
+        IndicadorIe indicador;
+        if (modelo == ModeloDocumento.NFCE) {
+            indicador = IndicadorIe.NAO_CONTRIBUINTE;
+        } else if (nfe.getDestinatario().getCpfCnpj().length() == 14) {
+            if (nfe.getDestinatario().getInscricaoEstadual() == null || nfe.getDestinatario().getInscricaoEstadual().equals("")) {
+                indicador = IndicadorIe.NAO_CONTRIBUINTE;
+
+            } else if (nfe.getDestinatario().getInscricaoEstadual().equalsIgnoreCase("ISENTO")) {
+                indicador = IndicadorIe.CONTRIBUINTE_ISENTO;
+            } else {
+                indicador = IndicadorIe.CONTRIBUINTE_ICMS;
+            }
+        } else if (nfe.getDestinatario().getUf().equals("AM") || ufDestino.equals("BA")
+                || ufDestino.equals("CE") || ufDestino.equals("GO")
+                || ufDestino.equals("MG") || ufDestino.equals("MS")
+                || ufDestino.equals("MT") || ufDestino.equals("PE")
+                || ufDestino.equals("RN") || ufDestino.equals("SE")
+                || ufDestino.equals("SP")) {
+            indicador = IndicadorIe.NAO_CONTRIBUINTE;
+        } else {
+            indicador = IndicadorIe.CONTRIBUINTE_ISENTO;
+        }
+        ConsumidorOperacao consumidorOperacao = indicador == IndicadorIe.NAO_CONTRIBUINTE ? ConsumidorOperacao.FINAL : ConsumidorOperacao.NORMAL;
+        nfe.getDestinatario().setIndicadorIe(indicador.getCodigo());
+        nfe.setLocalDestino(localDestino.getCodigo());
+        nfe.setConsumidorOperacao(consumidorOperacao.getCodigo());
     }
 
     private void gerarItensVenda() {
@@ -155,6 +191,10 @@ public class VendaToNFe extends ManualCDILookup {
         nfeFormaPagamento.setForma(tipoRecebimento.getTipo());
         nfeFormaPagamento.setValor(venda.getValorTotal());
         nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
+    }
+
+    private LocalDestino getLocalDestino(String uf, String ufDestino) {
+        return uf.equals(ufDestino) ? LocalDestino.INTERNA : LocalDestino.INTERESTADUAL;
     }
 
 

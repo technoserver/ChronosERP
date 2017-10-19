@@ -80,7 +80,7 @@ public class VendaCabecalho implements Serializable {
     @NotNull
     private Vendedor vendedor;
     @JoinColumn(name = "ID_TIPO_NOTA_FISCAL", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     private NotaFiscalTipo notaFiscalTipo;
     @JoinColumn(name = "ID_TRANSPORTADORA", referencedColumnName = "ID")
     @ManyToOne
@@ -93,6 +93,7 @@ public class VendaCabecalho implements Serializable {
     private Empresa empresa;
     @OneToMany(mappedBy = "vendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VendaDetalhe> listaVendaDetalhe;
+
 
     public VendaCabecalho() {
     }
@@ -201,30 +202,38 @@ public class VendaCabecalho implements Serializable {
     public void setValorTotal(BigDecimal valorTotal) {
         this.valorTotal = valorTotal;
     }
+
     /**
      * C=CIF | F=FOB
-     * @return 
+     *
+     * @return
      */
     public String getTipoFrete() {
         return tipoFrete;
     }
+
     /**
      * C=CIF | F=FOB
-     * @param tipoFrete 
+     *
+     * @param tipoFrete
      */
     public void setTipoFrete(String tipoFrete) {
         this.tipoFrete = tipoFrete;
     }
+
     /**
-     *  0=pagamento à vista | 1=pagamento à prazo | 2=outros. (Campo indPag da NF-e)
-     * @return 
+     * 0=pagamento à vista | 1=pagamento à prazo | 2=outros. (Campo indPag da NF-e)
+     *
+     * @return
      */
     public String getFormaPagamento() {
         return formaPagamento;
     }
+
     /**
-     *  0=pagamento à vista | 1=pagamento à prazo | 2=outros. (Campo indPag da NF-e)
-     * @param formaPagamento 
+     * 0=pagamento à vista | 1=pagamento à prazo | 2=outros. (Campo indPag da NF-e)
+     *
+     * @param formaPagamento
      */
     public void setFormaPagamento(String formaPagamento) {
         this.formaPagamento = formaPagamento;
@@ -253,16 +262,20 @@ public class VendaCabecalho implements Serializable {
     public void setObservacao(String observacao) {
         this.observacao = observacao;
     }
+
     /**
-     *  D=Digitacao | P=Producao | X=Expedicao | F=Faturado | E=Entregue | V=Devolução N =Nota Fiscal
-     * @return 
+     * D=Digitacao | P=Producao | X=Expedicao | F=Faturado | E=Entregue | V=Devolução N =Nota Fiscal
+     *
+     * @return
      */
     public String getSituacao() {
         return situacao;
     }
+
     /**
      * D=Digitacao | P=Producao | X=Expedicao | F=Faturado | E=Entregue | V=Devolução |N =Nota Fiscal
-     * @param situacao 
+     *
+     * @param situacao
      */
     public void setSituacao(String situacao) {
         this.situacao = situacao;
@@ -403,6 +416,20 @@ public class VendaCabecalho implements Serializable {
     public boolean temProduto() {
         return getListaVendaDetalhe().size() > 0;
     }
+
+    @Transient
+    public boolean isPodeExcluir() {
+        boolean podeExcluir = (!situacao.equals("F") && !situacao.equals("N") && !situacao.equals("C"));
+        return podeExcluir;
+    }
+
+    @Transient
+    public boolean isPodeCancelar() {
+        boolean podeCacelar = (!situacao.equals("F") && !situacao.equals("N"));
+        return podeCacelar;
+    }
+
+
 
     @Override
     public int hashCode() {

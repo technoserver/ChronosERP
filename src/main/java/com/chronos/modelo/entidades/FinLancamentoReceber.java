@@ -80,6 +80,21 @@ public class FinLancamentoReceber implements Serializable {
     public FinLancamentoReceber() {
     }
 
+    public FinLancamentoReceber(Integer id) {
+        this.id = id;
+    }
+
+    public FinLancamentoReceber(Integer id, String numeroDocumento) {
+        this.id = id;
+        this.numeroDocumento = numeroDocumento;
+    }
+
+    public FinLancamentoReceber(Integer id, Set<FinParcelaReceber> listaFinParcelaReceber, Set<FinLctoReceberNtFinanceira> listaFinLctoReceberNtFinanceira) {
+        this.id = id;
+        this.listaFinParcelaReceber = listaFinParcelaReceber;
+        this.listaFinLctoReceberNtFinanceira = listaFinLctoReceberNtFinanceira;
+    }
+
     public Integer getId() {
         return id;
     }

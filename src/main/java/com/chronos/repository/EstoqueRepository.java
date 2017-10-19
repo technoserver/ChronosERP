@@ -1,12 +1,14 @@
 package com.chronos.repository;
 
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.NfeCabecalho;
-import com.chronos.modelo.entidades.NfeDetalhe;
-import com.chronos.modelo.entidades.Produto;
+import com.chronos.dto.ProdutoDTO;
+import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.view.ViewProdutoEmpresa;
 import com.chronos.util.jpa.Transactional;
 
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -31,6 +33,14 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         }
     }
 
+    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, List<VendaDetalhe> itens) throws Exception {
+        for (VendaDetalhe item : itens) {
+            atualizaEstoqueEmpresaControle(idEmpresa, item.getProduto().getId(), item.getQuantidade().negate());
+        }
+    }
+
+
+
 
     public void atualizaEstoque(Integer idProduto, BigDecimal quantidade) throws Exception {
         //atualiza tabela PRODUTO
@@ -54,6 +64,21 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     }
 
+    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+
+        String jpql = "UPDATE EmpresaProduto p set p.controle = p.controle + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
+        //  execute(jpql, quantidade, idProduto, idEmpresa);
+
+        // String jpql = "UPDATE Produto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.id = :id";
+
+        TypedQuery query = (TypedQuery) em.createQuery(jpql);
+        query.setParameter("quantidade", quantidade);
+        query.setParameter("idproduto", idProduto);
+        query.setParameter("idempresa", idEmpresa);
+        query.executeUpdate();
+
+    }
+
     public List<NfeDetalhe> getItens(NfeCabecalho nfeCabecalho) throws Exception {
 
         //  abrirConexao();
@@ -64,13 +89,44 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     public List<Produto> getProdutoEmpresa(String nome, Empresa empresa) throws Exception {
 
-            String jpql = "select new Produto(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,p.ncm,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,p.unidadeProduto) From Produto p " +
-                    "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
-                    "where LOWER(p.nome)  like ?1 and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null)";
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Produto> criteria = builder.createQuery(Produto.class);
+        Root<ViewProdutoEmpresa> root = criteria.from(ViewProdutoEmpresa.class);
 
 
-        List<Produto> produtos = getEntity(Produto.class, jpql, "%" + nome.toLowerCase().trim() + "%", empresa.getId());
-            return produtos;
+        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,ep.controle,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla) From Produto p " +
+                "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
+                "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
+                "where LOWER(p.nome)  like ?1 and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null)";
+
+
+        List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, "%" + nome.toLowerCase().trim() + "%", empresa.getId());
+        return null;
+
+
+    }
+
+    public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) throws Exception {
+
+        CriteriaBuilder builder = em.getCriteriaBuilder();
+        CriteriaQuery<Produto> criteria = builder.createQuery(Produto.class);
+        Root<ViewProdutoEmpresa> root = criteria.from(ViewProdutoEmpresa.class);
+//
+//        criteria.select(builder.construct(Produto.class
+//                ,root.get("id"), root.get("nome")
+//                ,root.get("valorVenda"), root.get("quantidade"),
+//                root.get("controle"), root.get("ncm")
+//                ,root.get("imagem"), root.get("tributGrupoTributario")),
+//                root.get("tributIcmsCustomCab"), root.get("unidadeProduto"));
+
+        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,ep.controle,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla) From Produto p " +
+                "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
+                "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
+                "where LOWER(p.nome)  like ?1 and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null)";
+
+
+        List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, "%" + nome.toLowerCase().trim() + "%", empresa.getId());
+        return produtos;
 
 
     }

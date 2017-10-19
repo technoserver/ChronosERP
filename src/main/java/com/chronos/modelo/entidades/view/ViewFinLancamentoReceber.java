@@ -390,7 +390,7 @@ public class ViewFinLancamentoReceber implements Serializable, Comparable<ViewFi
     @Transient
     public BigDecimal calcularValorTotal() {
         valorAPagar = BigDecimal.ZERO;
-        valorAPagar = this.saldo.add(Optional.ofNullable(getValorJuro()).orElse(BigDecimal.ZERO));
+        valorAPagar = getSaldo().add(Optional.ofNullable(getValorJuro()).orElse(BigDecimal.ZERO));
         return valorAPagar;
     }
 

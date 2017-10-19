@@ -45,8 +45,12 @@ public class ViewProdutoEmpresa implements Serializable {
     private Character servico;
     @Column(name = "tipo")
     private Character tipo;
+    @Column(name = "imagem")
+    private String imagem;
     @Column(name = "quantidade", precision = 18, scale = 6)
     private BigDecimal quantidade;
+    @Column(name = "controle", precision = 18, scale = 6)
+    private BigDecimal controle;
     @Column(name = "inativo")
     private String inativo;
     @Column(name = "excluido")
@@ -229,6 +233,22 @@ public class ViewProdutoEmpresa implements Serializable {
 
     public void setExcluido(String excluido) {
         this.excluido = excluido;
+    }
+
+    public String getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
+
+    public BigDecimal getControle() {
+        return controle;
+    }
+
+    public void setControle(BigDecimal controle) {
+        this.controle = controle;
     }
 
     @Override

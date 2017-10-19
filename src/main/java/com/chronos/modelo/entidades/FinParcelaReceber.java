@@ -98,6 +98,11 @@ public class FinParcelaReceber implements Serializable {
         this.id = id;
     }
 
+    public FinParcelaReceber(Integer id, Integer idfinLancamentoReceber) {
+        this.id = id;
+        this.finLancamentoReceber = new FinLancamentoReceber(idfinLancamentoReceber);
+    }
+
     public Integer getId() {
         return id;
     }

@@ -62,6 +62,8 @@ public class ConfiguracaoEmissorDTO {
 
     private String emailTexto;
 
+    private String csc;
+
     private String observacaoPadrao;
 
 
@@ -85,6 +87,7 @@ public class ConfiguracaoEmissorDTO {
         this.observacaoPadrao = configuracao.getObservacaoPadrao();
         this.webserviceAmbiente = configuracao.getWebserviceAmbiente();
         this.processoEmissao = configuracao.getProcessoEmissao();
+        this.csc = configuracao.getCodigoCsc();
     }
 
 
@@ -306,6 +309,14 @@ public class ConfiguracaoEmissorDTO {
 
     public String getObservacaoPadrao() {
         return observacaoPadrao;
+    }
+
+    public String getCsc() {
+        return csc;
+    }
+
+    public void setCsc(String csc) {
+        this.csc = csc;
     }
 
     public void setObservacaoPadrao(String observacaoPadrao) {

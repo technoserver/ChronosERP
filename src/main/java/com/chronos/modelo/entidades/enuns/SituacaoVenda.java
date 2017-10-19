@@ -10,7 +10,8 @@ public enum SituacaoVenda {
     Faturado("F"),
     Entregue("E"),
     Devolucao("V"),
-    NotaFiscal("N");
+    NotaFiscal("N"),
+    CANCELADA("C");
 
     private String codigo;
 

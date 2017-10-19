@@ -28,6 +28,10 @@ public interface Repository<T> {
 
     void excluir(Class<T> clazz) throws PersistenceException;
 
+    void excluir(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
+
+    void excluir(Class<T> clazz, List<Filtro> filtros) throws PersistenceException;
+
     void excluir(T bean) throws PersistenceException;
 
     void excluir(T bean, Integer id) throws PersistenceException;
@@ -49,7 +53,8 @@ public interface Repository<T> {
     Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws PersistenceException;
 
     T getEntityJoinFetch(Integer id, Class<T> clazz) throws PersistenceException;
-    
+
+
     T getJoinFetch(Integer id, Class<T> clazz) throws PersistenceException;
 
     List<T> getAll(Class<T> clazz) throws PersistenceException;

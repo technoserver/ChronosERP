@@ -77,11 +77,32 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return executarQueryNativa(sql);
     }
 
-    @Transactional
+
     @Override
     public void excluir(Class<T> clazz) throws PersistenceException {
-        String jpql = "delete  FROM " + clazz.getName();
-        Query q = em.createQuery(jpql);
+        excluir(clazz, new ArrayList<>());
+    }
+
+    @Override
+    public void excluir(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
+        List<Filtro> filtros = new ArrayList<>();
+        if (valor.getClass() == String.class) {
+            filtros.add(new Filtro(Filtro.AND, atributo, Filtro.LIKE, valor));
+        } else {
+            filtros.add(new Filtro(Filtro.AND, atributo, Filtro.IGUAL, valor));
+        }
+
+        excluir(clazz, filtros);
+    }
+
+    @Transactional
+    @Override
+    public void excluir(Class<T> clazz, List<Filtro> filtros) throws PersistenceException {
+        String jpql = "delete  FROM " + clazz.getName() + " o";
+        jpql += " where 1=1 ";
+        jpql = montaQuery(jpql, null, null, filtros);
+        Query q = queryPrepared(jpql, filtros);
+        ;
 
         q.executeUpdate();
     }
@@ -160,6 +181,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         }
     }
 
+
     @Override
     public List<T> getAll(Class<T> clazz) throws PersistenceException {
 
@@ -193,6 +215,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     public T getEntityJoinFetch(Integer id, Class<T> clazz) throws PersistenceException {
         return null;
     }
+
 
     @Override
     public <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws PersistenceException {
