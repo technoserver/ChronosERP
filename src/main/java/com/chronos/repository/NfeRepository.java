@@ -19,6 +19,15 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         return nfe;
     }
 
+    public NfeCabecalho procedimentoNfeCancelada(NfeCabecalho nfe) throws Exception {
+        nfe = atualizar(nfe);
+        for (NfeDetalhe nfeDetalhe : nfe.getListaNfeDetalhe()) {
+            atualizaEstoqueEmpresa(nfe.getEmpresa().getId(), nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial());
+        }
+        return nfe;
+    }
+
+
     public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());

@@ -3,18 +3,16 @@ package com.chronos.controll.vendas;
 import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.dto.ProdutoDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.FormaPagamento;
-import com.chronos.modelo.entidades.enuns.SituacaoVenda;
-import com.chronos.modelo.entidades.enuns.StatusTransmissao;
-import com.chronos.modelo.entidades.enuns.TipoFrete;
+import com.chronos.modelo.entidades.enuns.*;
 import com.chronos.modelo.entidades.view.PessoaCliente;
 import com.chronos.repository.EstoqueRepository;
-import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
@@ -59,9 +57,11 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Inject
     private Repository<NfeCabecalho> nfeRepository;
     @Inject
-    private FinLancamentoReceberService recebimentoService;
-    @Inject
     private NfeService nfeService;
+    @Inject
+    private AuditoriaService audService;
+    @Inject
+    private FinLancamentoReceberService finLancamentoReceberService;
     @Inject
     private EstoqueRepository estoqueRepositoy;
 
@@ -72,6 +72,12 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     private PessoaCliente pessoaCliente;
 
+    private ProdutoDTO produto;
+
+    private Produto produto2;
+
+    private String justificativa;
+
     @Override
     public void doCreate() {
         super.doCreate();
@@ -80,6 +86,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         getObjeto().setDataVenda(new Date());
         getObjeto().setSituacao(SituacaoVenda.Digitacao.getCodigo());
         getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
+        pessoaCliente = null;
 
     }
 
@@ -99,10 +106,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                     ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
         }
         super.salvar();
-        if (getObjeto().getId() == null) {
-            getObjeto().setNumeroFatura(getObjeto().getId());
-            dao.atualizar(getObjeto());
-        }
     }
 
     public void incluirVendaDetalhe() {
@@ -111,8 +114,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         vendaDetalhe.setQuantidade(BigDecimal.ONE);
     }
 
-    public void definirValorProduto() {
-        vendaDetalhe.setValorUnitario(vendaDetalhe.getProduto().getValorVenda());
+    public void definirValorProduto(SelectEvent event) {
+        vendaDetalhe.setValorUnitario(produto.getValorVenda());
     }
 
     public void alterarVendaDetalhe() {
@@ -120,7 +123,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
     public void salvarVendaDetalhe() {
-
+        vendaDetalhe.setProduto(new Produto(produto.getId(), produto.getNome()));
         if (vendaDetalhe.getId() == null) {
             getObjeto().getListaVendaDetalhe().stream()
                     .filter(p -> p.getProduto().getId() == vendaDetalhe.getProduto().getId())
@@ -160,15 +163,16 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     }
 
+    @Transactional
     public void faturarVenda() {
         try {
 
-            recebimentoService.gerarLancamento(getObjeto().getValorTotal(), getObjeto().getCliente(),
-                    new DecimalFormat("VD0000000").format(getObjeto().getId()), getObjeto().getCondicoesPagamento(), "210", Constantes.FIN.NATUREZA_VENDA, empresa);
+            finLancamentoReceberService.gerarLancamento(getObjeto().getValorTotal(), getObjeto().getCliente(),
+                    new DecimalFormat("VD0000000").format(getObjeto().getId()), getObjeto().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, empresa);
             getObjeto().setSituacao(SituacaoVenda.Faturado.getCodigo());
-            getObjeto().setNumeroFatura(getObjeto().getId());
             salvar("Venda faturada com Sucesso");
             gerarComissao();
+            estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), getObjeto().getListaVendaDetalhe());
             setTelaGrid(true);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -176,27 +180,56 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         }
     }
 
-    @Transactional
-    public void gerarNFe() {
 
+    public void gerarNFe() {
+        ModeloDocumento modelo = ModeloDocumento.NFE;
+        transmitirNFe(modelo);
+    }
+
+
+    public void gerarNfce() {
+        ModeloDocumento modelo = ModeloDocumento.NFCE;
+        transmitirNFe(modelo);
+    }
+
+    public void danfe() {
+        try {
+            int idnfe = getObjetoSelecionado().getNumeroFatura();
+            NfeCabecalho nfe = nfeRepository.get(idnfe, NfeCabecalho.class);
+            ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
+            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
+            nfeService.danfe(nfe, configuracao);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+    }
+
+    private void transmitirNFe(ModeloDocumento modelo) {
         try {
             SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(getObjetoSelecionado().getSituacao());
+            if (situacao != SituacaoVenda.Faturado) {
+                throw new Exception("Essa venda não se encontra faturada");
+            }
             if (situacao == SituacaoVenda.NotaFiscal) {
                 throw new Exception("Essa venda já possue NFe");
             }
+
             VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
             setObjeto(venda);
-            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, ModeloDocumento.NFE);
-            NfeCabecalho nfe = new NfeCabecalho();
-            VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFE, configuracao, venda);
+            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
+            NfeCabecalho nfe;
+            VendaToNFe vendaNfe = new VendaToNFe(modelo, configuracao, venda);
             nfe = vendaNfe.gerarNfe();
+            nfe.setCsc(configuracao.getCsc());
             nfe.setVendaCabecalho(venda);
             StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao);
             if (status == StatusTransmissao.AUTORIZADA) {
                 getObjeto().setSituacao(SituacaoVenda.NotaFiscal.getCodigo());
                 getObjeto().setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
                 salvar();
-                Mensagem.addInfoMessage("NFe transmitida com sucesso");
+                String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";
+                Mensagem.addInfoMessage(msg);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -204,10 +237,44 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         }
     }
 
-
+    @Transactional
     public void cancelarVenda() {
 
+
+        try {
+            SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(getObjetoSelecionado().getSituacao());
+            if (situacao == SituacaoVenda.Faturado) {
+                setObjeto(getObjetoSelecionado());
+                getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());
+                finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
+                salvar();
+                for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
+                    estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
+                }
+            } else if (situacao == SituacaoVenda.NotaFiscal) {
+                setObjeto(getObjetoSelecionado());
+                NfeCabecalho nfe = nfeRepository.get(getObjeto().getNumeroFatura(), NfeCabecalho.class);
+                nfe.setJustificativaCancelamento(justificativa);
+                ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
+                ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
+                boolean cancelada = nfeService.cancelarNFe(nfe, configuracao);
+                if (cancelada) {
+                    finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
+                    getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());
+                    salvar();
+                    for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
+                        estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
+                    }
+                }
+
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
     }
+
 
     public void carregaItensOrcamento(SelectEvent event) {
         try {
@@ -263,7 +330,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
         List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
         try {
-            listaVendaCondicoesPagamento = condicoes.getEntitys(VendaCondicoesPagamento.class, "nome", nome);
+            Object[] join = new Object[]{""};
+            listaVendaCondicoesPagamento = condicoes.getEntitys(VendaCondicoesPagamento.class, "nome", nome, new Object[]{"nome", "vistaPrazo"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -303,25 +371,24 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public List<Vendedor> getListaVendedor(String nome) {
         List<Vendedor> listaVendedor = new ArrayList<>();
         try {
-            listaVendedor = vendedores.getEntitys(Vendedor.class, "colaborador.pessoa.nome", nome);
+            listaVendedor = vendedores.getEntitys(Vendedor.class, "colaborador.pessoa.nome", nome, new Object[]{"colaborador.pessoa.nome", "comissao"});
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return listaVendedor;
     }
 
-    public List<Produto> getListaProduto(String nome) {
-        List<Produto> listaProduto = new ArrayList<>();
+    public List<ProdutoDTO> getListaProduto(String nome) {
+        List<ProdutoDTO> listaProduto = new ArrayList<>();
+
         try {
-            List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro("nome", Filtro.LIKE, nome));
-            filtros.add(new Filtro("servico", "N"));
-            atributos = new Object[]{"nome", "valorVenda"};
-            listaProduto = produtos.getEntitys(Produto.class, filtros, atributos);
+
+            listaProduto = nfeService.getListaProdutoDTO(nome);
         } catch (Exception e) {
-            // e.printStackTrace();
+            e.printStackTrace();
         }
         return listaProduto;
+
     }
 
 
@@ -394,5 +461,29 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void setPessoaCliente(PessoaCliente pessoaCliente) {
         this.pessoaCliente = pessoaCliente;
+    }
+
+    public String getJustificativa() {
+        return justificativa;
+    }
+
+    public void setJustificativa(String justificativa) {
+        this.justificativa = justificativa;
+    }
+
+    public ProdutoDTO getProduto() {
+        return produto;
+    }
+
+    public void setProduto(ProdutoDTO produto) {
+        this.produto = produto;
+    }
+
+    public Produto getProduto2() {
+        return produto2;
+    }
+
+    public void setProduto2(Produto produto2) {
+        this.produto2 = produto2;
     }
 }

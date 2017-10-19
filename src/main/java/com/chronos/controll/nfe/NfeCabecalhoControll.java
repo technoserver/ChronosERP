@@ -13,8 +13,6 @@ import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
-import com.chronos.util.ArquivoUtil;
-import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
@@ -22,7 +20,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -353,23 +350,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
 
         try {
-            String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj());
-            String arquivoPdf = pastaXml + System.getProperty("file.separator") + getObjeto().getNomePdf();
-            String caminhoXml = pastaXml + System.getProperty("file.separator") + getObjeto().getNomeXml();
-            File fileXml = new File(caminhoXml);
-            File filePdf = new File(arquivoPdf);
-
-            if (!filePdf.exists() && !fileXml.exists()) {
-
-            }
-
-            if (filePdf.exists()) {
-                FacesUtil.downloadArquivo(filePdf, filePdf.getName());
-            } else {
-                nfeService.gerarDanfe(getObjeto());
-                FacesUtil.downloadArquivo(filePdf, filePdf.getName());
-            }
-
+            configuracao = configuraNfe();
+            nfeService.danfe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
 
         } catch (Exception ex) {
             ex.printStackTrace();

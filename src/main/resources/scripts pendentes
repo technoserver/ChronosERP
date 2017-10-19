@@ -16,6 +16,41 @@ colocar o crt da empresa na populacao dos dados
 cria campo valorTotalTributos em nfecabecalho
 
 
+CREATE OR REPLACE VIEW view_produto_empresa AS
+  SELECT
+    p.id,
+    e.id                  AS idempresa,
+    sg.id                 AS idsubgrupo,
+    g.id                  AS idgrupo,
+    m.id                  AS idmarca,
+    un.id                 AS idunidade,
+    p.gtin,
+    p.nome,
+    p.ncm,
+    p.cest,
+    p.custo_unitario,
+    p.valor_venda,
+    p.servico,
+    p.tipo,
+    p.imagem,
+    ep.quantidade_estoque AS quantidade,
+    ep.controle,
+    p.inativo,
+    p.excluido,
+    sg.nome               AS subgrupo,
+    g.nome                AS grupo,
+    m.nome                AS marca,
+    un.sigla
+  FROM produto p
+    JOIN empresa_produto ep ON ep.id_produto = p.id
+    JOIN empresa e ON ep.id_empresa = e.id
+    JOIN produto_subgrupo sg ON sg.id = p.id_subgrupo
+    JOIN produto_grupo g ON g.id = sg.id_grupo
+    JOIN unidade_produto un ON un.id = p.id_unidade_produto
+    LEFT JOIN produto_marca m ON m.id = p.id_marca_produto
+  ORDER BY p.nome;
+
+
 CREATE OR REPLACE VIEW public.view_sped_c190 AS
  SELECT nfec.id,
     nfed.cst_icms,

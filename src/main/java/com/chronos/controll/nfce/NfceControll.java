@@ -665,7 +665,8 @@ public class NfceControll implements Serializable {
     public void gerarCupom() throws JRException, IOException {
 
         try {
-            nfeService.gerarDanfe(venda);
+            configuracao = getConfiguraNfce();
+            nfeService.gerarDanfe(venda, new ConfiguracaoEmissorDTO(configuracao));
             nomeCupom = "cupom" + venda.getNumero() + ".pdf";
         } catch (Exception ex) {
             ex.printStackTrace();

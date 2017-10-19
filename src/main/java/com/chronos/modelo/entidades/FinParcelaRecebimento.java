@@ -81,6 +81,20 @@ public class FinParcelaRecebimento implements Serializable {
     public FinParcelaRecebimento() {
     }
 
+    public FinParcelaRecebimento(Integer id, Integer idfinParcelaReceber, Integer idfinLancamentoReceber) {
+        this.id = id;
+        this.finParcelaReceber = new FinParcelaReceber(idfinParcelaReceber, idfinLancamentoReceber);
+
+    }
+
+    public FinParcelaRecebimento(Integer id, Date dataRecebimento) {
+        this.id = id;
+        this.dataRecebimento = dataRecebimento;
+
+    }
+
+
+
     public Integer getId() {
         return id;
     }

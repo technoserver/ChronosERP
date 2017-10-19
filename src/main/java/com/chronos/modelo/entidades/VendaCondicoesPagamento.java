@@ -60,6 +60,12 @@ public class VendaCondicoesPagamento implements Serializable {
 
     }
 
+    public VendaCondicoesPagamento(Integer id, String nome, String vistaPrazo) {
+        this.id = id;
+        this.nome = nome;
+        this.vistaPrazo = vistaPrazo;
+    }
+
     public Integer getId() {
         return id;
     }

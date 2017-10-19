@@ -280,6 +280,9 @@ public class ArquivoUtil {
             case NFe:
                 destino = getPastaXmlNfeProcessada(cnpj);
                 break;
+            case NFCe:
+                destino = getPastaXmlNfeProcessada(cnpj);
+                break;
             case NFePreProcessada:
                 destino = getPastaXmlNfePreProcessada(cnpj);
                 break;

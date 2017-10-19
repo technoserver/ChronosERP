@@ -5,9 +5,11 @@
  */
 package com.chronos.controll;
 
+import com.chronos.modelo.entidades.Auditoria;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.EmpresaEndereco;
 import com.chronos.modelo.entidades.Usuario;
+import com.chronos.modelo.entidades.enuns.AcaoLog;
 import com.chronos.modelo.entidades.enuns.Estados;
 import com.chronos.repository.Repository;
 import com.chronos.security.UsuarioLogado;
@@ -24,6 +26,7 @@ import javax.enterprise.inject.Produces;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -37,10 +40,13 @@ public abstract class AbstractControll<T> implements Serializable {
 
     private T objetoSelecionado;
     private T objeto;
+    private Auditoria log;
     protected ERPLazyDataModel<T> dataModel;
+
     private boolean telaGrid = true;
     @Inject
     protected Repository<T> dao;
+    private Repository<Auditoria> auditoriaRepository;
 
     private String titulo;
     private int activeTabIndex;
@@ -344,6 +350,7 @@ public abstract class AbstractControll<T> implements Serializable {
         vendaOrcamentoSituacao.put("Faturado", "F");
         vendaOrcamentoSituacao.put("Entregue", "E");
         vendaOrcamentoSituacao.put("Nota Emitida", "N");
+        vendaOrcamentoSituacao.put("Cancelada", "C");
 
         formaPagamento = new LinkedHashMap<>();
         formaPagamento.put("0 - A Vista", "0");
@@ -554,6 +561,22 @@ public abstract class AbstractControll<T> implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao excluir o registro!", e);
+        }
+    }
+
+    public void gerarLog(AcaoLog acao, String conteudo, String janela) {
+        try {
+            Date agora = new Date();
+            log = new Auditoria();
+            log.setAcao(acao.getNome());
+            log.setConteudo(conteudo);
+            log.setDataRegistro(agora);
+            log.setHoraRegistro(new SimpleDateFormat("hh:mm:ss").format(agora));
+            log.setJanelaController(janela);
+            log.setUsuario(getUsuarioLogado());
+            auditoriaRepository.salvar(log);
+        } catch (Exception ex) {
+
         }
     }
 

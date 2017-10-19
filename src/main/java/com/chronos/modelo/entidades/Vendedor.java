@@ -40,11 +40,18 @@ public class Vendedor implements Serializable {
     @JoinColumn(name = "ID_TABELA_PRECO", referencedColumnName = "ID")
     @ManyToOne
     private TabelaPreco tabelaPreco;
+    @Transient
+    private String nome;
 
 
     public Vendedor() {
     }
 
+    public Vendedor(Integer id, String nome, BigDecimal comissao) {
+        this.id = id;
+        this.nome = nome;
+        this.comissao = comissao;
+    }
 
     public Integer getId() {
         return id;
@@ -131,9 +138,17 @@ public class Vendedor implements Serializable {
     }
 
 
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
     @Override
     public String toString() {
-        return colaborador.getNome();
+        return nome;
     }
 
     @Override
@@ -161,7 +176,5 @@ public class Vendedor implements Serializable {
         return true;
     }
 
-    
-    
 
 }
