@@ -101,11 +101,11 @@
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Juros" style="width:10%;text-align: right">
-                            <h:outputLabel value="#{row.valorJuro}">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                        </p:column>
+                        <!--<p:column headerText="Juros" style="width:10%;text-align: right">-->
+                            <!--<h:outputLabel value="#{row.valorJuro}">-->
+                                <!--<f:convertNumber pattern="#,##0.00"/>-->
+                            <!--</h:outputLabel>-->
+                        <!--</p:column>-->
                         <p:column headerText="Saldo" style="width:10%;text-align: right">
                             <h:outputLabel value="#{row.saldo}">
                                 <f:convertNumber pattern="#,##0.00"/>
@@ -255,7 +255,8 @@
                                      value="Confimar Recebimento"
                                      action="#{finRecebimentoControll.baixaParcelas}"
                                      id="btnRecebimento">
-
+                        <p:ajax update=":formCentro:panelRecebimento,:formCentro:dataTableParcelas"
+                                process="@form"/>
                     </h:commandButton>
                 </div>
             </div>

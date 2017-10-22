@@ -305,6 +305,7 @@ public class ViewFinLancamentoReceber implements Serializable, Comparable<ViewFi
 
 
     public BigDecimal getValorAPagar() {
+        valorAPagar = getSaldo();
         return Optional.ofNullable(valorAPagar).orElse(BigDecimal.ZERO);
     }
 

@@ -69,16 +69,16 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         qtdParcelasAvencer = 0;
         parcelas.stream().forEach(p -> {
 
-            p.calcularValorJuros();
-            p.calcularValorTotal();
-            multa = multa.add(p.getValorMulta());
-            juros = juros.add(p.getValorJuro());
+          //  p.calcularValorJuros();
+          //  p.calcularValorTotal();
+          //  multa = multa.add(p.getValorMulta());
+          // juros = juros.add(p.getValorJuro());
 
             if (p.isVencido()) {
                 temParcelaVencida = true;
                 totalVencidas = totalVencidas.add(p.getValorAPagar());
                 qtdParcelasVencida++;
-                parcelaReceberRepository.atualizarJuros(p.getIdParcelaReceber(), p.getValorJuro());
+              //  parcelaReceberRepository.atualizarJuros(p.getIdParcelaReceber(), p.getValorJuro());
                 if (p.getIdStatusParcela() != 4) {
                     parcelaReceberRepository.atualizarStatusParcela(p.getIdParcelaReceber(), 4);
                     p.setDescricaoSituacaoParcela("Vencido");
@@ -121,7 +121,11 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
                         break;
                     }
                 }
+
+                buscarParcelas();
             }
+
+
 
         }
     }
@@ -133,7 +137,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         BigDecimal valorJuros = BigDecimal.ZERO;
 
         if (valorPagar.compareTo(p.getSaldo()) > 0) {
-            valorJuros = valorPagar.subtract(p.getValorJuro());
+        //    valorJuros = valorPagar.subtract(p.getValorJuro());
         }
 
         recebimento.setContaCaixa(tipoRecebimento.getContaCaixa());

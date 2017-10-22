@@ -1,14 +1,13 @@
 package com.chronos.repository;
 
+import com.chronos.dto.EstoqueIdealDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.view.ViewProdutoEmpresa;
 import com.chronos.util.jpa.Transactional;
 
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -108,9 +107,9 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) throws Exception {
 
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery<Produto> criteria = builder.createQuery(Produto.class);
-        Root<ViewProdutoEmpresa> root = criteria.from(ViewProdutoEmpresa.class);
+//        CriteriaBuilder builder = em.getCriteriaBuilder();
+//        CriteriaQuery<Produto> criteria = builder.createQuery(Produto.class);
+//        Root<ViewProdutoEmpresa> root = criteria.from(ViewProdutoEmpresa.class);
 //
 //        criteria.select(builder.construct(Produto.class
 //                ,root.get("id"), root.get("nome")
@@ -118,6 +117,21 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 //                root.get("controle"), root.get("ncm")
 //                ,root.get("imagem"), root.get("tributGrupoTributario")),
 //                root.get("tributIcmsCustomCab"), root.get("unidadeProduto"));
+
+
+//        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();;
+//        CriteriaQuery<Produto> criteriaQuery = criteriaBuilder.createQuery(Produto.class);
+//        Root<Produto> root = criteriaQuery.from(Produto.class);
+//        Join<Pessoa, EmpresaProduto> join = root.join("ep", JoinType.INNER);
+//
+//
+//        Predicate or = criteriaBuilder.or(
+//                criteriaBuilder.isNotNull(root.get("tributIcmsCustomCab")),criteriaBuilder.isNotNull(root.get("tributGrupoTributario")));
+//
+//        criteriaQuery.select(root).where(criteriaBuilder.equal(join.get("tipo"), "TIPO")).where(or);
+//
+//        TypedQuery typedQuery = em.createQuery(criteriaQuery);
+//        typedQuery.getResultList();
 
         String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,ep.controle,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
@@ -129,6 +143,15 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         return produtos;
 
 
+    }
+
+    public List<EstoqueIdealDTO> getItensCompraSugerida(Empresa empresa) throws Exception {
+        String jpql = "select new com.chronos.dto.EstoqueIdealDTO(p.id,p.nome,p.valorCompra,ep.quantidadeEstoque,ep.controle,p.estoqueIdeal) From Produto p " +
+                "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
+                "WHERE p.controle < p.estoqueMinimo and ep.empresa.id = ?1";
+
+        List<EstoqueIdealDTO> produtos = getEntity(EstoqueIdealDTO.class, jpql, empresa.getId());
+        return produtos;
     }
 
 
