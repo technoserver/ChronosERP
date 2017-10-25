@@ -424,6 +424,97 @@ CREATE OR REPLACE VIEW view_fin_resumo_tesouraria AS
     JOIN fin_documento_origem doc ON lr.id_fin_documento_origem = doc.id;
 
 
+CREATE OR REPLACE VIEW view_fin_lancamento_receber AS
+  SELECT
+    lr.id                                                          AS id,
+    c.id                                                           AS id_cliente,
+    p.nome,
+    pf.cpf                                                         AS cpf_cnpj,
+    lr.data_lancamento,
+    lr.valor_a_receber                                             AS valor_lancamento,
+    lr.quantidade_parcela,
+    lr.numero_documento,
+    pr.numero_parcela,
+    pr.data_vencimento,
+    pr.valor                                                       AS valor_parcela,
+    pr.taxa_juro,
+    pr.valor_juro,
+    pr.taxa_multa,
+    pr.valor_multa,
+    pr.taxa_desconto,
+    pr.valor_desconto,
+    (SELECT COALESCE(sum(fin_parcela_recebimento.valor_recebido), 0 :: NUMERIC)
+     FROM fin_parcela_recebimento
+     WHERE fin_parcela_recebimento.id_fin_parcela_receber = pr.id) AS valor_recebido,
+    (SELECT COALESCE(sum(fin_parcela_recebimento.valor_juro), 0 :: NUMERIC)
+     FROM fin_parcela_recebimento
+     WHERE fin_parcela_recebimento.id_fin_parcela_receber = pr.id) AS juros_recebido,
+    (SELECT COALESCE(sum(fin_parcela_recebimento.valor_multa), 0 :: NUMERIC)
+     FROM fin_parcela_recebimento
+     WHERE fin_parcela_recebimento.id_fin_parcela_receber = pr.id) AS multa_recebido,
+    s.id                                                           AS id_status_parcela,
+    s.situacao                                                     AS situacao_parcela,
+    s.descricao                                                    AS descricao_situacao_parcela,
+    cc.id                                                          AS id_conta_caixa,
+    cc.nome                                                        AS nome_conta_caixa,
+    cc.limite_cobranca_juro,
+    pr.id                                                          AS id_parcela_receber,
+    doc.sigla_documento
+  FROM fin_lancamento_receber lr
+    INNER JOIN fin_parcela_receber pr ON (pr.id_fin_lancamento_receber = lr.id)
+    INNER JOIN fin_status_parcela s ON (pr.id_fin_status_parcela = s.id)
+    INNER JOIN conta_caixa cc ON (pr.id_conta_caixa = cc.id)
+    INNER JOIN fin_documento_origem doc ON (lr.id_fin_documento_origem = doc.id)
+    INNER JOIN cliente c ON (lr.id_cliente = c.id)
+    INNER JOIN pessoa p ON (c.id_pessoa = p.id)
+    INNER JOIN pessoa_fisica pf ON (pf.id_pessoa = p.id)
+
+  UNION
+  SELECT
+    lr.id                                                          AS id,
+    c.id                                                           AS id_cliente,
+    p.nome,
+    pj.cnpj                                                        AS cpf_cnpj,
+    lr.data_lancamento,
+    lr.valor_a_receber                                             AS valor_lancamento,
+    lr.quantidade_parcela,
+    lr.numero_documento,
+    pr.numero_parcela,
+    pr.data_vencimento,
+    pr.valor                                                       AS valor_parcela,
+    pr.taxa_juro,
+    pr.valor_juro,
+    pr.taxa_multa,
+    pr.valor_multa,
+    pr.taxa_desconto,
+    pr.valor_desconto,
+    (SELECT COALESCE(sum(fin_parcela_recebimento.valor_recebido), 0 :: NUMERIC)
+     FROM fin_parcela_recebimento
+     WHERE fin_parcela_recebimento.id_fin_parcela_receber = pr.id) AS valor_recebido,
+    (SELECT COALESCE(sum(fin_parcela_recebimento.valor_juro), 0 :: NUMERIC)
+     FROM fin_parcela_recebimento
+     WHERE fin_parcela_recebimento.id_fin_parcela_receber = pr.id) AS juros_recebido,
+    (SELECT COALESCE(sum(fin_parcela_recebimento.valor_multa), 0 :: NUMERIC)
+     FROM fin_parcela_recebimento
+     WHERE fin_parcela_recebimento.id_fin_parcela_receber = pr.id) AS multa_recebido,
+    s.id                                                           AS id_status_parcela,
+    s.situacao                                                     AS situacao_parcela,
+    s.descricao                                                    AS descricao_situacao_parcela,
+    cc.id                                                          AS id_conta_caixa,
+    cc.nome                                                        AS nome_conta_caixa,
+    cc.limite_cobranca_juro,
+    pr.id                                                          AS id_parcela_receber,
+    doc.sigla_documento
+
+  FROM fin_lancamento_receber lr
+    INNER JOIN fin_parcela_receber pr ON (pr.id_fin_lancamento_receber = lr.id)
+    INNER JOIN fin_status_parcela s ON (pr.id_fin_status_parcela = s.id)
+    INNER JOIN conta_caixa cc ON (pr.id_conta_caixa = cc.id)
+    INNER JOIN fin_documento_origem doc ON (lr.id_fin_documento_origem = doc.id)
+    INNER JOIN cliente c ON (lr.id_cliente = c.id)
+    INNER JOIN pessoa p ON (c.id_pessoa = p.id)
+    INNER JOIN pessoa_juridica pj ON (pj.id_pessoa = p.id);
+
 -- Views referente a tributação
 
 CREATE OR REPLACE VIEW view_tributacao_cofins AS
@@ -577,7 +668,9 @@ CREATE OR REPLACE VIEW view_produto_empresa AS
     p.valor_venda,
     p.servico,
     p.tipo,
+    p.imagem,
     ep.quantidade_estoque AS quantidade,
+    ep.controle,
     p.inativo,
     p.excluido,
     sg.nome               AS subgrupo,
@@ -667,24 +760,23 @@ CREATE VIEW VIEW_SPED_NFE_DETALHE AS
     LEFT JOIN NFE_CABECALHO NFEC ON (NFED.ID_NFE_CABECALHO = NFEC.ID);
 
 
-CREATE VIEW VIEW_SPED_C190 AS
+CREATE OR REPLACE VIEW view_sped_c190 AS
   SELECT
-    NFEC.ID,
-    NFED.CST_ICMS,
-    NFED.CFOP,
-    NFED.ALIQUOTA_ICMS,
-    NFEC.DATA_HORA_EMISSAO,
-    SUM(NFED.VALOR_TOTAL)                AS SOMA_VALOR_OPERACAO,
-    SUM(NFED.BASE_CALCULO_ICMS)          AS SOMA_BASE_CALCULO_ICMS,
-    SUM(NFED.VALOR_ICMS)                 AS SOMA_VALOR_ICMS,
-    SUM(NFED.VALOR_BASE_CALCULO_ICMS_ST) AS SOMA_BASE_CALCULO_ICMS_ST,
-    SUM(NFED.VALOR_ICMS_ST)              AS SOMA_VALOR_ICMS_ST,
-    SUM(NFED.VALOR_OUTRAS_DESPESAS)      AS SOMA_VL_RED_BC,
-    SUM(NFED.VALOR_IPI)                  AS SOMA_VALOR_IPI
-  FROM
-    VIEW_SPED_NFE_DETALHE NFED
-    INNER JOIN NFE_CABECALHO NFEC ON (NFED.ID_NFE_CABECALHO = NFEC.ID)
-  GROUP BY NFEC.ID, CST_ICMS, CFOP, ALIQUOTA_ICMS, DATA_HORA_EMISSAO;
+    nfec.id,
+    nfed.cst_icms,
+    nfed.cfop,
+    nfed.aliquota_icms,
+    nfec.data_hora_emissao,
+    sum(nfed.valor_total)                AS soma_valor_operacao,
+    sum(nfed.base_calculo_icms)          AS soma_base_calculo_icms,
+    sum(nfed.valor_icms)                 AS soma_valor_icms,
+    sum(nfed.valor_base_calculo_icms_st) AS soma_base_calculo_icms_st,
+    sum(nfed.valor_icms_st)              AS soma_valor_icms_st,
+    sum(nfed.valor_outras_despesas)      AS soma_vl_red_bc,
+    COALESCE(sum(nfed.valor_ipi), 0)     AS soma_valor_ipi
+  FROM view_sped_nfe_detalhe nfed
+    JOIN nfe_cabecalho nfec ON nfed.id_nfe_cabecalho = nfec.id
+  GROUP BY nfec.id, nfed.cst_icms, nfed.cfop, nfed.aliquota_icms, nfec.data_hora_emissao;
 
 
 CREATE VIEW VIEW_SPED_C300

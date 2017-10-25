@@ -14,6 +14,7 @@
         <cc:attribute name="nomeAtributo" required="true"/>
         <cc:attribute name="requerido" default="true"/>       
         <cc:attribute name="controller" required="true"/>
+        <cc:attribute name="tamanhoMinimo" default="3"/>
         <cc:clientBehavior name="itemSelecionado" targets="#{cc.attrs.idComponente}" event="itemSelect" />
     </cc:interface>
 
@@ -27,8 +28,9 @@
                             value="#{cc.attrs.nomeAtributo}"
                             completeMethod="#{cc.attrs.controller[cc.attrs.completeMethod]}" var="objeto"
                             itemLabel="#{cc.attrs.itemLabel}" itemValue="#{objeto}"
+                            queryDelay="500"
                             converter="defaultConverter" forceSelection="true"
-                            minQueryLength="3" maxResults="10" required="#{cc.attrs.requerido}"
+                            minQueryLength="#{cc.attrs.tamanhoMinimo}" maxResults="10" required="#{cc.attrs.requerido}"
                             style="width: 100%" emptyMessage="Nenhum registro encontrado" >
 
                 <cc:insertChildren />
