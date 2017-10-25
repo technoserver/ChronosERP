@@ -1,12 +1,11 @@
 package com.chronos.controll.compras;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.dto.EstoqueIdealDTO;
 import com.chronos.modelo.entidades.CompraPedido;
 import com.chronos.modelo.entidades.CompraPedidoDetalhe;
 import com.chronos.modelo.entidades.CompraRequisicaoDetalhe;
-import com.chronos.modelo.entidades.Produto;
-import com.chronos.repository.Filtro;
-import com.chronos.repository.Repository;
+import com.chronos.repository.EstoqueRepository;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
@@ -28,14 +27,14 @@ public class CompraSugeridaControll extends AbstractControll<CompraPedido> imple
 
     private static final long serialVersionUID = 1L;
     @Inject
-    private Repository<Produto> produtos;
+    private EstoqueRepository estoqueRepository;
 
     private String tipoCompraSugerida;
 
     public String confirma() {
         try {
 
-            List<Produto> listaProduto = getItensCompraSugerida();
+            List<EstoqueIdealDTO> listaProduto = getItensCompraSugerida();
             if (listaProduto.isEmpty()) {
                 throw new Exception("Nenhum produto com estoque menor que o mínimo!");
             }
@@ -56,12 +55,12 @@ public class CompraSugeridaControll extends AbstractControll<CompraPedido> imple
 
     public Set<CompraRequisicaoDetalhe> geraRequisicao() throws Exception {
 
-        List<Produto> listaProduto = getItensCompraSugerida();
+        List<EstoqueIdealDTO> listaProduto = getItensCompraSugerida();
         Set<CompraRequisicaoDetalhe> listaRequisicaoDetalhe = new HashSet<>();
-        for (Produto p : listaProduto) {
+        for (EstoqueIdealDTO p : listaProduto) {
             CompraRequisicaoDetalhe requisicaoDetalhe = new CompraRequisicaoDetalhe();
-            requisicaoDetalhe.setProduto(p);
-            requisicaoDetalhe.setQuantidade(p.getEstoqueIdeal().subtract(p.getQuantidadeEstoque()));
+            requisicaoDetalhe.setProduto(p.getProduto());
+            requisicaoDetalhe.setQuantidade(p.getEstoqueIdeal().subtract(p.getControle()));
             requisicaoDetalhe.setQuantidadeCotada(BigDecimal.ZERO);
             requisicaoDetalhe.setItemCotado("N");
 
@@ -72,12 +71,12 @@ public class CompraSugeridaControll extends AbstractControll<CompraPedido> imple
     }
     public Set<CompraPedidoDetalhe> geraPedido() throws Exception {
 
-        List<Produto> listaProduto = getItensCompraSugerida();
+        List<EstoqueIdealDTO> listaProduto = getItensCompraSugerida();
         Set<CompraPedidoDetalhe> listaPedidoDetalhe = new HashSet<>();
-        for (Produto p : listaProduto) {
+        for (EstoqueIdealDTO p : listaProduto) {
             CompraPedidoDetalhe pedidoDetalhe = new CompraPedidoDetalhe();
-            pedidoDetalhe.setProduto(p);
-            pedidoDetalhe.setQuantidade(p.getEstoqueIdeal().subtract(p.getQuantidadeEstoque()));
+            pedidoDetalhe.setProduto(p.getProduto());
+            pedidoDetalhe.setQuantidade(p.getEstoqueIdeal().subtract(p.getControle()));
             pedidoDetalhe.setValorUnitario(p.getValorCompra());
 
             listaPedidoDetalhe.add(pedidoDetalhe);
@@ -85,12 +84,11 @@ public class CompraSugeridaControll extends AbstractControll<CompraPedido> imple
         return listaPedidoDetalhe;
     }
 
-    public List<Produto> getItensCompraSugerida(){
-        List<Produto> listaProduto = new ArrayList<>();
+    public List<EstoqueIdealDTO> getItensCompraSugerida(){
+        List<EstoqueIdealDTO> listaProduto = new ArrayList<>();
         try{
-            List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND,"quantidadeEstoque",Filtro.MENOR,"o.estoqueMinimo"));
-            listaProduto = produtos.getEntitys(Produto.class,filtros);
+
+            listaProduto = estoqueRepository.getItensCompraSugerida(empresa);
 
         }catch (Exception ex){
             ex.printStackTrace();

@@ -5914,10 +5914,11 @@ CREATE INDEX FK_COMBO_PROD_ITEM ON PRODUTO_COMBO_ITEM (ID_PRODUTO_COMBO);
 
 
 CREATE TABLE EMPRESA_PRODUTO (
-  ID SERIAL  NOT NULL ,
-  ID_PRODUTO INTEGER   NOT NULL ,
-  ID_EMPRESA INTEGER   NOT NULL ,
+  ID                 SERIAL  NOT NULL ,
+  ID_PRODUTO         INTEGER   NOT NULL ,
+  ID_EMPRESA         INTEGER   NOT NULL ,
   QUANTIDADE_ESTOQUE DECIMAL(18,6)      ,
+  CONTROLE           DECIMAL(18, 6),
 PRIMARY KEY(ID)    ,
   FOREIGN KEY(ID_PRODUTO)
     REFERENCES PRODUTO(ID),
@@ -7212,9 +7213,23 @@ PRIMARY KEY(ID)  ,
 
 CREATE INDEX NFE_CAB_PROC_REF ON NFE_PROCESSO_REFERENCIADO (ID_NFE_CABECALHO);
 
+-- ------------------------------------------------------------
+-- aguarda o xml da nfe
+-- ------------------------------------------------------------
 
 
+CREATE TABLE NFE_XML (
+  id               SERIAL  NOT NULL,
+  ID_NFE_CABECALHO INTEGER NOT NULL,
+  XML              BLOB,
+  PRIMARY KEY (id),
+  FOREIGN KEY (ID_NFE_CABECALHO)
+  REFERENCES NFE_CABECALHO (ID)
+);
 
+
+CREATE INDEX nfe_xml_FKIndex1
+  ON NFE_XML (ID_NFE_CABECALHO);
 
 -- ------------------------------------------------------------
 -- Grupo de informação das NF/NF-e referenciadas. Grupo com as informações das NF/NF-e /NF de produtor/ Cupom Fiscal referenciadas. Esta informação será utilizada nas hipóteses previstas na legislação. (Ex.: Devolução de Mercadorias, Substituição de NF cancelada, Complementação de NF, etc.).
@@ -8570,3 +8585,32 @@ CREATE INDEX FK_OS_ABERT_PROD_SERV
   ON OS_PRODUTO_SERVICO (ID_OS_ABERTURA);
 CREATE INDEX FK_PROD_OS
   ON OS_PRODUTO_SERVICO (ID_PRODUTO);
+
+-- ------------------------------------------------------------
+-- fiscal_apuracao_icms guarda os dados referente a apurtação o ICMS
+-- ------------------------------------------------------------
+
+CREATE TABLE fiscal_apuracao_icms
+(
+  id                          SERIAL  NOT NULL,
+  id_empresa                  INTEGER NOT NULL,
+  competencia                 CHARACTER VARYING(7),
+  valor_total_debito          NUMERIC(18, 6),
+  valor_ajuste_debito         NUMERIC(18, 6),
+  valor_total_ajuste_debito   NUMERIC(18, 6),
+  valor_estorno_credito       NUMERIC(18, 6),
+  valor_total_credito         NUMERIC(18, 6),
+  valor_ajuste_credito        NUMERIC(18, 6),
+  valor_total_ajuste_credito  NUMERIC(18, 6),
+  valor_estorno_debito        NUMERIC(18, 6),
+  valor_saldo_credor_anterior NUMERIC(18, 6),
+  valor_saldo_apurado         NUMERIC(18, 6),
+  valor_total_deducao         NUMERIC(18, 6),
+  valor_icms_recolher         NUMERIC(18, 6),
+  valor_saldo_credor_transp   NUMERIC(18, 6),
+  valor_debito_especial       NUMERIC(18, 6),
+  CONSTRAINT fiscal_apuracao_icms_pkey PRIMARY KEY (id),
+  CONSTRAINT fiscal_apuracao_icms_id_empresa_fkey FOREIGN KEY (id_empresa)
+  REFERENCES public.empresa (id) MATCH SIMPLE
+  ON UPDATE NO ACTION ON DELETE NO ACTION
+);
