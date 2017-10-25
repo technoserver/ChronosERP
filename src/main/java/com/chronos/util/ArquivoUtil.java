@@ -213,9 +213,15 @@ public class ArquivoUtil {
         return localProduto.resolve(foto).toString();
     }
 
+    public String getFotoProdutoTemp(String foto) {
+        return localTemporario.resolve(foto).toString();
+    }
+
     public void removerFoto(String foto) throws IOException {
         Path caminhoFoto = localProduto.resolve(foto);
+        Path caminhoFotoTemp = localTemporario.resolve(foto);
         Files.deleteIfExists(caminhoFoto);
+        Files.deleteIfExists(caminhoFotoTemp);
     }
 
     public String getFotoFuncionario(String cnpj, String cpf) {

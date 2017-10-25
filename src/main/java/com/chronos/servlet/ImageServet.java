@@ -32,17 +32,22 @@ public class ImageServet extends HttpServlet {
         if (!StringUtils.isEmpty(imagem)) {
 
             File file = new File(imagem);
-            img = new Image();
-            byte[] bb;
-            try {
-                bb = Biblioteca.getBytesFromFile(file);
-                img.setContent(bb);
-                img.setContentType("image/jpg");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
-                return;
+
+            if (file.exists()) {
+                img = new Image();
+                byte[] bb;
+
+                try {
+                    bb = Biblioteca.getBytesFromFile(file);
+                    img.setContent(bb);
+                    img.setContentType("image/jpg");
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND); // 404.
+                    return;
+                }
             }
+
 
         }
 
@@ -72,6 +77,11 @@ public class ImageServet extends HttpServlet {
 
         } else if (url.contains("perfil")) {
             parametro = request.getParameter("foto");
+        } else if (url.contains("produtoTemp")) {
+            parametro = request.getParameter("foto");
+            if (!StringUtils.isEmpty(parametro)) {
+                parametro = ArquivoUtil.getInstance().getFotoProdutoTemp(parametro);
+            }
         } else if (url.contains("produto")) {
             parametro = request.getParameter("foto");
             if (!StringUtils.isEmpty(parametro)) {

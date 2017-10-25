@@ -68,6 +68,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private String strSubGrupo;
     private String inativo;
     private String nomeProdutoOld;
+    private String nomeFoto;
 
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
@@ -130,6 +131,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         setObjeto(produto);
         grupo = getObjeto().getProdutoSubGrupo().getProdutoGrupo();
         nomeProdutoOld = getObjeto().getNome();
+        nomeFoto = getObjeto().getImagem();
     }
 
     @Override
@@ -152,7 +154,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Override
     public void salvar() {
         try {
-
+            getObjeto().setImagem(nomeFoto);
             if (getObjeto().getTributGrupoTributario() == null && getObjeto().getTributIcmsCustomCab() == null) {
                 Mensagem.addWarnMessage("É necesário informar o Grupo Tributário OU o ICMS Customizado.");
             } else {
@@ -210,12 +212,12 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 //            if (getObjeto().getId() == null) {
 //                throw new Exception("Necessário salvar o produto antes de realizar o upload");
 //            }
-            if (!StringUtils.isEmpty(getObjeto().getImagem())) {
-                ArquivoUtil.getInstance().removerFoto(getObjeto().getImagem());
+            if (!StringUtils.isEmpty(nomeFoto)) {
+                ArquivoUtil.getInstance().removerFoto(nomeFoto);
             }
             UploadedFile arquivo = event.getFile();
-            String nomeFoto = ArquivoUtil.getInstance().salvarFotoProdutoTemporariamente(arquivo);
-            getObjeto().setImagem(nomeFoto);
+            nomeFoto = ArquivoUtil.getInstance().salvarFotoProdutoTemporariamente(arquivo);
+
 
         } catch (Exception e) {
 
@@ -393,5 +395,13 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setProdutoSelecionado(ViewProdutoEmpresa produtoSelecionado) {
         this.produtoSelecionado = produtoSelecionado;
+    }
+
+    public String getNomeFoto() {
+        return nomeFoto;
+    }
+
+    public void setNomeFoto(String nomeFoto) {
+        this.nomeFoto = nomeFoto;
     }
 }
