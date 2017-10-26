@@ -351,9 +351,14 @@
                             <p:outputLabel id="imagemProduto">
 
                                 <h:graphicImage id="imgPadrao" library="images" name="produto-sem-foto.png"
-                                                rendered="#{produtoControll.objeto.imagem==null}"/>
+                                                rendered="#{produtoControll.nomeFoto==null}"/>
+                                <h:graphicImage id="imgProdutoTemp"
+                                                value="/image/produtoTemp?foto=#{produtoControll.nomeFoto}"
+                                                class="img-circle"
+                                                rendered="#{produtoControll.objeto.imagem==null and produtoControll.nomeFoto!=null}"/>
+
                                 <h:graphicImage id="imgProduto"
-                                                value="/image/produto?foto=#{produtoControll.objeto.imagem}"
+                                                value="/image/produto?foto=#{produtoControll.nomeFoto}"
                                                 class="img-circle"
                                                 rendered="#{produtoControll.objeto.imagem!=null}"/>
 

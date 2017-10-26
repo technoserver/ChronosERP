@@ -1,5 +1,10 @@
 package com.chronos.dto;
 
+import com.chronos.modelo.entidades.Produto;
+import com.chronos.modelo.entidades.TributGrupoTributario;
+import com.chronos.modelo.entidades.TributIcmsCustomCab;
+import com.chronos.modelo.entidades.UnidadeProduto;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -21,6 +26,8 @@ public class ProdutoDTO implements Serializable {
     private Integer idicms;
     private String unidade;
 
+    private Produto produto;
+
     public ProdutoDTO() {
     }
 
@@ -35,6 +42,13 @@ public class ProdutoDTO implements Serializable {
         this.imagem = imagem;
         this.idgrupotributario = idgrupotributario;
         this.idicms = idicms;
+        this.produto = new Produto(id, nome, valorVenda, quantidadeEstoque, ncm, new UnidadeProduto(0, unidade));
+        this.produto.setImagem(imagem);
+        if (idgrupotributario != null) {
+            produto.setTributGrupoTributario(new TributGrupoTributario(idgrupotributario));
+        } else {
+            produto.setTributIcmsCustomCab(new TributIcmsCustomCab(idicms));
+        }
     }
 
 
@@ -116,5 +130,14 @@ public class ProdutoDTO implements Serializable {
 
     public void setUnidade(String unidade) {
         this.unidade = unidade;
+    }
+
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
 }
