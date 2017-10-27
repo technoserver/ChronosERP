@@ -1,14 +1,13 @@
 
 package com.chronos.modelo.entidades.view;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Embeddable
 public class ViewFinFluxoCaixa implements Serializable {
@@ -32,6 +31,8 @@ public class ViewFinFluxoCaixa implements Serializable {
     private String codigoSituacao;
     @Column(name = "DESCRICAO_SITUACAO")
     private String descricaoSituacao;
+    @Column(name = "descricao_natureza")
+    private String descricaoNatureza;
     @Column(name = "OPERACAO")
     private String operacao;
 
@@ -110,6 +111,14 @@ public class ViewFinFluxoCaixa implements Serializable {
         this.operacao = operacao;
     }
 
+
+    public String getDescricaoNatureza() {
+        return descricaoNatureza;
+    }
+
+    public void setDescricaoNatureza(String descricaoNatureza) {
+        this.descricaoNatureza = descricaoNatureza;
+    }
 
     @Override
     public boolean equals(Object o) {

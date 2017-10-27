@@ -294,9 +294,9 @@
                                 <erp:subMenu caminho="/modulo/financeiro/pagamento/finParcelaPagamento"
                                              label="Pagamento"
                                              funcao="finParcelaPagamento"/>
-                                <erp:subMenu caminho="/modulo/financeiro/pagamento/finPagamentoFixo"
-                                             label="Pagamento Fixo/Recorrente"
-                                             funcao="finPagamentoFixo"/>
+                                <!--<erp:subMenu caminho="/modulo/financeiro/pagamento/finPagamentoFixo"-->
+                                <!--label="Pagamento Fixo/Recorrente"-->
+                                <!--funcao="finPagamentoFixo"/>-->
                             </ul>
                         </li>
                         <li class="${fn:contains(view.viewId,'modulo/financeiro/recebimento/')?'active':''}">
@@ -316,7 +316,7 @@
                                 <!--funcao="finCobranca"/>-->
                             </ul>
                         </li>
-                        <!--
+
                         <li class="${fn:contains(view.viewId,'modulo/financeiro/movimento/')?'active':''}">
                             <a href="#">Movimentos <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">
@@ -328,7 +328,7 @@
                                              funcao="finMovimentoCaixaBanco"/>
                             </ul>
                         </li>
-
+                        <!--
                         <li class="${fn:contains(view.viewId,'modulo/financeiro/cheque/')?'active':''}">
                             <a href="#">Controle de Chq. <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">

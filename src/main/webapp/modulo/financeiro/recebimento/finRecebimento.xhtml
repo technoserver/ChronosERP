@@ -88,7 +88,7 @@
                             <h:outputLabel value="#{row.nome}"/>
                         </p:column>
                         <p:column headerText="Num. Parcela" style="width:12%">
-                            <h:outputLabel value="#{row.numeroDocumento}"/>
+                            <h:outputLabel value="#{row.numeroDocumento}/#{row.numeroParcela}"/>
                         </p:column>
                         <p:column headerText="Data Vencimento" style="width:15%"
                                   sortBy="#{row.dataVencimento}">
@@ -191,7 +191,13 @@
                                     </tbody>
                                     <tfoot>
                                     <tr class="border-bottom-1px">
+
                                         <td><h4>SALDO DEVEDOR LIQUIDO</h4></td>
+                                        <td colspan="4" class="nowrap coluna-monetaria">
+                                            <h4>
+                                                <span>#{finRecebimentoControll.formatarValor(finRecebimentoControll.saldoDevedor)}</span>
+                                            </h4>
+                                        </td>
                                     </tr>
                                     </tfoot>
                                 </table>

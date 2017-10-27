@@ -60,22 +60,27 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
         getObjeto().setListaFinParcelaPagar(new HashSet<>());
         getObjeto().setListaFinLctoPagarNtFinanceira(new HashSet<>());
         getObjeto().setEmpresa(empresa);
+        getObjeto().setDataLancamento(new Date());
     }
 
     @Override
     public void doEdit() {
         super.doEdit();
+        FinLancamentoPagar pagar = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(pagar);
     }
 
     @Override
-    public void salvar(String mensagem) {
+    public void salvar() {
 
         try {
             if (getObjeto().getId() == null) {
                 gerarParcelas();
                 geraNaturezaFinanceira();
+
             }
-            super.salvar(mensagem);
+            getObjeto().setValorAPagar(getObjeto().getValorTotal());
+            super.salvar();
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao salvar o registro!", e);

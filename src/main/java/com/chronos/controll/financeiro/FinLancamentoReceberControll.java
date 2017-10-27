@@ -318,7 +318,10 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     public List<NaturezaFinanceira> getListaNaturezaFinanceira(String nome) {
         List<NaturezaFinanceira> listaNaturezaFinanceira = new ArrayList<>();
         try {
-            listaNaturezaFinanceira = naturezas.getEntitys(NaturezaFinanceira.class, "descricao", nome);
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("apareceAReceber", "S"));
+            filtros.add(new Filtro("descricao", Filtro.LIKE, nome));
+            listaNaturezaFinanceira = naturezas.getEntitys(NaturezaFinanceira.class, filtros, new Object[]{"descricao"});
         } catch (Exception e) {
             // e.printStackTrace();
         }

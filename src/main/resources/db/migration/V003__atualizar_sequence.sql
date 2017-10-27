@@ -66,5 +66,5 @@ ALTER SEQUENCE nfe_configuracao_ID_SEQ RESTART WITH 2;
 ALTER SEQUENCE venda_condicoes_pagamento_ID_SEQ RESTART WITH 11;
 ALTER SEQUENCE venda_condicoes_parcelas_ID_SEQ RESTART WITH 56;
 ALTER SEQUENCE fin_tipo_recebimento_ID_SEQ RESTART WITH 4;
-ALTER SEQUENCE natureza_financeira_ID_SEQ RESTART WITH 31;
+ALTER SEQUENCE natureza_financeira_id_seq RESTART WITH 67;
 ALTER SEQUENCE plano_natureza_financeira_ID_SEQ RESTART WITH 5;

@@ -55,13 +55,18 @@ public class ContaCaixa implements Serializable {
     @ManyToOne   
     private AgenciaBanco agenciaBanco;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @NotNull
     private Empresa empresa;
   
 
     public ContaCaixa() {
     }
+
+    public ContaCaixa(Integer id) {
+        this.id = id;
+    }
+
 
     public ContaCaixa(Integer id, String nome) {
         this.id = id;

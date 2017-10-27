@@ -65,7 +65,7 @@ public class PlanoNaturezaFinanceira implements Serializable {
     @Min(1)
     private Integer niveis;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @NotNull(message = "Empresa Obrigatória")
     private Empresa empresa;
 

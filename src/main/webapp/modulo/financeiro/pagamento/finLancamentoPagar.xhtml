@@ -97,26 +97,17 @@
                                         nomeAtributo="#{finLancamentoPagarControll.objeto.numeroDocumento}"
                                         tamanhoMaximo="50" requerido="true"/>
 
-                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
                                           idComponente="qtdParcelas" label="Qtde Parcela"
                                           requerido="true" thousandSeparator=""
                                           nomeAtributo="#{finLancamentoPagarControll.objeto.quantidadeParcela}"/>
-                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3" thousandSeparator=""
+
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2" thousandSeparator=""
                                           idComponente="finLancamentoPagarIntervaloEntreParcelas"
                                           label="Intervalo Entre Parcelas" requerido="true"
                                           nomeAtributo="#{finLancamentoPagarControll.objeto.intervaloEntreParcelas}"/>
-                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
-                                         idComponente="finLancamentoPagarPagamentoCompartilhado"
-                                         label="Pag.Compatilhado."
-                                         nomeAtributo="#{finLancamentoPagarControll.objeto.pagamentoCompartilhado}"
-                                         itens="#{finLancamentoPagarControll.simNao}"/>
 
-                    </div>
-                    <div class="row">
-                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
-                                       idComponente="DataLancamento" label="Data Lanc."
-                                       nomeAtributo="#{finLancamentoPagarControll.objeto.dataLancamento}"/>
-                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-2"
                                        idComponente="PrimeiroVencimento" label="Primeiro Venc."
                                        requerido="true"
                                        nomeAtributo="#{finLancamentoPagarControll.objeto.primeiroVencimento}"/>
@@ -124,10 +115,11 @@
                                           idComponente="finLancamentoPagarValorTotal" label="Valor Total"
                                           requerido="true"
                                           nomeAtributo="#{finLancamentoPagarControll.objeto.valorTotal}"/>
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
-                                          idComponente="finLancamentoPagarValorAPagar"
-                                          label="Valor A Pagar"
-                                          nomeAtributo="#{finLancamentoPagarControll.objeto.valorAPagar}"/>
+
+                    </div>
+                    <div class="row">
+
+
                     </div>
                     <erp:separador label="Dados para geração das parcelas"/>
                     <div class="row">

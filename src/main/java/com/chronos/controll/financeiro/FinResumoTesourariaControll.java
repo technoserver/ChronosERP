@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.view.ViewFinResumoTesourariaID;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
@@ -12,7 +13,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -46,8 +46,8 @@ public class FinResumoTesourariaControll extends AbstractControll<ViewFinResumoT
             } else {
                 List<Filtro> filtros;
                 filtros = new ArrayList<>();
-                filtros.add(new Filtro(Filtro.AND, "viewFinResumoTesouraria.dataLancamento", Filtro.MAIOR_OU_IGUAL, getDataInicial()));
-                filtros.add(new Filtro(Filtro.AND, "viewFinResumoTesouraria.dataLancamento", Filtro.MENOR_OU_IGUAL, ultimoDiaMes()));
+                filtros.add(new Filtro(Filtro.AND, "viewFinResumoTesouraria.dataLancamento", Filtro.MAIOR_OU_IGUAL, Biblioteca.getDataInicial(periodo)));
+                filtros.add(new Filtro(Filtro.AND, "viewFinResumoTesouraria.dataLancamento", Filtro.MENOR_OU_IGUAL, Biblioteca.ultimoDiaMes(periodo)));
 
                 if (isTelaGrid()) {
                     listaResumoTesouraria = resumos.getEntitys(ViewFinResumoTesourariaID.class, filtros);
@@ -63,33 +63,7 @@ public class FinResumoTesourariaControll extends AbstractControll<ViewFinResumoT
         }
     }
 
-    private Date getDataInicial() {
-        try {
-            if (periodo == null) {
-                return null;
-            }
-            Calendar dataValida = Calendar.getInstance();
-            dataValida.setTime(periodo);
-            dataValida.setLenient(false);
 
-            dataValida.set(Calendar.DAY_OF_MONTH, 1);
-
-            dataValida.getTime();
-
-            return dataValida.getTime();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private Date ultimoDiaMes() {
-        Calendar dataF = Calendar.getInstance();
-        dataF.setTime(periodo);
-        dataF.setLenient(false);
-        dataF.set(Calendar.DAY_OF_MONTH, dataF.getActualMaximum(Calendar.DAY_OF_MONTH));
-
-        return dataF.getTime();
-    }
 
     public String getTotais() {
         BigDecimal aPagar = BigDecimal.ZERO;

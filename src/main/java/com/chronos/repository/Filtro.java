@@ -43,11 +43,14 @@ public class Filtro implements Serializable {
     public static final String MAIOR = ">";
     public static final String MAIOR_OU_IGUAL = ">=";
     public static final String NAO_NULO = "IS NOT NULL";
-    public static final String LIKE = " like";
+    public static final String LIKE = " LIKE";
+    public static final String IN = " IN";
+    public static final String BETWEEN = " BETWEEN";
     private String operadorLogico;
     private String atributo;
     private String operadorRelacional;
     private Object valor;
+    private Object[] valores;
 
 
     public Filtro() {
@@ -72,6 +75,27 @@ public class Filtro implements Serializable {
         this.atributo = atributo;
         this.operadorRelacional = IGUAL;
         this.valor = valor;
+    }
+
+    public Filtro(String operadorLogico, String atributo, String operadorRelacional, Object[] valores) {
+        this.operadorLogico = operadorLogico;
+        this.atributo = atributo;
+        this.operadorRelacional = operadorRelacional;
+        this.valores = valores;
+    }
+
+    public Filtro(String atributo, String operadorRelacional, Object[] valores) {
+        this.operadorLogico = AND;
+        this.atributo = atributo;
+        this.operadorRelacional = operadorRelacional;
+        this.valores = valores;
+    }
+
+    public Filtro(String atributo, Object[] valores) {
+        this.operadorLogico = AND;
+        this.atributo = atributo;
+        this.operadorRelacional = IN;
+        this.valores = valores;
     }
 
 

@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
@@ -20,20 +21,19 @@
     </ui:define>
 
 
-
     <ui:define name="gridDados">
 
         <erp:gridDados controller="#{naturezaFinanceiraControll}"
                        idDataTable="dataTableNaturezaFinanceira"
                        nomeFuncao="Natureza Financeira"
                        id="telaGrid"
-        >
+                       somenteConsulta="#{(row.id le 66)}">
 
             <p:column headerText="Classificacao">
                 <h:outputLabel value="#{row.classificacao}"/>
             </p:column>
             <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}" />
+                <h:outputLabel value="#{row.descricao}"/>
             </p:column>
             <p:column headerText="Tipo">
                 <h:outputLabel
@@ -52,17 +52,37 @@
         >
 
             <div class="row">
-                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-3"
                                   label="Plano Natureza Financeira"
                                   itemLabel="#{objeto.nome}"
                                   controller="#{naturezaFinanceiraControll}"
                                   completeMethod="getListaPlanoNaturezaFinanceira"
                                   nomeAtributo="#{naturezaFinanceiraControll.objeto.planoNaturezaFinanceira}"
-                                  idComponente="naturezaFinanceiraPlanoNaturezaFinanceira"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
-                                idComponente="naturezaFinanceiraClassificacao" label="Classificacao"
-                                nomeAtributo="#{naturezaFinanceiraControll.objeto.classificacao}"
-                                tamanhoMaximo="30"/>
+                                  idComponente="naturezaFinanceiraPlanoNaturezaFinanceira">
+
+                    <p:ajax event="itemSelecionado"
+                            oncomplete="addClass()"
+                            listener="#{naturezaFinanceiraControll.selecionarPlano}"
+                            update="formCentro:telaDetalhe:campoNatureza:natureza,:formCentro:telaDetalhe:classificacao:naturezaFinanceiraClassificacao"/>
+                </erp:autoComplete>
+
+                <erp:campoSelectConverter itens="#{naturezaFinanceiraControll.naturezas}"
+                                          id="campoNatureza"
+                                          styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="natureza"
+                                          nomeAtributo="#{naturezaFinanceiraControll.objeto.naturezaFinanceira}"
+                                          label="Natureza Pai"
+                                          requerido="#{(empty naturezaFinanceiraControll.objeto.planoNaturezaFinanceira and naturezaFinanceiraControll.objeto.planoNaturezaFinanceira.niveis > 1)? true:false}"
+                                          labelItens="#{obj.descricao}"/>
+
+                <erp:campoMascara styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  nomeAtributo="#{naturezaFinanceiraControll.objeto.classificacao}"
+                                  label="Classificacao"
+                                  mascara="#{naturezaFinanceiraControll.mascara}"
+                                  id="classificacao"
+                                  desabilitado="#{naturezaFinanceiraControll.classificacao}"
+                                  idComponente="naturezaFinanceiraClassificacao"/>
+
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                 idComponente="naturezaFinanceiraDescricao" label="Descricao"
