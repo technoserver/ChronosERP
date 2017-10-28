@@ -52,6 +52,8 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     private BigDecimal juros;
     private BigDecimal totalVencidas;
     private BigDecimal totalAVencer;
+    private BigDecimal totalReceber;
+    private BigDecimal saldoDevedor;
     private String observacao;
     private boolean temParcelaVencida;
 
@@ -294,5 +296,15 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
 
     public void setObservacao(String observacao) {
         this.observacao = observacao;
+    }
+
+    public BigDecimal getTotalReceber() {
+        totalReceber = getJuros().add(getMulta());
+        return totalReceber;
+    }
+
+    public BigDecimal getSaldoDevedor() {
+        saldoDevedor = getTotalVencidas().add(getTotalAVencer());
+        return saldoDevedor;
     }
 }

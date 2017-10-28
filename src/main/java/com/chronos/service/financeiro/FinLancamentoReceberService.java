@@ -4,6 +4,7 @@ import com.chronos.dto.LancamentoReceber;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.Modulo;
 import com.chronos.repository.Filtro;
+import com.chronos.repository.FinLancamentoReceberRepository;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
@@ -24,7 +25,7 @@ public class FinLancamentoReceberService implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private Repository<FinLancamentoReceber> lancamentos;
+    private FinLancamentoReceberRepository lancamentos;
     @Inject
     private Repository<FinParcelaRecebimento> recebimentoRepository;
     @Inject
@@ -47,9 +48,13 @@ public class FinLancamentoReceberService implements Serializable {
         gerarContasReceber(lancamento, naturezaFinanceira);
     }
 
+    @Transactional
     public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) throws Exception {
         VendaCondicoesPagamento condicoesParcelas = lancamento.getCondicoesPagamento();
-        condicoesParcelas.setParcelas(condicoes.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesParcelas.getId()));
+        if (condicoesParcelas.getParcelas() == null || condicoesParcelas.getParcelas().isEmpty()) {
+            condicoesParcelas.setParcelas(condicoes.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesParcelas.getId()));
+        }
+
 
         FinLancamentoReceber lancamentoReceber = new FinLancamentoReceber();
         lancamentoReceber.setCliente(lancamento.getCliente());

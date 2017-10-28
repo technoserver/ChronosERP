@@ -71,6 +71,7 @@
                                          disabled="#{!cc.attrs.controller.podeInserir()}"
                                          rendered="#{!cc.attrs.somenteConsulta}"
                                          id="btnCadastrar">
+                            <p:resetInput target=":formCentro"/>
                             <p:ajax process="@form"
                                     oncomplete="addClass()"
                                     update=":formCentro:telaGrid:outputPanelGrid,#{cc.attrs.telaDetalhePadrao?':formCentro:telaDetalhe:outputPanelDetalhe':':formCentro:outputPanelDetalhe'},navegacao,:formCentro:mensagem"/>

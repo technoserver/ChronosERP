@@ -2345,6 +2345,7 @@ body .ui-inputfield {
     background-image: none;
     border: 1px solid #e5e6e7;
     border-radius: 1px !important;
+    height: 34px;
     color: inherit;
     display: block;
     padding: 6px 12px;

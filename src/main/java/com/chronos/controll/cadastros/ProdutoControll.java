@@ -313,7 +313,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                 ViewProdutoEmpresa view = (ViewProdutoEmpresa) event.getData();
                 List<Filtro> filtros = new ArrayList<>();
                 filtros.add(new Filtro("produto.id", Filtro.IGUAL, view.getId()));
-                atributos = new Object[]{"empresa.id", "empresa.razaoSocial", "quantidadeEstoque"};
+                atributos = new Object[]{"empresa.id", "empresa.razaoSocial", "quantidadeEstoque", "controle"};
 
                 listProdutoEmpresa = produtosEmpresa.getEntitys(EmpresaProduto.class, filtros, atributos);
             }

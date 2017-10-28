@@ -1,11 +1,10 @@
 
 package com.chronos.modelo.entidades.view;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "VIEW_FIN_MOVIMENTO_CAIXA_BANCO")
@@ -26,8 +25,5 @@ public class ViewFinMovimentoCaixaBancoID implements Serializable {
         this.viewFinMovimentoCaixaBanco = viewFinMovimentoCaixaBanco;
     }
 
-    public Integer getId() {
-        return viewFinMovimentoCaixaBanco.hashCode();
-    }
 
 }

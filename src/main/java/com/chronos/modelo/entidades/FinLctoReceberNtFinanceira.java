@@ -113,10 +113,6 @@ public class FinLctoReceberNtFinanceira implements Serializable {
     }
 
 
-    @Override
-    public String toString() {
-        return id.toString();
-    }
 
     @Override
     public int hashCode() {

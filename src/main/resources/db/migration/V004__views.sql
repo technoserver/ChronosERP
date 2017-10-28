@@ -515,6 +515,119 @@ CREATE OR REPLACE VIEW view_fin_lancamento_receber AS
     INNER JOIN pessoa p ON (c.id_pessoa = p.id)
     INNER JOIN pessoa_juridica pj ON (pj.id_pessoa = p.id);
 
+
+CREATE OR REPLACE VIEW view_fin_fluxo_caixa AS
+  SELECT
+    concat(lp.id, pp.id) :: INTEGER AS id,
+    cc.id                           AS id_conta_caixa,
+    cc.nome                         AS nome_conta_caixa,
+    p.nome                          AS nome_pessoa,
+    lp.data_lancamento,
+    pp.data_vencimento,
+    pp.valor,
+    sp.situacao                     AS codigo_situacao,
+    sp.descricao                    AS descricao_situacao,
+    n.descricao                     AS descricao_natureza,
+    'S'                             AS operacao
+  FROM fin_parcela_pagar pp
+    JOIN conta_caixa cc ON pp.id_conta_caixa = cc.id
+    JOIN fin_lancamento_pagar lp ON pp.id_fin_lancamento_pagar = lp.id
+    JOIN fornecedor f ON lp.id_fornecedor = f.id
+    JOIN pessoa p ON f.id_pessoa = p.id
+    JOIN fin_status_parcela sp ON pp.id_fin_status_parcela = sp.id
+    JOIN fin_lcto_pagar_nt_financeira lpn ON lpn.id_fin_lancamento_pagar = lp.id
+    JOIN natureza_financeira n ON lpn.id_natureza_financeira = n.id
+  WHERE sp.situacao <> '02'
+  UNION
+  SELECT
+    concat(lr.id, pr.id) :: INTEGER                                      AS id,
+    cc.id                                                                AS id_conta_caixa,
+    cc.nome                                                              AS nome_conta_caixa,
+    p.nome                                                               AS nome_pessoa,
+    lr.data_lancamento,
+    pr.data_vencimento,
+    (pr.valor - COALESCE((SELECT SUM(valor_recebido)
+                          FROM fin_parcela_recebimento rec
+                          WHERE rec.id_fin_parcela_receber = pr.id), 0)) AS VALOR,
+    sp.situacao                                                          AS codigo_situacao,
+    sp.descricao                                                         AS descricao_situacao,
+    n.descricao                                                          AS descricao_natureza,
+    'E' :: TEXT                                                          AS operacao
+  FROM fin_parcela_receber pr
+    JOIN conta_caixa cc ON pr.id_conta_caixa = cc.id
+    JOIN fin_lancamento_receber lr ON pr.id_fin_lancamento_receber = lr.id
+    JOIN cliente c ON lr.id_cliente = c.id
+    JOIN pessoa p ON c.id_pessoa = p.id
+    JOIN fin_status_parcela sp ON pr.id_fin_status_parcela = sp.id
+    JOIN fin_lcto_receber_nt_financeira ln ON ln.id_fin_lancamento_receber = lr.id
+    JOIN natureza_financeira n ON ln.id_natureza_financeira = n.id
+  WHERE sp.situacao <> '02';
+
+
+CREATE OR REPLACE VIEW view_fin_movimento_caixa_banco AS
+  SELECT
+    concat(cc.id, lp.id, pp.id) :: INTEGER          AS id,
+    pp.id                                           AS id_movimento,
+    cc.id                                           AS id_conta_caixa,
+    cc.nome                                         AS nome_conta_caixa,
+    p.nome                                          AS nome_pessoa,
+    lp.data_lancamento,
+    pp.data_pagamento                               AS data_pago_recebido,
+    COALESCE(pp.historico, '' :: CHARACTER VARYING) AS historico,
+    pp.valor_pago                                   AS valor,
+    tp.descricao                                    AS tipo,
+    doc.descricao                                   AS descricao_documento_origem,
+    'S'                                             AS operacao
+  FROM fin_parcela_pagamento pp
+    JOIN fin_tipo_pagamento tp ON tp.id = pp.id_fin_tipo_pagamento
+    JOIN conta_caixa cc ON pp.id_conta_caixa = cc.id
+    JOIN fin_parcela_pagar ppr ON pp.id_fin_parcela_pagar = ppr.id
+    JOIN fin_lancamento_pagar lp ON ppr.id_fin_lancamento_pagar = lp.id
+    JOIN fornecedor f ON lp.id_fornecedor = f.id
+    JOIN pessoa p ON f.id_pessoa = p.id
+    JOIN fin_documento_origem doc ON lp.id_fin_documento_origem = doc.id
+  UNION
+  SELECT
+    concat(cc.id, lr.id, pr.id) :: INTEGER AS id,
+    pr.id                                  AS id_movimento,
+    cc.id                                  AS id_conta_caixa,
+    cc.nome                                AS nome_conta_caixa,
+    p.nome                                 AS nome_pessoa,
+    lr.data_lancamento,
+    pr.data_recebimento                    AS data_pago_recebido,
+    COALESCE(pr.historico, '')             AS historico,
+    pr.valor_recebido                      AS valor,
+    tr.descricao                           AS tipo,
+    doc.descricao                          AS descricao_documento_origem,
+    'E'                                    AS operacao
+  FROM fin_parcela_recebimento pr
+    JOIN fin_tipo_recebimento tr ON tr.id = pr.id_fin_tipo_recebimento
+    JOIN conta_caixa cc ON pr.id_conta_caixa = cc.id
+    JOIN fin_parcela_receber ppr ON pr.id_fin_parcela_receber = ppr.id
+    JOIN fin_lancamento_receber lr ON ppr.id_fin_lancamento_receber = lr.id
+    JOIN cliente c ON lr.id_cliente = c.id
+    JOIN pessoa p ON c.id_pessoa = p.id
+    JOIN fin_documento_origem doc ON lr.id_fin_documento_origem = doc.id
+  ORDER BY 11, 9;
+
+
+CREATE OR REPLACE VIEW view_fin_cheque_nao_compensado AS
+  SELECT
+    0        AS id,
+    cc.id    AS id_conta_caixa,
+    cc.nome  AS nome_conta_caixa,
+    t.talao,
+    t.numero AS numero_talao,
+    c.numero AS numero_cheque,
+    c.status_cheque,
+    c.data_status,
+    ce.valor
+  FROM cheque c
+    JOIN talonario_cheque t ON c.id_talonario_cheque = t.id
+    JOIN conta_caixa cc ON t.id_conta_caixa = cc.id
+    JOIN fin_cheque_emitido ce ON ce.id_cheque = c.id
+  WHERE c.status_cheque <> 'C';
+
 -- Views referente a tributação
 
 CREATE OR REPLACE VIEW view_tributacao_cofins AS

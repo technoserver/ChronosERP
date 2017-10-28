@@ -12,16 +12,15 @@ import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by john on 15/08/17.
@@ -40,13 +39,28 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
     private Repository<ContaCaixa> contaCaixaDao;
     @Inject
     private Repository<ViewFinChequeNaoCompensadoID> cheques;
+    @Inject
+    private Repository<ContaCaixa> contaRepository;
 
     private FinFechamentoCaixaBanco fechamentoCaixaBanco;
 
     private Date periodo;
     private List<ViewFinMovimentoCaixaBancoID> listaMovimentoCaixaBanco;
-    private List<ViewFinMovimentoCaixaBancoID> listaMovimentoCaixaBancoDetalhe;
 
+    private int idconta;
+    private Map<String, Integer> contaCaixa;
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+
+        contaCaixa = new LinkedHashMap<>();
+
+
+        contaCaixa.putAll(contaRepository.getEntitys(ContaCaixa.class, new Object[]{"nome"}).stream()
+                .collect(Collectors.toMap(ContaCaixa::getNome, ContaCaixa::getId)));
+    }
 
     @Override
     public void doEdit() {
@@ -61,17 +75,23 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
                 Mensagem.addInfoMessage("Necessário informar o período!");
 
             } else {
-                List<Filtro> filtros = new ArrayList<>();
-                filtros.add(new Filtro(Filtro.AND, "viewFinMovimentoCaixaBanco.dataLancamento", Filtro.MAIOR_OU_IGUAL, getDataInicial()));
-                filtros.add(new Filtro(Filtro.AND, "viewFinMovimentoCaixaBanco.dataLancamento", Filtro.MENOR_OU_IGUAL, ultimoDiaMes()));
 
-                if (isTelaGrid()) {
-                    listaMovimentoCaixaBanco = movimentosBanco.getEntitys(ViewFinMovimentoCaixaBancoID.class, filtros);
+                List<Filtro> filtros = new ArrayList<>();
+                filtros.add(new Filtro(Filtro.AND, "viewFinMovimentoCaixaBanco.dataLancamento", Filtro.MAIOR_OU_IGUAL, Biblioteca.getDataInicial(periodo)));
+                filtros.add(new Filtro(Filtro.AND, "viewFinMovimentoCaixaBanco.dataLancamento", Filtro.MENOR_OU_IGUAL, Biblioteca.ultimoDiaMes(periodo)));
+                if (idconta > 0) {
+                    filtros.add(new Filtro(Filtro.AND, "viewFinMovimentoCaixaBanco.idContaCaixa", Filtro.IGUAL, idconta));
+                }
+                listaMovimentoCaixaBanco = movimentosBanco.getEntitys(ViewFinMovimentoCaixaBancoID.class, filtros);
+                if (listaMovimentoCaixaBanco.isEmpty()) {
+                    Mensagem.addInfoMessage("Não existe movimento no periodo informado");
                 } else {
-                    filtros.add(new Filtro(Filtro.AND, "viewFinMovimentoCaixaBanco.idContaCaixa", Filtro.IGUAL, getObjeto().getViewFinMovimentoCaixaBanco().getIdContaCaixa()));
-                    listaMovimentoCaixaBancoDetalhe = movimentosBanco.getEntitys(ViewFinMovimentoCaixaBancoID.class,filtros);
+                    setTelaGrid(false);
+                    setObjeto(new ViewFinMovimentoCaixaBancoID());
                     buscaDadosFechamento();
                 }
+
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,52 +100,26 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
         }
     }
 
-    private Date getDataInicial() {
-        try {
-            if (periodo == null) {
-                return null;
-            }
-            Calendar dataValida = Calendar.getInstance();
-            dataValida.setTime(periodo);
-            dataValida.setLenient(false);
 
-            dataValida.set(Calendar.DAY_OF_MONTH, 1);
-
-            dataValida.getTime();
-
-            return dataValida.getTime();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private Date ultimoDiaMes() {
-        Calendar dataF = Calendar.getInstance();
-        dataF.setTime(periodo);
-        dataF.setLenient(false);
-        dataF.set(Calendar.DAY_OF_MONTH, dataF.getActualMaximum(Calendar.DAY_OF_MONTH));
-
-        return dataF.getTime();
-    }
 
     private void buscaDadosFechamento() throws Exception {
         DecimalFormat formatoMes = new DecimalFormat("00");
         Calendar dataFechamento = Calendar.getInstance();
-        dataFechamento.setTime(getDataInicial());
+        dataFechamento.setTime(Biblioteca.getDataInicial(periodo));
         int mes = Integer.valueOf(formatoMes.format(dataFechamento.get(Calendar.MONTH) + 1));
         int ano = dataFechamento.get(Calendar.YEAR);
 
-        ContaCaixa contaCaixa = contaCaixaDao.get(getObjeto().getViewFinMovimentoCaixaBanco().getIdContaCaixa(),ContaCaixa.class);
+
 
         List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro(Filtro.AND, "contaCaixa", Filtro.IGUAL, contaCaixa));
+        filtros.add(new Filtro(Filtro.AND, "contaCaixa.id", Filtro.IGUAL, idconta));
         filtros.add(new Filtro(Filtro.AND, "mes", Filtro.IGUAL, String.valueOf(mes)));
         filtros.add(new Filtro(Filtro.AND, "ano", Filtro.IGUAL, String.valueOf(ano)));
 
         fechamentoCaixaBanco = fechamentos.get(FinFechamentoCaixaBanco.class, filtros);
         if (fechamentoCaixaBanco == null) {
             fechamentoCaixaBanco = new FinFechamentoCaixaBanco();
-            fechamentoCaixaBanco.setContaCaixa(contaCaixa);
+            fechamentoCaixaBanco.setContaCaixa(new ContaCaixa(idconta));
         }
 
         //busca saldo anterior
@@ -135,7 +129,7 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
             ano -= 1;
         }
         filtros = new ArrayList<>();
-        filtros.add(new Filtro(Filtro.AND, "contaCaixa", Filtro.IGUAL, contaCaixa));
+        filtros.add(new Filtro(Filtro.AND, "contaCaixa.id", Filtro.IGUAL, idconta));
         filtros.add(new Filtro(Filtro.AND, "mes", Filtro.IGUAL, String.valueOf(mes)));
         filtros.add(new Filtro(Filtro.AND, "ano", Filtro.IGUAL, String.valueOf(ano)));
 
@@ -167,7 +161,7 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
 
         //busca os cheques não compensados
         filtros = new ArrayList<>();
-        filtros.add(new Filtro(Filtro.AND, "viewFinChequeNaoCompensado.idContaCaixa", Filtro.IGUAL, contaCaixa.getId()));
+        filtros.add(new Filtro(Filtro.AND, "viewFinChequeNaoCompensado.idContaCaixa", Filtro.IGUAL, idconta));
 
         List<ViewFinChequeNaoCompensadoID> listaChequeNaoCompensado = cheques.getEntitys(ViewFinChequeNaoCompensadoID.class, filtros);
         for (ViewFinChequeNaoCompensadoID c : listaChequeNaoCompensado) {
@@ -227,13 +221,7 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
         this.listaMovimentoCaixaBanco = listaMovimentoCaixaBanco;
     }
 
-    public List<ViewFinMovimentoCaixaBancoID> getListaMovimentoCaixaBancoDetalhe() {
-        return listaMovimentoCaixaBancoDetalhe;
-    }
 
-    public void setListaMovimentoCaixaBancoDetalhe(List<ViewFinMovimentoCaixaBancoID> listaMovimentoCaixaBancoDetalhe) {
-        this.listaMovimentoCaixaBancoDetalhe = listaMovimentoCaixaBancoDetalhe;
-    }
 
     public FinFechamentoCaixaBanco getFechamentoCaixaBanco() {
         return fechamentoCaixaBanco;
@@ -243,4 +231,19 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
         this.fechamentoCaixaBanco = fechamentoCaixaBanco;
     }
 
+    public int getIdconta() {
+        return idconta;
+    }
+
+    public void setIdconta(int idconta) {
+        this.idconta = idconta;
+    }
+
+    public Map<String, Integer> getContaCaixa() {
+        return contaCaixa;
+    }
+
+    public void setContaCaixa(Map<String, Integer> contaCaixa) {
+        this.contaCaixa = contaCaixa;
+    }
 }

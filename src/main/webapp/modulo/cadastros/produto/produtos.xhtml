@@ -127,9 +127,10 @@
                         <p:rowExpansion>
 
 
-                            <p:panelGrid columns="2">
+                            <p:panelGrid columns="3">
                                 <h:outputLabel value="Empresa"/>
                                 <h:outputLabel value="Estoque"/>
+                                <h:outputLabel value="Controle"/>
 
                                 <c:forEach items="#{produtoControll.listProdutoEmpresa}" var="prod">
 
@@ -137,6 +138,9 @@
 
 
                                     <h:outputLabel value="#{prod.quantidadeEstoque}">
+                                        <f:convertNumber pattern="#,##0.000"/>
+                                    </h:outputLabel>
+                                    <h:outputLabel value="#{prod.controle}">
                                         <f:convertNumber pattern="#,##0.000"/>
                                     </h:outputLabel>
 

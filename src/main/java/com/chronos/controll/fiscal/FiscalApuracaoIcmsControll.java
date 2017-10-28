@@ -18,6 +18,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -55,17 +56,18 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
         try {
 
             String periodoAnterior = "";
-            Calendar dataInicio = Calendar.getInstance();
-            Calendar dataFim = Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.MONTH, Integer.valueOf(periodo.substring(0, 2)));
+            calendar.set(Calendar.YEAR, Integer.valueOf(periodo.substring(3, 7)));
+
+            Date dataInicio = Biblioteca.getDataInicial(calendar.getTime());
+            Date dataFim;
             BigDecimal valorTotalDebitos = BigDecimal.ZERO;
             BigDecimal valorTotalCreditos = BigDecimal.ZERO;
-            BigDecimal valorSaldoApurado = BigDecimal.ZERO;
+            BigDecimal valorSaldoApurado;
             try {
                 periodoAnterior = Biblioteca.periodoAnterior(periodo);
-                dataInicio.setLenient(false);
-                dataInicio.set(Calendar.DAY_OF_MONTH, 1);
-                dataInicio.set(Calendar.MONTH, Integer.valueOf(periodo.substring(0, 2)) - 1);
-                dataInicio.set(Calendar.YEAR, Integer.valueOf(periodo.substring(3, 7)));
+
                 dataFim = Biblioteca.ultimoDiaMes(dataInicio);
             } catch (Exception e) {
                 throw new Exception("Período inválido.");

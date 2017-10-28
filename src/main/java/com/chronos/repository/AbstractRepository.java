@@ -21,13 +21,18 @@ public abstract class AbstractRepository implements Serializable {
     @Inject
     protected EntityManager em;
 
-    protected <T> void salvar(T bean) {
+    public <T> void salvar(T bean) {
         em.persist(bean);
     }
 
-    protected <T> T atualizar(T bean) throws PersistenceException {
+    public <T> T atualizar(T bean) throws PersistenceException {
         return em.merge(bean);
 
+    }
+
+    public <T> void excluir(T bean) {
+        Object updateObj = em.merge(bean);
+        em.remove(updateObj);
     }
 
     public <T> T get(Class<T> classToCast, String query, Object... values) {

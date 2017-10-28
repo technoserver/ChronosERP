@@ -38,10 +38,11 @@ public class EmpresaProduto implements Serializable {
     public EmpresaProduto() {
     }
 
-    public EmpresaProduto(Integer id, Integer idempresa, String nomeEmpresa, BigDecimal quantidadeEstoque) {
+    public EmpresaProduto(Integer id, Integer idempresa, String nomeEmpresa, BigDecimal quantidadeEstoque, BigDecimal controle) {
         this.id = id;
         this.empresa = new Empresa(idempresa, nomeEmpresa);
         this.quantidadeEstoque = quantidadeEstoque;
+        this.controle = controle;
     }
 
     public EmpresaProduto(Integer id, BigDecimal quantidadeEstoque, Integer idproduto, String nome, BigDecimal valorVenda) {

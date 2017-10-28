@@ -1,35 +1,11 @@
-/*
-* The MIT License
-* 
-* Copyright: Copyright (C) 2014 chronosinfo.COM
-* 
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in
-* all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-* THE SOFTWARE.
-* 
-* The author may be contacted at: chronosinfo.com@gmail.com
-*
-* @author John Vanderson M Lima (chronos.com)
-* @version 2.0
-*/
+
 package com.chronos.modelo.entidades;
 
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -44,6 +20,7 @@ public class NaturezaFinanceira implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @NotBlank
     @Column(name = "CLASSIFICACAO")
     private String classificacao;
     @Column(name = "DESCRICAO")
@@ -56,8 +33,12 @@ public class NaturezaFinanceira implements Serializable {
     private String apareceAPagar;
     @Column(name = "APARECE_A_RECEBER")
     private String apareceAReceber;
+    @JoinColumn(name = "ID_NATUREZA_FINANCEIRA", referencedColumnName = "ID")
+    @ManyToOne
+    private NaturezaFinanceira naturezaFinanceira;
     @JoinColumn(name = "ID_PLANO_NATUREZA_FINANCEIRA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
+    @NotNull
     private PlanoNaturezaFinanceira planoNaturezaFinanceira;
 
     public NaturezaFinanceira() {
@@ -137,6 +118,14 @@ public class NaturezaFinanceira implements Serializable {
 
     public void setPlanoNaturezaFinanceira(PlanoNaturezaFinanceira planoNaturezaFinanceira) {
         this.planoNaturezaFinanceira = planoNaturezaFinanceira;
+    }
+
+    public NaturezaFinanceira getNaturezaFinanceira() {
+        return naturezaFinanceira;
+    }
+
+    public void setNaturezaFinanceira(NaturezaFinanceira naturezaFinanceira) {
+        this.naturezaFinanceira = naturezaFinanceira;
     }
 
     @Override

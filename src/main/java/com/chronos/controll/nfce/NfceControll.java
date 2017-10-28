@@ -21,6 +21,7 @@ import com.chronos.util.jsf.Mensagem;
 import net.sf.jasperreports.engine.*;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
@@ -588,9 +589,15 @@ public class NfceControll implements Serializable {
         } else if (item.getProduto().getValorVenda().doubleValue() <= 0) {
             msg = "Produto não pode ser vendido com valor zerado ou negativo.";
             valido = false;
+        } else if (StringUtils.isEmpty(item.getProduto().getUnidadeProduto().getPodeFracionar())) {
+            msg = "A unidade de medida possue valores não informado : 'Pode Fracionar'.";
+            valido = false;
         } else if (item.getProduto().getUnidadeProduto().getPodeFracionar().equals("N") && (item.getQuantidadeComercial().doubleValue() % 1) != 0) {
             msg = "Este produto não pode ser vendido em quantidade fracionada.";
             valido = false;
+        }
+        if (!StringUtils.isEmpty(msg)) {
+            Mensagem.addInfoMessage(msg);
         }
 
         return valido;

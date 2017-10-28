@@ -481,6 +481,8 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public void voltar() {
+        objeto = null;
+        objetoSelecionado = null;
         titulo = "Consultar";
         telaGrid = true;
     }

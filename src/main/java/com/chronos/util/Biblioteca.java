@@ -5,6 +5,8 @@
  */
 package com.chronos.util;
 
+import com.chronos.dto.MapDTO;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,16 +17,44 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @author john
  */
 public class Biblioteca {
 
+
+    public static Map getMap(List<MapDTO> list) {
+        Map<String, BigDecimal> mapa = new LinkedHashMap<>();
+        BigDecimal valor = BigDecimal.ZERO;
+        String descricao = "";
+        String descricaoAux = "";
+        int i = 0;
+        for (MapDTO item : list) {
+            i++;
+            descricao = item.getDescricao();
+
+            if (descricaoAux.equals("")) {
+                descricaoAux = descricao;
+            }
+            if (descricao.equals(descricaoAux)) {
+                valor = valor.add(item.getValor());
+                if (i == list.size()) {
+                    mapa.put(descricao, valor);
+                }
+            } else {
+                mapa.put(descricaoAux, valor);
+                valor = item.getValor();
+                descricaoAux = descricao;
+                if (i == list.size()) {
+                    mapa.put(descricao, valor);
+                }
+            }
+
+        }
+        return mapa;
+    }
 
     public String retiraAcentos(String string) {
         String aux = new String(string);
@@ -361,14 +391,35 @@ public class Biblioteca {
         return periodoAnterior;
     }
 
-    public static Calendar ultimoDiaMes(Calendar dataInicio) {
-        Calendar cData = Calendar.getInstance();
-        cData.setTime(dataInicio.getTime());
-        cData.setLenient(false);
-        cData.set(Calendar.DAY_OF_MONTH, cData.getActualMaximum(Calendar.DAY_OF_MONTH));
+    public static Date getDataInicial(Date periodo) {
+        try {
+            if (periodo == null) {
+                return null;
+            }
+            Calendar dataValida = Calendar.getInstance();
+            dataValida.setTime(periodo);
+            dataValida.setLenient(false);
 
-        return cData;
+            dataValida.set(Calendar.DAY_OF_MONTH, 1);
+
+            dataValida.getTime();
+
+            return dataValida.getTime();
+        } catch (Exception e) {
+            return null;
+        }
     }
+
+    public static Date ultimoDiaMes(Date periodo) {
+        Calendar dataF = Calendar.getInstance();
+        dataF.setTime(periodo);
+        dataF.setLenient(false);
+        dataF.set(Calendar.DAY_OF_MONTH, dataF.getActualMaximum(Calendar.DAY_OF_MONTH));
+
+        return dataF.getTime();
+    }
+
+
 
     /**
      * Retorna o mes e ano no formato MM/AAAA
