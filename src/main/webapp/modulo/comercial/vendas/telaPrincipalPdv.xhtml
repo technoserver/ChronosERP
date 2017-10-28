@@ -20,10 +20,10 @@
                         itemLabel="#{objeto.produto.nome}" itemValue="#{objeto}" var="objeto"
                         style="width: 100%;margin-bottom: 10px" onfocus="true">
             <p:column headerText="Nome">
-                <p:outputLabel value="#{objeto.produto.descricaoPdv}"/>
+                <p:outputLabel value="#{objeto.nome}"/>
             </p:column>
             <p:column headerText="Estoque">
-                <p:outputLabel value="#{objeto.quantidadeEstoque}">
+                <p:outputLabel value="#{objeto.controle}">
                     <f:convertNumber pattern="#,##0.00"/>
                 </p:outputLabel>
             </p:column>

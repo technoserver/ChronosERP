@@ -2258,7 +2258,7 @@ div.dt-button-info {
     background-image: none;
     border: 1px solid #e5e6e7;
     border-radius: 1px;
-    height: 34px !important;
+    height: 34px;
     color: inherit;
     display: block;
     padding: 6px 12px;

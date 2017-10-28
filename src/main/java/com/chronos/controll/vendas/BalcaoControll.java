@@ -1,18 +1,15 @@
 package com.chronos.controll.vendas;
 
-import com.chronos.bo.nfe.VendaToNFe;
-import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.dto.ProdutoDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.FormaPagamento;
 import com.chronos.modelo.entidades.enuns.SituacaoVenda;
 import com.chronos.modelo.entidades.enuns.TipoFrete;
-import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
-import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
@@ -24,7 +21,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,13 +55,16 @@ public class BalcaoControll implements Serializable {
     @Inject
     private NfeService nfeService;
 
+    @Inject
+    private VendaService vendaService;
+
     private VendaCabecalho venda;
     private VendaDetalhe item;
     private Empresa empresa;
     private Usuario usuario;
     private Vendedor vendedor;
     private Cliente cliente;
-    private EmpresaProduto produto;
+    private ProdutoDTO produto;
     private List<Vendedor> listVendedores;
     private List<VendaCondicoesPagamento> condicoesPagamentos;
     private BigDecimal desconto;
@@ -94,8 +93,9 @@ public class BalcaoControll implements Serializable {
         venda.setSituacao(SituacaoVenda.Digitacao.getCodigo());
         venda.setTipoFrete(TipoFrete.CIF.getCodigo());
         vendedor = instanciarVendedor(usuario);
-        cliente = null;
+        cliente = new Cliente(1, "CLIENTE PADRAO");
         venda.setVendedor(vendedor);
+        venda.setCliente(cliente);
         item = new VendaDetalhe();
         desconto = BigDecimal.ZERO;
         telaPagamentos = false;
@@ -127,20 +127,8 @@ public class BalcaoControll implements Serializable {
             telaPagamentos = false;
             telaImpressao = true;
 
-            if (venda.getCondicoesPagamento() != null) {
-                venda.setFormaPagamento(venda.getCondicoesPagamento().getVistaPrazo().equals("V")
-                        ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
-            }
-            venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
-            venda = vendas.atualizar(venda);
-            if (venda.getId() == null) {
-                venda.setNumeroFatura(venda.getId());
-                vendas.atualizar(venda);
-            }
-            recebimentoService.gerarLancamento(venda.getValorTotal(), venda.getCliente(),
-                    new DecimalFormat("VD0000000").format(venda.getId()), venda.getCondicoesPagamento(), "210", Constantes.FIN.NATUREZA_VENDA, empresa);
-
-            gerarComissao();
+            venda = vendaService.faturarVenda(venda);
+            Mensagem.addInfoMessage("Venda faturada com sucesso");
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
@@ -148,17 +136,7 @@ public class BalcaoControll implements Serializable {
 
     }
 
-    private void gerarComissao() {
-        VendaComissao comissao = new VendaComissao();
-        comissao.setDataLancamento(new Date());
-        comissao.setSituacao("A");
-        comissao.setTipoContabil("C");
-        comissao.setValorComissao(venda.getValorComissao());
-        comissao.setValorVenda(venda.getValorTotal());
-        comissao.setVendaCabecalho(venda);
-        comissao.setVendedor(venda.getVendedor());
-        comissoes.salvar(comissao);
-    }
+
 
     public void cancelar() {
         telaVenda = true;
@@ -169,9 +147,8 @@ public class BalcaoControll implements Serializable {
 
 
         try {
-            VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, null, venda);
-            NfeCabecalho nfe = vendaNfe.gerarNfe();
-            nfeService.transmitirNFe(nfe, new ConfiguracaoEmissorDTO());
+            ModeloDocumento modelo = ModeloDocumento.NFCE;
+            vendaService.transmitirNFe(venda, modelo);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
@@ -180,21 +157,20 @@ public class BalcaoControll implements Serializable {
 
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Produto">
-    public List<EmpresaProduto> getListProduto(String nome) {
-        List<EmpresaProduto> list = new ArrayList<>();
+    public List<ProdutoDTO> getListProduto(String nome) {
+        List<ProdutoDTO> listaProduto = new ArrayList<>();
+
         try {
-            List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro("empresa.id", empresa.getId()));
-            filtros.add(new Filtro("produto.nome", Filtro.LIKE, nome));
-            list = produtos.getEntitys(EmpresaProduto.class, filtros);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+
+            listaProduto = nfeService.getListaProdutoDTO(nome);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return list;
+        return listaProduto;
     }
 
     public void selecionarProduto(SelectEvent event) {
-        EmpresaProduto produtoSelecionado = (EmpresaProduto) event.getObject();
+        ProdutoDTO produtoSelecionado = (ProdutoDTO) event.getObject();
         desconto = BigDecimal.ZERO;
         item = new VendaDetalhe();
         item.setVendaCabecalho(venda);
@@ -234,7 +210,7 @@ public class BalcaoControll implements Serializable {
 
         venda.calcularValorTotal();
         item = new VendaDetalhe();
-        produto = new EmpresaProduto();
+        produto = new ProdutoDTO();
 
     }
 
@@ -331,13 +307,7 @@ public class BalcaoControll implements Serializable {
         this.cliente = cliente;
     }
 
-    public EmpresaProduto getProduto() {
-        return produto;
-    }
 
-    public void setProduto(EmpresaProduto produto) {
-        this.produto = produto;
-    }
 
     public VendaDetalhe getItem() {
         return item;
@@ -397,5 +367,13 @@ public class BalcaoControll implements Serializable {
 
     public void setCondicoesPagamentos(List<VendaCondicoesPagamento> condicoesPagamentos) {
         this.condicoesPagamentos = condicoesPagamentos;
+    }
+
+    public ProdutoDTO getProduto() {
+        return produto;
+    }
+
+    public void setProduto(ProdutoDTO produto) {
+        this.produto = produto;
     }
 }

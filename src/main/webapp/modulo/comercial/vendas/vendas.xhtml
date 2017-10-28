@@ -447,15 +447,6 @@
                                                         </h:commandLink>
                                                     </li>
                                                 </c:if>
-                                                <li>
-                                                    <h:commandLink value="Salvar e emitir NF"
-                                                                   action="#{vendaCabecalhoControll.gerarNFe()}"
-                                                                   disabled="#{vendaCabecalhoControll.objeto.emitido}"
-                                                    >
-                                                        <p:ajax process="@form"
-                                                                update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"/>
-                                                    </h:commandLink>
-                                                </li>
                                             </ul>
                                         </c:if>
                                     </h:panelGroup>

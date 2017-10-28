@@ -596,6 +596,9 @@ public class NfceControll implements Serializable {
             msg = "Este produto não pode ser vendido em quantidade fracionada.";
             valido = false;
         }
+        if (!StringUtils.isEmpty(msg)) {
+            Mensagem.addInfoMessage(msg);
+        }
 
         return valido;
     }

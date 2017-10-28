@@ -1,19 +1,21 @@
 package com.chronos.controll.vendas;
 
-import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.*;
+import com.chronos.modelo.entidades.enuns.FormaPagamento;
+import com.chronos.modelo.entidades.enuns.Modulo;
+import com.chronos.modelo.entidades.enuns.SituacaoVenda;
+import com.chronos.modelo.entidades.enuns.TipoFrete;
 import com.chronos.modelo.entidades.view.PessoaCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.gerencial.AuditoriaService;
-import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
@@ -64,7 +66,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private FinLancamentoReceberService finLancamentoReceberService;
     @Inject
     private EstoqueRepository estoqueRepositoy;
-
+    @Inject
+    private VendaService vendaService;
 
 
     private VendaDetalhe vendaDetalhe;
@@ -163,16 +166,12 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     }
 
-    @Transactional
+
     public void faturarVenda() {
         try {
 
-            finLancamentoReceberService.gerarLancamento(getObjeto().getValorTotal(), getObjeto().getCliente(),
-                    new DecimalFormat("VD0000000").format(getObjeto().getId()), getObjeto().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, empresa);
-            getObjeto().setSituacao(SituacaoVenda.Faturado.getCodigo());
-            salvar("Venda faturada com Sucesso");
-            gerarComissao();
-            estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), getObjeto().getListaVendaDetalhe());
+            vendaService.faturarVenda(getObjeto());
+            Mensagem.addInfoMessage("Venda faturada com sucesso");
             setTelaGrid(true);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -183,13 +182,16 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void gerarNFe() {
         ModeloDocumento modelo = ModeloDocumento.NFE;
-        transmitirNFe(modelo);
+        vendaService.transmitirNFe(getObjeto(), modelo);
+        VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        vendaService.transmitirNFe(venda, modelo);
     }
 
 
     public void gerarNfce() {
         ModeloDocumento modelo = ModeloDocumento.NFCE;
-        transmitirNFe(modelo);
+        VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        vendaService.transmitirNFe(venda, modelo);
     }
 
     public void danfe() {
@@ -205,37 +207,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         }
     }
 
-    private void transmitirNFe(ModeloDocumento modelo) {
-        try {
-            SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(getObjetoSelecionado().getSituacao());
-            if (situacao != SituacaoVenda.Faturado) {
-                throw new Exception("Essa venda não se encontra faturada");
-            }
-            if (situacao == SituacaoVenda.NotaFiscal) {
-                throw new Exception("Essa venda já possue NFe");
-            }
-
-            VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
-            setObjeto(venda);
-            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
-            NfeCabecalho nfe;
-            VendaToNFe vendaNfe = new VendaToNFe(modelo, configuracao, venda);
-            nfe = vendaNfe.gerarNfe();
-            nfe.setCsc(configuracao.getCsc());
-            nfe.setVendaCabecalho(venda);
-            StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao);
-            if (status == StatusTransmissao.AUTORIZADA) {
-                getObjeto().setSituacao(SituacaoVenda.NotaFiscal.getCodigo());
-                getObjeto().setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
-                salvar();
-                String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";
-                Mensagem.addInfoMessage(msg);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
-        }
-    }
 
     @Transactional
     public void cancelarVenda() {
@@ -411,17 +382,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         getObjeto().setTaxaComissao(vendedor.getComissao());
     }
 
-    private void gerarComissao() {
-        VendaComissao comissao = new VendaComissao();
-        comissao.setDataLancamento(new Date());
-        comissao.setSituacao("A");
-        comissao.setTipoContabil("C");
-        comissao.setValorComissao(getObjeto().getValorComissao());
-        comissao.setValorVenda(getObjeto().getValorTotal());
-        comissao.setVendaCabecalho(getObjeto());
-        comissao.setVendedor(getObjeto().getVendedor());
-        comissoes.salvar(comissao);
-    }
 
 
     @Override

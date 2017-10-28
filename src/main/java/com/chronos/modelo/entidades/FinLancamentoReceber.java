@@ -220,6 +220,7 @@ public class FinLancamentoReceber implements Serializable {
     }
 
     public void setListaFinParcelaReceber(Set<FinParcelaReceber> listaFinParcelaReceber) {
+
         this.listaFinParcelaReceber = listaFinParcelaReceber;
     }
 
@@ -228,6 +229,7 @@ public class FinLancamentoReceber implements Serializable {
     }
 
     public void setListaFinLctoReceberNtFinanceira(Set<FinLctoReceberNtFinanceira> listaFinLctoReceberNtFinanceira) {
+
         this.listaFinLctoReceberNtFinanceira = listaFinLctoReceberNtFinanceira;
     }
 
