@@ -98,7 +98,7 @@
 
                                         <p:column headerText="Operacao">
                                             <h:outputLabel
-                                                    value="#{obj.viewFinMovimentoCaixaBanco.operacao}"/>
+                                                    value="#{obj.viewFinMovimentoCaixaBanco.operacao eq 'E'?'ENTRADA':'SAIDA'}"/>
                                         </p:column>
                                         <p:column headerText="Conta Caixa">
                                             <h:outputLabel

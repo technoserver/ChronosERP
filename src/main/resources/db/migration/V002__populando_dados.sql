@@ -21410,79 +21410,81 @@ insert into cest (ITEM, CEST, NCM_SH, DESCRICAO_SEGMENTO, DESCRICAO_CEST, SIGLA_
  Condições de Pagamento
 */
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (1,1,1,'30 DIAS',30,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(1,1,30,100);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (1,1,1,'A VISTA',0,0);
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (2,1,1,'30/60 DIAS',45,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(2,1,30,50);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(2,2,60,50);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (2,1,1,'30 DIAS',30,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(2,1,30,100);
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (3,1,1,'30/60/90 DIAS',60,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(3,1,30,33.34);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(3,2,60,33.33);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(3,3,90,33.33);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (3,1,1,'30/60 DIAS',45,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(3,1,30,50);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(3,2,60,50);
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (4,1,1,'30/60/90/120 DIAS',75,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,1,30,25);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,2,60,25);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,3,90,25);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,4,120,25);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (4,1,1,'30/60/90 DIAS',60,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,1,30,33.34);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,2,60,33.33);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(4,3,90,33.33);
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (5,1,1,'30/60/90/120/150 DIAS',90,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,1,30,20);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,2,60,20);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,3,90,20);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,4,120,20);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,5,150,20);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (5,1,1,'30/60/90/120 DIAS',75,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,1,30,25);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,2,60,25);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,3,90,25);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(5,4,120,25);
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (6,1,1,'30/60/90/120/150/180 DIAS',105,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,1,30,17);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,2,60,16.6);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,3,90,16.6);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,4,120,16.6);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,5,150,16.6);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,6,180,16.6);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (6,1,1,'30/60/90/120/150 DIAS',90,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,1,30,20);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,2,60,20);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,3,90,20);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,4,120,20);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(6,5,150,20);
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (7,1,1,'30/60/90/120/150/210 DIAS',120,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,1,30,14.32);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,2,60,14.28);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,3,90,14.28);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,4,120,14.28);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,5,150,14.28);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,6,180,14.28);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,7,210,14.28);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (7,1,1,'30/60/90/120/150/180 DIAS',105,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,1,30,17);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,2,60,16.6);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,3,90,16.6);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,4,120,16.6);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,5,150,16.6);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(7,6,180,16.6);
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (8,1,1,'30/60/90/120/150/210/240 DIAS',135,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,1,30,12.5);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,2,60,12.5);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,3,90,12.5);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,4,120,12.5);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,5,150,12.5);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,6,180,12.5);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,7,210,12.5);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,8,240,12.5);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (8,1,1,'30/60/90/120/150/210 DIAS',120,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,1,30,14.32);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,2,60,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,3,90,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,4,120,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,5,150,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,6,180,14.28);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(8,7,210,14.28);
+
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (9,1,1,'30/60/90/120/150/210/240 DIAS',135,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,1,30,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,2,60,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,3,90,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,4,120,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,5,150,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,6,180,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,7,210,12.5);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,8,240,12.5);
 
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (9,1,1,'30/60/90/120/150/210/240/270 DIAS',150,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,1,30,11.12);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,2,60,11.11);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,3,90,11.11);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,4,120,11.11);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,5,150,11.11);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,6,180,11.11);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,7,210,11.11);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,8,240,11.11);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(9,9,270,11.11);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (10,1,1,'30/60/90/120/150/210/240/270 DIAS',150,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,1,30,11.12);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,2,60,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,3,90,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,4,120,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,5,150,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,6,180,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,7,210,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,8,240,11.11);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,9,270,11.11);
 
-insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (10,1,1,'30/60/90/120/150/210/240/270/300 DIAS',165,1);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,1,30,10);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,2,60,10);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,3,90,10);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,4,120,10);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,5,150,10);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,6,180,10);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,7,210,10);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,8,240,10);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,9,270,10);
-insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(10,10,270,10);
+insert into venda_condicoes_pagamento(id,id_empresa,id_fin_tipo_recebimento,nome,prazo_medio,vista_prazo) values (11,1,1,'30/60/90/120/150/210/240/270/300 DIAS',165,1);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,1,30,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,2,60,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,3,90,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,4,120,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,5,150,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,6,180,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,7,210,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,8,240,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,9,270,10);
+insert into venda_condicoes_parcelas(id_venda_condicoes_pagamento,parcela,dias,taxa) values(11,10,270,10);
 

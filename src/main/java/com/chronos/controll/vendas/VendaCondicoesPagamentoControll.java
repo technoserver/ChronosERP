@@ -33,6 +33,7 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
         super.doCreate();
         getObjeto().setEmpresa(empresa);
         getObjeto().setParcelas(new ArrayList<>());
+        getObjeto().setVistaPrazo("0");
     }
 
     @Override
@@ -46,8 +47,9 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
     @Override
     public void salvar() {
         try {
-            verificaParcelas();
-
+            if (getObjeto().getVistaPrazo().equals("1")) {
+                verificaParcelas();
+            }
             super.salvar();
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,6 +68,9 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
     }
 
     private void verificaParcelas() throws Exception {
+        if (getObjeto().getParcelas().isEmpty()) {
+            throw new Exception("Para condições de pagamento a prazo é preciso informa as parcelas");
+        }
         double prazoMedio = 0;
         BigDecimal totalPorcento = BigDecimal.ZERO;
         for (int i = 0; i < getObjeto().getParcelas().size(); i++) {

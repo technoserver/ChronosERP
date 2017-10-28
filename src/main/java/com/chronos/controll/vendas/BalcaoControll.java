@@ -123,6 +123,12 @@ public class BalcaoControll implements Serializable {
     public void faturarVenda() {
 
         try {
+
+            if (cliente.getId() == 1 && !venda.getCondicoesPagamento().getVistaPrazo().equals("0")) {
+                Mensagem.addErrorMessage("Venda para cliente padrão não pode ser parcelada");
+                return;
+            }
+
             telaVenda = false;
             telaPagamentos = false;
             telaImpressao = true;

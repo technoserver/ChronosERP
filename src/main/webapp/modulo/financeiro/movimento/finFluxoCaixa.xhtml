@@ -113,7 +113,8 @@
                 </div>
             </div>
             <br/>
-            <h:panelGroup layout="block" id="grafico" class="row">
+            <h:panelGroup layout="block" id="grafico" class="row"
+                          rendered="#{finFluxoCaixaControll.listaFluxoCaixa.size() > 0}">
                 <h:inputHidden id="despesa" value="#{finFluxoCaixaControll.jsonDespesas}"/>
                 <h:inputHidden id="receitas" value="#{finFluxoCaixaControll.jsonReceitas}"/>
                 <div class="col-md-6">

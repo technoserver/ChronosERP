@@ -52,7 +52,7 @@ public class VendaCondicoesPagamento implements Serializable {
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
-    @OneToMany(mappedBy = "vendaCondicoesPagamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendaCondicoesPagamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VendaCondicoesParcelas> parcelas;
 
 

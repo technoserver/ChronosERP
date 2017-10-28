@@ -51,7 +51,7 @@ public class FinLancamentoReceberService implements Serializable {
     @Transactional
     public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) throws Exception {
         VendaCondicoesPagamento condicoesParcelas = lancamento.getCondicoesPagamento();
-        if (condicoesParcelas.getParcelas() == null || condicoesParcelas.getParcelas().isEmpty()) {
+        if (condicoesParcelas.getVistaPrazo().equals("1")) {
             condicoesParcelas.setParcelas(condicoes.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesParcelas.getId()));
         }
 
@@ -59,7 +59,7 @@ public class FinLancamentoReceberService implements Serializable {
         FinLancamentoReceber lancamentoReceber = new FinLancamentoReceber();
         lancamentoReceber.setCliente(lancamento.getCliente());
         lancamentoReceber.setFinDocumentoOrigem(new FinDocumentoOrigem(101));
-        lancamentoReceber.setQuantidadeParcela(condicoesParcelas.getParcelas().size());
+
         lancamentoReceber.setValorTotal(lancamento.getValorTotal());
         lancamentoReceber.setValorAReceber(lancamento.getValorTotal());
         lancamentoReceber.setDataLancamento(lancamento.getDataLancamento());
@@ -75,18 +75,55 @@ public class FinLancamentoReceberService implements Serializable {
 
         FinParcelaReceber parcelaReceber;
         int number = 1;
-        for (VendaCondicoesParcelas parcelas : condicoesParcelas.getParcelas()) {
+
+        if (condicoesParcelas.getVistaPrazo().equals("1")) {
+            lancamentoReceber.setQuantidadeParcela(condicoesParcelas.getParcelas().size());
+            for (VendaCondicoesParcelas parcelas : condicoesParcelas.getParcelas()) {
+                parcelaReceber = new FinParcelaReceber();
+                parcelaReceber.setFinLancamentoReceber(lancamentoReceber);
+                parcelaReceber.setNumeroParcela(number++);
+                parcelaReceber.setFinStatusParcela(new FinStatusParcela(1));
+                parcelaReceber.setContaCaixa(condicoesParcelas.getTipoRecebimento().getContaCaixa());
+                parcelaReceber.setDataEmissao(lancamento.getDataLancamento());
+                parcelaReceber.setDataVencimento(Biblioteca.addDay(lancamento.getDataLancamento(), parcelas.getDias()));
+                parcelaReceber.setValor(Biblioteca.calcTaxa(lancamento.getValorTotal(), parcelas.getTaxa()));
+
+                lancamentoReceber.getListaFinParcelaReceber().add(parcelaReceber);
+            }
+        } else {
+
+            lancamentoReceber.setQuantidadeParcela(1);
             parcelaReceber = new FinParcelaReceber();
             parcelaReceber.setFinLancamentoReceber(lancamentoReceber);
             parcelaReceber.setNumeroParcela(number++);
-            parcelaReceber.setFinStatusParcela(new FinStatusParcela(1));
+            parcelaReceber.setFinStatusParcela(new FinStatusParcela(2));
             parcelaReceber.setContaCaixa(condicoesParcelas.getTipoRecebimento().getContaCaixa());
             parcelaReceber.setDataEmissao(lancamento.getDataLancamento());
-            parcelaReceber.setDataVencimento(Biblioteca.addDay(lancamento.getDataLancamento(), parcelas.getDias()));
-            parcelaReceber.setValor(Biblioteca.calcTaxa(lancamento.getValorTotal(), parcelas.getTaxa()));
+            parcelaReceber.setDataVencimento(new Date());
+            parcelaReceber.setValor(lancamento.getValorTotal());
+
+            FinParcelaRecebimento recebimento = new FinParcelaRecebimento();
+
+            recebimento.setFinParcelaReceber(parcelaReceber);
+            recebimento.setContaCaixa(condicoesParcelas.getTipoRecebimento().getContaCaixa());
+            recebimento.setDataRecebimento(new Date());
+            recebimento.setFinTipoRecebimento(condicoesParcelas.getTipoRecebimento());
+            recebimento.setTaxaDesconto(BigDecimal.ZERO);
+            recebimento.setValorDesconto(BigDecimal.ZERO);
+            recebimento.setTaxaJuro(BigDecimal.ZERO);
+            recebimento.setValorJuro(BigDecimal.ZERO);
+            recebimento.setTaxaMulta(BigDecimal.ZERO);
+            recebimento.setValorMulta(BigDecimal.ZERO);
+            recebimento.setValorRecebido(lancamento.getValorTotal());
+
+            parcelaReceber.setListaFinParcelaRecebimento(new HashSet<>());
+            parcelaReceber.getListaFinParcelaRecebimento().add(recebimento);
 
             lancamentoReceber.getListaFinParcelaReceber().add(parcelaReceber);
+
         }
+
+
         geraNaturezaFinanceira(lancamentoReceber, naturezaFinanceira);
         lancamentos.salvar(lancamentoReceber);
 
