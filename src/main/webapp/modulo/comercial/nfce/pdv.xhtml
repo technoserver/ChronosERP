@@ -337,7 +337,8 @@
         <h:outputScript library="js" name="pdv.js"/>
         <script type="application/javascript">
             function fecharModalCancelamento() {
-                $('#confirmarCancelamento').modal('hide');
+                $('#myModal').modal('hide');
+                $(".modal-backdrop .fade .in").remove();
                 focusProduto();
             }
             function focusProduto() {

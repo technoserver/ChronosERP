@@ -110,7 +110,7 @@ public class NfceControll implements Serializable {
 
     private BigDecimal valorSuprimento;
     private BigDecimal desconto;
-    private BigDecimal quantidade;
+
 
 
     private BigDecimal totalVenda;
@@ -306,7 +306,7 @@ public class NfceControll implements Serializable {
             configuracao = getConfiguraNfce();
             nfeService.dadosPadroes(venda, ModeloDocumento.NFCE, empresa, new ConfiguracaoEmissorDTO(configuracao));
             desconto = BigDecimal.ZERO;
-            quantidade = BigDecimal.ZERO;
+
             File fileTemp = new File(context.getRealPath("/") + System.getProperty("file.separator") + "temp");
             if (!fileTemp.exists()) {
                 fileTemp.mkdir();
@@ -494,9 +494,9 @@ public class NfceControll implements Serializable {
 
     public void novoItem() {
         desconto = BigDecimal.ZERO;
-        quantidade = BigDecimal.ONE;
         item = new NfeDetalhe();
         item.setNfeCabecalho(venda);
+        item.setQuantidadeComercial(BigDecimal.ONE);
         ;
     }
 
@@ -506,21 +506,15 @@ public class NfceControll implements Serializable {
                 return;
             }
             realizaCalculosItem();
-            venda.getListaNfeDetalhe().stream()
-                    .filter(i -> i.getProduto().equals(item.getProduto()))
-                    .forEach(it -> {
-                        encontro = true;
-                        quantidade = quantidade.add(it.getQuantidadeComercial());
-                        desconto = desconto.add(it.getValorDesconto());
-                        it.setQuantidadeComercial(quantidade);
-                        it.setValorDesconto(item.getValorDesconto().add(desconto));
-                    });
-            if (!encontro) {
-                item.setQuantidadeComercial(quantidade);
-                item.setValorDesconto(item.getValorDesconto().add(desconto));
+
+            Optional<NfeDetalhe> itemNfeOptional = buscarItemPorProduto(item.getProduto());
+            NfeDetalhe it = null;
+            if (itemNfeOptional.isPresent()) {
+                it = itemNfeOptional.get();
+                it = item;
+            } else {
                 venda.getListaNfeDetalhe().add(0, item);
             }
-            encontro = false;
             venda = nfeService.atualizarTotais(venda);
             novoItem();
             Mensagem.addInfoMessage("Registro incluído!");
@@ -946,13 +940,7 @@ public class NfceControll implements Serializable {
         this.telaGrid = telaGrid;
     }
 
-    public BigDecimal getQuantidade() {
-        return quantidade;
-    }
 
-    public void setQuantidade(BigDecimal quantidade) {
-        this.quantidade = quantidade;
-    }
 
     public List<NfceTipoPagamento> getListTipoPagamento() {
         return listTipoPagamento;
