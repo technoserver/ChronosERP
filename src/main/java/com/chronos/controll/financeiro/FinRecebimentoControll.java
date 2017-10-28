@@ -62,6 +62,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     public void buscarParcelas() {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro("idStatusParcela", Filtro.DIFERENTE, 2));
+        filtros.add(new Filtro("idCliente", Filtro.IGUAL, cliente.getId()));
         parcelas = parcelaRepository.getEntitys(ViewFinLancamentoReceber.class, filtros);
         multa = BigDecimal.ZERO;
         juros = BigDecimal.ZERO;

@@ -202,8 +202,11 @@ public class ArquivoUtil {
     public void salvarFotoProduto(String foto) {
         try {
 
-            Files.move(this.localTemporario.resolve(foto), this.localProduto.resolve(foto), StandardCopyOption.REPLACE_EXISTING);
-            Files.deleteIfExists(this.localTemporario.resolve(foto));
+            if (Files.exists(this.localTemporario.resolve(foto))) {
+                Files.move(this.localTemporario.resolve(foto), this.localProduto.resolve(foto), StandardCopyOption.REPLACE_EXISTING);
+                Files.deleteIfExists(this.localTemporario.resolve(foto));
+            }
+
         } catch (IOException e) {
             throw new RuntimeException("Erro movendo a foto para destino final", e);
         }
