@@ -61,7 +61,7 @@ public class FinFluxoCaixaControll extends AbstractControll<ViewFinFluxoCaixaID>
         contaCaixa.put("Todas", 0);
         contaCaixa.putAll(contaRepository.getEntitys(ContaCaixa.class, new Object[]{"nome"}).stream()
                 .collect(Collectors.toMap(ContaCaixa::getNome, ContaCaixa::getId)));
-
+        listaFluxoCaixa = new ArrayList<>();
     }
 
     @Override
@@ -85,18 +85,12 @@ public class FinFluxoCaixaControll extends AbstractControll<ViewFinFluxoCaixaID>
 
                 }
                 listaFluxoCaixa = fluxos.getEntitys(ViewFinFluxoCaixaID.class, filtros);
-//                filtros.clear();
-//                filtros.add(new Filtro(Filtro.AND, "viewFinFluxoCaixa.dataVencimento", Filtro.MAIOR_OU_IGUAL, getDataInicialAnterior(periodo)));
-//                filtros.add(new Filtro(Filtro.AND, "viewFinFluxoCaixa.dataVencimento", Filtro.MENOR_OU_IGUAL, ultimoDiaMes(periodo)));
-//
-//                if (idconta > 0) {
-//                    filtros.add(new Filtro(Filtro.AND, "viewFinFluxoCaixa.idContaCaixa", Filtro.IGUAL,idconta));
-//
-//                }
-//                listaFluxoCaixaOld = fluxos.getEntitys(ViewFinFluxoCaixaID.class, filtros);
 
-                getTotais();
-
+                if (listaFluxoCaixa.isEmpty()) {
+                    Mensagem.addInfoMessage("Não existe movimento para o periodo informado");
+                } else {
+                    getTotais();
+                }
 
             }
         } catch (Exception e) {

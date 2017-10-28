@@ -6,6 +6,7 @@ import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.entidades.VendaCabecalho;
 import com.chronos.modelo.entidades.VendaComissao;
+import com.chronos.modelo.entidades.VendaCondicoesPagamento;
 import com.chronos.modelo.entidades.enuns.FormaPagamento;
 import com.chronos.modelo.entidades.enuns.Modulo;
 import com.chronos.modelo.entidades.enuns.SituacaoVenda;
@@ -49,11 +50,12 @@ public class VendaService implements Serializable {
                 venda.setFormaPagamento(venda.getCondicoesPagamento().getVistaPrazo().equals("V")
                         ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
             }
+            VendaCondicoesPagamento condicao = venda.getCondicoesPagamento();
             venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
             venda = repository.atualizar(venda);
             estoqueRepositoy.atualizaEstoqueEmpresaControle(venda.getEmpresa().getId(), venda.getListaVendaDetalhe());
             finLancamentoReceberService.gerarLancamento(venda.getValorTotal(), venda.getCliente(),
-                    new DecimalFormat("VD0000000").format(venda.getId()), venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
+                    new DecimalFormat("VD0000000").format(venda.getId()), condicao, Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
 
             gerarComissao(venda);
 

@@ -96,8 +96,7 @@
                                 <p:menuitem value="Imprimir Cupom"
                                             actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(row.id)}"
                                             icon="fa fa-print" ajax="false"/>
-                                <p:menuitem value="Devolução" actionListener="#{vendaCabecalhoControll.remover()}"
-                                            icon="fa fa-reply-all"/>
+
                                 <p:menuitem value="Emitir NFe"
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.numeroFatura}"
