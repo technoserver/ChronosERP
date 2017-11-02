@@ -22,6 +22,8 @@ public interface Repository<T> {
 
     void salvar(T bean) throws PersistenceException;
 
+    void salvar(List<T> bean) throws PersistenceException;
+
     T atualizar(T bean) throws PersistenceException;
 
     boolean updateNativo(Class<T> clazz,List<Filtro> filtros,Map<String,Object> atributos);

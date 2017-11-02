@@ -73,9 +73,10 @@ public class PessoaFisica implements Serializable {
     public PessoaFisica() {
     }
 
-    public PessoaFisica(Integer id, String cpf) {
+
+    public PessoaFisica(Integer id, String nome) {
         this.id = id;
-        this.cpf = cpf;
+        this.pessoa = new Pessoa(nome);
     }
 
     public Integer getId() {

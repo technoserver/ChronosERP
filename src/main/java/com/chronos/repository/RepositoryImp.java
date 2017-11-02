@@ -50,6 +50,22 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Transactional
     @Override
+    public void salvar(List<T> beans) throws PersistenceException {
+        int i = 0;
+        for (T t : beans) {
+            i++;
+            em.persist(t);
+            if (i % 50 == 0) {
+                em.flush();
+                em.clear();
+            }
+
+        }
+
+    }
+
+    @Transactional
+    @Override
     public T atualizar(T bean) throws PersistenceException {
         return em.merge(bean);
 

@@ -1,6 +1,7 @@
 
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -22,7 +23,7 @@ public class PessoaContato implements Serializable {
     @NotBlank
     @Column(name = "NOME")
     private String nome;
-   // @Email(message = "Email invalido")
+    @Email(message = "Email invalido")
     @Column(name = "EMAIL")
     private String email;
     @Column(name = "FONE_COMERCIAL")

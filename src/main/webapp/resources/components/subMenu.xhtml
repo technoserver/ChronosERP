@@ -14,7 +14,9 @@
     <!-- IMPLEMENTATION -->
     <cc:implementation>
         <li class="${fn:contains(view.viewId,cc.attrs.funcao)?'active':''}">
-            <h:link outcome="#{cc.attrs.caminho}" value="#{cc.attrs.label}"/>                          
+            <h:link outcome="#{cc.attrs.caminho}" value="#{cc.attrs.label}">
+                <cc:insertChildren/>
+            </h:link>
         </li>
     </cc:implementation>
 </html>

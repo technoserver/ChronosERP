@@ -1,5 +1,58 @@
+CREATE OR REPLACE VIEW VIEW_PESSOA AS
+  SELECT
+    p.id,
+    p.nome,
+    pf.cpf AS cpf_cnpj,
+    pf.rg  AS rg_ie,
+    p.tipo,
+    e.logradouro,
+    e.numero,
+    e.complemento,
+    e.bairro,
+    e.cidade,
+    e.cep,
+    e.municipio_ibge,
+    e.uf,
+    e.fone,
+    p.email,
+    p.site
+  FROM
+    pessoa p
+    INNER JOIN pessoa_fisica pf ON (pf.id_pessoa = p.id)
+    INNER JOIN pessoa_endereco e ON (e.id_pessoa = p.id)
+  WHERE
+    e.principal = 'S'
+
+  UNION
+
+  SELECT
+    p.id,
+    p.nome,
+    pj.cnpj               AS cpf_cnpj,
+    pj.inscricao_estadual AS rg_ie,
+    p.tipo,
+    e.logradouro,
+    e.numero,
+    e.complemento,
+    e.bairro,
+    e.cidade,
+    e.cep,
+    e.municipio_ibge,
+    e.uf,
+    e.fone,
+    p.email,
+    p.site
+  FROM
+    pessoa p
+    INNER JOIN pessoa_juridica pj ON (pj.id_pessoa = p.id)
+    INNER JOIN pessoa_endereco e ON (e.id_pessoa = p.id)
+  WHERE
+    e.principal = 'S';
+
+
 CREATE OR REPLACE VIEW view_pessoa_cliente AS
-  SELECT c.id,
+  SELECT
+    c.id,
     c.id_operacao_fiscal,
     c.id_pessoa,
     c.id_atividade_for_cli,
@@ -28,14 +81,15 @@ CREATE OR REPLACE VIEW view_pessoa_cliente AS
     p.email,
     p.site,
     pf.cpf AS cpf_cnpj,
-    pf.rg AS rg_ie
+    pf.rg  AS rg_ie
   FROM pessoa p
     JOIN pessoa_fisica pf ON pf.id_pessoa = p.id
     JOIN cliente c ON c.id_pessoa = p.id
     JOIN pessoa_endereco e ON e.id_pessoa = p.id
   WHERE p.cliente = 'S' AND e.principal = 'S'
   UNION
-  SELECT c.id,
+  SELECT
+    c.id,
     c.id_operacao_fiscal,
     c.id_pessoa,
     c.id_atividade_for_cli,
@@ -63,7 +117,7 @@ CREATE OR REPLACE VIEW view_pessoa_cliente AS
     p.tipo,
     p.email,
     p.site,
-    pj.cnpj AS cpf_cnpj,
+    pj.cnpj               AS cpf_cnpj,
     pj.inscricao_estadual AS rg_ie
   FROM pessoa p
     JOIN pessoa_juridica pj ON pj.id_pessoa = p.id
@@ -384,6 +438,85 @@ CREATE OR REPLACE VIEW view_pessoa_cliente_empresa AS
   WHERE empresa_endereco.principal = 'S' AND p.cliente = 'S' AND e.principal = 'S';
 
 --View FInanceiro
+
+
+CREATE OR REPLACE VIEW view_fin_lancamento_pagar AS
+  SELECT
+    concat(lp.id, pp.id) :: INTEGER AS id,
+    lp.id                           AS id_lancamento_pagar,
+    pp.id                           AS id_parcela_pagar,
+    cc.id                           AS id_conta_caixa,
+    s.id                            AS id_status_parcela,
+    f.id                            AS id_fornecedor,
+    p.id                            AS id_pessoa,
+    p.nome                          AS nome_fornecedor,
+    pf.cpf                          AS cpf_cnpj,
+    lp.quantidade_parcela,
+    lp.valor_a_pagar                AS valor_lancamento,
+    lp.data_lancamento,
+    lp.numero_documento,
+    pp.numero_parcela,
+    pp.data_vencimento,
+    pp.valor                        AS valor_parcela,
+    pp.taxa_juro,
+    pp.valor_juro,
+    pp.taxa_multa,
+    pp.valor_multa,
+    pp.taxa_desconto,
+    pp.valor_desconto,
+    doc.sigla_documento,
+    s.situacao                      AS situacao_parcela,
+    s.descricao                     AS descricao_situacao_parcela,
+    cc.nome                         AS nome_conta_caixa,
+    f.sofre_retencao                AS fornecedor_sofre_retencao
+  FROM fin_lancamento_pagar lp
+    INNER JOIN fin_parcela_pagar pp ON pp.id_fin_lancamento_pagar = lp.id
+    INNER JOIN fin_status_parcela s ON pp.id_fin_status_parcela = s.id
+    INNER JOIN fin_documento_origem doc ON lp.id_fin_documento_origem = doc.id
+    INNER JOIN fornecedor f ON lp.id_fornecedor = f.id
+    INNER JOIN pessoa p ON f.id_pessoa = p.id
+    INNER JOIN pessoa_fisica pf ON pf.id_pessoa = p.id
+    INNER JOIN conta_caixa cc ON pp.id_conta_caixa = cc.id
+  UNION
+
+  SELECT
+    concat(lp.id, pp.id) :: INTEGER AS id,
+    lp.id                           AS id_lancamento_pagar,
+    pp.id                           AS id_parcela_pagar,
+    cc.id                           AS id_conta_caixa,
+    s.id                            AS id_status_parcela,
+    f.id                            AS id_fornecedor,
+    p.id                            AS id_pessoa,
+    p.nome                          AS nome_fornecedor,
+    pj.cnpj                         AS cpf_cnpj,
+    lp.quantidade_parcela,
+    lp.valor_a_pagar                AS valor_lancamento,
+    lp.data_lancamento,
+    lp.numero_documento,
+    pp.numero_parcela,
+    pp.data_vencimento,
+    pp.valor                        AS valor_parcela,
+    pp.taxa_juro,
+    pp.valor_juro,
+    pp.taxa_multa,
+    pp.valor_multa,
+    pp.taxa_desconto,
+    pp.valor_desconto,
+    doc.sigla_documento,
+    s.situacao                      AS situacao_parcela,
+    s.descricao                     AS descricao_situacao_parcela,
+    cc.nome                         AS nome_conta_caixa,
+    f.sofre_retencao                AS fornecedor_sofre_retencao
+  FROM fin_lancamento_pagar lp
+    INNER JOIN fin_parcela_pagar pp ON pp.id_fin_lancamento_pagar = lp.id
+    INNER JOIN fin_status_parcela s ON pp.id_fin_status_parcela = s.id
+    INNER JOIN fin_documento_origem doc ON lp.id_fin_documento_origem = doc.id
+    INNER JOIN fornecedor f ON lp.id_fornecedor = f.id
+    INNER JOIN pessoa p ON f.id_pessoa = p.id
+    INNER JOIN pessoa_juridica pj ON pj.id_pessoa = p.id
+    INNER JOIN conta_caixa cc ON pp.id_conta_caixa = cc.id;
+
+
 CREATE OR REPLACE VIEW view_fin_resumo_tesouraria AS
   SELECT
     concat(lp.id, pp.id, ppr.id) :: INTEGER AS id,

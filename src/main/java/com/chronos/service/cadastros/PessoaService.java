@@ -89,25 +89,35 @@ public class PessoaService implements Serializable {
     }
 
 
+    public Pessoa salvar(Pessoa pessoa, Empresa empresa) throws Exception {
+        validarPessoa(pessoa);
+        pessoas.salvar(pessoa);
+        boolean salvarEmpresaPessoa = pessoa.getId() == null;
+        if (salvarEmpresaPessoa) {
+            salvarEmpresaPessoa(empresa, pessoa);
+        }
+        return pessoa;
+    }
+
     private void validarPessoa(Pessoa pessoa) throws Exception {
 
         if (pessoa.getTipo().equals("F")) {
-            Object[] atributos = new Object[]{"cpf"};
+            Object[] atributos = new Object[]{"pessoa.nome"};
             PessoaFisica pf = pessoasFisica.get(PessoaFisica.class, "cpf", pessoa.getPessoaFisica().getCpf().replaceAll("\\D", ""), atributos);
 
             if (pf != null && !pf.equals(pessoa.getPessoaFisica())) {
-                throw new ChronosException("CPF ja informado em :" + pessoa.getNome());
+                throw new ChronosException("CPF ja informado em :" + pf.getPessoa().getNome());
             }
             if (!Biblioteca.cpfValido(pessoa.getIdentificador())) {
                 throw new ChronosException("CPF invalido");
             }
             pessoa.setPessoaJuridica(null);
         } else {
-            Object[] atributos = new Object[]{"cnpj"};
+            Object[] atributos = new Object[]{"pessoa.nome"};
             PessoaJuridica pj = pessoasJuridica.get(PessoaJuridica.class, "cnpj", pessoa.getPessoaJuridica().getCnpj().replaceAll("\\D", ""), atributos);
 
             if (pj != null && !pj.equals(pessoa.getPessoaJuridica())) {
-                throw new ChronosException("CNPJ ja informado em :" + pessoa.getNome());
+                throw new ChronosException("CNPJ ja informado em :" + pj.getPessoa().getNome());
             }
             if (!Biblioteca.cnpjValido(pessoa.getIdentificador())) {
                 throw new ChronosException("CNPJ invalido");
@@ -122,7 +132,6 @@ public class PessoaService implements Serializable {
         }
 
     }
-
 
 
 }

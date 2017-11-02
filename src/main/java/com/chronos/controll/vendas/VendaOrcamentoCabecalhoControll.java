@@ -1,19 +1,20 @@
 package com.chronos.controll.vendas;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.enuns.SituacaoVenda;
+import com.chronos.modelo.entidades.enuns.TipoFrete;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
-import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.event.SelectEvent;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 16/08/17.
@@ -37,13 +38,37 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
     private VendaOrcamentoDetalhe vendaOrcamentoDetalhe;
     private VendaOrcamentoDetalhe vendaOrcamentoDetalheSelecionado;
+    private String tipo;
+
+    @Override
+    public ERPLazyDataModel<VendaOrcamentoCabecalho> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(VendaOrcamentoCabecalho.class);
+            dataModel.setDao(dao);
+            dataModel.getFiltros().clear();
+            dataModel.addFiltro("tipo", Optional.ofNullable(tipo).orElse("O"), Filtro.IGUAL);
+        }
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
         getObjeto().setListaVendaOrcamentoDetalhe(new HashSet<>());
-        getObjeto().setSituacao("D");
+        getObjeto().setSituacao(SituacaoVenda.Digitacao.getCodigo());
+        getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
+        getObjeto().setTipo(Optional.ofNullable(tipo).orElse("O"));
+        getObjeto().setDataCadastro(new Date());
+    }
+
+    @Override
+    public void doEdit() {
+        super.doEdit();
+
+        VendaOrcamentoCabecalho orcamento = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(orcamento);
     }
 
     @Override
@@ -74,57 +99,6 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     }
 
 
-    private void calculaTotais() throws Exception {
-        VendaOrcamentoCabecalho orcamentoCabecalho = getObjeto();
-        BigDecimal subTotal = BigDecimal.ZERO;
-        BigDecimal totalDesconto = BigDecimal.ZERO;
-        for (VendaOrcamentoDetalhe d : getObjeto().getListaVendaOrcamentoDetalhe()) {
-            d.setValorSubtotal(Biblioteca.multiplica(d.getQuantidade(), d.getValorUnitario()));
-            subTotal = Biblioteca.soma(subTotal, d.getValorSubtotal());
-            if (d.getTaxaDesconto() != null) {
-                d.setValorDesconto(Biblioteca.multiplica(d.getValorSubtotal(), Biblioteca.divide(d.getTaxaDesconto(), BigDecimal.valueOf(100))));
-            }
-            if (d.getValorDesconto() != null) {
-                totalDesconto = Biblioteca.soma(totalDesconto, d.getValorDesconto());
-                d.setValorTotal(Biblioteca.subtrai(d.getValorSubtotal(), d.getValorDesconto()));
-            } else {
-                d.setValorTotal(d.getValorSubtotal());
-            }
-        }
-        orcamentoCabecalho.setValorSubtotal(subTotal);
-        if (totalDesconto.compareTo(BigDecimal.ZERO) != 0) {
-            orcamentoCabecalho.setValorDesconto(totalDesconto);
-            orcamentoCabecalho.setTaxaDesconto(Biblioteca.multiplica(Biblioteca.divide(totalDesconto, subTotal), BigDecimal.valueOf(100)));
-        }
-
-        orcamentoCabecalho.setValorTotal(subTotal);
-        if (orcamentoCabecalho.getValorFrete() != null) {
-            orcamentoCabecalho.setValorTotal(Biblioteca.soma(orcamentoCabecalho.getValorTotal(), orcamentoCabecalho.getValorFrete()));
-        }
-        if (orcamentoCabecalho.getValorDesconto() != null) {
-            orcamentoCabecalho.setValorTotal(Biblioteca.subtrai(orcamentoCabecalho.getValorTotal(), orcamentoCabecalho.getValorDesconto()));
-        }
-
-        if (orcamentoCabecalho.getTaxaComissao() != null) {
-            orcamentoCabecalho.setValorComissao(Biblioteca.multiplica(Biblioteca.subtrai(subTotal, totalDesconto), Biblioteca.divide(orcamentoCabecalho.getTaxaComissao(), BigDecimal.valueOf(100))));
-        }
-        atualizaTotais();
-    }
-
-    public void atualizaTotais() throws Exception {
-        if (getObjeto().getValorSubtotal() != null) {
-            if (getObjeto().getTaxaDesconto() != null) {
-                getObjeto().setValorDesconto(Biblioteca.multiplica(getObjeto().getValorSubtotal(), Biblioteca.divide(getObjeto().getTaxaDesconto(), BigDecimal.valueOf(100))));
-                getObjeto().setValorTotal(Biblioteca.subtrai(getObjeto().getValorSubtotal(), getObjeto().getValorDesconto()));
-            }
-            if (getObjeto().getValorFrete() != null) {
-                if (getObjeto().getValorTotal() == null) {
-                    getObjeto().setValorTotal(getObjeto().getValorSubtotal());
-                }
-                getObjeto().setValorTotal(Biblioteca.soma(getObjeto().getValorTotal(), getObjeto().getValorFrete()));
-            }
-        }
-    }
 
     public void incluirVendaOrcamentoDetalhe() {
         vendaOrcamentoDetalhe = new VendaOrcamentoDetalhe();
@@ -141,7 +115,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
             getObjeto().getListaVendaOrcamentoDetalhe().add(vendaOrcamentoDetalhe);
         }
         try {
-            calculaTotais();
+            getObjeto().calcularValorTotal();
             salvar("Registro salvo com sucesso!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,7 +128,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
         try {
             getObjeto().getListaVendaOrcamentoDetalhe().remove(vendaOrcamentoDetalheSelecionado);
-            calculaTotais();
+            getObjeto().calcularValorTotal();
             salvar("Registro excluído com sucesso!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,6 +157,12 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         }
         return listaVendedor;
     }
+
+    public void definirTaxaComissao(SelectEvent event) {
+        Vendedor vendedor = (Vendedor) event.getObject();
+        getObjeto().setTaxaComissao(vendedor.getComissao());
+    }
+
 
     public List<Transportadora> getListaTransportadora(String nome) {
         List<Transportadora> listaTransportadora = new ArrayList<>();
@@ -244,5 +224,13 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
     public void setVendaOrcamentoDetalheSelecionado(VendaOrcamentoDetalhe vendaOrcamentoDetalheSelecionado) {
         this.vendaOrcamentoDetalheSelecionado = vendaOrcamentoDetalheSelecionado;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

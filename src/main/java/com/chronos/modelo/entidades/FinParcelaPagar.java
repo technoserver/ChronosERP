@@ -89,6 +89,11 @@ public class FinParcelaPagar implements Serializable {
     public FinParcelaPagar() {
     }
 
+    public FinParcelaPagar(Integer id) {
+        this.id = id;
+    }
+
+
     public Integer getId() {
         return id;
     }

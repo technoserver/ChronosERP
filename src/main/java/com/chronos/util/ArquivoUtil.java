@@ -10,6 +10,9 @@ import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -305,6 +308,14 @@ public class ArquivoUtil {
 
     private String diretorio() {
         return getDefault().getPath(diretorioRaiz(), ".chronos").toString();
+    }
+
+
+    public String obterCaminhoCompleto(String path) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext contextoExterno = context.getExternalContext();
+        ServletContext servletContext = (ServletContext) contextoExterno.getContext();
+        return servletContext.getRealPath(path);
     }
 
 }

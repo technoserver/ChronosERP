@@ -3,6 +3,7 @@ package com.chronos.controll.nfe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.dto.ProdutoDTO;
 import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.LocalDestino;
 import com.chronos.infra.enuns.ModeloDocumento;
@@ -23,6 +24,7 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -540,8 +542,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         List<Produto> listaProduto = new ArrayList<>();
 
         try {
-
-            listaProduto = nfeService.getListaProduto(descricao);
+            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao);
+            listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -26,7 +26,7 @@ public class VendaOrcamentoCabecalho implements Serializable {
     private String tipo;
     @Column(name = "CODIGO")
     private String codigo;
-    @NotNull
+    @NotNull(message = "teste")
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_CADASTRO")
     private Date dataCadastro;
@@ -303,8 +303,20 @@ public class VendaOrcamentoCabecalho implements Serializable {
         return valorSubtotal;
     }
 
+    public BigDecimal calcularTotalDesconto() {
+        valorDesconto = getListaVendaOrcamentoDetalhe().stream()
+                .map(VendaOrcamentoDetalhe::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        return valorDesconto;
+    }
+
     public String valorSubTotalFormatado(){
         return formatarValor(calcularValorProdutos());
+    }
+
+    public String valorDescontoFormatado() {
+        return formatarValor(calcularTotalDesconto());
     }
 
     public String valorTotalFormatado(){

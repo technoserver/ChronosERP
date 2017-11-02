@@ -10,14 +10,14 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        Recebimento
+        Pagamento
     </ui:define>
 
     <ui:define name="tela">
         Consulta
     </ui:define>
     <ui:define name="controle">
-        Recebimento
+        Pagamento
     </ui:define>
     <ui:define name="css">
         <style type="text/css">
@@ -61,33 +61,61 @@
             <erp:msgPermissao permissao="#{finRecebimentoControll.podeConsultar()}"/>
             <h:panelGroup layout="block" id="panelRecebimento" rendered="#{finRecebimentoControll.podeConsultar()}">
 
-                <div class="row">
-                    <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                                      label="Cliente"
-                                      itemLabel="#{objeto.pessoa.nome}"
-                                      controller="#{finRecebimentoControll}"
-                                      completeMethod="getListaCliente"
-                                      nomeAtributo="#{finRecebimentoControll.cliente}"
-                                      exibirInfo="true"
-                                      mensangemInfo="Para lista as parcelas é preciso selecionar o cliente."
-                                      idComponente="vendaCabecalhoCliente">
-                        <p:ajax event="itemSelecionado"
-                                listener="#{finRecebimentoControll.buscarParcelas}"
-                                update=":formCentro:panelValores,:formCentro:btnRecebimento"/>
 
-                    </erp:autoComplete>
+                <h:panelGroup layout="block" class="row m-b" id="filtros">
+                    <erp:campoTexto tamanhoMaximo="50"
+                                    label="Número DOC"
+                                    idComponente="numDocumento"
+                                    nomeAtributo="#{finPagamentoControll.numDocumento}"
+                                    styleClass="col-xs-12 col-sm-3 col-md-2"/>
+                    <erp:campoTexto tamanhoMaximo="60"
+                                    label="Fornecedor"
+                                    idComponente="fornecedor"
+                                    nomeAtributo="#{finPagamentoControll.fornecedor}"
+                                    styleClass="col-xs-12 col-sm-3 col-md-4"/>
+                    <erp:campoTexto tamanhoMaximo="14"
+                                    label="CNPJ/CPF"
+                                    idComponente="cnpjCpf"
+                                    nomeAtributo="#{finPagamentoControll.cnpjCpf}"
+                                    styleClass="col-xs-12 col-sm-3 col-md-2"/>
+                    <erp:campoData label="Vencimento de"
+                                   idComponente="vencimentoDe"
+                                   nomeAtributo="#{finPagamentoControll.dataInicial}"
+                                   styleClass="col-xs-12 col-sm-3 col-md-2"/>
+                    <erp:campoData label="Vencimento Até"
+                                   idComponente="vencimentoAte"
+                                   nomeAtributo="#{finPagamentoControll.dataFinal}"
+                                   styleClass="col-xs-12 col-sm-3 col-md-2"/>
+                </h:panelGroup>
+
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <h:commandButton value="Buscar Parcelas"
+                                         action="#{finPagamentoControll.buscarParcelas}"
+                                         id="btnFiltros"
+                                         class="btn btn-primary">
+                            <p:ajax process="@this,dataTableParcelas,:formCentro:filtros"
+                                    update="dataTableParcelas,:formCentro:panelValores"/>
+
+                        </h:commandButton>
+                    </div>
+
                 </div>
                 <br/>
                 <h:panelGroup layout="block" id="panelValores">
-                    <p:dataTable value="#{finRecebimentoControll.parcelas}"
+                    <p:dataTable value="#{finPagamentoControll.parcelas}"
                                  var="row" id="dataTableParcelas"
-                                 reflow="true" rendered="#{finRecebimentoControll.podeConsultar()}"
+                                 reflow="true" rendered="#{finPagamentoControll.podeConsultar()}"
                                  resizableColumns="true" sortBy="#{row.dataVencimento}"
-                                 rowKey="#{row.idParcelaReceber}"
-                                 selectionMode="multiple" selection="#{finRecebimentoControll.parcelasSelecionadas}"
+                                 rowKey="#{row.idParcelaPagar}"
+                                 selectionMode="multiple" selection="#{finPagamentoControll.parcelasSelecionada}"
                                  rowStyleClass="#{row.vencido?'red_color':''}">
-                        <p:column headerText="Cliente" sortBy="#{row.nome}" style="width:21%">
-                            <h:outputLabel value="#{row.nome}"/>
+                        <p:ajax event="rowSelect"
+                                update="formCentro:campo:valorAPagar"/>
+                        <p:ajax event="rowUnselect"
+                                update="formCentro:campo:valorAPagar"/>
+                        <p:column headerText="Fornecedor" sortBy="#{row.nomeFornecedor}" style="width:21%">
+                            <h:outputLabel value="#{row.nomeFornecedor}"/>
                         </p:column>
                         <p:column headerText="Num. Parcela" style="width:12%">
                             <h:outputLabel value="#{row.numeroDocumento}/#{row.numeroParcela}"/>
@@ -102,21 +130,6 @@
                             <h:outputLabel value="#{row.valorParcela}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
-                        </p:column>
-                        <!--<p:column headerText="Juros" style="width:10%;text-align: right">-->
-                            <!--<h:outputLabel value="#{row.valorJuro}">-->
-                                <!--<f:convertNumber pattern="#,##0.00"/>-->
-                            <!--</h:outputLabel>-->
-                        <!--</p:column>-->
-                        <p:column headerText="Saldo" style="width:10%;text-align: right">
-                            <h:outputLabel value="#{row.saldo}">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                        </p:column>
-                        <p:column headerText="Total" style="width:12%;text-align: right">
-                            <h:outputText value="#{row.valorAPagar}">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputText>
                         </p:column>
                         <p:column headerText="Status" style="width:10%"
                                   sortBy="#{row.descricaoSituacaoParcela}">
@@ -148,7 +161,7 @@
                                         <td><h4>VENCIDAS</h4></td>
                                         <td class="nowrap" width="1">
                                             <h4>
-                                                <span>#{finRecebimentoControll.qtdParcelasVencida}</span>
+                                                <span>#{finPagamentoControll.qtdParcelasVencida}</span>
                                             </h4>
                                         </td>
                                         <td class="nowrap coluna-monetaria" width="1">
@@ -171,7 +184,7 @@
                                         <td><h4>A VENCER</h4></td>
                                         <td class="nowrap" width="1">
                                             <h4>
-                                                <span>#{finRecebimentoControll.qtdParcelasAvencer}</span>
+                                                <span>#{finPagamentoControll.qtdParcelasAvencer}</span>
                                             </h4>
                                         </td>
                                         <td class="nowrap" width="1">
@@ -186,7 +199,7 @@
                                         </td>
                                         <td class="nowrap coluna-monetaria" width="1">
                                             <h4>
-                                                <span>#{finRecebimentoControll.formatarValor(finRecebimentoControll.totalAVencer)}</span>
+                                                <span>#{finPagamentoControll.formatarValor(finPagamentoControll.totalAVencer)}</span>
                                             </h4>
                                         </td>
                                     </tr>
@@ -197,7 +210,7 @@
                                         <td><h4>SALDO DEVEDOR LIQUIDO</h4></td>
                                         <td colspan="4" class="nowrap coluna-monetaria">
                                             <h4>
-                                                <span>#{finRecebimentoControll.formatarValor(finRecebimentoControll.saldoDevedor)}</span>
+                                                <span>#{finPagamentoControll.formatarValor(finPagamentoControll.saldoDevedor)}</span>
                                             </h4>
                                         </td>
                                     </tr>
@@ -219,15 +232,17 @@
                                     <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                                       label="Tipo Recebimento"
                                                       itemLabel="#{objeto.descricao}"
-                                                      controller="#{finRecebimentoControll}"
+                                                      controller="#{finPagamentoControll}"
                                                       completeMethod="getListaFinTipoRecebimento"
-                                                      nomeAtributo="#{finRecebimentoControll.tipoRecebimento}"
+                                                      nomeAtributo="#{finPagamentoControll.tipoPagamento}"
                                                       idComponente="tipoRecebimento" requerido="true"/>
 
                                     <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
                                                       idComponente="valorAPagar"
                                                       label="Valor Parcela" requerido="true"
-                                                      nomeAtributo="#{finRecebimentoControll.valorAPagar}"/>
+                                                      somenteLeitura="true"
+                                                      id="campo"
+                                                      nomeAtributo="#{finPagamentoControll.valorAPagar}"/>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-1 col-sm-1 col-md-1">
@@ -235,7 +250,7 @@
                                     </div>
                                     <erp:campoTexto styleClass="col-xs-10 col-sm-10 col-md-10"
                                                     idComponente="finParcelaRecebimentoHistorico" label="Historico"
-                                                    nomeAtributo="#{finRecebimentoControll.observacao}"
+                                                    nomeAtributo="#{finPagamentoControll.observacao}"
                                                     tamanhoMaximo="250"/>
 
                                     <div class="col-xs-1 col-sm-1 col-md-1">
@@ -261,8 +276,8 @@
                 <div class="col-xs-12 col-md-12 text-center">
                     <h:commandButton class="btn btn-primary"
                                      value="Confimar Recebimento"
-                                     action="#{finRecebimentoControll.baixaParcelas}"
-                                     disabled="#{empty finRecebimentoControll.cliente}"
+                                     action="#{finPagamentoControll.baixarParcelas}"
+
                                      id="btnRecebimento">
                         <p:ajax update=":formCentro:growl,:formCentro:panelRecebimento,:formCentro:dataTableParcelas"
                                 process="@form"/>
@@ -276,6 +291,80 @@
     <ui:define name="telaInclusaoAlteracao">
 
     </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogFinChequeEmitido" header="Emissão de Cheque"
+                      widgetVar="dialogFinChequeEmitido" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="600"
+                      visible="#{finPagamentoControll.pagamentoCheque}">
+
+                <p:outputPanel id="panelFinChequeEmitido">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Cheque"
+                                          itemLabel="#{objeto.numero}"
+                                          controller="#{finPagamentoControll}"
+                                          completeMethod="getListaFinCheque"
+                                          nomeAtributo="#{finPagamentoControll.finChequeEmitido.cheque}"
+                                          idComponente="finParcelaPagamentoFinChequeEmitido"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        idComponente="finChequeEmitidoNominalA" label="Nominal A"
+                                        nomeAtributo="#{finPagamentoControll.finChequeEmitido.nominalA}"
+                                        tamanhoMaximo="100"/>
+                    </div>
+
+                    <div class="row">
+                        <erp:campoData styleClass="col-xs-12 col-sm-4 col-md-4"
+                                       idComponente="finChequeEmitidoDataEmissao" label="Data Emissao"
+                                       requerido="true"
+                                       nomeAtributo="#{finPagamentoControll.finChequeEmitido.dataEmissao}"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-4 col-md-4"
+                                       idComponente="finChequeEmitidoBomPara" label="Bom Para"
+                                       requerido="true"
+                                       nomeAtributo="#{finPagamentoControll.finChequeEmitido.bomPara}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                          idComponente="finChequeEmitidoValor" label="Valor"
+                                          requerido="true"
+                                          nomeAtributo="#{finPagamentoControll.finChequeEmitido.valor}"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            idComponente="finChequeEmitidoHistorico" label="Historico"
+                                            nomeAtributo="#{finPagamentoControll.observacao}"/>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             actionListener="#{finPagamentoControll.finalizaPagamentoCheque()}">
+                                <p:ajax process="@form"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogFinChequeEmitido').hide();}"
+                                        update=":formCentro:panelRecebimento,:formOutrasTelas:panelFinChequeEmitido,:formCentro:growl,dialogFinChequeEmitido"
+                                />
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             actionListener="#{finPagamentoControll.cancelaPagamentoCheque()}"
+                            >
+                                <p:ajax process="@this"
+                                        update="dialogFinChequeEmitido"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
     <ui:define name="javaScript">
         <script type="application/javascript">
             $(document).ready(function () {

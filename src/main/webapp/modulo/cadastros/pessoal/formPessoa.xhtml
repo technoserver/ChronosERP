@@ -1,0 +1,497 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <p:tabView id="telaCadastroPessoa" activeIndex="#{pessoasControll.activeTabIndex}">
+
+        <p:tab title="Dados Pessoais" id="dadosPrincipais">
+            <div class="row">
+                <h:panelGroup layout="block" id="camposNone">
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                    idComponente="pessoaNome" label="Nome"
+                                    nomeAtributo="#{pessoasControll.objeto.nome}"
+                                    tamanhoMaximo="150" requerido="true"
+                                    id="campoNome"
+                                    exibir="#{pessoasControll.objeto.tipo eq 'F'}"/>
+
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                    idComponente="pessoaNome" label="Razão Social"
+                                    nomeAtributo="#{pessoasControll.objeto.nome}"
+                                    id="campoRazao"
+                                    tamanhoMaximo="150" requerido="true"
+                                    exibir="#{pessoasControll.objeto.tipo eq 'J'}"/>
+
+
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                    idComponente="pessoaJuridicaFantasia" label="Fantasia"
+                                    nomeAtributo="#{pessoasControll.objeto.pessoaJuridica.fantasia}"
+                                    tamanhoMaximo="150"
+                                    id="campoFantasia"
+                                    exibir="#{pessoasControll.objeto.tipo eq 'J'}"/>
+                </h:panelGroup>
+
+
+                <h:panelGroup layout="block" class="col-xs-12 col-sm-2 col-md-2"
+                >
+                    <h:outputLabel value="Tipo"
+                                   for="pessoaTipo"/>
+                    <h:selectOneMenu id="pessoaTipo"
+                                     class="form-control"
+                                     value="#{pessoasControll.objeto.tipo}">
+                        <f:selectItems value="#{pessoasControll.tipoPessoa}"/>
+                        <p:ajax event="change"
+                                update="formCentro:telaDetalhe:telaCadastroPessoa:panelPessoaFisicaJuridica,formCentro:telaDetalhe:telaCadastroPessoa:camposNone"
+                                process="@this" listener="#{pessoasControll.definirTipo()}"
+                                oncomplete="addClass()"/>
+
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+
+            </div>
+            <h:panelGroup layout="block" id="panelPessoaFisicaJuridica">
+
+                <h:panelGroup layout="block" id="dadosPessoaFisica"
+                              rendered="#{pessoasControll.objeto.tipo == 'F'}">
+
+                    <erp:separador label="Dados Pessoa Física"/>
+
+                    <div class="row">
+
+
+                    </div>
+
+
+                    <div class="row">
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="pessoaFisicaDataNascimento"
+                                       label="Data Nascimento"
+                                       nomeAtributo="#{pessoasControll.objeto.pessoaFisica.dataNascimento}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="pessoaFisicaSexo" label="Sexo"
+                                         nomeAtributo="#{pessoasControll.objeto.pessoaFisica.sexo}"
+                                         itens="#{pessoasControll.sexo}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="pessoaFisicaRaca" label="Raca"
+                                         nomeAtributo="#{pessoasControll.objeto.pessoaFisica.raca}"
+                                         itens="#{pessoasControll.racaCor}"
+                        />
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="pessoaFisicaTipoSangue" label="Tipo Sangue"
+                                         nomeAtributo="#{pessoasControll.objeto.pessoaFisica.tipoSangue}"
+                                         itens="#{pessoasControll.tipoSangue}"
+                        />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaFisicaNaturalidade" label="Naturalidade"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.naturalidade}"
+                                        tamanhoMaximo="100"
+                        />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaFisicaNacionalidade"
+                                        label="Nacionalidade"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.nacionalidade}"
+                                        tamanhoMaximo="100"
+                        />
+                    </div>
+
+
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaFisicaRg" label="RG"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.rg}"
+                                        tamanhoMaximo="20"
+                        />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaFisicaOrgaoRg" label="Orgao RG"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.orgaoRg}"
+                                        tamanhoMaximo="20"
+                        />
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="pessoaFisicaDataEmissaoRg"
+                                       label="Data Emissao Rg"
+                                       nomeAtributo="#{pessoasControll.objeto.pessoaFisica.dataEmissaoRg}"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaFisicaCnhNumero" label="CNH Numero"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.cnhNumero}"
+                                        tamanhoMaximo="20"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaFisicaCnhCategoria" label="CNH Categoria"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.cnhCategoria}"
+                                        tamanhoMaximo="2"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="pessoaFisicaCnhVencimento"
+                                       label="CNH Vencimento"
+                                       nomeAtributo="#{pessoasControll.objeto.pessoaFisica.cnhVencimento}"/>
+                    </div>
+
+                    <div class="row">
+                        <erp:campoCpf styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="pessoaFisicaCpf" label="CPF"
+                                      nomeAtributo="#{pessoasControll.objeto.pessoaFisica.cpf}"
+                                      requerido="true"
+                                      desabilitado="#{not empty pessoasControll.objeto.id}"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaFisicaTituloEleitoralNumero"
+                                        label="Titulo Eleitoral Numero"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.tituloEleitoralNumero}"
+                                        tamanhoMaximo="20"/>
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="pessoaFisicaTituloEleitoralZona" label="Zona"
+                                          nomeAtributo="#{pessoasControll.objeto.pessoaFisica.tituloEleitoralZona}"/>
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="pessoaFisicaTituloEleitoralSecao" label="Secao"
+                                          nomeAtributo="#{pessoasControll.objeto.pessoaFisica.tituloEleitoralSecao}"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaFisicaReservistaNumero"
+                                        label="Reservista Numero"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.reservistaNumero}"
+                                        tamanhoMaximo="20"/>
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="pessoaFisicaReservistaCategoria"
+                                          label="Reservista Categoria"
+                                          nomeAtributo="#{pessoasControll.objeto.pessoaFisica.reservistaCategoria}"/>
+                    </div>
+
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          label="Estado Civil"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{pessoasControll}"
+                                          completeMethod="getListaEstadoCivil"
+                                          nomeAtributo="#{pessoasControll.objeto.pessoaFisica.estadoCivil}"
+                                          idComponente="pessoaFisicaEstadoCivil"
+                        />
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                        idComponente="pessoaFisicaNomeMae" label="Nome Mae"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.nomeMae}"
+                                        tamanhoMaximo="100"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                        idComponente="pessoaFisicaNomePai" label="Nome Pai"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaFisica.nomePai}"
+                                        tamanhoMaximo="100"/>
+                    </div>
+
+
+                </h:panelGroup>
+
+                <h:panelGroup layout="block" id="dadosPessoaJuridica"
+                              rendered="#{pessoasControll.objeto.tipo == 'J'}">
+
+                    <erp:separador label="Dados Pessoa Jurídica"/>
+
+
+                    <div class="row">
+                        <erp:campoCnpj styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="pessoaJuridicaCnpj" label="CNPJ"
+                                       nomeAtributo="#{pessoasControll.objeto.pessoaJuridica.cnpj}"
+                                       requerido="true"
+                                       desabilitado="#{not empty pessoasControll.objeto.id}"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="pessoaJuridicaInscricaoMunicipal"
+                                        label="Inscricao Municipal"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaJuridica.inscricaoMunicipal}"
+                                        tamanhoMaximo="30"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="pessoaJuridicaInscricaoEstadual"
+                                        label="Inscricao Estadual"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaJuridica.inscricaoEstadual}"
+                                        tamanhoMaximo="30"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="pessoaJuridicaSuframa" label="Suframa"
+                                        nomeAtributo="#{pessoasControll.objeto.pessoaJuridica.suframa}"
+                                        tamanhoMaximo="9"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="pessoaJuridicaDataConstituicao"
+                                       label="Data Constituicao"
+                                       nomeAtributo="#{pessoasControll.objeto.pessoaJuridica.dataConstituicao}"/>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="pessoaJuridicaCrt" label="CRT"
+                                         nomeAtributo="#{pessoasControll.objeto.pessoaJuridica.crt}"
+                                         itens="#{pessoasControll.crt}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="pessoaJuridicaTipoRegime" label="Tipo Regime"
+                                         nomeAtributo="#{pessoasControll.objeto.pessoaJuridica.tipoRegime}"
+                                         itens="#{pessoasControll.tipoRegimeEmpresa}"/>
+                    </div>
+
+
+                </h:panelGroup>
+
+
+            </h:panelGroup>
+
+            <p:outputPanel id="panelPessoaEndereco">
+                <div class="row">
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-10"
+                                    idComponente="pessoaEnderecoLogradouro" label="Logradouro"
+                                    nomeAtributo="#{pessoasControll.endereco.logradouro}"
+                                    tamanhoMaximo="60"
+                                    requerido="true"/>
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    idComponente="pessoaEnderecoNumero" label="Numero"
+                                    nomeAtributo="#{pessoasControll.endereco.numero}"
+                                    tamanhoMaximo="10"
+                                    requerido="true"/>
+                </div>
+                <div class="row">
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                    idComponente="pessoaEnderecoComplemento" label="Complemento"
+                                    nomeAtributo="#{pessoasControll.endereco.complemento}"
+                                    tamanhoMaximo="60"/>
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                    idComponente="pessoaEnderecoBairro" label="Bairro"
+                                    nomeAtributo="#{pessoasControll.endereco.bairro}"
+                                    tamanhoMaximo="60"
+                                    requerido="true"/>
+
+                    <erp:campoMascara styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="pessoaEnderecoCep" label="Cep"
+                                      nomeAtributo="#{pessoasControll.endereco.cep}"
+                                      mascara="99.999-999"
+                                      requerido="true"/>
+
+                </div>
+                <div class="row">
+
+
+                    <div class="col-xs-12 col-sm-2 col-md-2">
+                        <h:outputLabel value="UF :" for="pessoaEnderecoUf"/>
+                        <h:selectOneMenu value="#{pessoasControll.endereco.uf}"
+                                         class="form-control" id="pessoaEnderecoUf">
+                            <f:selectItem itemValue="selecione" value="#{null}"/>
+                            <f:selectItems var="uf" value="#{pessoasControll.estado}"/>
+                            <p:ajax event="valueChange"
+                                    process="@this" update="Municipio"
+                                    listener="#{pessoasControll.instanciaCidade()}"
+                                    oncomplete="addClass()"/>
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-xs-12 col-sm-10 col-md-10">
+                        <h:outputLabel value="Municipio :"/>
+                        <br/>
+                        <p:autoComplete id="Municipio" value="#{pessoasControll.cidade}"
+                                        completeMethod="#{pessoasControll.getMunicipios}"
+                                        var="municipio" itemLabel="#{municipio.getNome()}"
+                                        itemValue="#{municipio}" converter="defaultConverter"
+                                        forceSelection="true" minQueryLength="3" maxResults="10"
+                                        emptyMessage="Nenhum registro encontrado" style="width: 100%"
+                                        required="true">
+                            <p:ajax event="itemSelect" process="@this"
+                                    listener="#{pessoasControll.atualizarCodIbge()}"/>
+                        </p:autoComplete>
+                    </div>
+
+
+                </div>
+            </p:outputPanel>
+
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                idComponente="pessoaEmail" label="Email"
+                                nomeAtributo="#{pessoasControll.objeto.email}"
+                                tamanhoMaximo="250"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                idComponente="pessoaSite" label="Site"
+                                nomeAtributo="#{pessoasControll.objeto.site}"
+                                tamanhoMaximo="250"/>
+
+                <erp:campoTelefone styleClass="col-xs-12 col-sm-5 col-md-2"
+                                   idComponente="pessoaEnderecoFone" label="Fone"
+                                   nomeAtributo="#{pessoasControll.endereco.fone}"
+                                   tamanhoMaximo="14"/>
+            </div>
+        </p:tab>
+
+
+        <p:tab title="Endereços" id="enderecos" disabled="#{empty pessoasControll.objeto.id}">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <h:commandLink title="Cadastrar" class="btn btn-default"
+                                   actionListener="#{pessoasControll.incluirEndereco()}">
+                        <i class="fa fa-plus"></i>
+                        <p:ajax process="@this,dataTablePessoaEndereco"
+                                oncomplete="PF('dialogEndereco').show()"
+                                update=":formOutrasTelas2:panelPessoaEndereco,dataTablePessoaEndereco"/>
+                        <!-- -->
+                    </h:commandLink>
+                </div>
+            </div>
+            <p:dataTable id="dataTablePessoaEndereco" var="obj"
+                         value="#{pessoasControll.objeto.listaPessoaEndereco}"
+                         paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
+                         rowKey="#{obj.id}" reflow="true" paginatorPosition="bottom">
+
+                <p:column headerText="Cidade">
+                    <h:outputLabel value="#{obj.cidade}"/>
+                </p:column>
+                <p:column headerText="Uf">
+                    <h:outputLabel value="#{obj.uf}"/>
+                </p:column>
+                <p:column headerText="Fone">
+                    <h:outputLabel value="#{obj.fone}"/>
+                </p:column>
+                <p:column headerText="Principal">
+                    <h:outputLabel
+                            value="#{pessoasControll.keyFromValue(pessoasControll.simNao, obj.principal)}"/>
+                </p:column>
+                <p:column headerText="Entrega">
+                    <h:outputLabel
+                            value="#{pessoasControll.keyFromValue(pessoasControll.simNao, obj.entrega)}"/>
+                </p:column>
+                <p:column headerText="Cobranca">
+                    <h:outputLabel
+                            value="#{pessoasControll.keyFromValue(pessoasControll.simNao, obj.cobranca)}"/>
+                </p:column>
+                <p:column headerText="Correspondencia">
+                    <h:outputLabel
+                            value="#{pessoasControll.keyFromValue(pessoasControll.simNao, obj.correspondencia)}"/>
+                </p:column>
+                <p:column headerText="Ações" width="140">
+                    <p:commandLink title="Alterar" action="#{pessoasControll.alterarEndereco}"
+                                   class=" btn btn-default"
+                                   process="dataTablePessoaEndereco"
+                                   oncomplete="PF('dialogEndereco').show()"
+                                   update=":formOutrasTelas2:panelPessoaEndereco,:formOutrasTelas2:dialogEndereco">
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{pessoasControll.pessoaEnderecoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{pessoasControll.excluirEndereco}"
+                                   update="dataTablePessoaEndereco,:formCentro:growl"
+                                   process="dataTablePessoaEndereco"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default">
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{pessoasControll.pessoaEnderecoSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+        </p:tab>
+        <p:tab title="Contatos" id="contatos" disabled="#{empty pessoasControll.objeto.id}">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <h:commandLink title="Cadastrar" class="btn btn-default"
+                                   actionListener="#{pessoasControll.incluirContato}">
+                        <i class="fa fa-plus"></i>
+                        <p:ajax process="@this,dataTablePessoaContato"
+                                oncomplete="PF('dialogContato').show()"
+                                update="formOutrasTelas:panelPessoaContato,dataTablePessoaContato"/>
+                    </h:commandLink>
+                </div>
+            </div>
+            <p:dataTable id="dataTablePessoaContato" var="obj"
+                         value="#{pessoasControll.objeto.listaPessoaContato}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         selection="#{pessoasControll.pessoaContatoSelecionado}"
+                         rowKey="#{obj.id}" reflow="true" paginatorPosition="bottom">
+
+
+                <p:column headerText="Nome">
+                    <h:outputLabel value="#{obj.nome}"/>
+                </p:column>
+                <p:column headerText="Email">
+                    <h:outputLabel value="#{obj.email}"/>
+                </p:column>
+                <p:column headerText="Fone Comercial">
+                    <h:outputLabel value="#{obj.foneComercial}"/>
+                </p:column>
+                <p:column headerText="Fone Residencial">
+                    <h:outputLabel value="#{obj.foneResidencial}"/>
+                </p:column>
+                <p:column headerText="Fone Celular">
+                    <h:outputLabel value="#{obj.foneCelular}"/>
+                </p:column>
+                <p:column headerText="Ações" width="140">
+                    <p:commandLink title="Alterar" action="#{pessoasControll.alterarContato}"
+                                   class=" btn btn-default"
+                                   process="dataTablePessoaContato"
+                                   oncomplete="PF('dialogContato').show()"
+                                   update=":formOutrasTelas:panelPessoaContato,:formOutrasTelas:dialogContato">
+                        <i class="fa fa-file-text-o"></i>
+                        <!-- -->
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{pessoasControll.pessoaContatoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{pessoasControll.excluirContato}"
+                                   update="dataTablePessoaContato,:formCentro:growl"
+                                   process="dataTablePessoaContato"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default">
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{pessoasControll.pessoaContatoSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+        </p:tab>
+        <p:tab title="Telefones" id="telefones" disabled="#{empty pessoasControll.objeto.id}">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <h:commandLink title="Cadastrar" class="btn btn-default"
+                                   id="btnIncluirTelefone"
+                                   actionListener="#{pessoasControll.incluirTelefone}">
+                        <i class="fa fa-plus"></i>
+                        <p:ajax process="@this,dataTablePessoaTelefone"
+                                oncomplete="PF('dialogTelefone').show()"
+                                update=":formOutrasTelas3:panelPessoaTelefone,dataTablePessoaTelefone"/>
+                        <!-- -->
+                    </h:commandLink>
+                </div>
+            </div>
+            <p:dataTable id="dataTablePessoaTelefone" var="obj"
+                         value="#{pessoasControll.objeto.listaPessoaTelefone}"
+                         paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
+                         rowKey="#{obj.id}" reflow="true" paginatorPosition="bottom">
+
+                <p:column headerText="Tipo">
+                    <h:outputLabel
+                            value="#{pessoasControll.keyFromValue(pessoasControll.tipoTelefone, obj.tipo)}"/>
+                </p:column>
+                <p:column headerText="Numero">
+                    <h:outputLabel value="#{obj.numero}"/>
+                </p:column>
+                <p:column headerText="Observacao">
+                    <h:outputLabel value="#{obj.observacao}"/>
+                </p:column>
+                <p:column headerText="Ações" width="140">
+                    <p:commandLink title="Alterar" action="#{pessoasControll.alterarTelefone()}"
+                                   class=" btn btn-default"
+                                   process="dataTablePessoaTelefone"
+                                   oncomplete="PF('dialogTelefone').show()"
+                                   update=":formOutrasTelas3:panelPessoaTelefone,:formOutrasTelas3:dialogTelefone">
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{obj}" target="#{cc.attrs.pessoaTelefoneSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{pessoasControll.excluirTelefone()}"
+                                   update="dataTablePessoaTelefone,:formCentro:growl"
+                                   process="dataTablePessoaTelefone"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default">
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{pessoasControll.pessoaTelefoneSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+        </p:tab>
+    </p:tabView>
+
+</ui:composition>
