@@ -295,7 +295,8 @@ ul.nav-second-level {
 }
 
 .nav-second-level li,
-.nav-third-level li {
+.nav-third-level li
+.nav-bedroom-level li {
     border-bottom: none !important;
 }
 
@@ -306,6 +307,10 @@ ul.nav-second-level {
 
 .nav-third-level li a {
     padding-left: 62px;
+}
+
+.nav-bedroom-level li a {
+    padding-left: 72px;
 }
 
 .nav-second-level li:last-child {
@@ -9943,6 +9948,10 @@ body.md-skin {
 
 .md-skin .nav-third-level li a {
     padding-left: 62px;
+}
+
+.md-skin .nav-bedroom-level li a {
+    padding-left: 72px;
 }
 
 .md-skin .navbar-top-links li a {

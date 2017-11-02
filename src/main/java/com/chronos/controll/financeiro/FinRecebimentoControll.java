@@ -268,7 +268,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     }
 
     public List<ViewFinLancamentoReceber> getParcelasSelecionadas() {
-        return parcelasSelecionadas;
+        return Optional.ofNullable(parcelasSelecionadas).orElse(new ArrayList<>());
     }
 
     public void setParcelasSelecionadas(List<ViewFinLancamentoReceber> parcelasSelecionadas) {
@@ -276,6 +276,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     }
 
     public BigDecimal getValorAPagar() {
+
         return valorAPagar;
     }
 

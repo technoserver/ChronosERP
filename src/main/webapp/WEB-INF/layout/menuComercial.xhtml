@@ -4,7 +4,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:erp="http://java.sun.com/jsf/composite/components">
+                xmlns:erp="http://java.sun.com/jsf/composite/components" xmlns:f="http://java.sun.com/jsf/core">
 
 
     <ul class="nav nav-second-level collapse ">
@@ -20,7 +20,14 @@
                                  funcao="condicoesPagamento"/>
                     <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
                                  label="Orçamento"
-                                 funcao="orcamento"/>
+                                 funcao="orcamento">
+                        <f:param name="tipo" value="O"/>
+                    </erp:subMenu>
+                    <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
+                                 label="Pedido"
+                                 funcao="orcamento">
+                        <f:param name="tipo" value="P"/>
+                    </erp:subMenu>
                     <erp:subMenu caminho="/modulo/comercial/vendas/vendas"
                                  label="Vendas"
                                  funcao="modulo/comercial/vendas/vendas"/>
@@ -57,9 +64,9 @@
         <li class="${fn:contains(view.viewId,'modulo/comercial/nfce/')?'active':''}">
             <a href="#">NFce<span class="fa arrow"></span></a>
             <ul class="nav nav-third-level">
-                <erp:subMenu caminho="/modulo/comercial/nfce/movimentoCaixa"
-                             label="Movimentos Caixas"
-                             funcao="movimentoCaixa"/>
+                <!--<erp:subMenu caminho="/modulo/comercial/nfce/movimentoCaixa"-->
+                <!--label="Movimentos Caixas"-->
+                <!--funcao="movimentoCaixa"/>-->
                 <erp:subMenu caminho="/modulo/comercial/nfce/pdv"
                              label="PDV"
                              funcao="pdv"/>

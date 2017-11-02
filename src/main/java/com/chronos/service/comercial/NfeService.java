@@ -506,7 +506,7 @@ public class NfeService implements Serializable {
         } else if (retorno.getCStat().equals("215") || retorno.getCStat().equals("225")) {
             status = StatusTransmissao.SCHEMA_INVALIDO;
             if (org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas())) {
-                Mensagem.addErrorMessage("Preenchimento do xml invalido para mais detalhes informes o camiinho dos schemas para validação");
+                Mensagem.addErrorMessage("Preenchimento do xml invalido para mais detalhes informes o camminho dos schemas para validação");
             } else {
                 String xml = XmlUtil.objectToXml(nfeEnv);
                 String erroValidacao = ValidarNFe.validaXml(xml, ValidarNFe.ENVIO);

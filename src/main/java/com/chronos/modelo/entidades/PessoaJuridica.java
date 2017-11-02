@@ -42,9 +42,9 @@ public class PessoaJuridica implements Serializable {
     public PessoaJuridica() {
     }
 
-    public PessoaJuridica(Integer id, String cnpj) {
+    public PessoaJuridica(Integer id, String nome) {
         this.id = id;
-        this.cnpj = cnpj;
+        this.pessoa = new Pessoa(nome);
     }
 
     @PreUpdate

@@ -36,10 +36,10 @@
                 <h:outputLabel value="#{row.numero}" />
             </p:column>
             <p:column headerText="Status Cheque">
-                <h:outputLabel value="#{chequeControll.keyFromValue(chequeControll.chequeStatus, obj.statusCheque)}" />
+                <h:outputLabel value="#{chequeControll.keyFromValue(chequeControll.chequeStatus, row.statusCheque)}"/>
             </p:column>
             <p:column headerText="Data Status">
-                <h:outputLabel value="#{obj.dataStatus}" >
+                <h:outputLabel value="#{row.dataStatus}">
                     <f:convertDateTime pattern="dd/MM/yyyy" />
                 </h:outputLabel>
             </p:column>

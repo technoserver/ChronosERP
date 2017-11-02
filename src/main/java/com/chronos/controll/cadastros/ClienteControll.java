@@ -95,8 +95,14 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
         Cliente cliente = null;
         try {
-            cliente = service.salvarCliente(getObjeto(), empresa);
-            setObjeto(cliente);
+            if (completo.equals("S")) {
+                cliente = service.salvarCliente(getObjeto(), empresa);
+                setObjeto(cliente);
+
+            } else {
+                getObjeto().getPessoa().setCliente("S");
+                dao.atualizar(getObjeto());
+            }
             Mensagem.addInfoMessage("Cliente salvo com sucesso");
         } catch (Exception e) {
             e.printStackTrace();

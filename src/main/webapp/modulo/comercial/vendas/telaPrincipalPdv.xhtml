@@ -38,7 +38,12 @@
                 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner" role="listbox">
                         <div class="hidden-xs item active">
-                            <p:graphicImage value="/resources/images/produto-sem-foto.png" width="100%"/>
+                            <p:graphicImage value="/resources/images/produto-sem-foto.png" width="100%"
+                                            rendered="#{balcaoControll.item.produto.imagem==null}"/>
+
+                            <h:graphicImage id="imgProduto"
+                                            value="/image/produto?foto=#{balcaoControll.item.produto.imagem}"
+                                            rendered="#{balcaoControll.item.produto.imagem!=null}"/>
 
                         </div>
                     </div>

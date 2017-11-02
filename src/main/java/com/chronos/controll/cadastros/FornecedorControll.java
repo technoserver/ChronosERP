@@ -65,9 +65,18 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
     public void salvar() {
         Fornecedor fornecedor = null;
         try {
-            fornecedor = service.salvarFornecedor(getObjeto(), empresa);
-            setObjeto(fornecedor);
-            Mensagem.addInfoMessage("Cliente salvo com sucesso");
+            if (completo.equals("S")) {
+                fornecedor = service.salvarFornecedor(getObjeto(), empresa);
+                setObjeto(fornecedor);
+            } else {
+                fornecedor = getObjeto();
+                Pessoa pessoa = pessoas.getJoinFetch(fornecedor.getPessoa().getId(), Pessoa.class);
+                fornecedor.setPessoa(pessoa);
+                fornecedor.getPessoa().setFornecedor("S");
+                fornecedor = dao.atualizar(fornecedor);
+
+            }
+            Mensagem.addInfoMessage("Fornecedor salvo com sucesso");
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("", e);

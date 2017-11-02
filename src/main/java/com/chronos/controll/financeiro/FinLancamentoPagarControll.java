@@ -75,6 +75,7 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
 
         try {
             if (getObjeto().getId() == null) {
+                getObjeto().setValorAPagar(getObjeto().getValorTotal());
                 gerarParcelas();
                 geraNaturezaFinanceira();
 

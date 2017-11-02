@@ -182,15 +182,14 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void gerarNFe() {
         ModeloDocumento modelo = ModeloDocumento.NFE;
-        vendaService.transmitirNFe(getObjeto(), modelo);
-        VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        VendaCabecalho venda = dao.getJoinFetch(getObjetoSelecionado().getId(), VendaCabecalho.class);
         vendaService.transmitirNFe(venda, modelo);
     }
 
 
     public void gerarNfce() {
         ModeloDocumento modelo = ModeloDocumento.NFCE;
-        VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        VendaCabecalho venda = dao.getJoinFetch(getObjetoSelecionado().getId(), VendaCabecalho.class);
         vendaService.transmitirNFe(venda, modelo);
     }
 
