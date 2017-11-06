@@ -5,8 +5,10 @@
  */
 package com.chronos.controll.cadastros;
 
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.TelaPessoa;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
@@ -50,6 +52,21 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     @Inject
     private PessoaService service;
 
+
+    @Override
+    public ERPLazyDataModel<Colaborador> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setDao(dao);
+            dataModel.setClazz(Colaborador.class);
+
+        }
+        dataModel.getFiltros().clear();
+        dataModel.addFiltro("pessoa.id", 1, Filtro.DIFERENTE);
+        dataModel.addFiltro("pessoa.id", 2, Filtro.DIFERENTE);
+        dataModel.setAtributos(new Object[]{"pessoa.nome", "matricula", "situacaoColaborador.nome", "cargo.nome", "setor.nome"});
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {

@@ -130,6 +130,15 @@
                                              funcao="finMovimentoCaixaBanco"/>
                             </ul>
                         </li>
+                        <li class="${fn:contains(view.viewId,'modulo/financeiro/relatorios/')?'active':''}">
+                            <a href="#">Relatorios <span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasPagar"
+                                             label="Contas a pagar"
+                                             funcao="relacaoContasPagar"/>
+
+                            </ul>
+                        </li>
                         <!--
                         <li class="${fn:contains(view.viewId,'modulo/financeiro/cheque/')?'active':''}">
                             <a href="#">Controle de Chq. <span class="fa arrow"></span></a>
@@ -180,15 +189,15 @@
                     </a>
                     <ul class="nav nav-second-level collapse ">
                         <li class="${fn:contains(view.viewId,'modulo/estoque/')?'active':''}">
-                            <erp:subMenu caminho="/modulo/estoque/estoqueFormacaoPreco"
-                                         label="Formação Preço"
-                                         funcao="estoqueFormacaoPreco"/>
-                            <erp:subMenu caminho="/modulo/estoque/requisicaoInternaCabecalho"
-                                         label="Requisição Interna"
-                                         funcao="requisicaoInternaCabecalho"/>
-                            <erp:subMenu caminho="/modulo/estoque/estoqueReajuste"
-                                         label="Reajuste"
-                                         funcao="estoqueReajuste"/>
+                            <!--<erp:subMenu caminho="/modulo/estoque/estoqueFormacaoPreco"-->
+                            <!--label="Formação Preço"-->
+                            <!--funcao="estoqueFormacaoPreco"/>-->
+                            <!--<erp:subMenu caminho="/modulo/estoque/requisicaoInternaCabecalho"-->
+                            <!--label="Requisição Interna"-->
+                            <!--funcao="requisicaoInternaCabecalho"/>-->
+                            <!--<erp:subMenu caminho="/modulo/estoque/estoqueReajuste"-->
+                            <!--label="Reajuste"-->
+                            <!--funcao="estoqueReajuste"/>-->
                             <erp:subMenu caminho="/modulo/estoque/entradaNotaFiscal"
                                          label="Entra NFe"
                                          funcao="entradaNotaFiscal"/>

@@ -19,7 +19,7 @@ public class ProdutoDTO implements Serializable {
     private String nome;
     private BigDecimal valorVenda;
     private BigDecimal quantidadeEstoque;
-    private BigDecimal controle;
+    private BigDecimal estoqueVerificado;
     private String ncm;
     private String imagem;
     private Integer idgrupotributario;
@@ -32,18 +32,18 @@ public class ProdutoDTO implements Serializable {
     public ProdutoDTO() {
     }
 
-    public ProdutoDTO(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal controle, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
+    public ProdutoDTO(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
         this.id = id;
         this.nome = nome;
         this.valorVenda = valorVenda;
         this.quantidadeEstoque = quantidadeEstoque;
-        this.controle = controle;
+        this.estoqueVerificado = estoqueVerificado;
         this.unidade = unidade;
         this.ncm = ncm;
         this.imagem = imagem;
         this.idgrupotributario = idgrupotributario;
         this.idicms = idicms;
-        this.produto = new Produto(id, nome, valorVenda, quantidadeEstoque, ncm, new UnidadeProduto(0, unidade));
+        this.produto = new Produto(id, nome, valorVenda, estoqueVerificado, ncm, new UnidadeProduto(0, unidade));
         this.produto.setImagem(imagem);
         this.produto.getUnidadeProduto().setPodeFracionar(podeFracionar);
         if (idgrupotributario != null) {
@@ -86,12 +86,12 @@ public class ProdutoDTO implements Serializable {
         this.quantidadeEstoque = quantidadeEstoque;
     }
 
-    public BigDecimal getControle() {
-        return controle;
+    public BigDecimal getEstoqueVerificado() {
+        return estoqueVerificado;
     }
 
-    public void setControle(BigDecimal controle) {
-        this.controle = controle;
+    public void setEstoqueVerificado(BigDecimal estoqueVerificado) {
+        this.estoqueVerificado = estoqueVerificado;
     }
 
     public String getNcm() {

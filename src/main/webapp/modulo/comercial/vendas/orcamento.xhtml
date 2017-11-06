@@ -10,14 +10,14 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="title">
-        Orçamento
+        #{vendaOrcamentoCabecalhoControll.tipo eq 'O'?'Orçamento':'PEDIDO'}
     </ui:define>
 
     <ui:define name="tela">
         #{vendaOrcamentoCabecalhoControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        Orçamento
+        #{vendaOrcamentoCabecalhoControll.tipo eq 'O'?'Orçamento':'PEDIDO'}
     </ui:define>
 
 

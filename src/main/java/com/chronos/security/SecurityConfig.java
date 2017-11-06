@@ -94,6 +94,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/modulo/financeiro/pagamento/**").authenticated()
                 .antMatchers("/modulo/financeiro/recebimento/**").authenticated()
                 .antMatchers("/modulo/financeiro/diversos/**").authenticated()
+                .antMatchers("/modulo/financeiro/relatorios/**").authenticated()
                 .antMatchers("/modulo/gerencial/**").authenticated()
                 .antMatchers("/modulo/fiscal/tributacao/**").authenticated()
                 .antMatchers("/modulo/fiscal/tributacao/**").authenticated()

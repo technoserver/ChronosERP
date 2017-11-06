@@ -174,12 +174,13 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                     if (!StringUtils.isEmpty(getObjeto().getImagem())) {
                         ArquivoUtil.getInstance().salvarFotoProduto(getObjeto().getImagem());
                     }
-                    if (getObjeto().getId() == null && getObjeto().getServico().equals("N")) {
+                    if (getObjeto().getId() == null) {
                         super.salvar(null);
                         EmpresaProduto produtoEmpresa = new EmpresaProduto();
                         produtoEmpresa.setEmpresa(empresa);
                         produtoEmpresa.setProduto(getObjeto());
                         produtoEmpresa.setQuantidadeEstoque(BigDecimal.ZERO);
+                        produtoEmpresa.setEstoqueVerificado(BigDecimal.ZERO);
                         produtosEmpresa.salvar(produtoEmpresa);
                     } else {
                         super.salvar(null);
@@ -313,7 +314,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                 ViewProdutoEmpresa view = (ViewProdutoEmpresa) event.getData();
                 List<Filtro> filtros = new ArrayList<>();
                 filtros.add(new Filtro("produto.id", Filtro.IGUAL, view.getId()));
-                atributos = new Object[]{"empresa.id", "empresa.razaoSocial", "quantidadeEstoque", "controle"};
+                atributos = new Object[]{"empresa.id", "empresa.razaoSocial", "quantidadeEstoque", "estoqueVerificado"};
 
                 listProdutoEmpresa = produtosEmpresa.getEntitys(EmpresaProduto.class, filtros, atributos);
             }

@@ -67,7 +67,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     public void atualizaEstoqueEmpresaControle(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
 
-        String jpql = "UPDATE EmpresaProduto p set p.controle = p.controle + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
+        String jpql = "UPDATE EmpresaProduto p set p.estoqueVerificado = p.estoqueVerificado + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
         //  execute(jpql, quantidade, idProduto, idEmpresa);
 
         // String jpql = "UPDATE Produto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.id = :id";
@@ -95,7 +95,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         Root<ViewProdutoEmpresa> root = criteria.from(ViewProdutoEmpresa.class);
 
 
-        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,ep.controle,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla) From Produto p " +
+        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
                 "where LOWER(p.nome)  like ?1 and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null)";
@@ -135,7 +135,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 //        TypedQuery typedQuery = em.createQuery(criteriaQuery);
 //        typedQuery.getResultList();
 
-        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,ep.controle,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla,un.podeFracionar) From Produto p " +
+        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla,un.podeFracionar) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
                 "where LOWER(p.nome)  like ?1 and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null)";
@@ -148,7 +148,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
     public List<EstoqueIdealDTO> getItensCompraSugerida(Empresa empresa) throws Exception {
-        String jpql = "select new com.chronos.dto.EstoqueIdealDTO(p.id,p.nome,p.valorCompra,ep.quantidadeEstoque,ep.controle,p.estoqueIdeal) From Produto p " +
+        String jpql = "select new com.chronos.dto.EstoqueIdealDTO(p.id,p.nome,p.valorCompra,ep.quantidadeEstoque,ep.estoqueVerificado,p.estoqueIdeal) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "WHERE p.controle < p.estoqueMinimo and ep.empresa.id = ?1";
 

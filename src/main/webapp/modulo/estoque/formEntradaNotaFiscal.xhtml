@@ -30,7 +30,18 @@
                         rendered="#{not empty entradaNotaFiscalControll.objeto}">
 
                     <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-md-6">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                          id="operacaoFiscal"
+                                          label="Operação Fiscal"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{entradaNotaFiscalControll}"
+                                          completeMethod="getListaTributOperacaoFiscal"
+                                          nomeAtributo="#{entradaNotaFiscalControll.objeto.tributOperacaoFiscal}"
+                                          idComponente="nfeCabecalhoTributOperacaoFiscal"
+                                          requerido="true">
+                        </erp:autoComplete>
+
+                        <div class="col-xs-12 col-sm-4 col-md-4">
                             <p:outputLabel value="Fornecedor" for="compraPedidoFornecedor" />
                             <br />
                             <p:autoComplete id="compraPedidoFornecedor"

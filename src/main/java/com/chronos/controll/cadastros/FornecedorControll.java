@@ -10,6 +10,7 @@ import com.chronos.modelo.entidades.Fornecedor;
 import com.chronos.modelo.entidades.Pessoa;
 import com.chronos.modelo.entidades.SituacaoForCli;
 import com.chronos.modelo.entidades.enuns.TelaPessoa;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
@@ -86,8 +87,11 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
     public List<Pessoa> getListaPessoa(String nome) {
         List<Pessoa> listaPessoa = new ArrayList<>();
         try {
-
-            listaPessoa = pessoas.getEntitys(Pessoa.class, "nome", nome, atributos);
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("nome", Filtro.LIKE, nome));
+            filtros.add(new Filtro("id", Filtro.DIFERENTE, 1));
+            filtros.add(new Filtro("id", Filtro.DIFERENTE, 2));
+            listaPessoa = pessoas.getEntitys(Pessoa.class, filtros, atributos);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -49,8 +49,8 @@ public class ViewProdutoEmpresa implements Serializable {
     private String imagem;
     @Column(name = "quantidade", precision = 18, scale = 6)
     private BigDecimal quantidade;
-    @Column(name = "controle", precision = 18, scale = 6)
-    private BigDecimal controle;
+    @Column(name = "estoque_verificado", precision = 18, scale = 6)
+    private BigDecimal estoqueVerificado;
     @Column(name = "inativo")
     private String inativo;
     @Column(name = "excluido")
@@ -243,12 +243,12 @@ public class ViewProdutoEmpresa implements Serializable {
         this.imagem = imagem;
     }
 
-    public BigDecimal getControle() {
-        return controle;
+    public BigDecimal getEstoqueVerificado() {
+        return estoqueVerificado;
     }
 
-    public void setControle(BigDecimal controle) {
-        this.controle = controle;
+    public void setEstoqueVerificado(BigDecimal estoqueVerificado) {
+        this.estoqueVerificado = estoqueVerificado;
     }
 
     @Override

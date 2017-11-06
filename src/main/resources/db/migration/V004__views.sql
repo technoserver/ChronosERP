@@ -1,3 +1,24 @@
+CREATE OR REPLACE VIEW view_dados_empresa AS
+  SELECT
+    empresa.id,
+    empresa.razao_social         AS empresa_razao_social,
+    empresa.nome_fantasia        AS empresa_nome_fantasia,
+    empresa.cnpj                 AS empresa_cnpj,
+    empresa.inscricao_estadual   AS empresa_inscricao_estadual,
+    empresa.imagem_logotipo      AS empresa_imagem_logotipo,
+    empresa_endereco.logradouro  AS empresa_endereco_logradouro,
+    empresa_endereco.numero      AS empresa_endereco_numero,
+    empresa_endereco.complemento AS empresa_endereco_complemento,
+    empresa_endereco.bairro      AS empresa_endereco_bairro,
+    empresa_endereco.cidade      AS empresa_endereco_cidade,
+    empresa_endereco.cep         AS empresa_endereco_cep,
+    empresa_endereco.fone        AS empresa_endereco_fone,
+    empresa_endereco.uf          AS empresa_endereco_uf,
+    empresa.email                AS empresa_email
+  FROM empresa empresa
+    JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+  WHERE empresa_endereco.principal = 'S';
+
 CREATE OR REPLACE VIEW VIEW_PESSOA AS
   SELECT
     p.id,
@@ -444,6 +465,7 @@ CREATE OR REPLACE VIEW view_fin_lancamento_pagar AS
   SELECT
     concat(lp.id, pp.id) :: INTEGER AS id,
     lp.id                           AS id_lancamento_pagar,
+    lp.id_empresa,
     pp.id                           AS id_parcela_pagar,
     cc.id                           AS id_conta_caixa,
     s.id                            AS id_status_parcela,
@@ -482,6 +504,7 @@ CREATE OR REPLACE VIEW view_fin_lancamento_pagar AS
   SELECT
     concat(lp.id, pp.id) :: INTEGER AS id,
     lp.id                           AS id_lancamento_pagar,
+    lp.id_empresa,
     pp.id                           AS id_parcela_pagar,
     cc.id                           AS id_conta_caixa,
     s.id                            AS id_status_parcela,
@@ -561,6 +584,7 @@ CREATE OR REPLACE VIEW view_fin_lancamento_receber AS
   SELECT
     lr.id                                                          AS id,
     c.id                                                           AS id_cliente,
+    lr.id_empresa,
     p.nome,
     pf.cpf                                                         AS cpf_cnpj,
     lr.data_lancamento,
@@ -606,6 +630,7 @@ CREATE OR REPLACE VIEW view_fin_lancamento_receber AS
   SELECT
     lr.id                                                          AS id,
     c.id                                                           AS id_cliente,
+    lr.id_empresa,
     p.nome,
     pj.cnpj                                                        AS cpf_cnpj,
     lr.data_lancamento,
@@ -641,6 +666,7 @@ CREATE OR REPLACE VIEW view_fin_lancamento_receber AS
 
   FROM fin_lancamento_receber lr
     INNER JOIN fin_parcela_receber pr ON (pr.id_fin_lancamento_receber = lr.id)
+    INNER JOIN fin_parcela_recebimento prb ON (prb.id_fin_parcela_receber = pr.id)
     INNER JOIN fin_status_parcela s ON (pr.id_fin_status_parcela = s.id)
     INNER JOIN conta_caixa cc ON (pr.id_conta_caixa = cc.id)
     INNER JOIN fin_documento_origem doc ON (lr.id_fin_documento_origem = doc.id)
@@ -765,9 +791,8 @@ CREATE OR REPLACE VIEW view_fin_cheque_nao_compensado AS
 
 CREATE OR REPLACE VIEW view_tributacao_cofins AS
   SELECT
-    configura.id,
-    configura.id_tribut_grupo_tributario,
-    configura.id_tribut_operacao_fiscal,
+    cofins.id,
+    cofins.id_tribut_operacao_fiscal,
     cofins.cst_cofins,
     cofins.efd_tabela_435,
     cofins.modalidade_base_calculo,
@@ -776,14 +801,13 @@ CREATE OR REPLACE VIEW view_tributacao_cofins AS
     cofins.aliquota_unidade,
     cofins.valor_preco_maximo,
     cofins.valor_pauta_fiscal
-  FROM tribut_configura_of_gt configura
-    JOIN tribut_cofins_cod_apuracao cofins ON cofins.id_tribut_configura_of_gt = configura.id;
+  FROM tribut_cofins_cod_apuracao cofins;
+
 
 CREATE OR REPLACE VIEW view_tributacao_pis AS
   SELECT
-    configura.id,
-    configura.id_tribut_grupo_tributario,
-    configura.id_tribut_operacao_fiscal,
+    pis.id,
+    pis.id_tribut_operacao_fiscal,
     pis.cst_pis,
     pis.efd_tabela_435,
     pis.modalidade_base_calculo,
@@ -792,15 +816,14 @@ CREATE OR REPLACE VIEW view_tributacao_pis AS
     pis.aliquota_unidade,
     pis.valor_preco_maximo,
     pis.valor_pauta_fiscal
-  FROM tribut_configura_of_gt configura
-    JOIN tribut_pis_cod_apuracao pis ON pis.id_tribut_configura_of_gt = configura.id;
+  FROM tribut_pis_cod_apuracao pis;
 
 
 CREATE OR REPLACE VIEW view_tributacao_icms AS
   SELECT
-    configura.id,
-    configura.id_tribut_grupo_tributario,
-    configura.id_tribut_operacao_fiscal,
+    icms.id,
+    icms.id_tribut_grupo_tributario,
+    icms.id_tribut_operacao_fiscal,
     grupo.origem_mercadoria,
     icms.uf_destino,
     icms.cfop,
@@ -819,9 +842,9 @@ CREATE OR REPLACE VIEW view_tributacao_icms AS
     icms.aliquota_icms_st,
     icms.valor_pauta_st,
     icms.valor_preco_maximo_st
-  FROM tribut_configura_of_gt configura
-    JOIN tribut_icms_uf icms ON icms.id_tribut_configura_of_gt = configura.id
-    JOIN tribut_grupo_tributario grupo ON configura.id_tribut_grupo_tributario = grupo.id;
+  FROM tribut_icms_uf icms
+    INNER JOIN tribut_grupo_tributario grupo ON grupo.id = icms.id_tribut_grupo_tributario;
+
 
 CREATE OR REPLACE VIEW view_tributacao_icms_custom AS
   SELECT
@@ -850,9 +873,8 @@ CREATE OR REPLACE VIEW view_tributacao_icms_custom AS
 
 CREATE OR REPLACE VIEW view_tributacao_ipi AS
   SELECT
-    configura.id,
-    configura.id_tribut_grupo_tributario,
-    configura.id_tribut_operacao_fiscal,
+    ipi.id,
+    ipi.id_tribut_operacao_fiscal,
     ipi.cst_ipi,
     ipi.modalidade_base_calculo,
     ipi.porcento_base_calculo,
@@ -860,8 +882,7 @@ CREATE OR REPLACE VIEW view_tributacao_ipi AS
     ipi.aliquota_unidade,
     ipi.valor_preco_maximo,
     ipi.valor_pauta_fiscal
-  FROM tribut_configura_of_gt configura
-    JOIN tribut_ipi_dipi ipi ON ipi.id_tribut_configura_of_gt = configura.id;
+  FROM tribut_ipi_dipi ipi;
 
 -- View NFCe
 
@@ -896,6 +917,50 @@ CREATE OR REPLACE VIEW view_nfce_cliente AS
     JOIN pessoa_endereco e ON e.id_pessoa = p.id
   WHERE p.cliente = 'S' AND e.principal = 'S';
 
+-- View Vendas
+
+CREATE OR REPLACE VIEW view_rank_produto AS
+  SELECT
+    p.nome,
+    sum(p.quantidade)            AS quantidade,
+    round(sum(p.porcentagem), 2) AS porcetagem,
+    view_dados_empresa.empresa_razao_social,
+    view_dados_empresa.empresa_nome_fantasia,
+    view_dados_empresa.empresa_cnpj,
+    view_dados_empresa.empresa_inscricao_estadual,
+    view_dados_empresa.empresa_imagem_logotipo,
+    view_dados_empresa.empresa_endereco_logradouro,
+    view_dados_empresa.empresa_endereco_numero,
+    view_dados_empresa.empresa_endereco_complemento,
+    view_dados_empresa.empresa_endereco_bairro,
+    view_dados_empresa.empresa_endereco_cidade,
+    view_dados_empresa.empresa_endereco_cep,
+    view_dados_empresa.empresa_endereco_fone,
+    view_dados_empresa.empresa_endereco_uf,
+    view_dados_empresa.empresa_email
+  FROM (SELECT
+          CASE
+          WHEN (sum(i.quantidade) * 100.0 / sum(sum(i.quantidade))
+          OVER ()) <= 1 :: NUMERIC
+            THEN 'OUTROS' :: CHARACTER VARYING
+          ELSE p_1.nome
+          END               AS nome,
+          sum(i.quantidade) AS quantidade,
+          sum(i.quantidade) * 100.0 / sum(sum(i.quantidade))
+          OVER ()           AS porcentagem
+        FROM produto p_1
+          JOIN venda_detalhe i ON i.id_produto = p_1.id
+        GROUP BY p_1.nome) p,
+    view_dados_empresa
+  GROUP BY p.nome, view_dados_empresa.empresa_razao_social, view_dados_empresa.empresa_nome_fantasia,
+    view_dados_empresa.empresa_cnpj, view_dados_empresa.empresa_inscricao_estadual,
+    view_dados_empresa.empresa_imagem_logotipo, view_dados_empresa.empresa_endereco_logradouro,
+    view_dados_empresa.empresa_endereco_numero, view_dados_empresa.empresa_endereco_complemento,
+    view_dados_empresa.empresa_endereco_bairro, view_dados_empresa.empresa_endereco_cidade,
+    view_dados_empresa.empresa_endereco_cep, view_dados_empresa.empresa_endereco_fone,
+    view_dados_empresa.empresa_endereco_uf, view_dados_empresa.empresa_email
+  ORDER BY 2 DESC;
+
 -- View Estoque
 
 CREATE OR REPLACE VIEW view_produto_empresa AS
@@ -916,7 +981,7 @@ CREATE OR REPLACE VIEW view_produto_empresa AS
     p.tipo,
     p.imagem,
     ep.quantidade_estoque AS quantidade,
-    ep.controle,
+    ep.estoque_verificado,
     p.inativo,
     p.excluido,
     sg.nome               AS subgrupo,
@@ -934,7 +999,7 @@ CREATE OR REPLACE VIEW view_produto_empresa AS
 
 --View para o SPED
 
-CREATE VIEW VIEW_SPED_NFE_DETALHE AS
+CREATE OR REPLACE VIEW VIEW_SPED_NFE_DETALHE AS
   SELECT
     NFED.*,
     NFEC.ID_TRIBUT_OPERACAO_FISCAL,
@@ -1025,7 +1090,7 @@ CREATE OR REPLACE VIEW view_sped_c190 AS
   GROUP BY nfec.id, nfed.cst_icms, nfed.cfop, nfed.aliquota_icms, nfec.data_hora_emissao;
 
 
-CREATE VIEW VIEW_SPED_C300
+CREATE OR REPLACE VIEW VIEW_SPED_C300
 AS
   SELECT
     SERIE,
@@ -1039,7 +1104,7 @@ AS
   GROUP BY
     SERIE, SUBSERIE, DATA_EMISSAO;
 
-CREATE VIEW VIEW_SPED_C321 AS
+CREATE OR REPLACE VIEW VIEW_SPED_C321 AS
   SELECT
     NF2D.ID_PRODUTO,
     U.SIGLA               AS DESCRICAO_UNIDADE,
@@ -1059,7 +1124,7 @@ CREATE VIEW VIEW_SPED_C321 AS
     P.ID_UNIDADE_PRODUTO = U.ID
   GROUP BY ID_PRODUTO, U.SIGLA, NF2C.DATA_EMISSAO;
 
-CREATE VIEW VIEW_SPED_C370 AS
+CREATE OR REPLACE VIEW VIEW_SPED_C370 AS
   SELECT
     nd.ID_NF_CABECALHO   AS ID_NF_CABECALHO,
     nc.DATA_EMISSAO      AS DATA_EMISSAO,
@@ -1074,7 +1139,7 @@ CREATE VIEW VIEW_SPED_C370 AS
     INNER JOIN ecf_nota_fiscal_cabecalho nc ON (nd.ID_NF_CABECALHO = nc.ID)
     INNER JOIN produto p ON (nd.ID_PRODUTO = p.ID);
 
-CREATE VIEW VIEW_SPED_C390 AS
+CREATE OR REPLACE VIEW VIEW_SPED_C390 AS
   SELECT
     NF2D.CST,
     NF2D.CFOP,
@@ -1090,7 +1155,7 @@ CREATE VIEW VIEW_SPED_C390 AS
   GROUP BY CST, NF2D.CFOP, TAXA_ICMS, NF2C.DATA_EMISSAO;
 
 
-CREATE VIEW VIEW_SPED_C425 AS
+CREATE OR REPLACE VIEW VIEW_SPED_C425 AS
   SELECT
     VD.ID_ECF_PRODUTO,
     U.SIGLA             AS DESCRICAO_UNIDADE,
@@ -1108,7 +1173,7 @@ CREATE VIEW VIEW_SPED_C425 AS
   GROUP BY
     ID_ECF_PRODUTO, U.SIGLA, ID_UNIDADE_PRODUTO, VD.TOTALIZADOR_PARCIAL, DATA_VENDA;
 
-CREATE VIEW VIEW_SPED_C490 AS
+CREATE OR REPLACE VIEW VIEW_SPED_C490 AS
   SELECT
     VD.CST,
     VD.CFOP,

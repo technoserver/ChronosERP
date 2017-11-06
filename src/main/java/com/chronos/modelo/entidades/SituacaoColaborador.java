@@ -57,6 +57,10 @@ public class SituacaoColaborador implements Serializable {
     public SituacaoColaborador() {
     }
 
+    public SituacaoColaborador(String nome) {
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

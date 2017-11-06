@@ -36,12 +36,12 @@
                                         nomeAtributo="#{produtoControll.produto}"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                         idComponente="produto"
-                                        label="Produto"
+                                        label="Grupo"
                                         tamanhoMaximo="100"
                                         nomeAtributo="#{produtoControll.strGrupo}"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                         idComponente="produto"
-                                        label="Produto"
+                                        label="SubGrupo"
                                         tamanhoMaximo="100"
                                         nomeAtributo="#{produtoControll.strSubGrupo}"/>
                         <div class="col-xs-12 col-sm-2 col-md-2">
@@ -130,7 +130,7 @@
                             <p:panelGrid columns="3">
                                 <h:outputLabel value="Empresa"/>
                                 <h:outputLabel value="Estoque"/>
-                                <h:outputLabel value="Controle"/>
+                                <h:outputLabel value="Verificado"/>
 
                                 <c:forEach items="#{produtoControll.listProdutoEmpresa}" var="prod">
 
@@ -140,7 +140,7 @@
                                     <h:outputLabel value="#{prod.quantidadeEstoque}">
                                         <f:convertNumber pattern="#,##0.000"/>
                                     </h:outputLabel>
-                                    <h:outputLabel value="#{prod.controle}">
+                                    <h:outputLabel value="#{prod.estoqueVerificado}">
                                         <f:convertNumber pattern="#,##0.000"/>
                                     </h:outputLabel>
 

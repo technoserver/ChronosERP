@@ -8,6 +8,7 @@ import com.chronos.util.report.ExecutorRelatorio;
 import org.hibernate.Session;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -39,6 +40,11 @@ public class AbstractRelatorioControll implements Serializable {
     protected Map<String, Object> parametros;
 
     protected Empresa empresa;
+
+    @PostConstruct
+    private void init() {
+        this.empresa = getEmpresaUsuario();
+    }
 
 
     public List<String> getEstado() {

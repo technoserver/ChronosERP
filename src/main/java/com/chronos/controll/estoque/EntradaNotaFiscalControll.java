@@ -54,6 +54,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
     private EstoqueRepository estoques;
+    @Inject
+    private Repository<TributOperacaoFiscal> operacoes;
 
 
     @Inject
@@ -517,6 +519,17 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             // e.printStackTrace();
         }
         return listaFornecedor;
+    }
+
+    public List<TributOperacaoFiscal> getListaTributOperacaoFiscal(String descricao) {
+        List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
+
+        try {
+            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao"});
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaTributOperacaoFiscal;
     }
 
     public List<NaturezaFinanceira> getListaNaturezaFinanceira(String nome) {
