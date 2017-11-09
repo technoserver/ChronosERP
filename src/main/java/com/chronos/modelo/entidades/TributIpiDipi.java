@@ -35,9 +35,9 @@ public class TributIpiDipi implements Serializable {
     @JoinColumn(name = "ID_TIPO_RECEITA_DIPI", referencedColumnName = "ID")
     @ManyToOne
     private TipoReceitaDipi tipoReceitaDipi;
-    @JoinColumn(name = "ID_TRIBUT_CONFIGURA_OF_GT", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
     @OneToOne(optional = false)
-    private TributConfiguraOfGt tributConfiguraOfGt;
+    private TributOperacaoFiscal tributOperacaoFiscal;
 
     public TributIpiDipi() {
     }
@@ -114,12 +114,12 @@ public class TributIpiDipi implements Serializable {
         this.tipoReceitaDipi = tipoReceitaDipi;
     }
 
-    public TributConfiguraOfGt getTributConfiguraOfGt() {
-        return tributConfiguraOfGt;
+    public TributOperacaoFiscal getTributOperacaoFiscal() {
+        return tributOperacaoFiscal;
     }
 
-    public void setTributConfiguraOfGt(TributConfiguraOfGt tributConfiguraOfGt) {
-        this.tributConfiguraOfGt = tributConfiguraOfGt;
+    public void setTributOperacaoFiscal(TributOperacaoFiscal tributOperacaoFiscal) {
+        this.tributOperacaoFiscal = tributOperacaoFiscal;
     }
 
     @Override

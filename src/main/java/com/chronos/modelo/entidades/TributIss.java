@@ -51,7 +51,7 @@ public class TributIss implements Serializable {
     @Transient
     private TributConfiguraOfGt tributConfiguraOfGt;
     @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @OneToOne(optional = false)
     private TributOperacaoFiscal tributOperacaoFiscal;
 
     public TributIss() {

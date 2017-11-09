@@ -56,7 +56,12 @@
                                   idComponente="cfop" label="CFOP"
                                   nomeAtributo="#{tributOperacaoFiscalControll.objeto.cfop}"
                 />
-                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="controlarEstoqueVerificado" label="Estouque Verificado"
+                                 itens="#{tributOperacaoFiscalControll.controla}"
+                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.controlarEstoqueVerificado}"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
                                 idComponente="descricao" label="Descrição :"
                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.descricao}"
                                 tamanhoMaximo="100"/>

@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        PIS/COFINS
+    </ui:define>
+
+    <ui:define name="tela">
+        #{cfopControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        PIS/COFINS
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{tributPisCofinsControll}"
+                       idDataTable="dataTableOperacaoFiscal"
+                       nomeFuncao="Operação Fiscal"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="CFOP">
+                <h:outputLabel value="#{row.cfop}"/>
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+            <p:column headerText="Descricao NF">
+                <h:outputLabel value="#{row.descricaoNaNf}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{tributPisCofinsControll}"
+                                   nomeFuncao="Operação Fiscal"
+                                   id="telaDetalhe"
+        >
+            <p:tabView id="tabViewDetalhes" style="border: 0px;">
+
+            </p:tabView>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

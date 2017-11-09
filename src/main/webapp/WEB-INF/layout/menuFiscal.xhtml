@@ -8,25 +8,29 @@
 
 
     <ul class="nav nav-second-level collapse ">
-        <li class="${fn:contains(view.viewId,'modulo/fiscal/tributacao/')?'active':''}">
+        <li class="${fn:contains(view.viewId,'modulo/fiscal/')?'active':''}">
             <a href="#">
                 <span class="nav-label">Tributação</span>
                 <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-third-level">
-                <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
+                <li class="${fn:contains(view.viewId,'modulo/fiscal/tributacao/')?'active':''}">
+
                     <erp:subMenu caminho="/modulo/fiscal/tributacao/tributOperacaoFiscal"
                                  label="Operação Fiscal"
                                  funcao="tributOperacaoFiscal"/>
                     <erp:subMenu caminho="/modulo/fiscal/tributacao/tributGrupoTributario"
                                  label="Grupo Tributário"
                                  funcao="tributGrupoTributario"/>
-                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributConfiguraOfGt"
-                                 label="Configura Tributação"
-                                 funcao="tributConfiguraOfGt"/>
+
+                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributPisCofins"
+                                 label="Configura PIS/COFINS"
+                                 funcao="tributPisCofins"/>
+
                     <erp:subMenu caminho="/modulo/fiscal/tributacao/tributIcmsCustom"
                                  label="ICMS Customizado"
                                  funcao="tributIcmsCustom"/>
+
                     <erp:subMenu caminho="/modulo/fiscal/tributacao/tributIss"
                                  label="ISS - Imposto Sobre Serviços"
                                  funcao="tributIss"/>
