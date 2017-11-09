@@ -48,7 +48,7 @@ public class TributIss implements Serializable {
     private Integer indicadorExigibilidade;
 
     @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     private TributOperacaoFiscal tributOperacaoFiscal;
 
     public TributIss() {

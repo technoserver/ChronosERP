@@ -1,6 +1,7 @@
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -49,6 +50,16 @@ public class TributIcmsUf implements Serializable {
     private BigDecimal valorPautaSt;
     @Column(name = "VALOR_PRECO_MAXIMO_ST")
     private BigDecimal valorPrecoMaximoSt;
+    @Transient
+    private BigDecimal creditoIcms;
+    @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @NotNull
+    private TributOperacaoFiscal tributOperacaoFiscal;
+    @JoinColumn(name = "id_tribut_grupo_tributario", referencedColumnName = "ID")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @NotNull
+    private TributGrupoTributario tributGrupoTributario;
 
 
     public TributIcmsUf() {
@@ -198,7 +209,29 @@ public class TributIcmsUf implements Serializable {
         this.valorPrecoMaximoSt = valorPrecoMaximoSt;
     }
 
+    public TributOperacaoFiscal getTributOperacaoFiscal() {
+        return tributOperacaoFiscal;
+    }
 
+    public void setTributOperacaoFiscal(TributOperacaoFiscal tributOperacaoFiscal) {
+        this.tributOperacaoFiscal = tributOperacaoFiscal;
+    }
+
+    public TributGrupoTributario getTributGrupoTributario() {
+        return tributGrupoTributario;
+    }
+
+    public void setTributGrupoTributario(TributGrupoTributario tributGrupoTributario) {
+        this.tributGrupoTributario = tributGrupoTributario;
+    }
+
+    public BigDecimal getCreditoIcms() {
+        return creditoIcms;
+    }
+
+    public void setCreditoIcms(BigDecimal creditoIcms) {
+        this.creditoIcms = creditoIcms;
+    }
 
     @Override
     public String toString() {

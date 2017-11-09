@@ -1,9 +1,10 @@
 package com.chronos.controll.tributacao;
 
 import com.chronos.controll.AbstractControll;
-import com.chronos.modelo.entidades.Cfop;
-import com.chronos.modelo.entidades.TributOperacaoFiscal;
+import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
+import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +28,16 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
 
     @Inject
     private Repository<Cfop> cfops;
+    @Inject
+    private Repository<TributPisCodApuracao> pisRepository;
+    @Inject
+    private Repository<TributCofinsCodApuracao> cofinsRepository;
+    @Inject
+    private Repository<TributIss> issRepository;
+    @Inject
+    private Repository<TributIpiDipi> ipiRepository;
+    @Inject
+    private Repository<TributIcmsUf> icmsRepository;
 
     private Cfop cfop;
 
@@ -46,6 +57,39 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
+    }
+
+    @Transactional
+    @Override
+    public void salvar() {
+
+        try {
+            verificarTributacao();
+            super.salvar();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+    }
+
+    private void verificarTributacao() {
+        if (!getObjeto().getDestacaIpi()) {
+            ipiRepository.excluir(TributIpiDipi.class, "tributOperacaoFiscal.id", getObjeto().getId());
+
+        }
+        if (!getObjeto().getDestacaPisCofins()) {
+            pisRepository.excluir(TributPisCodApuracao.class, "tributOperacaoFiscal.id", getObjeto().getId());
+
+        }
+        if (!getObjeto().getDestacaPisCofins()) {
+            cofinsRepository.excluir(TributCofinsCodApuracao.class, "tributOperacaoFiscal.id", getObjeto().getId());
+        }
+        if (!getObjeto().getCalculoInss()) {
+            issRepository.excluir(TributIss.class, "tributOperacaoFiscal.id", getObjeto().getId());
+        }
+        if (!getObjeto().getObrigacaoFiscal()) {
+            icmsRepository.excluir(TributIcmsUf.class, "tributOperacaoFiscal.id", getObjeto().getId());
+        }
     }
 
     public void selecionaCFOP(SelectEvent event) {

@@ -59,22 +59,43 @@
                 <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                  idComponente="controlarEstoqueVerificado" label="Estouque Verificado"
                                  itens="#{tributOperacaoFiscalControll.controla}"
-                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.controlarEstoqueVerificado}"/>
+                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.estoqueVerificado}"/>
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="obrigacaoFiscal" label="Obrigações Fiscais"
+                                 itens="#{tributOperacaoFiscalControll.controla}"
+                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.obrigacaoFiscal}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="destacaIpi" label="Destaca IPI"
+                                 itens="#{tributOperacaoFiscalControll.controla}"
+                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.destacaIpi}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="destacaPisCofins" label="Destaca PIS/COFINS"
+                                 itens="#{tributOperacaoFiscalControll.controla}"
+                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.destacaPisCofins}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="calculoIssqn" label="Calcular ISSQN"
+                                 itens="#{tributOperacaoFiscalControll.controla}"
+                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.calculoIssqn}"/>
+
+
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                 idComponente="descricao" label="Descrição :"
                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.descricao}"
                                 tamanhoMaximo="100"/>
-            </div>
-            <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                 idComponente="descricaoNf" label="Descrição da NF"
                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.descricaoNaNf}"
                                 tamanhoMaximo="100"/>
             </div>
             <div class="row">
                 <erp:campoAreaTexto label="Observação"
-                                    styleClass="colcol-xs-12 col-sm-10 col-md-10" idComponente="descricao"
+                                    styleClass="colcol-xs-12 col-sm-12 col-md-12" idComponente="descricao"
                                     nomeAtributo="#{tributOperacaoFiscalControll.objeto.observacao}"/>
             </div>
 

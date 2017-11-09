@@ -7,6 +7,7 @@
     <non-jta-data-source>java:comp/env/jdbc/chronosLightDB</non-jta-data-source>
       <class>com.chronos.modelo.entidades.view.ViewPessoa</class>
       <class>com.chronos.modelo.entidades.view.ViewFinLancamentoPagar</class>
+      <class>com.chronos.modelo.entidades.TributIcmsUfteste</class>
       <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/chronosLight"/>

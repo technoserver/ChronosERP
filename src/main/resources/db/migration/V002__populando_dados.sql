@@ -20053,6 +20053,8 @@ insert into tribut_operacao_fiscal (ID, ID_EMPRESA, DESCRICAO, DESCRICAO_NA_NF, 
 insert into tribut_operacao_fiscal (ID, ID_EMPRESA, DESCRICAO, DESCRICAO_NA_NF, CFOP, OBSERVACAO) values('5','1','VENDA LOJISTA FORA DO ESTADO','VENDA',NULL,'5. Venda Lojista fora do Estado');
 insert into tribut_operacao_fiscal (ID, ID_EMPRESA, DESCRICAO, DESCRICAO_NA_NF, CFOP, OBSERVACAO) values('6','1','SERVICO DENTRO DO ESTADO','PRESTACAO DE SERVICO','5933','NFE DE SERVICOS PARA DENTRO DO ESTADO');
 insert into tribut_operacao_fiscal (ID, ID_EMPRESA, DESCRICAO, DESCRICAO_NA_NF, CFOP, OBSERVACAO) values('7','1','SERVICO FORA DO ESTADO','PRESTACAO DE SERVICO','6933','NFE DE SERVICOS PARA FORA DO ESTADO');
+insert into tribut_operacao_fiscal (ID, ID_EMPRESA, DESCRICAO, DESCRICAO_NA_NF, CFOP, OBSERVACAO) values('8','1','VENDA PARA CONSUMIDOR DENTRO DO ESTADO','VENDA',NULL,'3. Venda Consumidor fora do Estado');
+
 
 insert into tribut_grupo_tributario (ID, ID_EMPRESA, DESCRICAO, ORIGEM_MERCADORIA, OBSERVACAO) values('1','1','PRODUTO FABRICACAO PROPRIA SUJEITO AO ICMS ST','0','1. Produtos de fabricação própria (sujeitos ao ICMS ST)');
 insert into tribut_grupo_tributario (ID, ID_EMPRESA, DESCRICAO, ORIGEM_MERCADORIA, OBSERVACAO) values('2','1','PRODUTO PARA REVENDA SUJEITO AO ICMS ST','0','2. Produtos de Revenda (sujeitos ao Regime do ICMS ST)');
