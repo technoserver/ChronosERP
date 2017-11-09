@@ -46,10 +46,7 @@ public class TributIss implements Serializable {
     // @Column(name = "indicador_exigibilidade")
     @Transient
     private Integer indicadorExigibilidade;
-    // @JoinColumn(name = "ID_TRIBUT_CONFIGURA_OF_GT", referencedColumnName = "ID")
-    //  @OneToOne(optional = false)
-    @Transient
-    private TributConfiguraOfGt tributConfiguraOfGt;
+
     @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
     @OneToOne(optional = false)
     private TributOperacaoFiscal tributOperacaoFiscal;
@@ -147,14 +144,6 @@ public class TributIss implements Serializable {
 
     public void setIndicadorExigibilidade(Integer indicadorExigibilidade) {
         this.indicadorExigibilidade = indicadorExigibilidade;
-    }
-
-    public TributConfiguraOfGt getTributConfiguraOfGt() {
-        return tributConfiguraOfGt;
-    }
-
-    public void setTributConfiguraOfGt(TributConfiguraOfGt tributConfiguraOfGt) {
-        this.tributConfiguraOfGt = tributConfiguraOfGt;
     }
 
     public TributOperacaoFiscal getTributOperacaoFiscal() {
