@@ -49,9 +49,7 @@ public class TributIcmsUf implements Serializable {
     private BigDecimal valorPautaSt;
     @Column(name = "VALOR_PRECO_MAXIMO_ST")
     private BigDecimal valorPrecoMaximoSt;
-    @JoinColumn(name = "ID_TRIBUT_CONFIGURA_OF_GT", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private TributConfiguraOfGt tributConfiguraOfGt;
+
 
     public TributIcmsUf() {
     }
@@ -200,13 +198,7 @@ public class TributIcmsUf implements Serializable {
         this.valorPrecoMaximoSt = valorPrecoMaximoSt;
     }
 
-    public TributConfiguraOfGt getTributConfiguraOfGt() {
-        return tributConfiguraOfGt;
-    }
 
-    public void setTributConfiguraOfGt(TributConfiguraOfGt tributConfiguraOfGt) {
-        this.tributConfiguraOfGt = tributConfiguraOfGt;
-    }
 
     @Override
     public String toString() {

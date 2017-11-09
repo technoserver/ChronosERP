@@ -321,7 +321,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
     }
 
     public NfeDetalhe defineTributacao(NfeDetalhe item, Empresa empresa, TributOperacaoFiscal operacaoFiscal, NfeDestinatario destinatario) throws Exception {
-        TributConfiguraOfGt confTrib;
+
 
         tributConfigRepository = getFacadeWithJNDI(TributConfiguraOfGtRepository.class);
         issRepository = getFacadeWithJNDI(IssRepository.class);
@@ -381,12 +381,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 if (operacaoFiscal == null) {
                     throw new Exception("Operação Fiscal não definida.Operação não realizada.");
                 }
-                String query = "select new TributConfiguraOfGt(o.id) from TributConfiguraOfGt o where o.tributOperacaoFiscal.id=?1 and "
-                        + "o.tributGrupoTributario.id =?2";
-                confTrib = tributConfigRepository.get(TributConfiguraOfGt.class, query, operacaoFiscal.getId(), item.getProduto().getTributGrupoTributario().getId());
-                if (confTrib == null) {
-                    throw new Exception("Não existe tributação para o produto : " + item.getNomeProduto() + ". Operação não realizada.");
-                }
+
                 listaFiltro.add(new Filtro("idTributOperacaoFiscal", operacaoFiscal.getId()));
                 listaFiltro.add(new Filtro("idTributGrupoTributario", item.getProduto().getTributGrupoTributario().getId()));
                 listaFiltro.add(new Filtro("ufDestino", "=", destinatario.getUf() == null ? ufEmpresa : destinatario.getUf()));
@@ -432,25 +427,25 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 } else {
                     throw new Exception("Não existe tributação de ICMS definida para o produto : " + item.getNomeProduto() + ". Operação não realizada.");
                 }
-                if (confTrib.getIpi().equals("S")) {
-                    // IPI
-                    listaFiltro.clear();
 
-                    listaFiltro.add(new Filtro("idTributOperacaoFiscal", operacaoFiscal.getId()));
-                    listaFiltro.add(new Filtro("idTributGrupoTributario", item.getProduto().getTributGrupoTributario().getId()));
+                // IPI
+                listaFiltro.clear();
 
-                    ViewTributacaoIpi ipi = ipiRepository.get(ViewTributacaoIpi.class, listaFiltro);
-                    if (ipi != null) {
-                        item.setNfeDetalheImpostoIpi(new NfeDetalheImpostoIpi());
-                        item.getNfeDetalheImpostoIpi().setNfeDetalhe(item);
-                        item.getNfeDetalheImpostoIpi().setCstIpi(ipi.getCstIpi());
-                        item.getNfeDetalheImpostoIpi().setAliquotaIpi(ipi.getAliquotaPorcento());
-                        tributos.setPercentualIpi(ipi.getAliquotaPorcento());
-                        tributos.setCstIpi(CstIpi.valueOfCodigo(item.getNfeDetalheImpostoIpi().getCstIpi()));
-                    } else if (empresa.getCrt().equals("2")) {
-                        throw new Exception("Não existe tributação de IPI definida para os parâmetros informados. Operação não realizada.");
-                    }
+                listaFiltro.add(new Filtro("idTributOperacaoFiscal", operacaoFiscal.getId()));
+                listaFiltro.add(new Filtro("idTributGrupoTributario", item.getProduto().getTributGrupoTributario().getId()));
+
+                ViewTributacaoIpi ipi = ipiRepository.get(ViewTributacaoIpi.class, listaFiltro);
+                if (ipi != null) {
+                    item.setNfeDetalheImpostoIpi(new NfeDetalheImpostoIpi());
+                    item.getNfeDetalheImpostoIpi().setNfeDetalhe(item);
+                    item.getNfeDetalheImpostoIpi().setCstIpi(ipi.getCstIpi());
+                    item.getNfeDetalheImpostoIpi().setAliquotaIpi(ipi.getAliquotaPorcento());
+                    tributos.setPercentualIpi(ipi.getAliquotaPorcento());
+                    tributos.setCstIpi(CstIpi.valueOfCodigo(item.getNfeDetalheImpostoIpi().getCstIpi()));
+                } else if (empresa.getCrt().equals("2")) {
+                    throw new Exception("Não existe tributação de IPI definida para os parâmetros informados. Operação não realizada.");
                 }
+
 
                 // PIS
                 listaFiltro.clear();
