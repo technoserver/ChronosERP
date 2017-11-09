@@ -115,6 +115,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         vendaDetalhe = new VendaDetalhe();
         vendaDetalhe.setVendaCabecalho(getObjeto());
         vendaDetalhe.setQuantidade(BigDecimal.ONE);
+        produto = new ProdutoDTO();
     }
 
     public void definirValorProduto(SelectEvent event) {

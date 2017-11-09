@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.modelo.entidades.ComissaoPerfil;
 import com.chronos.modelo.entidades.Vendedor;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
 
@@ -53,7 +54,12 @@ public class VendedorControll extends AbstractControll<Vendedor> implements Seri
     public List<Colaborador> getListColaborador(String nome){
         List<Colaborador> list = new ArrayList<>();
         try{
-            list = colaboradores.getEntitys(Colaborador.class,"pessoa.nome",nome);
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
+            filtros.add(new Filtro("pessoa.id", Filtro.DIFERENTE, 1));
+            filtros.add(new Filtro("pessoa.id", Filtro.DIFERENTE, 2));
+            filtros.add(new Filtro("pessoa.colaborador", "S"));
+            list = colaboradores.getEntitys(Colaborador.class, filtros, new Object[]{"pessoa.id", "pessoa.nome"});
         }catch (Exception ex){
             ex.printStackTrace();
         }

@@ -319,6 +319,7 @@
                                                            actionListener="#{vendaCabecalhoControll.incluirVendaDetalhe}"
                                                            type="button"
                                                            rendered="#{not empty vendaCabecalhoControll.objeto.id}">
+                                                <p:resetInput target=":formOutrasTelas"/>
                                                 <i class="glyphicon glyphicon-plus"/>
                                                 <p:ajax update=":formOutrasTelas:panelVendaDetalhe,dataTableVendaDetalhe"
                                                         oncomplete="PF('dialogVendaDetalhe').show()"
@@ -500,13 +501,8 @@
                                     <f:convertNumber pattern="#,###,##0.00"/>
                                 </p:outputLabel>
                             </p:column>
-                            <p:column headerText="Estoque" class="coluna-monetaria">
-                                <p:outputLabel value="#{objeto.quantidadeEstoque}">
-                                    <f:convertNumber pattern="#,###,##0.00"/>
-                                </p:outputLabel>
-                            </p:column>
-                            <p:column headerText="Controle" class="coluna-monetaria">
-                                <p:outputLabel value="#{objeto.controle}">
+                            <p:column headerText="Estoque Verificado" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.estoqueVerificado}">
                                     <f:convertNumber pattern="#,###,##0.00"/>
                                 </p:outputLabel>
                             </p:column>
@@ -532,6 +528,7 @@
                         <div class="col-xs-6 col-lg-6">
                             <h:commandButton value="Salvar" class="btn btn-primary center-block"
                                              actionListener="#{vendaCabecalhoControll.salvarVendaDetalhe}">
+
                                 <p:ajax process="@form"
                                         oncomplete="if (!args.validationFailed) {PF('dialogVendaDetalhe').hide();}"
                                         update=":formOutrasTelas:panelVendaDetalhe,:formCentro:growl,:formCentro:outputPanelDetalhe"

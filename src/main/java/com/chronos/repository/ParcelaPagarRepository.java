@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by john on 12/10/17.
@@ -28,6 +29,13 @@ public class ParcelaPagarRepository implements Serializable {
     public void atualizarStatusParcela(int idparcela, int idstatus) {
         String jpql = "UPDATE  FinParcelaPagar p set p.finStatusParcela.id = ?2 where p.id = ?1";
         executeCommand(jpql, idparcela, idstatus);
+    }
+
+
+    @Transactional
+    public void atualizarStatusParcela() {
+        String jpql = "UPDATE  FinParcelaPagar p set p.finStatusParcela.id = 4 where  p.finStatusParcela.id <> 2 and p.dataVencimento <= ?1";
+        executeCommand(jpql, new Date());
     }
 
 

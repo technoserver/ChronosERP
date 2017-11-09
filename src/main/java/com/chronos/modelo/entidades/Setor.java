@@ -33,6 +33,10 @@ public class Setor implements Serializable {
     public Setor() {
     }
 
+    public Setor(String nome) {
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

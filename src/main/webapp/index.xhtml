@@ -1,21 +1,148 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="./WEB-INF/layout/layoutPadrao.xhtml"
-               >
+>
 
+    <ui:define name="css">
+        <style type="text/css">
+            /* GUIAS */
+            .secao-1 {
+                background-color: #fff !important;
+                padding: 42px 0 30px;
+                order: 1;
+            }
+
+            .lista-guias-carreira {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                margin: 30px 0 20px;
+            }
+
+            .guia-carreira:first-child {
+                margin-left: 0;
+            }
+
+            .guia-carreira {
+                width: calc((100% - 65px) / 6);
+                margin: 0 6px;
+                position: relative;
+            }
+
+            .guia-carreira:last-child {
+                margin-right: 0;
+            }
+
+            .guia-carreira a {
+                text-decoration: none;
+                transition: none;
+                color: currentColor;
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                font-family: "Montserrat", sans-serif;
+                font-size: 18px;
+                font-weight: 500;
+                box-shadow: 12px 15px 20px rgba(0, 0, 0, .1);
+                display: flex;
+                border-radius: 10px;
+                border: 1px solid #EFF1F2;
+                transition: .2s;
+            }
+
+            .guia-carreira a:hover {
+                box-shadow: 2px 3px 6px rgba(0, 0, 0, .1);
+                transition: .2s;
+            }
+
+            .carreira-titulo {
+                color: #8795A2;
+                flex: 1 1 auto;
+                display: flex;
+                justify-content: center;
+            }
+
+            .carreira-icone {
+                flex: 0 0 auto;
+                width: 61px;
+                height: 52px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .guia-carreira svg {
+                fill: #7BAC3B;
+                border-radius: 5px;
+                background-color: #F8FAFB;
+                transform: scale(1.5);
+            }
+        </style>
+    </ui:define>
 
     <ui:define name="telaInclusaoAlteracao">
         <div class="ibox-content">
 
             <div class="row">
-                <div class="col-sm-6 b-r"><h3 class="m-t-none m-b">Testes</h3>
-                    <p>teste.</p>
+                <div class="lista-guias-carreira">
+                    <div class="guia-carreira">
+                        <a href="#" class="carreira-link" title=" PHP">
 
+                            <div class="carreira-icone">
 
+                            </div>
+                            <div class="carreira-titulo">Pessoas</div>
+                        </a>
+                    </div>
+                    <div class="guia-carreira">
+                        <a href="#" class="carreira-link" title=" PHP">
 
-                </div>                             
+                            <div class="carreira-icone">
+
+                            </div>
+                            <div class="carreira-titulo">Cliente</div>
+                        </a>
+                    </div>
+                    <div class="guia-carreira">
+                        <a href="#" class="carreira-link" title=" PHP">
+
+                            <div class="carreira-icone">
+
+                            </div>
+                            <div class="carreira-titulo">Fornecedor</div>
+                        </a>
+                    </div>
+                    <div class="guia-carreira">
+                        <a href="#" class="carreira-link" title=" PHP">
+
+                            <div class="carreira-icone">
+
+                            </div>
+                            <div class="carreira-titulo">NFe</div>
+                        </a>
+                    </div>
+                    <div class="guia-carreira">
+                        <a href="#" class="carreira-link" title=" PHP">
+
+                            <div class="carreira-icone">
+
+                            </div>
+                            <div class="carreira-titulo">NFCe</div>
+                        </a>
+                    </div>
+                    <div class="guia-carreira">
+                        <a href="#" class="carreira-link" title=" PHP">
+
+                            <div class="carreira-icone">
+
+                            </div>
+                            <div class="carreira-titulo">Vendas</div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="ibox-footer">

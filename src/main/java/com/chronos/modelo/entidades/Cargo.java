@@ -68,6 +68,10 @@ public class Cargo implements Serializable {
     public Cargo() {
     }
 
+    public Cargo(String nome) {
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

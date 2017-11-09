@@ -31,9 +31,9 @@ public class TributPisCodApuracao implements Serializable {
     private BigDecimal valorPrecoMaximo;
     @Column(name = "VALOR_PAUTA_FISCAL")
     private BigDecimal valorPautaFiscal;
-    @JoinColumn(name = "ID_TRIBUT_CONFIGURA_OF_GT", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
     @OneToOne(optional = false)
-    private TributConfiguraOfGt tributConfiguraOfGt;
+    private TributOperacaoFiscal tributOperacaoFiscal;
 
     public TributPisCodApuracao() {
     }
@@ -110,12 +110,12 @@ public class TributPisCodApuracao implements Serializable {
         this.valorPautaFiscal = valorPautaFiscal;
     }
 
-    public TributConfiguraOfGt getTributConfiguraOfGt() {
-        return tributConfiguraOfGt;
+    public TributOperacaoFiscal getTributOperacaoFiscal() {
+        return tributOperacaoFiscal;
     }
 
-    public void setTributConfiguraOfGt(TributConfiguraOfGt tributConfiguraOfGt) {
-        this.tributConfiguraOfGt = tributConfiguraOfGt;
+    public void setTributOperacaoFiscal(TributOperacaoFiscal tributOperacaoFiscal) {
+        this.tributOperacaoFiscal = tributOperacaoFiscal;
     }
 
     @Override

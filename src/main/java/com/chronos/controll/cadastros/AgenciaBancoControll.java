@@ -30,6 +30,7 @@ public class AgenciaBancoControll extends AbstractControll<AgenciaBanco> impleme
 
     @Inject
     private Repository<Banco> bancos;
+    @Inject
     private Repository<Municipio> municipios;
 
     public List<Banco> getAllBanco(String nome) {
@@ -45,7 +46,7 @@ public class AgenciaBancoControll extends AbstractControll<AgenciaBanco> impleme
     public List<String> getListaMunicipios(String nome) {
         List<String> listMunicipios = new LinkedList<>();
         try {
-            listMunicipios = municipios.getEntitysToQuery(String.class, "select m.nome from Municipio  m where m.uf.sigla = ?1 and LOWER(m.nome) like ?2", getObjeto().getUf(), "%" + nome.toLowerCase() + "%");
+            listMunicipios = municipios.getEntitysToQuery(String.class, "select m.nome from Municipio  m where m.uf.sigla = ?1 and LOWER(m.nome) like ?2", getObjeto().getUf(), "%" + nome.trim().toLowerCase() + "%");
         } catch (Exception ex) {
             ex.printStackTrace();
         }

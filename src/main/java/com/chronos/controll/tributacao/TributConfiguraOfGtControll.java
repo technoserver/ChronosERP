@@ -36,7 +36,7 @@ public class TributConfiguraOfGtControll extends AbstractControll<TributConfigur
         super.doCreate();
 
         TributPisCodApuracao pis = new TributPisCodApuracao();
-        pis.setTributConfiguraOfGt(getObjeto());
+
         getObjeto().setTributPisCodApuracao(pis);
         pis.setAliquotaUnidade(BigDecimal.ZERO);
         pis.setEfdTabela435("01");
@@ -54,12 +54,12 @@ public class TributConfiguraOfGtControll extends AbstractControll<TributConfigur
         cofins.setPorcentoBaseCalculo(BigDecimal.ZERO);
         cofins.setValorPautaFiscal(BigDecimal.ZERO);
         cofins.setValorPrecoMaximo(BigDecimal.ZERO);
-        cofins.setTributConfiguraOfGt(getObjeto());
+
         cofins.setAliquotaPorcento(BigDecimal.ZERO);
         getObjeto().setTributCofinsCodApuracao(cofins);
 
         TributIpiDipi ipi = new TributIpiDipi();
-        ipi.setTributConfiguraOfGt(getObjeto());
+
         getObjeto().setTributIpiDipi(ipi);
         ipi.setAliquotaPorcento(BigDecimal.ZERO);
         ipi.setAliquotaUnidade(BigDecimal.ZERO);

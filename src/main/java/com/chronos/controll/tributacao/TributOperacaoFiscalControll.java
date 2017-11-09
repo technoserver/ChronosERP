@@ -6,12 +6,15 @@ import com.chronos.modelo.entidades.TributOperacaoFiscal;
 import com.chronos.repository.Repository;
 import org.primefaces.event.SelectEvent;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by john on 16/08/17.
@@ -26,6 +29,18 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
     private Repository<Cfop> cfops;
 
     private Cfop cfop;
+
+    private Map<String, Boolean> controla;
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+
+        controla = new LinkedHashMap();
+        controla.put("Não", false);
+        controla.put("Sim", true);
+    }
 
     @Override
     public void doCreate() {
@@ -71,5 +86,13 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
 
     public void setCfop(Cfop cfop) {
         this.cfop = cfop;
+    }
+
+    public Map<String, Boolean> getControla() {
+        return controla;
+    }
+
+    public void setControla(Map<String, Boolean> controla) {
+        this.controla = controla;
     }
 }

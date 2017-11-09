@@ -26,8 +26,8 @@ public class EmpresaProduto implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "quantidade_estoque", precision = 18, scale = 6)
     private BigDecimal quantidadeEstoque;
-    @Column(name = "controle", precision = 18, scale = 6)
-    private BigDecimal controle;
+    @Column(name = "estoque_verificado", precision = 18, scale = 6)
+    private BigDecimal estoqueVerificado;
     @JoinColumn(name = "id_empresa", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -38,11 +38,11 @@ public class EmpresaProduto implements Serializable {
     public EmpresaProduto() {
     }
 
-    public EmpresaProduto(Integer id, Integer idempresa, String nomeEmpresa, BigDecimal quantidadeEstoque, BigDecimal controle) {
+    public EmpresaProduto(Integer id, Integer idempresa, String nomeEmpresa, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado) {
         this.id = id;
         this.empresa = new Empresa(idempresa, nomeEmpresa);
         this.quantidadeEstoque = quantidadeEstoque;
-        this.controle = controle;
+        this.estoqueVerificado = estoqueVerificado;
     }
 
     public EmpresaProduto(Integer id, BigDecimal quantidadeEstoque, Integer idproduto, String nome, BigDecimal valorVenda) {
@@ -89,12 +89,12 @@ public class EmpresaProduto implements Serializable {
         this.produto = produto;
     }
 
-    public BigDecimal getControle() {
-        return controle;
+    public BigDecimal getEstoqueVerificado() {
+        return estoqueVerificado;
     }
 
-    public void setControle(BigDecimal controle) {
-        this.controle = controle;
+    public void setEstoqueVerificado(BigDecimal estoqueVerificado) {
+        this.estoqueVerificado = estoqueVerificado;
     }
 
     @Override
