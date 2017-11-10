@@ -15,7 +15,11 @@ public class NfeRepository extends AbstractRepository implements Serializable {
 
     public NfeCabecalho procedimentoNfeAutorizada(NfeCabecalho nfe) throws Exception {
         nfe = atualizar(nfe);
-        atualizaEstoqueEmpresa(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+        if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
+            atualizaEstoqueEmpresaEstoqueVerificado(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+        } else {
+            atualizaEstoqueEmpresa(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+        }
         return nfe;
     }
 
@@ -34,10 +38,23 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         }
     }
 
+    public void atualizaEstoqueEmpresaEstoqueVerificado(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+        for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
+            atualizaEstoqueEmpresaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate(), nfeDetalhe.getQuantidadeComercial().negate());
+        }
+    }
+
     public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
 
         String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + ?1 where p.produto.id = ?2 and p.empresa.id= ?3";
         execute(jpql, quantidade, idProduto, idEmpresa);
+
+    }
+
+    public void atualizaEstoqueEmpresaEstoqueVerificado(Integer idEmpresa, Integer idProduto, BigDecimal quantidade, BigDecimal quantidadeVerificada) throws Exception {
+
+        String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + ?1,p.estoqueVerificado= p.estoqueVerificado + ?2 where p.produto.id = ?3 and p.empresa.id= ?4";
+        execute(jpql, quantidade, quantidadeVerificada, idProduto, idEmpresa);
 
     }
 

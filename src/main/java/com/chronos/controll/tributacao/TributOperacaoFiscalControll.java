@@ -64,8 +64,12 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
     public void salvar() {
 
         try {
-            verificarTributacao();
+            if (getObjeto().getId() != null) {
+                verificarTributacao();
+            }
+
             super.salvar();
+
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

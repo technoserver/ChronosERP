@@ -1818,6 +1818,7 @@ public class NfeCabecalho implements Serializable {
      */
     public BigDecimal calcularValorTotal() {
         valorTotal = BigDecimal.ZERO;
+        calcularValores();
         valorTotal = valorTotal.add(getValorTotalProdutos())
                 .subtract(getValorDesconto())
                 .add(getValorIcmsSt())
@@ -1828,6 +1829,45 @@ public class NfeCabecalho implements Serializable {
                 .add(getValorIpi())
                 .add(getValorServicos());
         return valorTotal;
+    }
+
+    public void calcularValores() {
+        valorTotalProdutos = getListaNfeDetalhe()
+                .stream().map(NfeDetalhe::getValorBrutoProduto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        valorDesconto = getListaNfeDetalhe()
+                .stream().map(NfeDetalhe::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        getListaNfeDetalhe().stream().forEach(item -> {
+            if (item.getNfeDetalheImpostoIcms() != null && item.getNfeDetalheImpostoIcms().getValorIcmsSt() != null) {
+                valorIcmsSt = valorIcmsSt.add(item.getNfeDetalheImpostoIcms().getValorIcmsSt());
+            }
+
+            if (item.getNfeDetalheImpostoIcms() != null && item.getNfeDetalheImpostoIpi().getValorIpi() != null) {
+                valorIpi = valorIpi.add(item.getNfeDetalheImpostoIpi().getValorIpi());
+            }
+
+        });
+
+        valorFrete = getListaNfeDetalhe()
+                .stream().map(NfeDetalhe::getValorFrete)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        valorSeguro = getListaNfeDetalhe()
+                .stream().map(NfeDetalhe::getValorSeguro)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        valorDespesasAcessorias = getListaNfeDetalhe()
+                .stream().map(NfeDetalhe::getValorOutrasDespesas)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+
     }
 
     public String valorTotalFormatado() {

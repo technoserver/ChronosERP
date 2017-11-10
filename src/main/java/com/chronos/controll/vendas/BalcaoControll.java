@@ -1,5 +1,6 @@
 package com.chronos.controll.vendas;
 
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
@@ -48,6 +49,8 @@ public class BalcaoControll implements Serializable {
     private Repository<VendaComissao> comissoes;
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
+    @Inject
+    private Repository<NfeCabecalho> nfeRepository;
     @Inject
     private UsuarioService userService;
     @Inject
@@ -154,7 +157,23 @@ public class BalcaoControll implements Serializable {
 
         try {
             ModeloDocumento modelo = ModeloDocumento.NFCE;
+            if (cliente.getId() == 1) {
+                venda.getCliente().setTributOperacaoFiscal(new TributOperacaoFiscal(1, "Venda"));
+            }
             vendaService.transmitirNFe(venda, modelo);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+    }
+
+    public void danfe() {
+        try {
+            int idnfe = venda.getNumeroFatura();
+            NfeCabecalho nfe = nfeRepository.get(idnfe, NfeCabecalho.class);
+            ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
+            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
+            nfeService.danfe(nfe, configuracao);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

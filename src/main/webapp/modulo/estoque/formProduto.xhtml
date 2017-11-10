@@ -12,7 +12,7 @@
     <p:tabView id="tabNfeProduto" style="border: 0px;">
         <p:tab title="Dados Principais">
             <div class="row">
-                <div class="col-xs-12 col-sm-8 col-md-8">
+                <div class="col-xs-12 col-sm-6 col-md-6">
                     <p:outputLabel value="Produto" for="nfeDetalheProduto" />
                     <br />
                     <p:autoComplete id="nfeDetalheProduto"
@@ -44,7 +44,7 @@
 
                     </p:inputNumber>
                 </div>
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-1"
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                                   idComponente="cfop"
                                   label="CFOP"
                                   requerido="true"
@@ -75,20 +75,20 @@
                                     linhas="5"/>
             </div>
         </p:tab>
-        <p:tab title="ICMS">
+        <p:tab title="ICMS" rendered="#{entradaNotaFiscalControll.objeto.tributOperacaoFiscal.obrigacaoFiscal}">
             <div class="row">
                 <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"
                                  idComponente="nfeDetalheImpostoIcmsCst"
                                  label="CST"
                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.cstIcms}"
-                                 itens="#{entradaNotaFiscalControll.listaCst}"
+                                 itens="#{entradaNotaFiscalControll.listaCstB}"
                                  rendered="#{entradaNotaFiscalControll.tipoCstIcms>1}"/>
 
                 <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"
                                  idComponente="nfeDetalheImpostoIcmsCsosn"
                                  label="CST"
                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIcms.csosn}"
-                                 itens="#{entradaNotaFiscalControll.listaCst}"
+                                 itens="#{entradaNotaFiscalControll.listaCsosnB}"
                                  rendered="#{entradaNotaFiscalControll.tipoCstIcms==1}"/>
 
             </div>
@@ -131,7 +131,7 @@
 
 
         </p:tab>
-        <p:tab title="IPI">
+        <p:tab title="IPI" rendered="#{entradaNotaFiscalControll.objeto.tributOperacaoFiscal.destacaIpi}">
             <div class="row">
                 <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"
                                  idComponente="nfeDetalheImpostoIcmsCst"
@@ -157,7 +157,7 @@
                                   nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheImpostoIpi.valorIpi}" />
             </div>
         </p:tab>
-        <p:tab title="PIS">
+        <p:tab title="PIS" rendered="#{entradaNotaFiscalControll.objeto.tributOperacaoFiscal.destacaPisCofins}">
             <div class="row">
                 <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"
                                  idComponente="nfeDetalheImpostoPisCst"
@@ -183,7 +183,7 @@
             </div>
 
         </p:tab>
-        <p:tab title="COFINS">
+        <p:tab title="COFINS" rendered="#{entradaNotaFiscalControll.objeto.tributOperacaoFiscal.destacaPisCofins}">
             <div class="row">
 
                 <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"

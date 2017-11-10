@@ -65,28 +65,29 @@ public class VendaToNFe extends ManualCDILookup {
         }
         operacaoFiscal = cliente.getTributOperacaoFiscal();
         nfe.setTributOperacaoFiscal(operacaoFiscal);
-        nfe.setNaturezaOperacao(cliente.getTributOperacaoFiscal().getDescricaoNaNf());
+        nfe.setNaturezaOperacao(StringUtils.isEmpty(operacaoFiscal.getDescricaoNaNf()) ? operacaoFiscal.getDescricao() : operacaoFiscal.getDescricaoNaNf());
     }
 
     private void definirDestinatario() {
-        nfe.setCliente(cliente);
-        PessoaEndereco endereco = cliente.getPessoa().buscarEnderecoPrincipal();
-        nfe.getDestinatario().setCpfCnpj(cliente.getPessoa().getIdentificador());
-        nfe.getDestinatario().setNome(cliente.getPessoa().getNome());
-        nfe.getDestinatario().setLogradouro(endereco.getLogradouro());
-        nfe.getDestinatario().setComplemento(endereco.getComplemento());
-        nfe.getDestinatario().setNumero(endereco.getNumero());
-        nfe.getDestinatario().setBairro(endereco.getBairro());
-        nfe.getDestinatario().setNomeMunicipio(endereco.getCidade());
-        nfe.getDestinatario().setCodigoMunicipio(endereco.getMunicipioIbge());
-        nfe.getDestinatario().setUf(endereco.getUf());
-        nfe.getDestinatario().setCep(endereco.getCep());
-        nfe.getDestinatario().setTelefone(endereco.getFone());
-        nfe.getDestinatario().setInscricaoEstadual(cliente.getPessoa().getRgOrIe());
-        nfe.getDestinatario().setEmail(cliente.getPessoa().getEmail());
-        nfe.getDestinatario().setCodigoPais(1058);
-        nfe.getDestinatario().setNomePais("Brazil");
-
+        if (cliente.getId() != 1) {
+            nfe.setCliente(cliente);
+            PessoaEndereco endereco = cliente.getPessoa().buscarEnderecoPrincipal();
+            nfe.getDestinatario().setCpfCnpj(cliente.getPessoa().getIdentificador());
+            nfe.getDestinatario().setNome(cliente.getPessoa().getNome());
+            nfe.getDestinatario().setLogradouro(endereco.getLogradouro());
+            nfe.getDestinatario().setComplemento(endereco.getComplemento());
+            nfe.getDestinatario().setNumero(endereco.getNumero());
+            nfe.getDestinatario().setBairro(endereco.getBairro());
+            nfe.getDestinatario().setNomeMunicipio(endereco.getCidade());
+            nfe.getDestinatario().setCodigoMunicipio(endereco.getMunicipioIbge());
+            nfe.getDestinatario().setUf(endereco.getUf());
+            nfe.getDestinatario().setCep(endereco.getCep());
+            nfe.getDestinatario().setTelefone(endereco.getFone());
+            nfe.getDestinatario().setInscricaoEstadual(cliente.getPessoa().getRgOrIe());
+            nfe.getDestinatario().setEmail(cliente.getPessoa().getEmail());
+            nfe.getDestinatario().setCodigoPais(1058);
+            nfe.getDestinatario().setNomePais("Brazil");
+        }
         String ufDestino = nfe.getDestinatario() != null && !StringUtils.isEmpty(nfe.getDestinatario().getUf()) ? nfe.getDestinatario().getUf() : nfe.getEmitente().getUf();
         LocalDestino localDestino = getLocalDestino(nfe.getEmitente().getUf(), ufDestino);
 

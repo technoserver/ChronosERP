@@ -143,7 +143,8 @@
                             Sim
                             <f:passThroughAttribute name="data-toggle" value="myModal"/>
                             <f:passThroughAttribute name="data-target" value="#myModal"/>
-                            <p:ajax process="@form" update="@form"
+                            <p:ajax process="@form"
+                                    update="@form,formCentro:tableProduto,:formCentro:growl,:formCentro:totalPedido"
                                     oncomplete="fecharModalCancelamento()"/>
 
                         </a>

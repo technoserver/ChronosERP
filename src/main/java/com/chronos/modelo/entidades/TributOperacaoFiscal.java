@@ -93,6 +93,7 @@ public class TributOperacaoFiscal implements Serializable {
         this.descricao = descricao;
     }
 
+
     public Integer getId() {
         return id;
     }

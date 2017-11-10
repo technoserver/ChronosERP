@@ -109,6 +109,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                     ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
         }
         super.salvar();
+        setTelaGrid(false);
     }
 
     public void incluirVendaDetalhe() {
@@ -148,6 +149,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         try {
             getObjeto().calcularValorTotal();
             salvar("Registro salvo com sucesso!");
+            setTelaGrid(false);
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro!", e);
@@ -184,14 +186,19 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void gerarNFe() {
         ModeloDocumento modelo = ModeloDocumento.NFE;
         VendaCabecalho venda = dao.getJoinFetch(getObjetoSelecionado().getId(), VendaCabecalho.class);
-        vendaService.transmitirNFe(venda, modelo);
+        if (!venda.getListaVendaDetalhe().isEmpty()) {
+            vendaService.transmitirNFe(venda, modelo);
+        }
+
     }
 
 
     public void gerarNfce() {
         ModeloDocumento modelo = ModeloDocumento.NFCE;
         VendaCabecalho venda = dao.getJoinFetch(getObjetoSelecionado().getId(), VendaCabecalho.class);
-        vendaService.transmitirNFe(venda, modelo);
+        if (!venda.getListaVendaDetalhe().isEmpty()) {
+            vendaService.transmitirNFe(venda, modelo);
+        }
     }
 
     public void danfe() {

@@ -23,8 +23,7 @@ public class ViewTributacaoCofins implements Serializable {
     @Id
     @Column(name = "id")
     private Integer id;
-    @Column(name = "id_tribut_grupo_tributario")
-    private Integer idTributGrupoTributario;
+
     @Column(name = "id_tribut_operacao_fiscal")
     private Integer idTributOperacaoFiscal;
     @Column(name = "cst_cofins", length = 2)
@@ -56,13 +55,6 @@ public class ViewTributacaoCofins implements Serializable {
         this.id = id;
     }
 
-    public Integer getIdTributGrupoTributario() {
-        return idTributGrupoTributario;
-    }
-
-    public void setIdTributGrupoTributario(Integer idTributGrupoTributario) {
-        this.idTributGrupoTributario = idTributGrupoTributario;
-    }
 
     public Integer getIdTributOperacaoFiscal() {
         return idTributOperacaoFiscal;

@@ -36,6 +36,8 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
     private Repository<TributIpiDipi> ipiRepository;
     @Inject
     private Repository<TributIcmsUf> icmsRepository;
+    @Inject
+    private Repository<TributGrupoTributario> grupoRepository;
 
 
     private TributPisCodApuracao pis;
@@ -49,6 +51,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
     private boolean controlaIpi;
     private boolean controlaIss;
     private boolean controlaIcms;
+    private boolean simplesNascional;
 
 
     @Override
@@ -75,7 +78,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
             return;
         }
         Crt crt = Crt.valueOfCodigo(Integer.valueOf(empresa.getCrt()));
-
+        simplesNascional = crt == Crt.SimplesNaciona;
         if (getObjeto().getObrigacaoFiscal()) {
             listTributIcmsUf = Optional.ofNullable(icmsRepository.getEntitys(TributIcmsUf.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(new ArrayList<>());
 
@@ -98,23 +101,24 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
             }
         }
         if (getObjeto().getCalculoInss()) {
-            iss = Optional.ofNullable(issRepository.get(TributIss.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(new TributIss());
+            iss = Optional.ofNullable(issRepository.get(TributIss.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(instanciarIssqn());
 
         } else {
-            instanciaIssqn();
+            instanciarIssqn();
         }
         if (getObjeto().getDestacaIpi()) {
-            ipi = Optional.ofNullable(ipiRepository.get(TributIpiDipi.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(new TributIpiDipi());
+            ipi = Optional.ofNullable(ipiRepository.get(TributIpiDipi.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(instanciarIpi());
 
         } else {
             instanciarIpi();
         }
         if (getObjeto().getDestacaPisCofins()) {
-            pis = Optional.ofNullable(pisRepository.get(TributPisCodApuracao.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(new TributPisCodApuracao());
-            cofins = Optional.ofNullable(cofinsRepository.get(TributCofinsCodApuracao.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(new TributCofinsCodApuracao());
+            pis = Optional.ofNullable(pisRepository.get(TributPisCodApuracao.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(instanciarPis());
+            cofins = Optional.ofNullable(cofinsRepository.get(TributCofinsCodApuracao.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(instanciarCofins());
 
         } else {
-            instanciaPisCofins();
+            instanciarPis();
+            instanciarCofins();
         }
 
 
@@ -136,6 +140,9 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
             if (getObjeto().getDestacaIpi()) {
                 ipi = ipiRepository.atualizar(ipi);
             }
+            listTributIcmsUf.stream().forEach(icms -> {
+                icms = icmsRepository.atualizar(icms);
+            });
             Mensagem.addInfoMessage("Tributação salva com sucesso");
             setTelaGrid(true);
         } catch (Exception ex) {
@@ -145,16 +152,8 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
 
     }
 
-    public void instanciaPisCofins() {
+    public TributCofinsCodApuracao instanciarCofins() {
 
-
-        pis = new TributPisCodApuracao();
-        pis.setTributOperacaoFiscal(getObjeto());
-        pis.setAliquotaPorcento(BigDecimal.ZERO);
-        pis.setAliquotaUnidade(BigDecimal.ZERO);
-        pis.setPorcentoBaseCalculo(BigDecimal.ZERO);
-        pis.setValorPautaFiscal(BigDecimal.ZERO);
-        pis.setValorPrecoMaximo(BigDecimal.ZERO);
 
         cofins = new TributCofinsCodApuracao();
         cofins.setTributOperacaoFiscal(getObjeto());
@@ -165,10 +164,22 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
         cofins.setValorPautaFiscal(BigDecimal.ZERO);
         cofins.setValorPrecoMaximo(BigDecimal.ZERO);
 
-
+        return cofins;
     }
 
-    public void instanciarIpi() {
+    private TributPisCodApuracao instanciarPis() {
+        pis = new TributPisCodApuracao();
+        pis.setTributOperacaoFiscal(getObjeto());
+        pis.setAliquotaPorcento(BigDecimal.ZERO);
+        pis.setAliquotaUnidade(BigDecimal.ZERO);
+        pis.setPorcentoBaseCalculo(BigDecimal.ZERO);
+        pis.setValorPautaFiscal(BigDecimal.ZERO);
+        pis.setValorPrecoMaximo(BigDecimal.ZERO);
+
+        return pis;
+    }
+
+    public TributIpiDipi instanciarIpi() {
 
         ipi = new TributIpiDipi();
         ipi.setTributOperacaoFiscal(getObjeto());
@@ -178,10 +189,10 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
         ipi.setValorPautaFiscal(BigDecimal.ZERO);
         ipi.setValorPrecoMaximo(BigDecimal.ZERO);
 
-
+        return ipi;
     }
 
-    public void instanciaIssqn() {
+    public TributIss instanciarIssqn() {
 
         iss = new TributIss();
         iss.setTributOperacaoFiscal(getObjeto());
@@ -193,7 +204,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
         iss.setValorPautaFiscal(BigDecimal.ZERO);
         iss.setValorPrecoMaximo(BigDecimal.ZERO);
 
-
+        return iss;
     }
 
     public void incluirTributIcmsUf() {
@@ -212,6 +223,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
         tributIcmsUf.setValorPrecoMaximoSt(BigDecimal.ZERO);
         tributIcmsUf.setModalidadeBc("3");
         tributIcmsUf.setModalidadeBcSt("4");
+        setActiveTabIndex(1);
     }
 
     public void alterarTributIcmsUf() {
@@ -221,11 +233,10 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
     public void salvarTributIcmsUf() {
         try {
             validarTributacaoICMS();
-            if (tributIcmsUf.getId() == null && !buscarGrupoTributario(tributIcmsUf.getTributGrupoTributario())) {
+            if (tributIcmsUf.getId() == null) {
                 listTributIcmsUf.add(tributIcmsUf);
-            } else {
-
             }
+            //  tributIcmsUf = icmsRepository.atualizar(tributIcmsUf);
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().validationFailed();
 
@@ -235,17 +246,25 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
 
     }
 
-    private boolean buscarGrupoTributario(TributGrupoTributario grupo) {
-        return listTributIcmsUf.stream().filter(g -> g.getTributGrupoTributario().getId() == grupo.getId()).findAny().isPresent();
-    }
 
     public void excluirTributIcmsUf() {
-        if (tributIcmsUfSelecionado == null || tributIcmsUfSelecionado.getId() == null) {
-            Mensagem.addInfoMessage("Nenhum registro selecionado");
+        if (tributIcmsUfSelecionado.getId() == null) {
+            listTributIcmsUf.remove(tributIcmsUfSelecionado);
         } else {
             listTributIcmsUf.remove(tributIcmsUfSelecionado);
-            salvar("Registro excluído com sucesso!");
+            icmsRepository.excluir(tributIcmsUfSelecionado, tributIcmsUfSelecionado.getId());
         }
+        Mensagem.addInfoMessage("Registro excluído com sucesso!");
+    }
+
+    public List<TributGrupoTributario> getListaGrupoTributario(String nome) {
+        List<TributGrupoTributario> listaTributGrupoTributario = new ArrayList<>();
+        try {
+            listaTributGrupoTributario = grupoRepository.getEntitys(TributGrupoTributario.class, "descricao", nome, new Object[]{"descricao"});
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaTributGrupoTributario;
     }
 
 
@@ -280,6 +299,12 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
     }
 
     private void validarTributacaoICMS() throws Exception {
+        if (listTributIcmsUf.stream()
+                .filter(icms -> icms.getTributGrupoTributario().getId() == tributIcmsUf.getTributGrupoTributario().getId() && icms.getUfDestino().equals(tributIcmsUf.getUfDestino()))
+                .findAny().isPresent()) {
+            throw new Exception("Grupo tributário já definido para essa UF ");
+        }
+
         if (tributIcmsUf.getCsosnB() != null) {
             switch (tributIcmsUf.getCsosnB()) {
                 case "101":
@@ -515,5 +540,13 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
 
     public void setListTributIcmsUf(List<TributIcmsUf> listTributIcmsUf) {
         this.listTributIcmsUf = listTributIcmsUf;
+    }
+
+    public boolean isSimplesNascional() {
+        return simplesNascional;
+    }
+
+    public void setSimplesNascional(boolean simplesNascional) {
+        this.simplesNascional = simplesNascional;
     }
 }

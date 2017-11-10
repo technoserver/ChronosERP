@@ -4,7 +4,6 @@ import com.chronos.dto.EstoqueIdealDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.view.ViewProdutoEmpresa;
-import com.chronos.util.jpa.Transactional;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -49,7 +48,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         // update(jpql, idProduto, quantidade);
     }
 
-    @Transactional
+
     public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
 
         String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
@@ -63,6 +62,13 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         query.setParameter("idempresa", idEmpresa);
         query.executeUpdate();
 
+    }
+
+    public void ajustarEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+
+        String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = ?1 where p.produto.id = ?2 and p.empresa.id= ?3";
+
+        execute(jpql, quantidade, idProduto, idEmpresa);
     }
 
     public void atualizaEstoqueEmpresaControle(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
@@ -104,6 +110,12 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, "%" + nome.toLowerCase().trim() + "%", empresa.getId());
         return null;
 
+
+    }
+
+    public void atualizarPrecoProduto(int idproduto, BigDecimal valor) throws Exception {
+        String jpql = "UPDATE Produto p SET p.valorVenda = ?1 where p.id =?2";
+        execute(jpql, valor, idproduto);
 
     }
 

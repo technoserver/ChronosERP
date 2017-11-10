@@ -136,6 +136,9 @@
                                 <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasPagar"
                                              label="Contas a pagar"
                                              funcao="relacaoContasPagar"/>
+                                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasReceber"
+                                             label="Contas a receber"
+                                             funcao="relacaoContasReceber"/>
 
                             </ul>
                         </li>
@@ -195,9 +198,9 @@
                             <!--<erp:subMenu caminho="/modulo/estoque/requisicaoInternaCabecalho"-->
                             <!--label="Requisição Interna"-->
                             <!--funcao="requisicaoInternaCabecalho"/>-->
-                            <!--<erp:subMenu caminho="/modulo/estoque/estoqueReajuste"-->
-                            <!--label="Reajuste"-->
-                            <!--funcao="estoqueReajuste"/>-->
+                            <erp:subMenu caminho="/modulo/estoque/estoqueReajuste"
+                                         label="Reajuste"
+                                         funcao="estoqueReajuste"/>
                             <erp:subMenu caminho="/modulo/estoque/entradaNotaFiscal"
                                          label="Entra NFe"
                                          funcao="entradaNotaFiscal"/>
@@ -215,21 +218,21 @@
                     </a>
                     <ul class="nav nav-second-level collapse ">
                         <li class="${fn:contains(view.viewId,'modulo/compras/')?'active':''}">
-                            <erp:subMenu caminho="/modulo/compras/compraRequisicao"
-                                         label="Requisição"
-                                         funcao="compraRequisicao"/>
-                            <erp:subMenu caminho="/modulo/compras/compraCotacao"
-                                         label="Cotação"
-                                         funcao="compraCotacao"/>
-                            <erp:subMenu caminho="/modulo/compras/compraMapaComparativo"
-                                         label="Mapa Comparativo"
-                                         funcao="compraMapaComparativo"/>
+                            <!--<erp:subMenu caminho="/modulo/compras/compraRequisicao"-->
+                            <!--label="Requisição"-->
+                            <!--funcao="compraRequisicao"/>-->
+                            <!--<erp:subMenu caminho="/modulo/compras/compraCotacao"-->
+                            <!--label="Cotação"-->
+                            <!--funcao="compraCotacao"/>-->
+                            <!--<erp:subMenu caminho="/modulo/compras/compraMapaComparativo"-->
+                            <!--label="Mapa Comparativo"-->
+                            <!--funcao="compraMapaComparativo"/>-->
                             <erp:subMenu caminho="/modulo/compras/compraPedido"
                                          label="Pedido"
                                          funcao="compraPedido"/>
-                            <erp:subMenu caminho="/modulo/compras/compraSugerida"
-                                         label="Compra Sugerida"
-                                         funcao="compraSugerida"/>
+                            <!--<erp:subMenu caminho="/modulo/compras/compraSugerida"-->
+                            <!--label="Compra Sugerida"-->
+                            <!--funcao="compraSugerida"/>-->
 
                         </li>
                     </ul>

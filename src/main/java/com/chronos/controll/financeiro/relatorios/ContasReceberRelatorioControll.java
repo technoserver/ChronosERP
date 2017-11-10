@@ -30,7 +30,7 @@ public class ContasReceberRelatorioControll extends AbstractRelatorioControll im
     private String situacao;
     private String cliente;
 
-    public void gerarContasPagar() {
+    public void gerarContasReceber() {
 
 
         try {

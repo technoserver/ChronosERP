@@ -370,7 +370,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
                 StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
                 if (status == StatusTransmissao.AUTORIZADA) {
-                    estoqueRepositoy.atualizaEstoqueEmpresa(empresa.getId(), getObjeto().getListaNfeDetalhe());
+
                     Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 } else {
                     duplicidade = status == StatusTransmissao.DUPLICIDADE;

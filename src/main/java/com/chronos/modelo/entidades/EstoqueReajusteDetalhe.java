@@ -8,69 +8,93 @@ import java.math.BigDecimal;
 @Table(name = "ESTOQUE_REAJUSTE_DETALHE")
 public class EstoqueReajusteDetalhe implements Serializable {
 
-   private static final long serialVersionUID = 1L;
-   @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-   @Basic(optional = false)
-   @Column(name = "ID")
-   private Integer id;
-   @Column(name = "VALOR_ORIGINAL")
-   private BigDecimal valorOriginal;
-   @Column(name = "VALOR_REAJUSTE")
-   private BigDecimal valorReajuste;
-   @JoinColumn(name = "ID_ESTOQUE_REAJUSTE_CABECALHO", referencedColumnName = "ID")
-   @ManyToOne(optional = false)
-   private EstoqueReajusteCabecalho estoqueReajusteCabecalho;
-   @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID")
-   @ManyToOne(optional = false)
-   private Produto produto;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "ID")
+    private Integer id;
 
-   public EstoqueReajusteDetalhe() {
-   }
 
-   public Integer getId() {
-      return id;
-   }
+    @Column(name = "quantidade_original")
+    private BigDecimal quantidadeOriginal;
 
-   public void setId(Integer id) {
-      this.id = id;
-   }
+    @Column(name = "quantidade_reajuste")
+    private BigDecimal quantidadeReajuste;
 
-   public BigDecimal getValorOriginal() {
-      return valorOriginal;
-   }
+    @Column(name = "VALOR_ORIGINAL")
+    private BigDecimal valorOriginal;
+    @Column(name = "VALOR_REAJUSTE")
+    private BigDecimal valorReajuste;
+    @JoinColumn(name = "ID_ESTOQUE_REAJUSTE_CABECALHO", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private EstoqueReajusteCabecalho estoqueReajusteCabecalho;
+    @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private Produto produto;
 
-   public void setValorOriginal(BigDecimal valorOriginal) {
-      this.valorOriginal = valorOriginal;
-   }
+    public EstoqueReajusteDetalhe() {
+    }
 
-   public BigDecimal getValorReajuste() {
-      return valorReajuste;
-   }
+    public Integer getId() {
+        return id;
+    }
 
-   public void setValorReajuste(BigDecimal valorReajuste) {
-      this.valorReajuste = valorReajuste;
-   }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-   public EstoqueReajusteCabecalho getEstoqueReajusteCabecalho() {
-      return estoqueReajusteCabecalho;
-   }
+    public BigDecimal getValorOriginal() {
+        return valorOriginal;
+    }
 
-   public void setEstoqueReajusteCabecalho(EstoqueReajusteCabecalho estoqueReajusteCabecalho) {
-      this.estoqueReajusteCabecalho = estoqueReajusteCabecalho;
-   }
+    public void setValorOriginal(BigDecimal valorOriginal) {
+        this.valorOriginal = valorOriginal;
+    }
 
-   public Produto getProduto() {
-      return produto;
-   }
+    public BigDecimal getValorReajuste() {
+        return valorReajuste;
+    }
 
-   public void setProduto(Produto produto) {
-      this.produto = produto;
-   }
+    public void setValorReajuste(BigDecimal valorReajuste) {
+        this.valorReajuste = valorReajuste;
+    }
 
-   @Override
-   public String toString() {
-      return "EstoqueReajusteDetalhe{" + "id=" + id + '}';
-   }
+    public EstoqueReajusteCabecalho getEstoqueReajusteCabecalho() {
+        return estoqueReajusteCabecalho;
+    }
+
+    public void setEstoqueReajusteCabecalho(EstoqueReajusteCabecalho estoqueReajusteCabecalho) {
+        this.estoqueReajusteCabecalho = estoqueReajusteCabecalho;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+    public BigDecimal getQuantidadeOriginal() {
+        return quantidadeOriginal;
+    }
+
+    public void setQuantidadeOriginal(BigDecimal quantidadeOriginal) {
+        this.quantidadeOriginal = quantidadeOriginal;
+    }
+
+    public BigDecimal getQuantidadeReajuste() {
+        return quantidadeReajuste;
+    }
+
+    public void setQuantidadeReajuste(BigDecimal quantidadeReajuste) {
+        this.quantidadeReajuste = quantidadeReajuste;
+    }
+
+    @Override
+    public String toString() {
+        return "EstoqueReajusteDetalhe{" + "id=" + id + '}';
+    }
 
 }
