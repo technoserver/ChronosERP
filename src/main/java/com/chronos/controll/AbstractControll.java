@@ -541,6 +541,7 @@ public abstract class AbstractControll<T> implements Serializable {
     public void salvar(String mensagem) {
         try {
             objeto = dao.atualizar (objeto);
+            telaGrid = true;
             Mensagem.addInfoMessage(mensagem != null ? mensagem : "Registro salvo com sucesso!");
         } catch (Exception e) {
             e.printStackTrace();
@@ -645,7 +646,7 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public HashMap getListaCstIpi() {
-        HashMap<String, String> cst = new HashMap<>();
+        HashMap<String, String> cst = new LinkedHashMap<>();
         cst.put("00 - Entrada com Recuperação de Crédito", "00");
         cst.put("01 - Entrada Tributável com Aliquota Zero", "01");
         cst.put("02 - Entrada Isenta", "02");
@@ -666,7 +667,7 @@ public abstract class AbstractControll<T> implements Serializable {
 
 
     public HashMap getListaCstPis() {
-        HashMap<String, String> cst = new HashMap<>();
+        HashMap<String, String> cst = new LinkedHashMap<>();
 
         cst.put("01 - Operacao Tributavel com Aliquota Basica", "01");
         cst.put("02 - Operacao Tributavel com Aliquota Diferenciada", "02");

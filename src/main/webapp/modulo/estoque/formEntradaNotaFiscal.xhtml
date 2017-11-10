@@ -39,6 +39,7 @@
                                           nomeAtributo="#{entradaNotaFiscalControll.objeto.tributOperacaoFiscal}"
                                           idComponente="nfeCabecalhoTributOperacaoFiscal"
                                           requerido="true">
+                            <p:ajax process="@this" event="itemSelecionado"/>
                         </erp:autoComplete>
 
                         <div class="col-xs-12 col-sm-4 col-md-4">
@@ -178,7 +179,6 @@
                                    type="button">
                         <i class="glyphicon glyphicon-plus"/>
                         <p:ajax update=":formCentro:growl,:formOutrasTelas:panelNfeDetalhe,:formOutrasTelas:dialogNfeDetalhe"
-                                oncomplete="PF('dialogNfeDetalhe').show()"
                                 process="@this"/>
                     </h:commandLink>
                 </div>

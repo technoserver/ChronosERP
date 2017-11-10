@@ -91,7 +91,7 @@ public class PessoaService implements Serializable {
 
     public Pessoa salvar(Pessoa pessoa, Empresa empresa) throws Exception {
         validarPessoa(pessoa);
-        pessoas.salvar(pessoa);
+        pessoa = pessoas.atualizar(pessoa);
         boolean salvarEmpresaPessoa = pessoa.getId() == null;
         if (salvarEmpresaPessoa) {
             salvarEmpresaPessoa(empresa, pessoa);

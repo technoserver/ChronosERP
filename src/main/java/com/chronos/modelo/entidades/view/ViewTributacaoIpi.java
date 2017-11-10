@@ -23,8 +23,6 @@ public class ViewTributacaoIpi implements Serializable {
     @Column(name = "id")
     @Id
     private Integer id;
-    @Column(name = "id_tribut_grupo_tributario")
-    private Integer idTributGrupoTributario;
     @Column(name = "id_tribut_operacao_fiscal")
     private Integer idTributOperacaoFiscal;
     @Column(name = "cst_ipi", length = 2)
@@ -54,13 +52,7 @@ public class ViewTributacaoIpi implements Serializable {
         this.id = id;
     }
 
-    public Integer getIdTributGrupoTributario() {
-        return idTributGrupoTributario;
-    }
 
-    public void setIdTributGrupoTributario(Integer idTributGrupoTributario) {
-        this.idTributGrupoTributario = idTributGrupoTributario;
-    }
 
     public Integer getIdTributOperacaoFiscal() {
         return idTributOperacaoFiscal;

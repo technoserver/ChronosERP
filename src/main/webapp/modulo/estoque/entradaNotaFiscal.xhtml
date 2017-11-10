@@ -76,7 +76,7 @@
                                 <div class="col-xs-6 col-lg-6">
 
                                     <h:commandButton value="Salvar" styleClass="btn btn-primary center-block"
-                                                     disabled="#{!entradaNotaFiscalControll.podeInserir()}"
+                                                     disabled="#{!entradaNotaFiscalControll.podeInserir() or entradaNotaFiscalControll.objeto.listaNfeDetalhe.size() le 0 }"
                                                      id="btnFechamento">
                                         <p:ajax
                                                 update=":formOutrasTelas6:panelFechamento,formCentro:growl,formCentro:mensagem,navegacao,:formCentro:outputPanelDetalhe"
@@ -107,6 +107,7 @@
         <h:form id="formOutrasTelas">
             <p:dialog id="dialogNfeDetalhe"
                       header="Inclusão/Alteração de Produto/Serviço"
+                      visible="#{entradaNotaFiscalControll.podeIncluirProduto}"
                       widgetVar="dialogNfeDetalhe" showEffect="slide" hideEffect="slide"
                       resizable="true" modal="true" closable="false" width="800">
 
@@ -126,7 +127,7 @@
                             >
                                 <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogNfeDetalhe').hide();}"
                                         process="@form"
-                                        update=":formOutrasTelas:panelNfeDetalhe,:formCentro:growl"/>
+                                        update=":formOutrasTelas:panelNfeDetalhe,:formCentro:growl,formCentro:tabNfe:dataTableNfeDetalhe,:formCentro:btnFechamento,formCentro:tabNfe:outputPanelTotais"/>
                             </h:commandButton>
 
                         </div>

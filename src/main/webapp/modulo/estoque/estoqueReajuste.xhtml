@@ -45,7 +45,7 @@
             </p:column>
             <p:column headerText="Tipo Reajuste">
                 <h:outputLabel
-                        value="#{EstoqueReajusteCabecalhoControll.keyFromValue(EstoqueReajusteCabecalhoControll.tipoReajuste, row.tipoReajuste)}"/>
+                        value="#{estoqueReajusteCabecalhoControll.keyFromValue(estoqueReajusteCabecalhoControll.tipoReajuste, row.tipoReajuste)}"/>
             </p:column>
 
 
@@ -56,7 +56,29 @@
     <ui:define name="telaInclusaoAlteracao">
         <erp:telaInclusaoAlteracao controller="#{estoqueReajusteCabecalhoControll}"
                                    nomeFuncao="Reajuste de Estoque"
-                                   id="telaDetalhe">
+                                   id="telaDetalhe"
+                                   somenteConsulta="#{not empty estoqueReajusteCabecalhoControll.objeto.id}">
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <h:commandButton styleClass="btn btn-primary"
+                                     action="#{estoqueReajusteCabecalhoControll.buscaGrupoProdutos}"
+                                     rendered="#{empty estoqueReajusteCabecalhoControll.objeto.id}"
+                                     value="Pesquisar">
+
+                        <p:ajax process="@this" update="@form,:formCentro:telaDetalhe:dataTableEstoqueReajusteDetalhe"/>
+                    </h:commandButton>
+                    &nbsp;
+                    <h:commandButton styleClass="btn btn-primary"
+                                     action="#{estoqueReajusteCabecalhoControll.efetuarCalculos}"
+                                     rendered="#{ empty estoqueReajusteCabecalhoControll.objeto.id}"
+                                     value="Calcular">
+
+                        <p:ajax process="@all"
+                                update="@form,formCentro:telaDetalhe:dataTableEstoqueReajusteDetalhe,:formCentro:growl"/>
+                    </h:commandButton>
+                </div>
+            </div>
 
             <div class="row">
                 <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
@@ -66,14 +88,13 @@
                                   completeMethod="getListaSubGrupo"
                                   nomeAtributo="#{estoqueReajusteCabecalhoControll.produtoSubgrupo}"
                                   idComponente="produtoSubGrupo">
-
-                    <p:ajax event="itemSelecionado"
-                            listener="#{estoqueReajusteCabecalhoControll.buscaGrupoProdutos}"
-                            update=":formCentro:telaDetalhe:outputPanelDetalhe"/>
+                    <p:ajax process="@this" event="itemSelecionado"
+                            update=":formCentro:telaDetalhe:campoGrupo:nomeGrupo"/>
                 </erp:autoComplete>
                 <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                 idComponente="nomeGrupo"
                                 label="Grupo"
+                                id="campoGrupo"
                                 nomeAtributo="#{estoqueReajusteCabecalhoControll.produtoSubgrupo.produtoGrupo.nome}"
                                 somenteLeitura="true"
                                 tamanhoMaximo="100"/>
@@ -104,21 +125,39 @@
             <erp:separador label="Produtos"/>
             <p:dataTable id="dataTableEstoqueReajusteDetalhe" var="obj"
                          value="#{estoqueReajusteCabecalhoControll.objeto.listaEstoqueReajusteDetalhe}"
-                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20" editable="true" editMode="cell"
                          resizableColumns="true" paginatorPosition="bottom" reflow="true">
 
                 <p:column headerText="Produto">
                     <h:outputLabel value="#{obj.produto.nome}"/>
                 </p:column>
-                <p:column headerText="Valor Original">
+                <p:column headerText="Valor Original" styleClass="coluna-monetaria">
                     <h:outputLabel value="#{obj.valorOriginal}">
                         <f:convertNumber pattern="#,##0.00"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Valor Reajuste">
+                <p:column headerText="Valor Reajuste" styleClass="coluna-monetaria">
                     <h:outputLabel value="#{obj.valorReajuste}">
                         <f:convertNumber pattern="#,##0.00"/>
                     </h:outputLabel>
+                </p:column>
+                <p:column headerText="Quantidade Original" styleClass="coluna-monetaria">
+                    <h:outputLabel value="#{obj.quantidadeOriginal}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Quantidade Reajuste" styleClass="coluna-monetaria">
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputLabel value="#{obj.quantidadeReajuste}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{obj.quantidadeReajuste}"/>
+                        </f:facet>
+                    </p:cellEditor>
+
                 </p:column>
             </p:dataTable>
 

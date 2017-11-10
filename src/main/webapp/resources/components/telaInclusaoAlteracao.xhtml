@@ -44,7 +44,6 @@
                                                      disabled="#{!cc.attrs.controller.podeInserir()}"
                                                      >
                                         <p:ajax process="@form"
-                                                oncomplete="addClass()"
                                                 update=":formCentro:growl,#{cc.attrs.gridPadrao ?':formCentro:telaGrid:outputPanelGrid' :':formCentro:outputPanelGrid'},:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
                                     </h:commandButton>
                                     <h:commandButton value="Salvar" class="btn btn-primary center-block"
@@ -53,7 +52,6 @@
                                                      disabled="#{!cc.attrs.controller.podeAlterar()}"
                                                      >
                                         <p:ajax process="@form"
-                                                oncomplete="addClass()"
                                                 update=":formCentro:growl,#{cc.attrs.gridPadrao ?':formCentro:telaGrid:outputPanelGrid' :':formCentro:outputPanelGrid'},:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
                                     </h:commandButton>
                                 </div>

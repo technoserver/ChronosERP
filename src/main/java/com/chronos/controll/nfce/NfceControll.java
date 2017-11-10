@@ -16,6 +16,7 @@ import com.chronos.service.comercial.NfeService;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.FormatValor;
+import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import net.sf.jasperreports.engine.*;
@@ -312,7 +313,7 @@ public class NfceControll implements Serializable {
                 fileTemp.mkdir();
             }
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
 
     }
@@ -618,6 +619,7 @@ public class NfceControll implements Serializable {
 
     }
 
+    @Transactional
     public void transmitirNfe() {
         try {
 
@@ -625,20 +627,18 @@ public class NfceControll implements Serializable {
             configuracao = getConfiguraNfce();
             definirNumeroItens();
             venda.setCsc(configuracao.getCodigoCsc());
-            resolveDuplicidade:
+
             gerarNumeracao(venda);
             StatusTransmissao status = nfeService.transmitirNFe(venda, new ConfiguracaoEmissorDTO(configuracao));
             if (status == StatusTransmissao.AUTORIZADA) {
-                venda = nfeRepositoy.atualizar(venda);
-                nfeService.atualizarNumeracao(venda);
-                estoqueRepositoy.atualizaEstoqueEmpresa(empresa.getId(), venda.getListaNfeDetalhe());
-
-                // lancaMovimentos();
+                nfeService.atualizarNumeracao(venda);                // lancaMovimentos();
                 gerarCupom();
                 Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 RequestContext.getCurrentInstance().addCallbackParam("vendaFinalizada", true);
             } else if (status == StatusTransmissao.DUPLICIDADE) {
-
+                nfeService.atualizarNumeracao(venda);
+                venda.setNumero(null);
+                transmitirNfe();
             }
 
 

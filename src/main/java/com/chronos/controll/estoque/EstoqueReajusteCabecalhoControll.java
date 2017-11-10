@@ -2,10 +2,11 @@ package com.chronos.controll.estoque;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
+import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.event.SelectEvent;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -29,11 +30,11 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
     @Inject
     private Repository<ProdutoSubGrupo> subgrupos;
     @Inject
-    private Repository<Produto> produtos;
+    private Repository<EmpresaProduto> produtos;
 
     private ProdutoSubGrupo produtoSubgrupo;
-
-
+    @Inject
+    private EstoqueRepository estoqueRepository;
 
 
     @Override
@@ -53,30 +54,51 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
         setObjeto(r);
     }
 
+    @Transactional
     @Override
     public void salvar() {
-        efetuarCalculos();
-        super.salvar();
+        try {
+            efetuarCalculos();
+            for (EstoqueReajusteDetalhe e : getObjeto().getListaEstoqueReajusteDetalhe()) {
+                estoqueRepository.ajustarEstoqueEmpresa(empresa.getId(), e.getProduto().getId(), e.getQuantidadeReajuste());
+                estoqueRepository.atualizarPrecoProduto(e.getProduto().getId(), e.getValorReajuste());
+            }
+            super.salvar();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+
     }
 
-    public void buscaGrupoProdutos(SelectEvent event) {
+    @Override
+    public void remover() {
+        Mensagem.addInfoMessage("Não é possivel realizar o procediment de exclusão. foram gerados movimento de ajuste");
+    }
+
+    public void buscaGrupoProdutos() {
         try {
-            ProdutoSubGrupo subGrupo = (ProdutoSubGrupo) event.getObject();
+
             getObjeto().getListaEstoqueReajusteDetalhe().clear();
-            atributos = new Object[]{"nome","valorVenda"};
+            atributos = new Object[]{"quantidadeEstoque", "produto.id", "produto.nome", "produto.valorVenda"};
             List<Filtro> filtros = new LinkedList<>();
-            filtros.add(new Filtro("produtoSubGrupo.id",subGrupo.getId()));
-            List<Produto> listaProduto = produtos.getEntitys(Produto.class, filtros,atributos);
+            if (produtoSubgrupo.getId() != null) {
+                filtros.add(new Filtro("produto.produtoSubGrupo.id", produtoSubgrupo.getId()));
+            }
+
+            filtros.add(new Filtro("empresa.id", empresa.getId()));
+            List<EmpresaProduto> listaProduto = produtos.getEntitys(EmpresaProduto.class, filtros, atributos);
 
             if (listaProduto.isEmpty()) {
-                Mensagem.addInfoMessage("Nenhum produto encontrado para o grupo selecionado.");
-            }else{
-                listaProduto.stream().forEach((p)->{
+                Mensagem.addInfoMessage("Nenhum produto encontrado");
+            } else {
+                listaProduto.stream().forEach((p) -> {
                     EstoqueReajusteDetalhe itemReajuste = new EstoqueReajusteDetalhe();
                     itemReajuste.setEstoqueReajusteCabecalho(getObjeto());
-                    itemReajuste.setProduto(p);
-                    itemReajuste.setValorOriginal(p.getValorVenda());
-
+                    itemReajuste.setProduto(p.getProduto());
+                    itemReajuste.setValorOriginal(p.getProduto().getValorVenda());
+                    itemReajuste.setQuantidadeOriginal(p.getQuantidadeEstoque());
+                    itemReajuste.setQuantidadeReajuste(p.getQuantidadeEstoque());
                     getObjeto().getListaEstoqueReajusteDetalhe().add(itemReajuste);
                 });
             }
@@ -91,10 +113,13 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
             if (getObjeto().getListaEstoqueReajusteDetalhe().isEmpty()) {
                 throw new Exception("Nenhum item para calcular.");
 
+            }
+            if (getObjeto().getPorcentagem() == null) {
+                throw new Exception("Percentual de reajuste não definido.");
             } else {
                 String tipo = getObjeto().getTipoReajuste();
-                getObjeto().getListaEstoqueReajusteDetalhe().stream().forEach(r->{
-                    r.setValorReajuste(calcularReajuste(r.getValorOriginal(),tipo));
+                getObjeto().getListaEstoqueReajusteDetalhe().stream().forEach(r -> {
+                    r.setValorReajuste(calcularReajuste(r.getValorOriginal(), tipo));
                 });
             }
         } catch (Exception e) {
@@ -103,11 +128,13 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
         }
     }
 
-    private BigDecimal calcularReajuste(BigDecimal valorOriginal,String tipo) {
-        if(!Optional.ofNullable(valorOriginal).isPresent()){
+    private BigDecimal calcularReajuste(BigDecimal valorOriginal, String tipo) {
+        if (!Optional.ofNullable(valorOriginal).isPresent()) {
             return BigDecimal.ZERO;
         }
-        BigDecimal reajuste = tipo.equals("A") ? valorOriginal.multiply(BigDecimal.ONE.subtract(getObjeto().getPorcentagem().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_DOWN))) : valorOriginal.multiply(BigDecimal.ONE.add(getObjeto().getPorcentagem().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_DOWN)));
+        BigDecimal reajuste = tipo.equals("A")
+                ? valorOriginal.multiply(BigDecimal.ONE.add(getObjeto().getPorcentagem().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_DOWN)))
+                : valorOriginal.multiply(BigDecimal.ONE.subtract(getObjeto().getPorcentagem().divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_DOWN)));
 
         return reajuste;
     }
@@ -115,7 +142,7 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
     public List<Colaborador> getListaColaborador(String nome) {
         List<Colaborador> listaColaborador = new ArrayList<>();
         try {
-            listaColaborador = colaboradores.getEntitys(Colaborador.class, "pessoa.nome", nome,atributos);
+            listaColaborador = colaboradores.getEntitys(Colaborador.class, "pessoa.nome", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -126,9 +153,9 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
         List<ProdutoSubGrupo> listaProdutoSubGrupo = new ArrayList<>();
         try {
             atributos = null;
-            listaProdutoSubGrupo = subgrupos.getEntitys(ProdutoSubGrupo.class, "nome", nome,atributos);
+            listaProdutoSubGrupo = subgrupos.getEntitys(ProdutoSubGrupo.class, "nome", nome, atributos);
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         }
         return listaProdutoSubGrupo;
     }

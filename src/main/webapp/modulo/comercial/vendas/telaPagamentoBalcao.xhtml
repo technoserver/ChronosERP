@@ -31,9 +31,10 @@
                     <div class="col-sm-8 col-md-8 col-lg-8">
                         <h4>TOTAL PAGO</h4>
                         <div class="input-group">
-                            <input name="data[Pedido][valor_pago]" class="mascara-valor form-control"
-                                   disabled="disabled" value="200,00" autocomplete="off" type="text"
-                                   id="PedidoValorPago"/>
+                            <p:inputNumber id="PedidoValorPago"
+                                           readonly="true"
+                                           value="#{balcaoControll.venda.valorTotal}"/>
+
                         </div>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ import com.chronos.service.cadastros.FornecedorService;
 import com.chronos.service.cadastros.ProdutoFornecedorService;
 import com.chronos.service.estoque.EntradaNotaFiscalService;
 import com.chronos.util.Biblioteca;
+import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
 import org.apache.commons.io.FileUtils;
 import org.primefaces.event.FileUploadEvent;
@@ -96,6 +97,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     private int tipoCstIcms;
     private boolean valoresValido;
+    private boolean podeIncluirProduto;
 
 
     @Override
@@ -103,13 +105,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         if (dataModel == null) {
             dataModel = new ERPLazyDataModel();
             dataModel.setClazz(getClazz());
-            dataModel.addFiltro("tipoOperacao", 0, Filtro.IGUAL);
             dataModel.setDao(dao);
         }
 
         Object[] atribut = new Object[]{"fornecedor", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota"};
         dataModel.setAtributos(atribut);
-
+        dataModel.getFiltros().clear();
+        dataModel.addFiltro("tipoOperacao", 0, Filtro.IGUAL);
         return dataModel;
     }
 
@@ -117,6 +119,19 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void doCreate() {
         setObjeto(entradaService.iniciar(empresa));
         setTelaGrid(false);
+        valorTotalFrete = BigDecimal.ZERO;
+        valorTotalDesconto = BigDecimal.ZERO;
+        valorTotalProdutos = BigDecimal.ZERO;
+        valorTotalBaseCalcIcms = BigDecimal.ZERO;
+        valorTotalIcms = BigDecimal.ZERO;
+        valorTotalBaseCalcIcmsST = BigDecimal.ZERO;
+        valorTotalIcmsST = BigDecimal.ZERO;
+        valorTotalBaseCalcPis = BigDecimal.ZERO;
+        valorTotalPis = BigDecimal.ZERO;
+        valorTotalBaseCalcCofins = BigDecimal.ZERO;
+        valorTotalCofins = BigDecimal.ZERO;
+        valorTotalIpi = BigDecimal.ZERO;
+        valorTotalNF = BigDecimal.ZERO;
     }
 
     @Override
@@ -127,6 +142,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     }
 
+    @Transactional
     @Override
     public void salvar() {
         try {
@@ -175,6 +191,40 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             valorTotalBaseCalcCofins = Biblioteca.soma(valorTotalBaseCalcCofins, item.getNfeDetalheImpostoCofins().getBaseCalculoCofins());
             valorTotalCofins = Biblioteca.soma(valorTotalCofins, item.getNfeDetalheImpostoCofins().getValorCofins());
         }
+    }
+
+    public void calcularTotais() {
+
+        getObjeto().calcularValorTotal();
+
+        valorTotalFrete = getObjeto().getValorFrete();
+        valorTotalDesconto = getObjeto().getValorDesconto();
+        valorTotalProdutos = getObjeto().getValorTotalProdutos();
+
+        valorTotalNF = getObjeto().getValorTotal();
+
+        getObjeto().getListaNfeDetalhe().forEach(item -> {
+            if (item.getNfeDetalheImpostoIcms() != null) {
+                valorTotalBaseCalcIcms = Biblioteca.soma(valorTotalBaseCalcIcms, item.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
+                valorTotalIcms = Biblioteca.soma(valorTotalIcms, item.getNfeDetalheImpostoIcms().getValorIcms());
+                valorTotalBaseCalcIcmsST = Biblioteca.soma(valorTotalBaseCalcIcmsST, item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
+                valorTotalIcmsST = Biblioteca.soma(valorTotalIcmsST, item.getNfeDetalheImpostoIcms().getValorIcmsSt());
+                valorTotalNF = Biblioteca.soma(valorTotalNF, item.getNfeDetalheImpostoIcms().getValorIcmsSt());
+            }
+            if (item.getNfeDetalheImpostoIpi() != null) {
+                valorTotalIpi = Biblioteca.soma(valorTotalIpi, item.getNfeDetalheImpostoIpi().getValorIpi());
+                valorTotalNF = Biblioteca.soma(valorTotalNF, item.getNfeDetalheImpostoIpi().getValorIpi());
+            }
+            if (item.getNfeDetalheImpostoPis() != null) {
+                valorTotalBaseCalcPis = Biblioteca.soma(valorTotalBaseCalcPis, item.getNfeDetalheImpostoPis().getValorBaseCalculoPis());
+                valorTotalPis = Biblioteca.soma(valorTotalPis, item.getNfeDetalheImpostoPis().getValorPis());
+            }
+            if (item.getNfeDetalheImpostoPis() != null) {
+                valorTotalBaseCalcCofins = Biblioteca.soma(valorTotalBaseCalcCofins, item.getNfeDetalheImpostoCofins().getBaseCalculoCofins());
+                valorTotalCofins = Biblioteca.soma(valorTotalCofins, item.getNfeDetalheImpostoCofins().getValorCofins());
+            }
+        });
+
     }
 
     private void cadastrarFornecedor(NfeEmitente emitente) throws Exception {
@@ -266,48 +316,64 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     // <editor-fold defaultstate="collapsed" desc="Crud Produto">
     public void incluiProduto() {
-        tipoCstIcms = Integer.valueOf(empresa.getCrt());
-        nfeDetalhe = new NfeDetalhe();
+        if (getObjeto().getTributOperacaoFiscal() == null) {
+            podeIncluirProduto = false;
+            Mensagem.addInfoMessage("Antes de incluir produtos selecione a Operação Fiscal.");
 
-        nfeDetalhe.setNfeCabecalho(getObjeto());
-//        nfeDetalhe.setListaArmamento(new HashSet<>());
-//        nfeDetalhe.setListaMedicamento(new HashSet<>());
-//        nfeDetalhe.setListaDeclaracaoImportacao(new HashSet<>());
+        } else {
+            tipoCstIcms = Integer.valueOf(empresa.getCrt());
+            nfeDetalhe = new NfeDetalhe();
 
-        nfeDetalheImpostoIcms = new NfeDetalheImpostoIcms();
-        nfeDetalheImpostoIpi = new NfeDetalheImpostoIpi();
-        nfeDetalheImpostoCofins = new NfeDetalheImpostoCofins();
-        nfeDetalheImpostoPis = new NfeDetalheImpostoPis();
+            nfeDetalhe.setNfeCabecalho(getObjeto());
 
-        nfeDetalhe.setNfeDetalheImpostoCofins(nfeDetalheImpostoCofins);
-        nfeDetalhe.setNfeDetalheImpostoIcms(nfeDetalheImpostoIcms);
-        nfeDetalhe.setNfeDetalheImpostoIpi(nfeDetalheImpostoIpi);
-        nfeDetalhe.setNfeDetalheImpostoPis(nfeDetalheImpostoPis);
+            nfeDetalhe.setCfop(getObjeto().getTributOperacaoFiscal().getCfop());
 
-        nfeDetalheImpostoIcms.setNfeDetalhe(nfeDetalhe);
-        nfeDetalheImpostoIcms.setBaseCalculoIcms(BigDecimal.ZERO);
-        nfeDetalheImpostoIcms.setValorIcms(BigDecimal.ZERO);
-        nfeDetalheImpostoIcms.setAliquotaIcms(BigDecimal.ZERO);
-        nfeDetalheImpostoIcms.setValorBaseCalculoIcmsSt(BigDecimal.ZERO);
-        nfeDetalheImpostoIcms.setValorIcmsSt(BigDecimal.ZERO);
-        nfeDetalheImpostoIcms.setAliquotaIcmsSt(BigDecimal.ZERO);
+            if (getObjeto().getTributOperacaoFiscal().getObrigacaoFiscal()) {
+                nfeDetalheImpostoIcms = new NfeDetalheImpostoIcms();
 
-        nfeDetalheImpostoIpi.setNfeDetalhe(nfeDetalhe);
-        nfeDetalheImpostoIpi.setAliquotaIpi(BigDecimal.ZERO);
-        nfeDetalheImpostoIpi.setEnquadramentoIpi("99");
-        nfeDetalheImpostoIpi.setValorBaseCalculoIpi(BigDecimal.ZERO);
-        nfeDetalheImpostoIpi.setValorIpi(BigDecimal.ZERO);
+                nfeDetalheImpostoIcms.setNfeDetalhe(nfeDetalhe);
+                nfeDetalheImpostoIcms.setBaseCalculoIcms(BigDecimal.ZERO);
+                nfeDetalheImpostoIcms.setValorIcms(BigDecimal.ZERO);
+                nfeDetalheImpostoIcms.setAliquotaIcms(BigDecimal.ZERO);
+                nfeDetalheImpostoIcms.setValorBaseCalculoIcmsSt(BigDecimal.ZERO);
+                nfeDetalheImpostoIcms.setValorIcmsSt(BigDecimal.ZERO);
+                nfeDetalheImpostoIcms.setAliquotaIcmsSt(BigDecimal.ZERO);
+            }
 
-        nfeDetalheImpostoPis.setNfeDetalhe(nfeDetalhe);
-        nfeDetalheImpostoPis.setAliquotaPisPercentual(BigDecimal.ZERO);
-        nfeDetalheImpostoPis.setValorBaseCalculoPis(BigDecimal.ZERO);
-        nfeDetalheImpostoPis.setValorPis(BigDecimal.ZERO);
+            if (getObjeto().getTributOperacaoFiscal().getDestacaIpi()) {
+                nfeDetalheImpostoIpi = new NfeDetalheImpostoIpi();
 
-        nfeDetalheImpostoCofins.setNfeDetalhe(nfeDetalhe);
-        nfeDetalheImpostoCofins.setAliquotaCofinsPercentual(BigDecimal.ZERO);
-        nfeDetalheImpostoCofins.setBaseCalculoCofins(BigDecimal.ZERO);
-        nfeDetalheImpostoCofins.setValorCofins(BigDecimal.ZERO);
+                nfeDetalheImpostoIpi.setNfeDetalhe(nfeDetalhe);
+                nfeDetalheImpostoIpi.setAliquotaIpi(BigDecimal.ZERO);
+                nfeDetalheImpostoIpi.setEnquadramentoIpi("99");
+                nfeDetalheImpostoIpi.setValorBaseCalculoIpi(BigDecimal.ZERO);
+                nfeDetalheImpostoIpi.setValorIpi(BigDecimal.ZERO);
+            }
 
+            if (getObjeto().getTributOperacaoFiscal().getDestacaPisCofins()) {
+                nfeDetalheImpostoCofins = new NfeDetalheImpostoCofins();
+                nfeDetalheImpostoPis = new NfeDetalheImpostoPis();
+
+                nfeDetalheImpostoPis.setNfeDetalhe(nfeDetalhe);
+                nfeDetalheImpostoPis.setAliquotaPisPercentual(BigDecimal.ZERO);
+                nfeDetalheImpostoPis.setValorBaseCalculoPis(BigDecimal.ZERO);
+                nfeDetalheImpostoPis.setValorPis(BigDecimal.ZERO);
+
+                nfeDetalheImpostoCofins.setNfeDetalhe(nfeDetalhe);
+                nfeDetalheImpostoCofins.setAliquotaCofinsPercentual(BigDecimal.ZERO);
+                nfeDetalheImpostoCofins.setBaseCalculoCofins(BigDecimal.ZERO);
+                nfeDetalheImpostoCofins.setValorCofins(BigDecimal.ZERO);
+            }
+
+
+            nfeDetalhe.setNfeDetalheImpostoCofins(nfeDetalheImpostoCofins);
+            nfeDetalhe.setNfeDetalheImpostoIcms(nfeDetalheImpostoIcms);
+            nfeDetalhe.setNfeDetalheImpostoIpi(nfeDetalheImpostoIpi);
+            nfeDetalhe.setNfeDetalheImpostoPis(nfeDetalheImpostoPis);
+
+
+            podeIncluirProduto = true;
+        }
     }
 
     public void alteraProduto() {
@@ -316,6 +382,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         nfeDetalheImpostoIpi = nfeDetalhe.getNfeDetalheImpostoIpi();
         nfeDetalheImpostoCofins = nfeDetalhe.getNfeDetalheImpostoCofins();
         nfeDetalheImpostoPis = nfeDetalhe.getNfeDetalheImpostoPis();
+        podeIncluirProduto = true;
     }
 
     public void excluirProduto() {
@@ -343,12 +410,14 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 nfeDetalhe.setValorUnitarioTributavel(nfeDetalhe.getValorUnitarioComercial());
                 nfeDetalhe.setProdutoCadastrado(true);
                 getObjeto().getListaNfeDetalhe().add(nfeDetalhe);
-                gerarValores(nfeDetalhe);
 
-                Mensagem.addInfoMessage("Registro incluído!");
-            } else {
-                Mensagem.addInfoMessage("Registro alterado!");
+
+                Mensagem.addInfoMessage("Produto salvo!");
             }
+            nfeDetalhe.calcularValorTotalProduto();
+            calcularTotais();
+
+            podeIncluirProduto = false;
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao salvar o registro", e);
@@ -388,7 +457,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void salvarNovoProduto() {
         try {
 
-            FornecedorProduto forProd = produtoFornecedorService.salvar(produto,fornecedor,empresa,nfeDetalhe.getValorUnitarioComercial(),nfeDetalhe.getCodigoProduto());
+            FornecedorProduto forProd = produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
             nfeDetalhe.setProduto(forProd.getProduto());
             nfeDetalhe.setProdutoCadastrado(true);
             Mensagem.addInfoMessage("Produto cadastro e vinculado com sucesso");
@@ -432,7 +501,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     // </editor-fold>
 
-// <editor-fold defaultstate="collapsed" desc="Diversos">
+    // <editor-fold defaultstate="collapsed" desc="Diversos">
 
     public boolean validarValor(BigDecimal valor1, BigDecimal valor2) {
         if (valor1 == null || valor2 == null) {
@@ -525,7 +594,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
 
         try {
-            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao"});
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("descricao", Filtro.LIKE, descricao));
+            filtros.add(new Filtro("cfop", Filtro.MENOR, 3000));
+            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, filtros, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoInss"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -543,9 +615,6 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     }
 
     // </editor-fold>
-
-
-
 
 
     @Override
@@ -761,5 +830,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setValoresValido(boolean valoresValido) {
         this.valoresValido = valoresValido;
+    }
+
+    public boolean isPodeIncluirProduto() {
+        return podeIncluirProduto;
+    }
+
+    public void setPodeIncluirProduto(boolean podeIncluirProduto) {
+        this.podeIncluirProduto = podeIncluirProduto;
     }
 }

@@ -90,7 +90,7 @@ public class VendaService implements Serializable {
             if (status == StatusTransmissao.AUTORIZADA) {
                 venda.setSituacao(SituacaoVenda.NotaFiscal.getCodigo());
                 venda.setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
-                repository.salvar(venda);
+                repository.atualizar(venda);
                 String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";
                 Mensagem.addInfoMessage(msg);
             }

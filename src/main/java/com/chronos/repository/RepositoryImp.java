@@ -73,6 +73,30 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Transactional
     @Override
+    public void atualizar(T bean, List<Filtro> filtros, Map<String, Object> atributos) throws PersistenceException {
+        String jpql = "UPDATE " + bean.getClass().getName() + " o SET ";
+
+        for (String atributo : atributos.keySet()) {
+            Object valor = atributos.get(atributo);
+
+            jpql += "o." + atributo + " = " + ((valor.getClass() == String.class) ? "'" + valor + "'," : valor + ",");
+        }
+
+        jpql = jpql.substring(0, jpql.length() - 1);
+
+        jpql += " where 1=1 ";
+        for (Filtro f : filtros) {
+            jpql += f.getOperadorLogico() + " o." + f.getAtributo() + " " + f.getOperadorRelacional() +
+                    ((f.getValor().getClass() == String.class) ? "'" + f.getValor() + "'" : f.getValor());
+        }
+        executeCommand(jpql);
+
+
+    }
+
+
+    @Transactional
+    @Override
     public boolean updateNativo(Class<T> clazz, List<Filtro> filtros, Map<String, Object> atributos) {
         String sql = "update " + clazz.getAnnotation(Table.class).name() + " set ";
 

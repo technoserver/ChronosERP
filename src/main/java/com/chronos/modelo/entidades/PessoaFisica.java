@@ -272,7 +272,6 @@ public class PessoaFisica implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 79 * hash + Objects.hashCode(this.id);
-        hash = 79 * hash + Objects.hashCode(this.cpf);
         return hash;
     }
 
@@ -286,9 +285,6 @@ public class PessoaFisica implements Serializable {
         }
         final PessoaFisica other = (PessoaFisica) obj;
         if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.cpf, other.cpf)) {
             return false;
         }
         return true;

@@ -32,14 +32,26 @@ public class TributOperacaoFiscal implements Serializable {
     @Min(message = "CFOP invalido", value = 1000)
     @Max(message = "CFOP invalido", value = 9999)
     private Integer cfop;
-    @Column(name = "controlar_estoque_verificado")
-    private Boolean controlarEstoqueVerificado;
-    @Column(name = "gerar_pis_cofins")
-    private Boolean gerarPisCofins;
-    @Column(name = "gerar_ipi")
-    private Boolean gerarIpi;
-    @Column(name = "gerar_issqn")
-    private Boolean gerarIssqn;
+    @Column(name = "estoque")
+    private Boolean estoque;
+    @Column(name = "estoque_verificado")
+    private Boolean estoqueVerificado;
+    @Column(name = "contabilidade")
+    private Boolean contabilidade;
+    @Column(name = "obrigacao_fiscal")
+    private Boolean obrigacaoFiscal;
+    @Column(name = "destaca_ipi")
+    private Boolean destacaIpi;
+    @Column(name = "destaca_pis_cofins")
+    private Boolean destacaPisCofins;
+    @Column(name = "calculo_inss")
+    private Boolean calculoInss;
+    @Column(name = "calculo_issqn")
+    private Boolean calculoIssqn;
+    @Column(name = "calculo_pis_cofins_retido")
+    private Boolean calculoPisCofinsRetido;
+    @Column(name = "calculo_irrf")
+    private Boolean calculoIrrf;
     @Column(name = "OBSERVACAO")
     private String observacao;
 
@@ -53,12 +65,22 @@ public class TributOperacaoFiscal implements Serializable {
     private TributIss tributIss;
 
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @NotNull
     private Empresa empresa;
    
     
     public TributOperacaoFiscal() {
+    }
+
+    public TributOperacaoFiscal(Integer id, String descricao, Integer cfop, Boolean obrigacaoFiscal, Boolean destacaIpi, Boolean destacaPisCofins, Boolean calculoInss) {
+        this.id = id;
+        this.descricao = descricao;
+        this.cfop = cfop;
+        this.obrigacaoFiscal = obrigacaoFiscal;
+        this.destacaIpi = destacaIpi;
+        this.destacaPisCofins = destacaPisCofins;
+        this.calculoInss = calculoInss;
     }
 
     public TributOperacaoFiscal(Integer id) {
@@ -70,6 +92,7 @@ public class TributOperacaoFiscal implements Serializable {
         this.id = id;
         this.descricao = descricao;
     }
+
 
     public Integer getId() {
         return id;
@@ -120,36 +143,116 @@ public class TributOperacaoFiscal implements Serializable {
     }
 
 
-    public Boolean getControlarEstoqueVerificado() {
-        return controlarEstoqueVerificado;
+    public Boolean getEstoque() {
+        return estoque;
     }
 
-    public void setControlarEstoqueVerificado(Boolean controlarEstoqueVerificado) {
-        this.controlarEstoqueVerificado = controlarEstoqueVerificado;
+    public void setEstoque(Boolean estoque) {
+        this.estoque = estoque;
     }
 
-    public Boolean getGerarPisCofins() {
-        return gerarPisCofins;
+    public Boolean getEstoqueVerificado() {
+        return estoqueVerificado;
     }
 
-    public void setGerarPisCofins(Boolean gerarPisCofins) {
-        this.gerarPisCofins = gerarPisCofins;
+    public void setEstoqueVerificado(Boolean estoqueVerificado) {
+        this.estoqueVerificado = estoqueVerificado;
     }
 
-    public Boolean getGerarIpi() {
-        return gerarIpi;
+    public Boolean getContabilidade() {
+        return contabilidade;
     }
 
-    public void setGerarIpi(Boolean gerarIpi) {
-        this.gerarIpi = gerarIpi;
+    public void setContabilidade(Boolean contabilidade) {
+        this.contabilidade = contabilidade;
     }
 
-    public Boolean getGerarIssqn() {
-        return gerarIssqn;
+    public Boolean getObrigacaoFiscal() {
+        return obrigacaoFiscal;
     }
 
-    public void setGerarIssqn(Boolean gerarIssqn) {
-        this.gerarIssqn = gerarIssqn;
+    public void setObrigacaoFiscal(Boolean obrigacaoFiscal) {
+        this.obrigacaoFiscal = obrigacaoFiscal;
+    }
+
+    public Boolean getDestacaIpi() {
+        return destacaIpi;
+    }
+
+    public void setDestacaIpi(Boolean destacaIpi) {
+        this.destacaIpi = destacaIpi;
+    }
+
+    public Boolean getDestacaPisCofins() {
+        return destacaPisCofins;
+    }
+
+    public void setDestacaPisCofins(Boolean destacaPisCofins) {
+        this.destacaPisCofins = destacaPisCofins;
+    }
+
+    public Boolean getCalculoInss() {
+        return calculoInss;
+    }
+
+    public void setCalculoInss(Boolean calculoInss) {
+        this.calculoInss = calculoInss;
+    }
+
+    public Boolean getCalculoIssqn() {
+        return calculoIssqn;
+    }
+
+    public void setCalculoIssqn(Boolean calculoIssqn) {
+        this.calculoIssqn = calculoIssqn;
+    }
+
+    public Boolean getCalculoPisCofinsRetido() {
+        return calculoPisCofinsRetido;
+    }
+
+    public void setCalculoPisCofinsRetido(Boolean calculoPisCofinsRetido) {
+        this.calculoPisCofinsRetido = calculoPisCofinsRetido;
+    }
+
+    public Boolean getCalculoIrrf() {
+        return calculoIrrf;
+    }
+
+    public void setCalculoIrrf(Boolean calculoIrrf) {
+        this.calculoIrrf = calculoIrrf;
+    }
+
+    public TributPisCodApuracao getTributPisCodApuracao() {
+        return tributPisCodApuracao;
+    }
+
+    public void setTributPisCodApuracao(TributPisCodApuracao tributPisCodApuracao) {
+        this.tributPisCodApuracao = tributPisCodApuracao;
+    }
+
+    public TributCofinsCodApuracao getTributCofinsCodApuracao() {
+        return tributCofinsCodApuracao;
+    }
+
+    public void setTributCofinsCodApuracao(TributCofinsCodApuracao tributCofinsCodApuracao) {
+        this.tributCofinsCodApuracao = tributCofinsCodApuracao;
+    }
+
+    public TributIpiDipi getTributIpiDipi() {
+        return tributIpiDipi;
+    }
+
+    public void setTributIpiDipi(TributIpiDipi tributIpiDipi) {
+        this.tributIpiDipi = tributIpiDipi;
+    }
+
+    public TributIss getTributIss() {
+        return tributIss;
+    }
+
+    public void setTributIss(TributIss tributIss) {
+        this.tributIss = tributIss;
     }
 
     @Override

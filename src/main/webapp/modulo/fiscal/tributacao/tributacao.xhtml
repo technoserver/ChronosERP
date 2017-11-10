@@ -1,0 +1,363 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Tributacao
+    </ui:define>
+
+    <ui:define name="tela">
+        #{tributacaoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Tributacao
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{tributacaoControll}"
+                       idDataTable="dataTableTributacao"
+                       nomeFuncao="Operação Fiscal"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="CFOP" width="65">
+                <h:outputLabel value="#{row.cfop}"/>
+            </p:column>
+            <p:column headerText="Descricao">
+                <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+            <p:column headerText="Obrigações Fiscais" styleClass="text-center" width="170">
+                <i class="fa #{row.obrigacaoFiscal?'fa-check text-success' :'fa-ban text-danger'}"
+                   aria-hidden="true"></i>
+            </p:column>
+            <p:column headerText="Destaca PIS/COFINS" styleClass="text-center" width="180">
+                <i class="fa #{row.destacaPisCofins?'fa-check text-success' :'fa-ban text-danger'}"
+                   aria-hidden="true"></i>
+            </p:column>
+            <p:column headerText="Destaca IPI" styleClass="text-center" width="150">
+                <i class="fa #{row.destacaIpi?'fa-check text-success' :'fa-ban text-danger'}" aria-hidden="true"></i>
+            </p:column>
+            <p:column headerText="Calcular ISSQN" styleClass="text-center" width="150">
+                <i class="fa #{row.calculoIssqn?'fa-check text-success' :'fa-ban text-danger'}" aria-hidden="true"></i>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{tributacaoControll}"
+                                   nomeFuncao="Operação Fiscal"
+                                   id="telaDetalhe"
+        >
+            <p:tabView id="tabViewDetalhes" style="border: 0px;" activeIndex="#{tributacaoControll.activeTabIndex}">
+                <p:tab title="Dados Principais">
+                    <erp:campoTexto nomeAtributo="#{tributacaoControll.objeto.descricao}"
+                                    idComponente="descricao"
+                                    label="Operação Fiscal"
+                                    styleClass="col-xs-12 col-sm-6 col-md-6"
+                                    tamanhoMaximo="100"
+                                    somenteLeitura="true"/>
+
+                    <erp:campoTexto nomeAtributo="#{tributacaoControll.objeto.obrigacaoFiscal?'SIM':'NAO'}"
+                                    idComponente="obrigacaoFiscal"
+                                    label="Obrigação Fiscal"
+                                    styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    tamanhoMaximo="3"
+                                    somenteLeitura="true"/>
+                    <erp:campoTexto nomeAtributo="#{tributacaoControll.objeto.destacaIpi?'SIM':'NAO'}"
+                                    idComponente="destacaIpi"
+                                    label="Destaca IPI"
+                                    styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    tamanhoMaximo="3"
+                                    somenteLeitura="true"/>
+                    <erp:campoTexto nomeAtributo="#{tributacaoControll.objeto.destacaPisCofins?'SIM':'NAO'}"
+                                    idComponente="destacaPisCofins"
+                                    label="Destaca PIS/COFINS"
+                                    styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    tamanhoMaximo="3"
+                                    somenteLeitura="true"/>
+                    <erp:campoTexto nomeAtributo="#{tributacaoControll.objeto.calculoIssqn?'SIM':'NAO'}"
+                                    idComponente="calculoIssqn"
+                                    label="Calcular ISSQN"
+                                    styleClass="col-xs-12 col-sm-2 col-md-2"
+                                    tamanhoMaximo="3"
+                                    somenteLeitura="true"/>
+
+                </p:tab>
+                <p:tab title="ICMS"
+                       disabled="#{empty tributacaoControll.objeto.id || !tributacaoControll.controlaIcms}">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h:commandLink title="Novo" class="btn btn-default"
+                                           actionListener="#{tributacaoControll.incluirTributIcmsUf}"
+                                           type="button"
+                                           rendered="#{not empty tributacaoControll.objeto.id}">
+                                <i class="glyphicon glyphicon-plus"/>
+                                <p:resetInput target=":formOutrasTelas"/>
+                                <p:ajax update=":formOutrasTelas:panelTributIcmsUf,dataTableTributIcmsUf"
+                                        oncomplete="PF('dialogTributIcmsUf').show()"
+                                        process="@this"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+
+                    <p:dataTable id="dataTableTributIcmsUf" var="obj"
+                                 value="#{tributacaoControll.listTributIcmsUf}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 paginatorPosition="bottom"
+                                 resizableColumns="true" reflow="true"
+                                 rowKey="#{obj.id}">
+
+
+                        <p:column headerText="UF Destino">
+                            <h:outputLabel value="#{obj.ufDestino}"/>
+                        </p:column>
+                        <p:column headerText="CFOP">
+                            <h:outputLabel value="#{obj.cfop}"/>
+                        </p:column>
+                        <p:column headerText="Aliquota">
+                            <h:outputLabel value="#{obj.aliquota}"/>
+                        </p:column>
+                        <p:column headerText="Valor Pauta">
+                            <h:outputLabel value="#{obj.valorPauta}"/>
+                        </p:column>
+                        <p:column headerText="Valor Preco Maximo">
+                            <h:outputLabel value="#{obj.valorPrecoMaximo}"/>
+                        </p:column>
+                        <p:column headerText="MVA">
+                            <h:outputLabel value="#{obj.mva}"/>
+                        </p:column>
+                        <p:column headerText="Ações" width="110">
+                            <p:commandLink title="Alterar"
+                                           action="#{tributacaoControll.alterarTributIcmsUf}"
+                                           class=" btn btn-default"
+                                           oncomplete="PF('dialogTributIcmsUf').show()"
+                                           update=":formOutrasTelas:panelTributIcmsUf,dataTableTributIcmsUf"
+                                           process="dataTableTributIcmsUf">
+                                <i class="fa fa-file-text-o"></i>
+                                <f:setPropertyActionListener value="#{obj}"
+                                                             target="#{tributacaoControll.tributIcmsUfSelecionado}"/>
+                            </p:commandLink>
+                            &nbsp;
+                            <p:commandLink title="Excluir"
+                                           action="#{tributacaoControll.excluirTributIcmsUf}"
+                                           style="position: relative; right: 7px"
+                                           update="dataTableTributIcmsUf"
+                                           process="dataTableTributIcmsUf"
+                                           oncomplete="atualizarMsg();"
+                                           class="btn btn-default"
+                            >
+                                <i class="fa fa-times"></i>
+                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                <f:setPropertyActionListener value="#{obj}"
+                                                             target="#{tributacaoControll.tributIcmsUfSelecionado}"/>
+                            </p:commandLink>
+
+                        </p:column>
+                    </p:dataTable>
+
+                </p:tab>
+                <p:tab title="PIS"
+                       disabled="#{empty tributacaoControll.objeto.id || !tributacaoControll.controlaPisCofins}">
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-8 col-md-8"
+                                         idComponente="tributPisCodApuracaoCstPis" label="CST"
+                                         nomeAtributo="#{tributacaoControll.pis.cstPis}"
+                                         itens="#{tributacaoControll.listaCstPis}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="tributPisCodApuracaoAliquotaPorcento"
+                                          label="Aliquota Porcento"
+                                          nomeAtributo="#{tributacaoControll.pis.aliquotaPorcento}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="tributPisCodApuracaoPorcentoBaseCalculo"
+                                          label="% Base Calculo"
+                                          nomeAtributo="#{tributacaoControll.pis.porcentoBaseCalculo}"/>
+                    </div>
+
+                </p:tab>
+                <p:tab title="COFINS"
+                       disabled="#{empty tributacaoControll.objeto.id || !tributacaoControll.controlaPisCofins}">
+
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-8 col-md-8"
+                                         idComponente="tributCofinsCodApuracaoCstCofins" label="CST"
+                                         nomeAtributo="#{tributacaoControll.cofins.cstCofins}"
+                                         itens="#{tributacaoControll.listaCstPis}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="tributCofinsCodApuracaoAliquotaPorcento"
+                                          label="Aliquota Porcento"
+                                          nomeAtributo="#{tributacaoControll.cofins.aliquotaPorcento}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="tributCofinsCodApuracaoPorcentoBaseCalculo"
+                                          label="Porcento Base Calculo"
+                                          nomeAtributo="#{tributacaoControll.cofins.porcentoBaseCalculo}"/>
+
+                    </div>
+
+
+                </p:tab>
+                <p:tab title="IPI"
+                       disabled="#{empty tributacaoControll.objeto.id || !tributacaoControll.controlaIpi}">
+
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-8 col-md-8"
+                                         idComponente="tributIpiDipiCstIpi" label="CST"
+                                         nomeAtributo="#{tributacaoControll.ipi.cstIpi}"
+                                         itens="#{tributacaoControll.listaCstIpi}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="tributIpiDipiAliquotaPorcento"
+                                          label="Aliquota Porcento"
+                                          nomeAtributo="#{tributacaoControll.ipi.aliquotaPorcento}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="tributIpiDipiPorcentoBaseCalculo"
+                                          label="Porcento Base Calculo"
+                                          nomeAtributo="#{tributacaoControll.ipi.porcentoBaseCalculo}"/>
+                    </div>
+
+                </p:tab>
+
+                <p:tab title="ISSQN"
+                       disabled="#{empty tributacaoControll.objeto.id || !tributacaoControll.controlaIss}">
+                    <div class="row">
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="tributIssAliquotaPorcento" label="Aliquota %"
+                                          nomeAtributo="#{tributacaoControll.iss.aliquotaPorcento}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="tributIssPorcentoBaseCalculo" label="% Base Calc."
+                                          nomeAtributo="#{tributacaoControll.iss.porcentoBaseCalculo}"/>
+
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                                         idComponente="tributIssCodigoTributacao" label="Codigo Tributacao"
+                                         nomeAtributo="#{tributacaoControll.iss.codigoTributacao}"
+                                         itens="#{tributacaoControll.issCodigoTributacao}"/>
+
+                    </div>
+                </p:tab>
+
+            </p:tabView>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogTributIcmsUf"
+                      header="Inclusão/Alteração de ICMS UF" responsive="true"
+                      widgetVar="dialogTributIcmsUf" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+                <h:panelGroup layout="block" id="panelTributIcmsUf">
+
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
+                                          label="Grupo Tributario"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{tributacaoControll}"
+                                          completeMethod="getListaGrupoTributario"
+                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.tributGrupoTributario}"
+                                          idComponente="tributGrupoTributario"
+                                          requerido="true"
+                                          id="campoProdutoGrupoTributario"/>
+
+
+                    </div>
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                         idComponente="tributIcmsUfUfDestino" label="UF Destino"
+                                         nomeAtributo="#{tributacaoControll.tributIcmsUf.ufDestino}"
+                                         itens="#{tributacaoControll.estado}"/>
+
+                        <erp:campoInteiro idComponente="cfop" styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          label="CFOP"
+                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.cfop}"
+                                          requerido="true"/>
+                        <erp:campoSelect styleClass="ccol-xs-12 col-sm-8 col-md-8"
+                                         idComponente="tributIcmsUfCsosnB" label="CSOSN"
+                                         nomeAtributo="#{tributacaoControll.tributIcmsUf.csosnB}"
+                                         itens="#{tributacaoControll.listaCsosnB}"
+                                         rendered="#{tributacaoControll.simplesNascional}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-8 col-md-8"
+                                         idComponente="tributIcmsUfCstB" label="CST"
+                                         nomeAtributo="#{tributacaoControll.tributIcmsUf.cstB}"
+                                         itens="#{tributacaoControll.listaCstB}"
+                                         rendered="#{!tributacaoControll.simplesNascional}"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="tributIcmsUfAliquota" label="Aliquota ICMS"
+                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.aliquota}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfPorcentoBc" label="% Redução da BC"
+                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.porcentoBc}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfAliquotaIcmsSt"
+                                          label="Aliquota ICMS ST"
+                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.aliquotaIcmsSt}"/>
+
+
+                        <erp:campoDecimal styleClass="ccol-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfPorcentoBcSt" label="% Redução da  BC ST "
+                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.porcentoBcSt}"/>
+
+
+                    </div>
+                    <div class="row">
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="tributIcmsUfMva" label="MVA"
+                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.mva}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfAliquotaInternaSt"
+                                          label="Aliq. Interna"
+                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.aliquotaInternaSt}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="tributIcmsUfAliquotaInterestadualSt"
+                                          label="Aliq. Interestadual"
+                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.aliquotaInterestadualSt}"/>
+
+                    </div>
+
+
+                </h:panelGroup>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             actionListener="#{tributacaoControll.salvarTributIcmsUf}"
+                                             class="btn btn-primary center-block">
+                                <p:ajax
+                                        update=":formOutrasTelas:panelTributIcmsUf,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogTributIcmsUf').hide();}"
+                                        process="@form"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             class="btn btn-default center-block">
+                                <p:resetInput target=":formOutrasTelas"/>
+                                <p:ajax oncomplete="PF('dialogTributIcmsUf').hide();"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

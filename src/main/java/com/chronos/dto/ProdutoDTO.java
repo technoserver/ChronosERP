@@ -43,7 +43,8 @@ public class ProdutoDTO implements Serializable {
         this.imagem = imagem;
         this.idgrupotributario = idgrupotributario;
         this.idicms = idicms;
-        this.produto = new Produto(id, nome, valorVenda, estoqueVerificado, ncm, new UnidadeProduto(0, unidade));
+
+        this.produto = new Produto(id, nome, valorVenda, quantidadeEstoque, ncm, new UnidadeProduto(0, unidade));
         this.produto.setImagem(imagem);
         this.produto.getUnidadeProduto().setPodeFracionar(podeFracionar);
         if (idgrupotributario != null) {

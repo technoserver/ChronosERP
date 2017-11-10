@@ -100,6 +100,7 @@ public class PessoasControll extends AbstractControll<Pessoa> implements Seriali
     public void salvar() {
         try {
             service.salvar(getObjeto(), empresa);
+            setTelaGrid(true);
             Mensagem.addInfoMessage("Dados salvo com sucesso");
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -432,7 +432,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 listaFiltro.clear();
 
                 listaFiltro.add(new Filtro("idTributOperacaoFiscal", operacaoFiscal.getId()));
-                listaFiltro.add(new Filtro("idTributGrupoTributario", item.getProduto().getTributGrupoTributario().getId()));
+
 
                 ViewTributacaoIpi ipi = ipiRepository.get(ViewTributacaoIpi.class, listaFiltro);
                 if (ipi != null) {
@@ -451,7 +451,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 listaFiltro.clear();
 
                 listaFiltro.add(new Filtro("idTributOperacaoFiscal", operacaoFiscal.getId()));
-                listaFiltro.add(new Filtro("idTributGrupoTributario", item.getProduto().getTributGrupoTributario().getId()));
+
 
                 ViewTributacaoPis pis = pisRepository.get(ViewTributacaoPis.class, listaFiltro);
 
@@ -469,7 +469,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 // COFINS
                 listaFiltro.clear();
                 listaFiltro.add(new Filtro("idTributOperacaoFiscal", operacaoFiscal.getId()));
-                listaFiltro.add(new Filtro("idTributGrupoTributario", item.getProduto().getTributGrupoTributario().getId()));
+
 
                 ViewTributacaoCofins cofins = cofinsRepository.get(ViewTributacaoCofins.class, listaFiltro);
                 if (cofins != null) {

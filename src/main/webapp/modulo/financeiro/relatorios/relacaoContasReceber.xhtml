@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Relação de Contas a receber
+    </ui:define>
+
+    <ui:define name="tela">
+        Filtros
+    </ui:define>
+    <ui:define name="controle">
+        Relação de Contas a receber
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <div class="ibox-content">
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-4"
+                                nomeAtributo="#{contasReceberRelatorioControll.cliente}"
+                                tamanhoMaximo="100" label="Cliente" idComponente="cliente"/>
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="Situação" for="situacao"/>
+                    <h:selectOneMenu id="situacao" class="form-control"
+                                     value="#{contasReceberRelatorioControll.situacao}">
+                        <f:selectItem itemLabel="Todos" itemValue="#{null}"/>
+                        <f:selectItem itemLabel="Aberto" itemValue="01"/>
+                        <f:selectItem itemLabel="Quitado" itemValue="02"/>
+                        <f:selectItem itemLabel="Quitado Parcialmente" itemValue="03"/>
+                        <f:selectItem itemLabel="Vencido" itemValue="04"/>
+                    </h:selectOneMenu>
+                </div>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                nomeAtributo="#{contasReceberRelatorioControll.numDocumento}"
+                                tamanhoMaximo="30" label="Documento" idComponente="numDocumento"/>
+                <erp:campoData nomeAtributo="#{contasReceberRelatorioControll.vencimentoDe}"
+                               label="Vencimento de"
+                               idComponente="vencimentoDe"
+                               styleClass="col-xs-12 col-sm-2 col-md-2"/>
+                <erp:campoData nomeAtributo="#{contasReceberRelatorioControll.vencimentoAte}"
+                               label="Vencimento Até"
+                               idComponente="vencimentoAte"
+                               styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                <div class="col-xs-12 col-sm-12 col-md-12 text-center m-t">
+
+                    <p:commandLink title="Gerar relatório"
+                                   value="Gerar Relatório"
+                                   styleClass="btn btn-primary"
+                                   actionListener="#{contasReceberRelatorioControll.gerarContasReceber}"
+                                   ajax="false">
+
+                    </p:commandLink>
+
+                </div>
+
+
+            </div>
+        </div>
+        <div class="ibox-footer">
+
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
+                                     actionListener="index" immediate="true"
+                    >
+                        <p:ajax update="navegacao,:formCentro:mensagem"
+                                process="@this"/>
+                    </h:commandButton>
+                </div>
+            </div>
+
+
+        </div>
+    </ui:define>
+
+</ui:composition>

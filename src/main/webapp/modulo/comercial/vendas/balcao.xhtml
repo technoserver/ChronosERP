@@ -180,15 +180,25 @@
                             <h:commandButton id="imprimir-cupom"
                                              value="IMPRIMIR CUPOM"
                                              class="btn btn-primary btn-lg"
+                                             rendered="#{empty balcaoControll.venda.numeroFatura}"
                                              actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(balcaoControll.venda.id)}">
+                                <p:ajax disabled="true"/>
+                            </h:commandButton>
+
+                            <h:commandButton id="imprimir-nfce"
+                                             value="IMPRIMIR CUPOM"
+                                             class="btn btn-primary btn-lg"
+                                             rendered="#{not empty balcaoControll.venda.numeroFatura}"
+                                             actionListener="#{balcaoControll.danfe}">
                                 <p:ajax disabled="true"/>
                             </h:commandButton>
                             &nbsp;
                             <h:commandButton id="emitir-nfc" type="button"
                                              value="EMITIR NFC"
+                                             rendered="#{empty balcaoControll.venda.numeroFatura}"
                                              action="#{balcaoControll.gerarNfce}"
                                              class="btn btn-maroon btn-lg">
-                                <p:ajax update=":formCentro:growl,:formCentro:mensagem"/>
+                                <p:ajax update=":formCentro:growl,:formCentro:mensagem,:formCentro:tela-impressao"/>
                             </h:commandButton>
 
                         </div>

@@ -107,6 +107,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
                 getObjeto().setPessoa(pessoa);
                 dao.atualizar(getObjeto());
             }
+            setTelaGrid(true);
             Mensagem.addInfoMessage("Cliente salvo com sucesso");
         } catch (Exception e) {
             e.printStackTrace();

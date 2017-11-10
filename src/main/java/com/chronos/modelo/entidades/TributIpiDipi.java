@@ -36,7 +36,7 @@ public class TributIpiDipi implements Serializable {
     @ManyToOne
     private TipoReceitaDipi tipoReceitaDipi;
     @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     private TributOperacaoFiscal tributOperacaoFiscal;
 
     public TributIpiDipi() {
