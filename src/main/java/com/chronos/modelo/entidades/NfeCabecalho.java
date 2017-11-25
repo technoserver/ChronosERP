@@ -1846,7 +1846,7 @@ public class NfeCabecalho implements Serializable {
                 valorIcmsSt = valorIcmsSt.add(item.getNfeDetalheImpostoIcms().getValorIcmsSt());
             }
 
-            if (item.getNfeDetalheImpostoIcms() != null && item.getNfeDetalheImpostoIpi().getValorIpi() != null) {
+            if (item.getNfeDetalheImpostoIpi() != null && item.getNfeDetalheImpostoIpi().getValorIpi() != null) {
                 valorIpi = valorIpi.add(item.getNfeDetalheImpostoIpi().getValorIpi());
             }
 

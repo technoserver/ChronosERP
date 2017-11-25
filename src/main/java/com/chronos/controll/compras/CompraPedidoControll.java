@@ -85,11 +85,13 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
         atualizaTotaisPedido();
 
         super.salvar();
+        setTelaGrid(false);
     }
 
     public void incluirItem() {
         compraPedidoDetalhe = new CompraPedidoDetalhe();
         compraPedidoDetalhe.setCompraPedido(getObjeto());
+        compraPedidoDetalhe.setQuantidade(BigDecimal.ONE);
     }
 
     public void alterarItem() {
@@ -98,14 +100,21 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
 
     //TODO Calcular a taxa de desconto do item e o subtotal
     public void salvarItem() {
-        if (compraPedidoDetalhe.getId() == null) {
-            getObjeto().getListaCompraPedidoDetalhe().add(compraPedidoDetalhe);
+        try {
+            if (compraPedidoDetalhe.getId() == null) {
+                getObjeto().getListaCompraPedidoDetalhe().add(compraPedidoDetalhe);
+            }
+
+            atualizaTotaisItens();
+            atualizaTotaisPedido();
+
+            salvar("Item salvo com sucesso!");
+            setTelaGrid(false);
+            setActiveTabIndex(1);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
-        atualizaTotaisItens();
-        atualizaTotaisPedido();
-
-        salvar("Item salvo com sucesso!");
     }
 
     public void excluirItem() {
@@ -113,6 +122,8 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
         getObjeto().getListaCompraPedidoDetalhe().remove(compraPedidoDetalheSelecionado);
         atualizaTotaisPedido();
         salvar("Item excluído com sucesso!");
+        setTelaGrid(false);
+        setActiveTabIndex(1);
 
     }
 
@@ -216,13 +227,12 @@ public class CompraPedidoControll extends AbstractControll<CompraPedido> impleme
     public List<Produto> getListaProduto(String nome) {
         List<Produto> listaProduto = new ArrayList<>();
         try {
-            listaProduto = produtos.getEntitys(Produto.class,"nome", nome);
+            listaProduto = produtos.getEntitys(Produto.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
         return listaProduto;
     }
-
 
 
     @Override

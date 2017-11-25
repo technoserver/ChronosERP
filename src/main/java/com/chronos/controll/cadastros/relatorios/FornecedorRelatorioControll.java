@@ -32,10 +32,11 @@ public class FornecedorRelatorioControll extends AbstractRelatorioControll imple
         parametros.put("tipo", retornaValorPadrao(tipo));
         parametros.put("cpf_cnpj", retornaValorPadrao(cpfCnpj));
         parametros.put("idempresa", empresa.getId());
-        String caminhoRelatorio = "/relatorios/cadastros/relacaoFornecedor.jasper";
 
+        String caminhoRelatorio = "/relatorios/cadastros";
+        String nomeRelatorio = "relacaoFornecedor.jasper";
 
-        executarRelatorio(caminhoRelatorio, "relacaoFornecedor.pdf");
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoFornecedor.pdf");
 
     }
 

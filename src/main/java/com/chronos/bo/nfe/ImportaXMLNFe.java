@@ -190,8 +190,8 @@ public class ImportaXMLNFe {
         emitente.setUf(emit.getEnderEmit().getUF().value());
         emitente.setCep(emit.getEnderEmit().getCEP());
         emitente.setCrt(emit.getCRT());
-        emitente.setCodigoPais(Integer.valueOf(emit.getEnderEmit().getCPais()));
-        emitente.setNomePais(emit.getEnderEmit().getXPais());
+        emitente.setCodigoPais(1058);
+        emitente.setNomePais("BRASIL");
         emitente.setTelefone(emit.getEnderEmit().getFone());
         emitente.setInscricaoEstadualSt(emit.getIEST());
         emitente.setInscricaoMunicipal(emit.getIM());

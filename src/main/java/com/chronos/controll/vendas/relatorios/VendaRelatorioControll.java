@@ -20,19 +20,19 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         parametros = new HashMap<>();
         parametros.put("idvenda", id);
 
-        String caminhoRelatorio = "/relatorios/vendas/venda.jasper";
+        String caminhoRelatorio = "/relatorios/vendas";
+        String nomeRelatorio = "venda.jasper";
 
-
-        executarRelatorio(caminhoRelatorio, "pedidoVenda.pdf");
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "pedidoVenda.pdf");
     }
 
     public void imprimirPedidoCupom(int id) {
         parametros = new HashMap<>();
         parametros.put("idvenda", id);
 
-        String caminhoRelatorio = "/relatorios/vendas/vendaCupom.jasper";
+        String caminhoRelatorio = "/relatorios/vendas";
+        String nomeRelatorio = "vendaCupom.jasper";
 
-
-        executarRelatorio(caminhoRelatorio, "pedidoVenda.pdf");
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "pedidoVenda.pdf");
     }
 }

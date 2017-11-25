@@ -14,6 +14,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -92,6 +93,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
                 throw new Exception(mensagem);
             }
             super.salvar();
+            setTelaGrid(false);
         } catch (Exception e) {
             Mensagem.addErrorMessage("Ocorreu um erro!", e);
 
@@ -103,6 +105,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     public void incluirVendaOrcamentoDetalhe() {
         vendaOrcamentoDetalhe = new VendaOrcamentoDetalhe();
         vendaOrcamentoDetalhe.setVendaOrcamentoCabecalho(getObjeto());
+        vendaOrcamentoDetalhe.setQuantidade(BigDecimal.ONE);
     }
 
     public void alterarVendaOrcamentoDetalhe() {
@@ -117,6 +120,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         try {
             getObjeto().calcularValorTotal();
             salvar("Registro salvo com sucesso!");
+            setTelaGrid(false);
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro!", e);
@@ -130,6 +134,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
             getObjeto().getListaVendaOrcamentoDetalhe().remove(vendaOrcamentoDetalheSelecionado);
             getObjeto().calcularValorTotal();
             salvar("Registro excluído com sucesso!");
+            setTelaGrid(false);
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro!", e);

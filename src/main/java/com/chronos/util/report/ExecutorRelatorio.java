@@ -13,6 +13,7 @@ import net.sf.jasperreports.export.*;
 import org.hibernate.jdbc.Work;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,19 +26,20 @@ import java.util.Map;
  */
 public class ExecutorRelatorio implements Work {
 
-    private String caminhoRelatorio;
+    private String diretorioRelatorio;
+    private String nomeRelatorio;
     private HttpServletResponse response;
     private Map<String, Object> parametros;
     private String nomeArquivoSaida;
 
     private boolean relatorioGerado;
 
- 
 
-    public ExecutorRelatorio(String caminhoRelatorio,
-            HttpServletResponse response, Map<String, Object> parametros,
-            String nomeArquivoSaida) {
-        this.caminhoRelatorio = caminhoRelatorio;
+    public ExecutorRelatorio(String diretorioRelatorio, String nomeRelatorio,
+                             HttpServletResponse response, Map<String, Object> parametros,
+                             String nomeArquivoSaida) {
+        this.diretorioRelatorio = diretorioRelatorio;
+        this.nomeRelatorio = nomeRelatorio;
         this.response = response;
         this.parametros = parametros;
         this.nomeArquivoSaida = nomeArquivoSaida;
@@ -48,7 +50,8 @@ public class ExecutorRelatorio implements Work {
     @Override
     public void execute(Connection connection) throws SQLException {
         try {
-            InputStream relatorioStream = this.getClass().getResourceAsStream(this.caminhoRelatorio);
+            InputStream relatorioStream = this.getClass().getResourceAsStream(this.diretorioRelatorio + File.separator + this.nomeRelatorio);
+            parametros.put("SUBREPORT_DIR", this.getClass().getResource(this.diretorioRelatorio + File.separator).getPath());
 
             JasperPrint print = JasperFillManager.fillReport(relatorioStream, this.parametros, connection);
             this.relatorioGerado = print.getPages().size() > 0;
@@ -65,7 +68,7 @@ public class ExecutorRelatorio implements Work {
                 exportador.exportReport();
             }
         } catch (Exception e) {
-            throw new SQLException("Erro ao executar relatório " + this.caminhoRelatorio, e);
+            throw new SQLException("Erro ao executar relatório " + this.diretorioRelatorio + File.separator + this.nomeRelatorio, e);
         }
     }
 
