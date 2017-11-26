@@ -10,14 +10,14 @@
 >
 
     <ui:define name="title">
-        Relação de Vendas
+        Relação de Entrada
     </ui:define>
 
     <ui:define name="tela">
         Filtros
     </ui:define>
     <ui:define name="controle">
-        Relação de Vendas
+        Relação de Entrada
     </ui:define>
 
 
@@ -25,12 +25,12 @@
         <div class="ibox-content">
             <div class="row">
 
-                <erp:campoData nomeAtributo="#{vendaRelatorioControll.dataInicial}"
+                <erp:campoData nomeAtributo="#{estoqueRelatorioControll.dataInicial}"
                                label="Data inicial"
                                idComponente="vencimentoDe"
                                styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
-                <erp:campoData nomeAtributo="#{vendaRelatorioControll.dataFinal}"
+                <erp:campoData nomeAtributo="#{estoqueRelatorioControll.dataFinal}"
                                label="Data Final"
                                idComponente="vencimentoAte"
                                styleClass="col-xs-12 col-sm-2 col-md-2"/>
@@ -40,7 +40,7 @@
                     <p:commandLink title="Gerar relatório"
                                    value="Gerar Relatório"
                                    styleClass="btn btn-primary"
-                                   actionListener="#{vendaRelatorioControll.imprimirRelacaoVendas}"
+                                   actionListener="#{estoqueRelatorioControll.imprimirRelacaoEntradas}"
                                    ajax="false">
 
                     </p:commandLink>

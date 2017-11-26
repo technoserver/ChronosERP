@@ -34,6 +34,20 @@
                     <erp:subMenu caminho="/modulo/comercial/vendas/balcao"
                                  label="Balcao"
                                  funcao="modulo/comercial/vendas/balcao"/>
+
+                </li>
+                <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/relatorios/')?'active':''}">
+                    <a href="#">Relatorios <span class="fa arrow"></span></a>
+                    <ul class="nav nav-bedroom-level">
+                        <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoVendas"
+                                     label="Vendas"
+                                     funcao="relacaoVendas"/>
+                        <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/ranckProdutos"
+                                     label="Ranck de Produtos"
+                                     funcao="ranckProdutos"/>
+
+
+                    </ul>
                 </li>
             </ul>
         </li>
