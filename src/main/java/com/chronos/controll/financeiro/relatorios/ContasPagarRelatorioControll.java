@@ -44,10 +44,10 @@ public class ContasPagarRelatorioControll extends AbstractRelatorioControll impl
             parametros.put("idempresa", empresa.getId());
 
 
-            String caminhoRelatorio = "/relatorios/financeiro/relacaoContasPagar.jasper";
+            String caminhoRelatorio = "/relatorios/financeiro";
+            String nomeRelatorio = "relacaoContasPagar.jasper";
 
-
-            executarRelatorio(caminhoRelatorio, "relacaoContasPagar.pdf");
+            executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoContasPagar.pdf");
         } catch (Exception ex) {
             new RuntimeException("Erro ao tenta gera o relatorio", ex);
         }

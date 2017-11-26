@@ -32,10 +32,10 @@ public class ClienteRelatorioControll extends AbstractRelatorioControll implemen
         parametros.put("tipo", retornaValorPadrao(tipo));
         parametros.put("cpf_cnpj", retornaValorPadrao(cpfCnpj));
         parametros.put("idempresa", empresa.getId());
-        String caminhoRelatorio = "/relatorios/cadastros/relacaoCliente.jasper";
+        String caminhoRelatorio = "/relatorios/cadastros";
+        String nomeRelatorio = "relacaoCliente.jasper";
 
-
-        executarRelatorio(caminhoRelatorio, "relacaoClientes.pdf");
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoClientes.pdf");
 
     }
 

@@ -77,7 +77,7 @@ public class PessoaService implements Serializable {
     }
 
 
-    private EmpresaPessoa salvarEmpresaPessoa(Empresa empresa, Pessoa pessoa) {
+    public EmpresaPessoa salvarEmpresaPessoa(Empresa empresa, Pessoa pessoa) {
         EmpresaPessoa empresaPessoa = new EmpresaPessoa();
         empresaPessoa.setPessoa(pessoa);
         empresaPessoa.setEmpresa(empresa);
@@ -91,11 +91,11 @@ public class PessoaService implements Serializable {
 
     public Pessoa salvar(Pessoa pessoa, Empresa empresa) throws Exception {
         validarPessoa(pessoa);
-        pessoa = pessoas.atualizar(pessoa);
         boolean salvarEmpresaPessoa = pessoa.getId() == null;
         if (salvarEmpresaPessoa) {
             salvarEmpresaPessoa(empresa, pessoa);
         }
+        pessoa = pessoas.atualizar(pessoa);
         return pessoa;
     }
 

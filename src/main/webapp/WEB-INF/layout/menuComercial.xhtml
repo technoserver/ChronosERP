@@ -20,12 +20,12 @@
                                  funcao="condicoesPagamento"/>
                     <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
                                  label="Orçamento"
-                                 funcao="orcamento">
+                                 funcao="tipo=O">
                         <f:param name="tipo" value="O"/>
                     </erp:subMenu>
                     <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
                                  label="Pedido"
-                                 funcao="orcamento">
+                                 funcao="tipo=P">
                         <f:param name="tipo" value="P"/>
                     </erp:subMenu>
                     <erp:subMenu caminho="/modulo/comercial/vendas/vendas"
@@ -34,6 +34,20 @@
                     <erp:subMenu caminho="/modulo/comercial/vendas/balcao"
                                  label="Balcao"
                                  funcao="modulo/comercial/vendas/balcao"/>
+
+                </li>
+                <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/relatorios/')?'active':''}">
+                    <a href="#">Relatorios <span class="fa arrow"></span></a>
+                    <ul class="nav nav-bedroom-level">
+                        <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoVendas"
+                                     label="Vendas"
+                                     funcao="relacaoVendas"/>
+                        <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/ranckProdutos"
+                                     label="Ranck de Produtos"
+                                     funcao="ranckProdutos"/>
+
+
+                    </ul>
                 </li>
             </ul>
         </li>

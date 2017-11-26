@@ -45,10 +45,11 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         parametros.put("inativo", inativo);
         parametros.put("tipoProduto", tipoProduto);
         parametros.put("idempresa", empresa.getId());
-        String caminhoRelatorio = "/relatorios/cadastros/relacaoProdutos.jasper";
 
+        String caminhoRelatorio = "/relatorios/cadastros";
+        String nomeRelatorio = "relacaoProdutos.jasper";
 
-        executarRelatorio(caminhoRelatorio, "relacaoProdutos.pdf");
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoProdutos.pdf");
     }
 
     public List<ProdutoGrupo> getGrupos() {

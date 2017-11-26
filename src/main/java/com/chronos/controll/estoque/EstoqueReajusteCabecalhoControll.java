@@ -58,12 +58,18 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
     @Override
     public void salvar() {
         try {
-            efetuarCalculos();
-            for (EstoqueReajusteDetalhe e : getObjeto().getListaEstoqueReajusteDetalhe()) {
-                estoqueRepository.ajustarEstoqueEmpresa(empresa.getId(), e.getProduto().getId(), e.getQuantidadeReajuste());
-                estoqueRepository.atualizarPrecoProduto(e.getProduto().getId(), e.getValorReajuste());
+            if (getObjeto().getListaEstoqueReajusteDetalhe().isEmpty()) {
+                Mensagem.addInfoMessage("Não existe itens a serem calculado");
+                setTelaGrid(false);
+            } else {
+                efetuarCalculos();
+                for (EstoqueReajusteDetalhe e : getObjeto().getListaEstoqueReajusteDetalhe()) {
+                    estoqueRepository.ajustarEstoqueEmpresa(empresa.getId(), e.getProduto().getId(), e.getQuantidadeReajuste());
+                    estoqueRepository.atualizarPrecoProduto(e.getProduto().getId(), e.getValorReajuste());
+                }
+                super.salvar();
             }
-            super.salvar();
+
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

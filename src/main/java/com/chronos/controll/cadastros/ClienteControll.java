@@ -104,6 +104,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
                 Pessoa pessoa = pessoas.getJoinFetch(getObjeto().getPessoa().getId(), Pessoa.class);
                 pessoa.setCliente("S");
+
                 getObjeto().setPessoa(pessoa);
                 dao.atualizar(getObjeto());
             }

@@ -56,6 +56,10 @@ public class Pessoa implements Serializable {
     public Pessoa() {
     }
 
+    public Pessoa(Integer id) {
+        this.id = id;
+    }
+
     public Pessoa(Integer id,String nome) {
         this.id = id;
         this.nome = nome;

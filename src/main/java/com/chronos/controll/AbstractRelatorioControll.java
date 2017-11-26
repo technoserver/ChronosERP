@@ -57,9 +57,9 @@ public class AbstractRelatorioControll implements Serializable {
         return estados;
     }
 
-    protected void executarRelatorio(String caminhoRelatorio, String nomeArquivoSaida) {
+    protected void executarRelatorio(String diretorioRelatorio, String nomeRelatorio, String nomeArquivoSaida) {
 
-        ExecutorRelatorio executor = new ExecutorRelatorio(caminhoRelatorio, response, parametros, nomeArquivoSaida);
+        ExecutorRelatorio executor = new ExecutorRelatorio(diretorioRelatorio, nomeRelatorio, response, parametros, nomeArquivoSaida);
 
         Session session = em.unwrap(Session.class);
         session.doWork(executor);

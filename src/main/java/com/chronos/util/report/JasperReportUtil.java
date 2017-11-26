@@ -17,9 +17,11 @@ public class JasperReportUtil {
     private final String PONTO = ".";
 
     public byte[] gerarRelatorio(JRXmlDataSource dataSource, HashMap parametrosRelatorio, String caminhoRelatorio, String nomeRelatorioJasper) throws JRException {
-
-        InputStream relatorioStream = this.getClass().getResourceAsStream(caminhoRelatorio + SEPARATOR + nomeRelatorioJasper + PONTO + "jasper");
-
+        String relatorio = caminhoRelatorio + SEPARATOR + nomeRelatorioJasper + PONTO + "jasper";
+        InputStream relatorioStream = this.getClass().getResourceAsStream(relatorio);
+        if (relatorioStream == null) {
+            throw new RuntimeException("Caminho do relatorio não encontrado : " + relatorio);
+        }
         String subDiretorio = this.getClass().getResource(caminhoRelatorio + SEPARATOR).getPath();
         parametrosRelatorio.put("SUBREPORT_DIR", subDiretorio);
         parametrosRelatorio.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));

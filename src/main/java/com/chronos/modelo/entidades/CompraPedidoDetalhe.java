@@ -231,8 +231,6 @@ public class CompraPedidoDetalhe implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 61 * hash + Objects.hashCode(this.id);
-        hash = 61 * hash + Objects.hashCode(this.compraPedido);
-        hash = 61 * hash + Objects.hashCode(this.produto);
         return hash;
     }
 
@@ -248,12 +246,7 @@ public class CompraPedidoDetalhe implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.compraPedido, other.compraPedido)) {
-            return false;
-        }
-        if (!Objects.equals(this.produto, other.produto)) {
-            return false;
-        }
+
         return true;
     }
 

@@ -108,6 +108,13 @@ public class PessoasControll extends AbstractControll<Pessoa> implements Seriali
         }
     }
 
+    @Override
+    public void remover() {
+        Pessoa p = new Pessoa(pessoaSelecionada.getId());
+        setObjetoSelecionado(p);
+        super.remover();
+    }
+
     public void definirTipo() {
         Pessoa pessoa = getObjeto();
         if (pessoa.getTipo().equals("F")) {
