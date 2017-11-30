@@ -1,5 +1,6 @@
 package com.chronos.controll.nfce;
 
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.exception.EmissorException;
@@ -93,6 +94,7 @@ public class NfceControll implements Serializable {
     private NfceOperador operador;
     private NfceConfiguracao configuracao;
     private NfeCabecalho venda;
+    private NfeCabecalho vendaSelecionada;
     private Empresa empresa;
     private Usuario usuario;
     private ViewNfceCliente cliente;
@@ -131,6 +133,8 @@ public class NfceControll implements Serializable {
     private ExternalContext context;
     private String nomeCupom;
 
+    private ERPLazyDataModel dataModel;
+
 
     @PostConstruct
     private void init() {
@@ -144,6 +148,20 @@ public class NfceControll implements Serializable {
         listVendedores = new ArrayList<>();
         novaVenda();
 
+    }
+
+    public ERPLazyDataModel<NfeCabecalho> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel();
+            dataModel.setDao(nfeRepositoy);
+            dataModel.setClazz(NfeCabecalho.class);
+        }
+        dataModel.setAtributos(new Object[]{"cliente", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo", "qrcode"});
+        dataModel.getFiltros().clear();
+        dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
+        dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
+        dataModel.addFiltro("codigoModelo", "65", Filtro.IGUAL);
+        return dataModel;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Caixa">
@@ -677,6 +695,20 @@ public class NfceControll implements Serializable {
         }
     }
 
+    public void danfe() {
+
+
+        try {
+            configuracao = getConfiguraNfce();
+            nfeService.danfe(vendaSelecionada, new ConfiguracaoEmissorDTO(configuracao));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+    }
+
+
     //</editor-fold>
 
 
@@ -770,6 +802,13 @@ public class NfceControll implements Serializable {
     public String formatarValor(BigDecimal valor) {
         String valorFormatado = FormatValor.getInstance().formatoDecimal("V", valor.doubleValue());
         return valorFormatado;
+    }
+
+    public boolean podeConsultar() {
+        // return false;
+        boolean teste = FacesUtil.isUserInRole("NFCE_CONSULTA")
+                || FacesUtil.isUserInRole("ADMIN");
+        return teste;
     }
 
     public boolean isPodeLancaPagamento() {
@@ -1006,5 +1045,13 @@ public class NfceControll implements Serializable {
 
     public void setNomeCupom(String nomeCupom) {
         this.nomeCupom = nomeCupom;
+    }
+
+    public NfeCabecalho getVendaSelecionada() {
+        return vendaSelecionada;
+    }
+
+    public void setVendaSelecionada(NfeCabecalho vendaSelecionada) {
+        this.vendaSelecionada = vendaSelecionada;
     }
 }
