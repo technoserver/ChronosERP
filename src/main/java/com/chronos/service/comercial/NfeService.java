@@ -38,15 +38,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static java.nio.file.FileSystems.getDefault;
 
@@ -153,6 +152,51 @@ public class NfeService implements Serializable {
 
         }
 
+    }
+
+    public void baixaXml(List<NfeCabecalho> nfes, Empresa empresa) throws Exception {
+        if (nfes.size() > 0) {
+            final int BUFFER = 2048;
+            BufferedInputStream origin = null;
+            File arquivoZip = File.createTempFile(empresa.getCnpj(), ".zip");
+            arquivoZip.deleteOnExit();
+            FileOutputStream dest = new FileOutputStream(arquivoZip);
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+            byte data[] = new byte[BUFFER];
+
+            for (NfeCabecalho n : nfes) {
+                String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj());
+                File arquivoXml = new File(pastaXml + System.getProperty("file.separator") + n.getNomeXml());
+                if (!arquivoXml.exists()) {
+                    List<Filtro> filtros = new LinkedList<>();
+                    filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, n.getId()));
+                    String atributos[] = new String[]{"xml"};
+                    NfeXml nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
+                    if (nfeXml != null) {
+                        arquivoXml = new File(ArquivoUtil.getInstance().escrever(TipoArquivo.NFe, empresa.getCnpj(), nfeXml.getXml(), n.getNomeXml()));
+                    }
+
+                }
+                if (arquivoXml.exists()) {
+                    FileInputStream fi = new FileInputStream(arquivoXml);
+
+                    origin = new BufferedInputStream(fi, 20);
+                    ZipEntry entry = new ZipEntry(arquivoXml.getName());
+                    out.putNextEntry(entry);
+
+                    int count;
+                    while ((count = origin.read(data, 0, BUFFER)) != -1) {
+                        out.write(data, 0, count);
+                    }
+
+                    origin.close();
+                }
+
+                // adiciona ao arquivo compactado
+            }
+            out.close();
+            FacesUtil.downloadArquivo(arquivoZip, empresa.getCnpj() + ".zip");
+        }
     }
 
     public String inutilizarNFe(ConfiguracaoEmissorDTO configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
@@ -532,7 +576,7 @@ public class NfeService implements Serializable {
         File filePdf = new File(arquivoPdf);
 
         if (!filePdf.exists() && !fileXml.exists()) {
-
+            System.out.println("Na existe nem xml e nem pdf");
         }
 
         if (filePdf.exists()) {

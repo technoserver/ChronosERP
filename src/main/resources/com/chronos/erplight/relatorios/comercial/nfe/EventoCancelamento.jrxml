@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="EventoCancelamento" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20"
+              rightMargin="20" topMargin="20" bottomMargin="20" uuid="99b66762-45e6-406c-90ec-dcbe80814983">
+    <property name="ireport.zoom" value="2.200000000000001"/>
+    <property name="ireport.x" value="47"/>
+    <property name="ireport.y" value="0"/>
+    <parameter name="numNota" class="java.lang.String"/>
+    <parameter name="serie" class="java.lang.String"/>
+    <parameter name="mesAno" class="java.lang.String"/>
+    <parameter name="status" class="java.lang.String"/>
+    <parameter name="modelo" class="java.lang.String"/>
+    <parameter name="chaveAcesso" class="java.lang.String"/>
+    <parameter name="protocolo" class="java.lang.String"/>
+    <parameter name="justificativa" class="java.lang.String"/>
+    <parameter name="ambiente" class="java.lang.String"/>
+    <parameter name="orgao" class="java.lang.String"/>
+    <parameter name="titulo" class="java.lang.String"/>
+    <parameter name="dataHoraEvento" class="java.lang.String"/>
+    <parameter name="tipoEvento" class="java.lang.String"/>
+    <parameter name="descEvento" class="java.lang.String"/>
+    <parameter name="seqEvento" class="java.lang.String"/>
+    <parameter name="versaoEvento" class="java.lang.String"/>
+    <parameter name="dataHoraRegistro" class="java.lang.String"/>
+    <field name="ambiente" class="java.lang.String">
+        <fieldDescription><![CDATA[/procEventoNFe/evento/infEvento/tpAmb]]></fieldDescription>
+    </field>
+    <field name="cnpj" class="java.lang.String">
+        <fieldDescription><![CDATA[/procEventoNFe/evento/infEvento/CNPJ]]></fieldDescription>
+    </field>
+    <field name="dataHoraEvento" class="java.lang.String">
+        <fieldDescription><![CDATA[/procEventoNFe/evento/infEvento/dhEvento]]></fieldDescription>
+    </field>
+    <field name="tipoEvento" class="java.lang.String">
+        <fieldDescription><![CDATA[/procEventoNFe/evento/infEvento/tpEvento]]></fieldDescription>
+    </field>
+    <field name="chaveAcesso" class="java.lang.String"/>
+    <group name="group 01">
+        <groupExpression><![CDATA[$V{PAGE_NUMBER}]]></groupExpression>
+        <groupHeader>
+            <band height="64">
+                <rectangle>
+                    <reportElement x="0" y="13" width="555" height="50" uuid="5213b089-76e6-4cbe-9f31-83ceeca5806a"/>
+                </rectangle>
+                <line>
+                    <reportElement x="0" y="38" width="339" height="1" uuid="99857cce-3bf4-45ae-a7ba-bd5a0398c381"/>
+                </line>
+                <line>
+                    <reportElement x="339" y="13" width="1" height="50" uuid="648115dc-187f-4f03-8b1d-49b82b554ed1"/>
+                </line>
+                <componentElement>
+                    <reportElement stretchType="RelativeToBandHeight" x="347" y="28" width="203" height="24"
+                                   uuid="b4dba8e4-b73c-451d-a90d-0a461988e253"/>
+                    <jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                                 xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd"
+                                 type="Code128C" drawText="false" checksumRequired="false" barHeight="0">
+                        <jr:codeExpression><![CDATA[$P{chaveAcesso}]]></jr:codeExpression>
+                    </jr:barbecue>
+                </componentElement>
+                <staticText>
+                    <reportElement key="txtModelo" mode="Transparent" x="5" y="15" width="42" height="8"
+                                   uuid="d72d5554-8c57-4a1a-8450-ad2918156d5d"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[MODELO]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement key="txtSerie" mode="Transparent" x="175" y="15" width="50" height="8"
+                                   uuid="45048649-c3d4-4a0f-8826-a6628401cb6c"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[SÉRIE]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement key="txtNumero" mode="Transparent" x="66" y="15" width="50" height="8"
+                                   uuid="950d905f-0990-4d36-95ce-7fc442c26dc6"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[NÚMERO]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement key="txtMes" mode="Transparent" x="233" y="15" width="50" height="8"
+                                   uuid="63990dac-3f9f-463b-8e24-b6fba6449236"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[MÊS/ANO EMISSÃO]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement key="txtChave" mode="Transparent" x="6" y="40" width="27" height="8"
+                                   uuid="37539719-afb8-4b3b-b399-68336abb915d"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[CHAVE]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="62" y="13" width="1" height="25" uuid="0d54cb81-9645-45b7-b86b-3441d4234cde"/>
+                </line>
+                <line>
+                    <reportElement x="172" y="13" width="1" height="25" uuid="fcefc8b7-76d2-46fe-8a1c-4c9493114ada"/>
+                </line>
+                <line>
+                    <reportElement x="227" y="13" width="1" height="25" uuid="65a0e3ad-ad35-42b3-9848-a1fe40fd8f20"/>
+                </line>
+                <textField>
+                    <reportElement x="66" y="23" width="101" height="12" uuid="c958e4a3-cf15-40dc-a9b3-03454a6e77ea"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{numNota}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="175" y="22" width="47" height="12" uuid="89448a38-34f5-4560-9f43-951001728e7c"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{serie}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="233" y="23" width="100" height="12" uuid="419b49bb-4412-44dd-a3c9-0949888f9f3c"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{mesAno}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="5" y="23" width="57" height="12" uuid="5d3d5878-4a27-40f7-925b-e9effa30b080"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{modelo}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="6" y="47" width="312" height="12" uuid="e425a709-50b6-49dc-897f-e900493cdcd9"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{chaveAcesso}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="2" y="0" width="550" height="14" uuid="4ebb914b-d763-49cb-8d01-fe85cd9369a5"/>
+                    <textElement verticalAlignment="Middle">
+                        <font fontName="Times New Roman" size="10" isBold="false"/>
+                    </textElement>
+                    <textFieldExpression>
+                        <![CDATA[$P{modelo}.equalsIgnoreCase("55")?"NOTA FISCAL ELETRÔNICA":"CONHECIMENTO DE TRANSPORTE ELETRÔNICO"]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+    </group>
+    <group name="group 02">
+        <groupExpression><![CDATA[$V{group 01_COUNT}]]></groupExpression>
+        <groupHeader>
+            <band height="125">
+                <rectangle>
+                    <reportElement x="0" y="20" width="555" height="104" uuid="8ccd3440-6b9e-4c91-90f3-cf0b3b6d10cc"/>
+                </rectangle>
+                <line>
+                    <reportElement x="0" y="45" width="555" height="1" uuid="a004b495-00f4-4c9a-bd22-f9869fd88dc0"/>
+                </line>
+                <line>
+                    <reportElement x="0" y="71" width="555" height="1" uuid="2f403d1e-b13c-4315-ad1e-7a6febb9264b"/>
+                </line>
+                <line>
+                    <reportElement x="0" y="96" width="555" height="1" uuid="759d5ff0-498d-4b23-9b23-6fb8c67fe5ad"/>
+                </line>
+                <staticText>
+                    <reportElement key="txtOrgao" mode="Transparent" x="5" y="22" width="50" height="8"
+                                   uuid="0e64881d-4f4a-40d4-9840-c84b0fbf5746"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[ORGÃO]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="69" y="20" width="1" height="25" uuid="d22e437a-9b05-42d5-b093-b917c9eefa9e"/>
+                </line>
+                <staticText>
+                    <reportElement key="txtAmbiente" mode="Transparent" x="80" y="22" width="50" height="8"
+                                   uuid="bca07d33-df5e-4ff7-bfbe-3788e79b968b"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[AMBIENTE]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="338" y="20" width="1" height="25" uuid="b018a501-3c78-4efe-908d-e06e832f89eb"/>
+                </line>
+                <staticText>
+                    <reportElement key="txtAmbiente" mode="Transparent" x="341" y="22" width="69" height="8"
+                                   uuid="98a40ba0-9d54-4423-836f-7e263701b72a"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[DATA / HORA DO EVENTO]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement key="txtEvento" mode="Transparent" x="5" y="47" width="50" height="8"
+                                   uuid="94066832-fe85-4287-8cac-667602a39ddc"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[EVENTO]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="69" y="46" width="1" height="25" uuid="5f0044e9-e972-4b21-987b-14cf12326613"/>
+                </line>
+                <staticText>
+                    <reportElement key="txtDescEvento" mode="Transparent" x="80" y="47" width="76" height="8"
+                                   uuid="6c1fc541-fb21-4207-a88d-db2d395f4c40"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[DESCRIÇÃO DO EVENTO]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="264" y="46" width="1" height="25" uuid="545ee176-f011-47f3-8ece-8d5096f44ad1"/>
+                </line>
+                <staticText>
+                    <reportElement key="txtSeqEnvento" mode="Transparent" x="267" y="47" width="61" height="8"
+                                   uuid="17062182-bc69-4e7e-9133-598bc19edc4b"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[SEQUÊNCIA DO EVENTO]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="338" y="46" width="1" height="25" uuid="f143b378-d98b-4fbe-b31b-da06f8440d6d"/>
+                </line>
+                <staticText>
+                    <reportElement key="txtSeqEnvento" mode="Transparent" x="341" y="47" width="61" height="8"
+                                   uuid="1eb07b78-a6f5-4ac8-9ef6-747c490811c8"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[VERSÃO DO EVENTO]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement key="txtStatus" mode="Transparent" x="5" y="74" width="50" height="8"
+                                   uuid="f9585a8b-7f89-4148-87ec-50b75bb16e1c"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[STATUS]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement key="txtJustificativa" mode="Transparent" x="5" y="99" width="50" height="8"
+                                   uuid="228d6d6e-f5fa-40ba-8d1e-2cb62da0f370"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[JUSTIFICATIVA]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement key="txtProtocolo" mode="Transparent" x="217" y="74" width="50" height="8"
+                                   uuid="3e8c3f00-5898-4ed3-92d6-aa05266caddc"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[PROTOCOLO]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="338" y="71" width="1" height="25" uuid="080f2b96-011a-4f49-bbbe-efdcdec1a94e"/>
+                </line>
+                <staticText>
+                    <reportElement key="txtDataRegistro" mode="Transparent" x="342" y="74" width="100" height="8"
+                                   uuid="6e59f620-240b-42ac-9ac8-fe8845dde791"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="5" isItalic="false" pdfFontName="Times-Roman"/>
+                    </textElement>
+                    <text><![CDATA[DATA/ HORA REGISTRO]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="214" y="71" width="1" height="25" uuid="0771bc23-f139-4f9b-9a09-18f20721a57b"/>
+                </line>
+                <textField>
+                    <reportElement x="5" y="30" width="50" height="12" uuid="941ac8df-5f26-4b11-a310-7acfc3f374a2"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{orgao}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="80" y="30" width="248" height="12" uuid="589626d0-66ba-45e4-9d2c-dcea56b8a65c"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression>
+                        <![CDATA[($P{ambiente}.equalsIgnoreCase("1")?"PRODUÇÃO":"HOMOLOGAÇÃO - SEM VALOR FISCAL")]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="5" y="55" width="63" height="12" uuid="0d3d4086-7830-4dac-81ff-1276f074462d"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{tipoEvento}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="267" y="55" width="71" height="12" uuid="be2c9a36-42b2-41e2-9762-a722e5075db8"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{seqEvento}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="341" y="55" width="101" height="12" uuid="d29f05b7-f52c-4e13-810c-16a056ed2960"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{versaoEvento}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="341" y="30" width="209" height="12" uuid="241a81a1-8f31-4bb5-ba36-a3e3a346270a"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression>
+                        <![CDATA[($P{dataHoraEvento} != null ? ($P{dataHoraEvento}.substring(8,10) + "/" + $P{dataHoraEvento}.substring(5,7) + "/" + $P{dataHoraEvento}.substring(0,4) +" "+$P{dataHoraEvento}.substring(11, 13)+":"+$P{dataHoraEvento}.substring(14, 16)) : "")]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="341" y="82" width="209" height="12" uuid="84fea7b8-d920-4307-9e13-1fc171f3438d"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression>
+                        <![CDATA[($P{dataHoraRegistro} != null ? ($P{dataHoraRegistro}.substring(8,10) + "/" + $P{dataHoraRegistro}.substring(5,7) + "/" + $P{dataHoraRegistro}.substring(0,4) +" "+$P{dataHoraRegistro}.substring(11, 13)+":"+$P{dataHoraRegistro}.substring(14, 16)) : "")]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="5" y="107" width="545" height="12" uuid="dc92bf83-8ab5-4cc8-b004-ebee6287b0d9"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{justificativa}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="217" y="82" width="116" height="12" uuid="1f61b080-6a8b-4adc-9335-e3decce51298"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{protocolo}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="2" y="4" width="548" height="16" uuid="6262b156-83c9-447c-b8fb-f0f23962e10f"/>
+                    <textElement>
+                        <font fontName="Times New Roman" size="10" isBold="false"/>
+                    </textElement>
+                    <textFieldExpression>
+                        <![CDATA["CANCELAMENTO DE "+($P{modelo}.equalsIgnoreCase("55")?"NF-E":"CT-E")]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="80" y="55" width="174" height="12" uuid="49b16445-634d-47e2-bfd5-974f18a96d0b"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{descEvento}]]></textFieldExpression>
+                </textField>
+                <textField>
+                    <reportElement x="5" y="82" width="199" height="12" uuid="f37c4517-ffc1-4971-9923-5de3d7b091f2"/>
+                    <textElement>
+                        <font fontName="Times New Roman"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{status}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+    </group>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <pageHeader>
+        <band height="60" splitType="Stretch">
+            <rectangle>
+                <reportElement x="0" y="-15" width="555" height="75" uuid="5b64d00f-cad7-45b5-add0-0e7cff63c17e"/>
+            </rectangle>
+            <staticText>
+                <reportElement x="0" y="20" width="555" height="20" uuid="f5645af9-8734-4ff8-adcf-0030992aea88"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA[Não possui valor fiscal. Simples representação do evento indicado abaixo.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="40" width="555" height="20" uuid="81258f71-86fb-4550-bf66-228abb49ce5d"/>
+                <textElement textAlignment="Center">
+                    <font size="12"/>
+                </textElement>
+                <text><![CDATA[CONSULTE A AUTENTICIDADE NO SITE DA SEFAZ AUTORIZADORA.]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="6" y="-15" width="544" height="35" uuid="91134b3b-e385-4d3a-9019-75f6d9ede673"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="14" isBold="true"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA["CANCELAMENTO DE "+($P{modelo}.equalsIgnoreCase("55")?"NF-E":"CT-E")]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+</jasperReport>

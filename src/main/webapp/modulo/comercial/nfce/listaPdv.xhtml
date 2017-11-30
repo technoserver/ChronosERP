@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        PDV
+    </ui:define>
+
+    <ui:define name="tela">
+        Lista NFCe
+    </ui:define>
+    <ui:define name="controle">
+        PDV
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <div class="ibox-content">
+            <erp:msgPermissao permissao="#{nfceControll.podeConsultar()}"/>
+            <p:dataTable value="#{nfceControll.dataModel}"
+                         var="row" id="dataTableNfce" paginator="true"
+                         rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                         reflow="true" rendered="#{nfceControll.podeConsultar()}"
+                         resizableColumns="true" lazy="true"
+            >
+
+                <p:column headerText="Cliente" sortBy="#{row.cliente.pessoa.nome}">
+                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                </p:column>
+                <p:column headerText="Número" sortBy="#{row.numero}" width="120">
+                    <h:outputLabel value="#{row.numero}">
+                        <f:convertNumber type="number" parent="0"/>
+                    </h:outputLabel>
+                </p:column>
+
+                <p:column headerText="Chave Acesso">
+                    <h:outputLabel value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
+                </p:column>
+                <p:column headerText="Data Emissão"
+                          sortBy="#{row.dataHoraEmissao}" width="120">
+                    <h:outputLabel value="#{row.dataHoraEmissao}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor Total" style="text-align: right;" width="100">
+                    <h:outputLabel value="#{row.valorTotal}">
+                        <f:convertNumber pattern="#,###,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Status" sortBy="#{row.statusNota}" width="120">
+                    <h:outputLabel
+                            value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
+                </p:column>
+                <p:column headerText="Ações" width="60">
+                    <h:commandLink class="btn btn-default"
+                                   title="Gerar Cupom"
+                                   action="#{nfceControll.danfe}"
+                                   rendered="#{row.podeCancelar}"
+                                   id="btnGerardanfe">
+                        <p:ajax disabled="true"/>
+                        <i class="fa fa-print" aria-hidden="true"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{nfceControll.vendaSelecionada}"/>
+                    </h:commandLink>
+                </p:column>
+
+
+            </p:dataTable>
+        </div>
+
+    </ui:define>
+
+
+</ui:composition>

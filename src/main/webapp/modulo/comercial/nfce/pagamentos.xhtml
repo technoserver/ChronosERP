@@ -200,8 +200,8 @@
                 <h:commandLink id="botao-finalizar" type="button"
                                action="#{nfceControll.finalizarVenda}"
                                disabled="#{!nfceControll.podeFinalzarVenda}"
-                               class="btn btn-lg btn-success">
-                    <span class="glyphicon glyphicon-ok margin-right-10px"></span>Finalizar
+                               class="btn btn-lg btn-success" value="Finalizar">
+                    <span class="glyphicon glyphicon-ok margin-right-10px"></span>
                     <p:ajax update=":formCentro:growl,formCentro:tela-pagamento,:formCentro:telaPdv,,:formDanfe:dialogDanfe"
                             oncomplete="if (args.vendaFinalizada) {PF('dialogDanfe').show(); };"
                             process="@form"/>

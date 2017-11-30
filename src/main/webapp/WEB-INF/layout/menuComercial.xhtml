@@ -71,6 +71,23 @@
                 <erp:subMenu caminho="/modulo/comercial/nfe/nfeConfiguracao"
                              label="Configuração"
                              funcao="nfeConfiguracao"/>
+                <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/relatorios/')?'active':''}">
+                    <a href="#">Relatorios <span class="fa arrow"></span></a>
+                    <ul class="nav nav-bedroom-level">
+                        <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNumeros"
+                                     label="Numeração utilizada"
+                                     funcao="relacaoNumeros"/>
+                        <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNfe"
+                                     label="Relação de NFe"
+                                     funcao="relacaoNfe"/>
+
+                        <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoXmlNfe"
+                                     label="Relação de XML"
+                                     funcao="relacaoXmlNfe"/>
+
+
+                    </ul>
+                </li>
 
 
             </ul>
@@ -84,10 +101,12 @@
                 <erp:subMenu caminho="/modulo/comercial/nfce/pdv"
                              label="PDV"
                              funcao="pdv"/>
+                <erp:subMenu caminho="/modulo/comercial/nfce/listaPdv"
+                             label="Lista NFCe"
+                             funcao="listaPdv"/>
                 <erp:subMenu caminho="/modulo/comercial/nfce/nfceConfiguracao"
                              label="Configuração"
                              funcao="nfceConfiguracao"/>
-
 
             </ul>
         </li>
