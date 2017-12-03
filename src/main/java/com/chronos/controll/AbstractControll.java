@@ -46,6 +46,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private boolean telaGrid = true;
     @Inject
     protected Repository<T> dao;
+    @Inject
     private Repository<Auditoria> auditoriaRepository;
 
     private String titulo;
@@ -579,7 +580,7 @@ public abstract class AbstractControll<T> implements Serializable {
             log.setUsuario(getUsuarioLogado());
             auditoriaRepository.salvar(log);
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
     }
 

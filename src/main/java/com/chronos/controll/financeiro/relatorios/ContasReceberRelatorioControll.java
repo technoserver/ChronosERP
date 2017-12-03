@@ -1,6 +1,7 @@
 package com.chronos.controll.financeiro.relatorios;
 
 import com.chronos.controll.AbstractRelatorioControll;
+import com.chronos.dto.ReciboPagamentoDTO;
 import com.chronos.repository.ParcelaPagarRepository;
 import org.springframework.util.StringUtils;
 
@@ -51,6 +52,22 @@ public class ContasReceberRelatorioControll extends AbstractRelatorioControll im
         } catch (Exception ex) {
             new RuntimeException("Erro ao tenta gera o relatorio", ex);
         }
+    }
+
+    public void gerarReciboRecebimento(ReciboPagamentoDTO recibo) {
+        parametros = new HashMap<>();
+        parametros.put("id_cliente", recibo.getIdcliente());
+        parametros.put("id_tipo_recebimento", recibo.getIdtipoRecebimento());
+        parametros.put("valor_pago", recibo.getValorPago());
+        parametros.put("valor_extenso", recibo.getValorExtenso());
+        parametros.put("ids_recebimento", recibo.getIdsrecebimento());
+        parametros.put("id_empresa", empresa.getId());
+
+        String caminhoRelatorio = "/relatorios/financeiro";
+        String nomeRelatorio = "reciboPagamento.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "reciboRecebimento.pdf");
+
     }
 
 

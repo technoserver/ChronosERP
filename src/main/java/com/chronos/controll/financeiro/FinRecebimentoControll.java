@@ -1,7 +1,9 @@
 package com.chronos.controll.financeiro;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.dto.ReciboPagamentoDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.enuns.AcaoLog;
 import com.chronos.modelo.entidades.view.ViewFinLancamentoReceber;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.ParcelaReceberRepository;
@@ -10,6 +12,7 @@ import com.chronos.util.Constantes;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.context.RequestContext;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -56,6 +59,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     private BigDecimal saldoDevedor;
     private String observacao;
     private boolean temParcelaVencida;
+    private ReciboPagamentoDTO recibo;
 
     private BigDecimal valorAPagar;
 
@@ -98,6 +102,9 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     }
 
     public void baixaParcelas() {
+        String documentos = "";
+        int idcliente = 0;
+        List<Integer> ids = new ArrayList<>();
         if (parcelasSelecionadas == null || parcelasSelecionadas.isEmpty()) {
             Mensagem.addInfoMessage("É preciso seleionar ao menos 1 parcela");
         } else {
@@ -111,6 +118,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
 
                 }
             } else {
+
                 for (ViewFinLancamentoReceber p : parcelasSelecionadas) {
                     if (saldo.signum() > 0) {
                         if (p.getValorAPagar().compareTo(saldo) <= 0) {
@@ -120,12 +128,24 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
                             fazerLancamento(p, saldo, true);
                             saldo = BigDecimal.ZERO;
                         }
+
+                        ids.add(p.getId());
+                        idcliente = p.getIdCliente();
+                        documentos += " " + p.getNumeroDocumento() + "/" + p.getNumeroParcela();
+
                     } else {
                         break;
                     }
                 }
+                gerarLog(AcaoLog.BAIXA_PARCELA, "Recebimento da(s) parcela(s) de Nº " + documentos, "Tela Recebimento");
+                recibo = new ReciboPagamentoDTO();
+                recibo.setIdcliente(idcliente);
+                recibo.setIdtipoRecebimento(tipoRecebimento.getId());
+                recibo.setValorPago(valorAPagar);
+                recibo.setIdsrecebimento(ids);
 
                 buscarParcelas();
+                RequestContext.getCurrentInstance().execute("PF('recibo').show()");
             }
 
 
@@ -308,5 +328,13 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     public BigDecimal getSaldoDevedor() {
         saldoDevedor = getTotalVencidas().add(getTotalAVencer());
         return saldoDevedor;
+    }
+
+    public ReciboPagamentoDTO getRecibo() {
+        return recibo;
+    }
+
+    public void setRecibo(ReciboPagamentoDTO recibo) {
+        this.recibo = recibo;
     }
 }

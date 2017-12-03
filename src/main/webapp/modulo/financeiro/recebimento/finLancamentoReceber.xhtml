@@ -29,26 +29,26 @@
                        id="telaGrid"
                         >
 
-            <p:column headerText="Doc. Origem">
-                <h:outputLabel value="#{row.finDocumentoOrigem.descricao}" />
+            <p:column headerText="Documento" width="120">
+                <h:outputLabel value="#{row.numeroDocumento}"/>
             </p:column>
             <p:column headerText="Cliente">
                 <h:outputLabel value="#{row.cliente.pessoa.nome}" />
             </p:column>
-            <p:column headerText="Qtde Parcela">
+            <p:column headerText="Qtde Parcela" width="120" styleClass="text-center">
                 <h:outputLabel value="#{row.quantidadeParcela}" />
             </p:column>
-            <p:column headerText="Valor A Receber">
+            <p:column headerText="Valor A Receber" styleClass="text-right" width="140">
                 <h:outputLabel value="#{row.valorAReceber}">
                     <f:convertNumber pattern="#,##0.00" />
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="Data Lancamento">
+            <p:column headerText="Data Lancamento" styleClass="text-center" width="150">
                 <h:outputLabel value="#{row.dataLancamento}">
                     <f:convertDateTime pattern="dd/MM/yyyy" />
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="1º Vencimento">
+            <p:column headerText="1º Vencimento" styleClass="text-center" width="140">
                 <h:outputLabel value="#{row.primeiroVencimento}">
                     <f:convertDateTime pattern="dd/MM/yyyy" />
                 </h:outputLabel>
