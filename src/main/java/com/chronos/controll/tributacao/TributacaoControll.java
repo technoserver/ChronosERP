@@ -61,7 +61,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
             dataModel.setClazz(TributOperacaoFiscal.class);
             dataModel.setDao(dao);
         }
-        dataModel.setAtributos(new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoInss"});
+        dataModel.setAtributos(new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
         return dataModel;
     }
 
@@ -70,7 +70,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
         super.doEdit();
         controlaIpi = getObjeto().getDestacaIpi();
         controlaPisCofins = getObjeto().getDestacaPisCofins();
-        controlaIss = getObjeto().getCalculoInss();
+        controlaIss = getObjeto().getCalculoIssqn();
         controlaIcms = getObjeto().getObrigacaoFiscal();
         if (empresa.getCrt() == null) {
             Mensagem.addInfoMessage("CRT para " + empresa.getRazaoSocial() + " não informado");
@@ -99,8 +99,10 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
 
                         });
             }
+        } else {
+            listTributIcmsUf = new ArrayList<>();
         }
-        if (getObjeto().getCalculoInss()) {
+        if (getObjeto().getCalculoIssqn()) {
             iss = Optional.ofNullable(issRepository.get(TributIss.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(instanciarIssqn());
 
         } else {
@@ -130,7 +132,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
         try {
             validarTributacao();
 
-            if (getObjeto().getCalculoInss()) {
+            if (getObjeto().getCalculoIssqn()) {
                 iss = issRepository.atualizar(iss);
             }
             if (getObjeto().getDestacaPisCofins()) {

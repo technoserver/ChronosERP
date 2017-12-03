@@ -104,9 +104,9 @@
                             </h:outputLabel>
                         </p:column>
                         <!--<p:column headerText="Juros" style="width:10%;text-align: right">-->
-                            <!--<h:outputLabel value="#{row.valorJuro}">-->
-                                <!--<f:convertNumber pattern="#,##0.00"/>-->
-                            <!--</h:outputLabel>-->
+                        <!--<h:outputLabel value="#{row.valorJuro}">-->
+                        <!--<f:convertNumber pattern="#,##0.00"/>-->
+                        <!--</h:outputLabel>-->
                         <!--</p:column>-->
                         <p:column headerText="Saldo" style="width:10%;text-align: right">
                             <h:outputLabel value="#{row.saldo}">
@@ -255,6 +255,7 @@
 
             </h:panelGroup>
 
+
         </div>
         <div class="ibox-footer">
             <div class="row">
@@ -275,6 +276,19 @@
 
     <ui:define name="telaInclusaoAlteracao">
 
+    </ui:define>
+    <ui:define name="outrasTelas">
+        <h:form id="cofirmarRecibo">
+            <p:confirmDialog global="false" id="recibo" showEffect="fade" hideEffect="fade" widgetVar="recibo"
+                             header="Imprimir Recibo ?" responsive="true" closable="true" closeOnEscape="true"
+                             message="Dejesa imprimir recibo de pagamento">
+                <p:commandButton value="Sim" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+                                 action="#{contasReceberRelatorioControll.gerarReciboRecebimento(finRecebimentoControll.recibo)}"
+                                 ajax="false" onclick="PF('recibo').hide();"/>
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+                                 onclick="PF('recibo').hide()"/>
+            </p:confirmDialog>
+        </h:form>
     </ui:define>
     <ui:define name="javaScript">
         <script type="application/javascript">

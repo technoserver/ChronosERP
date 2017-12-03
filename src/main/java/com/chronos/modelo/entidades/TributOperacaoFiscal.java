@@ -73,14 +73,14 @@ public class TributOperacaoFiscal implements Serializable {
     public TributOperacaoFiscal() {
     }
 
-    public TributOperacaoFiscal(Integer id, String descricao, Integer cfop, Boolean obrigacaoFiscal, Boolean destacaIpi, Boolean destacaPisCofins, Boolean calculoInss) {
+    public TributOperacaoFiscal(Integer id, String descricao, Integer cfop, Boolean obrigacaoFiscal, Boolean destacaIpi, Boolean destacaPisCofins, Boolean calculoIssqn) {
         this.id = id;
         this.descricao = descricao;
         this.cfop = cfop;
         this.obrigacaoFiscal = obrigacaoFiscal;
         this.destacaIpi = destacaIpi;
         this.destacaPisCofins = destacaPisCofins;
-        this.calculoInss = calculoInss;
+        this.calculoIssqn = calculoIssqn;
     }
 
     public TributOperacaoFiscal(Integer id) {
