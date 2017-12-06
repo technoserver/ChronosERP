@@ -23,7 +23,7 @@ public class OsStatusControll extends AbstractControll<OsStatus> implements Seri
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "OS_STATUS";
     }
 
     @Override

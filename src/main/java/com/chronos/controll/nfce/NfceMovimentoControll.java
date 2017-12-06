@@ -316,7 +316,7 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "NFCE_MOVIMENTO";
     }
 
     @Override

@@ -93,7 +93,7 @@ public class FinResumoTesourariaControll extends AbstractControll<ViewFinResumoT
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_RESUMO_TESOURARIA";
+        return "RESUMO_TESOURARIA";
     }
 
     @Override

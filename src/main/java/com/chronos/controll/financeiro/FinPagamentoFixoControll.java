@@ -60,7 +60,7 @@ public class FinPagamentoFixoControll  extends AbstractControll<FinPagamentoFixo
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_PAGAMENTO_FIXO";
+        return "PAGAMENTO_FIXO";
     }
 
     @Override

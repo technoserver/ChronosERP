@@ -120,7 +120,7 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
 
     @Override
     protected String getFuncaoBase() {
-        return "TRIBUT_OPERACAO_FISCAL";
+        return "OPERACAO_FISCAL";
     }
 
     @Override

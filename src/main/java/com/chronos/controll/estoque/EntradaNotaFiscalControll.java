@@ -147,15 +147,17 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void salvar() {
         try {
             if (getObjeto().getId() == null) {
-
+                for (NfeDetalhe detalhe : getObjeto().getListaNfeDetalhe()) {
+                    estoques.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+                }
             } else {
                 List<NfeDetalhe> listaNfeDetOld = estoques.getItens(getObjeto());
                 for (NfeDetalhe detalhe : listaNfeDetOld) {
                     estoques.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
                 }
+                estoques.atualizaEstoqueEmpresa(empresa.getId(), getObjeto().getListaNfeDetalhe());
             }
 
-            estoques.atualizaEstoqueEmpresa(empresa.getId(), getObjeto().getListaNfeDetalhe());
             super.salvar();
             setTelaGrid(true);
         } catch (Exception ex) {
@@ -624,7 +626,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     @Override
     protected String getFuncaoBase() {
-        return "NFE_CABECALHO";
+        return "NFE_ENTRADA";
     }
 
     @Override

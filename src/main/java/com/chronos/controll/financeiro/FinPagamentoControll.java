@@ -214,7 +214,7 @@ public class FinPagamentoControll extends AbstractControll<FinParcelaPagar> impl
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "PAGAMENTO";
     }
 
     @Override

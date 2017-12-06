@@ -105,7 +105,7 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
 
     @Override
     protected String getFuncaoBase() {
-        return "VENDA_CONDICOES_PAGAMENTO";
+        return "CONDICOES_PAGAMENTO";
     }
 
     @Override

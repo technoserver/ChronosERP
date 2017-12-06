@@ -173,7 +173,7 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
 
     @Override
     protected String getFuncaoBase() {
-        return "ESTOQUE_REAJUSTE_CABECALHO";
+        return "ESTOQUE_REAJUSTE";
     }
 
     @Override

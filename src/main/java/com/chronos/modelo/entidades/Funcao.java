@@ -29,6 +29,11 @@ public class Funcao implements Serializable {
     public Funcao() {
     }
 
+    public Funcao(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

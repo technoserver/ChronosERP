@@ -315,7 +315,7 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_LANCAMENTO_PAGAR";
+        return "LANCAMENTO_PAGAR";
     }
 
     @Override

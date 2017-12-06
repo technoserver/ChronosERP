@@ -70,7 +70,7 @@ public class VendaRomaneioEntregaControll extends AbstractControll<VendaRomaneio
 
     @Override
     protected String getFuncaoBase() {
-        return "VENDA_ROMANEIO_ENTREGA";
+        return "ROMANEIO_ENTREGA";
     }
 
     @Override

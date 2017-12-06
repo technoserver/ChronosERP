@@ -60,7 +60,7 @@ public class PapelFuncao implements Serializable {
     @Column(name = "HABILITADO")
     private String habilitado;
     @JoinColumn(name = "ID_PAPEL", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Papel papel;
     @JoinColumn(name = "ID_FUNCAO", referencedColumnName = "ID")
     @ManyToOne(optional = false)

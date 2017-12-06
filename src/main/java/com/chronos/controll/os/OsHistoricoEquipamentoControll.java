@@ -23,7 +23,7 @@ public class OsHistoricoEquipamentoControll extends AbstractControll<OsAberturaE
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "OS_HISTORICO";
     }
 
     @Override

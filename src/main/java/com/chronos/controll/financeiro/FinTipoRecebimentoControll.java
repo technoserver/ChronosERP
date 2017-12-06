@@ -40,7 +40,7 @@ public class FinTipoRecebimentoControll extends AbstractControll<FinTipoRecebime
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_TIPO_RECEBIMENTO";
+        return "TIPO_RECEBIMENTO";
     }
 
     @Override

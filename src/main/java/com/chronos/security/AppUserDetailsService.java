@@ -64,16 +64,16 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
 
         funcoes.stream().forEach((p)->{
             if (p.getPodeConsultar() != null && p.getPodeConsultar().equals("S")) {
-                authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome() + "_CONSULTAR"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + p.getFuncao().getFormulario() + "_CONSULTAR"));
             }
             if (p.getPodeInserir() != null && p.getPodeInserir().equals("S")) {
-                authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome() + "_INSERIR"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + p.getFuncao().getFormulario() + "_INSERIR"));
             }
             if (p.getPodeAlterar() != null && p.getPodeAlterar().equals("S")) {
-                authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome() + "_ALTERAR"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + p.getFuncao().getFormulario() + "_ALTERAR"));
             }
             if (p.getPodeExcluir() != null && p.getPodeExcluir().equals("S")) {
-                authorities.add(new SimpleGrantedAuthority(p.getFuncao().getNome() + "_EXCLUIR"));
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + p.getFuncao().getFormulario() + "_EXCLUIR"));
             }
         });
 

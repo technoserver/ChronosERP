@@ -303,7 +303,7 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_PARCELA_RECEBIMENTO";
+        return "PARCELA_RECEBIMENTO";
     }
 
     @Override

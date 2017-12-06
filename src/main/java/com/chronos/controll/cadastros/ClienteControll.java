@@ -221,7 +221,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
     @Override
     protected String getFuncaoBase() {
-        return "Cliente";
+        return "CLIENTE";
     }
 
     @Override

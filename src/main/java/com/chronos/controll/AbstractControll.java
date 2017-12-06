@@ -709,21 +709,21 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public boolean podeConsultar() {
         // return false;
-        boolean teste = FacesUtil.isUserInRole(getFuncaoBase() + "_CONSULTA")
+        boolean teste = FacesUtil.isUserInRole(getFuncaoBase() + "_CONSULTAR")
                 || FacesUtil.isUserInRole("ADMIN");
         return teste;
     }
 
     public boolean podeInserir() {
-        return FacesUtil.isUserInRole(getFuncaoBase() + "_INSERE") || FacesUtil.isUserInRole("ADMIN");
+        return FacesUtil.isUserInRole(getFuncaoBase() + "_INSERIR") || FacesUtil.isUserInRole("ADMIN");
     }
 
     public boolean podeAlterar() {
-        return FacesUtil.isUserInRole(getFuncaoBase() + "_ALTERA") || FacesUtil.isUserInRole("ADMIN");
+        return FacesUtil.isUserInRole(getFuncaoBase() + "_ALTERAR") || FacesUtil.isUserInRole("ADMIN");
     }
 
     public boolean podeExcluir() {
-        return FacesUtil.isUserInRole(getFuncaoBase() + "_EXCLUI") || FacesUtil.isUserInRole("ADMIN");
+        return FacesUtil.isUserInRole(getFuncaoBase() + "_EXCLUIR") || FacesUtil.isUserInRole("ADMIN");
     }
 
     public T getObjetoSelecionado() {

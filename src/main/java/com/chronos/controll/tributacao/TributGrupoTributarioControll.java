@@ -29,7 +29,7 @@ public class TributGrupoTributarioControll extends AbstractControll<TributGrupoT
 
     @Override
     protected String getFuncaoBase() {
-        return "TRIBUT_GRUPO_TRIBUTARIO";
+        return "GRUPO_TRIBUTARIO";
     }
 
     @Override

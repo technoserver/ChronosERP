@@ -207,7 +207,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
     @Override
     protected String getFuncaoBase() {
-        return "VENDA_ORCAMENTO_CABECALHO";
+        return "VENDA_ORCAMENTO";
     }
 
     @Override

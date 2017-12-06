@@ -239,7 +239,7 @@ public class FinCobrancaControll extends AbstractControll<FinCobranca> implement
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_COBRANCA";
+        return "COBRANCA";
     }
 
     @Override

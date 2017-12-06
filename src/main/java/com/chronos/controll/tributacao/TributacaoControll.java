@@ -229,7 +229,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
     }
 
     public void alterarTributIcmsUf() {
-        tributIcmsUf = tributIcmsUfSelecionado;
+        tributIcmsUf = icmsRepository.get(tributIcmsUfSelecionado.getId(), TributIcmsUf.class);
     }
 
     public void salvarTributIcmsUf() {
@@ -447,7 +447,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
 
     @Override
     protected String getFuncaoBase() {
-        return "PIS_COFINS";
+        return "TRIBUTACAO";
     }
 
     @Override

@@ -29,7 +29,7 @@ public class ContadorControll extends AbstractControll<Contador> implements Seri
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "CONTADOR";
     }
 
     @Override

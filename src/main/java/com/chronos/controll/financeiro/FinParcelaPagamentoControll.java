@@ -285,7 +285,7 @@ public class FinParcelaPagamentoControll extends AbstractControll<FinParcelaPaga
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_PARCELA_PAGAMENTO";
+        return "PARCELA_PAGAMENTO";
     }
 
     @Override

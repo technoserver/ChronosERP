@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Papel
+    </ui:define>
+
+    <ui:define name="tela">
+        #{papelControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        papel
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{papelControll.telaGrid}">
+                <div class="ibox-content">
+                    <p:dataTable value="#{papelControll.dataModel}"
+                                 var="row" id="dataTablePapel" paginator="true"
+                                 rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                                 reflow="true" rendered="#{papelControll.podeConsultar()}"
+                                 resizableColumns="true" lazy="true"
+                    >
+
+                        <p:column headerText="Nome">
+                            <h:outputLabel value="#{row.nome}"/>
+                        </p:column>
+                        <p:column headerText="Acesso completo">
+                            <h:outputLabel value="#{row.nome}"/>
+                        </p:column>
+                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                            <p:commandLink title="Alterar" action="#{papelControll.doEdit()}" class=" btn btn-default"
+                                           update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                           id="btnAlterar"
+                                           rendered="#{row.id !=1 }">
+                                <i class="fa fa-file-text-o"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{papelControll.objetoSelecionado}"/>
+                            </p:commandLink>
+                            &nbsp;
+                            <p:commandLink title="Excluir" action="#{papelControll.remover()}"
+                                           update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                           process="dataTablePapel"
+                                           oncomplete="atualizarMsg();"
+                                           id="btnExcluir"
+                                           class="btn btn-default"
+                                           rendered="#{row.id !=1 }"
+                                           disabled="#{!papelControll.podeExcluir()}">
+                                <i class="fa fa-times"></i>
+                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{papelControll.objetoSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="ibox-footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
+                                             actionListener="#{papelControll.doCreate()}"
+                                             disabled="#{!papelControll.podeInserir()}"
+                                             id="btnCadastrar">
+                                <p:resetInput target=":formCentro"/>
+                                <p:ajax process="@form"
+                                        oncomplete="addClass()"
+                                        update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             id="btnCancelar"
+                                             action="#{papelControll.doIndex()}" immediate="true"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </p:outputPanel>
+        </p:outputPanel>
+
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{papelControll}"
+                                   nomeFuncao="PAPEL"
+                                   id="telaDetalhe"
+                                   gridPadrao="false">
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                idComponente="nome" label="Nome"
+                                requerido="true"
+                                nomeAtributo="#{papelControll.objeto.nome}"
+                                tamanhoMaximo="20"/>
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="Acesso Completo" for="papelAcessoCompleto"/>
+                    <h:selectOneMenu styleClass="form-control" id="papelAcessoCompleto"
+                                     value="#{papelControll.objeto.acessoCompleto}">
+                        <p:ajax event="change" update="formCentro:telaDetalhe:panelCentroDetalhe" process="@this"/>
+                        <f:selectItems value="#{papelControll.naoSim}"/>
+                    </h:selectOneMenu>
+                </div>
+
+            </div>
+            <div class="row">
+
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="papelDescricao" label="Descricao"
+                                    nomeAtributo="#{papelControll.objeto.descricao}"/>
+            </div>
+            <h:panelGroup id="permissoes" layout="block"
+                          rendered="#{papelControll.objeto.acessoCompleto eq 'N' and not empty papelControll.objeto.id}">
+
+                <div class="row">
+                    <div class="col-md-12 m-t">
+                        <h:commandLink title="Novo" class="btn btn-default"
+                                       id="btnIncluirPermissao"
+                                       actionListener="#{papelControll.incluirPermissao}"
+                                       type="button"
+                        >
+                            <p:resetInput target=":formOutrasTelas"/>
+                            <i class="glyphicon glyphicon-plus"/>
+                            <p:ajax update=":formOutrasTelas:panelPermissao,dataTablePapelFuncao"
+                                    oncomplete="PF('dialogPermissao').show()"
+                                    process="@this"/>
+                        </h:commandLink>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <p:dataTable value="#{papelControll.listaPapelFuncao}"
+                                     var="row" id="dataTablePapelFuncao" paginator="true"
+                                     rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                                     reflow="true"
+                                     resizableColumns="true"
+                        >
+
+                            <p:column headerText="Nome">
+                                <h:outputLabel value="#{row.funcao.nome}"/>
+                            </p:column>
+                            <p:column headerText="Pode Consultar" styleClass="text-center">
+                                <i class="fa #{row.podeConsultar eq 'S'?'fa-check text-success' :'fa-ban text-danger'}"
+                                   aria-hidden="true"></i>
+                            </p:column>
+                            <p:column headerText="Pode Incluir" styleClass="text-center">
+                                <i class="fa #{row.podeInserir eq 'S'?'fa-check text-success' :'fa-ban text-danger'}"
+                                   aria-hidden="true"></i>
+                            </p:column>
+                            <p:column headerText="Pode Alterar" styleClass="text-center">
+                                <i class="fa #{row.podeAlterar eq 'S'?'fa-check text-success' :'fa-ban text-danger'}"
+                                   aria-hidden="true"></i>
+                            </p:column>
+                            <p:column headerText="Pode Excluir" styleClass="text-center">
+                                <i class="fa #{row.podeExcluir eq 'S'?'fa-check text-success' :'fa-ban text-danger'}"
+                                   aria-hidden="true"></i>
+                            </p:column>
+                            <p:column headerText="Ações" width="110" styleClass="text-center">
+                                <p:commandLink title="Alterar" action="#{papelControll.alterarPermissao}"
+                                               class=" btn btn-default"
+                                               update="dataTablePapelFuncao,:formOutrasTelas:panelPermissao"
+                                               oncomplete="PF('dialogPermissao').show()"
+                                               id="btnAlterarPermissao"
+                                               rendered="#{row.id !=1 }">
+                                    <i class="fa fa-file-text-o"></i>
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{papelControll.papelFuncaoSelecionado}"/>
+                                </p:commandLink>
+                                &nbsp;
+                                <p:commandLink title="Excluir" action="#{papelControll.excluirPermissao}"
+                                               update="dataTablePapelFuncao"
+                                               process="dataTablePapelFuncao"
+                                               oncomplete="atualizarMsg();"
+                                               id="btnExcluirPermissao"
+                                               class="btn btn-default"
+                                >
+                                    <i class="fa fa-times"></i>
+                                    <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{papelControll.papelFuncaoSelecionado}"/>
+                                </p:commandLink>
+                            </p:column>
+
+
+                        </p:dataTable>
+                    </div>
+                </div>
+
+
+            </h:panelGroup>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogPermissao"
+                      header="Inclusão/Alteração de Permissão"
+                      widgetVar="dialogPermissao" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+
+                <p:outputPanel id="panelPermissao">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
+                                          label="Função"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{papelControll}"
+                                          completeMethod="getListFuncao"
+                                          nomeAtributo="#{papelControll.papelFuncao.funcao}"
+                                          idComponente="papelFuncao"/>
+
+
+                    </div>
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="podeConsultar"
+                                         label="Pode Consultar"
+                                         itens="#{papelControll.naoSim}"
+                                         nomeAtributo="#{papelControll.papelFuncao.podeConsultar}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="podeInserir"
+                                         label="Pode Inserir"
+                                         itens="#{papelControll.naoSim}"
+                                         nomeAtributo="#{papelControll.papelFuncao.podeInserir}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="podeAlterar"
+                                         label="Pode Alterar"
+                                         itens="#{papelControll.naoSim}"
+                                         nomeAtributo="#{papelControll.papelFuncao.podeAlterar}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="podeExcluir"
+                                         label="Pode Excluir"
+                                         itens="#{papelControll.naoSim}"
+                                         nomeAtributo="#{papelControll.papelFuncao.podeExcluir}"/>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             id="btnSalvarPermissao"
+                                             actionListener="#{papelControll.salvarPermissao}">
+
+                                <p:ajax process="@form"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogPermissao').hide();}"
+                                        update=":formOutrasTelas:panelPermissao,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                />
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                            >
+                                <p:ajax oncomplete="PF('dialogPermissao').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
