@@ -114,7 +114,7 @@ public class FinExtratoContaBancoControll extends AbstractControll<ContaCaixa> i
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_EXTRATO_CONTA_BANCO";
+        return "EXTRATO_CONTA_BANCO";
     }
 
     @Override

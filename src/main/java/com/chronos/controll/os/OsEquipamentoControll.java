@@ -23,7 +23,7 @@ public class OsEquipamentoControll extends AbstractControll<OsEquipamento> imple
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "OS_EQUIPAMENTO";
     }
 
     @Override

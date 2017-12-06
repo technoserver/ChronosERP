@@ -197,7 +197,7 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_MOVIMENTO_CAIXA_BANCO";
+        return "MOVIMENTO_CAIXA_BANCO";
     }
 
     @Override

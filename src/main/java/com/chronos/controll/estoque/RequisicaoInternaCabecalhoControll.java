@@ -127,7 +127,7 @@ public class RequisicaoInternaCabecalhoControll extends AbstractControll<Requisi
 
     @Override
     protected String getFuncaoBase() {
-        return "REQUISICAO_INTERNA_CABECALHO";
+        return "REQUISICAO_INTERNA";
     }
 
     @Override

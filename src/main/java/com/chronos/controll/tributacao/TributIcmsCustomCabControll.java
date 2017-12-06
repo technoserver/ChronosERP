@@ -68,7 +68,7 @@ public class TributIcmsCustomCabControll extends AbstractControll<TributIcmsCust
 
     @Override
     protected String getFuncaoBase() {
-        return "TRIBUT_ICMS_CUSTOM_CAB";
+        return "ICMS_CUSTOMIZADO";
     }
 
     @Override

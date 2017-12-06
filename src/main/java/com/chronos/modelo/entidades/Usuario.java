@@ -1,6 +1,7 @@
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -26,9 +27,11 @@ public class Usuario implements Serializable {
     private String administrador;
     @JoinColumn(name = "ID_COLABORADOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
+    @NotNull
     private Colaborador colaborador;
     @JoinColumn(name = "ID_PAPEL", referencedColumnName = "ID")
     @ManyToOne(optional = false)
+    @NotNull
     private Papel papel;
 
     public Usuario(Integer id, String login, String senha,Integer idpapel) {
@@ -44,6 +47,12 @@ public class Usuario implements Serializable {
 
     
     public Usuario() {
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void prePersist() {
+        this.login = login.trim().toLowerCase();
     }
 
     public Integer getId() {

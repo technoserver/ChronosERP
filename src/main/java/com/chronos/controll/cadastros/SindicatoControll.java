@@ -29,7 +29,7 @@ public class SindicatoControll extends AbstractControll<Sindicato> implements Se
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "SINDICATO"; //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

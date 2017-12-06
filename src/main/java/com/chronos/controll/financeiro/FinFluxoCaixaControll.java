@@ -182,7 +182,7 @@ public class FinFluxoCaixaControll extends AbstractControll<ViewFinFluxoCaixaID>
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_FLUXO_CAIXA";
+        return "FLUXO_CAIXA";
     }
 
     @Override

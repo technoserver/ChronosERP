@@ -210,12 +210,12 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
 
     @Override
     protected Class<FinParcelaReceber> getClazz() {
-        return null;
+        return FinParcelaReceber.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "RECEBIMENTO";
     }
 
     @Override

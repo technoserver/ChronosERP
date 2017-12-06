@@ -23,7 +23,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "OS_ABERTURA";
     }
 
     @Override

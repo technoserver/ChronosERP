@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Usuário
+    </ui:define>
+
+    <ui:define name="tela">
+        #{usuarioConttroll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Usuário
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{usuarioConttroll}"
+                       idDataTable="dataTableUsuario"
+                       nomeFuncao="USUARIO"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Login">
+                <h:outputLabel value="#{row.login}"/>
+            </p:column>
+            <p:column headerText="Administrador" styleClass="text-center">
+                <i class="fa #{row.administrador eq 'S'?'fa-check text-success' :'fa-ban text-danger'}"
+                   aria-hidden="true"></i>
+            </p:column>
+            <p:column headerText="Data Cadastro">
+                <h:outputLabel value="#{row.dataCadastro}" styleClass="text-center">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{usuarioConttroll}"
+                                   nomeFuncao="USUARIO"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Colaborador"
+                                  itemLabel="#{objeto.pessoa.nome}"
+                                  controller="#{vendedorControll}"
+                                  completeMethod="getListColaborador"
+                                  nomeAtributo="#{usuarioConttroll.objeto.colaborador}"
+                                  idComponente="colaborador"
+                />
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Papel"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{usuarioConttroll}"
+                                  completeMethod="getListPapel"
+                                  nomeAtributo="#{usuarioConttroll.objeto.papel}"
+                                  idComponente="papel"
+                />
+
+
+            </div>
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="login" label="Login"
+                                nomeAtributo="#{usuarioConttroll.objeto.login}"
+                                requerido="true"
+                                tamanhoMaximo="20"/>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <p:outputLabel for="pwd1" value="Senha"/>
+                    <p:password id="pwd1" value="#{usuarioConttroll.senha}" match="pwd2" required="true"
+                                validatorMessage="Senha não confere"/>
+                </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <p:outputLabel for="pwd2" value="Confirmar senha"/>
+                    <p:password id="pwd2" value="#{usuarioConttroll.senha}" required="true"/>
+                </div>
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

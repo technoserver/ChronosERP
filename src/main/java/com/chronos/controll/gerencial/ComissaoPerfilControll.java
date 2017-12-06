@@ -29,7 +29,7 @@ public class ComissaoPerfilControll extends AbstractControll<ComissaoPerfil> imp
 
     @Override
     protected String getFuncaoBase() {
-        return "Comissao_Perfil";
+        return "COMISSAO_PERFIL";
     }
 
     @Override

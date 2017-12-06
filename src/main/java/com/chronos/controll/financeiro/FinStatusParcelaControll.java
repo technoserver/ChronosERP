@@ -23,7 +23,7 @@ public class FinStatusParcelaControll extends AbstractControll<FinStatusParcela>
 
     @Override
     protected String getFuncaoBase() {
-        return "FIN_STATUS_PARCELA";
+        return "STATUS_PARCELA";
     }
 
     @Override

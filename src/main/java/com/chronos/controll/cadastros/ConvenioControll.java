@@ -29,7 +29,7 @@ public class ConvenioControll extends AbstractControll<Convenio> implements Seri
 
     @Override
     protected String getFuncaoBase() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "CONVENIO"; //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

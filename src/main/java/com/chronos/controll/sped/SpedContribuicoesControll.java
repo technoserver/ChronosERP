@@ -23,7 +23,7 @@ public class SpedContribuicoesControll extends AbstractControll<Contador> implem
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "SPED_CONSTRIBUICOES";
     }
 
     @Override
