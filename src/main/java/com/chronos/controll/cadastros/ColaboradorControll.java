@@ -47,6 +47,7 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     @Inject
     private Repository<Pessoa> pessoas;
 
+
     private String completo;
 
     @Inject
@@ -64,7 +65,7 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         dataModel.getFiltros().clear();
         dataModel.addFiltro("pessoa.id", 1, Filtro.DIFERENTE);
         dataModel.addFiltro("pessoa.id", 2, Filtro.DIFERENTE);
-        dataModel.setAtributos(new Object[]{"pessoa.nome", "matricula", "situacaoColaborador.nome", "cargo.nome", "setor.nome"});
+        dataModel.setAtributos(new Object[]{"pessoa.id", "pessoa.nome", "matricula", "situacaoColaborador.nome", "cargo.nome", "setor.nome"});
         return dataModel;
     }
 
@@ -79,11 +80,21 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     }
 
     @Override
+    public void doEdit() {
+        super.doEdit();
+
+        Colaborador colaborador = dao.get(getObjeto().getId(), Colaborador.class);
+
+        setObjeto(colaborador);
+    }
+
+    @Override
     public void salvar() {
 
         Colaborador colaborador = null;
         try {
-            colaborador = service.salvarColaborador(getObjeto(), empresa);
+            Empresa ep = getObjeto().getId() != null ? empresa : emp;
+            colaborador = service.salvarColaborador(getObjeto(), ep);
             setObjeto(colaborador);
             Mensagem.addInfoMessage("Colaborador salvo com sucesso");
         } catch (Exception e) {
@@ -164,6 +175,7 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         return listaSetor;
     }
 
+
     @Override
     public Pessoa getPessoa() {
         return getObjeto().getPessoa();
@@ -176,7 +188,7 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
 
     @Override
     public String getTela() {
-        return TelaPessoa.CLIENTE.getCodigo();
+        return TelaPessoa.COLABORADOR.getCodigo();
     }
 
     @Override
@@ -201,4 +213,6 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     public void setCompleto(String completo) {
         this.completo = completo;
     }
+
+
 }

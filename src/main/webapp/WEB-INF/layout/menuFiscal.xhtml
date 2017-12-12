@@ -4,36 +4,40 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:erp="http://java.sun.com/jsf/composite/components">
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
     <ul class="nav nav-second-level collapse ">
-        <li class="${fn:contains(view.viewId,'modulo/fiscal/')?'active':''}">
-            <a href="#">
-                <span class="nav-label">Tributação</span>
-                <span class="fa arrow"></span>
-            </a>
-            <ul class="nav nav-third-level">
-                <li class="${fn:contains(view.viewId,'modulo/fiscal/tributacao/')?'active':''}">
+        <c:if test="#{seguranca.userTributacao eq true }">
+            <li class="${fn:contains(view.viewId,'modulo/fiscal/')?'active':''}">
+                <a href="#">
+                    <span class="nav-label">Tributação</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-third-level">
+                    <li class="${fn:contains(view.viewId,'modulo/fiscal/tributacao/')?'active':''}">
 
-                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributOperacaoFiscal"
-                                 label="Operação Fiscal"
-                                 funcao="tributOperacaoFiscal"/>
-                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributGrupoTributario"
-                                 label="Grupo Tributário"
-                                 funcao="tributGrupoTributario"/>
+                        <erp:subMenu caminho="/modulo/fiscal/tributacao/tributOperacaoFiscal"
+                                     label="Operação Fiscal"
+                                     funcao="tributOperacaoFiscal"/>
+                        <erp:subMenu caminho="/modulo/fiscal/tributacao/tributGrupoTributario"
+                                     label="Grupo Tributário"
+                                     funcao="tributGrupoTributario"/>
 
-                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributacao"
-                                 label="Tributacao"
-                                 funcao="tributacao/tributacao"/>
+                        <erp:subMenu caminho="/modulo/fiscal/tributacao/tributacao"
+                                     label="Tributacao"
+                                     funcao="tributacao/tributacao"/>
 
-                    <erp:subMenu caminho="/modulo/fiscal/tributacao/tributIcmsCustom"
-                                 label="ICMS Customizado"
-                                 funcao="tributacao/tributIcmsCustom"/>
+                        <erp:subMenu caminho="/modulo/fiscal/tributacao/tributIcmsCustom"
+                                     label="ICMS Customizado"
+                                     funcao="tributacao/tributIcmsCustom"/>
 
-                </li>
-            </ul>
-        </li>
+                    </li>
+                </ul>
+            </li>
+        </c:if>
+
         <li class="${fn:contains(view.viewId,'modulo/fiscal/sped/')?'active':''}">
             <a href="#">Sped<span class="fa arrow"></span></a>
             <ul class="nav nav-third-level">
@@ -44,10 +48,12 @@
 
                 <erp:subMenu caminho="/modulo/fiscal/sped/spedFiscal"
                              label="SPED Fiscal"
-                             funcao="spedFiscal"/>
+                             funcao="spedFiscal"
+                             exibir="#{seguranca.userSpedFiscal}"/>
                 <erp:subMenu caminho="/modulo/fiscal/sped/spedContribuicoes"
                              label="SPED Contribuicoes"
-                             funcao="spedContribuicoes"/>
+                             funcao="spedContribuicoes"
+                             exibir="#{seguranca.userSpedContribuicoes}"/>
 
             </ul>
         </li>

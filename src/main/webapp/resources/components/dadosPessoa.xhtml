@@ -17,12 +17,13 @@
         <p:tab title="Dados Pessoas" id="dadosPrincipais">
             <div class="row">
                 <h:panelGroup layout="block" id="camposNone">
+
                     <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
                                     idComponente="pessoaNome" label="Nome"
                                     nomeAtributo="#{cc.attrs.controller.objeto.pessoa.nome}"
                                     tamanhoMaximo="150" requerido="true"
                                     id="campoNome"
-                                    exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'F'}"/>
+                                    exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'F' and  !(cc.attrs.controller.tela eq 'CL')}"/>
 
                     <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
                                     idComponente="pessoaNome" label="Razão Social"
@@ -31,6 +32,22 @@
                                     tamanhoMaximo="150" requerido="true"
                                     exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'J'}"/>
 
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                    idComponente="pessoaNome" label="Nome"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.nome}"
+                                    tamanhoMaximo="150" requerido="true"
+                                    id="campoNomeColaborador"
+                                    exibir="#{cc.attrs.controller.objeto.pessoa.tipo eq 'F' and cc.attrs.controller.tela eq 'CL'}"/>
+
+                    <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                      label="Empresa"
+                                      itemLabel="#{objeto.razaoSocial}"
+                                      controller="#{cc.attrs.controller}"
+                                      completeMethod="getListaEmpresa"
+                                      nomeAtributo="#{cc.attrs.controller.emp}"
+                                      idComponente="colaboradorTipoAdmissao"
+                                      rendered="#{cc.attrs.controller.objeto.pessoa.colaborador eq 'S' and empty cc.attrs.controller.objeto.pessoa.id}"
+                                      requerido="true"/>
 
                     <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
                                     idComponente="pessoaJuridicaFantasia" label="Fantasia"

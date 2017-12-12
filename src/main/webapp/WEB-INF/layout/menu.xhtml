@@ -6,7 +6,7 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:erp="http://java.sun.com/jsf/composite/components">
+                xmlns:erp="http://java.sun.com/jsf/composite/components" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
     <div class="sidebar-collapse">
@@ -49,213 +49,53 @@
                     </a>
                     <ui:include src="menuCadastros.xhtml"/>
                 </li>
+                <c:if test="#{seguranca.financeiro eq true }">
+                    <li class="${fn:contains(view.viewId,'financeiro')?'active':''}">
+                        <a href="#">
+                            <i class="fa fa-th-large"></i>
+                            <span class="nav-label">Financeiro</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ui:include src="menuFinanceiro.xhtml"/>
+                    </li>
+                </c:if>
+                <c:if test="#{seguranca.comercial eq true }">
+                    <li class="${fn:contains(view.viewId,'comercial')?'active':''}">
+                        <a href="#">
+                            <i class="fa fa-th-large"></i>
+                            <span class="nav-label">Comercial</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ui:include src="menuComercial.xhtml"/>
+                    </li>
+                </c:if>
 
-                <li class="${fn:contains(view.viewId,'financeiro')?'active':''}">
-                    <a href="#">
-                        <i class="fa fa-th-large"></i>
-                        <span class="nav-label">Financeiro</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level collapse ">
-                        <li class="${fn:contains(view.viewId,'modulo/financeiro/diversos/')?'active':''}">
-                            <a href="#">Diversos <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
+                <c:if test="#{seguranca.suprimentos eq true }">
+                    <!--FISCAL-->
+                    <li class="${fn:contains(view.viewId,'suprimentos')?'active':''}">
+                        <a href="#">
+                            <i class="fa fa-th-large"></i>
+                            <span class="nav-label">Suprimentos</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ui:include src="menuSuprimentos.xhtml"/>
+                    </li>
 
-                                <erp:subMenu caminho="/modulo/financeiro/diversos/finTipoPagamento"
-                                             label="Tipo Pagamento"
-                                             funcao="finTipoPagamento"/>
-
-                                <erp:subMenu caminho="/modulo/financeiro/diversos/finTipoRecebimento"
-                                             label="Tipo Recebimento"
-                                             funcao="finTipoRecebimento"/>
-                                <erp:subMenu caminho="/modulo/financeiro/diversos/finStatusParcela"
-                                             label="Status Parcela"
-                                             funcao="finStatusParcela"/>
-                                <erp:subMenu caminho="/modulo/financeiro/diversos/planoCentroResultado"
-                                             label="Plano Centro Resultado"
-                                             funcao="planoCentroResultado"/>
-                                <erp:subMenu caminho="/modulo/financeiro/diversos/centroResultado"
-                                             label="Centro Resultado"
-                                             funcao="centroResultado"/>
-                                <erp:subMenu caminho="/modulo/financeiro/diversos/planoNaturezaFinanceira"
-                                             label="Plano Natureza Financeira"
-                                             funcao="planoNaturezaFinanceira"/>
-                                <erp:subMenu caminho="/modulo/financeiro/diversos/naturezaFinanceira"
-                                             label="Natureza Financeira"
-                                             funcao="naturezaFinanceira"/>
-
-
-                            </ul>
-                        </li>
-                        <li class="${fn:contains(view.viewId,'modulo/financeiro/pagamento/')?'active':''}">
-                            <a href="#">Pagamentos <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
-                                <erp:subMenu caminho="/modulo/financeiro/pagamento/finLancamentoPagar"
-                                             label="Lançamento a Pagar"
-                                             funcao="finLancamentoPagar"/>
-                                <erp:subMenu caminho="/modulo/financeiro/pagamento/finPagamento"
-                                             label="Pagamento"
-                                             funcao="finPagamento"/>
-                                <!--<erp:subMenu caminho="/modulo/financeiro/pagamento/finPagamentoFixo"-->
-                                <!--label="Pagamento Fixo/Recorrente"-->
-                                <!--funcao="finPagamentoFixo"/>-->
-                            </ul>
-                        </li>
-                        <li class="${fn:contains(view.viewId,'modulo/financeiro/recebimento/')?'active':''}">
-                            <a href="#">Recebimentos <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
-                                <erp:subMenu caminho="/modulo/financeiro/recebimento/finLancamentoReceber"
-                                             label="Lançamento a Receber"
-                                             funcao="finLancamentoReceber"/>
-                                <!--<erp:subMenu caminho="/modulo/financeiro/recebimento/finParcelaRecebimento"-->
-                                <!--label="Recebimento"-->
-                                <!--funcao="finParcelaRecebimento"/>-->
-                                <erp:subMenu caminho="/modulo/financeiro/recebimento/finRecebimento"
-                                             label="Recebimento"
-                                             funcao="finRecebimento"/>
-                                <!--<erp:subMenu caminho="/modulo/financeiro/recebimento/finCobranca"-->
-                                <!--label="Cobrança"-->
-                                <!--funcao="finCobranca"/>-->
-                            </ul>
-                        </li>
-
-                        <li class="${fn:contains(view.viewId,'modulo/financeiro/movimento/')?'active':''}">
-                            <a href="#">Movimentos <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
-                                <erp:subMenu caminho="/modulo/financeiro/movimento/finFluxoCaixa"
-                                             label="Fluxo Caixa"
-                                             funcao="finFluxoCaixa"/>
-                                <erp:subMenu caminho="/modulo/financeiro/movimento/finMovimentoCaixaBanco"
-                                             label="Movimento Caixa Banco"
-                                             funcao="finMovimentoCaixaBanco"/>
-                            </ul>
-                        </li>
-                        <li class="${fn:contains(view.viewId,'modulo/financeiro/relatorios/')?'active':''}">
-                            <a href="#">Relatorios <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
-                                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasPagar"
-                                             label="Contas a pagar"
-                                             funcao="relacaoContasPagar"/>
-                                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasReceber"
-                                             label="Contas a receber"
-                                             funcao="relacaoContasReceber"/>
-
-                            </ul>
-                        </li>
-                        <!--
-                        <li class="${fn:contains(view.viewId,'modulo/financeiro/cheque/')?'active':''}">
-                            <a href="#">Controle de Chq. <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
-                                <erp:subMenu caminho="/modulo/financeiro/cheque/finParcelaPagamento"
-                                             label="Emissão de Cheque"
-                                             funcao="Emissão de Cheque"/>
-                                <erp:subMenu caminho="/modulo/financeiro/cheque/finResumoTesouraria"
-                                             label="Resumo Tesouraria"
-                                             funcao="ResumoTesouraria"/>
-                                <erp:subMenu caminho="/modulo/financeiro/cheque/finChequeRecebido"
-                                             label="Custódia de Cheque"
-                                             funcao="CustódiaCheque"/>
-                            </ul>
-                        </li>
-
-                        <li class="${fn:contains(view.viewId,'modulo/financeiro/edi/')?'active':''}">
-                            <a href="#">EDI <span class="fa arrow"></span></a>
-                            <ul class="nav nav-third-level">
-                                <erp:subMenu caminho="/modulo/financeiro/edi/finExtratoContaBanco"
-                                             label="Extrato Conta Banco"
-                                             funcao="finExtratoContaBanco"/>
-                                <erp:subMenu caminho="/modulo/financeiro/edi/finProcessaArquivoRetorno"
-                                             label="Processa Retorno"
-                                             funcao="finProcessaArquivoRetorno"/>
-                                <erp:subMenu caminho="/modulo/financeiro/diversos/finConfiguracaoBoleto"
-                                             label="ConfiguraçãoBoleto"
-                                             funcao="finConfiguracaoBoleto"/>
-                            </ul>
-                        </li>
-                        -->
-                    </ul>
-                </li>
-                <li class="${fn:contains(view.viewId,'comercial')?'active':''}">
-                    <a href="#">
-                        <i class="fa fa-th-large"></i>
-                        <span class="nav-label">Comercial</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ui:include src="menuComercial.xhtml"/>
-                </li>
-
-                <li class="${fn:contains(view.viewId,'estoque')?'active':''}">
-                    <a href="#">
-                        <i class="fa fa-th-large"></i>
-                        <span class="nav-label">Estoque</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level collapse ">
-                        <li class="${fn:contains(view.viewId,'modulo/estoque/')?'active':''}">
-                            <!--<erp:subMenu caminho="/modulo/estoque/estoqueFormacaoPreco"-->
-                            <!--label="Formação Preço"-->
-                            <!--funcao="estoqueFormacaoPreco"/>-->
-                            <!--<erp:subMenu caminho="/modulo/estoque/requisicaoInternaCabecalho"-->
-                            <!--label="Requisição Interna"-->
-                            <!--funcao="requisicaoInternaCabecalho"/>-->
-                            <erp:subMenu caminho="/modulo/estoque/estoqueReajuste"
-                                         label="Reajuste"
-                                         funcao="estoqueReajuste"/>
-                            <erp:subMenu caminho="/modulo/estoque/entradaNotaFiscal"
-                                         label="Entra NFe"
-                                         funcao="entradaNotaFiscal"/>
-                        </li>
-                        <li class="${fn:contains(view.viewId,'modulo/estoque/relatorios/')?'active':''}">
-                            <a href="#">Relatorios <span class="fa arrow"></span></a>
-                            <ul class="nav nav-bedroom-level">
-                                <erp:subMenu caminho="/modulo/estoque/relatorios/relacaoEntradas"
-                                             label="Entradas"
-                                             funcao="relacaoEntradas"/>
+                </c:if>
 
 
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                <c:if test="#{seguranca.fiscal eq true }">
+                    <!--FISCAL-->
+                    <li class="${fn:contains(view.viewId,'fiscal')?'active':''}">
+                        <a href="#">
+                            <i class="fa fa-th-large"></i>
+                            <span class="nav-label">Fiscal</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ui:include src="menuFiscal.xhtml"/>
+                    </li>
+                </c:if>
 
-
-                <!--Menu Compras-->
-                <li class="${fn:contains(view.viewId,'compras')?'active':''}">
-                    <a href="#">
-                        <i class="fa fa-th-large"></i>
-                        <span class="nav-label">Compras</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level collapse ">
-                        <li class="${fn:contains(view.viewId,'modulo/compras/')?'active':''}">
-                            <!--<erp:subMenu caminho="/modulo/compras/compraRequisicao"-->
-                            <!--label="Requisição"-->
-                            <!--funcao="compraRequisicao"/>-->
-                            <!--<erp:subMenu caminho="/modulo/compras/compraCotacao"-->
-                            <!--label="Cotação"-->
-                            <!--funcao="compraCotacao"/>-->
-                            <!--<erp:subMenu caminho="/modulo/compras/compraMapaComparativo"-->
-                            <!--label="Mapa Comparativo"-->
-                            <!--funcao="compraMapaComparativo"/>-->
-                            <erp:subMenu caminho="/modulo/compras/compraPedido"
-                                         label="Pedido"
-                                         funcao="compraPedido"/>
-                            <!--<erp:subMenu caminho="/modulo/compras/compraSugerida"-->
-                            <!--label="Compra Sugerida"-->
-                            <!--funcao="compraSugerida"/>-->
-
-                        </li>
-                    </ul>
-                </li>
-                <!--Tributacao-->
-                <li class="${fn:contains(view.viewId,'fiscal')?'active':''}">
-                    <a href="#">
-                        <i class="fa fa-th-large"></i>
-                        <span class="nav-label">Fiscal</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ui:include src="menuFiscal.xhtml"/>
-                </li>
 
                 <!--Configuracoes-->
                 <li class="${fn:contains(view.viewId,'configuracoes')?'active':''}">

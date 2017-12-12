@@ -47,6 +47,8 @@ public class AdmModulo implements Serializable {
     private String codigo;
     @Column(name = "NOME")
     private String nome;
+    @Column(name = "ATIVO")
+    private String ativo;
     @Column(name = "DESCRICAO")
     private String descricao;
 
@@ -83,6 +85,14 @@ public class AdmModulo implements Serializable {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(String ativo) {
+        this.ativo = ativo;
     }
 
     @Override

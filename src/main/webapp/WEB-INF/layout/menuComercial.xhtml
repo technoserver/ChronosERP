@@ -4,123 +4,138 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:erp="http://java.sun.com/jsf/composite/components" xmlns:f="http://java.sun.com/jsf/core">
+                xmlns:erp="http://java.sun.com/jsf/composite/components" xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
     <ul class="nav nav-second-level collapse ">
-        <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
-            <a href="#">
-                <span class="nav-label">Vendas</span>
-                <span class="fa arrow"></span>
-            </a>
-            <ul class="nav nav-third-level">
-                <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
-                    <erp:subMenu caminho="/modulo/comercial/vendas/condicoesPagamento"
-                                 label="Condições de Pagamento"
-                                 funcao="condicoesPagamento"/>
-                    <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
-                                 label="Orçamento"
-                                 funcao="tipo=O">
-                        <f:param name="tipo" value="O"/>
-                    </erp:subMenu>
-                    <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
-                                 label="Pedido"
-                                 funcao="tipo=P">
-                        <f:param name="tipo" value="P"/>
-                    </erp:subMenu>
-                    <erp:subMenu caminho="/modulo/comercial/vendas/vendas"
-                                 label="Vendas"
-                                 funcao="modulo/comercial/vendas/vendas"/>
-                    <erp:subMenu caminho="/modulo/comercial/vendas/balcao"
-                                 label="Balcao"
-                                 funcao="modulo/comercial/vendas/balcao"/>
-
-                </li>
-                <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/relatorios/')?'active':''}">
-                    <a href="#">Relatorios <span class="fa arrow"></span></a>
-                    <ul class="nav nav-bedroom-level">
-                        <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoVendas"
+        <c:if test="#{seguranca.userVendas eq true }">
+            <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
+                <a href="#">
+                    <span class="nav-label">Vendas</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-third-level">
+                    <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
+                        <erp:subMenu caminho="/modulo/comercial/vendas/condicoesPagamento"
+                                     label="Condições de Pagamento"
+                                     funcao="condicoesPagamento"/>
+                        <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
+                                     label="Orçamento"
+                                     funcao="tipo=O">
+                            <f:param name="tipo" value="O"/>
+                        </erp:subMenu>
+                        <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
+                                     label="Pedido"
+                                     funcao="tipo=P">
+                            <f:param name="tipo" value="P"/>
+                        </erp:subMenu>
+                        <erp:subMenu caminho="/modulo/comercial/vendas/vendas"
                                      label="Vendas"
-                                     funcao="relacaoVendas"/>
-                        <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/ranckProdutos"
-                                     label="Ranck de Produtos"
-                                     funcao="ranckProdutos"/>
-                        <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoProdutosVendido"
-                                     label="Produtos +  Vendios"
-                                     funcao="relacaoProdutosVendido"/>
+                                     funcao="modulo/comercial/vendas/vendas"/>
+                        <erp:subMenu caminho="/modulo/comercial/vendas/balcao"
+                                     label="Balcao"
+                                     funcao="modulo/comercial/vendas/balcao"/>
 
-                        <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoClientesMaisCompram"
-                                     label="Clientes +  Compram"
-                                     funcao="relacaoClientesMaisCompram"/>
+                    </li>
+                    <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/relatorios/')?'active':''}">
+                        <a href="#">Relatorios <span class="fa arrow"></span></a>
+                        <ul class="nav nav-bedroom-level">
+                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoVendas"
+                                         label="Vendas"
+                                         funcao="relacaoVendas"/>
+                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/ranckProdutos"
+                                         label="Ranck de Produtos"
+                                         funcao="ranckProdutos"/>
+                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoProdutosVendido"
+                                         label="Produtos +  Vendios"
+                                         funcao="relacaoProdutosVendido"/>
 
-                        <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/comissaoVenda"
-                                     label="Comissões"
-                                     funcao="comissaoVenda"/>
+                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoClientesMaisCompram"
+                                         label="Clientes +  Compram"
+                                         funcao="relacaoClientesMaisCompram"/>
 
-
-                    </ul>
-                </li>
-            </ul>
-        </li>
-        <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/')?'active':''}">
-            <a href="#">NFe<span class="fa arrow"></span></a>
-            <ul class="nav nav-third-level">
-
-
-                <erp:subMenu caminho="/modulo/comercial/nfe/nfe"
-                             label="NF-e"
-                             funcao="nfe"/>
-
-                <erp:subMenu caminho="/modulo/comercial/nfe/inutilizarNumeroNfe"
-                             label="Inutilizar Número"
-                             funcao="inutilizarNumeroNfe"/>
-
-                <erp:subMenu caminho="/modulo/comercial/nfe/statusNfe"
-                             label="Status Serviço"
-                             funcao="statusNfe"/>
-
-                <erp:subMenu caminho="/modulo/comercial/nfe/nfeConfiguracao"
-                             label="Configuração"
-                             funcao="nfeConfiguracao"/>
-                <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/relatorios/')?'active':''}">
-                    <a href="#">Relatorios <span class="fa arrow"></span></a>
-                    <ul class="nav nav-bedroom-level">
-                        <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNumeros"
-                                     label="Numeração utilizada"
-                                     funcao="relacaoNumeros"/>
-                        <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNfe"
-                                     label="Relação de NFe"
-                                     funcao="relacaoNfe"/>
-
-                        <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoXmlNfe"
-                                     label="Relação de XML"
-                                     funcao="relacaoXmlNfe"/>
+                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/comissaoVenda"
+                                         label="Comissões"
+                                         funcao="comissaoVenda"/>
 
 
-                    </ul>
-                </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </c:if>
+
+        <c:if test="#{seguranca.userOs eq true }">
+
+        </c:if>
+
+        <c:if test="#{seguranca.userNfe eq true }">
+            <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/')?'active':''}">
+                <a href="#">NFe<span class="fa arrow"></span></a>
+                <ul class="nav nav-third-level">
 
 
-            </ul>
-        </li>
-        <li class="${fn:contains(view.viewId,'modulo/comercial/nfce/')?'active':''}">
-            <a href="#">NFce<span class="fa arrow"></span></a>
-            <ul class="nav nav-third-level">
-                <!--<erp:subMenu caminho="/modulo/comercial/nfce/movimentoCaixa"-->
-                <!--label="Movimentos Caixas"-->
-                <!--funcao="movimentoCaixa"/>-->
-                <erp:subMenu caminho="/modulo/comercial/nfce/pdv"
-                             label="PDV"
-                             funcao="pdv"/>
-                <erp:subMenu caminho="/modulo/comercial/nfce/listaPdv"
-                             label="Lista NFCe"
-                             funcao="listaPdv"/>
-                <erp:subMenu caminho="/modulo/comercial/nfce/nfceConfiguracao"
-                             label="Configuração"
-                             funcao="nfceConfiguracao"/>
+                    <erp:subMenu caminho="/modulo/comercial/nfe/nfe"
+                                 label="NF-e"
+                                 funcao="nfe"/>
 
-            </ul>
-        </li>
+                    <erp:subMenu caminho="/modulo/comercial/nfe/inutilizarNumeroNfe"
+                                 label="Inutilizar Número"
+                                 funcao="inutilizarNumeroNfe"/>
+
+                    <erp:subMenu caminho="/modulo/comercial/nfe/statusNfe"
+                                 label="Status Serviço"
+                                 funcao="statusNfe"/>
+
+                    <erp:subMenu caminho="/modulo/comercial/nfe/nfeConfiguracao"
+                                 label="Configuração"
+                                 funcao="/nfe/nfeConfiguracao"/>
+
+                    <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/relatorios/')?'active':''}">
+                        <a href="#">Relatorios <span class="fa arrow"></span></a>
+                        <ul class="nav nav-bedroom-level">
+                            <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNumeros"
+                                         label="Numeração utilizada"
+                                         funcao="relacaoNumeros"/>
+                            <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNfe"
+                                         label="Relação de NFe"
+                                         funcao="relacaoNfe"/>
+
+                            <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoXmlNfe"
+                                         label="Relação de XML"
+                                         funcao="relacaoXmlNfe"/>
+
+
+                        </ul>
+                    </li>
+
+
+                </ul>
+            </li>
+        </c:if>
+        <c:if test="#{seguranca.userNfce eq true }">
+            <li class="${fn:contains(view.viewId,'modulo/comercial/nfce/')?'active':''}">
+                <a href="#">NFce<span class="fa arrow"></span></a>
+                <ul class="nav nav-third-level">
+                    <!--<erp:subMenu caminho="/modulo/comercial/nfce/movimentoCaixa"-->
+                    <!--label="Movimentos Caixas"-->
+                    <!--funcao="movimentoCaixa"/>-->
+                    <erp:subMenu caminho="/modulo/comercial/nfce/pdv"
+                                 label="PDV"
+                                 funcao="pdv"/>
+                    <erp:subMenu caminho="/modulo/comercial/nfce/listaPdv"
+                                 label="Lista NFCe"
+                                 funcao="listaPdv"/>
+                    <erp:subMenu caminho="/modulo/comercial/nfce/nfceConfiguracao"
+                                 label="Configuração"
+                                 funcao="nfceConfiguracao"/>
+
+                </ul>
+            </li>
+
+        </c:if>
+
     </ul>
 
 

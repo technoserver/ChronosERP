@@ -40,13 +40,10 @@ public class TributIss implements Serializable {
     private Integer itemListaServico;
     @Column(name = "codigo_tributacao")
     private Character codigoTributacao;
-    //@Column(name = "indicador_incentivo_fiscal")
-    @Transient
+    @Column(name = "indicador_incentivo_fiscal")
     private Integer indicadorIncentivoFiscal;
-    // @Column(name = "indicador_exigibilidade")
-    @Transient
+    @Column(name = "indicador_exigibilidade")
     private Integer indicadorExigibilidade;
-
     @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     private TributOperacaoFiscal tributOperacaoFiscal;

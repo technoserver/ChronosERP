@@ -238,8 +238,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 valorPis = item.getNfeDetalheImpostoPis() == null ? BigDecimal.ZERO : valorPis.add(item.getNfeDetalheImpostoPis().getValorPis());
                 valorCofins = item.getNfeDetalheImpostoCofins() == null ? BigDecimal.ZERO : valorCofins.add(item.getNfeDetalheImpostoCofins().getValorCofins());
             }
-            valorTotalTributos = Optional.ofNullable(item.getValorTotalTributos()).orElse(BigDecimal.ZERO);
-            valorNotaFiscal = valorNotaFiscal.add(item.getValorTotal());
+
 
             String ncm = servico ? item.getProduto().getCodigoLst() : item.getNcm();
             List<Filtro> listaFiltro = new ArrayList<>();
@@ -254,7 +253,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
             }
 
         }
-        valorNotaFiscal = valorNotaFiscal.add(valorIpi).add(valorIcmsSt);
+        valorNotaFiscal = valorNotaFiscal.add(valorIpi).add(valorIcmsSt).add(totalProdutos);
         nfe.setValorFrete(valorFrete);
         nfe.setValorDespesasAcessorias(valorOutrasDespesas);
         nfe.setValorSeguro(valorSeguro);
@@ -280,13 +279,15 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setValorPis(valorPis);
         nfe.setValorCofins(valorCofins);
         nfe.setValorTotalTributos(valorTotalTributos);
-        nfe.setValorTotal(valorNotaFiscal);
+        nfe.setValorTotal(valorNotaFiscal.add(totalServicos));
         String msg = "Trib. Aprox. Federal R$ " + new DecimalFormat("#,###,##0.00").format(impostoFederal)
                 + " e R$ " + new DecimalFormat("#,###,##0.00").format(impostoEstadual) + " Estadual "
                 + "e R$ " + new DecimalFormat("#,###,##0.00").format(impostoMunicipal) + " Municipal Fonte IBPT";
 
 
         nfe.setInformacoesAddContribuinte(msg);
+
+
         return nfe;
     }
 
@@ -345,9 +346,13 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         tributos.setSeguro(item.getValorSeguro());
         boolean servico = item.getProduto().getServico() != null && item.getProduto().getServico().equals("S");
         tributos.setServico(servico);
-        boolean operacaoInterna = empresa.buscarEnderecoPrincipal().getUf().equals(destinatario.getUf());
+        boolean operacaoInterna = destinatario == null || destinatario.getId() == null || empresa.buscarEnderecoPrincipal().getUf().equals(destinatario.getUf());
         // Se houver CFOP cadastrado na Operaçao Fiscal, a nota é de serviços
         if (servico) {
+            if (StringUtils.isEmpty(empresa.getInscricaoMunicipal())) {
+                throw new Exception("IM não definida.");
+            }
+
             if (StringUtils.isEmpty(item.getProduto().getCodigoLst())) {
                 throw new Exception("Codigo LST do serviço não definido.");
             }
@@ -356,12 +361,12 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
 
             item.setCfop(operacaoInterna ? 5933 : 6933);
 
-            listaFiltro.add(new Filtro("idTributOperacaoFiscal", operacaoFiscal.getId()));
-            listaFiltro.add(new Filtro("idTributGrupoTributario", item.getProduto().getTributGrupoTributario().getId()));
+            listaFiltro.add(new Filtro("tributOperacaoFiscal.id", operacaoFiscal.getId()));
+
 
             // ISSQN
             // TributIss iss = operacaoFiscal.getListaIss().get(0);
-            ViewTributacaoIss iss = null;//issDao.get(ViewTributacaoIss.class, listaFiltro);
+            TributIss iss = issRepository.get(TributIss.class, listaFiltro);
             if (iss == null) {
                 throw new Exception("Não existe tributação de ISS definida para o " + item.getProduto().getNome() + " informados. Operação não realizada.");
             }
@@ -372,7 +377,8 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
             item.getNfeDetalheImpostoIssqn().setItemListaServicos(Integer.valueOf(item.getProduto().getCodigoLst().trim()));
             item.getNfeDetalheImpostoIssqn().setIndicadorExigibilidadeIss(iss.getIndicadorExigibilidade());
             item.getNfeDetalheImpostoIssqn().setIndicadorIncentivoFiscal(iss.getIndicadorIncentivoFiscal());
-
+            item.getNfeDetalheImpostoIssqn().setMunicipioIncidencia(operacaoInterna ? empresa.buscarEnderecoPrincipal().getMunicipioIbge() : destinatario.getCodigoMunicipio());
+            item.getNfeDetalheImpostoIssqn().setIndicadorIncentivoFiscal(iss.getIndicadorIncentivoFiscal());
             //   NfeCalculo calculo = NfeCalculoControll.calculoIss(nfeDetalhe);
         } else // ICMS
             // Se o Produto estiver vinculado a uma configuracao de Operacao

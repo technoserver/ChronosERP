@@ -280,9 +280,8 @@ public class NfeCabecalho implements Serializable {
         this.codigoModelo = codigoModelo;
     }
 
-    public NfeCabecalho(Integer id, Cliente cliente, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo, String qrcode) {
+    public NfeCabecalho(Integer id, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo, String qrcode) {
         this.id = id;
-        this.cliente = cliente;
         this.serie = serie;
         this.numero = numero;
         this.dataHoraEmissao = dataHoraEmissao;
@@ -1031,7 +1030,7 @@ public class NfeCabecalho implements Serializable {
      * @return
      */
     public BigDecimal getValorTotal() {
-        return valorTotal;
+        return Optional.ofNullable(valorTotal).orElse(BigDecimal.ZERO);
     }
 
     /**
@@ -1837,6 +1836,7 @@ public class NfeCabecalho implements Serializable {
      * vNF - Valor Total da NF-e [(+) vProd (id:W07) (-) vDesc (id:W10) (+) vICMSST (id:W06) (+) vFrete (id:W09) (+)
      * vSeg (id:W10) (+) vOutro (id:W15) (+) vII (id:W11) (+) vIPI (id:W12) (+) vServ (id:W19) (NT 2011/004)]
      */
+
     public BigDecimal calcularValorTotal() {
         valorTotal = BigDecimal.ZERO;
         calcularValores();
@@ -1853,6 +1853,7 @@ public class NfeCabecalho implements Serializable {
     }
 
     public void calcularValores() {
+
         valorTotalProdutos = getListaNfeDetalhe()
                 .stream().map(NfeDetalhe::getValorBrutoProduto)
                 .reduce(BigDecimal::add)
@@ -1864,6 +1865,7 @@ public class NfeCabecalho implements Serializable {
 
         getListaNfeDetalhe().stream().forEach(item -> {
             if (item.getNfeDetalheImpostoIcms() != null && item.getNfeDetalheImpostoIcms().getValorIcmsSt() != null) {
+                baseCalculoIcmsSt = getBaseCalculoIcmsSt().add(item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
                 valorIcmsSt = valorIcmsSt.add(item.getNfeDetalheImpostoIcms().getValorIcmsSt());
             }
 
@@ -1892,7 +1894,7 @@ public class NfeCabecalho implements Serializable {
     }
 
     public String valorTotalFormatado() {
-        return formatarValor(calcularValorTotal());
+        return formatarValor(getValorTotal());
     }
 
     private String formatarValor(BigDecimal valor) {

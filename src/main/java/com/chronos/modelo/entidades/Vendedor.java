@@ -47,6 +47,12 @@ public class Vendedor implements Serializable {
     public Vendedor() {
     }
 
+    public Vendedor(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+
+    }
+
     public Vendedor(Integer id, String nome, BigDecimal comissao) {
         this.id = id;
         this.nome = nome;

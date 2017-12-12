@@ -40,9 +40,7 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.text.ParseException;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 //cancelar
 //inutilizar
@@ -101,6 +99,7 @@ public class GeraXMLEnvio {
         TNFe.InfNFe.Cobr cobr = getCobr(nfeCabecalho.getFatura(), nfeCabecalho.getListaDuplicata());
         infNfe.setCobr(cobr);
 
+
         // detalhes
         for (NfeDetalhe nfeDetalhe : nfeCabecalho.getListaNfeDetalhe()) {
             boolean servico = nfeDetalhe.getProduto().getServico() != null && nfeDetalhe.getProduto().getServico().equals("S");
@@ -119,6 +118,7 @@ public class GeraXMLEnvio {
                     .setXProd("NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
         }
 
+
         // NFe Cabeçalho -- Totais
         Total total = getTotais(nfeCabecalho);
         infNfe.setTotal(total);
@@ -130,6 +130,9 @@ public class GeraXMLEnvio {
         enviNFe.setIdLote("1");
         enviNFe.setIndSinc("1");
         enviNFe.getNFe().add(nfe);
+
+
+        enviNFe.getNFe().get(0).getInfNFe().getPag().addAll(getPags(nfeCabecalho.getListaNfeFormaPagamento()));
 
         // Monta e Assina o XML
         enviNFe = Nfe.montaNfe(enviNFe, false);
@@ -147,15 +150,13 @@ public class GeraXMLEnvio {
             infNFeSupl.setQrCode(qrCode);
             enviNFe.getNFe().get(0).setInfNFeSupl(infNFeSupl);
 
-            Pag pag = new Pag();
-            pag.setTPag("01");
-            pag.setVPag(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorTotal()));
-            infNfe.getPag().add(pag);
+
         }
 
 
         return enviNFe;
     }
+
 
     public TEnvEvento cancelarNfe(String chave, String protocolo, String ambiente, String uf, String cnpj,
                                   String justificativa) throws ParseException {
@@ -1042,6 +1043,20 @@ public class GeraXMLEnvio {
         return cobr;
     }
 
+    private List<Pag> getPags(Set<NfeFormaPagamento> listaNfeFormaPagamento) {
+
+        List<Pag> pags = new ArrayList<>();
+
+        listaNfeFormaPagamento.stream().forEach(p -> {
+            Pag pag = new Pag();
+            pag.setTPag(p.getForma());
+            pag.setVPag(FormatValor.getInstance().formatarValor(p.getValor()));
+            pags.add(pag);
+        });
+
+        return pags;
+    }
+
 
     private InfAdic getInfAdic() {
         InfAdic infAdic = new TNFe.InfNFe.InfAdic();
@@ -1094,14 +1109,7 @@ public class GeraXMLEnvio {
             if (nfeCabecalho.getValorCofinsIssqn().compareTo(BigDecimal.ZERO) > 0) {
                 issqnTot.setVCOFINS(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorCofinsIssqn()));
             }
-            issqnTot.setDCompet(FormatValor.getInstance().formatarData(new Date()));
-        }
-
-        if (nfeCabecalho.getBaseCalculoPrevidencia().compareTo(BigDecimal.ZERO) > 0) {
-            TNFe.InfNFe.Total.RetTrib issRet = new TNFe.InfNFe.Total.RetTrib();
-            total.setRetTrib(issRet);
-            issRet.setVBCRetPrev(FormatValor.getInstance().formatarValor(nfeCabecalho.getBaseCalculoPrevidencia()));
-            issRet.setVRetPrev(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorRetidoPrevidencia()));
+            issqnTot.setDCompet(FormatValor.getInstance().formatarDataEUA(new Date()));
         }
 
         boolean valorRetido = false;
@@ -1110,13 +1118,9 @@ public class GeraXMLEnvio {
             valorRetido = true;
         } else if (nfeCabecalho.getValorRetidoCofins().compareTo(BigDecimal.ZERO) > 0) {
             valorRetido = true;
-        } else if (nfeCabecalho.getValorRetidoCofins().compareTo(BigDecimal.ZERO) > 0) {
+        } else if (nfeCabecalho.getValorRetidoIrrf().compareTo(BigDecimal.ZERO) > 0) {
             valorRetido = true;
         } else if (nfeCabecalho.getValorRetidoCsll().compareTo(BigDecimal.ZERO) > 0) {
-            valorRetido = true;
-        } else if (nfeCabecalho.getBaseCalculoIrrf().compareTo(BigDecimal.ZERO) > 0) {
-            valorRetido = true;
-        } else if (nfeCabecalho.getBaseCalculoPrevidencia().compareTo(BigDecimal.ZERO) > 0) {
             valorRetido = true;
         } else if (nfeCabecalho.getValorRetidoPrevidencia().compareTo(BigDecimal.ZERO) > 0) {
             valorRetido = true;

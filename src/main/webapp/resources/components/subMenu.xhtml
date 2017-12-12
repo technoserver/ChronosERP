@@ -2,21 +2,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:cc="http://java.sun.com/jsf/composite"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
     <!-- INTERFACE -->
     <cc:interface>
         <cc:attribute name="funcao" required="true"/>
         <cc:attribute name="caminho" required="true"/>
         <cc:attribute name="label" required="true"/>
+        <cc:attribute name="exibir" default="#{true}"/>
     </cc:interface>
 
     <!-- IMPLEMENTATION -->
     <cc:implementation>
-        <li class="${fn:contains(view.viewId,cc.attrs.funcao)?'active':''}">
-            <h:link outcome="#{cc.attrs.caminho}" value="#{cc.attrs.label}">
-                <cc:insertChildren/>
-            </h:link>
-        </li>
+        <c:if test="#{cc.attrs.exibir eq true }">
+            <li class="${fn:contains(view.viewId,cc.attrs.funcao)?'active':''}">
+                <h:link outcome="#{cc.attrs.caminho}" value="#{cc.attrs.label}">
+                    <cc:insertChildren/>
+                </h:link>
+            </li>
+        </c:if>
+
     </cc:implementation>
 </html>

@@ -24,6 +24,24 @@
     <ui:define name="gridDados">
 
         <erp:formularioGrid controller="#{nfeCabecalhoControll}" id="telaGrid">
+
+            <div class="row ">
+
+            </div>
+            <div class="row m-b">
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="numeroNfe" label="Numero"
+                                  nomeAtributo="#{nfeCabecalhoControll.numeroNfe}"/>
+
+
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                               label="Data Inicial" idComponente="dataInicial"
+                               nomeAtributo="#{nfeCabecalhoControll.dataInicial}"/>
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                               label="Data Final" idComponente="dataFinal"
+                               nomeAtributo="#{nfeCabecalhoControll.dataFinal}"/>
+            </div>
+
             <erp:gridDadosSemForm idDataTable="dataTableNfe" controller="#{nfeCabecalhoControll}">
                 <p:column headerText="Cliente" sortBy="#{row.cliente.pessoa.nome}">
                     <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
@@ -71,7 +89,7 @@
                                    actionListener="#{nfeCabecalhoControll.transmitirNfe}"
                                    rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeEnviar}"
                                    id="btnEnviarNfe">
-                        <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe"/>
+                        <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:panelCentroDetalhe"/>
                         <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
                     </h:commandLink>
 
@@ -106,7 +124,8 @@
 
                     <h:commandLink class="btn btn-default"
                                    title="Enviar Email" style="margin-left: 5px;"
-                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   action="#{nfeCabecalhoControll.enviarEmail}"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar and not empty nfeCabecalhoControll.objeto.destinatario.email}"
                                    id="btnEmail">
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
                     </h:commandLink>

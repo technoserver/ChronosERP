@@ -42,7 +42,7 @@ public class AbstractRelatorioControll implements Serializable {
     protected Empresa empresa;
 
     @PostConstruct
-    private void init() {
+    protected void init() {
         this.empresa = getEmpresaUsuario();
     }
 

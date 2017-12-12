@@ -419,6 +419,19 @@ public class Biblioteca {
         return dataF.getTime();
     }
 
+    public static Date dataPagamento(int dias) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new java.util.Date());
+        calendar.add(Calendar.DAY_OF_MONTH, dias);
+        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+            calendar.add(Calendar.DATE, 1); //Soma 1 dia pra cair na segunda feira
+
+        } else if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) {
+            calendar.add(Calendar.DATE, 2); //Soma 2 dias pra cair na segunda feira
+
+        }
+        return calendar.getTime();
+    }
 
 
     /**

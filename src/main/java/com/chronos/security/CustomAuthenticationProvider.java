@@ -18,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
@@ -99,12 +100,19 @@ public class CustomAuthenticationProvider extends ManualCDILookup implements Aut
         return type.equals(UsernamePasswordAuthenticationToken.class);
     }
 
-    private String getSenha(String usuario, String senha) {
+    private String getSenha(String usuario, String senhaDigitada) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String senhaCrip = (usuario + senha).replaceAll("a", "@").replaceAll("e", "3").replaceAll("i", "1").replaceAll("o", "0").replaceAll("u", "#");
-        senhaCrip += senhaCrip.length();
-        senhaCrip = passwordEncoder.encode(senhaCrip);
-        return senhaCrip;
+        String senhaEncodadaBD = (usuario + senhaDigitada).replaceAll("a", "@").replaceAll("e", "3").replaceAll("i", "1").replaceAll("o", "0").replaceAll("u", "#");
+        senhaEncodadaBD += senhaEncodadaBD.length();
+        PasswordEncoder passwordEnocder = new BCryptPasswordEncoder();
+        if (passwordEncoder.matches(senhaDigitada, senhaEncodadaBD)) {
+            // Senha válida
+        } else {
+            // Senha inválida
+        }
+        senhaEncodadaBD = passwordEncoder.encode(senhaEncodadaBD);
+
+        return senhaEncodadaBD;
     }
 
 }

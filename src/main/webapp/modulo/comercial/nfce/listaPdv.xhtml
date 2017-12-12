@@ -32,9 +32,7 @@
                          resizableColumns="true" lazy="true"
             >
 
-                <p:column headerText="Cliente" sortBy="#{row.cliente.pessoa.nome}">
-                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
-                </p:column>
+
                 <p:column headerText="Número" sortBy="#{row.numero}" width="120">
                     <h:outputLabel value="#{row.numero}">
                         <f:convertNumber type="number" parent="0"/>
@@ -60,22 +58,75 @@
                             value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
                 <p:column headerText="Ações" width="60">
-                    <h:commandLink class="btn btn-default"
-                                   title="Gerar Cupom"
-                                   action="#{nfceControll.danfe}"
-                                   rendered="#{row.podeCancelar}"
-                                   id="btnGerardanfe">
-                        <p:ajax disabled="true"/>
-                        <i class="fa fa-print" aria-hidden="true"></i>
-                        <f:setPropertyActionListener value="#{row}"
-                                                     target="#{nfceControll.vendaSelecionada}"/>
-                    </h:commandLink>
+                    <p:menuButton>
+                        <p:menuitem value="Cancelar NFCe"
+                                    icon="fa fa-ban"
+                                    update=":formJustificativaCancelamento:panelJustificativaCancelamento"
+                                    oncomplete="PF('dialogJustificativaCancelamento').show();"
+                        >
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{nfceControll.vendaSelecionada}"/>
+                        </p:menuitem>
+                        <p:menuitem value="Cupom"
+                                    icon="fa fa-print" ajax="false"
+                                    rendered="#{row.podeCancelar}"
+                                    action="#{nfceControll.danfe}">
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{nfceControll.vendaSelecionada}"/>
+                        </p:menuitem>
+                    </p:menuButton>
                 </p:column>
 
 
             </p:dataTable>
         </div>
 
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formJustificativaCancelamento">
+            <p:dialog id="dialogJustificativaCancelamento"
+                      header="Justificativa Cancelamento" responsive="true"
+                      widgetVar="dialogJustificativaCancelamento" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelJustificativaCancelamento">
+                    <div class="row">
+
+                        <erp:campoTexto idComponente="labelJustificativaCancelamento"
+                                        label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        nomeAtributo="#{nfceControll.justificativa}"
+                                        tamanhoMaximo="255" requerido="true" tamanhoMinimo="15">
+
+                        </erp:campoTexto>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Enviar"
+                                             actionListener="#{nfceControll.cancelarNfce()}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogJustificativaCancelamento').hide();}"
+                                        process="@form"
+                                        update="panelJustificativaCancelamento,:formCentro:growl"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogJustificativaCancelamento').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 

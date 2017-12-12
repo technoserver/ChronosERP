@@ -42,6 +42,8 @@ public interface Repository<T> {
 
     boolean existeRegisro(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
 
+    Object getObject(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException;
+
     T get(Integer id, Class<T> clazz) throws PersistenceException;
 
     T get(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
@@ -68,7 +70,8 @@ public interface Repository<T> {
     List<T> getEntitys(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
     
     List<T> getEntitys(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException;
-    
+
+    List<T> getEntitys(Class<T> clazz, String atributo, Object valor, Object[] atributos, Object[] joins) throws PersistenceException;
     
     List<T> getEntitys(Class<T> clazz) throws PersistenceException;    
     

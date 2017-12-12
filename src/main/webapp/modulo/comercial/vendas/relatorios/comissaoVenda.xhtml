@@ -25,6 +25,13 @@
         <div class="ibox-content">
             <div class="row">
 
+                <erp:campoSelect itens="#{vendaRelatorioControll.listaVendedor}"
+                                 styleClass="col-xs-12 col-sm-4 col-md-4"
+                                 idComponente="vendedor"
+                                 label="Vendedor"
+
+                                 nomeAtributo="#{vendaRelatorioControll.idvendedor}"/>
+
                 <erp:campoData nomeAtributo="#{vendaRelatorioControll.dataInicial}"
                                label="Data inicial"
                                idComponente="vencimentoDe"
