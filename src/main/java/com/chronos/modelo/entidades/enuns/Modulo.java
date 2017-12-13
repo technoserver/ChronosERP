@@ -6,7 +6,7 @@ package com.chronos.modelo.entidades.enuns;
 public enum Modulo {
     VENDA("210"), OS("220");
 
-    private Modulo(String codigo) {
+    Modulo(String codigo) {
         this.codigo = codigo;
     }
 

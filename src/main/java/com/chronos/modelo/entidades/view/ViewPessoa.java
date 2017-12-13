@@ -225,9 +225,7 @@ public class ViewPessoa implements Serializable {
 
         ViewPessoa that = (ViewPessoa) o;
 
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-
-        return true;
+        return id != null ? id.equals(that.id) : that.id == null;
     }
 
     @Override

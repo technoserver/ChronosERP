@@ -178,10 +178,7 @@ public class NfeDeclaracaoImportacao implements Serializable {
             return false;
         }
         final NfeDeclaracaoImportacao other = (NfeDeclaracaoImportacao) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

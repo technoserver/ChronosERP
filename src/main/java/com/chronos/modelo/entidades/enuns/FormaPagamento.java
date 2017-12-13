@@ -8,7 +8,7 @@ public enum FormaPagamento {
 
     private String codigo;
 
-    private FormaPagamento(String codigo) {
+    FormaPagamento(String codigo) {
         this.codigo = codigo;
     }
 

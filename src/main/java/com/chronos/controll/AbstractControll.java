@@ -517,7 +517,7 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public void doCreate() {
         try {
-            objeto = (T) getClazz().newInstance();
+            objeto = getClazz().newInstance();
             telaGrid = false;
             titulo = "Cadastrar";
             activeTabIndex = 0;

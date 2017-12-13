@@ -130,10 +130,7 @@ public class CompraRequisicao implements Serializable {
             return false;
         }
         final CompraRequisicao other = (CompraRequisicao) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

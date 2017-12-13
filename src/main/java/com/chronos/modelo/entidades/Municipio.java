@@ -133,10 +133,7 @@ public class Municipio implements Serializable {
             return false;
         }
         final Municipio other = (Municipio) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

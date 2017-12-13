@@ -67,7 +67,15 @@
         </c:if>
 
         <c:if test="#{seguranca.userOs eq true }">
+            <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/')?'active':''}">
+                <a href="#">OS<span class="fa arrow"></span></a>
+                <ul class="nav nav-third-level">
+                    <erp:subMenu caminho="/modulo/comercial/os/equipammentos"
+                                 label="Equipamento"
+                                 funcao="equipamento"/>
+                </ul>
 
+            </li>
         </c:if>
 
         <c:if test="#{seguranca.userNfe eq true }">

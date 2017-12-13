@@ -117,10 +117,7 @@ public class Uf implements Serializable {
             return false;
         }
         final Uf other = (Uf) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

@@ -132,10 +132,7 @@ public class FinStatusParcela implements Serializable {
             return false;
         }
         final FinStatusParcela other = (FinStatusParcela) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

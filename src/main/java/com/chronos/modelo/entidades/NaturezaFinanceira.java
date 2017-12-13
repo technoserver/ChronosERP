@@ -149,10 +149,7 @@ public class NaturezaFinanceira implements Serializable {
             return false;
         }
         final NaturezaFinanceira other = (NaturezaFinanceira) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

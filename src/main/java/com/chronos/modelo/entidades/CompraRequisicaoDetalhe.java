@@ -153,10 +153,7 @@ public class CompraRequisicaoDetalhe implements Serializable {
         if (!Objects.equals(this.compraRequisicao, other.compraRequisicao)) {
             return false;
         }
-        if (!Objects.equals(this.produto, other.produto)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.produto, other.produto);
     }
 
 }

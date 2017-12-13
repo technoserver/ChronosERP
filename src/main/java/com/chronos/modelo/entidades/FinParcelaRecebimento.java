@@ -224,10 +224,7 @@ public class FinParcelaRecebimento implements Serializable {
             return false;
         }
         final FinParcelaRecebimento other = (FinParcelaRecebimento) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

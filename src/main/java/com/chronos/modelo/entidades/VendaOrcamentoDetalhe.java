@@ -151,10 +151,7 @@ public class VendaOrcamentoDetalhe implements Serializable {
             return false;
         }
         final VendaOrcamentoDetalhe other = (VendaOrcamentoDetalhe) obj;
-        if (!Objects.equals(this.produto, other.produto)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.produto, other.produto);
     }
 
     

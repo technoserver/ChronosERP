@@ -176,10 +176,7 @@ public class Vendedor implements Serializable {
             return false;
         }
         final Vendedor other = (Vendedor) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 

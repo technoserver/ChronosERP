@@ -69,10 +69,7 @@ public class NfceCaixa implements Serializable {
             return false;
         }
         final NfceCaixa other = (NfceCaixa) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

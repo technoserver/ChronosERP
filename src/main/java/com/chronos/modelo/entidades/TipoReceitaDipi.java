@@ -61,10 +61,7 @@ public class TipoReceitaDipi implements Serializable {
             return false;
         }
         final TipoReceitaDipi other = (TipoReceitaDipi) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
  

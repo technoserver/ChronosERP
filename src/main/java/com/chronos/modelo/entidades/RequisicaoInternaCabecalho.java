@@ -94,10 +94,7 @@ public class RequisicaoInternaCabecalho implements Serializable {
             return false;
         }
         final RequisicaoInternaCabecalho other = (RequisicaoInternaCabecalho) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
    
    

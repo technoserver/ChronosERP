@@ -123,10 +123,7 @@ public class NfceResolucao implements Serializable {
             return false;
         }
         final NfceResolucao other = (NfceResolucao) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

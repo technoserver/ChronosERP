@@ -100,9 +100,6 @@ public class ProdutoSubGrupo implements Serializable {
             return false;
         }
         final ProdutoSubGrupo other = (ProdutoSubGrupo) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 }

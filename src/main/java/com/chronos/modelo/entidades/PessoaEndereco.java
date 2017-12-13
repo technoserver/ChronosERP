@@ -203,10 +203,7 @@ public class PessoaEndereco implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.principal, other.principal)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.principal, other.principal);
     }
 
     @Override

@@ -109,10 +109,7 @@ public class CompraCotacaoPedidoDetalhe implements Serializable {
             return false;
         }
         final CompraCotacaoPedidoDetalhe other = (CompraCotacaoPedidoDetalhe) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

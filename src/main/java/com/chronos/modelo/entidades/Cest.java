@@ -117,10 +117,7 @@ public class Cest implements Serializable {
             return false;
         }
         final Cest other = (Cest) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
    

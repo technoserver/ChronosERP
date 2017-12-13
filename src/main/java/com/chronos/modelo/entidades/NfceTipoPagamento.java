@@ -108,10 +108,7 @@ public class NfceTipoPagamento implements Serializable {
             return false;
         }
         final NfceTipoPagamento other = (NfceTipoPagamento) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

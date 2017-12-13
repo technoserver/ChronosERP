@@ -8,7 +8,7 @@ public enum TipoFrete {
 
     private String codigo;
 
-    private TipoFrete(String codigo) {
+    TipoFrete(String codigo) {
         this.codigo = codigo;
     }
 

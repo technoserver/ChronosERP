@@ -21,7 +21,7 @@ public abstract class ManualCDILookup {
 
     public <T> T getFacadeWithJNDI(Class<T> classToFind) {
         BeanManager bm = getBeanManager();
-        Set<Bean<?>> beans = (Set<Bean<?>>) bm.getBeans(classToFind);
+        Set<Bean<?>> beans = bm.getBeans(classToFind);
         if (beans == null || beans.isEmpty()) {
             return null;
         }

@@ -119,10 +119,7 @@ public class FinDocumentoOrigem implements Serializable {
             return false;
         }
         final FinDocumentoOrigem other = (FinDocumentoOrigem) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

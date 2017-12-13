@@ -267,10 +267,7 @@ public class Convenio implements Serializable {
             return false;
         }
         final Convenio other = (Convenio) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

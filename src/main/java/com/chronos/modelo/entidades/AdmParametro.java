@@ -30,9 +30,7 @@ package com.chronos.modelo.entidades;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.DecimalMax;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 
@@ -152,10 +150,7 @@ public class AdmParametro implements Serializable {
             return false;
         }
         final AdmParametro other = (AdmParametro) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

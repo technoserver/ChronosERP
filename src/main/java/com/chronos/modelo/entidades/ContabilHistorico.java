@@ -118,10 +118,7 @@ public class ContabilHistorico implements Serializable {
             return false;
         }
         final ContabilHistorico other = (ContabilHistorico) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

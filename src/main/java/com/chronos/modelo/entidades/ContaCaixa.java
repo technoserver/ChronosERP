@@ -222,10 +222,7 @@ public class ContaCaixa implements Serializable {
         if (!Objects.equals(this.codigo, other.codigo)) {
             return false;
         }
-        if (!Objects.equals(this.digito, other.digito)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.digito, other.digito);
     }
 
     

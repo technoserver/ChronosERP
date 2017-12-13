@@ -144,10 +144,7 @@ public class ViewTributacaoCofins implements Serializable {
             return false;
         }
         final ViewTributacaoCofins other = (ViewTributacaoCofins) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 

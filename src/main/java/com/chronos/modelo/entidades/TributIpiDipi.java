@@ -143,10 +143,7 @@ public class TributIpiDipi implements Serializable {
             return false;
         }
         final TributIpiDipi other = (TributIpiDipi) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
  

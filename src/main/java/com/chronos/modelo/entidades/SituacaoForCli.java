@@ -107,10 +107,7 @@ public class SituacaoForCli implements Serializable {
             return false;
         }
         final SituacaoForCli other = (SituacaoForCli) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

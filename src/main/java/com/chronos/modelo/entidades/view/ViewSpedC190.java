@@ -153,10 +153,7 @@ public class ViewSpedC190 implements Serializable {
             return false;
         }
         final ViewSpedC190 other = (ViewSpedC190) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

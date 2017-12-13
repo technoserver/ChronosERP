@@ -182,10 +182,7 @@ public class FinCobranca implements Serializable {
             return false;
         }
         final FinCobranca other = (FinCobranca) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

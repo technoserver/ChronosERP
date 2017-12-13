@@ -450,10 +450,7 @@ public class VendaCabecalho implements Serializable {
             return false;
         }
         final VendaCabecalho other = (VendaCabecalho) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

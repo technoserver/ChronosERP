@@ -104,11 +104,7 @@ public class TipoRelacionamento implements Serializable {
             return false;
         }
         final TipoRelacionamento other = (TipoRelacionamento) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

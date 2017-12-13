@@ -101,10 +101,7 @@ public class Ncm implements Serializable {
             return false;
         }
         final Ncm other = (Ncm) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

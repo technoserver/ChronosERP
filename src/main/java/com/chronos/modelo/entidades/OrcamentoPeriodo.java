@@ -83,10 +83,7 @@ public class OrcamentoPeriodo implements Serializable {
             return false;
         }
         final OrcamentoPeriodo other = (OrcamentoPeriodo) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 

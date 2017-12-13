@@ -1960,9 +1960,6 @@ public class NfeCabecalho implements Serializable {
             return false;
         }
         final NfeCabecalho other = (NfeCabecalho) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 }

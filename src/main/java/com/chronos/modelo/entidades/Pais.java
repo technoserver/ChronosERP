@@ -126,10 +126,7 @@ public class Pais implements Serializable {
             return false;
         }
         final Pais other = (Pais) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

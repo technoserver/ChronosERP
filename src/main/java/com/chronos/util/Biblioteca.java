@@ -157,7 +157,7 @@ public class Biblioteca {
                 // converte o i-esimo caractere do CNPJ em um numero:
                 // por exemplo, transforma o caractere '0' no inteiro 0
                 // (48 eh a posicao de '0' na tabela ASCII)
-                num = (int) (cnpj.charAt(i) - 48);
+                num = cnpj.charAt(i) - 48;
                 sm = sm + (num * peso);
                 peso = peso + 1;
                 if (peso == 10) {
@@ -176,7 +176,7 @@ public class Biblioteca {
             sm = 0;
             peso = 2;
             for (i = 12; i >= 0; i--) {
-                num = (int) (cnpj.charAt(i) - 48);
+                num = cnpj.charAt(i) - 48;
                 sm = sm + (num * peso);
                 peso = peso + 1;
                 if (peso == 10) {
@@ -193,11 +193,7 @@ public class Biblioteca {
 
             // Verifica se os digitos calculados conferem com os digitos
             // informados.
-            if ((dig13 == cnpj.charAt(12)) && (dig14 == cnpj.charAt(13))) {
-                return true;
-            } else {
-                return false;
-            }
+            return (dig13 == cnpj.charAt(12)) && (dig14 == cnpj.charAt(13));
         } catch (Exception e) {
             return (false);
         }
@@ -228,7 +224,7 @@ public class Biblioteca {
                 // converte o i-esimo caractere do CPF em um numero:
                 // por exemplo, transforma o caractere '0' no inteiro 0
                 // (48 eh a posicao de '0' na tabela ASCII)
-                num = (int) (cpf.charAt(i) - 48);
+                num = cpf.charAt(i) - 48;
                 sm = sm + (num * peso);
                 peso = peso - 1;
             }
@@ -244,7 +240,7 @@ public class Biblioteca {
             sm = 0;
             peso = 11;
             for (i = 0; i < 10; i++) {
-                num = (int) (cpf.charAt(i) - 48);
+                num = cpf.charAt(i) - 48;
                 sm = sm + (num * peso);
                 peso = peso - 1;
             }
@@ -258,11 +254,7 @@ public class Biblioteca {
 
             // Verifica se os digitos calculados conferem com os digitos
             // informados.
-            if ((dig10 == cpf.charAt(9)) && (dig11 == cpf.charAt(10))) {
-                return true;
-            } else {
-                return false;
-            }
+            return (dig10 == cpf.charAt(9)) && (dig11 == cpf.charAt(10));
         } catch (Exception e) {
             return false;
         }

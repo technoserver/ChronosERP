@@ -142,7 +142,6 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         jpql += " where 1=1 ";
         jpql = montaQuery(jpql, null, null, filtros);
         Query q = queryPrepared(jpql, filtros);
-        ;
 
         q.executeUpdate();
     }

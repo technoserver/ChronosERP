@@ -254,10 +254,7 @@ public class TributIcmsUf implements Serializable {
             return false;
         }
         final TributIcmsUf other = (TributIcmsUf) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

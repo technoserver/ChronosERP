@@ -518,7 +518,6 @@ public class NfceControll implements Serializable {
         item = new NfeDetalhe();
         item.setNfeCabecalho(venda);
         item.setQuantidadeComercial(BigDecimal.ONE);
-        ;
     }
 
     public void salvaProduto() {

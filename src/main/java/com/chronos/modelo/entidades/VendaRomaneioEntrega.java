@@ -142,10 +142,7 @@ public class VendaRomaneioEntrega implements Serializable {
             return false;
         }
         final VendaRomaneioEntrega other = (VendaRomaneioEntrega) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

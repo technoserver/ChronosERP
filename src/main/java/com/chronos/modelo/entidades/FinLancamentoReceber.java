@@ -262,10 +262,7 @@ public class FinLancamentoReceber implements Serializable {
             return false;
         }
         final FinLancamentoReceber other = (FinLancamentoReceber) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

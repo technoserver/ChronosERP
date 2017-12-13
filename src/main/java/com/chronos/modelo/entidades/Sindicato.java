@@ -264,10 +264,7 @@ public class Sindicato  implements Serializable {
             return false;
         }
         final Sindicato other = (Sindicato) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
    

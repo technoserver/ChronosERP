@@ -18,7 +18,7 @@ public class OsEquipamentoControll extends AbstractControll<OsEquipamento> imple
 
     @Override
     protected Class<OsEquipamento> getClazz() {
-        return null;
+        return OsEquipamento.class;
     }
 
     @Override
