@@ -474,10 +474,7 @@ public class Empresa implements Serializable {
             return false;
         }
         final Empresa other = (Empresa) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

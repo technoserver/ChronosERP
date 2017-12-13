@@ -266,10 +266,7 @@ public class FinParcelaPagar implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.numeroParcela, other.numeroParcela)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.numeroParcela, other.numeroParcela);
     }
 
     

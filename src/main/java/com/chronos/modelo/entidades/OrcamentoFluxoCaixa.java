@@ -133,10 +133,7 @@ public class OrcamentoFluxoCaixa implements Serializable {
             return false;
         }
         final OrcamentoFluxoCaixa other = (OrcamentoFluxoCaixa) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
    

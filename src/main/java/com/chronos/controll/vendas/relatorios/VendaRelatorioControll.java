@@ -1,12 +1,16 @@
 package com.chronos.controll.vendas.relatorios;
 
 import com.chronos.controll.AbstractRelatorioControll;
+import com.chronos.modelo.entidades.Vendedor;
+import com.chronos.repository.Repository;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by john on 18/09/17.
@@ -16,9 +20,26 @@ import java.util.HashMap;
 public class VendaRelatorioControll extends AbstractRelatorioControll implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Inject
+    private Repository<Vendedor> vendedorRepository;
 
     private Date dataInicial;
     private Date dataFinal;
+    private Integer idvendedor;
+
+    private Map<String, Integer> listaVendedor;
+
+    @PostConstruct
+    @Override
+    protected void init() {
+        super.init();
+        List<Vendedor> list = vendedorRepository.getEntitys(Vendedor.class, new ArrayList<>(), new Object[]{"colaborador.pessoa.nome"});
+        list.add(0, new Vendedor(0, "TODOS"));
+        listaVendedor = new LinkedHashMap<>();
+        listaVendedor.putAll(list.stream()
+                .collect(Collectors.toMap((Vendedor::getNome), Vendedor::getId)));
+
+    }
 
     public void imprimirPedido(int id) {
         parametros = new HashMap<>();
@@ -67,6 +88,9 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         parametros.put("dataInicial", dataInicial);
         parametros.put("dataFinal", dataFinal);
         parametros.put("idempresa", empresa.getId());
+        if (idvendedor > 0) {
+            parametros.put("idvendedor", idvendedor);
+        }
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "relacaoComissoes.jasper";
 
@@ -89,12 +113,12 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         parametros.put("peridoInicial", dataInicial);
         parametros.put("peridoFinal", dataFinal);
         parametros.put("idempresa", empresa.getId());
+
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "relacaoClientesVenda.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "clientesMaisCompram.pdf");
     }
-
 
 
     public Date getDataInicial() {
@@ -111,5 +135,21 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void setDataFinal(Date dataFinal) {
         this.dataFinal = dataFinal;
+    }
+
+    public Integer getIdvendedor() {
+        return idvendedor;
+    }
+
+    public void setIdvendedor(Integer idvendedor) {
+        this.idvendedor = idvendedor;
+    }
+
+    public Map<String, Integer> getListaVendedor() {
+        return listaVendedor;
+    }
+
+    public void setListaVendedor(Map<String, Integer> listaVendedor) {
+        this.listaVendedor = listaVendedor;
     }
 }

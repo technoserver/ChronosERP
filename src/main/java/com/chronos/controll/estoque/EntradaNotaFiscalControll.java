@@ -17,12 +17,14 @@ import org.apache.commons.io.FileUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -57,7 +59,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private EstoqueRepository estoques;
     @Inject
     private Repository<TributOperacaoFiscal> operacoes;
-
+    @Inject
+    private Repository<VendaCondicoesPagamento> pagamentoRepository;
 
     @Inject
     private EntradaNotaFiscalService entradaService;
@@ -98,6 +101,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private int tipoCstIcms;
     private boolean valoresValido;
     private boolean podeIncluirProduto;
+
+
+    private NaturezaFinanceira naturezaFinanceira;
+    private ContaCaixa contaCaixa;
 
 
     @Override
@@ -284,7 +291,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                     throw new Exception("Essa nota já foi  digitada pra esse fornecedor !");
                 }
                 verificaProdutoNaoCadastrado(true);
-
+                getObjeto().setDataHoraEntradaSaida(new Date());
                 Mensagem.addInfoMessage("XML importados com sucesso!");
             }
         } catch (Exception ex) {
@@ -499,6 +506,79 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             Mensagem.addErrorMessage("Ocorreu um erro ao buscar os dados do produto.", e);
         }
         return produtoNaoCadastrado;
+    }
+
+    // </editor-fold>
+
+
+    // <editor-fold defaultstate="collapsed" desc="Crud Duplicatas">
+    public void incluirDuplicata() {
+
+        duplicata = new NfeDuplicata();
+        if (contaCaixa == null || naturezaFinanceira == null) {
+            FacesContext.getCurrentInstance().validationFailed();
+            Mensagem.addErrorMessage("É preciso seleciona a natureza e a conta caixa !!!");
+        }
+
+    }
+
+    public void alterarDuplicata() {
+        duplicata = duplicataSelecionada;
+    }
+
+    public void salvarDuplicata() {
+        try {
+            if (condicao != null) {
+                getObjeto().getListaDuplicata().clear();
+                gerarDuplicatas();
+            } else {
+                BigDecimal valorTotalDuplicata = BigDecimal.ZERO;
+                for (NfeDuplicata d : getObjeto().getListaDuplicata()) {
+                    valorTotalDuplicata = Biblioteca.soma(valorTotalDuplicata, d.getValor());
+                }
+                valorTotalDuplicata = Biblioteca.soma(valorTotalDuplicata, duplicata.getValor());
+                if (valorTotalDuplicata.compareTo(getObjeto().getValorTotal()) > 0) {
+                    Mensagem.addInfoMessage("Valor acima do valor total da nota");
+                } else if (!getObjeto().getListaDuplicata().contains(duplicata)) {
+                    Mensagem.addInfoMessage("Registro alterado!");
+                    getObjeto().getListaDuplicata().add(duplicata);
+                } else {
+                    getObjeto().getListaDuplicata().add(duplicata);
+                    int i = 0;
+
+                    for (NfeDuplicata d : getObjeto().getListaDuplicata()) {
+                        i++;
+                        d.setNumero(getObjeto().getNumero() + "/" + i);
+                    }
+                }
+
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+
+    }
+
+    private void gerarDuplicatas() throws Exception {
+        getObjeto().setIndicadorFormaPagamento(1);
+
+        int numero = 0;
+        condicao = pagamentoRepository.getEntityJoinFetch(condicao.getId(), VendaCondicoesPagamento.class);
+        for (VendaCondicoesParcelas p : condicao.getParcelas()) {
+
+            numero++;
+
+            NfeDuplicata d = new NfeDuplicata();
+            d.setNfeCabecalho(getObjeto());
+            d.setNumero(Integer.valueOf(getObjeto().getNumero()) + "/" + String.valueOf(numero));
+            d.setValor(Biblioteca.multiplica(getObjeto().getValorTotal(), p.getTaxa()).divide(BigDecimal.valueOf(100), RoundingMode.HALF_DOWN));
+            d.setDataVencimento(Biblioteca.dataPagamento(p.getDias()));
+            getObjeto().getListaDuplicata().add(d);
+
+        }
+
     }
 
     // </editor-fold>

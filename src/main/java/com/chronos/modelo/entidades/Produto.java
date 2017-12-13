@@ -148,13 +148,14 @@ public class Produto implements Serializable {
     }
 
 
-    public Produto(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, String ncm, UnidadeProduto unidadeProduto) {
+    public Produto(Integer id, String nome, String servico, BigDecimal valorVenda, BigDecimal quantidadeEstoque, String ncm, UnidadeProduto unidadeProduto) {
         this.id = id;
         this.nome = nome;
         this.valorVenda = valorVenda;
         this.quantidadeEstoque = quantidadeEstoque;
         this.ncm = ncm;
         this.unidadeProduto = unidadeProduto;
+        this.servico = servico;
     }
 
 
@@ -634,10 +635,7 @@ public class Produto implements Serializable {
             return false;
         }
         final Produto other = (Produto) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

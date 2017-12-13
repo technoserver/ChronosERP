@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+    <ul class="nav nav-second-level collapse ">
+        <c:if test="#{seguranca.userEstoque eq true }">
+            <li class="${fn:contains(view.viewId,'estoque')?'active':''}">
+                <a href="#">
+                    <span class="nav-label">Estoque</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-third-level collapse ">
+                    <li class="${fn:contains(view.viewId,'modulo/estoque/')?'active':''}">
+                        <!--<erp:subMenu caminho="/modulo/estoque/estoqueFormacaoPreco"-->
+                        <!--label="Formação Preço"-->
+                        <!--funcao="estoqueFormacaoPreco"/>-->
+                        <!--<erp:subMenu caminho="/modulo/estoque/requisicaoInternaCabecalho"-->
+                        <!--label="Requisição Interna"-->
+                        <!--funcao="requisicaoInternaCabecalho"/>-->
+                        <erp:subMenu caminho="/modulo/estoque/estoqueReajuste"
+                                     label="Reajuste"
+                                     funcao="estoqueReajuste"/>
+                        <erp:subMenu caminho="/modulo/estoque/entradaNotaFiscal"
+                                     label="Entra NFe"
+                                     funcao="entradaNotaFiscal"/>
+                    </li>
+                    <li class="${fn:contains(view.viewId,'modulo/estoque/relatorios/')?'active':''}">
+                        <a href="#">Relatorios <span class="fa arrow"></span></a>
+                        <ul class="nav nav-bedroom-level">
+                            <erp:subMenu caminho="/modulo/estoque/relatorios/relacaoEntradas"
+                                         label="Entradas"
+                                         funcao="relacaoEntradas"/>
+
+
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </c:if>
+
+        <c:if test="#{seguranca.userCompras eq true }">
+            <!--Menu Compras-->
+            <li class="${fn:contains(view.viewId,'compras')?'active':''}">
+                <a href="#">
+                    <span class="nav-label">Compras</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-third-level collapse ">
+                    <li class="${fn:contains(view.viewId,'modulo/compras/')?'active':''}">
+                        <!--<erp:subMenu caminho="/modulo/compras/compraRequisicao"-->
+                        <!--label="Requisição"-->
+                        <!--funcao="compraRequisicao"/>-->
+                        <!--<erp:subMenu caminho="/modulo/compras/compraCotacao"-->
+                        <!--label="Cotação"-->
+                        <!--funcao="compraCotacao"/>-->
+                        <!--<erp:subMenu caminho="/modulo/compras/compraMapaComparativo"-->
+                        <!--label="Mapa Comparativo"-->
+                        <!--funcao="compraMapaComparativo"/>-->
+                        <erp:subMenu caminho="/modulo/compras/compraPedido"
+                                     label="Pedido"
+                                     funcao="compraPedido"/>
+                        <!--<erp:subMenu caminho="/modulo/compras/compraSugerida"-->
+                        <!--label="Compra Sugerida"-->
+                        <!--funcao="compraSugerida"/>-->
+
+                    </li>
+                </ul>
+            </li>
+        </c:if>
+
+
+    </ul>
+
+
+</ui:composition>

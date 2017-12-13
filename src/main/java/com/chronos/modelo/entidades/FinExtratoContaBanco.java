@@ -208,10 +208,7 @@ public class FinExtratoContaBanco implements Serializable {
         if (!Objects.equals(this.ano, other.ano)) {
             return false;
         }
-        if (!Objects.equals(this.documento, other.documento)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.documento, other.documento);
     }
     
     

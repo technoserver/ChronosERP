@@ -45,7 +45,7 @@ public class StatusNfeControll implements Serializable {
     @PostConstruct
     private void initid() {
         titulo = "Consulta";
-        context = facesContext.getCurrentInstance().getExternalContext();
+        context = FacesContext.getCurrentInstance().getExternalContext();
     }
 
     public void consultaStatus() {

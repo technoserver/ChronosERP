@@ -207,10 +207,7 @@ public class FinFechamentoCaixaBanco implements Serializable {
         if (!Objects.equals(this.mes, other.mes)) {
             return false;
         }
-        if (!Objects.equals(this.ano, other.ano)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.ano, other.ano);
     }
     
     

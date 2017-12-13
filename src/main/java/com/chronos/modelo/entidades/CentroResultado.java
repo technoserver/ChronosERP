@@ -94,10 +94,7 @@ public class CentroResultado implements Serializable {
             return false;
         }
         final CentroResultado other = (CentroResultado) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

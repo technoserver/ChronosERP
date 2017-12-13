@@ -25,6 +25,7 @@ public class ProdutoDTO implements Serializable {
     private Integer idgrupotributario;
     private Integer idicms;
     private String unidade;
+    private String servico;
 
 
     private Produto produto;
@@ -32,7 +33,7 @@ public class ProdutoDTO implements Serializable {
     public ProdutoDTO() {
     }
 
-    public ProdutoDTO(Integer id, String nome, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
+    public ProdutoDTO(Integer id, String nome, String servico, String codigoLst, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
         this.id = id;
         this.nome = nome;
         this.valorVenda = valorVenda;
@@ -43,10 +44,11 @@ public class ProdutoDTO implements Serializable {
         this.imagem = imagem;
         this.idgrupotributario = idgrupotributario;
         this.idicms = idicms;
-
-        this.produto = new Produto(id, nome, valorVenda, quantidadeEstoque, ncm, new UnidadeProduto(0, unidade));
+        this.servico = servico;
+        this.produto = new Produto(id, nome, servico, valorVenda, quantidadeEstoque, ncm, new UnidadeProduto(0, unidade));
         this.produto.setImagem(imagem);
         this.produto.getUnidadeProduto().setPodeFracionar(podeFracionar);
+        this.produto.setCodigoLst(codigoLst);
         if (idgrupotributario != null) {
             produto.setTributGrupoTributario(new TributGrupoTributario(idgrupotributario));
         } else {

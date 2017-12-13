@@ -47,6 +47,8 @@ public class AdmModulo implements Serializable {
     private String codigo;
     @Column(name = "NOME")
     private String nome;
+    @Column(name = "ATIVO")
+    private String ativo;
     @Column(name = "DESCRICAO")
     private String descricao;
 
@@ -85,6 +87,14 @@ public class AdmModulo implements Serializable {
         this.descricao = descricao;
     }
 
+    public String getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(String ativo) {
+        this.ativo = ativo;
+    }
+
     @Override
     public String toString() {
         return nome;
@@ -106,10 +116,7 @@ public class AdmModulo implements Serializable {
             return false;
         }
         final AdmModulo other = (AdmModulo) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

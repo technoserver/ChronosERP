@@ -103,10 +103,7 @@ public class Cheque implements Serializable {
         if (!Objects.equals(this.numero, other.numero)) {
             return false;
         }
-        if (!Objects.equals(this.statusCheque, other.statusCheque)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.statusCheque, other.statusCheque);
     }
 
     

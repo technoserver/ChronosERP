@@ -133,10 +133,7 @@ public class TalonarioCheque implements Serializable {
         if (!Objects.equals(this.empresa, other.empresa)) {
             return false;
         }
-        if (!Objects.equals(this.contaCaixa, other.contaCaixa)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.contaCaixa, other.contaCaixa);
     }
 
     

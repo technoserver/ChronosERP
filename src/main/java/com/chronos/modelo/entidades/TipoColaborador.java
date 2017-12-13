@@ -94,10 +94,7 @@ public class TipoColaborador implements Serializable {
             return false;
         }
         final TipoColaborador other = (TipoColaborador) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

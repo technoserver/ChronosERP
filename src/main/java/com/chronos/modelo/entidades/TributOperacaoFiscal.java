@@ -279,10 +279,7 @@ public class TributOperacaoFiscal implements Serializable {
             return false;
         }
         final TributOperacaoFiscal other = (TributOperacaoFiscal) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

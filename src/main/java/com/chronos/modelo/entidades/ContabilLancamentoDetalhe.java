@@ -140,10 +140,7 @@ public class ContabilLancamentoDetalhe implements Serializable {
             return false;
         }
         final ContabilLancamentoDetalhe other = (ContabilLancamentoDetalhe) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

@@ -60,7 +60,7 @@ public class FinFluxoCaixaControll extends AbstractControll<ViewFinFluxoCaixaID>
 
         contaCaixa.put("Todas", 0);
         contaCaixa.putAll(contaRepository.getEntitys(ContaCaixa.class, new Object[]{"nome"}).stream()
-                .collect(Collectors.toMap(ContaCaixa::getNome, ContaCaixa::getId)));
+                .collect(Collectors.toMap(ContaCaixa::getNomeAux, ContaCaixa::getId)));
         listaFluxoCaixa = new ArrayList<>();
     }
 

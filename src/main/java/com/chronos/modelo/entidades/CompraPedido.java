@@ -380,10 +380,7 @@ public class CompraPedido implements Serializable {
             return false;
         }
         final CompraPedido other = (CompraPedido) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 

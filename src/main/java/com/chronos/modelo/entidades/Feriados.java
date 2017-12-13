@@ -157,10 +157,7 @@ public class Feriados  implements Serializable {
             return false;
         }
         final Feriados other = (Feriados) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

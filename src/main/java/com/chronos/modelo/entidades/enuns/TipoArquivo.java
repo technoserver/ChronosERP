@@ -15,5 +15,5 @@ public enum TipoArquivo {
     LogoEmpresa,
     Certificado,
     LogoTransmissao,
-    Configuracao;
+    Configuracao
 }

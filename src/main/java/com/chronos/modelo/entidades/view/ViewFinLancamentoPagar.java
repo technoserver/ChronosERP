@@ -377,11 +377,7 @@ public class ViewFinLancamentoPagar implements Serializable {
         if (id != null ? !id.equals(that.id) : that.id != null) return false;
         if (idLancamentoPagar != null ? !idLancamentoPagar.equals(that.idLancamentoPagar) : that.idLancamentoPagar != null)
             return false;
-        if (idParcelaPagar != null ? !idParcelaPagar.equals(that.idParcelaPagar) : that.idParcelaPagar != null)
-            return false;
-
-
-        return true;
+        return idParcelaPagar != null ? idParcelaPagar.equals(that.idParcelaPagar) : that.idParcelaPagar == null;
     }
 
     @Override

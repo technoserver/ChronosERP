@@ -58,6 +58,9 @@ public class ContaCaixa implements Serializable {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @NotNull
     private Empresa empresa;
+    @Transient
+    private String nomeAux;
+
   
 
     public ContaCaixa() {
@@ -186,8 +189,14 @@ public class ContaCaixa implements Serializable {
     public void setLimiteCobrancaJuro(Integer limiteCobrancaJuro) {
         this.limiteCobrancaJuro = limiteCobrancaJuro;
     }
-    
-    
+
+    public String getNomeAux() {
+        return nomeAux = this.nome + " - " + this.id;
+    }
+
+    public void setNomeAux(String nomeAux) {
+        this.nomeAux = nomeAux;
+    }
 
     @Override
     public int hashCode() {
@@ -213,10 +222,7 @@ public class ContaCaixa implements Serializable {
         if (!Objects.equals(this.codigo, other.codigo)) {
             return false;
         }
-        if (!Objects.equals(this.digito, other.digito)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.digito, other.digito);
     }
 
     

@@ -18,7 +18,7 @@ public enum AcaoLog {
     LOGIN("LOGIN"),
     BAIXA_PARCELA("BAIXA PARCELA");
 
-    private AcaoLog(String nome) {
+    AcaoLog(String nome) {
         this.nome = nome;
     }
 

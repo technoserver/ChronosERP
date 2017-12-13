@@ -502,10 +502,7 @@ public class NfceConfiguracao implements Serializable {
             return false;
         }
         final NfceConfiguracao other = (NfceConfiguracao) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

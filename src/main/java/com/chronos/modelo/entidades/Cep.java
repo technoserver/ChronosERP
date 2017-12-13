@@ -172,10 +172,7 @@ public class Cep implements Serializable {
             return false;
         }
         final Cep other = (Cep) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 

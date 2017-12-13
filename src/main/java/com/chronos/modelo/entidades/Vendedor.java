@@ -47,6 +47,12 @@ public class Vendedor implements Serializable {
     public Vendedor() {
     }
 
+    public Vendedor(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+
+    }
+
     public Vendedor(Integer id, String nome, BigDecimal comissao) {
         this.id = id;
         this.nome = nome;
@@ -170,10 +176,7 @@ public class Vendedor implements Serializable {
             return false;
         }
         final Vendedor other = (Vendedor) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 

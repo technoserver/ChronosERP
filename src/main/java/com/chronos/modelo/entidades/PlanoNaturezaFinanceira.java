@@ -141,10 +141,7 @@ public class PlanoNaturezaFinanceira implements Serializable {
             return false;
         }
         final PlanoNaturezaFinanceira other = (PlanoNaturezaFinanceira) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

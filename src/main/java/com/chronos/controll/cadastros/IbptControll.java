@@ -18,7 +18,6 @@ import javax.inject.Named;
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +67,7 @@ public class IbptControll extends AbstractControll<Ibpt> implements Serializable
         }
     }
 
-    public Ibpt importarTabela(String[] linha) throws ParseException, Exception {
+    public Ibpt importarTabela(String[] linha) throws Exception {
 
         Ibpt tb = null;
         if (linha.length > 10) {

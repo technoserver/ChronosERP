@@ -11,22 +11,22 @@ import com.chronos.modelo.entidades.NotaFiscalTipo;
 public interface Constantes {
 
 
-    public static String DIRETORIO_SCHEMA_NFE = "/modulo/comercial/nfe/schemas/";
-    public static final String JASPERNFE = "DanfeRetrato";
-    public static final String JASPERNFCE = "danfeNfce";
-    public static final String CAMINHODANFE = "/com/chronos/erplight/relatorios/comercial/nfe";
-    public static int DECIMAIS_QUANTIDADE = 3;
-    public static int DECIMAIS_VALOR = 2;
+    String DIRETORIO_SCHEMA_NFE = "/modulo/comercial/nfe/schemas/";
+    String JASPERNFE = "DanfeRetrato";
+    String JASPERNFCE = "danfeNfce";
+    String CAMINHODANFE = "/com/chronos/erplight/relatorios/comercial/nfe";
+    int DECIMAIS_QUANTIDADE = 3;
+    int DECIMAIS_VALOR = 2;
 
     interface FIN{
-        public static FinStatusParcela STATUS_ABERTO = new FinStatusParcela(1);
-        public static FinStatusParcela STATUS_QUITADO = new FinStatusParcela(2);
-        public static FinStatusParcela STATUS_PARCIAL = new FinStatusParcela(3);
-        public static FinTipoRecebimento CHEQUE = new FinTipoRecebimento(1);
-        public static NaturezaFinanceira NATUREZA_VENDA = new NaturezaFinanceira(57);
+        FinStatusParcela STATUS_ABERTO = new FinStatusParcela(1);
+        FinStatusParcela STATUS_QUITADO = new FinStatusParcela(2);
+        FinStatusParcela STATUS_PARCIAL = new FinStatusParcela(3);
+        FinTipoRecebimento CHEQUE = new FinTipoRecebimento(1);
+        NaturezaFinanceira NATUREZA_VENDA = new NaturezaFinanceira(57);
     }
 
     interface COMERCIAL {
-        public static NotaFiscalTipo TIPO_NFE = new NotaFiscalTipo();
+        NotaFiscalTipo TIPO_NFE = new NotaFiscalTipo();
     }
 }

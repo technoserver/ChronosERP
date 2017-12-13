@@ -2,6 +2,7 @@ package com.chronos.controll.nfe;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.dto.ConfEmail;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.exception.EmissorException;
@@ -15,6 +16,7 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.util.jsf.Mensagem;
+import com.chronos.util.mail.EnvioEmail;
 import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
@@ -68,6 +70,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private boolean duplicidade;
     private boolean dadosSalvos;
     private String justificativa;
+    private int numeroNfe;
+    private Date dataInicial;
+    private Date dataFinal;
 
     @PostConstruct
     @Override
@@ -395,7 +400,6 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
         }
     }
-
     public void cancelaNfe() {
 
         try {
@@ -403,11 +407,6 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             configuracao = configuracao != null ? configuracao : configuraNfe();
             boolean cancelado = nfeService.cancelarNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
             if (cancelado) {
-                // atualiza o estoque
-                for (NfeDetalhe nfeDetalhe : getObjeto().getListaNfeDetalhe()) {
-
-                    estoqueRepositoy.atualizaEstoqueEmpresa(empresa.getId(), nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial());
-                }
                 Mensagem.addInfoMessage("NFe cancelada com sucesso");
             }
 
@@ -425,6 +424,27 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao enviar a carta de correção!", e);
+        }
+    }
+
+    public void enviarEmail() {
+
+        try {
+            configuracao = configuracao != null ? configuracao : configuraNfe();
+            ConfEmail confEmail = new ConfEmail();
+            confEmail.setHost(configuracao.getEmailServidorSmtp());
+            confEmail.setPorta(configuracao.getEmailPorta());
+            confEmail.setSsl(configuracao.getEmailAutenticaSsl().equals("S"));
+            confEmail.setUsuario(configuracao.getEmailUsuario());
+            confEmail.setSenha(configuracao.getEmailSenha());
+            confEmail.setTsl(!configuracao.getEmailAutenticaSsl().equals("S"));
+            EnvioEmail envio = new EnvioEmail();
+            envio.enviarNfeEmail(confEmail, getObjeto());
+            System.out.print("teste");
+            Mensagem.addInfoMessage("Email enviado com sucesso");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Ocorreu um erro ao enviar email!", ex);
         }
     }
 
@@ -704,6 +724,30 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     public void setTipoPagamento(NfceTipoPagamento tipoPagamento) {
         this.tipoPagamento = tipoPagamento;
+    }
+
+    public int getNumeroNfe() {
+        return numeroNfe;
+    }
+
+    public void setNumeroNfe(int numeroNfe) {
+        this.numeroNfe = numeroNfe;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
     }
 
 // </editor-fold>

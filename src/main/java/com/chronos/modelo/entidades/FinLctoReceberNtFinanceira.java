@@ -130,10 +130,7 @@ public class FinLctoReceberNtFinanceira implements Serializable {
             return false;
         }
         final FinLctoReceberNtFinanceira other = (FinLctoReceberNtFinanceira) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

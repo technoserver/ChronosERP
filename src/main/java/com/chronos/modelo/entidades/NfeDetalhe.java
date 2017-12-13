@@ -544,7 +544,6 @@ public class NfeDetalhe implements Serializable {
 
     public BigDecimal calcularSubTotalProduto(){
         this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial());
-        ;
         return valorSubtotal;
     }
 
@@ -604,10 +603,7 @@ public class NfeDetalhe implements Serializable {
             return false;
         }
         final NfeDetalhe other = (NfeDetalhe) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

@@ -100,10 +100,7 @@ public class Papel implements Serializable {
             return false;
         }
         final Papel other = (Papel) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

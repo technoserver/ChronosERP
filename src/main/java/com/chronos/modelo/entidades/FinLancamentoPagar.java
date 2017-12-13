@@ -269,10 +269,7 @@ public class FinLancamentoPagar implements Serializable {
             return false;
         }
         final FinLancamentoPagar other = (FinLancamentoPagar) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

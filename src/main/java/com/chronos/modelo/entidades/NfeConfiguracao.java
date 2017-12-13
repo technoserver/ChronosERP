@@ -345,9 +345,6 @@ public class NfeConfiguracao implements Serializable {
             return false;
         }
         final NfeConfiguracao other = (NfeConfiguracao) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 }

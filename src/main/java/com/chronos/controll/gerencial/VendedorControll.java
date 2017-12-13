@@ -41,7 +41,7 @@ public class VendedorControll extends AbstractControll<Vendedor> implements Seri
     public void salvar() {
         getObjeto().setMetaVendas(getObjeto().getMetaVendas() != null ? getObjeto().getMetaVendas() : BigDecimal.ZERO);
         getObjeto().setComissao(getObjeto().getComissao() != null ? getObjeto().getComissao() : BigDecimal.ZERO);
-        boolean existeColaborador = getObjeto().getId() != null ? false : dao.existeRegisro(Vendedor.class, "colaborador.id", getObjeto().getColaborador().getId());
+        boolean existeColaborador = getObjeto().getId() == null && dao.existeRegisro(Vendedor.class, "colaborador.id", getObjeto().getColaborador().getId());
 
         if (existeColaborador) {
             Mensagem.addInfoMessage("Colaborador já definido como vendendor");

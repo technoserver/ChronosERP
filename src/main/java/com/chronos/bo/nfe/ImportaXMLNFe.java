@@ -476,7 +476,6 @@ public class ImportaXMLNFe {
             impostoIpi.setValorBaseCalculoIpi(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getVBC()));
             impostoIpi.setAliquotaIpi(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getPIPI()));
             impostoIpi.setQuantidadeUnidadeTributavel(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getQUnid()));
-            ;
             impostoIpi.setValorUnidadeTributavel(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getVUnid()));
             impostoIpi.setValorIpi(FormatValor.getInstance().formatarValorToBigDecimal(ipiTrib.getVIPI()));
         } else {

@@ -2,7 +2,6 @@ package com.chronos.bo.nfe;
 
 import br.com.samuelweb.certificado.Certificado;
 import br.com.samuelweb.certificado.CertificadoService;
-import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.AmbienteEmissao;
 import com.chronos.infra.enuns.Estados;
 import com.chronos.init.Configuracoes;
@@ -46,7 +45,7 @@ public class ConfigurarAmbienteEmissor {
         return cert;
     }
 
-    public Configuracoes iniciarConfiguracoes(Certificado certificado) throws EmissorException, Exception {
+    public Configuracoes iniciarConfiguracoes(Certificado certificado) throws Exception {
         configuracoes = Configuracoes.iniciaConfiguracoes(Estados.getUFbySigla(uf), String.valueOf(ambiente.getCodigo()), certificado, caminhoSchema, versao);
         configuracoes.setProtocol(true);
         return configuracoes;

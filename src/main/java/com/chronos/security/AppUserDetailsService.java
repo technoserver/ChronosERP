@@ -5,8 +5,10 @@
  */
 package com.chronos.security;
 
+import com.chronos.modelo.entidades.AdmModulo;
 import com.chronos.modelo.entidades.PapelFuncao;
 import com.chronos.modelo.entidades.Usuario;
+import com.chronos.repository.Repository;
 import com.chronos.repository.Usuarios;
 import com.chronos.util.cdi.CDIServiceLocator;
 import com.chronos.util.cdi.ManualCDILookup;
@@ -33,6 +35,7 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
     private Usuarios dao;
     private List<GrantedAuthority> grantedAuths;
     private Usuario usr;
+    private Repository<AdmModulo> admModuloRepository;
 
     @Override
     public UserDetails loadUserByUsername(String usuario) throws UsernameNotFoundException {
@@ -49,6 +52,12 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
 
                 grantedAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             }
+            admModuloRepository = getFacadeWithJNDI(Repository.class);
+            List<AdmModulo> modulos = admModuloRepository.getEntitys(AdmModulo.class, "ativo", "S");
+            modulos.forEach(m -> {
+                grantedAuths.add(new SimpleGrantedAuthority("ROLE_" + m.getNome()));
+            });
+
             return new UsuarioSistema(usr, grantedAuths);
         } catch (Exception e) {
             if (!(e instanceof NoResultException)) {

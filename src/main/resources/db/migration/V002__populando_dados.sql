@@ -21568,3 +21568,50 @@ INSERT INTO funcao(nome,formulario) VALUES ('CONDICOES DE PAGAMENTO','CONDICOES_
 INSERT INTO funcao(nome,formulario) VALUES ('CONTROLE DE FRETE','VENDA_FRETE');
 INSERT INTO funcao(nome,formulario) VALUES ('ORCAMENTO/PEDIDO','VENDA_ORCAMENTO');
 INSERT INTO funcao(nome,formulario) VALUES ('ROMANEIO DE ENTREGA','ROMANEIO_ENTREGA');
+
+
+INSERT INTO adm_modulo VALUES (1, '110', 'GED', 'MODULO ADM', 'N');
+INSERT INTO adm_modulo VALUES (2, '120', 'ETIQUETAS', 'MODULO ADM', 'N');
+INSERT INTO adm_modulo VALUES (3, '130', 'AGENDA', 'MODULO ADM', 'N');
+INSERT INTO adm_modulo VALUES (4, '140', 'BI', 'MODULO ADM', 'N');
+INSERT INTO adm_modulo VALUES (5, '200', 'FRENTE_CAIXA', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (6, '210', 'VENDA', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (7, '220', 'OS', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (8, '230', 'NFE', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (9, '240', 'NFCE', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (10, '250', 'NFSE', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (11, '260', 'CTE', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (12, '270', 'MDFE', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (13, '280', 'CRM', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (14, '290', 'AFV', 'MODULO COMERCIAL', 'N');
+INSERT INTO adm_modulo VALUES (15, '300', 'FINANCEIRO', 'MODULO FINANCEIRO', 'N');
+INSERT INTO adm_modulo VALUES (16, '310', 'EDI', 'MODULO FINANCEIRO', 'N');
+INSERT INTO adm_modulo VALUES (17, '320', 'CONCILIACAO_BANCARIA', 'MODULO FINANCEIRO', 'N');
+INSERT INTO adm_modulo VALUES (18, '410', 'FOLHA', 'MODULO RH', 'N');
+INSERT INTO adm_modulo VALUES (19, '420', 'PONTO', 'MODULO RH', 'N');
+INSERT INTO adm_modulo VALUES (20, '430', 'ESOCIAL', 'MODULO RH', 'N');
+INSERT INTO adm_modulo VALUES (21, '510', 'COMPRAS', 'MODULO SUPRIMENTOS', 'N');
+INSERT INTO adm_modulo VALUES (22, '520', 'ESTOQUE', 'MODULO SUPRIMENTOS', 'N');
+INSERT INTO adm_modulo VALUES (23, '520', 'CONTRATOS', 'MODULO SUPRIMENTOS', 'N');
+INSERT INTO adm_modulo VALUES (24, '510', 'INVENTARIO', 'MODULO SUPRIMENTOS', 'N');
+INSERT INTO adm_modulo VALUES (25, '520', 'PCP', 'MODULO SUPRIMENTOS', 'N');
+INSERT INTO adm_modulo VALUES (26, '530', 'WMS', 'MODULO SUPRIMENTOS', 'N');
+INSERT INTO adm_modulo VALUES (27, '610', 'CONTABIL', 'MODULO CONTABIL', 'N');
+INSERT INTO adm_modulo VALUES (28, '620', 'PATRIMONIO', 'MODULO CONTABIL', 'N');
+INSERT INTO adm_modulo VALUES (29, '630', 'ORCAMENTO', 'MODULO CONTABIL', 'N');
+INSERT INTO adm_modulo VALUES (30, '710', 'TRIBUTACAO', 'MODULO FISCAL', 'N');
+INSERT INTO adm_modulo VALUES (31, '720', 'ESCRITA_FISCAL', 'MODULO FISCAL', 'N');
+INSERT INTO adm_modulo VALUES (32, '730', 'SPED_FISCAL', 'MODULO FISCAL', 'N');
+INSERT INTO adm_modulo VALUES (33, '740', 'SPED_CONTRIBUICOES', 'MODULO FISCAL', 'N');
+
+/*
+ Status OS
+*/
+
+insert into os_status(id,codigo,nome)values(1,'10','ABERTA');
+insert into os_status(id,codigo,nome)values(2,'20','AGUARDANDO MATERIAL');
+insert into os_status(id,codigo,nome)values(3,'30','AGUARDANDO APROVACAO');
+insert into os_status(id,codigo,nome)values(4,'40','FINALIZADO');
+insert into os_status(id,codigo,nome)values(5,'50','FINALIZADO E FATURADO');
+insert into os_status(id,codigo,nome)values(6,'60','FINALIZADO E EMITIDO NF');
+insert into os_status(id,codigo,nome)values(7,'70','CANCELADO');

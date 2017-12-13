@@ -249,10 +249,7 @@ public class Contador implements Serializable {
             return false;
         }
         final Contador other = (Contador) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

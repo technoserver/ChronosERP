@@ -372,7 +372,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void definirEnderecoEntrega(SelectEvent event) {
         PessoaCliente pessoaCliente = (PessoaCliente) event.getObject();
-        ;
         Cliente cliente = new Cliente();
         cliente.setId(pessoaCliente.getId());
         getObjeto().setCliente(cliente);

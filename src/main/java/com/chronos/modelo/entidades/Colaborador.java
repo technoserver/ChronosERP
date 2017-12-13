@@ -152,10 +152,10 @@ public class Colaborador implements Serializable {
         this.pessoa = new Pessoa(idpessoa,nome);
     }
 
-    public Colaborador(Integer id, String nome, String matricula, String situacao, String cargo, String setor) {
+    public Colaborador(Integer id, Integer idpessoa, String nome, String matricula, String situacao, String cargo, String setor) {
         this.id = id;
         this.nome = nome;
-        this.pessoa = new Pessoa(nome);
+        this.pessoa = new Pessoa(idpessoa, nome);
         this.matricula = matricula;
         this.situacaoColaborador = new SituacaoColaborador(situacao);
         this.cargo = new Cargo(cargo);

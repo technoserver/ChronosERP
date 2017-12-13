@@ -96,10 +96,7 @@ public class Setor implements Serializable {
             return false;
         }
         final Setor other = (Setor) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

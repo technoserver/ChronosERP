@@ -47,16 +47,6 @@
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="library" name="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" level="application" />
     <orderEntry type="library" name="Maven: com.chronos.calc:ChronosCalcTribut:1.0.10" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.sped:ChronosEfdIcms:1.0.1" level="project" />
-    <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:chronosnfe:3.1.11" level="project" />
-    <orderEntry type="library" name="Maven: br.com.autocom:nfe-wsdl:3.10c" level="project" />
-    <orderEntry type="library" name="Maven: br.com.autocom:nfe-xsd:8.i.2_DFe1.02a" level="project" />
-    <orderEntry type="library" name="Maven: br.com.samuelweb:java_certificado:1.3" level="project" />
-    <orderEntry type="library" name="Maven: com.sun.xml.txw2:txw2:20110809" level="project" />
-    <orderEntry type="library" name="Maven: relaxngDatatype:relaxngDatatype:20020414" level="project" />
-    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.2" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos.calc:ChronosCalcTribut:1.0.10" level="project" />
     <orderEntry type="library" name="Maven: br.com.samuelweb:java-efd-icms:2.0.20.0" level="project" />
     <orderEntry type="library" name="Maven: com.chronos.sped:ChronosEfdIcms:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: postgresql:postgresql:9.1-901-1.jdbc4" level="project" />
@@ -96,8 +86,10 @@
     <orderEntry type="library" name="Maven: org.slf4j:jcl-over-slf4j:1.7.21" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.1" level="project" />
+    <orderEntry type="library" name="Maven: com.outjected:simple-email:0.2.5" level="project" />
     <orderEntry type="library" name="Maven: javax.mail:mail:1.4.7" level="project" />
     <orderEntry type="library" name="Maven: javax.activation:activation:1.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-email:1.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.velocity:velocity:1.7" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.4" level="project" />

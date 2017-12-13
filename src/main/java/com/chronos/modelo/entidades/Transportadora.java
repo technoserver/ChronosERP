@@ -95,10 +95,7 @@ public class Transportadora implements Serializable {
             return false;
         }
         final Transportadora other = (Transportadora) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 

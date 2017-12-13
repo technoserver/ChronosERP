@@ -356,10 +356,7 @@ public class PessoaCliente implements Serializable {
             return false;
         }
         final PessoaCliente other = (PessoaCliente) obj;
-        if (this.id != other.id) {
-            return false;
-        }
-        return true;
+        return this.id == other.id;
     }
 
    

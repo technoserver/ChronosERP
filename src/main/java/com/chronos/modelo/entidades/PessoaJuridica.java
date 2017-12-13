@@ -155,9 +155,6 @@ public class PessoaJuridica implements Serializable {
             return false;
         }
         final PessoaJuridica other = (PessoaJuridica) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 }

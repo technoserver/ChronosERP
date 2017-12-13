@@ -133,6 +133,8 @@ public class NfceControll implements Serializable {
     private ExternalContext context;
     private String nomeCupom;
 
+    private String justificativa;
+
     private ERPLazyDataModel dataModel;
 
 
@@ -156,7 +158,7 @@ public class NfceControll implements Serializable {
             dataModel.setDao(nfeRepositoy);
             dataModel.setClazz(NfeCabecalho.class);
         }
-        dataModel.setAtributos(new Object[]{"cliente", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo", "qrcode"});
+        dataModel.setAtributos(new Object[]{"serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo", "qrcode"});
         dataModel.getFiltros().clear();
         dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
@@ -371,7 +373,7 @@ public class NfceControll implements Serializable {
         saldoRestante = BigDecimal.ZERO;
 
         //guarda valores para calculo
-        totalVenda = venda.getValorTotalProdutos();
+        totalVenda = venda.getValorTotalProdutos().add(venda.getValorServicos());
         desconto = venda.getValorDesconto();
         acrescimo = venda.getValorDespesasAcessorias();
         totalReceber = Biblioteca.soma(totalVenda, acrescimo);
@@ -516,7 +518,6 @@ public class NfceControll implements Serializable {
         item = new NfeDetalhe();
         item.setNfeCabecalho(venda);
         item.setQuantidadeComercial(BigDecimal.ONE);
-        ;
     }
 
     public void salvaProduto() {
@@ -675,6 +676,24 @@ public class NfceControll implements Serializable {
             ex.printStackTrace();
             Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
         }
+    }
+
+    public void cancelarNfce() {
+
+        try {
+            venda = nfeRepositoy.getJoinFetch(vendaSelecionada.getId(), NfeCabecalho.class);
+            venda.setJustificativaCancelamento(justificativa);
+            configuracao = getConfiguraNfce();
+            boolean cancelado = nfeService.cancelarNFe(venda, new ConfiguracaoEmissorDTO(configuracao));
+            if (cancelado) {
+                Mensagem.addInfoMessage("NFCe cancelada com sucesso");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagem.addErrorMessage("Ocorreu um erro ao cancelar a NFC-e!\n", e);
+        }
+
     }
 
 
@@ -1053,5 +1072,13 @@ public class NfceControll implements Serializable {
 
     public void setVendaSelecionada(NfeCabecalho vendaSelecionada) {
         this.vendaSelecionada = vendaSelecionada;
+    }
+
+    public String getJustificativa() {
+        return justificativa;
+    }
+
+    public void setJustificativa(String justificativa) {
+        this.justificativa = justificativa;
     }
 }

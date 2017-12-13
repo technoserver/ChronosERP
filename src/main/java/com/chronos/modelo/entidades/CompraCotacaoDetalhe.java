@@ -190,10 +190,7 @@ public class CompraCotacaoDetalhe implements Serializable {
         if (!Objects.equals(this.produto, other.produto)) {
             return false;
         }
-        if (!Objects.equals(this.compraRequisicaoDetalhe, other.compraRequisicaoDetalhe)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.compraRequisicaoDetalhe, other.compraRequisicaoDetalhe);
     }
     
     

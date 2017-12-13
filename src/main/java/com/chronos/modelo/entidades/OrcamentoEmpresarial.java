@@ -136,10 +136,7 @@ public class OrcamentoEmpresarial implements Serializable {
             return false;
         }
         final OrcamentoEmpresarial other = (OrcamentoEmpresarial) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

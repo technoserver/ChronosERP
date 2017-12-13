@@ -115,10 +115,7 @@ public class Almoxarifado implements Serializable {
             return false;
         }
         final Almoxarifado other = (Almoxarifado) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

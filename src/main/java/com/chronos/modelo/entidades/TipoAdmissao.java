@@ -113,10 +113,7 @@ public class TipoAdmissao implements Serializable {
         if (!Objects.equals(this.codigo, other.codigo)) {
             return false;
         }
-        if (!Objects.equals(this.nome, other.nome)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.nome, other.nome);
     }
 
     

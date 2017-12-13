@@ -453,9 +453,6 @@ public class NfeTransporte implements Serializable {
             return false;
         }
         final NfeTransporte other = (NfeTransporte) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 }

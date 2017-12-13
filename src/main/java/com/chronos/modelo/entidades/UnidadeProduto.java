@@ -136,10 +136,7 @@ public class UnidadeProduto implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.sigla, other.sigla)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.sigla, other.sigla);
     }
     
     

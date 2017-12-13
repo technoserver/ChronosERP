@@ -193,10 +193,7 @@ public class FinPagamentoFixo implements Serializable {
             return false;
         }
         final FinPagamentoFixo other = (FinPagamentoFixo) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

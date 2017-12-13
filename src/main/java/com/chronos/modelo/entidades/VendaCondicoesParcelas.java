@@ -129,10 +129,7 @@ public class VendaCondicoesParcelas implements Serializable {
     if (!Objects.equals(this.dias, other.dias)) {
       return false;
     }
-    if (!Objects.equals(this.taxa, other.taxa)) {
-      return false;
-    }
-    return true;
+      return Objects.equals(this.taxa, other.taxa);
   }
 
 

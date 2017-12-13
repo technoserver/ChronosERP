@@ -139,10 +139,7 @@ public class TributPisCodApuracao implements Serializable {
             return false;
         }
         final TributPisCodApuracao other = (TributPisCodApuracao) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

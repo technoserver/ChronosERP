@@ -254,7 +254,7 @@
                 json.forEach(function (e) {
                     descricoes.push(e.descricao);
                     valores[e.descricao] = e.valor;
-                })
+                });
 
                 chart = c3.generate({
                     bindto: grafico,

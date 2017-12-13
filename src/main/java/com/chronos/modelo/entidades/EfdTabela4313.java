@@ -125,10 +125,7 @@ public class EfdTabela4313  implements Serializable {
             return false;
         }
         EfdTabela4313 other = (EfdTabela4313) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
 
     @Override

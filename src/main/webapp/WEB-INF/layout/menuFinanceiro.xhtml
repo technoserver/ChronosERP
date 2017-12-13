@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+
+    <ul class="nav nav-second-level collapse ">
+        <li class="${fn:contains(view.viewId,'modulo/financeiro/diversos/')?'active':''}">
+            <a href="#">Diversos <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+
+                <erp:subMenu caminho="/modulo/financeiro/diversos/finTipoPagamento"
+                             label="Tipo Pagamento"
+                             funcao="finTipoPagamento"/>
+
+                <erp:subMenu caminho="/modulo/financeiro/diversos/finTipoRecebimento"
+                             label="Tipo Recebimento"
+                             funcao="finTipoRecebimento"/>
+                <erp:subMenu caminho="/modulo/financeiro/diversos/finStatusParcela"
+                             label="Status Parcela"
+                             funcao="finStatusParcela"/>
+                <erp:subMenu caminho="/modulo/financeiro/diversos/planoCentroResultado"
+                             label="Plano Centro Resultado"
+                             funcao="planoCentroResultado"/>
+                <erp:subMenu caminho="/modulo/financeiro/diversos/centroResultado"
+                             label="Centro Resultado"
+                             funcao="centroResultado"/>
+                <erp:subMenu caminho="/modulo/financeiro/diversos/planoNaturezaFinanceira"
+                             label="Plano Natureza Financeira"
+                             funcao="planoNaturezaFinanceira"/>
+                <erp:subMenu caminho="/modulo/financeiro/diversos/naturezaFinanceira"
+                             label="Natureza Financeira"
+                             funcao="naturezaFinanceira"/>
+
+
+            </ul>
+        </li>
+        <li class="${fn:contains(view.viewId,'modulo/financeiro/pagamento/')?'active':''}">
+            <a href="#">Pagamentos <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/financeiro/pagamento/finLancamentoPagar"
+                             label="Lançamento a Pagar"
+                             funcao="finLancamentoPagar"/>
+                <erp:subMenu caminho="/modulo/financeiro/pagamento/finPagamento"
+                             label="Pagamento"
+                             funcao="finPagamento"/>
+                <!--<erp:subMenu caminho="/modulo/financeiro/pagamento/finPagamentoFixo"-->
+                <!--label="Pagamento Fixo/Recorrente"-->
+                <!--funcao="finPagamentoFixo"/>-->
+            </ul>
+        </li>
+        <li class="${fn:contains(view.viewId,'modulo/financeiro/recebimento/')?'active':''}">
+            <a href="#">Recebimentos <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/financeiro/recebimento/finLancamentoReceber"
+                             label="Lançamento a Receber"
+                             funcao="finLancamentoReceber"/>
+                <!--<erp:subMenu caminho="/modulo/financeiro/recebimento/finParcelaRecebimento"-->
+                <!--label="Recebimento"-->
+                <!--funcao="finParcelaRecebimento"/>-->
+                <erp:subMenu caminho="/modulo/financeiro/recebimento/finRecebimento"
+                             label="Recebimento"
+                             funcao="finRecebimento"/>
+                <!--<erp:subMenu caminho="/modulo/financeiro/recebimento/finCobranca"-->
+                <!--label="Cobrança"-->
+                <!--funcao="finCobranca"/>-->
+            </ul>
+        </li>
+
+        <li class="${fn:contains(view.viewId,'modulo/financeiro/movimento/')?'active':''}">
+            <a href="#">Movimentos <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/financeiro/movimento/finFluxoCaixa"
+                             label="Fluxo Caixa"
+                             funcao="finFluxoCaixa"/>
+                <erp:subMenu caminho="/modulo/financeiro/movimento/finMovimentoCaixaBanco"
+                             label="Movimento Caixa Banco"
+                             funcao="finMovimentoCaixaBanco"/>
+            </ul>
+        </li>
+        <li class="${fn:contains(view.viewId,'modulo/financeiro/relatorios/')?'active':''}">
+            <a href="#">Relatorios <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasPagar"
+                             label="Contas a pagar"
+                             funcao="relacaoContasPagar"/>
+                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasReceber"
+                             label="Contas a receber"
+                             funcao="relacaoContasReceber"/>
+
+            </ul>
+        </li>
+        <!--
+        <li class="${fn:contains(view.viewId,'modulo/financeiro/cheque/')?'active':''}">
+            <a href="#">Controle de Chq. <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/financeiro/cheque/finParcelaPagamento"
+                             label="Emissão de Cheque"
+                             funcao="Emissão de Cheque"/>
+                <erp:subMenu caminho="/modulo/financeiro/cheque/finResumoTesouraria"
+                             label="Resumo Tesouraria"
+                             funcao="ResumoTesouraria"/>
+                <erp:subMenu caminho="/modulo/financeiro/cheque/finChequeRecebido"
+                             label="Custódia de Cheque"
+                             funcao="CustódiaCheque"/>
+            </ul>
+        </li>
+
+        <li class="${fn:contains(view.viewId,'modulo/financeiro/edi/')?'active':''}">
+            <a href="#">EDI <span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/financeiro/edi/finExtratoContaBanco"
+                             label="Extrato Conta Banco"
+                             funcao="finExtratoContaBanco"/>
+                <erp:subMenu caminho="/modulo/financeiro/edi/finProcessaArquivoRetorno"
+                             label="Processa Retorno"
+                             funcao="finProcessaArquivoRetorno"/>
+                <erp:subMenu caminho="/modulo/financeiro/diversos/finConfiguracaoBoleto"
+                             label="ConfiguraçãoBoleto"
+                             funcao="finConfiguracaoBoleto"/>
+            </ul>
+        </li>
+        -->
+    </ul>
+
+
+</ui:composition>

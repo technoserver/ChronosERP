@@ -622,7 +622,7 @@ public class NfeService implements Serializable {
             if (modelo == ModeloDocumento.NFE) {
                 nomeRelatorioJasper = Constantes.JASPERNFE;
                 JRXmlDataSource faturaDataSource = new JRXmlDataSource(caminho, "//dup");
-                InputStream inFt = this.getClass().getResourceAsStream("/com/chronos/relatorio/danfe/danfeDanfeRetratoFatura.jasper");
+                InputStream inFt = this.getClass().getResourceAsStream("com/chronos/erplight/relatorios/comercial/nfe/DanfeRetratoFatura.jasper");
                 parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
                 parametrosRelatorio.put("danfeRetratoFatura", inFt);
             } else {
@@ -754,9 +754,7 @@ public class NfeService implements Serializable {
         if (destino == LocalDestino.INTERESTADUAL && cfop < 6000) {
             throw new Exception("CFOP :" + cfop + " inválido para operações Interestadual");
         }
-        if (cfop != cfopAux) {
-            throw new Exception("Existem CFOP invalido na lista de item(s)");
-        }
+
         LocalDestino local = LocalDestino.getByCodigo(nfe.getLocalDestino());
         if (local == LocalDestino.INTERESTADUAL && modelo == ModeloDocumento.NFCE) {
             throw new Exception("Emissão de NFCe somente para operações locais");

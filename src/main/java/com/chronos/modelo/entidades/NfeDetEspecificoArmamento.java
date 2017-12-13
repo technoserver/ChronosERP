@@ -93,10 +93,7 @@ public class NfeDetEspecificoArmamento implements Serializable {
             return false;
         }
         final NfeDetEspecificoArmamento other = (NfeDetEspecificoArmamento) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

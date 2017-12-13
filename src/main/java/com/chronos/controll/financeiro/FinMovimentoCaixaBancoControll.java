@@ -59,7 +59,7 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
 
 
         contaCaixa.putAll(contaRepository.getEntitys(ContaCaixa.class, new Object[]{"nome"}).stream()
-                .collect(Collectors.toMap(ContaCaixa::getNome, ContaCaixa::getId)));
+                .collect(Collectors.toMap((ContaCaixa::getNomeAux), ContaCaixa::getId)));
     }
 
     @Override

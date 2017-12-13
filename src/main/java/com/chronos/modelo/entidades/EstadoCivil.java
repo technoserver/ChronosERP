@@ -78,10 +78,7 @@ public class EstadoCivil implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.nome, other.nome)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.nome, other.nome);
     }
 
 }

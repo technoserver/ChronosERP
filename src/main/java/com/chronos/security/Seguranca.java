@@ -8,6 +8,7 @@ package com.chronos.security;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.util.ArquivoUtil;
+import com.chronos.util.jsf.FacesUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import javax.enterprise.context.RequestScoped;
@@ -86,5 +87,156 @@ public class Seguranca {
         }
         return empresa;
     }
+
+    // <editor-fold defaultstate="collapsed" desc="Modulo Comercial">
+    public boolean isComercial() {
+        return isUserNfe() || isUserNfce() || isUserCte() || isUserNFSe() || isUserComissoes() || isUserOs();
+    }
+
+    public boolean isUserVendas() {
+        return FacesUtil.isUserInRole("VENDAS");
+    }
+
+    public boolean isUserNfe() {
+        return FacesUtil.isUserInRole("NFE");
+    }
+
+    public boolean isUserNfce() {
+        return FacesUtil.isUserInRole("NFCE");
+    }
+
+    public boolean isUserCte() {
+        return FacesUtil.isUserInRole("CTE");
+    }
+
+    public boolean isUserNFSe() {
+        return FacesUtil.isUserInRole("NFSE");
+    }
+
+    public boolean isUserComissoes() {
+        return FacesUtil.isUserInRole("COMISSOES");
+    }
+
+    public boolean isUserOs() {
+        return FacesUtil.isUserInRole("OS");
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Modulo Administrativo">
+    public boolean isAdministrativo() {
+        return isUserGed() || isUserEtiquetas() || isUserAgenda() || isUserBI();
+    }
+
+    public boolean isUserGed() {
+        return FacesUtil.isUserInRole("GED");
+    }
+
+    public boolean isUserEtiquetas() {
+        return FacesUtil.isUserInRole("ETIQUETAS");
+    }
+
+    public boolean isUserAgenda() {
+        return FacesUtil.isUserInRole("AGENDA");
+    }
+
+    public boolean isUserBI() {
+        return FacesUtil.isUserInRole("BI");
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Modulo Financeiro">
+    public boolean isFinanceiro() {
+        return FacesUtil.isUserInRole("FINANCEIRO");
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Modulo Recursos Humanos">
+    public boolean isRecursosHumano() {
+        return isUserPonto() || isUserFolha() || isUserEsocial();
+    }
+
+    public boolean isUserPonto() {
+        return FacesUtil.isUserInRole("PONTO");
+    }
+
+    public boolean isUserFolha() {
+        return FacesUtil.isUserInRole("FOLHA");
+    }
+
+    public boolean isUserEsocial() {
+        return FacesUtil.isUserInRole("ESOCIAL");
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Modulo Suplimentos">
+    public boolean isSuprimentos() {
+        return isUserEstoque() || isUserCompras();
+    }
+
+    public boolean isUserCompras() {
+        return FacesUtil.isUserInRole("COMPRAS");
+    }
+
+    public boolean isUserEstoque() {
+        return FacesUtil.isUserInRole("ESTOQUE");
+    }
+
+    public boolean isUserContratos() {
+        return FacesUtil.isUserInRole("CONTRATOS");
+    }
+
+    public boolean isUserInventario() {
+        return FacesUtil.isUserInRole("INVENTARIO");
+    }
+
+    public boolean isUserPCP() {
+        return FacesUtil.isUserInRole("PCP");
+    }
+
+    public boolean isUserWMS() {
+        return FacesUtil.isUserInRole("WMS");
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Modulo Fiscal">
+    public boolean isFiscal() {
+        return isUserEscritaFiscal() || isUserSpedFiscal() || isUserSpedContribuicoes() || isUserTributacao();
+    }
+
+    public boolean isUserEscritaFiscal() {
+        return FacesUtil.isUserInRole("ESCRITA_FISCAL");
+    }
+
+    public boolean isUserSpedFiscal() {
+        return FacesUtil.isUserInRole("SPED_FISCAL");
+    }
+
+    public boolean isUserSpedContribuicoes() {
+        return FacesUtil.isUserInRole("SPED_CONTRIBUICOES");
+    }
+
+    public boolean isUserTributacao() {
+        return FacesUtil.isUserInRole("TRIBUTACAO");
+    }
+
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Modulo Contabil">
+    public boolean isContabil() {
+        return isUserContabil() || isUserSpedContabil() || isUserOrcamento();
+    }
+
+    public boolean isUserContabil() {
+        return FacesUtil.isUserInRole("CONTABIL");
+    }
+
+    public boolean isUserSpedContabil() {
+        return FacesUtil.isUserInRole("SPED_CONTABIL");
+    }
+
+    public boolean isUserOrcamento() {
+        return FacesUtil.isUserInRole("ORCAMENTO");
+    }
+
+    // </editor-fold>
 
 }

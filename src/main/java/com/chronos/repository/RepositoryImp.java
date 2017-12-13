@@ -142,7 +142,6 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         jpql += " where 1=1 ";
         jpql = montaQuery(jpql, null, null, filtros);
         Query q = queryPrepared(jpql, filtros);
-        ;
 
         q.executeUpdate();
     }
@@ -168,6 +167,24 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return (Long) query.getSingleResult() > 0;
 
     }
+
+    @Override
+    public Object getObject(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException {
+        String jpql = "SELECT o.id ";
+
+        if (atributos != null && atributos.length > 0) {
+            for (Object obj : atributos) {
+                jpql += ", o." + obj.toString();
+            }
+            jpql += " FROM " + clazz.getName() + " o ";
+        }
+        jpql += " WHERE o." + atributo + " = :valor";
+        Query query = em.createQuery(jpql);
+        query.setParameter("valor", valor);
+        Object obj = query.getResultList().stream().findFirst().orElse(null);
+        return obj;
+    }
+
 
     @Override
     public T get(Integer id, Class<T> clazz) throws PersistenceException {
@@ -271,6 +288,13 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Override
     public List<T> getEntitys(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException {
+
+
+        return getEntitys(clazz, atributo, valor, atributos, null);
+    }
+
+    @Override
+    public List<T> getEntitys(Class<T> clazz, String atributo, Object valor, Object[] atributos, Object[] joins) throws PersistenceException {
         List<Filtro> filtros = new ArrayList<>();
         if (valor.getClass() == String.class) {
             filtros.add(new Filtro(Filtro.AND, atributo, Filtro.LIKE, valor));
@@ -278,7 +302,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
             filtros.add(new Filtro(Filtro.AND, atributo, Filtro.IGUAL, valor));
         }
 
-        return getEntitys(clazz, filtros, atributos);
+        return getEntitys(clazz, filtros, atributos, joins);
     }
 
     @Override

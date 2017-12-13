@@ -134,10 +134,7 @@ public class FinTipoRecebimento implements Serializable {
             return false;
         }
         final FinTipoRecebimento other = (FinTipoRecebimento) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

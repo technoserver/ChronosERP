@@ -80,7 +80,9 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
         Crt crt = Crt.valueOfCodigo(Integer.valueOf(empresa.getCrt()));
         simplesNascional = crt == Crt.SimplesNaciona;
         if (getObjeto().getObrigacaoFiscal()) {
-            listTributIcmsUf = Optional.ofNullable(icmsRepository.getEntitys(TributIcmsUf.class, "tributOperacaoFiscal.id", getObjeto().getId())).orElse(new ArrayList<>());
+            listTributIcmsUf = Optional
+                    .ofNullable(icmsRepository.getEntitys(TributIcmsUf.class, "tributOperacaoFiscal.id", getObjeto().getId(), null, new Object[]{"tributGrupoTributario"}))
+                    .orElse(new ArrayList<>());
 
             if (crt == Crt.SimplesNaciona) {
                 listTributIcmsUf.stream()

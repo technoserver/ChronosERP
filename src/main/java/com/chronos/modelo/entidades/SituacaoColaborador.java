@@ -109,11 +109,7 @@ public class SituacaoColaborador implements Serializable {
             return false;
         }
         final SituacaoColaborador other = (SituacaoColaborador) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 

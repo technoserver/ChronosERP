@@ -77,10 +77,7 @@ public class ProdutoGrupo implements Serializable {
             return false;
         }
         final ProdutoGrupo other = (ProdutoGrupo) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     

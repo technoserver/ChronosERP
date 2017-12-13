@@ -15,7 +15,7 @@ public enum SituacaoVenda {
 
     private String codigo;
 
-    private SituacaoVenda(String codigo) {
+    SituacaoVenda(String codigo) {
         this.codigo = codigo;
     }
 

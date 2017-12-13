@@ -153,10 +153,7 @@ public class ContabilLancamentoCabecalho implements Serializable {
             return false;
         }
         final ContabilLancamentoCabecalho other = (ContabilLancamentoCabecalho) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
     
     

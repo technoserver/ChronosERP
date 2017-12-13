@@ -248,10 +248,7 @@ public class Pessoa implements Serializable {
             return false;
         }
         final Pessoa other = (Pessoa) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

@@ -6,10 +6,26 @@
 package com.chronos.util.mail;
 
 
+import com.outjected.email.api.MailMessage;
+import com.outjected.email.api.SessionConfig;
+import com.outjected.email.impl.MailMessageImpl;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+
 /**
  *
  * @author john
  */
+@RequestScoped
 public class Mailer {
-    
+
+
+    @Inject
+    private SessionConfig config;
+
+    public MailMessage novaMensagem() {
+        return new MailMessageImpl(this.config);
+    }
 }

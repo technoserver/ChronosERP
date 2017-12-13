@@ -36,6 +36,10 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     private Municipio cidade;
     private List<Municipio> cidades;
 
+    protected Empresa emp;
+
+
+
 
     @Inject
     private Repository<Municipio> municipios;
@@ -43,6 +47,8 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     private Repository<Pessoa> pessoas;
     @Inject
     private Repository<EstadoCivil> estadosCivis;
+    @Inject
+    private Repository<Empresa> empresaRepository;
 
     private String cpf;
     private String cnpj;
@@ -175,6 +181,16 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
             e.printStackTrace();
         }
         return listaEstadoCivil;
+    }
+
+    public List<Empresa> getListaEmpresa(String nome) {
+        List<Empresa> listaEmpresa = new ArrayList<>();
+        try {
+            listaEmpresa = empresaRepository.getEntitys(Empresa.class, "razaoSocial", nome, new Object[]{"razaoSocial"});
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaEmpresa;
     }
 
     protected Pessoa novaPessoa(String cliente, String colaborador, String transportadora, String fornecedor) {
@@ -335,5 +351,13 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
 
     public void setCidade(Municipio cidade) {
         this.cidade = cidade;
+    }
+
+    public Empresa getEmp() {
+        return emp;
+    }
+
+    public void setEmp(Empresa emp) {
+        this.emp = emp;
     }
 }

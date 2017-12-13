@@ -141,10 +141,7 @@ public class TributCofinsCodApuracao implements Serializable {
             return false;
         }
         final TributCofinsCodApuracao other = (TributCofinsCodApuracao) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
    

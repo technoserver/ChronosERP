@@ -41,7 +41,7 @@ PrimeFaces.validator.Size = {
             throw msgObj;
         }
     }
-}
+};
 
 PrimeFaces.validator.NotBlank = {
     MESSAGE_ID: 'org.hibernate.validator.constraints.NotBlank.message',
@@ -80,7 +80,7 @@ PrimeFaces.validator.SKU = {
             var msgObj = {
                 summary: msg,
                 detail: msg
-            }
+            };
 
             throw msgObj;
         }

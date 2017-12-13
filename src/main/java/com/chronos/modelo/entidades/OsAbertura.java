@@ -227,10 +227,7 @@ public class OsAbertura implements Serializable {
             return false;
         }
         final OsAbertura other = (OsAbertura) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
     @Override

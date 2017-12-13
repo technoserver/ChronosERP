@@ -106,10 +106,7 @@ public class TributGrupoTributario implements Serializable {
             return false;
         }
         final TributGrupoTributario other = (TributGrupoTributario) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
    
