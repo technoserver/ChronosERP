@@ -136,7 +136,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         try {
 
             OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
-            gerarNFe(os);
+            gerarNFe(os, ModeloDocumento.NFE);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -144,9 +144,20 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         }
     }
 
-    public void gerarNFe(OsAbertura os) throws Exception {
-        boolean transmitido;
-        ModeloDocumento modelo = ModeloDocumento.NFE;
+    public void gerarNFce() {
+        try {
+
+            OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
+            gerarNFe(os, ModeloDocumento.NFCE);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao gerar NFCe do servico. \r\n", ex);
+        }
+    }
+
+    public void gerarNFe(OsAbertura os, ModeloDocumento modelo) throws Exception {
+
         boolean estoque = isTemAcesso("ESTOQUE");
         osService.transmitirNFe(os, modelo, estoque);
     }

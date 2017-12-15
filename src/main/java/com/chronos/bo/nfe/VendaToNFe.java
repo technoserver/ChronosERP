@@ -60,7 +60,6 @@ public class VendaToNFe extends ManualCDILookup {
         definirOperacaoTributaria();
         gerarItensVenda();
         addItens();
-        nfeUtil.gerarNumeracao(nfe, empresa);
         definirFormaPagamento();
         return nfe;
     }

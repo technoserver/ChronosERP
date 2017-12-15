@@ -55,7 +55,7 @@ public class InutilizarNfeControll implements Serializable {
             Object atributos[] = new Object[]{"certificadoDigitalSenha", "webserviceAmbiente"};
             NfeConfiguracao configuracao = configuracoes.get(NfeConfiguracao.class, "empresa.id", 1, atributos);
 
-            NotaFiscalTipo notaFiscalTipo = nfeService.getNotaFicalTipoByModelo(modelo);
+            NotaFiscalTipo notaFiscalTipo = nfeService.getNotaFicalTipo(modelo, empresa);
             int serie = (notaFiscalTipo == null || notaFiscalTipo.getSerie() == null || notaFiscalTipo.getSerie() == null) ? 1 : Integer.valueOf(notaFiscalTipo.getSerie());
             resultado = nfeService.inutilizarNFe(new ConfiguracaoEmissorDTO(configuracao), modelo, serie, numeroInicial, numeroFinal, justificativa);
         } catch (Exception ex) {

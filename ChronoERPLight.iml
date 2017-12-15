@@ -51,7 +51,7 @@
     <orderEntry type="library" name="Maven: com.chronos.sped:ChronosEfdIcms:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: postgresql:postgresql:9.1-901-1.jdbc4" level="project" />
     <orderEntry type="library" name="Maven: org.flywaydb:flyway-core:4.2.0" level="project" />
-    <orderEntry type="library" name="Maven: org.primefaces.themes:bootstrap:1.0.10" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.themes:custom-theme:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi:3.11" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.9" level="project" />
     <orderEntry type="library" name="Maven: org.hibernate:hibernate-validator:5.3.1.Final" level="project" />

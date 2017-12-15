@@ -95,10 +95,11 @@
                         </p:menuitem>
                         <p:menuitem value="Gerar NFCe"
                                     rendered="#{osAberturaControll.isTemAcesso('NFCE')}"
+                                    action="#{osAberturaControll.gerarNFce}"
                                     update=":formCentro:mensagem"
                         >
                             <f:setPropertyActionListener value="#{row}"
-                                                         target="#{nfceControll.vendaSelecionada}"/>
+                                                         target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
                         <p:menuitem value="Gerar Danfe"
                                     icon="fa fa-print" ajax="false"

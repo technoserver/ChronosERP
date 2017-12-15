@@ -134,9 +134,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
 
         try {
-            nfeService.validar(getObjeto());
+            nfeService.validacaoNfe(getObjeto());
             if (getObjeto().getId() == null) {
-                gerarNumeracao(getObjeto());
                 NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
                 nfeFormaPagamento.setNfceTipoPagamento(tipoPagamento);
                 nfeFormaPagamento.setNfeCabecalho(getObjeto());
@@ -478,21 +477,6 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Diversos">
 
 
-    public void gerarNumeracao() {
-        try {
-            getObjeto().setNumero(null);
-            gerarNumeracao(getObjeto());
-        } catch (Exception ex) {
-            Mensagem.addErrorMessage("", ex);
-            throw new RuntimeException("Erro ao gera um novo número da NFe", ex);
-
-        }
-    }
-
-    public void gerarNumeracao(NfeCabecalho nfe) throws Exception {
-        nfeService.gerarNumeracao(nfe, true);
-        duplicidade = false;
-    }
 
     // </editor-fold>
 
@@ -512,7 +496,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
 
         try {
-            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao"});
+            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
         } catch (Exception e) {
             // e.printStackTrace();
         }

@@ -131,8 +131,10 @@ public class GeraXMLEnvio {
         enviNFe.setIndSinc("1");
         enviNFe.getNFe().add(nfe);
 
+        if (modelo == ModeloDocumento.NFCE) {
+            enviNFe.getNFe().get(0).getInfNFe().getPag().addAll(getPags(nfeCabecalho.getListaNfeFormaPagamento()));
+        }
 
-        enviNFe.getNFe().get(0).getInfNFe().getPag().addAll(getPags(nfeCabecalho.getListaNfeFormaPagamento()));
 
         // Monta e Assina o XML
         enviNFe = Nfe.montaNfe(enviNFe, false);
