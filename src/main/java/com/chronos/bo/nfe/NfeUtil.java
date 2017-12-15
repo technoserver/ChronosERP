@@ -219,8 +219,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setValorIpi(valorIpi);
         nfe.setValorPis(valorPis);
         nfe.setValorCofins(valorCofins);
-        nfe.setValorTotalTributos(valorTotalTributos);
-        nfe.setValorTotal(valorNotaFiscal.add(totalServicos));
+        nfe.calcularValorTotal();
         String msg = "Trib. Aprox. Federal R$ " + new DecimalFormat("#,###,##0.00").format(impostoFederal)
                 + " e R$ " + new DecimalFormat("#,###,##0.00").format(impostoEstadual) + " Estadual "
                 + "e R$ " + new DecimalFormat("#,###,##0.00").format(impostoMunicipal) + " Municipal Fonte IBPT";

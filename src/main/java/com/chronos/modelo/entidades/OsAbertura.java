@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -12,6 +14,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "OS_ABERTURA")
+@DynamicUpdate
 public class OsAbertura implements Serializable {
 
     private static final long serialVersionUID = 2L;
@@ -20,6 +23,8 @@ public class OsAbertura implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "ID_NFE_CABECALHO")
+    private Integer idnfeCabecalho;
     @Column(name = "NUMERO")
     private String numero;
     @Temporal(TemporalType.DATE)
@@ -86,7 +91,7 @@ public class OsAbertura implements Serializable {
     public OsAbertura() {
     }
 
-    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, int idcliente, String nome, String osStatus) {
+    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, int idcliente, String nome, String osStatus, Integer idnfeCabecalho) {
         this.id = id;
         this.numero = numero;
         this.dataInicio = dataInicio;
@@ -94,6 +99,8 @@ public class OsAbertura implements Serializable {
         this.dataFim = dataFim;
         this.cliente = new Cliente(idcliente, nome);
         this.osStatus = new OsStatus(0, osStatus);
+        this.idnfeCabecalho = idnfeCabecalho;
+
     }
 
     public Integer getId() {
@@ -102,6 +109,14 @@ public class OsAbertura implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdnfeCabecalho() {
+        return idnfeCabecalho;
+    }
+
+    public void setIdnfeCabecalho(Integer idnfeCabecalho) {
+        this.idnfeCabecalho = idnfeCabecalho;
     }
 
     public String getNumero() {
@@ -289,6 +304,7 @@ public class OsAbertura implements Serializable {
     public void setCondicoesPagamento(VendaCondicoesPagamento condicoesPagamento) {
         this.condicoesPagamento = condicoesPagamento;
     }
+
 
     private String formatarValor(BigDecimal valor) {
         DecimalFormatSymbols simboloDecimal = DecimalFormatSymbols.getInstance();

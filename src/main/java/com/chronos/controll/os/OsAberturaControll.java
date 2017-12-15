@@ -79,7 +79,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             dataModel.setClazz(getClazz());
             dataModel.setDao(dao);
         }
-        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "cliente.id", "cliente.pessoa.nome", "osStatus.nome"});
+        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "cliente.id", "cliente.pessoa.nome", "osStatus.nome", "idnfeCabecalho"});
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         return dataModel;
     }
@@ -148,6 +148,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         try {
 
             OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
+
             gerarNFe(os, ModeloDocumento.NFCE);
 
         } catch (Exception ex) {
@@ -160,6 +161,10 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
         boolean estoque = isTemAcesso("ESTOQUE");
         osService.transmitirNFe(os, modelo, estoque);
+    }
+
+    public void danfe() {
+
     }
 
     public void cancelar() {

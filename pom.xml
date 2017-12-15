@@ -29,7 +29,7 @@
         <!--Sped fiscal-->
         <java-sped.version>1.0.1</java-sped.version>
         <!--Calculo dos tributos-->
-        <chronos-calculoTributario.version>1.0.10</chronos-calculoTributario.version>
+        <chronos-calculoTributario.version>1.0.15</chronos-calculoTributario.version>
 
 
         <!-- Java Mail -->

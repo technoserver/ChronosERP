@@ -73,6 +73,8 @@ public class NfeService implements Serializable {
     @Inject
     private Repository<NfeXml> nfeXmlRepository;
     @Inject
+    private Repository<OsAbertura> osRepository;
+    @Inject
     private EstoqueRepository estoqueRepositoy;
 
     @Inject
@@ -451,6 +453,7 @@ public class NfeService implements Serializable {
     public StatusTransmissao transmitirNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao, boolean atualizarEstoque) throws Exception {
         validacaoNfe(nfe);
         VendaCabecalho venda = nfe.getVendaCabecalho();
+        OsAbertura os = nfe.getOs();
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         StatusTransmissao status = StatusTransmissao.ENVIADA;
         String schemas = context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE);
@@ -471,12 +474,18 @@ public class NfeService implements Serializable {
                 nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
                 nfe = nfeRepository.procedimentoNfeAutorizada(nfe, atualizarEstoque);
                 atualizarNumeroNfe(notaFiscalTipo, Integer.valueOf(nfe.getNumero()));
+                salvaNfeXml(xmlProc, nfe);
+                salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml());
+
                 if (venda != null) {
                     venda.setNumeroFatura(nfe.getId());
                     nfe.setVendaCabecalho(venda);
                 }
-                salvaNfeXml(xmlProc, nfe);
-                salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml());
+                if (os != null) {
+                    os.setOsStatus(Constantes.OS.STATUS_EMITIDO);
+                    os.setIdnfeCabecalho(nfe.getId());
+                    osRepository.atualizar(os);
+                }
                 status = StatusTransmissao.AUTORIZADA;
 
             } else if (retorno.getProtNFe().getInfProt().getCStat().equals("204")

@@ -69,7 +69,7 @@ public class OsService implements Serializable {
         VendaToNFe vendaNfe = new VendaToNFe(modelo, configuracao, os);
         nfe = vendaNfe.gerarNfe();
         nfe.setCsc(configuracao.getCsc());
-
+        nfe.setOs(os);
 
         StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao, atualizarEstoque);
         if (status == StatusTransmissao.AUTORIZADA) {

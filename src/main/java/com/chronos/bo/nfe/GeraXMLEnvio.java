@@ -297,9 +297,9 @@ public class GeraXMLEnvio {
         ide.setCNF(nfeCabecalho.getCodigoNumerico());
         ide.setNatOp(nfeCabecalho.getNaturezaOperacao());
         ide.setIndPag(String.valueOf(nfeCabecalho.getIndicadorFormaPagamento()));
-        ide.setMod(nfeCabecalho.getCodigoModelo());
-        ide.setSerie(Integer.valueOf(nfeCabecalho.getSerie()).toString());
-        ide.setNNF(Integer.valueOf(nfeCabecalho.getNumero()).toString());
+        ide.setMod(nfeCabecalho.getCodigoModelo() != null ? nfeCabecalho.getCodigoModelo() : "00");
+        ide.setSerie(nfeCabecalho.getSerie() != null ? Integer.valueOf(nfeCabecalho.getSerie()).toString() : "000");
+        ide.setNNF(nfeCabecalho.getNumero() != null ? Integer.valueOf(nfeCabecalho.getNumero()).toString() : "00000000");
         ide.setDhEmi(FormatValor.getInstance().formatarDataNota(nfeCabecalho.getDataHoraEmissao()));
 
         ide.setDhSaiEnt(modelo == ModeloDocumento.NFE
