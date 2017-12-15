@@ -14,6 +14,9 @@ CREATE TABLE EFD_TABELA_4314 (
   PRIMARY KEY (ID)
 );
 
+
+COMMENT ON TABLE efd_tabela_4314 IS '4.3.14 - Tabela Operações com Isenção da Contribuição Social (CST 07) ';
+
 -- ------------------------------------------------------------
 -- Tabela 4.3.13 Produtos Sujeitos à Alíquota Zero da Contribuição Social (CST 06)
 -- ------------------------------------------------------------
@@ -27,6 +30,8 @@ CREATE TABLE EFD_TABELA_4313 (
   FIM_VIGENCIA    DATE,
   PRIMARY KEY (ID)
 );
+
+COMMENT ON TABLE efd_tabela_4313 IS 'Tabela 4.3.13 Produtos Sujeitos à Alíquota Zero da Contribuição Social (CST 06)';
 
 -- ------------------------------------------------------------
 -- Tabela 4.3.10 – Produtos Sujeitos a Incidência Monofásica da Contribuição Social – Alíquotas Diferenciadas (CST 02 e 04)
@@ -42,6 +47,8 @@ CREATE TABLE EFD_TABELA_4310 (
   PRIMARY KEY (ID)
 );
 
+COMMENT ON TABLE efd_tabela_4310 IS 'Tabela 4.3.10 – Produtos Sujeitos a Incidência Monofásica da Contribuição Social – Alíquotas Diferenciadas (CST 02 e 04)';
+
 -- ------------------------------------------------------------
 -- 4.3.16 – Tabela Operações com Suspensão da Contribuição Social (CST 09)
 -- ------------------------------------------------------------
@@ -56,6 +63,8 @@ CREATE TABLE EFD_TABELA_4316 (
   PRIMARY KEY (ID)
 );
 
+COMMENT ON TABLE efd_tabela_4316 IS '4.3.16 – Tabela Operações com Suspensão da Contribuição Social (CST 09)';
+
 -- ------------------------------------------------------------
 -- 4.3.15 - Tabela Operações sem Incidência da Contribuição Social (CST 08)
 -- ------------------------------------------------------------
@@ -69,6 +78,8 @@ CREATE TABLE EFD_TABELA_4315 (
   FIM_VIGENCIA    DATE,
   PRIMARY KEY (ID)
 );
+
+COMMENT ON TABLE efd_tabela_4315 IS '4.3.15 - Tabela Operações sem Incidência da Contribuição Social (CST 08)';
 
 -- ------------------------------------------------------------
 -- Cadastro das regiões. Pode ser utilizado para definir a região de atuação de vendedores, por exemplo.
@@ -7561,6 +7572,10 @@ CREATE TABLE OS_ABERTURA (
   HORA_FIM                     VARCHAR(8),
   NOME_CONTATO                 VARCHAR(50),
   FONE_CONTATO                 VARCHAR(15),
+  VALOR_TOTAL                  DECIMAL(18, 6),
+  VALOR_TOTAL_DESCONTO         DECIMAL(18, 6),
+  VALOR_TOTAL_PRODUTO          DECIMAL(18, 6),
+  VALOR_TOTAL_SERVICOS         DECIMAL(18, 6),
   OBSERVACAO_CLIENTE           TEXT,
   OBSERVACAO_ABERTURA          TEXT,
   PRIMARY KEY (ID),
@@ -7679,273 +7694,67 @@ CREATE TABLE fiscal_apuracao_icms
 );
 
 
-CREATE TABLE MDFE_CABECALHO (
-  ID                        SERIAL NOT NULL,
-  ID_EMPRESA                INTEGER,
-  UF                        INTEGER,
-  TIPO_AMBIENTE             INTEGER,
-  TIPO_EMITENTE             INTEGER,
-  TIPO_TRANSPORTADORA       INTEGER,
-  MODELO                    CHAR(2),
-  SERIE                     VARCHAR(3),
-  NUMERO_MDFE               VARCHAR(9),
-  CODIGO_NUMERICO           VARCHAR(8),
-  CHAVE_ACESSO              VARCHAR(44),
-  DIGITO_VERIFICADOR        INT,
-  MODAL                     INTEGER,
-  DATA_HORA_EMISSAO         TIMESTAMP,
-  TIPO_EMISSAO              INTEGER,
-  PROCESSO_EMISSAO          INTEGER,
-  VERSAO_PROCESSO_EMISSAO   VARCHAR(20),
-  UF_INICIO                 CHAR(2),
-  UF_FIM                    CHAR(2),
-  DATA_HORA_PREVISAO_VIAGEM TIMESTAMP,
-  QUANTIDADE_TOTAL_CTE      INTEGER,
-  QUANTIDADE_TOTAL_NFE      INTEGER,
-  QUANTIDADE_TOTAL_MDFE     INTEGER,
-  CODIGO_UNIDADE_MEDIDA     CHAR(2),
-  PESO_BRUTO_CARGA          DECIMAL(18, 6),
-  VALOR_CARGA               DECIMAL(18, 6),
-  NUMERO_PROTOCOLO          VARCHAR(15),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_EMPRESA)
-  REFERENCES EMPRESA (ID)
+CREATE TABLE agenda_categoria_compromisso
+(
+  id   SERIAL NOT NULL,
+  nome CHARACTER VARYING(100), -- Nome da categoria
+  cor  CHARACTER VARYING(50), -- Cor da categoria, escolhida pelo desenvolvedor de acordo com a estratégia adotada na aplicação.
+  CONSTRAINT agenda_categoria_compromisso_pkey PRIMARY KEY (id)
 );
 
-CREATE INDEX FK_EMPRESA_MDFE
-  ON NFE_CABECALHO (ID_EMPRESA);
+COMMENT ON COLUMN agenda_categoria_compromisso.nome IS 'Nome da categoria';
+COMMENT ON COLUMN agenda_categoria_compromisso.cor IS 'Cor da categoria, escolhida pelo desenvolvedor de acordo com a estratégia adotada na aplicação.';
 
+CREATE TABLE agenda_compromisso
+(
+  id                              SERIAL  NOT NULL,
+  id_colaborador                  INTEGER NOT NULL,
+  id_agenda_categoria_compromisso INTEGER NOT NULL,
+  data_compromisso                DATE,
+  hora                            CHARACTER VARYING(8),
+  duracao                         INTEGER, -- Duração em minutos
+  onde                            CHARACTER VARYING(100),
+  descricao                       CHARACTER VARYING(100),
+  tipo                            INTEGER, -- 0=PESSOAL | 1=GERENCIAL (não pode ser alterado pelo colaborador)
+  CONSTRAINT agenda_compromisso_pkey PRIMARY KEY (id),
+  CONSTRAINT agenda_compromisso_id_agenda_categoria_compromisso_fkey FOREIGN KEY (id_agenda_categoria_compromisso)
+  REFERENCES agenda_categoria_compromisso (id),
+  CONSTRAINT agenda_compromisso_id_colaborador_fkey FOREIGN KEY (id_colaborador) REFERENCES public.colaborador (id)
+);
 
-CREATE TABLE MDFE_RODOVIARIO (
-  ID                 SERIAL  NOT NULL,
-  ID_MDFE_CABECALHO  INTEGER NOT NULL,
-  RNTRC              VARCHAR(8),
-  CODIGO_AGENDAMENTO VARCHAR(16),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_CABECALHO)
-  REFERENCES MDFE_CABECALHO (id)
+COMMENT ON TABLE agenda_compromisso IS 'Tabela que armazena os compromissos do colaborador';
+COMMENT ON COLUMN agenda_compromisso.duracao IS 'Duração em minutos';
+COMMENT ON COLUMN agenda_compromisso.tipo IS '0=PESSOAL | 1=GERENCIAL (não pode ser alterado pelo colaborador)';
+
+CREATE TABLE agenda_compromisso_convidado
+(
+  id                    SERIAL  NOT NULL,
+  id_colaborador        INTEGER NOT NULL,
+  id_agenda_compromisso INTEGER NOT NULL,
+  CONSTRAINT agenda_compromisso_convidado_pkey PRIMARY KEY (id),
+  CONSTRAINT agenda_compromisso_convidado_id_agenda_compromisso_fkey FOREIGN KEY (id_agenda_compromisso)
+  REFERENCES public.agenda_compromisso (id),
+  CONSTRAINT agenda_compromisso_convidado_id_colaborador_fkey FOREIGN KEY (id_colaborador) REFERENCES public.colaborador (id)
 );
 
 
-CREATE INDEX MDFE_RODOVIARIO_FKIndex1
-  ON MDFE_RODOVIARIO (ID_MDFE_CABECALHO);
-CREATE INDEX IFK_FK_MDFE_RODOVIARIO
-  ON MDFE_RODOVIARIO (ID_MDFE_CABECALHO);
-
-
-CREATE TABLE MDFE_RODOVIARIO_MOTORISTA (
-  ID                 SERIAL  NOT NULL,
-  ID_MDFE_RODOVIARIO INTEGER NOT NULL,
-  NOME               VARCHAR(60),
-  CPF                VARCHAR(11),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_RODOVIARIO)
-  REFERENCES MDFE_RODOVIARIO (id)
+CREATE TABLE agenda_notificacao
+(
+  id                    SERIAL  NOT NULL,
+  id_agenda_compromisso INTEGER NOT NULL,
+  data_notificacao      DATE,
+  hora                  CHARACTER VARYING(8),
+  tipo                  INTEGER, -- 0=e-mail | 1=mensagem na tela do computador
+  CONSTRAINT agenda_notificacao_pkey PRIMARY KEY (id),
+  CONSTRAINT agenda_notificacao_id_agenda_compromisso_fkey FOREIGN KEY (id_agenda_compromisso)
+  REFERENCES public.agenda_compromisso (id)
 );
 
-
-CREATE INDEX MDFE_condutor_FKIndex1
-  ON MDFE_RODOVIARIO_MOTORISTA (ID_MDFE_RODOVIARIO);
-CREATE INDEX MDFE_RODOVIARIO_MOTORISTA_FKIndex1
-  ON MDFE_RODOVIARIO_MOTORISTA (ID_MDFE_RODOVIARIO);
-CREATE INDEX IFK_FK_MDFE_RODOVIARIO_MOTORIS
-  ON MDFE_RODOVIARIO_MOTORISTA (ID_MDFE_RODOVIARIO);
+COMMENT ON COLUMN public.agenda_notificacao.tipo IS '0=e-mail | 1=mensagem na tela do computador';
 
 
-CREATE TABLE MDFE_RODOVIARIO_VEICULO (
-  ID                 SERIAL  NOT NULL,
-  ID_MDFE_RODOVIARIO INTEGER NOT NULL,
-  CODIGO_INTERNO     VARCHAR(10),
-  PLACA              VARCHAR(7),
-  RENAVAM            VARCHAR(11),
-  TARA               INTEGER,
-  CAPACIDADE_KG      INTEGER,
-  CAPACIDADE_M3      INTEGER,
-  TIPO_RODADO        CHAR(2),
-  TIPO_CARROCERIA    CHAR(2),
-  UF_LICENCIAMENTO   CHAR(2),
-  PROPRIETARIO_CPF   VARCHAR(11),
-  PROPRIETARIO_CNPJ  VARCHAR(14),
-  PROPRIETARIO_RNTRC VARCHAR(8),
-  PROPRIETARIO_NOME  VARCHAR(60),
-  PROPRIETARIO_IE    VARCHAR(2),
-  PROPRIETARIO_TIPO  INTEGER,
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_RODOVIARIO)
-  REFERENCES MDFE_RODOVIARIO (id)
-);
 
 
-CREATE INDEX MDFE_veiculo_reboque_FKIndex1
-  ON MDFE_RODOVIARIO_VEICULO (ID_MDFE_RODOVIARIO);
-CREATE INDEX MDFE_RODOVIARIO_VEICULO_FKIndex1
-  ON MDFE_RODOVIARIO_VEICULO (ID_MDFE_RODOVIARIO);
 
 
-CREATE TABLE MDFE_RODOVIARIO_PEDAGIO (
-  ID                 SERIAL  NOT NULL,
-  ID_MDFE_RODOVIARIO INTEGER NOT NULL,
-  CNPJ_FORNECEDOR    VARCHAR(14),
-  CNPJ_RESPONSAVEL   VARCHAR(14),
-  CPF_RESPONSAVEL    VARCHAR(11),
-  NUMERO_COMPROVANTE VARCHAR(20),
-  VALOR              DECIMAL(18, 6),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_RODOVIARIO)
-  REFERENCES MDFE_RODOVIARIO (id)
-);
 
-
-CREATE INDEX IFK_FK_MDFE_RODOVIARIO_PEDAGIO
-  ON MDFE_RODOVIARIO_PEDAGIO (ID_MDFE_RODOVIARIO);
-
-
-CREATE TABLE MDFE_MUNICIPIO_DESCARREGAMENTO (
-  ID                SERIAL  NOT NULL,
-  ID_MDFE_CABECALHO INTEGER NOT NULL,
-  NOME_MUNICIPIO    VARCHAR(60),
-  CODIGO_MUNICIPIO  VARCHAR(7),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_CABECALHO)
-  REFERENCES MDFE_CABECALHO (id)
-);
-
-
-CREATE INDEX MDFE_MUNICIPIO_DESCARREGAMENTO_FKIndex1
-  ON MDFE_MUNICIPIO_DESCARREGAMENTO (ID_MDFE_CABECALHO);
-CREATE INDEX IFK_FK_MDFE_MUNICIPIO_DESCARRE
-  ON MDFE_MUNICIPIO_DESCARREGAMENTO (ID_MDFE_CABECALHO);
-
-CREATE TABLE MDFE_INFORMACAO_NFE (
-  ID                                SERIAL  NOT NULL,
-  ID_MDFE_MUNICIPIO_DESCARREGAMENTO INTEGER NOT NULL,
-  CHAVE_NFE                         VARCHAR(44),
-  SEGUNDO_CODIGO_BARRA              VARCHAR(36),
-  INDICADOR_REENTREGA               INTEGER,
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_MUNICIPIO_DESCARREGAMENTO)
-  REFERENCES MDFE_MUNICIPIO_DESCARREGAMENTO (id)
-);
-
-
-CREATE INDEX MDFE_informacoes_nfe_FKIndex1
-  ON MDFE_INFORMACAO_NFE (ID_MDFE_MUNICIPIO_DESCARREGAMENTO);
-CREATE INDEX MDFE_INFORMACAO_NFE_FKIndex1
-  ON MDFE_INFORMACAO_NFE (ID_MDFE_MUNICIPIO_DESCARREGAMENTO);
-CREATE INDEX IFK_FK_MDFE_INFORMACAO_NFE
-  ON MDFE_INFORMACAO_NFE (ID_MDFE_MUNICIPIO_DESCARREGAMENTO);
-
-
-CREATE TABLE MDFE_INFORMACAO_CTE (
-  ID                                SERIAL  NOT NULL,
-  ID_MDFE_MUNICIPIO_DESCARREGAMENTO INTEGER NOT NULL,
-  CHAVE_CTE                         VARCHAR(44),
-  SEGUNDO_CODIGO_BARRA              VARCHAR(36),
-  INDICADOR_REENTREGA               INTEGER,
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_MUNICIPIO_DESCARREGAMENTO)
-  REFERENCES MDFE_MUNICIPIO_DESCARREGAMENTO (id)
-);
-
-
-CREATE INDEX MDFE_INFORMACAO_CTE_FKIndex1
-  ON MDFE_INFORMACAO_CTE (ID_MDFE_MUNICIPIO_DESCARREGAMENTO);
-CREATE INDEX IFK_FK_MDFE_INFORMACAO_CTE
-  ON MDFE_INFORMACAO_CTE (ID_MDFE_MUNICIPIO_DESCARREGAMENTO);
-
-
-CREATE TABLE MDFE_PERCURSO (
-  ID                SERIAL  NOT NULL,
-  ID_MDFE_CABECALHO INTEGER NOT NULL,
-  UF_PERCURSO       CHAR(2),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_CABECALHO)
-  REFERENCES MDFE_CABECALHO (id)
-);
-
-
-CREATE INDEX MDFE_PERCURSO_FKIndex1
-  ON MDFE_PERCURSO (ID_MDFE_CABECALHO);
-CREATE INDEX IFK_FK_MDFE_PERCURSO
-  ON MDFE_PERCURSO (ID_MDFE_CABECALHO);
-
-CREATE TABLE MDFE_INFORMACAO_SEGURO (
-  ID                SERIAL  NOT NULL,
-  ID_MDFE_CABECALHO INTEGER NOT NULL,
-  RESPONSAVEL       INTEGER,
-  CNPJ_CPF          VARCHAR(14),
-  SEGURADORA        VARCHAR(11),
-  CNPJ_SEGURADORA   VARCHAR(14),
-  APOLICE           VARCHAR(20),
-  AVERBACAO         VARCHAR(40),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_CABECALHO)
-  REFERENCES MDFE_CABECALHO (id)
-);
-
-
-CREATE INDEX MDFE_INFORMACAO_SEGURO_FKIndex1
-  ON MDFE_INFORMACAO_SEGURO (ID_MDFE_CABECALHO);
-CREATE INDEX IFK_FK_MDFE_INFORMACAO_SEGURO
-  ON MDFE_INFORMACAO_SEGURO (ID_MDFE_CABECALHO);
-
-CREATE TABLE MDFE_LACRE (
-  ID                SERIAL  NOT NULL,
-  ID_MDFE_CABECALHO INTEGER NOT NULL,
-  NUMERO_LACRE      VARCHAR(20),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_CABECALHO)
-  REFERENCES MDFE_CABECALHO (id)
-);
-
-
-CREATE INDEX MDFE_LACRE_FKIndex1
-  ON MDFE_LACRE (ID_MDFE_CABECALHO);
-CREATE INDEX IFK_FK_MDFE_LACRE
-  ON MDFE_LACRE (ID_MDFE_CABECALHO);
-
-CREATE TABLE MDFE_MUNICIPIO_CARREGAMENTO (
-  ID                SERIAL  NOT NULL,
-  ID_MDFE_CABECALHO INTEGER NOT NULL,
-  NOME_MUNICIPIO    VARCHAR(60),
-  CODIGO_MUNICIPIO  VARCHAR(7),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_CABECALHO)
-  REFERENCES MDFE_CABECALHO (id)
-);
-
-
-CREATE INDEX MDFE_MUNICIPIO_CARREGAMENTO_FKIndex1
-  ON MDFE_MUNICIPIO_CARREGAMENTO (ID_MDFE_CABECALHO);
-CREATE INDEX IFK_FK_MDFE_MUNICIPIO_CARREGAM
-  ON MDFE_MUNICIPIO_CARREGAMENTO (ID_MDFE_CABECALHO);
-
-
-CREATE TABLE MDFE_EMITENTE (
-  ID                SERIAL  NOT NULL,
-  ID_MDFE_CABECALHO INTEGER NOT NULL,
-  NOME              VARCHAR(60),
-  FANTASIA          VARCHAR(60),
-  CNPJ              VARCHAR(14),
-  IE                INTEGER,
-  LOGRADOURO        VARCHAR(60),
-  NUMERO            VARCHAR(60),
-  COMPLEMENTO       VARCHAR(60),
-  BAIRRO            VARCHAR(60),
-  CODIGO_MUNICIPIO  VARCHAR(7),
-  NOME_MUNICIPIO    VARCHAR(60),
-  CEP               VARCHAR(8),
-  UF                CHAR(2),
-  TELEFONE          VARCHAR(12),
-  EMAIL             VARCHAR(60),
-  STATUS_MDFE       INTEGER,
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_MDFE_CABECALHO)
-  REFERENCES MDFE_CABECALHO (id)
-);
-
-
-CREATE INDEX MDFE_EMITENTE_FKIndex1
-  ON MDFE_EMITENTE (ID_MDFE_CABECALHO);
-CREATE INDEX IFK_FK_MDFE_EMITENTE
-  ON MDFE_EMITENTE (ID_MDFE_CABECALHO);

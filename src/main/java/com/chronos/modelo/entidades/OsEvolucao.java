@@ -27,7 +27,7 @@ public class OsEvolucao implements Serializable {
     private String observacao;
     @Column(name = "ENVIAR_EMAIL")
     private String enviarEmail;
-    @JoinColumn(name = "OS_ABERTURA_ID", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_OS_ABERTURA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private OsAbertura osAbertura;

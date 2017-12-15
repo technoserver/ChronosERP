@@ -1,0 +1,404 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        OS
+    </ui:define>
+
+    <ui:define name="tela">
+        #{osAberturaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        OS
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <erp:formularioGrid controller="#{osAberturaControll}" id="telaGrid">
+            <p:dataTable value="#{osAberturaControll.dataModel}" var="row" id="dataTableOsAbertura"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20" lazy="true"
+                         paginatorPosition="bottom" reflow="true" resizableColumns="true"
+                         rendered="#{osAberturaControll.podeConsultar()}">
+
+                <p:column headerText="Status" width="100">
+                    <h:outputLabel value="#{row.osStatus.nome}"/>
+                </p:column>
+                <p:column headerText="Cliente">
+                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                </p:column>
+                <p:column headerText="Numero" width="100">
+                    <h:outputLabel value="#{row.numero}"/>
+                </p:column>
+                <p:column headerText="Data Inicio" width="110">
+                    <h:outputLabel value="#{row.dataInicio}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Previsão" width="140">
+                    <h:outputLabel value="#{row.dataPrevisao}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Fim" width="120">
+                    <h:outputLabel value="#{row.dataFim}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Ações" width="160" styleClass="text-center">
+                    <p:commandLink title="Alterar" id="btnEditar" action="#{osAberturaControll.doEdit()}"
+                                   class=" btn btn-default"
+                                   update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                   process="dataTableOsAbertura">
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{row}" target="#{osAberturaControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" id="btnExcluir" action="#{osAberturaControll.remover()}"
+                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                   disabled="#{!osAberturaControll.podeExcluir()}"
+                                   process="dataTableOsAbertura"
+                                   class="btn btn-default"
+                                   rendered="#{!row.emitidoOrFaturado and !row.cancelado}">
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                        <f:setPropertyActionListener value="#{row}" target="#{osAberturaControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:menuButton style="height: 26px;">
+                        <p:menuitem value="Imprimir OS"
+                                    icon="fa fa-print"
+                                    action="#{osRelatorioControll.imprimirOS(row.id)}"
+                                    ajax="false">
+
+                        </p:menuitem>
+                        <p:menuitem value="Faturar OS"
+                                    icon="fa fa-print"
+                                    rendered="#{osAberturaControll.isTemAcesso('FINANCEIRO')}">
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{nfceControll.vendaSelecionada}"/>
+                        </p:menuitem>
+                        <p:menuitem value="Gerar NFe"
+                                    action="#{osAberturaControll.gerarNFe}"
+                                    update=":formCentro:mensagem"
+                                    rendered="#{osAberturaControll.isTemAcesso('NFE')}"
+                        >
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{osAberturaControll.objetoSelecionado}"/>
+                        </p:menuitem>
+                        <p:menuitem value="Gerar NFCe"
+                                    rendered="#{osAberturaControll.isTemAcesso('NFCE')}"
+                                    update=":formCentro:mensagem"
+                        >
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{nfceControll.vendaSelecionada}"/>
+                        </p:menuitem>
+                        <p:menuitem value="Gerar Danfe"
+                                    icon="fa fa-print" ajax="false"
+                                    rendered="#{osAberturaControll.isTemAcesso('NFCE')||osAberturaControll.isTemAcesso('NFE')}"
+                                    action="#{nfceControll.danfe}">
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{nfceControll.vendaSelecionada}"/>
+                        </p:menuitem>
+                    </p:menuButton>
+
+                </p:column>
+
+            </p:dataTable>
+        </erp:formularioGrid>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{osAberturaControll}"
+                                   nomeFuncao="OS"
+                                   id="telaDetalhe"
+                                   exibirFooter="false"
+                                   somenteConsulta="true">
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <!-- small box -->
+                    <div class="small-box bg-gray">
+                        <div class="inner">
+                            <h3>R$<span>#{osAberturaControll.objeto.valorTotalFormatado()}</span></h3>
+
+                            <p>Valor Total</p>
+                        </div>
+                        <div class="icon" style="top: 0px">
+                            <i class="fa  fa-money"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <!-- small box -->
+                    <div class="small-box bg-gray">
+                        <div class="inner">
+                            <h3>R$<span>#{osAberturaControll.objeto.valorProdutoFormatado()}</span></h3>
+
+                            <p>Valor Produtos</p>
+                        </div>
+                        <div class="icon" style="top: 0px">
+                            <i class="fa fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <!-- small box -->
+                    <div class="small-box bg-gray">
+                        <div class="inner">
+                            <h3>R$<span>#{osAberturaControll.objeto.valorServicoFormatado()}</span></h3>
+
+                            <p>Valor do Serviço</p>
+                        </div>
+                        <div class="icon" style="top: 0px">
+                            <i class="fa  fa-wrench"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <p:tabView id="tabViewDetalhes" style="border: 0px;" activeIndex="#{osAberturaControll.activeTabIndex}">
+                <p:tab title="Dados Principais">
+                    <ui:include src="osDadosPrincipais.xhtml"/>
+
+                </p:tab>
+                <p:tab title="Serviço/Produto" id="tabProduto" disabled="#{empty osAberturaControll.objeto.id}">
+                    <ui:include src="osServicoProduto.xhtml"/>
+                </p:tab>
+                <p:tab title="Evolução" id="tabEvolucao" disabled="#{empty osAberturaControll.objeto.id}">
+                    <ui:include src="osEvolucao.xhtml"/>
+                </p:tab>
+
+                <p:tab title="Equipamento" id="tabEquipamento" disabled="#{empty osAberturaControll.objeto.id}">
+                    <ui:include src="osEquipamento.xhtml"/>
+                </p:tab>
+
+
+            </p:tabView>
+            <div class="row ">
+
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogOsAberturaEquipamento"
+                      header="Inclusão/Alteração Os Abertura Equipamento"
+                      widgetVar="dialogOsAberturaEquipamento" showEffect="slide" responsive="true"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="800">
+
+                <p:outputPanel id="panelOsAberturaEquipamento">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p:outputLabel value="Os Equipamento"
+                                           for="osAberturaEquipamentoOsEquipamento"/>
+                            <br/>
+                            <p:autoComplete id="osAberturaEquipamentoOsEquipamento"
+                                            value="#{osAberturaControll.osAberturaEquipamento.osEquipamento}"
+                                            completeMethod="#{osAberturaControll.getListaOsEquipamento}"
+                                            var="osEquipamento" itemLabel="#{osEquipamento.nome}"
+                                            itemValue="#{osEquipamento}"
+                                            converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="10"
+                                            required="true" style="width: 100%"
+                                            emptyMessage="Nenhum registro encontrado"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        idComponente="osAberturaEquipamentoNumeroSerie"
+                                        label="Numero Serie"
+                                        nomeAtributo="#{osAberturaControll.osAberturaEquipamento.numeroSerie}"
+                                        tamanhoMaximo="50"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-6"
+                                         idComponente="osAberturaEquipamentoTipoCobertura"
+                                         label="Tipo Cobertura"
+                                         nomeAtributo="#{osAberturaControll.osAberturaEquipamento.tipoCobertura}"
+                                         itens="#{osAberturaControll.osTipoCobertura}"/>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <p:commandButton value="Salvar"
+                                             class="btn btn-primary center-block"
+                                             action="#{osAberturaControll.salvarOsAberturaEquipamento}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOsAberturaEquipamento').hide()}"
+                                             update=":formOutrasTelas:panelOsAberturaEquipamento,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                             id="btnSalvaEquipamento">
+
+                            </p:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOsAberturaEquipamento').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+
+            <p:dialog id="dialogOsProdutoServico"
+                      header="Inclusão/Alteração Os Produto Servico"
+                      widgetVar="dialogOsProdutoServico" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="800" responsive="true">
+
+                <p:outputPanel id="panelOsProdutoServico">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Produto"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{osAberturaControll}"
+                                          completeMethod="getListaProduto"
+                                          nomeAtributo="#{osAberturaControll.osProdutoServico.produto}"
+                                          idComponente="vendaDetalheProduto">
+
+                            <p:column headerText="Produto">
+                                <p:outputLabel value="#{objeto.nome}"/>
+                            </p:column>
+                            <p:column headerText="UN">
+                                <p:outputLabel value="#{objeto.unidadeProduto.sigla}"/>
+                            </p:column>
+                            <p:column headerText="Valor Venda" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.valorVenda}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Estoque Verificado" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.controle}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:ajax event="itemSelecionado"
+                                    listener="#{osAberturaControll.selecionaValorProduto}"
+                                    update="formOutrasTelas2:campoDecimalValorUnitario:valorUnitario"/>
+
+                        </erp:autoComplete>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="osProdutoServicoQuantidade" label="Quantidade"
+                                          nomeAtributo="#{osAberturaControll.osProdutoServico.quantidade}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="valorUnitario" label="Valor"
+                                          nomeAtributo="#{osAberturaControll.osProdutoServico.valorUnitario}"
+                                          id="campoDecimalValorUnitario"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="osProdutoServicoTaxaDesconto" label="Taxa Desconto"
+                                          nomeAtributo="#{osAberturaControll.osProdutoServico.taxaDesconto}"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            idComponente="osProdutoServicoComplemento" label="Complemento"
+                                            nomeAtributo="#{osAberturaControll.osProdutoServico.complemento}"/>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <p:commandButton value="Salvar"
+                                             actionListener="#{osAberturaControll.salvarOsProdutoServico}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOsProdutoServico').hide();}"
+                                             update=":formOutrasTelas2:panelOsProdutoServico,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                             id="btnSalvarProdutoServico">
+
+                            </p:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOsProdutoServico').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formOutrasTelas3">
+
+            <p:dialog id="dialogOsEvolucao"
+                      header="Inclusão/Alteração Os Evolucao" widgetVar="dialogOsEvolucao"
+                      showEffect="slide" hideEffect="slide" resizable="true" modal="true"
+                      closable="true" width="800" responsive="true">
+
+                <p:outputPanel id="panelOsEvolucao">
+                    <div class="row">
+                        <erp:campoData styleClass="col-xs-12 col-sm-4 col-md-4"
+                                       idComponente="osEvolucaoDataRegistro" label="Data Registro"
+                                       nomeAtributo="#{osAberturaControll.osEvolucao.dataRegistro}"/>
+                        <erp:campoMascara styleClass="col-xs-12 col-sm-4 col-md-4"
+                                          idComponente="osEvolucaoHoraRegistro" label="Hora Registro"
+                                          nomeAtributo="#{osAberturaControll.osEvolucao.horaRegistro}"
+                                          mascara="99:99:99"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-4 col-md-4"
+                                         idComponente="osEvolucaoEnviarEmail" label="Enviar Email"
+                                         rendered="#{osAberturaControll.emailValido}"
+                                         nomeAtributo="#{osAberturaControll.osEvolucao.enviarEmail}"
+                                         itens="#{osAberturaControll.simNao}"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            idComponente="osEvolucaoObservacao" label="Observacao"
+                                            nomeAtributo="#{osAberturaControll.osEvolucao.observacao}"/>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <h:commandButton value="salvar"
+                                             class="btn btn-primary center-block"
+                                             actionListener="#{osAberturaControll.salvarOsEvolucao}"
+                                             id="btnSalvarEvolucao">
+                                <p:ajax process="@form"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogOsEvolucao').hide();}"
+                                        update=":formOutrasTelas3:panelOsEvolucao,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             class="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOsEvolucao').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

@@ -42,6 +42,17 @@ public class VendaToNFe extends ManualCDILookup {
 
     }
 
+    public VendaToNFe(ModeloDocumento modelo, ConfiguracaoEmissorDTO configuracao, OsAbertura os) {
+        this.modelo = modelo;
+        this.os = os;
+        cliente = os.getCliente();
+        empresa = os.getEmpresa();
+        tipoVenda = TipoVenda.OS;
+        this.configuracao = configuracao;
+        nfeUtil = new NfeUtil();
+
+    }
+
     public NfeCabecalho gerarNfe() throws Exception {
         nfe = new NfeCabecalho();
         valoresPadrao();
@@ -183,14 +194,14 @@ public class VendaToNFe extends ManualCDILookup {
     }
 
     public void definirFormaPagamento() {
-        FinTipoRecebimento tipoRecebimento = venda.getCondicoesPagamento().getTipoRecebimento();
+        FinTipoRecebimento tipoRecebimento = tipoVenda == TipoVenda.VENDA ? venda.getCondicoesPagamento().getTipoRecebimento() : os.getCondicoesPagamento().getTipoRecebimento();
         NfceTipoPagamento tipoPagamento = new NfceTipoPagamento();
         tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
         NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
         nfeFormaPagamento.setNfceTipoPagamento(tipoPagamento);
         nfeFormaPagamento.setNfeCabecalho(nfe);
         nfeFormaPagamento.setForma(tipoRecebimento.getTipo());
-        nfeFormaPagamento.setValor(venda.getValorTotal());
+        nfeFormaPagamento.setValor(tipoVenda == TipoVenda.VENDA ? venda.getValorTotal() : os.getValorTotal());
         nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
     }
 

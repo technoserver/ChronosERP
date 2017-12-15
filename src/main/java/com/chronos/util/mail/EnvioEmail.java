@@ -9,12 +9,15 @@ import com.outjected.email.impl.SimpleMailConfig;
 import org.apache.commons.mail.MultiPartEmail;
 import org.springframework.util.StringUtils;
 
+import javax.ejb.Asynchronous;
+import javax.ejb.Stateless;
 import java.io.File;
 
 
 /**
  * Created by john on 11/12/17.
  */
+@Stateless
 public class EnvioEmail {
 
     public SessionConfig getMailConfig(ConfEmail confEmail) {
@@ -58,6 +61,17 @@ public class EnvioEmail {
 //                .contentType(ContentType.ALTERNATIVE)
 //                .send();
 
+    }
+
+    @Asynchronous
+    public void enviarEmail(ConfEmail confEmail, String assunto, String msg, String emaiEnvio) {
+        MailMessage message = new MailMessageImpl(getMailConfig(confEmail));
+        message.to(emaiEnvio)
+                .subject(assunto)
+                .bodyText(msg)
+                .importance(MessagePriority.HIGH)
+                .contentType(ContentType.ALTERNATIVE)
+                .send();
     }
 
     public void enviarEmail(ConfEmail confEmail) {

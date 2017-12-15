@@ -510,7 +510,7 @@ public class NfeService implements Serializable {
     }
 
     @Transactional
-    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
+    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao, boolean atualizarEstoque) throws Exception {
         validacaoNfe(nfe);
         VendaCabecalho venda = nfe.getVendaCabecalho();
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
@@ -530,7 +530,7 @@ public class NfeService implements Serializable {
                 nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getProtNFe().getInfProt().getDhRecbto()));
                 String xmlProc = XmlUtil.criaNfeProc(nfeEnv, retorno.getProtNFe());
                 nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
-                nfe = nfeRepository.procedimentoNfeAutorizada(nfe);
+                nfe = nfeRepository.procedimentoNfeAutorizada(nfe, atualizarEstoque);
                 if (venda != null) {
                     venda.setNumeroFatura(nfe.getId());
                     nfe.setVendaCabecalho(venda);
@@ -683,7 +683,7 @@ public class NfeService implements Serializable {
     }
 
     @Transactional
-    public boolean cancelarNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
+    public boolean cancelarNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao, boolean estoque) throws Exception {
 
         boolean cancelado = false;
         if (StatusTransmissao.isCancelada(nfe.getStatusNota())) {
@@ -709,7 +709,7 @@ public class NfeService implements Serializable {
                 nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getRetEvento().get(0).getInfEvento().getDhRegEvento()));
                 String xml = xmlCancelado(retorno, evento);
                 nfe.setStatusNota(StatusTransmissao.CANCELADA.getCodigo());
-                nfe = nfeRepository.procedimentoNfeCancelada(nfe);
+                nfe = nfeRepository.procedimentoNfeCancelada(nfe, estoque);
                 cancelado = true;
             } else if (retorno.getRetEvento().get(0).getInfEvento().getCStat().equals("573")) {
                 cancelado = repository.updateNativo(NfeCabecalho.class, filtros, atributos);

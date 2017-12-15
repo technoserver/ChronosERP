@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Table(name = "OS_PRODUTO_SERVICO")
@@ -60,10 +61,19 @@ public class OsProdutoServico implements Serializable {
         this.id = id;
     }
 
+    /**
+     * 0=PRODUTO | 1=SERVIÇO
+     *
+     * @return
+     */
     public Integer getTipo() {
         return tipo;
     }
 
+    /**
+     * 0=PRODUTO | 1=SERVIÇO
+     * @return
+     */
     public void setTipo(Integer tipo) {
         this.tipo = tipo;
     }
@@ -93,6 +103,8 @@ public class OsProdutoServico implements Serializable {
     }
 
     public BigDecimal getValorSubtotal() {
+        this.valorSubtotal = this.quantidade.multiply(valorUnitario);
+        this.valorSubtotal.setScale(2, BigDecimal.ROUND_HALF_DOWN);
         return valorSubtotal;
     }
 
@@ -109,6 +121,10 @@ public class OsProdutoServico implements Serializable {
     }
 
     public BigDecimal getValorDesconto() {
+        this.valorDesconto = Optional.ofNullable(this.taxaDesconto).isPresent()
+                ? taxaDesconto.multiply(this.valorUnitario).divide(quantidade).divide(BigDecimal.valueOf(100))
+                : BigDecimal.ZERO;
+        this.valorDesconto.setScale(2, BigDecimal.ROUND_HALF_DOWN);
         return valorDesconto;
     }
 
@@ -117,7 +133,8 @@ public class OsProdutoServico implements Serializable {
     }
 
     public BigDecimal getValorTotal() {
-        return valorTotal;
+        this.valorTotal = getValorSubtotal().subtract(Optional.ofNullable(this.valorDesconto).orElse(BigDecimal.ZERO));
+        return this.valorTotal;
     }
 
     public void setValorTotal(BigDecimal valorTotal) {

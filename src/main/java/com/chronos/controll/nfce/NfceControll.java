@@ -648,7 +648,8 @@ public class NfceControll implements Serializable {
             venda.setCsc(configuracao.getCodigoCsc());
 
             gerarNumeracao(venda);
-            StatusTransmissao status = nfeService.transmitirNFe(venda, new ConfiguracaoEmissorDTO(configuracao));
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            StatusTransmissao status = nfeService.transmitirNFe(venda, new ConfiguracaoEmissorDTO(configuracao), estoque);
             if (status == StatusTransmissao.AUTORIZADA) {
                 nfeService.atualizarNumeracao(venda);                // lancaMovimentos();
                 gerarCupom();
@@ -684,7 +685,8 @@ public class NfceControll implements Serializable {
             venda = nfeRepositoy.getJoinFetch(vendaSelecionada.getId(), NfeCabecalho.class);
             venda.setJustificativaCancelamento(justificativa);
             configuracao = getConfiguraNfce();
-            boolean cancelado = nfeService.cancelarNFe(venda, new ConfiguracaoEmissorDTO(configuracao));
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            boolean cancelado = nfeService.cancelarNFe(venda, new ConfiguracaoEmissorDTO(configuracao), estoque);
             if (cancelado) {
                 Mensagem.addInfoMessage("NFCe cancelada com sucesso");
             }

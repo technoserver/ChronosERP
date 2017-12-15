@@ -90,9 +90,9 @@
 
         <!-- Tema do Bootstrap -->
         <dependency>
-            <groupId>org.primefaces.themes</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>1.0.10</version>
+            <groupId>com.chronos.themes</groupId>
+            <artifactId>custom-theme</artifactId>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
 

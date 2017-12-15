@@ -139,6 +139,10 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, Integer> statusNfe;
     private HashMap<String, Integer> webserviceAmbiente;
 
+    // OS
+    private HashMap<String, Integer> osTipoCobertura;
+    private HashMap<String, Integer> osTipoProdutoServico;
+
 
     protected abstract Class<T> getClazz();
 
@@ -479,6 +483,19 @@ public abstract class AbstractControll<T> implements Serializable {
         webserviceAmbiente.put("Produção", 1);
         webserviceAmbiente.put("Homologação", 2);
 
+        // OS
+        osTipoCobertura = new HashMap<>();
+        osTipoCobertura.put("NENHUM", 0);
+        osTipoCobertura.put("GARANTIA", 1);
+        osTipoCobertura.put("SEGURO", 2);
+        osTipoCobertura.put("CONTRATO", 3);
+
+        osTipoProdutoServico = new HashMap<>();
+        osTipoProdutoServico.put("PRODUTO", 0);
+        osTipoProdutoServico.put("SERVIÇO", 1);
+
+
+
     }
 
     public void voltar() {
@@ -724,6 +741,10 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public boolean podeExcluir() {
         return FacesUtil.isUserInRole(getFuncaoBase() + "_EXCLUIR") || FacesUtil.isUserInRole("ADMIN");
+    }
+
+    public boolean isTemAcesso(String modulo) {
+        return FacesUtil.isUserInRole(modulo);
     }
 
     public T getObjetoSelecionado() {
@@ -1031,5 +1052,13 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, Integer> getWebserviceAmbiente() {
         return webserviceAmbiente;
+    }
+
+    public HashMap<String, Integer> getOsTipoCobertura() {
+        return osTipoCobertura;
+    }
+
+    public HashMap<String, Integer> getOsTipoProdutoServico() {
+        return osTipoProdutoServico;
     }
 }

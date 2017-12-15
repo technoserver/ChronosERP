@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h:commandLink title="Novo" class="btn btn-default margem-bottom-10"
+                           actionListener="#{osAberturaControll.incluirOsAberturaEquipamento}"
+                           type="button">
+                <i class="glyphicon glyphicon-plus"/>
+                <p:ajax update=":formOutrasTelas:panelOsAberturaEquipamento,dataTableOsAberturaEquipamento"
+                        oncomplete="PF('dialogOsAberturaEquipamento').show()"
+                        process="@this"/>
+            </h:commandLink>
+        </div>
+    </div>
+    <p:dataTable id="dataTableOsAberturaEquipamento" var="obj"
+                 value="#{osAberturaControll.objeto.listaOsAberturaEquipamento}"
+                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                 resizableColumns="true"
+                 reflow="true" paginatorPosition="bottom">
+
+
+        <p:column headerText="Os Equipamento">
+            <h:outputLabel value="#{obj.osEquipamento.nome}"/>
+        </p:column>
+        <p:column headerText="Numero Serie">
+            <h:outputLabel value="#{obj.numeroSerie}"/>
+        </p:column>
+        <p:column headerText="Tipo Cobertura">
+            <h:outputLabel
+                    value="#{osAberturaControll.keyFromValue(osAberturaControll.osTipoCobertura, obj.tipoCobertura)}"/>
+        </p:column>
+        <p:column headerText="Ações" width="150">
+            <p:commandLink process="dataTableOsAberturaEquipamento" title="Alterar" style="margin-right: 4px"
+                           oncomplete="PF('dialogOsAberturaEquipamento').show()" styleClass="btn btn-default"
+                           action="#{osAberturaControll.alterarOsAberturaEquipamento}"
+                           update=":formOutrasTelas:panelOsAberturaEquipamento,dataTableOsAberturaEquipamento">
+                <i class="fa fa-file-text-o"></i>
+                <f:setPropertyActionListener value="#{obj}"
+                                             target="#{osAberturaControll.osAberturaEquipamentoSelecionado}"/>
+            </p:commandLink>
+            &nbsp;
+            <p:commandLink process="dataTableOsAberturaEquipamento" title="Excluir" styleClass="btn btn-default"
+                           action="#{osAberturaControll.excluirOsAberturaEquipamento}"
+                           update="dataTableOsAberturaEquipamento,:formCentro:growl">
+                <i class="fa fa-close"/>
+                <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                           icon="ui-icon-alert"/>
+                <f:setPropertyActionListener value="#{obj}"
+                                             target="#{osAberturaControll.osAberturaEquipamentoSelecionado}"/>
+            </p:commandLink>
+        </p:column>
+    </p:dataTable>
+
+</ui:composition>

@@ -69,12 +69,9 @@ public class VendaService implements Serializable {
     }
 
     @Transactional
-    public void transmitirNFe(VendaCabecalho venda, ModeloDocumento modelo) {
+    public void transmitirNFe(VendaCabecalho venda, ModeloDocumento modelo, boolean atualizarEstoque) {
         try {
             SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getSituacao());
-            if (situacao != SituacaoVenda.Faturado) {
-                throw new Exception("Essa venda não se encontra faturada");
-            }
             if (situacao == SituacaoVenda.NotaFiscal) {
                 throw new Exception("Essa venda já possue NFe");
             }
@@ -86,7 +83,8 @@ public class VendaService implements Serializable {
             nfe = vendaNfe.gerarNfe();
             nfe.setCsc(configuracao.getCsc());
             nfe.setVendaCabecalho(venda);
-            StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao);
+
+            StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao, atualizarEstoque);
             if (status == StatusTransmissao.AUTORIZADA) {
                 venda.setSituacao(SituacaoVenda.NotaFiscal.getCodigo());
                 venda.setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());

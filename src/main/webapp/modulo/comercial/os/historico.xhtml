@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Historico de OS
+    </ui:define>
+
+    <ui:define name="tela">
+        #{osHistoricoEquipamentoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Historico de OS
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{osHistoricoEquipamentoControll}"
+                       idDataTable="dataTableHistorico"
+                       nomeFuncao="HISTORICO"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="Equipamento">
+                <h:outputLabel value="#{row.osEquipamento.nome}"/>
+            </p:column>
+            <p:column headerText="Numero Serie">
+                <h:outputLabel value="#{row.numeroSerie}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{osHistoricoEquipamentoControll}"
+                                   nomeFuncao="HISTORICO"
+                                   id="telaDetalhe"
+        >
+            <div class="row">
+
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-4"
+                                idComponente="osAberturaEquipamentoNome" label="Equipamento"
+                                tamanhoMaximo="1000"
+                                somenteLeitura="true"
+                                nomeAtributo="#{osHistoricoEquipamentoControll.objeto.osEquipamento.nome}"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-4"
+                                idComponente="osAberturaEquipamentoNumeroSerie"
+                                label="Numero Serie"
+                                tamanhoMaximo="100"
+                                somenteLeitura="true"
+                                nomeAtributo="#{osHistoricoEquipamentoControll.objeto.numeroSerie}"/>
+            </div>
+            <div class="row m-t">
+                <p:dataTable id="dataTableOsProdutoServico" var="obj"
+                             value="#{osHistoricoEquipamentoControll.listaOsProdutoServico}"
+                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                             paginatorPosition="bottom"
+                             resizableColumns="true" reflow="true">
+
+                    <p:column headerText="Produto/Servico">
+                        <h:outputLabel value="#{obj.produto.nome}"/>
+                    </p:column>
+                    <p:column headerText="Complemento">
+                        <h:outputLabel value="#{obj.complemento}"/>
+                    </p:column>
+                    <p:column headerText="Quantidade">
+                        <h:outputLabel value="#{obj.quantidade}">
+                            <f:convertNumber pattern="0.000"/>
+                        </h:outputLabel>
+                    </p:column>
+                </p:dataTable>
+
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

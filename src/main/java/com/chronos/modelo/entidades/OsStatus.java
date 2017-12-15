@@ -24,6 +24,11 @@ public class OsStatus implements Serializable {
     public OsStatus() {
     }
 
+    public OsStatus(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

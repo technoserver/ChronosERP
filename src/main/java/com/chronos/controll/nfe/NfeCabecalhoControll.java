@@ -372,8 +372,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             if (dadosSalvos) {
 
                 configuracao = configuracao != null ? configuracao : configuraNfe();
-
-                StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
+                boolean estoque = isTemAcesso("ESTOQUE");
+                StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao), estoque);
                 if (status == StatusTransmissao.AUTORIZADA) {
 
                     Mensagem.addInfoMessage("NFe transmitida com sucesso");
@@ -405,7 +405,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         try {
             getObjeto().setJustificativaCancelamento(justificativa);
             configuracao = configuracao != null ? configuracao : configuraNfe();
-            boolean cancelado = nfeService.cancelarNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
+            boolean estoque = isTemAcesso("ESTOQUE");
+            boolean cancelado = nfeService.cancelarNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao), estoque);
             if (cancelado) {
                 Mensagem.addInfoMessage("NFe cancelada com sucesso");
             }
