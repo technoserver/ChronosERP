@@ -49,6 +49,7 @@ public class ProdutoDTO implements Serializable {
         this.produto.setImagem(imagem);
         this.produto.getUnidadeProduto().setPodeFracionar(podeFracionar);
         this.produto.setCodigoLst(codigoLst);
+        this.produto.setControle(estoqueVerificado);
         if (idgrupotributario != null) {
             produto.setTributGrupoTributario(new TributGrupoTributario(idgrupotributario));
         } else {

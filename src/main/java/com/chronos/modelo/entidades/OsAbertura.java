@@ -1,14 +1,20 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.*;
 
 @Entity
 @Table(name = "OS_ABERTURA")
+@DynamicUpdate
 public class OsAbertura implements Serializable {
 
     private static final long serialVersionUID = 2L;
@@ -17,6 +23,8 @@ public class OsAbertura implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "ID_NFE_CABECALHO")
+    private Integer idnfeCabecalho;
     @Column(name = "NUMERO")
     private String numero;
     @Temporal(TemporalType.DATE)
@@ -42,17 +50,37 @@ public class OsAbertura implements Serializable {
     private String observacaoCliente;
     @Column(name = "OBSERVACAO_ABERTURA")
     private String observacaoAbertura;
+    @Column(name = "VALOR_TOTAL_PRODUTOS")
+    private BigDecimal valorTotalProduto;
+    @Column(name = "VALOR_TOTAL_SERVICOS")
+    private BigDecimal valorTotalServico;
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
+    @Column(name = "VALOR_TOTAL_DESCONTO")
+    private BigDecimal valorTotalDesconto;
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
+    @Column(name = "VALOR_TOTAL")
+    private BigDecimal valorTotal;
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private Cliente cliente;
     @JoinColumn(name = "ID_COLABORADOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
+    @NotNull
     private Colaborador colaborador;
     @JoinColumn(name = "ID_OS_STATUS", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private OsStatus osStatus;
+    @JoinColumn(name = "ID_VENDA_CONDICOES_PAGAMENTO", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    @NotNull
+    private VendaCondicoesPagamento condicoesPagamento;
+    @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private Empresa empresa;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OsEvolucao> listaOsEvolucao;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)     
@@ -63,12 +91,32 @@ public class OsAbertura implements Serializable {
     public OsAbertura() {
     }
 
+    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, int idcliente, String nome, String osStatus, Integer idnfeCabecalho) {
+        this.id = id;
+        this.numero = numero;
+        this.dataInicio = dataInicio;
+        this.dataPrevisao = dataPrevisao;
+        this.dataFim = dataFim;
+        this.cliente = new Cliente(idcliente, nome);
+        this.osStatus = new OsStatus(0, osStatus);
+        this.idnfeCabecalho = idnfeCabecalho;
+
+    }
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdnfeCabecalho() {
+        return idnfeCabecalho;
+    }
+
+    public void setIdnfeCabecalho(Integer idnfeCabecalho) {
+        this.idnfeCabecalho = idnfeCabecalho;
     }
 
     public String getNumero() {
@@ -193,7 +241,7 @@ public class OsAbertura implements Serializable {
     }
 
     public Set<OsProdutoServico> getListaOsProdutoServico() {
-        return listaOsProdutoServico;
+        return Optional.ofNullable(listaOsProdutoServico).orElse(new HashSet<>());
     }
 
     public void setListaOsProdutoServico(Set<OsProdutoServico> listaOsProdutoServico) {
@@ -206,6 +254,132 @@ public class OsAbertura implements Serializable {
 
     public void setListaOsAberturaEquipamento(Set<OsAberturaEquipamento> listaOsAberturaEquipamento) {
         this.listaOsAberturaEquipamento = listaOsAberturaEquipamento;
+    }
+
+
+    public BigDecimal getValorTotalProduto() {
+        return valorTotalProduto;
+    }
+
+    public void setValorTotalProduto(BigDecimal valorTotalProduto) {
+        this.valorTotalProduto = valorTotalProduto;
+    }
+
+    public BigDecimal getValorTotalServico() {
+        return valorTotalServico;
+    }
+
+    public void setValorTotalServico(BigDecimal valorTotalServico) {
+        this.valorTotalServico = valorTotalServico;
+    }
+
+    public BigDecimal getValorTotalDesconto() {
+        return valorTotalDesconto;
+    }
+
+    public void setValorTotalDesconto(BigDecimal valorTotalDesconto) {
+        this.valorTotalDesconto = valorTotalDesconto;
+    }
+
+    public BigDecimal getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(BigDecimal valorTotal) {
+        this.valorTotal = valorTotal;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
+    public VendaCondicoesPagamento getCondicoesPagamento() {
+        return condicoesPagamento;
+    }
+
+    public void setCondicoesPagamento(VendaCondicoesPagamento condicoesPagamento) {
+        this.condicoesPagamento = condicoesPagamento;
+    }
+
+
+    private String formatarValor(BigDecimal valor) {
+        DecimalFormatSymbols simboloDecimal = DecimalFormatSymbols.getInstance();
+        simboloDecimal.setDecimalSeparator('.');
+        DecimalFormat formatar = new DecimalFormat("0.00", simboloDecimal);
+
+        return formatar.format(Optional.ofNullable(valor).orElse(BigDecimal.ZERO));
+    }
+
+    public BigDecimal calcularValorTotal() {
+        BigDecimal valor = getListaOsProdutoServico()
+                .stream()
+                .map(OsProdutoServico::getValorTotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        return valor;
+    }
+
+    public BigDecimal calcularValorProduto() {
+        BigDecimal valor = getListaOsProdutoServico()
+                .stream()
+                .filter((p) -> p.getTipo() != null && p.getTipo() == 0)
+                .map(OsProdutoServico::getValorTotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        return valor;
+    }
+
+    public BigDecimal calcularValorServico() {
+        BigDecimal valor = getListaOsProdutoServico()
+                .stream()
+                .filter((p) -> p.getTipo() == 1)
+                .map(OsProdutoServico::getValorTotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        return valor;
+    }
+
+    public void calcularValores() {
+        this.valorTotalProduto = calcularValorProduto();
+        this.valorTotalServico = calcularValorServico();
+        this.valorTotal = calcularValorTotal();
+    }
+
+    public boolean isNovo() {
+        return this.id == null;
+    }
+
+    public String valorTotalFormatado() {
+        return formatarValor(calcularValorTotal());
+    }
+
+    public String valorProdutoFormatado() {
+        return formatarValor(calcularValorProduto());
+    }
+
+    public String valorServicoFormatado() {
+        return formatarValor(calcularValorServico());
+    }
+
+    public boolean isFaturado() {
+        return this.osStatus.getId() != null && this.osStatus.getId() == 5;
+    }
+
+    public boolean isEmitido() {
+        return this.osStatus.getId() != null && this.osStatus.getId() == 6;
+    }
+
+    public boolean isEmitidoOrFaturado() {
+        boolean teste = this.osStatus.getId() == 6 || this.osStatus.getId() == 5;
+        return teste;
+    }
+
+    public boolean isCancelado() {
+        return this.osStatus.getId() != null && this.osStatus.getId() == 7;
     }
 
     @Override

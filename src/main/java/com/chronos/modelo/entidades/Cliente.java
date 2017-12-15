@@ -75,6 +75,11 @@ public class Cliente implements Serializable {
         this.pessoa = new Pessoa(nome);
     }
 
+    public Cliente(Integer id, String nome, String email) {
+        this.id = id;
+        this.pessoa = new Pessoa(nome, email);
+    }
+
     public Integer getId() {
         return id;
     }

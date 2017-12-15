@@ -67,12 +67,31 @@
         </c:if>
 
         <c:if test="#{seguranca.userOs eq true }">
-            <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/')?'active':''}">
+            <li class="${fn:contains(view.viewId,'modulo/comercial/os/')?'active':''}">
                 <a href="#">OS<span class="fa arrow"></span></a>
                 <ul class="nav nav-third-level">
-                    <erp:subMenu caminho="/modulo/comercial/os/equipammentos"
+                    <erp:subMenu caminho="/modulo/comercial/os/equipamentos"
                                  label="Equipamento"
                                  funcao="equipamento"/>
+
+                    <erp:subMenu caminho="/modulo/comercial/os/osAbertura"
+                                 label="OS"
+                                 funcao="osAbertura"/>
+
+                    <erp:subMenu caminho="/modulo/comercial/os/historico"
+                                 label="Historico"
+                                 funcao="historico"/>
+
+                    <li class="${fn:contains(view.viewId,'modulo/comercial/os/relatorios/')?'active':''}">
+                        <a href="#">Relatorios <span class="fa arrow"></span></a>
+                        <ul class="nav nav-bedroom-level">
+                            <erp:subMenu caminho="/modulo/comercial/os/relatorios/relacaoOs"
+                                         label="Relação"
+                                         funcao="relacaoOs"/>
+
+
+                        </ul>
+                    </li>
                 </ul>
 
             </li>

@@ -250,6 +250,8 @@ public class NfeCabecalho implements Serializable {
     private Set<NfeFormaPagamento> listaNfeFormaPagamento;
     @Transient
     private String csc;
+    @Transient
+    private OsAbertura os;
 
     public NfeCabecalho() {
     }
@@ -1832,6 +1834,14 @@ public class NfeCabecalho implements Serializable {
         this.csc = csc;
     }
 
+    public OsAbertura getOs() {
+        return os;
+    }
+
+    public void setOs(OsAbertura os) {
+        this.os = os;
+    }
+
     /**
      * vNF - Valor Total da NF-e [(+) vProd (id:W07) (-) vDesc (id:W10) (+) vICMSST (id:W06) (+) vFrete (id:W09) (+)
      * vSeg (id:W10) (+) vOutro (id:W15) (+) vII (id:W11) (+) vIPI (id:W12) (+) vServ (id:W19) (NT 2011/004)]
@@ -1839,7 +1849,7 @@ public class NfeCabecalho implements Serializable {
 
     public BigDecimal calcularValorTotal() {
         valorTotal = BigDecimal.ZERO;
-        calcularValores();
+        //  calcularValores();
         valorTotal = valorTotal.add(getValorTotalProdutos())
                 .subtract(getValorDesconto())
                 .add(getValorIcmsSt())

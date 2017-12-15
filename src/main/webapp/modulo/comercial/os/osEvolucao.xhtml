@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h:commandLink title="Novo" class="btn btn-default margem-bottom-10"
+                           actionListener="#{osAberturaControll.incluirOsEvolucao}"
+                           type="button">
+                <i class="glyphicon glyphicon-plus"/>
+                <p:ajax update=":formOutrasTelas3:panelOsEvolucao,dataTableOsEvolucao"
+                        oncomplete="PF('dialogOsEvolucao').show()"
+                        process="@this"/>
+            </h:commandLink>
+        </div>
+    </div>
+
+    <p:dataTable id="dataTableOsEvolucao" var="obj"
+                 value="#{osAberturaControll.objeto.listaOsEvolucao}"
+                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                 reflow="true" paginatorPosition="bottom"
+                 resizableColumns="true"
+    >
+
+        <p:column headerText="Data Registro">
+            <h:outputLabel value="#{obj.dataRegistro}">
+                <f:convertDateTime pattern="dd/MM/yyyy"/>
+            </h:outputLabel>
+        </p:column>
+        <p:column headerText="Hora Registro">
+            <h:outputLabel value="#{obj.horaRegistro}"/>
+        </p:column>
+        <p:column headerText="Observacao">
+            <h:outputLabel value="#{obj.observacao}"/>
+        </p:column>
+        <p:column headerText="Enviar Email">
+            <h:outputLabel
+                    value="#{osAberturaControll.keyFromValue(osAberturaControll.simNao, obj.enviarEmail)}"/>
+        </p:column>
+        <p:column headerText="Ações" width="150">
+            <p:commandLink process="dataTableOsEvolucao" title="Alterar" style="margin-right: 4px"
+                           oncomplete="PF('dialogOsEvolucao').show()" styleClass="btn btn-default"
+                           action="#{osAberturaControll.alterarOsEvolucao}"
+                           update=":formOutrasTelas3:panelOsEvolucao,dataTableOsEvolucao">
+                <i class="fa fa-file-text-o"></i>
+                <f:setPropertyActionListener value="#{obj}" target="#{osAberturaControll.osEvolucaoSelecionado}"/>
+            </p:commandLink>
+            &nbsp;
+            <p:commandLink title="Excluir" styleClass="btn btn-default"
+                           action="#{osAberturaControll.excluirOsEvolucao}"
+                           process="dataTableOsEvolucao"
+                           update="dataTableOsEvolucao">
+                <i class="fa fa-close"/>
+                <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                           icon="ui-icon-alert"/>
+                <f:setPropertyActionListener value="#{obj}" target="#{osAberturaControll.osEvolucaoSelecionado}"/>
+            </p:commandLink>
+        </p:column>
+    </p:dataTable>
+
+</ui:composition>

@@ -74,6 +74,8 @@ public class NfceControll implements Serializable {
     private EstoqueRepository estoqueRepositoy;
     @Inject
     private Repository<NfeCabecalho> nfeRepositoy;
+    @Inject
+    private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
 
     @Inject
     protected FacesContext facesContext;
@@ -100,6 +102,7 @@ public class NfceControll implements Serializable {
     private ViewNfceCliente cliente;
     private Vendedor vendedor;
     private List<Vendedor> listVendedores;
+    private TributOperacaoFiscal operacao;
 
 
     private String tipoDesconto;
@@ -148,6 +151,7 @@ public class NfceControll implements Serializable {
         vendedor = instanciarVendedor(usuario);
         context = facesContext.getExternalContext();
         listVendedores = new ArrayList<>();
+        operacao = operacaoFiscalRepository.get(1, TributOperacaoFiscal.class);
         novaVenda();
 
     }
@@ -322,7 +326,7 @@ public class NfceControll implements Serializable {
 
             }
             venda = new NfeCabecalho();
-            venda.setTributOperacaoFiscal(new TributOperacaoFiscal(1));
+            venda.setTributOperacaoFiscal(operacao);
             item = new NfeDetalhe();
             configuracao = getConfiguraNfce();
             nfeService.dadosPadroes(venda, ModeloDocumento.NFCE, empresa, new ConfiguracaoEmissorDTO(configuracao));
@@ -646,18 +650,17 @@ public class NfceControll implements Serializable {
             configuracao = getConfiguraNfce();
             definirNumeroItens();
             venda.setCsc(configuracao.getCodigoCsc());
-
-            gerarNumeracao(venda);
-            StatusTransmissao status = nfeService.transmitirNFe(venda, new ConfiguracaoEmissorDTO(configuracao));
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            StatusTransmissao status = nfeService.transmitirNFe(venda, new ConfiguracaoEmissorDTO(configuracao), estoque);
             if (status == StatusTransmissao.AUTORIZADA) {
-                nfeService.atualizarNumeracao(venda);                // lancaMovimentos();
+                // lancaMovimentos();
                 gerarCupom();
                 Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 RequestContext.getCurrentInstance().addCallbackParam("vendaFinalizada", true);
             } else if (status == StatusTransmissao.DUPLICIDADE) {
-                nfeService.atualizarNumeracao(venda);
-                venda.setNumero(null);
-                transmitirNfe();
+
+                // venda.setNumero(null);
+                // transmitirNfe();
             }
 
 
@@ -684,7 +687,8 @@ public class NfceControll implements Serializable {
             venda = nfeRepositoy.getJoinFetch(vendaSelecionada.getId(), NfeCabecalho.class);
             venda.setJustificativaCancelamento(justificativa);
             configuracao = getConfiguraNfce();
-            boolean cancelado = nfeService.cancelarNFe(venda, new ConfiguracaoEmissorDTO(configuracao));
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            boolean cancelado = nfeService.cancelarNFe(venda, new ConfiguracaoEmissorDTO(configuracao), estoque);
             if (cancelado) {
                 Mensagem.addInfoMessage("NFCe cancelada com sucesso");
             }
@@ -697,10 +701,7 @@ public class NfceControll implements Serializable {
     }
 
 
-    public void gerarNumeracao(NfeCabecalho nfe) throws Exception {
-        nfeService.gerarNumeracao(nfe, false);
 
-    }
 
     public void gerarCupom() throws JRException, IOException {
 

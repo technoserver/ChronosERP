@@ -13,21 +13,27 @@ import java.util.List;
 public class NfeRepository extends AbstractRepository implements Serializable {
 
 
-    public NfeCabecalho procedimentoNfeAutorizada(NfeCabecalho nfe) throws Exception {
+    public NfeCabecalho procedimentoNfeAutorizada(NfeCabecalho nfe, boolean atualizarEstoque) throws Exception {
         nfe = atualizar(nfe);
-        if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
-            atualizaEstoqueEmpresaEstoqueVerificado(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
-        } else {
-            atualizaEstoqueEmpresa(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+        if (atualizarEstoque) {
+            if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
+                atualizaEstoqueEmpresaEstoqueVerificado(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+            } else {
+                atualizaEstoqueEmpresa(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+            }
         }
+
         return nfe;
     }
 
-    public NfeCabecalho procedimentoNfeCancelada(NfeCabecalho nfe) throws Exception {
+    public NfeCabecalho procedimentoNfeCancelada(NfeCabecalho nfe, boolean estoque) throws Exception {
         nfe = atualizar(nfe);
-        for (NfeDetalhe nfeDetalhe : nfe.getListaNfeDetalhe()) {
-            atualizaEstoqueEmpresa(nfe.getEmpresa().getId(), nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial());
+        if (estoque) {
+            for (NfeDetalhe nfeDetalhe : nfe.getListaNfeDetalhe()) {
+                atualizaEstoqueEmpresa(nfe.getEmpresa().getId(), nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial());
+            }
         }
+
         return nfe;
     }
 

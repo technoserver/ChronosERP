@@ -29,7 +29,7 @@
         <!--Sped fiscal-->
         <java-sped.version>1.0.1</java-sped.version>
         <!--Calculo dos tributos-->
-        <chronos-calculoTributario.version>1.0.10</chronos-calculoTributario.version>
+        <chronos-calculoTributario.version>1.0.15</chronos-calculoTributario.version>
 
 
         <!-- Java Mail -->
@@ -90,9 +90,9 @@
 
         <!-- Tema do Bootstrap -->
         <dependency>
-            <groupId>org.primefaces.themes</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>1.0.10</version>
+            <groupId>com.chronos.themes</groupId>
+            <artifactId>custom-theme</artifactId>
+            <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
 

@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h:commandLink title="Novo" class="btn btn-default margem-bottom-10"
+                           action="#{osAberturaControll.incluirOsProdutoServico()}"
+                           type="button">
+                <i class="glyphicon glyphicon-plus"/>
+                <p:ajax update=":formOutrasTelas2:panelOsProdutoServico,dataTableOsProdutoServico"
+                        oncomplete="PF('dialogOsProdutoServico').show()"
+                        process="@this"/>
+            </h:commandLink>
+        </div>
+    </div>
+    <p:dataTable id="dataTableOsProdutoServico" var="obj"
+                 value="#{osAberturaControll.objeto.listaOsProdutoServico}"
+                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                 reflow="true" paginatorPosition="bottom"
+                 resizableColumns="true"
+    >
+
+
+        <p:column headerText="Produto/Serviço">
+            <h:outputLabel value="#{obj.produto.nome}"/>
+        </p:column>
+        <p:column headerText="Tipo" width="100">
+            <h:outputLabel
+                    value="#{osAberturaControll.keyFromValue(osAberturaControll.osTipoProdutoServico, obj.tipo)}"/>
+        </p:column>
+        <p:column headerText="Quantidade" styleClass="text-center" width="120">
+            <h:outputLabel value="#{obj.quantidade}">
+                <f:convertNumber pattern="#,##0.00"/>
+            </h:outputLabel>
+        </p:column>
+        <p:column headerText="Valor Unitario" styleClass="text-right" width="140">
+            <h:outputLabel value="#{obj.valorUnitario}">
+                <f:convertNumber pattern="#,##0.00"/>
+            </h:outputLabel>
+        </p:column>
+        <p:column headerText="Subtotal" styleClass="text-right" width="125">
+            <h:outputLabel value="#{obj.valorSubtotal}">
+                <f:convertNumber pattern="#,##0.00"/>
+            </h:outputLabel>
+        </p:column>
+        <p:column headerText="Desconto" styleClass="text-right" width="100">
+            <h:outputLabel value="#{obj.valorDesconto}">
+                <f:convertNumber pattern="#,##0.00"/>
+            </h:outputLabel>
+        </p:column>
+        <p:column headerText="Total" styleClass="text-right" width="125">
+            <h:outputLabel value="#{obj.valorTotal}">
+                <f:convertNumber pattern="#,##0.00"/>
+            </h:outputLabel>
+        </p:column>
+        <p:column headerText="Ações" width="120" styleClass="text-center">
+            <p:commandLink process="dataTableOsProdutoServico" title="Alterar" style="margin-right: 4px"
+                           oncomplete="PF('dialogOsProdutoServico').show()" styleClass="btn btn-default"
+                           action="#{osAberturaControll.alterarOsProdutoServico}"
+                           update=":formOutrasTelas2:panelOsProdutoServico,dataTableOsProdutoServico">
+                <i class="fa fa-file-text-o"></i>
+                <f:setPropertyActionListener value="#{obj}" target="#{osAberturaControll.osProdutoServicoSelecionado}"/>
+            </p:commandLink>
+            &nbsp;
+            <p:commandLink process="dataTableOsProdutoServico" title="Excluir" styleClass="btn btn-default"
+                           action="#{osAberturaControll.excluirOsProdutoServico}"
+                           update="dataTableOsProdutoServico">
+                <i class="fa fa-close"/>
+                <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                           icon="ui-icon-alert"/>
+                <f:setPropertyActionListener value="#{obj}" target="#{osAberturaControll.osProdutoServicoSelecionado}"/>
+            </p:commandLink>
+        </p:column>
+    </p:dataTable>
+
+</ui:composition>

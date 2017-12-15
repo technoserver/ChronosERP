@@ -186,8 +186,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void gerarNFe() {
         ModeloDocumento modelo = ModeloDocumento.NFE;
         VendaCabecalho venda = dao.getJoinFetch(getObjetoSelecionado().getId(), VendaCabecalho.class);
+        boolean estoque = isTemAcesso("ESTOQUE");
         if (!venda.getListaVendaDetalhe().isEmpty()) {
-            vendaService.transmitirNFe(venda, modelo);
+            vendaService.transmitirNFe(venda, modelo, estoque);
         }
 
     }
@@ -196,8 +197,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void gerarNfce() {
         ModeloDocumento modelo = ModeloDocumento.NFCE;
         VendaCabecalho venda = dao.getJoinFetch(getObjetoSelecionado().getId(), VendaCabecalho.class);
+        boolean estoque = isTemAcesso("ESTOQUE");
         if (!venda.getListaVendaDetalhe().isEmpty()) {
-            vendaService.transmitirNFe(venda, modelo);
+            vendaService.transmitirNFe(venda, modelo, estoque);
         }
     }
 
@@ -235,7 +237,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                 nfe.setJustificativaCancelamento(justificativa);
                 ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
                 ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
-                boolean cancelada = nfeService.cancelarNFe(nfe, configuracao);
+                boolean estoque = isTemAcesso("ESTOQUE");
+                boolean cancelada = nfeService.cancelarNFe(nfe, configuracao, estoque);
                 if (cancelada) {
                     finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
                     getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());

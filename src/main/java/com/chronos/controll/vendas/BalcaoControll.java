@@ -11,6 +11,7 @@ import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
@@ -160,7 +161,8 @@ public class BalcaoControll implements Serializable {
             if (cliente.getId() == 1) {
                 venda.getCliente().setTributOperacaoFiscal(new TributOperacaoFiscal(1, "Venda"));
             }
-            vendaService.transmitirNFe(venda, modelo);
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            vendaService.transmitirNFe(venda, modelo, estoque);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

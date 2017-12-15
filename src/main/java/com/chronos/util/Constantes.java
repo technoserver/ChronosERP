@@ -1,9 +1,6 @@
 package com.chronos.util;
 
-import com.chronos.modelo.entidades.FinStatusParcela;
-import com.chronos.modelo.entidades.FinTipoRecebimento;
-import com.chronos.modelo.entidades.NaturezaFinanceira;
-import com.chronos.modelo.entidades.NotaFiscalTipo;
+import com.chronos.modelo.entidades.*;
 
 /**
  * Created by john on 20/08/17.
@@ -29,4 +26,14 @@ public interface Constantes {
     interface COMERCIAL {
         NotaFiscalTipo TIPO_NFE = new NotaFiscalTipo();
     }
+
+    interface OS {
+
+        OsStatus STATUS_ABERTO = new OsStatus(1, "ABERTA");
+        OsStatus STATUS_FINALIZADO = new OsStatus(4, "FINALIZADO");
+        OsStatus STATUS_FATURADO = new OsStatus(5, "FINALIZADO E FATURADO");
+        OsStatus STATUS_EMITIDO = new OsStatus(6, "FINALZIADO E EMITIDO NF");
+        OsStatus STATUS_CANCELADO = new OsStatus(7, "CANCELADO");
+    }
+
 }
