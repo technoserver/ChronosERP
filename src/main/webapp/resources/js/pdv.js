@@ -2,6 +2,8 @@
  * Created by john on 19/09/17.
  */
 
+
+
 $(document).bind('keydown', function (event) {
     if (event.which == 112) {
         $('#painel-teclas-atalho').modal('show');

@@ -143,6 +143,12 @@ public abstract class AbstractControll<T> implements Serializable {
     private HashMap<String, Integer> osTipoCobertura;
     private HashMap<String, Integer> osTipoProdutoServico;
 
+    //Agenda
+    private HashMap<String, String> categoriaCompromissoCor;
+    private HashMap<String, Integer> compromissoTipo;
+    private HashMap<String, Integer> compromissoRecorrente;
+
+
 
     protected abstract Class<T> getClazz();
 
@@ -493,6 +499,26 @@ public abstract class AbstractControll<T> implements Serializable {
         osTipoProdutoServico = new HashMap<>();
         osTipoProdutoServico.put("PRODUTO", 0);
         osTipoProdutoServico.put("SERVIÇO", 1);
+
+
+        //Agenda
+        categoriaCompromissoCor = new HashMap<>();
+        categoriaCompromissoCor.put("Amarelo", "Amarelo");
+        categoriaCompromissoCor.put("Azul", "Azul");
+        categoriaCompromissoCor.put("Branco", "Branco");
+        categoriaCompromissoCor.put("Verde", "Verde");
+        categoriaCompromissoCor.put("Vermelho", "Vermelho");
+
+        compromissoTipo = new HashMap<>();
+        compromissoTipo.put("Pessoal", 0);
+        compromissoTipo.put("Gerencial", 1);
+
+        compromissoRecorrente = new HashMap<>();
+        compromissoRecorrente.put("Não", 0);
+        compromissoRecorrente.put("Diário", 1);
+        compromissoRecorrente.put("Semanal", 2);
+        compromissoRecorrente.put("Mensal", 3);
+        compromissoRecorrente.put("Anual", 4);
 
 
 
@@ -1060,5 +1086,18 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, Integer> getOsTipoProdutoServico() {
         return osTipoProdutoServico;
+    }
+
+
+    public HashMap<String, String> getCategoriaCompromissoCor() {
+        return categoriaCompromissoCor;
+    }
+
+    public HashMap<String, Integer> getCompromissoTipo() {
+        return compromissoTipo;
+    }
+
+    public HashMap<String, Integer> getCompromissoRecorrente() {
+        return compromissoRecorrente;
     }
 }

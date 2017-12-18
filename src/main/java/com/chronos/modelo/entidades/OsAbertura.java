@@ -91,14 +91,14 @@ public class OsAbertura implements Serializable {
     public OsAbertura() {
     }
 
-    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, int idcliente, String nome, String osStatus, Integer idnfeCabecalho) {
+    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, int idcliente, String nome, Integer idstatus, String osStatus, Integer idnfeCabecalho) {
         this.id = id;
         this.numero = numero;
         this.dataInicio = dataInicio;
         this.dataPrevisao = dataPrevisao;
         this.dataFim = dataFim;
         this.cliente = new Cliente(idcliente, nome);
-        this.osStatus = new OsStatus(0, osStatus);
+        this.osStatus = new OsStatus(idstatus, osStatus);
         this.idnfeCabecalho = idnfeCabecalho;
 
     }
@@ -380,6 +380,10 @@ public class OsAbertura implements Serializable {
 
     public boolean isCancelado() {
         return this.osStatus.getId() != null && this.osStatus.getId() == 7;
+    }
+
+    public boolean isPodeExcluir() {
+        return (this.osStatus.getId() != 6 && this.osStatus.getId() != 5 && this.osStatus.getId() != 7);
     }
 
     @Override

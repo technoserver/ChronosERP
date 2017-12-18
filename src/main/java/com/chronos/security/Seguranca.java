@@ -94,7 +94,7 @@ public class Seguranca {
     }
 
     public boolean isUserVendas() {
-        return FacesUtil.isUserInRole("VENDAS");
+        return FacesUtil.isUserInRole("VENDA");
     }
 
     public boolean isUserNfe() {

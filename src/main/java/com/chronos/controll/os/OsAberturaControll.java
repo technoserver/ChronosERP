@@ -7,7 +7,6 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.ProdutoService;
-import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.OsService;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.Constantes;
@@ -53,6 +52,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Inject
     private Repository<VendaCondicoesPagamento> pagamentoRepository;
 
+
     private OsAberturaEquipamento osAberturaEquipamento;
     private OsAberturaEquipamento osAberturaEquipamentoSelecionado;
 
@@ -66,7 +66,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     private TabelaProdutoServico tabelaProduto;
 
-    private NfeService nfeService;
+
     private BigDecimal quantidade;
     private boolean temProduto;
     private boolean emailValido;
@@ -79,7 +79,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             dataModel.setClazz(getClazz());
             dataModel.setDao(dao);
         }
-        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "cliente.id", "cliente.pessoa.nome", "osStatus.nome", "idnfeCabecalho"});
+        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "cliente.id", "cliente.pessoa.nome", "osStatus.id", "osStatus.nome", "idnfeCabecalho"});
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         return dataModel;
     }
@@ -169,8 +169,10 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void cancelar() {
         try {
-            boolean cancelado = false;
 
+            boolean estoque = isTemAcesso("ESTOQUE");
+            OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
+            osService.cancelarOs(os, estoque);
 
         } catch (Exception ex) {
             ex.printStackTrace();

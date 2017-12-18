@@ -141,7 +141,8 @@ public class Colaborador implements Serializable {
     private String classificacaoContabilConta;
     @Transient
     private String nome;
-
+    @Transient
+    private Date dataNascimento;
 
     public Colaborador() {
     }
@@ -150,6 +151,12 @@ public class Colaborador implements Serializable {
         this.id = id;
         this.nome = nome;
         this.pessoa = new Pessoa(idpessoa,nome);
+    }
+
+    public Colaborador(Integer id, String nome, Date dataNascimento) {
+        this.id = id;
+        this.nome = nome;
+        this.dataNascimento = dataNascimento;
     }
 
     public Colaborador(Integer id, Integer idpessoa, String nome, String matricula, String situacao, String cargo, String setor) {
@@ -554,5 +561,29 @@ public class Colaborador implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Date getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Colaborador)) return false;
+
+        Colaborador that = (Colaborador) o;
+
+        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
     }
 }

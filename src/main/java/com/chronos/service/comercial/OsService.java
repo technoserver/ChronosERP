@@ -3,15 +3,18 @@ package com.chronos.service.comercial;
 import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
-import com.chronos.modelo.entidades.NfeCabecalho;
-import com.chronos.modelo.entidades.OsAbertura;
-import com.chronos.modelo.entidades.OsProdutoServico;
-import com.chronos.modelo.entidades.Produto;
+import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.enuns.Modulo;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
+import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
+import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -26,10 +29,24 @@ public class OsService implements Serializable {
 
     @Inject
     private Repository<OsAbertura> repository;
+    @Inject
+    private Repository<NfeCabecalho> nfeRepository;
+    @Inject
+    private EstoqueRepository estoqueRepositoy;
 
     private Set<OsProdutoServico> itens;
     @Inject
     private NfeService nfeService;
+    @Inject
+    private FinLancamentoReceberService finLancamentoReceberService;
+
+    private Empresa empresa;
+
+    @PostConstruct
+    private void init() {
+        empresa = FacesUtil.getEmpresaUsuario();
+
+    }
 
     public OsAbertura salvar(OsAbertura os) throws Exception {
         if (os.isNovo()) {
@@ -78,6 +95,36 @@ public class OsService implements Serializable {
         }
 
 
+    }
+
+    @Transactional
+    public void cancelarOs(OsAbertura os, boolean estoque) throws Exception {
+        boolean cancelado = true;
+        if (os.getOsStatus().getId() == 6) {
+            NfeCabecalho nfe = nfeRepository.get(os.getIdnfeCabecalho(), NfeCabecalho.class);
+            nfe.setJustificativaCancelamento("Cancelamento de por informação de valores invalido");
+            ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
+            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
+
+            cancelado = nfeService.cancelarNFe(nfe, configuracao, estoque);
+            if (cancelado) {
+                finLancamentoReceberService.excluirFinanceiro(os.getNumero(), Modulo.OS);
+            }
+        } else {
+            finLancamentoReceberService.excluirFinanceiro(os.getNumero(), Modulo.OS);
+        }
+
+        if (estoque && cancelado) {
+            for (OsProdutoServico item : os.getListaOsProdutoServico()) {
+                if (item.getProduto().getServico().equals("N")) {
+                    estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
+                }
+
+            }
+        }
+        os.setOsStatus(Constantes.OS.STATUS_CANCELADO);
+        salvar(os);
+        Mensagem.addInfoMessage("OS cancelada com sucesso");
     }
 
     private Optional<OsProdutoServico> buscarItem(Produto produto) {
