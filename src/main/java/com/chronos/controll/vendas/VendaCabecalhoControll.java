@@ -243,9 +243,12 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                     finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
                     getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());
                     salvar();
-                    for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
-                        estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
+                    if (estoque) {
+                        for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
+                            estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
+                        }
                     }
+
                 }
 
             }

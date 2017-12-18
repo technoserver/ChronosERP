@@ -1,0 +1,237 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Compromisso
+    </ui:define>
+
+    <ui:define name="tela">
+        #{agendaCompromissoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Compromisso
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{agendaCompromissoControll}"
+                       idDataTable="dataTableCompromisso"
+                       nomeFuncao="Compromisso"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Colaborador">
+                <h:outputLabel value="#{row.colaborador.pessoa.nome}"/>
+            </p:column>
+            <p:column headerText="Categoria">
+                <h:outputLabel value="#{row.agendaCategoriaCompromisso.nome}"/>
+            </p:column>
+            <p:column headerText="Data">
+                <h:outputLabel value="#{row.dataCompromisso}"/>
+            </p:column>
+            <p:column headerText="Hora">
+                <h:outputLabel value="#{row.hora}"/>
+            </p:column>
+            <p:column headerText="Duracao">
+                <h:outputLabel value="#{row.duracao}"/>
+            </p:column>
+            <p:column headerText="Onde">
+                <h:outputLabel value="#{row.onde}"/>
+            </p:column>
+            <p:column headerText="Tipo">
+                <h:outputLabel
+                        value="#{agendaCompromissoControll.keyFromValue(agendaCompromissoControll.compromissoTipo, obj.tipo)}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{agendaCompromissoControll}"
+                                   nomeFuncao="Compromisso"
+                                   id="telaDetalhe"
+        >
+
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <p:commandButton value="Calendario"
+                                     actionListener="#{agendaCompromissoControll.atualizaCalendario}"
+                                     oncomplete="PF('dialogAgendaCalendario').show()"
+                                     update=":formOutrasTelas2:panelAgendaCalendario"
+                                     disabled="#{empty agendaCompromissoControll.objeto.id}"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <p:outputLabel value="Categoria"
+                                   for="agendaCompromissoAgendaCategoriaCompromisso"/>
+                    <br/>
+                    <div class="field-action">
+                        <p:autoComplete
+                                id="agendaCompromissoAgendaCategoriaCompromisso"
+                                value="#{agendaCompromissoControll.objeto.agendaCategoriaCompromisso}"
+                                completeMethod="#{agendaCompromissoControll.getListaAgendaCategoriaCompromisso}"
+                                var="agendaCategoriaCompromisso"
+                                itemLabel="#{agendaCategoriaCompromisso.nome}"
+                                itemValue="#{agendaCategoriaCompromisso}"
+                                converter="defaultConverter"
+                                forceSelection="true" minQueryLength="3" maxResults="10"
+                                required="true" style="width: 100%"
+                                emptyMessage="Nenhum registro encontrado"/>
+
+                        <div class="field-action__icon">
+                            <p:commandLink style="font-size: 22px"
+                                           actionListener="#{agendaCompromissoControll.incluirCategoria}"
+                                           process="@this"
+                                           oncomplete="PF('dialogCategoria').show()"
+                                           update=":formOutrasTelas:panelCategoria">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                            </p:commandLink>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+
+                <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-2"
+                               idComponente="agendaCompromissoDataCompromisso"
+                               label="Data Compromisso" requerido="true"
+                               nomeAtributo="#{agendaCompromissoControll.objeto.dataCompromisso}"/>
+                <erp:campoMascara styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="agendaCompromissoHora" label="Hora"
+                                  nomeAtributo="#{agendaCompromissoControll.objeto.hora}"
+                                  mascara="99:99:99"/>
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="agendaCompromissoDuracao" label="Duracao"
+                                  nomeAtributo="#{agendaCompromissoControll.objeto.duracao}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                                 idComponente="agendaCompromissoTipo" label="Tipo"
+                                 itens="#{agendaCompromissoControll.compromissoTipo}"
+                                 nomeAtributo="#{agendaCompromissoControll.objeto.tipo}"/>
+
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                                 idComponente="agendaCompromissoRecorrente" label="Recorrente"
+                                 itens="#{agendaCompromissoControll.compromissoRecorrente}"
+                                 nomeAtributo="#{agendaCompromissoControll.recorrente}"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="agendaCompromissoQtdeOcorrencia"
+                                  label="Qtde Ocorrencia"
+                                  nomeAtributo="#{agendaCompromissoControll.quantidadeOcorrencia}"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="agendaCompromissoDescricao" label="Descricao"
+                                nomeAtributo="#{agendaCompromissoControll.objeto.descricao}"
+                                tamanhoMaximo="100"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="agendaCompromissoOnde" label="Onde"
+                                nomeAtributo="#{agendaCompromissoControll.objeto.onde}"
+                                tamanhoMaximo="100"/>
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas1">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogCategoria" header="Categoria"
+                      widgetVar="dialogCategoria" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="600" responsive="true">
+
+                <p:outputPanel id="panelCategoria">
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        idComponente="agendaCategoriaCompromissoNome" label="Nome"
+                                        nomeAtributo="#{agendaCompromissoControll.categoria.nome}"
+                                        tamanhoMaximo="100"/>
+                    </div>
+                    <div class="row">
+                        <h:outputText value="Cor "/>
+                        <p:colorPicker value="#{agendaCompromissoControll.categoria.cor}" mode="inline"
+                                       required="true"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             actionListener="#{agendaCompromissoControll.salvarCategoria}"
+                                             update=":formOutrasTelas:panelCategoria,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogCategoria').hide();}"/>
+
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 text-center">
+                            <p:commandButton value="Cancelar" styleClass="default-btn"
+                                             oncomplete="PF('dialogCategoria').hide();"/>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+            <p:dialog id="dialogAgendaCalendario" header="Calendario" position="top"
+                      widgetVar="dialogAgendaCalendario" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="800" responsive="true">
+
+                <p:outputPanel id="panelAgendaCalendario">
+                    <p:schedule id="schedule" widgetVar="schedule"
+                                value="#{agendaCompromissoControll.eventModel}"
+                                styleClass="erp-campo-100" locale="pt">
+                        <p:ajax event="dateSelect"
+                                listener="#{agendaCompromissoControll.onDateSelect}"
+                                update=":formOutrasTelas3:dialogAdicionaEvento"
+                                oncomplete="PF('dialogAdicionaEvento').show();"/>
+                    </p:schedule>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formOutrasTelas3">
+            <p:dialog id="dialogAdicionaEvento" header="Adicionar Evento"
+                      widgetVar="dialogAdicionaEvento" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="400" responsive="true">
+
+                <p:outputPanel id="panelAdicionaEvento">
+                    <p:inputText styleClass="erp-campo-80"
+                                 value="#{agendaCompromissoControll.eventoAdicionado.title}"/>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row text-center">
+                        <p:commandButton value="Salvar"
+                                         actionListener="#{agendaCompromissoControll.adicionaEvento}"
+                                         oncomplete="PF('schedule').update();PF('dialogAdicionaEvento').hide();"/>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
