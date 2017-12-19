@@ -110,6 +110,72 @@ body .ui-button.default-btn.ui-state-active {
     color: black !important;
 }
 
+.eventoCalendarioAmarelo .fc-event, .eventoCalendarioAmarelo a, .eventoCalendarioAmarelo .fc-event-inner {
+    background: yellow;
+    color: black;
+}
+
+.eventoCalendarioAzul .fc-event, .eventoCalendarioAzul a, .eventoCalendarioAzul .fc-event-inner {
+    background: blue;
+}
+
+.eventoCalendarioBranco .fc-event, .eventoCalendarioBranco a, .eventoCalendarioBranco .fc-event-inner {
+    background-color: white;
+    color: black;
+}
+
+.eventoCalendarioVerde .fc-event, .eventoCalendarioVerde a, .eventoCalendarioVerde .fc-event-inner {
+    background: green;
+}
+
+.eventoCalendarioVermelho .fc-event, .eventoCalendarioVermelho a, .eventoCalendarioVermelho .fc-event-inner {
+    background: red;
+}
+
+.eventoCalendarioPreto .fc-event, .eventoCalendarioPreto a, .eventoCalendarioPreto .fc-event-inner {
+    background: black;
+}
+
+.eventoCalendarioAniversario .fc-event, .eventoCalendarioAniversario a, .eventoCalendarioAniversario .fc-event-inner {
+    text-align: right;
+    background: green;
+    background-image: url("../images/cake.png");
+    background-repeat: no-repeat;
+}
+
+.eventoCalendarioAmarelo {
+    background: yellow !important;
+    color: black !important;
+}
+
+.eventoCalendarioAzul {
+    background: blue !important;
+}
+
+.eventoCalendarioBranco {
+    background-color: white !important;
+    color: black !important;
+}
+
+.eventoCalendarioVerde {
+    background: green !important;
+}
+
+.eventoCalendarioVermelho {
+    background: red !important;
+}
+
+.eventoCalendarioPreto {
+    background: black !important;
+}
+
+.eventoCalendarioAniversario {
+    text-align: right !important;
+    background: green !important;
+    background-image: url("#{facesContext.externalContext.requestContextPath}/resources/images/cake.png") !important;
+    background-repeat: no-repeat !important;
+}
+
 
 /*
  * Component: Small Box
