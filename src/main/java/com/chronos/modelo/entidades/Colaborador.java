@@ -2,6 +2,8 @@
 package com.chronos.modelo.entidades;
 
 
+import org.springframework.util.StringUtils;
+
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -556,7 +558,7 @@ public class Colaborador implements Serializable {
     }
 
     public String getNome() {
-        return pessoa != null ? pessoa.getNome() : "";
+        return StringUtils.isEmpty(nome) ? pessoa != null ? pessoa.getNome() : "" : nome;
     }
 
     public void setNome(String nome) {

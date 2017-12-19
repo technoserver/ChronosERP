@@ -38,6 +38,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
 
     public void executarRelatorio() {
+
         empresa = getEmpresaUsuario();
         parametros = new HashMap<>();
         parametros.put("produto", retornaValorPadrao(produto));
@@ -45,6 +46,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         parametros.put("inativo", inativo);
         parametros.put("tipoProduto", tipoProduto);
         parametros.put("idempresa", empresa.getId());
+        parametros.put("estoqueVerificado", grupo.getId() == 999);
 
         String caminhoRelatorio = "/relatorios/cadastros";
         String nomeRelatorio = "relacaoProdutos.jasper";
@@ -60,6 +62,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
         }
         list.add(0, new ProdutoGrupo(0, "Selecione"));
+        list.add(new ProdutoGrupo(999, "Sem controle de saldo"));
         return list;
     }
 

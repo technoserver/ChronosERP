@@ -67,6 +67,7 @@ public class AgendaCompromissoControll extends AbstractControll<AgendaCompromiss
             incluiCompromissoConvidado();
             incluiCompromissoRecorrente();
             atualizaCalendario();
+            setTelaGrid(false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,6 +79,11 @@ public class AgendaCompromissoControll extends AbstractControll<AgendaCompromiss
 
     public void salvarCategoria() {
         categoriaRepository.salvar(categoria);
+    }
+
+    public void excluirCategoria() {
+        categoriaRepository.excluir(getObjeto().getAgendaCategoriaCompromisso());
+        getObjeto().setAgendaCategoriaCompromisso(null);
     }
 
 
@@ -183,6 +189,12 @@ public class AgendaCompromissoControll extends AbstractControll<AgendaCompromiss
 
             eventModel.addEvent(event);
         }
+    }
+
+    public void adicionaEvento() {
+        eventModel.addEvent(eventoAdicionado);
+
+        eventoAdicionado = new DefaultScheduleEvent();
     }
 
     public List<AgendaCategoriaCompromisso> getListaAgendaCategoriaCompromisso(String nome) {

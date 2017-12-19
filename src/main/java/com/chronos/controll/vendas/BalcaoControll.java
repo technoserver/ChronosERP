@@ -53,6 +53,8 @@ public class BalcaoControll implements Serializable {
     @Inject
     private Repository<NfeCabecalho> nfeRepository;
     @Inject
+    private Repository<TributOperacaoFiscal> operacaoRepository;
+    @Inject
     private UsuarioService userService;
     @Inject
     private FinLancamentoReceberService recebimentoService;
@@ -159,7 +161,8 @@ public class BalcaoControll implements Serializable {
         try {
             ModeloDocumento modelo = ModeloDocumento.NFCE;
             if (cliente.getId() == 1) {
-                venda.getCliente().setTributOperacaoFiscal(new TributOperacaoFiscal(1, "Venda"));
+                TributOperacaoFiscal operacao = operacaoRepository.get(1, TributOperacaoFiscal.class);
+                venda.getCliente().setTributOperacaoFiscal(operacao);
             }
             boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
             vendaService.transmitirNFe(venda, modelo, estoque);

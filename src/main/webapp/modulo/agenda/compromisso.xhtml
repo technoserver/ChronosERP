@@ -20,6 +20,14 @@
         Compromisso
     </ui:define>
 
+    <ui:define name="css">
+        <style type="text/css">
+
+
+        </style>
+
+    </ui:define>
+
 
     <ui:define name="gridDados">
 
@@ -89,18 +97,37 @@
                                 converter="defaultConverter"
                                 forceSelection="true" minQueryLength="3" maxResults="10"
                                 required="true" style="width: 100%"
-                                emptyMessage="Nenhum registro encontrado"/>
+                                emptyMessage="Nenhum registro encontrado">
+                            >
 
-                        <div class="field-action__icon">
+                            <p:ajax event="itemSelect" update="formCentro:telaDetalhe:botoes"/>
+
+
+                        </p:autoComplete>
+                        <h:panelGroup layout="block" class="field-action__icon" id="botoes">
                             <p:commandLink style="font-size: 22px"
                                            actionListener="#{agendaCompromissoControll.incluirCategoria}"
                                            process="@this"
+                                           title="Incluir categoria"
+                                           rendered="#{empty agendaCompromissoControll.objeto.agendaCategoriaCompromisso}"
                                            oncomplete="PF('dialogCategoria').show()"
                                            update=":formOutrasTelas:panelCategoria">
                                 <i class="fa fa-plus-circle" aria-hidden="true"></i>
+
                             </p:commandLink>
 
-                        </div>
+                            <p:commandLink style="font-size: 22px"
+                                           action="#{agendaCompromissoControll.excluirCategoria}"
+                                           process="@this"
+                                           update="formCentro:telaDetalhe:agendaCompromissoAgendaCategoriaCompromisso"
+                                           id="btnExcluir"
+                                           rendered="#{not empty agendaCompromissoControll.objeto.agendaCategoriaCompromisso}"
+                                           title="Excluir categoria"
+                            >
+                                <i class="fa fa-times-circle" aria-hidden="true"></i>
+
+                            </p:commandLink>
+                        </h:panelGroup>
                     </div>
                 </div>
             </div>
@@ -165,9 +192,10 @@
                                         tamanhoMaximo="100"/>
                     </div>
                     <div class="row">
-                        <h:outputText value="Cor "/>
-                        <p:colorPicker value="#{agendaCompromissoControll.categoria.cor}" mode="inline"
-                                       required="true"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"
+                                         idComponente="agendaCategoriaCompromissoCor" label="Cor"
+                                         itens="#{agendaCompromissoControll.categoriaCompromissoCor}"
+                                         nomeAtributo="#{agendaCompromissoControll.categoria.cor}"/>
                     </div>
                 </p:outputPanel>
                 <f:facet name="footer">

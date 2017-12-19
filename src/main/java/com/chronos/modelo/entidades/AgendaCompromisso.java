@@ -45,6 +45,13 @@ public class AgendaCompromisso implements Serializable {
     public AgendaCompromisso() {
     }
 
+    public AgendaCompromisso(Integer id, String descricao, Date dataCompromisso, String cor) {
+        this.id = id;
+        this.dataCompromisso = dataCompromisso;
+        this.descricao = descricao;
+        this.categoria = cor;
+    }
+
     public Integer getId() {
         return id;
     }
