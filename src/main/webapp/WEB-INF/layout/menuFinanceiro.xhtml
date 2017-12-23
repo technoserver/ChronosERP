@@ -82,6 +82,8 @@
                              funcao="finMovimentoCaixaBanco"/>
             </ul>
         </li>
+
+
         <li class="${fn:contains(view.viewId,'modulo/financeiro/relatorios/')?'active':''}">
             <a href="#">Relatorios <span class="fa arrow"></span></a>
             <ul class="nav nav-third-level">
@@ -94,8 +96,12 @@
 
             </ul>
         </li>
+
+
         <!--
-        <li class="${fn:contains(view.viewId,'modulo/financeiro/cheque/')?'active':''}">
+
+
+         <li class="${fn:contains(view.viewId,'modulo/financeiro/cheque/')?'active':''}">
             <a href="#">Controle de Chq. <span class="fa arrow"></span></a>
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/financeiro/cheque/finParcelaPagamento"
@@ -110,21 +116,22 @@
             </ul>
         </li>
 
-        <li class="${fn:contains(view.viewId,'modulo/financeiro/edi/')?'active':''}">
-            <a href="#">EDI <span class="fa arrow"></span></a>
-            <ul class="nav nav-third-level">
-                <erp:subMenu caminho="/modulo/financeiro/edi/finExtratoContaBanco"
-                             label="Extrato Conta Banco"
-                             funcao="finExtratoContaBanco"/>
-                <erp:subMenu caminho="/modulo/financeiro/edi/finProcessaArquivoRetorno"
-                             label="Processa Retorno"
-                             funcao="finProcessaArquivoRetorno"/>
-                <erp:subMenu caminho="/modulo/financeiro/diversos/finConfiguracaoBoleto"
-                             label="ConfiguraçãoBoleto"
-                             funcao="finConfiguracaoBoleto"/>
-            </ul>
-        </li>
-        -->
+
+              <li class="${fn:contains(view.viewId,'modulo/financeiro/edi/')?'active':''}">
+                  <a href="#">EDI <span class="fa arrow"></span></a>
+                  <ul class="nav nav-third-level">
+                      <erp:subMenu caminho="/modulo/financeiro/edi/finExtratoContaBanco"
+                                   label="Extrato Conta Banco"
+                                   funcao="finExtratoContaBanco"/>
+                      <erp:subMenu caminho="/modulo/financeiro/edi/finProcessaArquivoRetorno"
+                                   label="Processa Retorno"
+                                   funcao="finProcessaArquivoRetorno"/>
+                      <erp:subMenu caminho="/modulo/financeiro/diversos/finConfiguracaoBoleto"
+                                   label="ConfiguraçãoBoleto"
+                                   funcao="finConfiguracaoBoleto"/>
+                  </ul>
+              </li>
+              -->
     </ul>
 
 

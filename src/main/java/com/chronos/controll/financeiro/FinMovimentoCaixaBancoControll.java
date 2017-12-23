@@ -120,6 +120,10 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
         if (fechamentoCaixaBanco == null) {
             fechamentoCaixaBanco = new FinFechamentoCaixaBanco();
             fechamentoCaixaBanco.setContaCaixa(new ContaCaixa(idconta));
+            fechamentoCaixaBanco.setAno(String.valueOf(ano));
+            fechamentoCaixaBanco.setMes(String.valueOf(mes));
+            fechamentoCaixaBanco.setDataFechamento(new Date());
+            fechamentoCaixaBanco.setMesAno(mes + "/" + ano);
         }
 
         //busca saldo anterior
@@ -135,8 +139,8 @@ public class FinMovimentoCaixaBancoControll extends AbstractControll<ViewFinMovi
 
         FinFechamentoCaixaBanco fechamentoAnterior = fechamentos.get(FinFechamentoCaixaBanco.class, filtros);
 
-        if (fechamentoAnterior != null && fechamentoAnterior.getSaldoAnterior() != null) {
-            fechamentoCaixaBanco.setSaldoAnterior(fechamentoAnterior.getSaldoAnterior());
+        if (fechamentoAnterior != null && fechamentoAnterior.getSaldoConta() != null) {
+            fechamentoCaixaBanco.setSaldoAnterior(fechamentoAnterior.getSaldoConta());
         } else {
             fechamentoCaixaBanco.setSaldoAnterior(BigDecimal.ZERO);
         }

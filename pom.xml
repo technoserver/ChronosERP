@@ -27,10 +27,11 @@
         <!--Sped fiscal-->
         <java-efd-icms.version>2.0.20.0</java-efd-icms.version>
         <!--Sped fiscal-->
-        <java-sped.version>1.0.1</java-sped.version>
+        <java-sped.version>1.0.2</java-sped.version>
         <!--Calculo dos tributos-->
         <chronos-calculoTributario.version>1.0.15</chronos-calculoTributario.version>
-
+        <!--thema-->
+        <chronos-thema.version>1.0.0</chronos-thema.version>
 
         <!-- Java Mail -->
         <javax.mail.version>1.5.6</javax.mail.version>
@@ -55,25 +56,8 @@
         </repository>
     </repositories>
     <dependencies>
-        <!--Calculo tributario-->
-        <dependency>
-            <groupId>com.chronos.calc</groupId>
-            <artifactId>ChronosCalcTribut</artifactId>
-            <version>${chronos-calculoTributario.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>br.com.samuelweb</groupId>
-            <artifactId>java-efd-icms</artifactId>
-            <version>${java-efd-icms.version}</version>
-        </dependency>
 
-        <dependency>
-            <groupId>com.chronos.sped</groupId>
-            <artifactId>ChronosEfdIcms</artifactId>
-            <version>${java-sped.version}</version>
-        </dependency>
 
-        
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -88,13 +72,7 @@
             <version>4.2.0</version>
         </dependency>
 
-        <!-- Tema do Bootstrap -->
-        <dependency>
-            <groupId>com.chronos.themes</groupId>
-            <artifactId>custom-theme</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
+
 
         <!-- Usado para geração de arquivos Excel -->
         <dependency>
@@ -306,18 +284,44 @@
             <version>7.0</version>
             <scope>provided</scope>
         </dependency>
-        <!--        Chronos Emissor-->
-        <dependency>
-            <groupId>com.chronos.chronosnfe</groupId>
-            <artifactId>chronosnfe</artifactId>
-            <version>${chronosNFe.version}</version>
-        </dependency>
+
         <!-- Converter objeto em Json-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.8.2</version>
         </dependency>
+
+        <!--        Chronos Emissor-->
+        <dependency>
+            <groupId>com.chronos.chronosnfe</groupId>
+            <artifactId>chronosnfe</artifactId>
+            <version>${chronosNFe.version}</version>
+        </dependency>
+
+        <!-- Tema do Bootstrap -->
+
+        <dependency>
+            <groupId>com.chronos.themes</groupId>
+            <artifactId>custom-theme</artifactId>
+            <version>${chronos-thema.version}</version>
+        </dependency>
+
+        <!--Calculo tributario-->
+        <dependency>
+            <groupId>com.chronos.calc</groupId>
+            <artifactId>ChronosCalcTribut</artifactId>
+            <version>${chronos-calculoTributario.version}</version>
+        </dependency>
+
+        <!--Geração de bloco do sped-->
+        <dependency>
+            <groupId>com.chronos</groupId>
+            <artifactId>sped</artifactId>
+            <version>${java-sped.version}</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

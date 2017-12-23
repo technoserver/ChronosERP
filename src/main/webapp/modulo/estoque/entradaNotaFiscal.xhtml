@@ -39,6 +39,11 @@
             <p:column headerText="Numero" width="100">
                 <h:outputLabel value="#{row.numero}"/>
             </p:column>
+            <p:column headerText="Data Entrada" width="140" sortBy="#{row.dataHoraEntradaSaida}">
+                <h:outputLabel value="#{row.dataHoraEntradaSaida}">
+                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                </h:outputLabel>
+            </p:column>
             <p:column headerText="Data Emissao" width="140">
                 <h:outputLabel value="#{row.dataHoraEmissao}">
                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>

@@ -90,7 +90,8 @@ public class SpedIcmsIpiService implements Serializable {
     private Empresa empresa;
     private EmpresaEndereco enderecoPrincipal;
     private SpedFiscalIcms sped;
-
+    private List<NfeCabecalho> listaNfeCabecalho;
+    private List<Filtro> filtros;
 
     public File geraArquivo(String versao, String finalidadeArquivo, String perfil, Integer inventario, Date dataInicial, Date dataFinal, Integer idContador) throws Exception {
         this.dataInicio = dataInicial;
@@ -108,6 +109,14 @@ public class SpedIcmsIpiService implements Serializable {
         empresa = (Empresa) Biblioteca.nullToEmpty(empresa, false);
         enderecoPrincipal = empresa.buscarEnderecoPrincipal();
         enderecoPrincipal = (EmpresaEndereco) Biblioteca.nullToEmpty(enderecoPrincipal, false);
+
+
+        filtros = new ArrayList<>();
+        filtros.add(new Filtro(Filtro.AND, "dataHoraEntradaSaida", Filtro.MAIOR_OU_IGUAL, dataInicio));
+        filtros.add(new Filtro(Filtro.AND, "dataHoraEntradaSaida", Filtro.MENOR_OU_IGUAL, dataFim));
+
+        listaNfeCabecalho = nfes.getEntitys(NfeCabecalho.class, filtros);
+
 
         geraBloco0();
         geraBlocoC();
@@ -141,10 +150,7 @@ public class SpedIcmsIpiService implements Serializable {
 
         //TODO REGISTRO 0015: DADOS DO CONTRIBUINTE SUBSTITUTO
 
-        List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
-        filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
-        List<NfeCabecalho> listaNfeCabecalho = nfes.getEntitys(NfeCabecalho.class, filtros);
+
 
         List<UnidadeProduto> listaUnidadeProduto = new ArrayList<>();
 
@@ -184,7 +190,6 @@ public class SpedIcmsIpiService implements Serializable {
         sped.getBloco0().getRegistro0005().setEmail(empresa.getEmail());
 
         // REGISTRO 0015: DADOS DO CONTRIBUINTE SUBSTITUTO
-        // Implementado a critério do Participante do T2Ti ERP
         // REGISTRO 0100: DADOS DO CONTABILISTA
         sped.getBloco0().getRegistro0100().setNome(contador.getNome());
         if (!contador.getCpf().isEmpty()) {
@@ -212,112 +217,140 @@ public class SpedIcmsIpiService implements Serializable {
         * consumidor ou cupom fiscal]
          */
         Registro0150 registro0150;
-        NfeEmitente emitente;
-        NfeDestinatario destinatario;
+        NfeEmitente fornecedor;
+        NfeDestinatario cliente;
 
         for (NfeCabecalho c : listaNfeCabecalho) {
 
-            registro0150 = new Registro0150();
-            emitente = c.getEmitente();
+
+            if (c.getFornecedor() != null) {
+                fornecedor = c.getEmitente();
+                boolean existe = sped.getBloco0().getListaRegistro0150()
+                        .stream().filter(reg -> reg.getCodPart().equals("F" + c.getFornecedor().getId()))
+                        .findAny().isPresent();
+                if (!existe) {
+                    registro0150 = new Registro0150();
+                    registro0150.setCodPart("F" + c.getFornecedor().getId());
+                    registro0150.setNome(fornecedor.getNome());
+                    registro0150.setCodPais("01058");
+                    if (fornecedor.getCpfCnpj().length() == 11) {
+                        registro0150.setCpf(fornecedor.getCpfCnpj());
+                    } else if (fornecedor.getCpfCnpj().length() == 14) {
+                        registro0150.setCnpj(fornecedor.getCpfCnpj());
+                    }
+                    registro0150.setCodMun(fornecedor.getCodigoMunicipio());
+                    registro0150.setSuframa(String.valueOf(fornecedor.getSuframa()));
+                    registro0150.setEndereco(fornecedor.getLogradouro());
+                    registro0150.setNum(fornecedor.getNumero());
+                    registro0150.setCompl(fornecedor.getComplemento());
+                    registro0150.setBairro(fornecedor.getBairro());
+
+                    sped.getBloco0().getListaRegistro0150().add(registro0150);
+                }
+            }
+
             if (c.getCliente() != null) {
-                registro0150.setCodPart("F" + emitente.getId());
-                registro0150.setNome(emitente.getNome());
-                registro0150.setCodPais("01058");
-                if (emitente.getCpfCnpj().length() == 11) {
-                    registro0150.setCpf(emitente.getCpfCnpj());
-                } else if (emitente.getCpfCnpj().length() == 14) {
-                    registro0150.setCnpj(emitente.getCpfCnpj());
+                cliente = c.getDestinatario();
+                boolean existe = sped.getBloco0().getListaRegistro0150()
+                        .stream().filter(reg -> reg.getCodPart().equals("C" + c.getCliente().getId()))
+                        .findAny().isPresent();
+                if (!existe) {
+                    registro0150 = new Registro0150();
+
+
+                    registro0150.setCodPart("C" + c.getCliente().getId());
+                    registro0150.setNome(cliente.getNome());
+                    registro0150.setCodPais("01058");
+                    if (cliente.getCpfCnpj().length() == 11) {
+                        registro0150.setCpf(cliente.getCpfCnpj());
+                    } else if (cliente.getCpfCnpj().length() == 14) {
+                        registro0150.setCnpj(cliente.getCpfCnpj());
+                    }
+                    registro0150.setCodMun(cliente.getCodigoMunicipio());
+                    registro0150.setSuframa(String.valueOf(cliente.getSuframa()));
+                    registro0150.setEndereco(cliente.getLogradouro());
+                    registro0150.setNum(cliente.getNumero());
+                    registro0150.setCompl(cliente.getComplemento());
+                    registro0150.setBairro(cliente.getBairro());
+
+                    sped.getBloco0().getListaRegistro0150().add(registro0150);
                 }
-                registro0150.setCodMun(emitente.getCodigoMunicipio());
-                registro0150.setSuframa(String.valueOf(emitente.getSuframa()));
-                registro0150.setEndereco(emitente.getLogradouro());
-                registro0150.setNum(emitente.getNumero());
-                registro0150.setCompl(emitente.getComplemento());
-                registro0150.setBairro(emitente.getBairro());
 
-                sped.getBloco0().getListaRegistro0150().add(registro0150);
-
-                registro0150 = new Registro0150();
-                destinatario = c.getDestinatario();
-
-                registro0150.setCodPart("C" + c.getCliente().getId());
-                registro0150.setNome(destinatario.getNome());
-                registro0150.setCodPais("01058");
-                if (destinatario.getCpfCnpj().length() == 11) {
-                    registro0150.setCpf(destinatario.getCpfCnpj());
-                } else if (destinatario.getCpfCnpj().length() == 14) {
-                    registro0150.setCnpj(destinatario.getCpfCnpj());
-                }
-                registro0150.setCodMun(destinatario.getCodigoMunicipio());
-                registro0150.setSuframa(String.valueOf(destinatario.getSuframa()));
-                registro0150.setEndereco(destinatario.getLogradouro());
-                registro0150.setNum(destinatario.getNumero());
-                registro0150.setCompl(destinatario.getComplemento());
-                registro0150.setBairro(destinatario.getBairro());
-
-                sped.getBloco0().getListaRegistro0150().add(registro0150);
             }
 
 
             // REGISTRO 0175: ALTERAÇÃO DA TABELA DE CADASTRO DE PARTICIPANTE
             // Pegar os dados de PESSOA_ALTERACAO para gerar o registro 0175
+
+
             // registro 0200
             for (NfeDetalhe nfeDetalhe : c.getListaNfeDetalhe()) {
-                Registro0200 registro0200 = new Registro0200();
+
                 Produto produto = nfeDetalhe.getProduto();
 
-                registro0200.setCodItem(produto.getId().toString());
-                registro0200.setDescrItem(produto.getDescricao());
-                registro0200.setCodBarra(produto.getGtin());
-                // TEM QUE PREENCHER PARA INFORMAR NO 0205
-                registro0200.setCodAntItem("");
-                registro0200.setUnidInv(produto.getUnidadeProduto().getId().toString());
-                registro0200.setTipoItem(produto.getTipoItemSped());
-                registro0200.setCodNcm(produto.getNcm());
-                registro0200.setExIpi(produto.getExTipi());
-                registro0200.setCodGen(produto.getNcm().substring(0, 2));
-                registro0200.setCodLst(produto.getCodigoLst());
-                registro0200.setAliqIcms(produto.getAliquotaIcmsPaf());
+                boolean existe = sped.getBloco0().getListaRegistro0200().stream()
+                        .filter(reg -> reg.getCodItem().equals(produto.getId().toString()))
+                        .findAny().isPresent();
+                if (!existe) {
+                    Registro0200 registro0200 = new Registro0200();
+                    registro0200.setCodItem(produto.getId().toString());
+                    registro0200.setDescrItem(produto.getDescricao());
+                    registro0200.setCodBarra(produto.getGtin());
+                    // TEM QUE PREENCHER PARA INFORMAR NO 0205
+                    registro0200.setCodAntItem("");
+                    registro0200.setUnidInv(produto.getUnidadeProduto().getId().toString());
+                    registro0200.setTipoItem(produto.getTipoItemSped());
+                    registro0200.setCodNcm(produto.getNcm());
+                    registro0200.setExIpi(produto.getExTipi());
+                    registro0200.setCodGen(produto.getNcm().substring(0, 2));
+                    registro0200.setCodLst(produto.getCodigoLst());
+                    registro0200.setAliqIcms(produto.getAliquotaIcmsPaf());
 
-                if (!listaUnidadeProduto.contains(produto.getUnidadeProduto())) {
-                    listaUnidadeProduto.add(produto.getUnidadeProduto());
+
+                    if (!listaUnidadeProduto.contains(produto.getUnidadeProduto())) {
+                        listaUnidadeProduto.add(produto.getUnidadeProduto());
+                    }
+
+                    // REGISTRO 0205: ALTERAÇÃO DO ITEM
+                    filtros.clear();
+                    filtros.add(new Filtro(Filtro.AND, "produto", Filtro.IGUAL, produto));
+                    filtros.add(new Filtro(Filtro.AND, "dataInicial", Filtro.MAIOR_OU_IGUAL, dataInicio));
+                    filtros.add(new Filtro(Filtro.AND, "dataInicial", Filtro.MENOR_OU_IGUAL, dataFim));
+
+                    List<ProdutoAlteracaoItem> listaProdutoAlteracaoItem = produtoAlteradoRepository.getEntitys(ProdutoAlteracaoItem.class, filtros);
+                    Registro0205 registro0205;
+                    for (ProdutoAlteracaoItem produtoAlteracaoItem : listaProdutoAlteracaoItem) {
+                        registro0205 = new Registro0205();
+
+                        registro0205.setDescrAntItem(produtoAlteracaoItem.getNome());
+                        registro0205.setDtIni(produtoAlteracaoItem.getDataInicial());
+                        registro0205.setDtFin(produtoAlteracaoItem.getDataFinal());
+                        registro0205.setCodAntItem(produtoAlteracaoItem.getCodigo());
+
+                        registro0200.getRegistro0205List().add(registro0205);
+                    }
+
+                    // REGISTRO 0206: CÓDIGO DE PRODUTO CONFORME TABELA PUBLICADA PELA ANP (COMBUSTÍVEIS)
+
+                    // REGISTRO 0210: CONSUMO ESPECÍFICO PADRONIZADO
+
+                    // REGISTRO 0220: FATORES DE CONVERSÃO DE UNIDADES
+
+
+                    UnidadeConversao unidadeConversao = produto.getUnidadeConversao();
+                    if (unidadeConversao != null) {
+                        Registro0220 registro0220 = new Registro0220();
+                        registro0220.setUnidConv(unidadeConversao.getProduto().getUnidadeProduto().getId().toString());
+                        registro0220.setFatConv(unidadeConversao.getFatorConversao());
+
+                        registro0200.getRegistro0220List().add(registro0220);
+                    }
+                    sped.getBloco0().getListaRegistro0200().add(registro0200);
                 }
 
-                // REGISTRO 0205: ALTERAÇÃO DO ITEM
-                filtros.clear();
-                filtros.add(new Filtro(Filtro.AND, "produto", Filtro.IGUAL, produto));
-                filtros.add(new Filtro(Filtro.AND, "dataInicial", Filtro.MAIOR_OU_IGUAL, dataInicio));
-                filtros.add(new Filtro(Filtro.AND, "dataInicial", Filtro.MENOR_OU_IGUAL, dataFim));
-
-                List<ProdutoAlteracaoItem> listaProdutoAlteracaoItem = produtoAlteradoRepository.getEntitys(ProdutoAlteracaoItem.class, filtros);
-                Registro0205 registro0205;
-                for (ProdutoAlteracaoItem produtoAlteracaoItem : listaProdutoAlteracaoItem) {
-                    registro0205 = new Registro0205();
-
-                    registro0205.setDescrAntItem(produtoAlteracaoItem.getNome());
-                    registro0205.setDtIni(produtoAlteracaoItem.getDataInicial());
-                    registro0205.setDtFin(produtoAlteracaoItem.getDataFinal());
-                    registro0205.setCodAntItem(produtoAlteracaoItem.getCodigo());
-
-                    registro0200.getRegistro0205List().add(registro0205);
-                }
-
-                // REGISTRO 0206: CÓDIGO DE PRODUTO CONFORME TABELA PUBLICADA
-                // PELA ANP (COMBUSTÍVEIS)
-                // Implementado a critério do Participante do T2Ti ERP
-                // REGISTRO 0210: CONSUMO ESPECÍFICO PADRONIZADO
-                // Implementado a critério do Participante do T2Ti ERP
-                // REGISTRO 0220: FATORES DE CONVERSÃO DE UNIDADES
-                UnidadeConversao unidadeConversao = produto.getUnidadeConversao();
-                if (unidadeConversao != null) {
-                    Registro0220 registro0220 = new Registro0220();
-                    registro0220.setUnidConv(unidadeConversao.getProduto().getUnidadeProduto().getId().toString());
-                    registro0220.setFatConv(unidadeConversao.getFatorConversao());
-
-                    registro0200.getRegistro0220List().add(registro0220);
-                }
             }
         }
+
 
         // REGISTRO 0190: IDENTIFICAÇÃO DAS UNIDADES DE MEDIDA
         Registro0190 registro0190;
@@ -329,11 +362,10 @@ public class SpedIcmsIpiService implements Serializable {
 
             sped.getBloco0().getListaRegistro0190().add(registro0190);
         }
-
+        //TODO implementar o controle de CIAP
         // REGISTRO 0300: CADASTRO DE BENS OU COMPONENTES DO ATIVO IMOBILIZADO
         // REGISTRO 0305: INFORMAÇÃO SOBRE A UTILIZAÇÃO DO BEM
-        // Implementado a critério do Participante do T2Ti ERP - versão 1.0 não
-        // possui controle CIAP
+
         // REGISTRO 0400: TABELA DE NATUREZA DA OPERAÇÃO/PRESTAÇÃO
         Registro0400 registro0400;
         for (TributOperacaoFiscal operacaoFiscal : listaOperacaoFiscal) {
@@ -344,23 +376,20 @@ public class SpedIcmsIpiService implements Serializable {
         }
 
         // REGISTRO 0450: TABELA DE INFORMAÇÃO COMPLEMENTAR DO DOCUMENTO FISCAL
-        // Implementado a critério do Participante do T2Ti ERP
+
         // REGISTRO 0460: TABELA DE OBSERVAÇÕES DO LANÇAMENTO FISCAL
-        // Implementado a critério do Participante do T2Ti ERP
+
         // REGISTRO 0500: PLANO DE CONTAS CONTÁBEIS
-        // Implementado a critério do Participante do T2Ti ERP
+
         // REGISTRO 0600: CENTRO DE CUSTOS
-        // Implementado a critério do Participante do T2Ti ERP
+
     }
 
     /**
      * // BLOCO C: DOCUMENTOS FISCAIS I - MERCADORIAS (ICMS/IPI)
      */
     private void geraBlocoC() {
-        List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
-        filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
-        List<NfeCabecalho> listaNfeCabecalho = nfes.getEntitys(NfeCabecalho.class, filtros);
+
 
         filtros.clear();
         filtros.add(new Filtro(Filtro.AND, "dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
@@ -493,16 +522,19 @@ public class SpedIcmsIpiService implements Serializable {
                     registroC170.setVlDesc(nfeDetalhe.getValorDesconto());
                     registroC170.setIndMov(0);
                     //info icms
-                    registroC170.setCstIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getCstIcms());
-                    registroC170.setCfop(nfeDetalhe.getCfop().toString());
-                    registroC170.setCodNat(nfeDetalhe.getNfeCabecalho().getTributOperacaoFiscal().getId().toString());
-                    registroC170.setVlBcIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
-                    registroC170.setAliqIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getAliquotaIcms());
-                    registroC170.setVlIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getValorIcms());
-                    registroC170.setVlBcIcmsSt(nfeDetalhe.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
-                    registroC170.setAliqSt(nfeDetalhe.getNfeDetalheImpostoIcms().getAliquotaIcmsSt());
-                    registroC170.setVlIcmsSt(nfeDetalhe.getNfeDetalheImpostoIcms().getValorIcmsSt());
-                    registroC170.setIndApur(0);
+                    if (nfeDetalhe.getNfeDetalheImpostoIcms() != null) {
+                        registroC170.setCstIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getCstIcms());
+                        registroC170.setCfop(nfeDetalhe.getCfop().toString());
+                        registroC170.setCodNat(nfeDetalhe.getNfeCabecalho().getTributOperacaoFiscal().getId().toString());
+                        registroC170.setVlBcIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
+                        registroC170.setAliqIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getAliquotaIcms());
+                        registroC170.setVlIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getValorIcms());
+                        registroC170.setVlBcIcmsSt(nfeDetalhe.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
+                        registroC170.setAliqSt(nfeDetalhe.getNfeDetalheImpostoIcms().getAliquotaIcmsSt());
+                        registroC170.setVlIcmsSt(nfeDetalhe.getNfeDetalheImpostoIcms().getValorIcmsSt());
+                        registroC170.setIndApur(0);
+                    }
+
                     //info IPI
                     if (nfeDetalhe.getNfeDetalheImpostoIpi() != null) {
                         registroC170.setCstIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getCstIpi());

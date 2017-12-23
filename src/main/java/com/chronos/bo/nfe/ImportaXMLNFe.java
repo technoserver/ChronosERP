@@ -271,8 +271,9 @@ public class ImportaXMLNFe {
 
         imp = imposto.getSimpleName();
         imp = imp.equals("TIpi") ? "IPI" : imp;
-        JAXBElement<?> element = classToCast.stream().filter(i -> i.getName().toString().contains(imp)).findFirst().get();
-        return (T) element.getValue();
+        JAXBElement<?> element = classToCast.stream().filter(i -> i.getName().toString().contains(imp)).findFirst().orElse(null);
+
+        return element != null ? (T) element.getValue() : null;
     }
 
     private NfeDetalheImpostoIcms getIcms(TNFe.InfNFe.Det.Imposto.ICMS icms) throws ParseException {

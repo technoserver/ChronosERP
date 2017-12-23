@@ -4,6 +4,7 @@ import com.chronos.bo.nfe.ImportaXMLNFe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.enuns.AcaoLog;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
@@ -16,6 +17,7 @@ import com.chronos.util.jsf.Mensagem;
 import org.apache.commons.io.FileUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
+import org.springframework.util.StringUtils;
 
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -115,7 +117,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             dataModel.setDao(dao);
         }
 
-        Object[] atribut = new Object[]{"fornecedor", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota"};
+        Object[] atribut = new Object[]{"fornecedor", "serie", "numero", "dataHoraEntradaSaida", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota"};
         dataModel.setAtributos(atribut);
         dataModel.getFiltros().clear();
         dataModel.addFiltro("tipoOperacao", 0, Filtro.IGUAL);
@@ -153,19 +155,32 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     @Override
     public void salvar() {
         try {
+            boolean inclusao = false;
             if (getObjeto().getId() == null) {
+                inclusao = true;
                 for (NfeDetalhe detalhe : getObjeto().getListaNfeDetalhe()) {
-                    estoques.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+                    atualizarEstoque(detalhe);
+
                 }
             } else {
                 List<NfeDetalhe> listaNfeDetOld = estoques.getItens(getObjeto());
                 for (NfeDetalhe detalhe : listaNfeDetOld) {
-                    estoques.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+                    atualizarEstoque(detalhe);
                 }
-                estoques.atualizaEstoqueEmpresa(empresa.getId(), getObjeto().getListaNfeDetalhe());
+                if (getObjeto().getTributOperacaoFiscal().getEstoqueVerificado() && getObjeto().getTributOperacaoFiscal().getEstoque()) {
+                    estoques.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), getObjeto().getListaNfeDetalhe());
+                } else if (getObjeto().getTributOperacaoFiscal().getEstoqueVerificado()) {
+                    estoques.atualizaEstoqueEmpresaControle(empresa.getId(), getObjeto().getListaNfeDetalhe());
+                } else {
+                    estoques.atualizaEstoqueEmpresa(empresa.getId(), getObjeto().getListaNfeDetalhe());
+                }
+            }
+            String descricao = "Entrada da NFe :" + getObjeto().getNumero() + " Fornecedor :" + getObjeto().getEmitente().getNome();
+            super.salvar();
+            if (inclusao) {
+                gerarLog(AcaoLog.INSERT, descricao, "Entrada de NF");
             }
 
-            super.salvar();
             setTelaGrid(true);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -173,6 +188,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         }
 
     }
+
 
     public void gerarValores(NfeDetalhe item) {
         valorTotalFrete = Biblioteca.soma(valorTotalFrete, item.getValorFrete());
@@ -280,6 +296,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 getObjeto().setListaNfeDetalhe((ArrayList) map.get("detalhe"));
 
                 getObjeto().setListaDuplicata((HashSet) map.get("duplicata"));
+                getObjeto().setDataHoraEntradaSaida(new Date());
                 verificarFornecedor();
                 List<Filtro> filtro = new LinkedList<>();
                 filtro.add(new Filtro(Filtro.AND, "fornecedor.id", Filtro.IGUAL, fornecedor.getId()));
@@ -295,8 +312,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 Mensagem.addInfoMessage("XML importados com sucesso!");
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
+            Mensagem.addErrorMessage("Erro ao importa XML", ex);
+            throw new RuntimeException("Erro ao importa XML : " + ex.getMessage());
+
+
         }
     }
 
@@ -312,7 +331,6 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         String cpfCnpj = getObjeto().getEmitente().getCpfCnpj();
         fornecedor = fornecedorService.getFornecedor(cpfCnpj);
         if (fornecedor == null) {
-            fornecedor = fornecedorService.getFornecedor(cpfCnpj);
             cadastrarFornecedor(getObjeto().getEmitente());
             getObjeto().setFornecedor(fornecedor);
         } else {
@@ -679,7 +697,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("descricao", Filtro.LIKE, descricao));
             filtros.add(new Filtro("cfop", Filtro.MENOR, 3000));
-            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, filtros, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoInss"});
+            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, filtros, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoInss", "estoque", "estoqueVerificado"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -698,6 +716,36 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     // </editor-fold>
 
+
+    private void atualizarEstoque(NfeDetalhe detalhe) throws Exception {
+        if (getObjeto().getTributOperacaoFiscal().getEstoqueVerificado() && getObjeto().getTributOperacaoFiscal().getEstoque()) {
+            estoques.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+        } else if (getObjeto().getTributOperacaoFiscal().getEstoqueVerificado()) {
+            estoques.atualizaEstoqueEmpresaControle(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+        } else {
+            estoques.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+        }
+    }
+
+    private void validarDados() throws Exception {
+
+        if (getObjeto().getListaNfeDetalhe().isEmpty()) {
+            throw new Exception("Itens da NFe não informado");
+        }
+
+        for (NfeDetalhe item : getObjeto().getListaNfeDetalhe()) {
+
+            if (item.getCfop() == null) {
+                throw new Exception("Para o item " + item.getNomeProduto() + " não foi informado CFOP");
+            }
+            if (item.getNfeDetalheImpostoIcms() != null) {
+                if (StringUtils.isEmpty(item.getNfeDetalheImpostoIcms().getCstIcms()) && StringUtils.isEmpty(item.getNfeDetalheImpostoIcms().getCsosn())) {
+                    throw new Exception("Para o item " + item.getNomeProduto() + " não foi informado CST/CSOSN");
+                }
+            }
+        }
+
+    }
 
     @Override
     protected Class<NfeCabecalho> getClazz() {

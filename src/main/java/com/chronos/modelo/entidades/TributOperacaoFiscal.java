@@ -73,6 +73,23 @@ public class TributOperacaoFiscal implements Serializable {
     public TributOperacaoFiscal() {
     }
 
+    public TributOperacaoFiscal(Integer id) {
+        this.id = id;
+
+    }
+
+    public TributOperacaoFiscal(Integer id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
+
+    public TributOperacaoFiscal(String descricao, String descricaoNaNf, Boolean estoque, Boolean estoqueVerificado) {
+        this.descricao = descricao;
+        this.descricaoNaNf = descricaoNaNf;
+        this.estoque = estoque;
+        this.estoqueVerificado = estoqueVerificado;
+    }
+
     public TributOperacaoFiscal(Integer id, String descricao, Integer cfop, Boolean obrigacaoFiscal, Boolean destacaIpi, Boolean destacaPisCofins, Boolean calculoIssqn) {
         this.id = id;
         this.descricao = descricao;
@@ -83,14 +100,16 @@ public class TributOperacaoFiscal implements Serializable {
         this.calculoIssqn = calculoIssqn;
     }
 
-    public TributOperacaoFiscal(Integer id) {
-        this.id = id;
-
-    }
-
-    public TributOperacaoFiscal(Integer id, String descricao) {
+    public TributOperacaoFiscal(Integer id, String descricao, Integer cfop, Boolean obrigacaoFiscal, Boolean destacaIpi, Boolean destacaPisCofins, Boolean calculoIssqn, Boolean estoque, Boolean estoqueVerificado) {
         this.id = id;
         this.descricao = descricao;
+        this.cfop = cfop;
+        this.obrigacaoFiscal = obrigacaoFiscal;
+        this.destacaIpi = destacaIpi;
+        this.destacaPisCofins = destacaPisCofins;
+        this.calculoIssqn = calculoIssqn;
+        this.estoque = estoque;
+        this.estoqueVerificado = estoqueVerificado;
     }
 
 

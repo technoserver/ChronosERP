@@ -42,6 +42,7 @@ public class ProdutoFornecedorService implements Serializable {
         empProduto.setEmpresa(empresa);
         empProduto.setProduto(produto);
         empProduto.setQuantidadeEstoque(BigDecimal.ZERO);
+        empProduto.setEstoqueVerificado(BigDecimal.ZERO);
         empresaProdutos.salvar(empProduto);
 
         return repository.atualizar(forProd);

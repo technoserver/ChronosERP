@@ -269,9 +269,9 @@ public class NfeCabecalho implements Serializable {
     }
 
 
-    public NfeCabecalho(Integer id, Cliente cliente, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo) {
+    public NfeCabecalho(Integer id, String cliente, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo) {
         this.id = id;
-        this.cliente = cliente;
+        this.cliente = new Cliente(0, cliente);
         this.serie = serie;
         this.numero = numero;
         this.dataHoraEmissao = dataHoraEmissao;
@@ -295,12 +295,13 @@ public class NfeCabecalho implements Serializable {
         this.qrcode = qrcode;
     }
 
-    public NfeCabecalho(Integer id, Fornecedor fornecedor, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota) {
+    public NfeCabecalho(Integer id, Fornecedor fornecedor, String serie, String numero, Date dataHoraEntradaSaida, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota) {
         this.id = id;
         this.fornecedor = fornecedor;
         this.serie = serie;
         this.numero = numero;
         this.dataHoraEmissao = dataHoraEmissao;
+        this.dataHoraEntradaSaida = dataHoraEntradaSaida;
         this.chaveAcesso = chaveAcesso;
         this.digitoChaveAcesso = digitoChaveAcesso;
         this.valorTotal = valorTotal;

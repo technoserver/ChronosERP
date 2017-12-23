@@ -787,6 +787,41 @@ CREATE OR REPLACE VIEW view_fin_cheque_nao_compensado AS
     JOIN fin_cheque_emitido ce ON ce.id_cheque = c.id
   WHERE c.status_cheque <> 'C';
 
+
+CREATE OR REPLACE VIEW view_resumo_contas_mensal AS
+  SELECT
+    (SELECT COALESCE(sum(valor_pago), 0 :: NUMERIC)
+     FROM fin_parcela_pagamento
+     WHERE data_pagamento BETWEEN (date_trunc('month', CURRENT_DATE)) AND (
+       date_trunc('month', CURRENT_DATE) + INTERVAL '1 month' - INTERVAL '1 day')) AS valor_quitado,
+    COALESCE(sum(valor), 0)                                                        AS total_quita,
+    COALESCE(SUM(CASE WHEN data_vencimento > CURRENT_DATE AND data_vencimento <= CURRENT_DATE + '7 day' :: INTERVAL
+      THEN valor
+                 ELSE 0 END), 0)                                                   AS total_quita_7_dias,
+    'P'                                                                            AS tipo
+  FROM fin_parcela_pagar pp
+    INNER JOIN fin_status_parcela s ON pp.id_fin_status_parcela = s.id
+  WHERE s.situacao <> '02' AND data_vencimento BETWEEN (date_trunc('month', CURRENT_DATE)) AND (
+    date_trunc('month', CURRENT_DATE) + INTERVAL '1 month' - INTERVAL '1 day')
+
+  UNION
+
+  SELECT
+
+    (SELECT COALESCE(sum(valor_recebido), 0 :: NUMERIC)
+     FROM fin_parcela_recebimento
+     WHERE data_recebimento BETWEEN (date_trunc('month', CURRENT_DATE)) AND (
+       date_trunc('month', CURRENT_DATE) + INTERVAL '1 month' - INTERVAL '1 day')) AS valor_quitado,
+    COALESCE(sum(valor), 0)                                                        AS total_quita,
+    COALESCE(SUM(CASE WHEN data_vencimento > CURRENT_DATE AND data_vencimento <= CURRENT_DATE + '7 day' :: INTERVAL
+      THEN valor
+                 ELSE 0 END), 0)                                                   AS total_quita_7_dias,
+    'R'                                                                            AS tipo
+  FROM fin_parcela_receber pr
+    INNER JOIN fin_status_parcela s ON pr.id_fin_status_parcela = s.id
+  WHERE s.situacao <> '02' AND data_vencimento BETWEEN (date_trunc('month', CURRENT_DATE)) AND (
+    date_trunc('month', CURRENT_DATE) + INTERVAL '1 month' - INTERVAL '1 day');
+
 -- Views referente a tributação
 
 CREATE OR REPLACE VIEW view_tributacao_cofins AS
@@ -999,95 +1034,133 @@ CREATE OR REPLACE VIEW view_produto_empresa AS
 
 --View para o SPED
 
-CREATE OR REPLACE VIEW VIEW_SPED_NFE_DETALHE AS
+CREATE OR REPLACE VIEW view_sped_nfe_detalhe AS
   SELECT
-    NFED.*,
-    NFEC.ID_TRIBUT_OPERACAO_FISCAL,
-    P.ID_UNIDADE_PRODUTO,
-    COFINS.CST_COFINS,
-    COFINS.QUANTIDADE_VENDIDA AS QUANTIDADE_VENDIDA_COFINS,
-    COFINS.BASE_CALCULO_COFINS,
-    COFINS.ALIQUOTA_COFINS_PERCENTUAL,
-    COFINS.ALIQUOTA_COFINS_REAIS,
-    COFINS.VALOR_COFINS,
-    ICMS.ORIGEM_MERCADORIA,
-    ICMS.CST_ICMS,
-    ICMS.CSOSN,
-    ICMS.MODALIDADE_BC_ICMS,
-    ICMS.TAXA_REDUCAO_BC_ICMS,
-    ICMS.BASE_CALCULO_ICMS,
-    ICMS.ALIQUOTA_ICMS,
-    ICMS.VALOR_ICMS,
-    ICMS.MOTIVO_DESONERACAO_ICMS,
-    ICMS.MODALIDADE_BC_ICMS_ST,
-    ICMS.PERCENTUAL_MVA_ICMS_ST,
-    ICMS.PERCENTUAL_REDUCAO_BC_ICMS_ST,
-    ICMS.VALOR_BASE_CALCULO_ICMS_ST,
-    ICMS.ALIQUOTA_ICMS_ST,
-    ICMS.VALOR_ICMS_ST,
-    ICMS.VALOR_BC_ICMS_ST_RETIDO,
-    ICMS.VALOR_ICMS_ST_RETIDO,
-    ICMS.VALOR_BC_ICMS_ST_DESTINO,
-    ICMS.VALOR_ICMS_ST_DESTINO,
-    ICMS.ALIQUOTA_CREDITO_ICMS_SN,
-    ICMS.VALOR_CREDITO_ICMS_SN,
-    ICMS.PERCENTUAL_BC_OPERACAO_PROPRIA,
-    ICMS.UF_ST,
-    II.VALOR_BC_II,
-    II.VALOR_DESPESAS_ADUANEIRAS,
-    II.VALOR_IMPOSTO_IMPORTACAO,
-    II.VALOR_IOF,
-    IPI.ENQUADRAMENTO_IPI,
-    IPI.CNPJ_PRODUTOR,
-    IPI.CODIGO_SELO_IPI,
-    IPI.QUANTIDADE_SELO_IPI,
-    IPI.ENQUADRAMENTO_LEGAL_IPI,
-    IPI.CST_IPI,
-    IPI.VALOR_BASE_CALCULO_IPI,
-    IPI.ALIQUOTA_IPI,
-    IPI.QUANTIDADE_UNIDADE_TRIBUTAVEL,
-    IPI.VALOR_UNIDADE_TRIBUTAVEL,
-    IPI.VALOR_IPI,
-    ISSQN.BASE_CALCULO_ISSQN,
-    ISSQN.ALIQUOTA_ISSQN,
-    ISSQN.VALOR_ISSQN,
-    ISSQN.MUNICIPIO_ISSQN,
-    ISSQN.ITEM_LISTA_SERVICOS,
-    PIS.CST_PIS,
-    PIS.QUANTIDADE_VENDIDA    AS QUANTIDADE_VENDIDA_PIS,
-    PIS.VALOR_BASE_CALCULO_PIS,
-    PIS.ALIQUOTA_PIS_PERCENTUAL,
-    PIS.ALIQUOTA_PIS_REAIS,
-    PIS.VALOR_PIS
-  FROM
-    NFE_DETALHE NFED
-    LEFT JOIN NFE_DETALHE_IMPOSTO_COFINS COFINS ON (COFINS.ID_NFE_DETALHE = NFED.ID)
-    LEFT JOIN NFE_DETALHE_IMPOSTO_ICMS ICMS ON (ICMS.ID_NFE_DETALHE = NFED.ID)
-    LEFT JOIN NFE_DETALHE_IMPOSTO_II II ON (II.ID_NFE_DETALHE = NFED.ID)
-    LEFT JOIN NFE_DETALHE_IMPOSTO_IPI IPI ON (IPI.ID_NFE_DETALHE = NFED.ID)
-    LEFT JOIN NFE_DETALHE_IMPOSTO_ISSQN ISSQN ON (ISSQN.ID_NFE_DETALHE = NFED.ID)
-    LEFT JOIN NFE_DETALHE_IMPOSTO_PIS PIS ON (PIS.ID_NFE_DETALHE = NFED.ID)
-    LEFT JOIN PRODUTO P ON (NFED.ID_PRODUTO = P.ID)
-    LEFT JOIN NFE_CABECALHO NFEC ON (NFED.ID_NFE_CABECALHO = NFEC.ID);
+    nfed.id,
+    nfed.id_produto,
+    nfed.id_nfe_cabecalho,
+    nfed.numero_item,
+    nfed.codigo_produto,
+    nfed.gtin,
+    nfed.nome_produto,
+    p.servico,
+    nfed.ncm,
+    nfed.nve,
+    nfed.ex_tipi,
+    nfed.cfop,
+    nfed.unidade_comercial,
+    nfed.quantidade_comercial,
+    nfed.valor_unitario_comercial,
+    nfed.valor_bruto_produto,
+    nfed.gtin_unidade_tributavel,
+    nfed.unidade_tributavel,
+    nfed.quantidade_tributavel,
+    nfed.valor_unitario_tributavel,
+    nfed.valor_frete,
+    nfed.valor_seguro,
+    nfed.valor_desconto,
+    nfed.valor_outras_despesas,
+    nfed.entra_total,
+    nfed.valor_subtotal,
+    nfed.valor_total,
+    nfed.numero_pedido_compra,
+    nfed.item_pedido_compra,
+    nfed.informacoes_adicionais,
+    nfed.numero_fci,
+    nfed.numero_recopi,
+    nfed.valor_total_tributos,
+    nfed.percentual_devolvido,
+    nfed.valor_ipi_devolvido,
+    nfed.cest,
+    nfed.indicador_escala_relevante,
+    nfed.cnpj_fabricante,
+    nfed.codigo_beneficio_fiscal,
+    nfec.id_tribut_operacao_fiscal,
+    p.id_unidade_produto,
+    cofins.cst_cofins,
+    cofins.quantidade_vendida AS quantidade_vendida_cofins,
+    cofins.base_calculo_cofins,
+    cofins.aliquota_cofins_percentual,
+    cofins.aliquota_cofins_reais,
+    cofins.valor_cofins,
+    icms.origem_mercadoria,
+    icms.cst_icms,
+    icms.csosn,
+    icms.modalidade_bc_icms,
+    icms.taxa_reducao_bc_icms,
+    icms.base_calculo_icms,
+    icms.aliquota_icms,
+    icms.valor_icms,
+    icms.motivo_desoneracao_icms,
+    icms.modalidade_bc_icms_st,
+    icms.percentual_mva_icms_st,
+    icms.percentual_reducao_bc_icms_st,
+    icms.valor_base_calculo_icms_st,
+    icms.aliquota_icms_st,
+    icms.valor_icms_st,
+    icms.valor_bc_icms_st_retido,
+    icms.valor_icms_st_retido,
+    icms.valor_bc_icms_st_destino,
+    icms.valor_icms_st_destino,
+    icms.aliquota_credito_icms_sn,
+    icms.valor_credito_icms_sn,
+    icms.percentual_bc_operacao_propria,
+    icms.uf_st,
+    ii.valor_bc_ii,
+    ii.valor_despesas_aduaneiras,
+    ii.valor_imposto_importacao,
+    ii.valor_iof,
+    ipi.enquadramento_ipi,
+    ipi.cnpj_produtor,
+    ipi.codigo_selo_ipi,
+    ipi.quantidade_selo_ipi,
+    ipi.enquadramento_legal_ipi,
+    ipi.cst_ipi,
+    ipi.valor_base_calculo_ipi,
+    ipi.aliquota_ipi,
+    ipi.quantidade_unidade_tributavel,
+    ipi.valor_unidade_tributavel,
+    ipi.valor_ipi,
+    issqn.base_calculo_issqn,
+    issqn.aliquota_issqn,
+    issqn.valor_issqn,
+    issqn.municipio_issqn,
+    issqn.item_lista_servicos,
+    pis.cst_pis,
+    pis.quantidade_vendida    AS quantidade_vendida_pis,
+    pis.valor_base_calculo_pis,
+    pis.aliquota_pis_percentual,
+    pis.aliquota_pis_reais,
+    pis.valor_pis
+  FROM nfe_detalhe nfed
+    LEFT JOIN nfe_detalhe_imposto_cofins cofins ON cofins.id_nfe_detalhe = nfed.id
+    LEFT JOIN nfe_detalhe_imposto_icms icms ON icms.id_nfe_detalhe = nfed.id
+    LEFT JOIN nfe_detalhe_imposto_ii ii ON ii.id_nfe_detalhe = nfed.id
+    LEFT JOIN nfe_detalhe_imposto_ipi ipi ON ipi.id_nfe_detalhe = nfed.id
+    LEFT JOIN nfe_detalhe_imposto_issqn issqn ON issqn.id_nfe_detalhe = nfed.id
+    LEFT JOIN nfe_detalhe_imposto_pis pis ON pis.id_nfe_detalhe = nfed.id
+    LEFT JOIN produto p ON nfed.id_produto = p.id
+    LEFT JOIN nfe_cabecalho nfec ON nfed.id_nfe_cabecalho = nfec.id;
 
 
 CREATE OR REPLACE VIEW view_sped_c190 AS
   SELECT
     nfec.id,
-    nfed.cst_icms,
+    COALESCE(nfed.cst_icms, nfed.csosn)               AS cst_icms,
     nfed.cfop,
-    nfed.aliquota_icms,
-    nfec.data_hora_emissao,
-    sum(nfed.valor_total)                AS soma_valor_operacao,
-    sum(nfed.base_calculo_icms)          AS soma_base_calculo_icms,
-    sum(nfed.valor_icms)                 AS soma_valor_icms,
-    sum(nfed.valor_base_calculo_icms_st) AS soma_base_calculo_icms_st,
-    sum(nfed.valor_icms_st)              AS soma_valor_icms_st,
-    sum(nfed.valor_outras_despesas)      AS soma_vl_red_bc,
-    COALESCE(sum(nfed.valor_ipi), 0)     AS soma_valor_ipi
+    COALESCE(nfed.aliquota_icms, 0)                   AS aliquota_icms,
+    nfec.data_hora_emissao                            AS data_emissao,
+    COALESCE(sum(nfed.valor_total), 0)                AS soma_valor_operacao,
+    COALESCE(sum(nfed.base_calculo_icms), 0)          AS soma_base_calculo_icms,
+    COALESCE(sum(nfed.valor_icms), 0)                 AS soma_valor_icms,
+    COALESCE(sum(nfed.valor_base_calculo_icms_st), 0) AS soma_base_calculo_icms_st,
+    COALESCE(sum(nfed.valor_icms_st), 0)              AS soma_valor_icms_st,
+    COALESCE(sum(nfed.valor_outras_despesas), 0)      AS soma_vl_red_bc,
+    COALESCE(sum(nfed.valor_ipi), 0)                  AS soma_valor_ipi
   FROM view_sped_nfe_detalhe nfed
     JOIN nfe_cabecalho nfec ON nfed.id_nfe_cabecalho = nfec.id
-  GROUP BY nfec.id, nfed.cst_icms, nfed.cfop, nfed.aliquota_icms, nfec.data_hora_emissao;
+  WHERE nfed.servico <> 'S'
+  GROUP BY nfec.id, nfed.cst_icms, nfed.csosn, nfed.cfop, nfed.aliquota_icms, nfec.data_hora_emissao;
 
 
 CREATE OR REPLACE VIEW VIEW_SPED_C300

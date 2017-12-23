@@ -659,8 +659,9 @@ public class NfceControll implements Serializable {
                 RequestContext.getCurrentInstance().addCallbackParam("vendaFinalizada", true);
             } else if (status == StatusTransmissao.DUPLICIDADE) {
 
-                // venda.setNumero(null);
-                // transmitirNfe();
+                // nfeService.getNotaFicalTipo("55",empresa);
+
+                //  transmitirNfe();
             }
 
 

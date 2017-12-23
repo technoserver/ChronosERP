@@ -479,13 +479,35 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         StringBuilder jpqlBuilder = new StringBuilder(jpql);
         for (Filtro f : filters) {
             i++;
+//            jpqlBuilder.append(" ")
+//                    .append(f.getOperadorLogico())
+//                    .append((f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional());
+//            if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)) {
+//                jpqlBuilder.append(" :valor").append(i);
+//            }
+            jpqlBuilder.append(" ");
+            jpqlBuilder.append(f.getOperadorLogico());
+            if (f.getOperadorRelacional().equals(Filtro.NAO_NULO)) {
+                jpqlBuilder.append(" o." + f.getAtributo() + " ");
+                jpqlBuilder.append(Filtro.NAO_NULO);
+            } else if (f.getOperadorRelacional().equals(Filtro.BETWEEN)) {
+                jpqlBuilder.append(" o." + f.getAtributo() + " ");
+                jpqlBuilder.append(Filtro.BETWEEN);
+                jpqlBuilder.append(" :valor" + i + "A");
+                jpqlBuilder.append(" AND ");
+                jpqlBuilder.append(" :valor" + i + "B");
+            } else if (f.getOperadorRelacional().equals(Filtro.IN)) {
 
-            jpqlBuilder.append(" ")
-                    .append(f.getOperadorLogico())
-                    .append((f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional());
-            if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)){
+            } else if (f.getOperadorRelacional().equals(Filtro.LIKE) && f.getValor().getClass() == String.class) {
+                jpqlBuilder.append(" LOWER(o." + f.getAtributo() + ") ");
+                jpqlBuilder.append(Filtro.LIKE);
+                jpqlBuilder.append(" :valor").append(i);
+            } else {
+                jpqlBuilder.append(" o." + f.getAtributo() + " ");
+                jpqlBuilder.append(f.getOperadorRelacional());
                 jpqlBuilder.append(" :valor").append(i);
             }
+
         }
         jpql = jpqlBuilder.toString();
         QueryUtil queryUtil = new QueryUtil();
@@ -531,17 +553,19 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         int i = 0;
         for (Filtro f : filters) {
             i++;
-            if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)){
-                if (f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) {
-                    query.setParameter("valor" + i, "%" + String.valueOf(f.getValor()).trim().toLowerCase() + "%");
-                } else if (f.getValor().getClass() == String.class) {
-                    query.setParameter("valor" + i, String.valueOf(f.getValor()).trim());
 
-                } else {
-                    query.setParameter("valor" + i, f.getValor());
-                }
+            if (f.getOperadorRelacional().equals(Filtro.NAO_NULO)) {
+
+            } else if (f.getOperadorRelacional().equals(Filtro.BETWEEN)) {
+                query.setParameter("valor" + i + "A", f.getValores()[0]);
+                query.setParameter("valor" + i + "B", f.getValores()[1]);
+            } else if (f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) {
+                query.setParameter("valor" + i, "%" + String.valueOf(f.getValor()).trim().toLowerCase() + "%");
+            } else if (f.getValor().getClass() == String.class) {
+                query.setParameter("valor" + i, String.valueOf(f.getValor()).trim());
+            } else {
+                query.setParameter("valor" + i, f.getValor());
             }
-
         }
         return query;
     }
