@@ -3,6 +3,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="./WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html">
 
@@ -63,12 +64,72 @@
 
         </style>
     </ui:define>
+    <ui:define name="title">
+        Home
+    </ui:define>
 
+    <ui:define name="tela">
+        DashBoard
+    </ui:define>
+    <ui:define name="controle">
+        Dashboard
+    </ui:define>
     <ui:define name="telaInclusaoAlteracao">
         <div class="ibox-content">
-            <div class="row">
 
-            </div>
+            <h:panelGroup layout="block" class="row" id="financeiro">
+                <h:inputHidden id="reusumoContas" value="#{homeControll.jsonResumoContas}"/>
+
+                <div class="col-md-4">
+
+                    <h3 style="font-weight: bold;margin-bottom: 20px">Contas a Pagar/Receber pagas no mês</h3>
+                    <div id="chartResumo"></div>
+
+                </div>
+                <div class="col-md-4">
+                    <h3 style="font-weight: bold;margin-bottom: 20px">Contas a Pagar/Receber vencidas no mês</h3>
+
+                    <div id="chartResumo2"></div>
+
+                </div>
+                <div class="col-md-4">
+                    <h3 style="font-weight: bold;margin-bottom: 20px">Contas a Pagar/Receber a vencer com 7 dias</h3>
+
+                    <div id="chartResumo3"></div>
+
+                </div>
+            </h:panelGroup>
+            <h:panelGroup layout="block" class="row" id="vendas">
+
+            </h:panelGroup>
+
+            <h:panelGroup layout="block" class="row" id="pessoal">
+                <div class="col-md-12">
+                    <h3 style="font-weight: bold;margin-bottom: 20px">Compromissos</h3>
+                    <p:dataTable id="dataTableCompromisso" var="obj"
+                                 value="#{homeControll.compromissos}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
+                                 resizableColumns="true" paginatorPosition="bottom">
+
+
+                        <p:column headerText="Data" width="100">
+                            <h:outputLabel value="#{obj.dataCompromisso}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Hora" width="80">
+                            <h:outputLabel value="#{obj.hora}"/>
+                        </p:column>
+                        <p:column headerText="Descrição">
+                            <h:outputLabel value="#{obj.descricao}"/>
+                        </p:column>
+                        <p:column headerText="Local">
+                            <h:outputLabel value="#{obj.onde}"/>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+            </h:panelGroup>
 
             <div class="row">
                 <div id="dock-container">
@@ -130,6 +191,106 @@
         <div class="ibox-footer">
 
         </div>
+    </ui:define>
+
+    <ui:define name="javaScript">
+        <h:outputScript library="js" name="vendor/c3charts/d3.min.js"/>
+        <h:outputScript library="js" name="vendor/c3charts/c3.min.js"/>
+        <script type="application/javascript">
+
+            var local = d3.locale({
+                "decimal": ",",
+                "thousands": ".",
+                "grouping": [3],
+                "currency": ["R$", ""],
+                "dateTime": "%d/%m/%Y %H:%M:%S",
+                "date": "%d/%m/%Y",
+                "time": "%H:%M:%S",
+                "periods": ["AM", "PM"],
+                "days": ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+                "shortDays": ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+                "months": ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+                "shortMonths": ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+            });
+            var formatter = local.numberFormat;
+
+            $(document).ready(function () {
+                gerarGrafico();
+            });
+
+            function gerarGrafico() {
+                var resumoContas = $(PrimeFaces.escapeClientId('formCentro:reusumoContas')).val();
+                var jsonResumoContas;
+                if (resumoContas) {
+                    jsonResumoContas = $.parseJSON(resumoContas);
+
+                    var quitadas = [];
+                    var vencidas = [];
+                    var avencer = [];
+
+
+                    jsonResumoContas.forEach(function (e) {
+
+                        var quitada;
+                        var vencida;
+                        var vencer;
+                        if (e.viewResumoContas.tipo === 'P') {
+
+                            quitada = {"descricao": "DESPESAS", Despesa: e.viewResumoContas.valorQuitado};
+                            vencida = {"descricao": "DESPESAS", Despesa: e.viewResumoContas.totalQuita};
+                            vencer = {"descricao": "DESPESAS", Despesa: e.viewResumoContas.totalQuita7Dias};
+                        } else {
+
+                            quitada = {"descricao": "RECEITAS", Receita: e.viewResumoContas.valorQuitado};
+                            vencida = {"descricao": "RECEITAS", Receita: e.viewResumoContas.totalQuita};
+                            vencer = {"descricao": "RECEITAS", Receita: e.viewResumoContas.totalQuita7Dias};
+                        }
+                        quitadas.push(quitada);
+                        vencidas.push(vencida);
+                        avencer.push(vencer);
+                    });
+                    montarGraficoContas(quitadas, ["Despesa", "Receita"], '#chartResumo');
+                    montarGraficoContas(vencidas, ["Despesa", "Receita"], '#chartResumo2');
+                    montarGraficoContas(avencer, ["Despesa", "Receita"], '#chartResumo3');
+                }
+
+            }
+
+            function montarGraficoContas(valores, valueKey, grafico) {
+
+
+                chart = c3.generate({
+                    padding: {
+                        top: 10
+
+                    },
+                    bindto: grafico,
+                    data: {
+                        json: valores,
+                        keys: {
+                            x: 'descricao',
+                            value: valueKey,
+                        },
+                        type: 'bar'
+                    },
+                    axis: {
+                        x: {
+                            type: 'category'
+                        },
+                        y: {tick: {count: 10, format: formatter(',.2f')}}
+                    },
+                    bar: {
+                        width: {
+                            ratio: 0.5
+                        }
+                    }
+                });
+
+            }
+
+        </script>
+
+
     </ui:define>
 
 </ui:composition>

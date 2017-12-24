@@ -1,6 +1,11 @@
 
 package com.chronos.modelo.entidades.view;
 
+import com.chronos.modelo.entidades.Cliente;
+import com.chronos.modelo.entidades.Pessoa;
+import com.chronos.modelo.entidades.PessoaFisica;
+import com.chronos.modelo.entidades.PessoaJuridica;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -79,6 +84,11 @@ public class PessoaCliente implements Serializable {
     private String cpfCnpj;
     @Column(name = "RG_IE")
     private String rgIe;
+    @Transient
+    private Pessoa pessoa;
+    @Transient
+    private Cliente cliente;
+
 
     public PessoaCliente() {
     }
@@ -92,7 +102,23 @@ public class PessoaCliente implements Serializable {
         this.nome = nome;
         this.cpfCnpj = cpfCnpj;
         this.tipo = tipo;
+
+        this.pessoa = new Pessoa(id, nome);
+
     }
+
+    public PessoaCliente(Integer id, String nome, String cpfCnpj, String tipo) {
+        this.id = id;
+        this.tipo = tipo;
+        this.nome = nome;
+        this.cpfCnpj = cpfCnpj;
+
+
+        this.pessoa = new Pessoa(id, nome);
+        instanciaTipoPessoa();
+
+    }
+
 
     public int getId() {
         return id;
@@ -333,8 +359,26 @@ public class PessoaCliente implements Serializable {
     public void setRgIe(String rgIe) {
         this.rgIe = rgIe;
     }
- 
-    
+
+    public Pessoa getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
+    }
+
+
+    private void instanciaTipoPessoa() {
+        if (this.tipo.equals("F")) {
+            this.pessoa.setPessoaFisica(new PessoaFisica());
+            this.pessoa.getPessoaFisica().setCpf(this.cpfCnpj);
+        } else {
+            this.pessoa.setPessoaJuridica(new PessoaJuridica());
+            this.pessoa.getPessoaJuridica().setCnpj(this.cpfCnpj);
+        }
+    }
+
     @Override
     public String toString() {
         return nome;

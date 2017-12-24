@@ -66,7 +66,20 @@ public class FornecedorService implements Serializable {
         pessoa.setListaEmpresa(new HashSet<>());
         pessoa.getListaEmpresa().add(empresa);
 
-        pessoa = pessoa.getTipo().equals("F") ? instanciaPessoaFisica(pessoa) : instanciaPessoaJuridica(pessoa);
+
+        if (pessoa.getTipo().equals("F")) {
+            pessoa = instanciaPessoaFisica(pessoa);
+            pessoa.getPessoaFisica().setCpf(emitente.getCpfCnpj());
+        } else {
+            pessoa = instanciaPessoaJuridica(pessoa);
+            pessoa.getPessoaJuridica().setCnpj(emitente.getCpfCnpj());
+            pessoa.getPessoaJuridica().setCrt(emitente.getCrt());
+            pessoa.getPessoaJuridica().setFantasia(emitente.getFantasia());
+            pessoa.getPessoaJuridica().setInscricaoEstadual(emitente.getInscricaoEstadual());
+            pessoa.getPessoaJuridica().setInscricaoMunicipal(emitente.getInscricaoMunicipal());
+            pessoa.getPessoaJuridica().setSuframa(emitente.getSuframa() + "");
+
+        }
 
         end.setPessoa(pessoa);
 

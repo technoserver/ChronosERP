@@ -208,7 +208,7 @@ public class Seguranca {
     }
 
     public boolean isUserSpedFiscal() {
-        return FacesUtil.isUserInRole("SPED_FISCAL");
+        return FacesUtil.isUserInRole("SPED");
     }
 
     public boolean isUserSpedContribuicoes() {

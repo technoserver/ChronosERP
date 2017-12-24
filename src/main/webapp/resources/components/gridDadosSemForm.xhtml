@@ -4,8 +4,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:cc="http://java.sun.com/jsf/composite"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:erp="http://xmlns.jcp.org/jsf/composite/components"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 <!-- INTERFACE -->
@@ -41,7 +39,6 @@
             </p:commandLink>
             &nbsp;
             <p:commandLink title="Excluir" action="#{cc.attrs.controller.remover()}"
-                           style="position: relative; right: 7px"
                            update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                            process="#{cc.attrs.idDataTable}"
                            oncomplete="atualizarMsg();"

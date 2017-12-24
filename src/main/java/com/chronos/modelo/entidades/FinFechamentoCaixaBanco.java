@@ -170,10 +170,6 @@ public class FinFechamentoCaixaBanco implements Serializable {
         this.contaCaixa = contaCaixa;
     }
 
-    @Override
-    public String toString() {
-        return id.toString();
-    }
 
     @Override
     public int hashCode() {

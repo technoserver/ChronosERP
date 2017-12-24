@@ -57,7 +57,7 @@
                                   nomeAtributo="#{tributOperacaoFiscalControll.objeto.cfop}"
                 />
                 <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                                 idComponente="controlarEstoqueVerificado" label="Estouque Verificado"
+                                 idComponente="controlarEstoqueVerificado" label="Estoque Verificado"
                                  itens="#{tributOperacaoFiscalControll.controla}"
                                  nomeAtributo="#{tributOperacaoFiscalControll.objeto.estoqueVerificado}"/>
 
@@ -84,7 +84,12 @@
 
             </div>
             <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="controlarEstoque" label="Estoque"
+                                 itens="#{tributOperacaoFiscalControll.controla}"
+                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.estoque}"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-4"
                                 idComponente="descricao" label="Descrição :"
                                 nomeAtributo="#{tributOperacaoFiscalControll.objeto.descricao}"
                                 tamanhoMaximo="100"/>

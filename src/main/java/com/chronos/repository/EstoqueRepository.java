@@ -20,47 +20,9 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     private static final long serialVersionUID = 1L;
 
-
-    public void atualizaEstoque(List<NfeDetalhe> listaNfeDetalhe) throws Exception {
-        for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
-            atualizaEstoque(nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
-        }
-    }
-
-    public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
-        for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
-            atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
-        }
-    }
-
-    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, List<VendaDetalhe> itens) throws Exception {
-        for (VendaDetalhe item : itens) {
-            atualizaEstoqueEmpresaControle(idEmpresa, item.getProduto().getId(), item.getQuantidade().negate());
-        }
-    }
-
-
-
-
-    public void atualizaEstoque(Integer idProduto, BigDecimal quantidade) throws Exception {
-        //atualiza tabela PRODUTO
-        String jpql = "UPDATE Produto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.id = :id";
-        // update(jpql, idProduto, quantidade);
-    }
-
-
-    public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
-
-        String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
-        //  execute(jpql, quantidade, idProduto, idEmpresa);
-
-        // String jpql = "UPDATE Produto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.id = :id";
-
-        TypedQuery query = (TypedQuery) em.createQuery(jpql);
-        query.setParameter("quantidade", quantidade);
-        query.setParameter("idproduto", idProduto);
-        query.setParameter("idempresa", idEmpresa);
-        query.executeUpdate();
+    public void atualizarPrecoProduto(int idproduto, BigDecimal valor) throws Exception {
+        String jpql = "UPDATE Produto p SET p.valorVenda = ?1 where p.id =?2";
+        execute(jpql, valor, idproduto);
 
     }
 
@@ -71,24 +33,68 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         execute(jpql, quantidade, idProduto, idEmpresa);
     }
 
-    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
 
-        String jpql = "UPDATE EmpresaProduto p set p.estoqueVerificado = p.estoqueVerificado + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
-        //  execute(jpql, quantidade, idProduto, idEmpresa);
+    public void atualizaEstoqueVerificado(Integer idEmpresa, List<VendaDetalhe> itens) throws Exception {
+        for (VendaDetalhe item : itens) {
+            atualizaEstoqueEmpresaControle(idEmpresa, item.getProduto().getId(), item.getQuantidade().negate());
+        }
+    }
 
-        // String jpql = "UPDATE Produto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.id = :id";
+    public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+        for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
+            atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+        }
+    }
 
-        TypedQuery query = (TypedQuery) em.createQuery(jpql);
-        query.setParameter("quantidade", quantidade);
-        query.setParameter("idproduto", idProduto);
-        query.setParameter("idempresa", idEmpresa);
-        query.executeUpdate();
+    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+        for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
+            atualizaEstoqueEmpresaControle(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+        }
+    }
+
+    public void atualizaEstoqueEmpresaControleFiscal(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+        for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
+            atualizaEstoqueEmpresaControleFiscal(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+        }
+    }
+
+
+    public void teste() {
 
     }
 
-    public List<NfeDetalhe> getItens(NfeCabecalho nfeCabecalho) throws Exception {
+    public void teste(int id) {
 
-        //  abrirConexao();
+    }
+
+
+
+    public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+
+        String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
+
+        executarQueryEstoque(idEmpresa, idProduto, quantidade, jpql);
+
+    }
+
+    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+
+        String jpql = "UPDATE EmpresaProduto p set p.estoqueVerificado = p.estoqueVerificado + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
+
+        executarQueryEstoque(idEmpresa, idProduto, quantidade, jpql);
+
+    }
+
+    public void atualizaEstoqueEmpresaControleFiscal(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+
+        String jpql = "UPDATE EmpresaProduto p set p.estoqueVerificado = p.estoqueVerificado + :quantidade,p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
+
+        executarQueryEstoque(idEmpresa, idProduto, quantidade, jpql);
+
+    }
+
+
+    public List<NfeDetalhe> getItens(NfeCabecalho nfeCabecalho) throws Exception {
         String jpql = "SELECT NEW NfeDetalhe (o.id, o.produto, o.quantidadeComercial) FROM NfeDetalhe o WHERE o.nfeCabecalho.id = ?1";
         List<NfeDetalhe> itens = getEntity(NfeDetalhe.class, jpql, nfeCabecalho.getId());
         return itens;
@@ -113,11 +119,6 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     }
 
-    public void atualizarPrecoProduto(int idproduto, BigDecimal valor) throws Exception {
-        String jpql = "UPDATE Produto p SET p.valorVenda = ?1 where p.id =?2";
-        execute(jpql, valor, idproduto);
-
-    }
 
     public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) throws Exception {
 
@@ -167,6 +168,15 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         List<EstoqueIdealDTO> produtos = getEntity(EstoqueIdealDTO.class, jpql, empresa.getId());
         return produtos;
     }
+
+    private void executarQueryEstoque(Integer idEmpresa, Integer idProduto, BigDecimal quantidade, String jpql) {
+        TypedQuery query = (TypedQuery) em.createQuery(jpql);
+        query.setParameter("quantidade", quantidade);
+        query.setParameter("idproduto", idProduto);
+        query.setParameter("idempresa", idEmpresa);
+        query.executeUpdate();
+    }
+
 
 
 }

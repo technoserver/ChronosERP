@@ -106,121 +106,123 @@
                                 <i class="fa fa-search" style="padding: 3px"></i>
                                 <p:ajax oncomplete="if (!args.validationFailed){gerarGrafico();}"
                                         process="@form"
-                                        update=":formCentro:mensagem,:formCentro:telaGrid:grafico"/>
+                                        update=":formCentro:mensagem,:formCentro:telaGrid:panelGrafico"/>
                             </h:commandLink>
                         </div>
                     </div>
                 </div>
             </div>
             <br/>
-            <h:panelGroup layout="block" id="grafico" class="row"
-                          rendered="#{finFluxoCaixaControll.listaFluxoCaixa.size() > 0}">
-                <h:inputHidden id="despesa" value="#{finFluxoCaixaControll.jsonDespesas}"/>
-                <h:inputHidden id="receitas" value="#{finFluxoCaixaControll.jsonReceitas}"/>
-                <div class="col-md-6">
-                    <h2 style="font-weight: bold">Despesas</h2>
-                    <div id="chartDespesas"></div>
+            <h:panelGroup layout="block" id="panelGrafico">
+                <h:panelGroup layout="block" id="grafico" class="row"
+                              rendered="#{finFluxoCaixaControll.listaFluxoCaixa.size() > 0}">
+                    <h:inputHidden id="despesa" value="#{finFluxoCaixaControll.jsonDespesas}"/>
+                    <h:inputHidden id="receitas" value="#{finFluxoCaixaControll.jsonReceitas}"/>
+                    <div class="col-md-6">
+                        <h2 style="font-weight: bold">Despesas</h2>
+                        <div id="chartDespesas"></div>
 
-                </div>
-                <div class="col-md-6">
-                    <h2 style="font-weight: bold">Receitas</h2>
-                    <div id="chartReceitas"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <h2 style="font-weight: bold">Receitas</h2>
+                        <div id="chartReceitas"></div>
 
-                </div>
-                <div class="col-md-12" style="margin-top: 20px">
-                    <fieldset class="muted" style="padding:0 !important">
-                        <legend>
-                            <h3 class="margin-top-0">
-                                <i class="fa icon-moneybag margin-right-10px"></i>Despesas
-                            </h3>
-                        </legend>
-                        <h:dataTable width="80%" value="#{finFluxoCaixaControll.tableDespesa.entrySet().toArray()}"
-                                     var="entry"
-                                     cellpadding="5" cellspacing="0" class="margin-bottom-10px"
-                                     columnClasses="col,colValorDespesas">
-                            <h:column>
-                                <h4>#{entry.key}</h4>
-                            </h:column>
-                            <h:column>
-                                <h4>R$
-                                    #{entry.key eq 'TOTAL'?'':'-'}
-                                    <h:outputLabel value="#{entry.value}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                                    </h:outputLabel>
-                                </h4>
-                            </h:column>
-                        </h:dataTable>
-                    </fieldset>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 20px">
+                        <fieldset class="muted" style="padding:0 !important">
+                            <legend>
+                                <h3 class="margin-top-0">
+                                    <i class="fa icon-moneybag margin-right-10px"></i>Despesas
+                                </h3>
+                            </legend>
+                            <h:dataTable width="80%" value="#{finFluxoCaixaControll.tableDespesa.entrySet().toArray()}"
+                                         var="entry"
+                                         cellpadding="5" cellspacing="0" class="margin-bottom-10px"
+                                         columnClasses="col,colValorDespesas">
+                                <h:column>
+                                    <h4>#{entry.key}</h4>
+                                </h:column>
+                                <h:column>
+                                    <h4>R$
+                                        #{entry.key eq 'TOTAL'?'':'-'}
+                                        <h:outputLabel value="#{entry.value}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputLabel>
+                                    </h4>
+                                </h:column>
+                            </h:dataTable>
+                        </fieldset>
 
-                </div>
-                <div class="col-md-12" style="margin-top: 20px">
-                    <fieldset class="muted" style="padding:0 !important">
-                        <legend>
-                            <h3 class="margin-top-0">
-                                <i class="fa icon-moneybag margin-right-10px"></i>Receitas
-                            </h3>
-                        </legend>
-                        <h:dataTable width="80%" value="#{finFluxoCaixaControll.tableReceita.entrySet().toArray()}"
-                                     var="entry"
-                                     cellpadding="5" cellspacing="0" columnClasses="col,colValorReceitas">
-                            <h:column>
-                                <h4>#{entry.key}</h4>
-                            </h:column>
-                            <h:column>
-                                <h4>R$
-                                    #{entry.key eq 'TOTAL'?'':'-'}
-                                    <h:outputLabel value="#{entry.value}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                                    </h:outputLabel>
-                                </h4>
-                            </h:column>
-                        </h:dataTable>
-                    </fieldset>
-                </div>
-                <div class="col-md-12" style="margin-top: 20px">
-                    <fieldset class="muted" style="padding:0 !important">
-                        <legend>
-                            <h3 class="margin-top-0">
-                                <i class="fa icon-moneybag margin-right-10px"></i>Detalhamento
-                            </h3>
-                        </legend>
-                        <table width="80%" cellpadding="5" cellspacing="0" class="margin-bottom-10px">
-                            <thead>
-                            <tr class="header-detalhe">
-                                <th>Périodo</th>
-                                <th style="text-align: right">Entrada</th>
-                                <th style="text-align: right">Saidas</th>
-                                <th style="text-align: right">Saldo</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>
-                                    <h:outputText value="#{finFluxoCaixaControll.periodo}">
-                                        <f:convertDateTime pattern="MMM yyyy"/>
-                                    </h:outputText>
-                                </td>
-                                <td class="colValorReceitas">
-                                    <h:outputText value="#{finFluxoCaixaControll.entradas}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                                    </h:outputText>
-                                </td>
-                                <td class="colValorDespesas">
-                                    -
-                                    <h:outputText value="#{finFluxoCaixaControll.saidas}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                                    </h:outputText>
-                                </td>
-                                <td class="#{finFluxoCaixaControll.saldo.signum() le 0?'colValorDespesas':'colValorReceitas'}">
-                                    <h:outputText value="#{finFluxoCaixaControll.saldo}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                                    </h:outputText>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </fieldset>
-                </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 20px">
+                        <fieldset class="muted" style="padding:0 !important">
+                            <legend>
+                                <h3 class="margin-top-0">
+                                    <i class="fa icon-moneybag margin-right-10px"></i>Receitas
+                                </h3>
+                            </legend>
+                            <h:dataTable width="80%" value="#{finFluxoCaixaControll.tableReceita.entrySet().toArray()}"
+                                         var="entry"
+                                         cellpadding="5" cellspacing="0" columnClasses="col,colValorReceitas">
+                                <h:column>
+                                    <h4>#{entry.key}</h4>
+                                </h:column>
+                                <h:column>
+                                    <h4>R$
+                                        #{entry.key eq 'TOTAL'?'':'-'}
+                                        <h:outputLabel value="#{entry.value}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputLabel>
+                                    </h4>
+                                </h:column>
+                            </h:dataTable>
+                        </fieldset>
+                    </div>
+                    <div class="col-md-12" style="margin-top: 20px">
+                        <fieldset class="muted" style="padding:0 !important">
+                            <legend>
+                                <h3 class="margin-top-0">
+                                    <i class="fa icon-moneybag margin-right-10px"></i>Detalhamento
+                                </h3>
+                            </legend>
+                            <table width="80%" cellpadding="5" cellspacing="0" class="margin-bottom-10px">
+                                <thead>
+                                <tr class="header-detalhe">
+                                    <th>Périodo</th>
+                                    <th style="text-align: right">Entrada</th>
+                                    <th style="text-align: right">Saidas</th>
+                                    <th style="text-align: right">Saldo</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        <h:outputText value="#{finFluxoCaixaControll.periodo}">
+                                            <f:convertDateTime pattern="MMM yyyy"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td class="colValorReceitas">
+                                        <h:outputText value="#{finFluxoCaixaControll.entradas}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td class="colValorDespesas">
+                                        -
+                                        <h:outputText value="#{finFluxoCaixaControll.saidas}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td class="#{finFluxoCaixaControll.saldo.signum() le 0?'colValorDespesas':'colValorReceitas'}">
+                                        <h:outputText value="#{finFluxoCaixaControll.saldo}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </fieldset>
+                    </div>
+                </h:panelGroup>
             </h:panelGroup>
 
 
@@ -234,6 +236,22 @@
         <h:outputScript library="js" name="vendor/c3charts/c3.min.js"/>
 
         <script type="application/javascript">
+
+            var local = d3.locale({
+                "decimal": ",",
+                "thousands": ".",
+                "grouping": [3],
+                "currency": ["R$", ""],
+                "dateTime": "%d/%m/%Y %H:%M:%S",
+                "date": "%d/%m/%Y",
+                "time": "%H:%M:%S",
+                "periods": ["AM", "PM"],
+                "days": ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+                "shortDays": ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+                "months": ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+                "shortMonths": ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+            });
+            var formatter = local.numberFormat;
 
             function gerarGrafico() {
 

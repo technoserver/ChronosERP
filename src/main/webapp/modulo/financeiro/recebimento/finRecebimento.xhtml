@@ -52,6 +52,10 @@
             .red_color {
                 background-color: #f2dede !important;
             }
+
+            .red_color.ui-state-highlight {
+                background-color: #00acac !important;
+            }
         </style>
     </ui:define>
 
@@ -290,6 +294,101 @@
             </p:confirmDialog>
         </h:form>
     </ui:define>
+
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+
+            <p:dialog id="dialogFinChequeRecebido" header="Emissão de Cheque"
+                      widgetVar="dialogFinChequeRecebido" showEffect="slide" responsive="true"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="600"
+            >
+
+                <p:outputPanel id="panelFinChequeRecebido">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-8 col-md-8"
+                                          label="Cliente"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{finRecebimentoControll}"
+                                          completeMethod="getListaPessoa"
+                                          nomeAtributo="#{finRecebimentoControll.finChequeRecebido.pessoa}"
+                                          idComponente="finChequeRecebidoPessoa">
+
+                            <p:ajax event="itemSelecionado"
+                                    listener="#{finRecebimentoControll.onSelecionaPessoa}"
+                                    update=":formOutrasTelas2:panelFinChequeRecebido"/>
+
+                        </erp:autoComplete>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="finChequeRecebidoCpfCnpj" label="Cpf Cnpj"
+                                        nomeAtributo="#{finRecebimentoControll.finChequeRecebido.cpfCnpj}"
+                                        tamanhoMaximo="14" somenteLeitura="true"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="finChequeRecebidoCodigoBanco" label="Codigo Banco"
+                                        nomeAtributo="#{finRecebimentoControll.finChequeRecebido.codigoBanco}"
+                                        tamanhoMaximo="10" requerido="true"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="finChequeRecebidoCodigoAgencia"
+                                        label="Codigo Agencia"
+                                        nomeAtributo="#{finRecebimentoControll.finChequeRecebido.codigoAgencia}"
+                                        tamanhoMaximo="10" requerido="true"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="finChequeRecebidoConta" label="Conta"
+                                        nomeAtributo="#{finRecebimentoControll.finChequeRecebido.conta}"
+                                        tamanhoMaximo="20" requerido="true"/>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="finChequeRecebidoNumero" label="Numero"
+                                          nomeAtributo="#{finRecebimentoControll.finChequeRecebido.numero}"
+                                          requerido="true"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="finChequeRecebidoValor" label="Valor"
+                                          nomeAtributo="#{finRecebimentoControll.finChequeRecebido.valor}"
+                                          requerido="true"/>
+
+                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                       idComponente="finChequeRecebidoDataEmissao" label="Data Emissao"
+                                       nomeAtributo="#{finRecebimentoControll.finChequeRecebido.dataEmissao}"
+                                       requerido="true"/>
+                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                       idComponente="finChequeRecebidoBomPara" label="Bom Para"
+                                       nomeAtributo="#{finRecebimentoControll.finChequeRecebido.bomPara}"
+                                       requerido="true"/>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             actionListener="#{finRecebimentoControll.finalizaRecebimentoCheque()}">
+                                <p:ajax process="@form"
+                                        oncomplete="if (!args.validationFailed) {PF('dialogFinChequeRecebido').hide();}"
+                                        update=":formOutrasTelas2:panelFinChequeRecebido,:formCentro:growl,:formCentro:panelRecebimento,:formCentro:dataTableParcelas"
+                                />
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             actionListener="#{finParcelaPagamentoControll.cancelaPagamentoCheque()}"
+                            >
+                                <p:ajax process="@this"
+                                        update="dialogFinChequeRecebido"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
     <ui:define name="javaScript">
         <script type="application/javascript">
             $(document).ready(function () {

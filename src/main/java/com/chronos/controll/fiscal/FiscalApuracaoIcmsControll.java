@@ -104,18 +104,26 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
 
             // REGISTRO C190: REGISTRO ANALÍTICO DO DOCUMENTO (CÓDIGO 01, 1B, 04 ,55 e 65).
             List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND, "viewSpedC190.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio.getTime()));
-            filtros.add(new Filtro(Filtro.AND, "viewSpedC190.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim.getTime()));
+
+            filtros.add(new Filtro(Filtro.AND, "viewSpedC190.dataEmissao", Filtro.BETWEEN, new Object[]{dataInicio, dataFim}));
+
+
+            String sql = "SELECT o FROM com.chronos.modelo.entidades.view.ViewSpedC190Id o  WHERE 1 = 1 AND o.viewSpedC190.dataEmissao  BETWEEN ?1 AND  :?2";
 
             List<ViewSpedC190Id> listaNfeAnalitico = viewSpedC190IdRepository.getEntitys(ViewSpedC190Id.class, filtros);
-            for (int i = 0; i < listaNfeAnalitico.size(); i++) {
-                valorTotalDebitos = valorTotalDebitos.add(listaNfeAnalitico.get(i).getViewSpedC190().getSomaValorIcms());
+
+            for (ViewSpedC190Id item : listaNfeAnalitico) {
+
+
+                valorTotalDebitos = valorTotalDebitos.add(item.getViewSpedC190().getSomaValorIcms());
+
             }
+
 
             // REGISTRO C390: REGISTRO ANALÍTICO DAS NOTAS FISCAIS DE VENDA A CONSUMIDOR (CÓDIGO 02)
             filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio.getTime()));
-            filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim.getTime()));
+            filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
+            filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
             List<ViewSpedC390Id> listaC390 = viewSpedC390IdRepository.getEntitys(ViewSpedC390Id.class, filtros);
             for (int i = 0; i < listaC390.size(); i++) {
                 valorTotalDebitos = valorTotalDebitos.add(listaC390.get(i).getViewC390().getSomaIcms());
@@ -123,8 +131,8 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
 
             // REGISTRO C490: REGISTRO ANALÍTICO DO MOVIMENTO DIÁRIO (CÓDIGO 02, 2D e 60).
             filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND, "viewC490.dataVenda", Filtro.MAIOR_OU_IGUAL, dataInicio.getTime()));
-            filtros.add(new Filtro(Filtro.AND, "viewC490.dataVenda", Filtro.MENOR_OU_IGUAL, dataFim.getTime()));
+            filtros.add(new Filtro(Filtro.AND, "viewC490.dataVenda", Filtro.MAIOR_OU_IGUAL, dataInicio));
+            filtros.add(new Filtro(Filtro.AND, "viewC490.dataVenda", Filtro.MENOR_OU_IGUAL, dataFim));
             List<ViewSpedC490Id> listaC490 = viewSpedC490IdRepository.getEntitys(ViewSpedC490Id.class, filtros);
             for (int i = 0; i < listaC490.size(); i++) {
                 valorTotalDebitos = valorTotalDebitos.add(listaC490.get(i).getViewC490().getSomaIcms());
@@ -198,6 +206,7 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
 
             salvar("Apuração realizada.");
         } catch (Exception e) {
+            e.printStackTrace();
             Mensagem.addErrorMessage("Erro ao carregar os dados!", e);
 
         }

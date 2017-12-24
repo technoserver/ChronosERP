@@ -1,7 +1,10 @@
 
 package com.chronos.modelo.entidades.view;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -10,7 +13,7 @@ import java.util.Objects;
 @Embeddable
 public class ViewSpedC190 implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Basic(optional = false)
+
     @Column(name = "ID")
     private int id;
     @Column(name = "CST_ICMS")
@@ -19,7 +22,7 @@ public class ViewSpedC190 implements Serializable {
     private Integer cfop;
     @Column(name = "ALIQUOTA_ICMS")
     private BigDecimal aliquotaIcms;
-    @Column(name = "DATA_HORA_EMISSAO")
+    @Column(name = "data_emissao")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dataEmissao;
     @Column(name = "SOMA_VALOR_OPERACAO")

@@ -59,6 +59,13 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
         getObjeto().setEmpresa(empresa);
     }
 
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        TributOperacaoFiscal operacao = dao.get(getObjeto().getId(), TributOperacaoFiscal.class);
+        setObjeto(operacao);
+    }
+
     @Transactional
     @Override
     public void salvar() {
@@ -88,7 +95,7 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
         if (!getObjeto().getDestacaPisCofins()) {
             cofinsRepository.excluir(TributCofinsCodApuracao.class, "tributOperacaoFiscal.id", getObjeto().getId());
         }
-        if (!getObjeto().getCalculoInss()) {
+        if (!getObjeto().getCalculoIssqn()) {
             issRepository.excluir(TributIss.class, "tributOperacaoFiscal.id", getObjeto().getId());
         }
         if (!getObjeto().getObrigacaoFiscal()) {

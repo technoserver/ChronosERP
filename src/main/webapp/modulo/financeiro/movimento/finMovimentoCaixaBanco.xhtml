@@ -80,9 +80,9 @@
                                     <div class="row">
                                         <div class="col-xs-12 col-md-12">
                                             <p:commandButton styleClass="m-b"
-                                                             process="formCentro:dataTableFinMovimentoCaixaBancoDetalhe"
+                                                             process="formCentro:dataTableFinMovimentoCaixaBancoDetalhe,@this"
                                                              title="Processar Fechamento" value="Realizar Fechamento"
-                                                             actionListener="#{finMovimentoCaixaBancoControll.processaFechamento}"
+                                                             action="#{finMovimentoCaixaBancoControll.processaFechamento}"
                                                              update=":formCentro:outputPanelDetalhe">
                                                 <p:confirm header="Confirmação"
                                                            message="Confirma o fechamento do movimento?"

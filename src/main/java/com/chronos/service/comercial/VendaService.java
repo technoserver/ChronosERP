@@ -53,7 +53,7 @@ public class VendaService implements Serializable {
             VendaCondicoesPagamento condicao = venda.getCondicoesPagamento();
             venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
             venda = repository.atualizar(venda);
-            estoqueRepositoy.atualizaEstoqueEmpresaControle(venda.getEmpresa().getId(), venda.getListaVendaDetalhe());
+            estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), venda.getListaVendaDetalhe());
             finLancamentoReceberService.gerarLancamento(venda.getValorTotal(), venda.getCliente(),
                     new DecimalFormat("VD0000000").format(venda.getId()), condicao, Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
 

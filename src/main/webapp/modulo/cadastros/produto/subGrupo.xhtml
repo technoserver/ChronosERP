@@ -34,7 +34,7 @@
             <p:column headerText="Descricao">
                 <h:outputLabel value="#{row.descricao}"/>
             </p:column>
-            <p:column headerText="Grupo">
+            <p:column headerText="Grupo" sortBy="#{row.produtoGrupo.nome}">
                 <h:outputLabel value="#{row.produtoGrupo.nome}"/>
             </p:column>
 

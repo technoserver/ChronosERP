@@ -88,7 +88,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             dataModel.setDao(dao);
             dataModel.setClazz(NfeCabecalho.class);
         }
-        dataModel.setAtributos(new Object[]{"cliente", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
+        dataModel.setAtributos(new Object[]{"cliente.pessoa.nome", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
         dataModel.getFiltros().clear();
         dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);

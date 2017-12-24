@@ -131,4 +131,11 @@ public class Filtro implements Serializable {
         this.valor = valor;
     }
 
+    public Object[] getValores() {
+        return valores;
+    }
+
+    public void setValores(Object[] valores) {
+        this.valores = valores;
+    }
 }
