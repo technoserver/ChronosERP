@@ -27,7 +27,7 @@
         <!--Sped fiscal-->
         <java-efd-icms.version>2.0.20.0</java-efd-icms.version>
         <!--Sped fiscal-->
-        <java-sped.version>1.0.2</java-sped.version>
+        <java-sped.version>1.0.5</java-sped.version>
         <!--Calculo dos tributos-->
         <chronos-calculoTributario.version>1.0.15</chronos-calculoTributario.version>
         <!--thema-->

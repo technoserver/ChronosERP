@@ -1,18 +1,18 @@
 package com.chronos.service.fiscal;
 
-import com.chronos.infra.efdicms.SpedFiscalIcms;
-import com.chronos.infra.efdicms.bloco1.Registro1010;
-import com.chronos.infra.efdicms.blococ.*;
-import com.chronos.infra.efdicms.blocoe.RegistroE100;
-import com.chronos.infra.efdicms.blocoe.RegistroE110;
-import com.chronos.infra.efdicms.blocoe.RegistroE116;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.view.*;
 import com.chronos.repository.EcfNotaFiscalCabecalhoRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.repository.ViewSpedC425Repository;
+import com.chronos.sped.SpedFiscalIcms;
 import com.chronos.sped.efdicms.bloco0.*;
+import com.chronos.sped.efdicms.bloco1.Registro1010;
+import com.chronos.sped.efdicms.blococ.*;
+import com.chronos.sped.efdicms.blocoe.RegistroE100;
+import com.chronos.sped.efdicms.blocoe.RegistroE110;
+import com.chronos.sped.efdicms.blocoe.RegistroE116;
 import com.chronos.sped.efdicms.blocoh.RegistroH005;
 import com.chronos.sped.efdicms.blocoh.RegistroH010;
 import com.chronos.util.Biblioteca;
@@ -305,6 +305,7 @@ public class SpedIcmsIpiService implements Serializable {
                     registro0200.setCodGen(produto.getNcm().substring(0, 2));
                     registro0200.setCodLst(produto.getCodigoLst());
                     registro0200.setAliqIcms(produto.getAliquotaIcmsPaf());
+                    registro0200.setCest(produto.getCest());
 
 
                     if (!listaUnidadeProduto.contains(produto.getUnidadeProduto())) {
@@ -410,7 +411,7 @@ public class SpedIcmsIpiService implements Serializable {
             RegistroC100 registroC100;
             for (NfeCabecalho nfe : listaNfeCabecalho) {
                 registroC100 = new RegistroC100();
-
+                String modelo = nfe.getCodigoModelo();
                 registroC100.setIndOper(String.valueOf(nfe.getTipoOperacao()));
                 registroC100.setIndEmit("0"); // 0 - Emissao Propria
                 if (nfe.getCliente() != null) {
@@ -510,66 +511,69 @@ public class SpedIcmsIpiService implements Serializable {
                 // Implementado a critério do Participante do T2Ti ERP
                 // REGISTRO C170: ITENS DO DOCUMENTO (CÓDIGO 01, 1B, 04 e 55).
                 RegistroC170 registroC170;
-                for (NfeDetalhe nfeDetalhe : nfe.getListaNfeDetalhe()) {
-                    registroC170 = new RegistroC170();
-                    //info produro
-                    registroC170.setNumItem(nfeDetalhe.getNumeroItem().toString());
-                    registroC170.setCodItem(nfeDetalhe.getGtin());
-                    registroC170.setDescrCompl(nfeDetalhe.getNomeProduto());
-                    registroC170.setQtd(nfeDetalhe.getQuantidadeComercial());
-                    registroC170.setUnid(nfeDetalhe.getProduto().getUnidadeProduto().getId().toString());
-                    registroC170.setVlItem(nfeDetalhe.getValorTotal());
-                    registroC170.setVlDesc(nfeDetalhe.getValorDesconto());
-                    registroC170.setIndMov(0);
-                    //info icms
-                    if (nfeDetalhe.getNfeDetalheImpostoIcms() != null) {
-                        registroC170.setCstIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getCstIcms());
-                        registroC170.setCfop(nfeDetalhe.getCfop().toString());
-                        registroC170.setCodNat(nfeDetalhe.getNfeCabecalho().getTributOperacaoFiscal().getId().toString());
-                        registroC170.setVlBcIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
-                        registroC170.setAliqIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getAliquotaIcms());
-                        registroC170.setVlIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getValorIcms());
-                        registroC170.setVlBcIcmsSt(nfeDetalhe.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
-                        registroC170.setAliqSt(nfeDetalhe.getNfeDetalheImpostoIcms().getAliquotaIcmsSt());
-                        registroC170.setVlIcmsSt(nfeDetalhe.getNfeDetalheImpostoIcms().getValorIcmsSt());
-                        registroC170.setIndApur(0);
+                if (modelo.equals("01") || modelo.equals("1b") || modelo.equals("04") || modelo.equals("55")) {
+                    for (NfeDetalhe nfeDetalhe : nfe.getListaNfeDetalhe()) {
+                        registroC170 = new RegistroC170();
+                        //info produro
+                        registroC170.setNumItem(nfeDetalhe.getNumeroItem().toString());
+                        registroC170.setCodItem(nfeDetalhe.getGtin());
+                        registroC170.setDescrCompl(nfeDetalhe.getNomeProduto());
+                        registroC170.setQtd(nfeDetalhe.getQuantidadeComercial());
+                        registroC170.setUnid(nfeDetalhe.getProduto().getUnidadeProduto().getId().toString());
+                        registroC170.setVlItem(nfeDetalhe.getValorTotal());
+                        registroC170.setVlDesc(nfeDetalhe.getValorDesconto());
+                        registroC170.setIndMov(0);
+                        //info icms
+                        if (nfeDetalhe.getNfeDetalheImpostoIcms() != null) {
+                            registroC170.setCstIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getCstIcms());
+                            registroC170.setCfop(nfeDetalhe.getCfop().toString());
+                            registroC170.setCodNat(nfeDetalhe.getNfeCabecalho().getTributOperacaoFiscal().getId().toString());
+                            registroC170.setVlBcIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
+                            registroC170.setAliqIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getAliquotaIcms());
+                            registroC170.setVlIcms(nfeDetalhe.getNfeDetalheImpostoIcms().getValorIcms());
+                            registroC170.setVlBcIcmsSt(nfeDetalhe.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
+                            registroC170.setAliqSt(nfeDetalhe.getNfeDetalheImpostoIcms().getAliquotaIcmsSt());
+                            registroC170.setVlIcmsSt(nfeDetalhe.getNfeDetalheImpostoIcms().getValorIcmsSt());
+                            registroC170.setIndApur(0);
+                        }
+
+                        //info IPI
+                        if (nfeDetalhe.getNfeDetalheImpostoIpi() != null) {
+                            registroC170.setCstIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getCstIpi());
+                            registroC170.setCodEnq(nfeDetalhe.getNfeDetalheImpostoIpi().getEnquadramentoIpi());
+                            registroC170.setVlBcIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi());
+                            registroC170.setAliqIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getAliquotaIpi());
+                            registroC170.setVlIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getValorIpi());
+                        }
+
+                        //info PIS
+
+                        if (nfeDetalhe.getNfeDetalheImpostoPis() != null) {
+                            registroC170.setCstPis(nfeDetalhe.getNfeDetalheImpostoPis().getCstPis());
+                            registroC170.setVlBcPis(nfeDetalhe.getNfeDetalheImpostoPis().getValorBaseCalculoPis());
+                            registroC170.setAliqPisPerc(nfeDetalhe.getNfeDetalheImpostoPis().getAliquotaPisPercentual());
+                            registroC170.setQuantBcPis(nfeDetalhe.getNfeDetalheImpostoPis().getQuantidadeVendida());
+                            registroC170.setAliqPisR(nfeDetalhe.getNfeDetalheImpostoPis().getAliquotaPisReais());
+                            registroC170.setVlPis(nfeDetalhe.getNfeDetalheImpostoPis().getValorPis());
+                        }
+
+                        //info COFINS
+                        if (nfeDetalhe.getNfeDetalheImpostoCofins() != null) {
+                            registroC170.setCstCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getCstCofins());
+                            registroC170.setVlBcCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getBaseCalculoCofins());
+                            registroC170.setAliqCofinsPerc(nfeDetalhe.getNfeDetalheImpostoCofins().getAliquotaCofinsPercentual());
+                            registroC170.setQuantBcCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getQuantidadeVendida());
+                            registroC170.setAliqCofinsR(nfeDetalhe.getNfeDetalheImpostoCofins().getAliquotaCofinsReais());
+                            registroC170.setVlCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getValorCofins());
+                        }
+
+
+                        registroC170.setCodCta("");
+
+                        registroC100.getRegistroC170List().add(registroC170);
                     }
-
-                    //info IPI
-                    if (nfeDetalhe.getNfeDetalheImpostoIpi() != null) {
-                        registroC170.setCstIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getCstIpi());
-                        registroC170.setCodEnq(nfeDetalhe.getNfeDetalheImpostoIpi().getEnquadramentoIpi());
-                        registroC170.setVlBcIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi());
-                        registroC170.setAliqIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getAliquotaIpi());
-                        registroC170.setVlIpi(nfeDetalhe.getNfeDetalheImpostoIpi().getValorIpi());
-                    }
-
-                    //info PIS
-
-                    if (nfeDetalhe.getNfeDetalheImpostoPis() != null) {
-                        registroC170.setCstPis(nfeDetalhe.getNfeDetalheImpostoPis().getCstPis());
-                        registroC170.setVlBcPis(nfeDetalhe.getNfeDetalheImpostoPis().getValorBaseCalculoPis());
-                        registroC170.setAliqPisPerc(nfeDetalhe.getNfeDetalheImpostoPis().getAliquotaPisPercentual());
-                        registroC170.setQuantBcPis(nfeDetalhe.getNfeDetalheImpostoPis().getQuantidadeVendida());
-                        registroC170.setAliqPisR(nfeDetalhe.getNfeDetalheImpostoPis().getAliquotaPisReais());
-                        registroC170.setVlPis(nfeDetalhe.getNfeDetalheImpostoPis().getValorPis());
-                    }
-
-                    //info COFINS
-                    if (nfeDetalhe.getNfeDetalheImpostoCofins() != null) {
-                        registroC170.setCstCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getCstCofins());
-                        registroC170.setVlBcCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getBaseCalculoCofins());
-                        registroC170.setAliqCofinsPerc(nfeDetalhe.getNfeDetalheImpostoCofins().getAliquotaCofinsPercentual());
-                        registroC170.setQuantBcCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getQuantidadeVendida());
-                        registroC170.setAliqCofinsR(nfeDetalhe.getNfeDetalheImpostoCofins().getAliquotaCofinsReais());
-                        registroC170.setVlCofins(nfeDetalhe.getNfeDetalheImpostoCofins().getValorCofins());
-                    }
-
-
-                    registroC170.setCodCta("");
-
-                    registroC100.getRegistroC170List().add(registroC170);
                 }
+
 
                 // REGISTRO C171: ARMAZENAMENTO DE COMBUSTIVEIS (código 01, 55).
                 // Implementado a critério do Participante do T2Ti ERP
@@ -592,31 +596,34 @@ public class SpedIcmsIpiService implements Serializable {
                 // Implementado a critério do Participante do T2Ti ERP
                 // REGISTRO C179: INFORMAÇÕES COMPLEMENTARES ST (CÓDIGO 01).
                 // Implementado a critério do Participante do T2Ti ERP
-                // REGISTRO C190: REGISTRO ANALÍTICO DO DOCUMENTO (CÓDIGO 01,
-                // 1B, 04 ,55 e 65).
-                List<ViewSpedC190Id> listaNfeAnalitico = viewC190Repository.getEntitys(ViewSpedC190Id.class, "viewSpedC190.id", nfe.getId());
-                RegistroC190 registroC190;
-                for (ViewSpedC190Id s : listaNfeAnalitico) {
-                    registroC190 = new RegistroC190();
-                    if (s != null) {
-                        ViewSpedC190 spedC190 = s.getViewSpedC190();
+                // REGISTRO C190: REGISTRO ANALÍTICO DO DOCUMENTO (CÓDIGO 01,1B, 04 ,55 e 65).
 
-                        registroC190.setCstIcms(spedC190.getCstIcms());
-                        registroC190.setCfop(spedC190.getCfop().toString());
-                        registroC190.setAliqIcms(spedC190.getAliquotaIcms());
-                        registroC190.setVlOpr(spedC190.getSomaValorOperacao());
-                        registroC190.setVlBcIcms(spedC190.getSomaBaseCalculoIcms());
-                        registroC190.setVlIcms(spedC190.getSomaValorIcms());
-                        registroC190.setVlBcIcmsSt(spedC190.getSomaBaseCalculoIcmsSt());
-                        registroC190.setVlIcmsSt(spedC190.getSomaValorIcmsSt());
-                        registroC190.setVlRedBc(spedC190.getSomaVlRedBc());
-                        registroC190.setVlIpi(spedC190.getSomaValorIpi());
-                        registroC190.setCodObs("");
+                if (modelo.equals("01") || modelo.equals("1B") || modelo.equals("04") || modelo.equals("55") || modelo.equals("65")) {
+                    List<ViewSpedC190Id> listaNfeAnalitico = viewC190Repository.getEntitys(ViewSpedC190Id.class, "viewSpedC190.id", nfe.getId());
+                    RegistroC190 registroC190;
+                    for (ViewSpedC190Id s : listaNfeAnalitico) {
+                        registroC190 = new RegistroC190();
+                        if (s != null) {
+                            ViewSpedC190 spedC190 = s.getViewSpedC190();
 
-                        registroC100.getRegistroC190List().add(registroC190);
+                            registroC190.setCstIcms(spedC190.getCstIcms());
+                            registroC190.setCfop(spedC190.getCfop().toString());
+                            registroC190.setAliqIcms(spedC190.getAliquotaIcms());
+                            registroC190.setVlOpr(spedC190.getSomaValorOperacao());
+                            registroC190.setVlBcIcms(spedC190.getSomaBaseCalculoIcms());
+                            registroC190.setVlIcms(spedC190.getSomaValorIcms());
+                            registroC190.setVlBcIcmsSt(spedC190.getSomaBaseCalculoIcmsSt());
+                            registroC190.setVlIcmsSt(spedC190.getSomaValorIcmsSt());
+                            registroC190.setVlRedBc(spedC190.getSomaVlRedBc());
+                            registroC190.setVlIpi(spedC190.getSomaValorIpi());
+                            registroC190.setCodObs("");
+
+                            registroC100.getRegistroC190List().add(registroC190);
+                        }
+
                     }
-
                 }
+
 
                 sped.getBlocoC().getListaRegistroC100().add(registroC100);
 
