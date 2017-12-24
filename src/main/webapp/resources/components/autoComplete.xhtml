@@ -16,6 +16,7 @@
         <cc:attribute name="controller" required="true"/>
         <cc:attribute name="tamanhoMinimo" default="3"/>
         <cc:attribute name="exibirInfo" default="#{false}"/>
+        <cc:attribute name="drop" default="#{false}"/>
         <cc:attribute name="mensangemInfo"/>
         <cc:clientBehavior name="itemSelecionado" targets="#{cc.attrs.idComponente}" event="itemSelect" />
 
@@ -35,6 +36,7 @@
                             completeMethod="#{cc.attrs.controller[cc.attrs.completeMethod]}" var="objeto"
                             itemLabel="#{cc.attrs.itemLabel}" itemValue="#{objeto}"
                             queryDelay="500"
+                            dropdown="#{cc.attrs.drop}"
                             converter="defaultConverter" forceSelection="true"
                             minQueryLength="#{cc.attrs.tamanhoMinimo}" maxResults="10" required="#{cc.attrs.requerido}"
                             style="width: 100%" emptyMessage="Nenhum registro encontrado" >

@@ -172,6 +172,6 @@
     <orderEntry type="library" name="Maven: com.google.zxing:javase:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.chronos.themes:custom-theme:1.0.0" level="project" />
     <orderEntry type="library" name="Maven: com.chronos.calc:ChronosCalcTribut:1.0.15" level="project" />
-    <orderEntry type="library" name="Maven: com.chronos:sped:1.0.2" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos:sped:1.0.5" level="project" />
   </component>
 </module>
