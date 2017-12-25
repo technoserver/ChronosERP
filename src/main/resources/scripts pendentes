@@ -12,7 +12,7 @@ colocar o crt da empresa na populacao dos dados
 cria campo valorTotalTributos em nfecabecalho
 
 
-
+INSERT INTO funcao(nome,formulario) VALUES ('CENTRO DE RESULTADO POR NATUREZA','CENTRO_RESULTADO_NATUREZA');
 
 cria coluna de de data de movimento em movimento_produto
 

@@ -28,6 +28,13 @@ public class CtResultadoNtFinanceira implements Serializable {
     public CtResultadoNtFinanceira() {
     }
 
+
+    public CtResultadoNtFinanceira(Integer id, Integer idnaturezaFinanceira, String naturezaFinanceira, Integer idcentroResultado, String centroResultado) {
+        this.id = id;
+        this.naturezaFinanceira = new NaturezaFinanceira(idnaturezaFinanceira, naturezaFinanceira);
+        this.centroResultado = new CentroResultado(idcentroResultado, centroResultado);
+    }
+
     public Integer getId() {
         return id;
     }

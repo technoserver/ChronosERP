@@ -180,6 +180,30 @@ body .ui-button.default-btn.ui-state-active {
     display: inherit !important;
 }
 
+input {
+    text-transform: uppercase !important;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    text-transform: none !important;
+}
+
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    text-transform: none !important;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    text-transform: none !important;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    text-transform: none !important;
+}
+
+::placeholder { /* Recent browsers */
+    text-transform: none !important;
+}
+
 
 /*
  * Component: Small Box
