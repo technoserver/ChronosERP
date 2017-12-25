@@ -74,7 +74,7 @@
                     </div>
 
                 </h:panelGroup>
-                <div class="wrapper wrapper-content animated fadeInRight">
+                <div class="wrapper wrapper-content animated fadeInRight ui-fluid">
 
 
                     <h:form id="formCentro" style="margin: 0" role="form">
@@ -141,8 +141,30 @@
 
                 $('.hasDatepicker').addClass('form-control');
                 $('.ui-autocomplete-input').addClass('form-control');
-                $('.ui-autocomplete-input').css('width', '100%');
+
+
             });
+
+
+            function printElement(elemento) {
+
+                var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+                mywindow.document.write('<html><head><title>' + document.title + '</title>');
+                mywindow.document.write('</head><body >');
+                mywindow.document.write(document.getElementById(elemento).innerHTML);
+                mywindow.document.write('</body></html>');
+
+                mywindow.document.close(); // necessary for IE >= 10
+                mywindow.focus(); // necessary for IE >= 10*/
+
+                mywindow.print();
+                mywindow.close();
+
+                return true;
+
+                // $(elemento).printElement();
+            }
 
             function addClass() {
                 $('input[type="text"]').addClass('form-control');
@@ -150,7 +172,7 @@
                 $('.hasDatepicker').addClass('form-control');
                 $('.ui-inputnumber input').addClass('form-control');
                 $('.ui-autocomplete-input').addClass('form-control');
-                $('.ui-autocomplete-input').css('width', '100%');
+
                 $('.js-data-table table').addClass("table table-striped table-bordered table-condensed");
             }
 

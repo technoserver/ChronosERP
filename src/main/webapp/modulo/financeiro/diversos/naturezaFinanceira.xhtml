@@ -23,25 +23,91 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{naturezaFinanceiraControll}"
-                       idDataTable="dataTableNaturezaFinanceira"
-                       nomeFuncao="Natureza Financeira"
-                       id="telaGrid"
-                       somenteConsulta="#{(row.id le 66)}">
 
-            <p:column headerText="Classificacao">
-                <h:outputLabel value="#{row.classificacao}"/>
-            </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}"/>
-            </p:column>
-            <p:column headerText="Tipo">
-                <h:outputLabel
-                        value="#{naturezaFinanceiraControll.keyFromValue(naturezaFinanceiraControll.tipoNaturazaFinanceira, row.tipo)}"/>
-            </p:column>
+        <erp:formularioGrid controller="#{naturezaFinanceiraControll}" id="telaGrid">
 
+            <div class="row m-b">
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <p:commandButton value="Imprimir"
+                                     icon="fa fa-print"
+                                     action="#{naturezaFinanceiraControll.buscarNaturezas}"
+                                     oncomplete="printElement('relatorio');"
+                                     update="formCentro:telaGrid:panelRelatorio">
+                    </p:commandButton>
 
-        </erp:gridDados>
+                </div>
+            </div>
+            <erp:gridDadosSemForm controller="#{naturezaFinanceiraControll}"
+                                  idDataTable="dataTableNaturezaFinanceira"
+                                  somenteConsulta="#{(row.id le 66)}">
+                <p:column headerText="Classificacao">
+                    <h:outputLabel value="#{row.classificacao}"/>
+                </p:column>
+                <p:column headerText="Descricao">
+                    <h:outputLabel value="#{row.descricao}"/>
+                </p:column>
+                <p:column headerText="Tipo">
+                    <h:outputLabel
+                            value="#{naturezaFinanceiraControll.keyFromValue(naturezaFinanceiraControll.tipoNaturazaFinanceira, row.tipo)}"/>
+                </p:column>
+            </erp:gridDadosSemForm>
+
+            <div class="row m-t">
+                <h:panelGroup layout="block" id="panelRelatorio">
+
+                    <div id="relatorio" style="display: none">
+                        <div class="col-sm-8 col-md-8"></div>
+                        <div class="col-sm-4 col-md-4">
+                            <p><strong> #{naturezaFinanceiraControll.empresaUsuario.razaoSocial}</strong></p>
+                            <p>
+                                #{naturezaFinanceiraControll.empresaUsuario.buscarEnderecoPrincipal().logradouro},
+                                #{naturezaFinanceiraControll.empresaUsuario.buscarEnderecoPrincipal().numero}
+                                &nbsp;-&nbsp;
+                                #{naturezaFinanceiraControll.empresaUsuario.buscarEnderecoPrincipal().bairro}
+                            </p>
+                            <p>
+                                <strong>CNPJ :&nbsp;</strong>#{naturezaFinanceiraControll.empresaUsuario.cnpj}
+                                <strong>IE :&nbsp;</strong> #{naturezaFinanceiraControll.empresaUsuario.inscricaoEstadual}
+                            </p>
+                            <p>
+                                <strong>Fone :&nbsp;</strong>#{naturezaFinanceiraControll.empresaUsuario.buscarEnderecoPrincipal().fone}
+                            </p>
+                            <p>
+                                <strong>Email :&nbsp;</strong>#{naturezaFinanceiraControll.empresaUsuario.email}
+                            </p>
+                        </div>
+                        <div class="col-sm-12 col-md-12">
+                            <p>
+                                <h2 class="text-center"><strong>Natureza Financeira</strong></h2>
+                            </p>
+                            <table width="100%">
+                                <thead>
+                                <tr>
+                                    <th>Conta</th>
+                                    <th>Descrição</th>
+                                    <th>Tipo</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <ui:repeat value="#{naturezaFinanceiraControll.naturezas}" var="row">
+                                    <tr>
+                                        <td>#{row.classificacao}</td>
+                                        <td>
+                                            <pre style="border: inherit;background-color: white"> #{row.descricao}</pre>
+                                        </td>
+                                        <td>#{row.tipo}</td>
+                                    </tr>
+                                </ui:repeat>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </h:panelGroup>
+
+            </div>
+        </erp:formularioGrid>
+
     </ui:define>
 
 

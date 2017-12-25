@@ -72,6 +72,10 @@ public class PlanoNaturezaFinanceira implements Serializable {
     public PlanoNaturezaFinanceira() {
     }
 
+    public PlanoNaturezaFinanceira(Integer niveis) {
+        this.niveis = niveis;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -176,6 +176,10 @@ body .ui-button.default-btn.ui-state-active {
     background-repeat: no-repeat !important;
 }
 
+.ui-autocomplete-input {
+    display: inherit !important;
+}
+
 
 /*
  * Component: Small Box

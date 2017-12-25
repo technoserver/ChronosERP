@@ -6,6 +6,7 @@ import com.chronos.modelo.entidades.PlanoNaturezaFinanceira;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
+import org.apache.commons.lang.StringUtils;
 import org.primefaces.event.SelectEvent;
 
 import javax.faces.view.ViewScoped;
@@ -92,6 +93,19 @@ public class NaturezaFinanceiraControll extends AbstractControll<NaturezaFinance
         int nivel = plano.getNiveis() > 1 ? plano.getNiveis() - 1 : 1;
         naturezas = (nivel - 1) == 0 ? null : dao.getEntitys(NaturezaFinanceira.class, "planoNaturezaFinanceira.niveis", nivel);
         definirMascara();
+    }
+
+    public void buscarNaturezas() {
+        naturezas = dao.getEntitys(NaturezaFinanceira.class, new Object[]{"classificacao", "descricao", "tipo", "planoNaturezaFinanceira.niveis"});
+        String descricao = "";
+        int nivel;
+        for (NaturezaFinanceira n : naturezas) {
+            nivel = n.getPlanoNaturezaFinanceira().getNiveis();
+            descricao = StringUtils.leftPad("", nivel);
+            descricao += n.getDescricao();
+            n.setDescricao(descricao);
+        }
+
     }
 
     public void definirMascara() {
