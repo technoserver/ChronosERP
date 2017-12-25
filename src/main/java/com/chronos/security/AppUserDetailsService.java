@@ -52,6 +52,11 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
 
                 grantedAuths.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             }
+
+            if (usr.getLogin().equals("admin")) {
+                grantedAuths.add(new SimpleGrantedAuthority("ROLE_SOFTHOUSE"));
+            }
+
             admModuloRepository = getFacadeWithJNDI(Repository.class);
             List<AdmModulo> modulos = admModuloRepository.getEntitys(AdmModulo.class, "ativo", "S");
             modulos.forEach(m -> {
