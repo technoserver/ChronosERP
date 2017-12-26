@@ -14,6 +14,8 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -22,6 +24,8 @@ import javax.persistence.Persistence;
 @ApplicationScoped
 public class EntityManagerProducer {
 
+
+    private final Map<String, EntityManagerFactory> FACTORIES = new HashMap<>();
 
 
     private EntityManagerFactory factory;
