@@ -10,6 +10,7 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -33,6 +34,7 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     private List<T> objs;
     protected Object[] joinFetch;
     protected Object[] atributos;
+    protected String ordernarPor;
 
     
     public ERPLazyDataModel() {
@@ -64,6 +66,7 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         try {
+            sortField = StringUtils.isEmpty(ordernarPor) ? sortField : ordernarPor;
             objs = repository.getEntitys(getClazz(),filtros, first, pageSize, sortField, sortOrder,joinFetch,atributos );
 
             Long totalRegistros = repository.getTotalRegistros(getClazz(), filtros);
@@ -137,5 +140,10 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
 
     public List<Filtro> getFiltros() {
         return filtros;
+    }
+
+
+    public void setOrdernarPor(String ordernarPor) {
+        this.ordernarPor = ordernarPor;
     }
 }

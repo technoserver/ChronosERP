@@ -29,6 +29,7 @@
             <div class="row m-b">
                 <div class="col-xs-12 col-sm-2 col-md-2">
                     <p:commandButton value="Imprimir"
+                                     style="margin-top: 24px"
                                      icon="fa fa-print"
                                      action="#{naturezaFinanceiraControll.buscarNaturezas}"
                                      oncomplete="printElement('relatorio');"
@@ -36,28 +37,59 @@
                     </p:commandButton>
 
                 </div>
-            </div>
-            <erp:gridDadosSemForm controller="#{naturezaFinanceiraControll}"
-                                  idDataTable="dataTableNaturezaFinanceira"
-                                  somenteConsulta="#{(row.id le 66)}">
-                <p:column headerText="Classificacao">
-                    <h:outputLabel value="#{row.classificacao}"/>
-                </p:column>
-                <p:column headerText="Descricao">
-                    <h:outputLabel value="#{row.descricao}"/>
-                </p:column>
-                <p:column headerText="Tipo">
-                    <h:outputLabel
-                            value="#{naturezaFinanceiraControll.keyFromValue(naturezaFinanceiraControll.tipoNaturazaFinanceira, row.tipo)}"/>
-                </p:column>
-            </erp:gridDadosSemForm>
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <!--<h:outputLabel value="Exibir por Nivel"  for="tipo"/>-->
+                    <!--<h:selectOneMenu id="tipo"-->
+                    <!--class="form-control"-->
+                    <!--value="#{naturezaFinanceiraControll.exibirPorNivel}"-->
+                    <!--&gt;-->
+                    <!--<f:selectItems value="#{naturezaFinanceiraControll.naoSim}"/>-->
+                    <!--<p:ajax update=":formCentro:telaGrid:outputPanelGrid" event="change" process="@this" listener="#{naturezaFinanceiraControll.buscarNaturezaPornivel}"/>-->
+                    <!--</h:selectOneMenu>-->
 
-            <div class="row m-t">
+                </div>
+
+
+            </div>
+            <h:panelGroup layout="block" id="lista"
+                          rendered="#{empty naturezaFinanceiraControll.exibirPorNivel or naturezaFinanceiraControll.exibirPorNivel eq 'N'}">
+                <erp:gridDadosSemForm controller="#{naturezaFinanceiraControll}"
+                                      idDataTable="dataTableNaturezaFinanceira"
+                                      somenteConsulta="#{(row.id le 66)}">
+                    <p:column headerText="Classificacao">
+                        <h:outputLabel value="#{row.classificacao}"/>
+                    </p:column>
+                    <p:column headerText="Descricao">
+                        <h:outputLabel value="#{row.descricao}"/>
+                    </p:column>
+                    <p:column headerText="Tipo">
+                        <h:outputLabel
+                                value="#{naturezaFinanceiraControll.keyFromValue(naturezaFinanceiraControll.tipoNaturazaFinanceira, row.tipo)}"/>
+                    </p:column>
+                </erp:gridDadosSemForm>
+            </h:panelGroup>
+            <h:panelGroup layout="block" id="nivel" rendered="#{naturezaFinanceiraControll.exibirPorNivel eq 'S'}">
+                <p:treeTable value="#{naturezaFinanceiraControll.root}" var="row">
+                    <p:column headerText="Classificacao">
+                        <h:outputLabel value="#{row.classificacao}"/>
+                    </p:column>
+                    <p:column headerText="Descricao">
+                        <h:outputLabel value="#{row.descricao}"/>
+                    </p:column>
+                    <p:column headerText="Tipo">
+                        <h:outputLabel
+                                value="#{naturezaFinanceiraControll.keyFromValue(naturezaFinanceiraControll.tipoNaturazaFinanceira, row.tipo)}"/>
+                    </p:column>
+                </p:treeTable>
+            </h:panelGroup>
+
+
+            <div>
                 <h:panelGroup layout="block" id="panelRelatorio">
 
                     <div id="relatorio" style="display: none">
-                        <div class="col-sm-8 col-md-8"></div>
-                        <div class="col-sm-4 col-md-4">
+                        <div></div>
+                        <div>
                             <p><strong> #{naturezaFinanceiraControll.empresaUsuario.razaoSocial}</strong></p>
                             <p>
                                 #{naturezaFinanceiraControll.empresaUsuario.buscarEnderecoPrincipal().logradouro},
@@ -76,15 +108,15 @@
                                 <strong>Email :&nbsp;</strong>#{naturezaFinanceiraControll.empresaUsuario.email}
                             </p>
                         </div>
-                        <div class="col-sm-12 col-md-12">
+                        <div>
                             <p>
-                                <h2 class="text-center"><strong>Natureza Financeira</strong></h2>
+                                <h2 style="text-align: center"><strong>Natureza Financeira</strong></h2>
                             </p>
                             <table width="100%">
                                 <thead>
                                 <tr>
-                                    <th>Conta</th>
-                                    <th>Descrição</th>
+                                    <th style="text-align: left">Conta</th>
+                                    <th style="text-align: left">Descrição</th>
                                     <th>Tipo</th>
                                 </tr>
                                 </thead>
@@ -95,7 +127,7 @@
                                         <td>
                                             <pre style="border: inherit;background-color: white"> #{row.descricao}</pre>
                                         </td>
-                                        <td>#{row.tipo}</td>
+                                        <td style="text-align: center">#{row.tipo eq 'D'?'DESPESA':'RECEITA'}</td>
                                     </tr>
                                 </ui:repeat>
                                 </tbody>
@@ -104,7 +136,6 @@
                     </div>
 
                 </h:panelGroup>
-
             </div>
         </erp:formularioGrid>
 
@@ -141,25 +172,9 @@
                                           requerido="#{(empty naturezaFinanceiraControll.objeto.planoNaturezaFinanceira and naturezaFinanceiraControll.objeto.planoNaturezaFinanceira.niveis > 1)? true:false}"
                                           labelItens="#{obj.descricao}"/>
 
-                <erp:campoMascara styleClass="col-xs-12 col-sm-3 col-md-3"
-                                  nomeAtributo="#{naturezaFinanceiraControll.objeto.classificacao}"
-                                  label="Classificacao"
-                                  mascara="#{naturezaFinanceiraControll.mascara}"
-                                  id="classificacao"
-                                  desabilitado="#{naturezaFinanceiraControll.classificacao}"
-                                  idComponente="naturezaFinanceiraClassificacao"/>
 
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
-                                idComponente="naturezaFinanceiraDescricao" label="Descricao"
-                                nomeAtributo="#{naturezaFinanceiraControll.objeto.descricao}"
-                                tamanhoMaximo="100"/>
-            </div>
-            <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
-                                idComponente="naturezaFinanceiraAplicacao" label="Aplicacao"
-                                nomeAtributo="#{naturezaFinanceiraControll.objeto.aplicacao}"
-                                tamanhoMaximo="250"/>
+
 
                 <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                  idComponente="naturezaFinanceiraTipo" label="Tipo"
@@ -175,6 +190,29 @@
                                  idComponente="naturezaFinanceiraApareceAReceber" label="Aparece A Receber"
                                  nomeAtributo="#{naturezaFinanceiraControll.objeto.apareceAReceber}"
                                  itens="#{naturezaFinanceiraControll.simNao}"/>
+            </div>
+            <div class="row">
+
+                <erp:campoMascara styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  nomeAtributo="#{naturezaFinanceiraControll.objeto.classificacao}"
+                                  label="Classificacao"
+                                  mascara="#{naturezaFinanceiraControll.mascara}"
+                                  id="classificacao"
+                                  desabilitado="#{naturezaFinanceiraControll.classificacao}"
+                                  idComponente="naturezaFinanceiraClassificacao"/>
+
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                idComponente="naturezaFinanceiraDescricao" label="Descricao"
+                                nomeAtributo="#{naturezaFinanceiraControll.objeto.descricao}"
+                                tamanhoMaximo="100"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                idComponente="naturezaFinanceiraAplicacao" label="Aplicacao"
+                                nomeAtributo="#{naturezaFinanceiraControll.objeto.aplicacao}"
+                                tamanhoMaximo="250"/>
+
+
             </div>
 
 

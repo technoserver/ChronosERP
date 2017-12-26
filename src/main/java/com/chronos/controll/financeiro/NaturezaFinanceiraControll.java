@@ -1,6 +1,7 @@
 package com.chronos.controll.financeiro;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.NaturezaFinanceira;
 import com.chronos.modelo.entidades.PlanoNaturezaFinanceira;
 import com.chronos.repository.Filtro;
@@ -8,6 +9,8 @@ import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
 import org.apache.commons.lang.StringUtils;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.SortOrder;
+import org.primefaces.model.TreeNode;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -30,11 +33,26 @@ public class NaturezaFinanceiraControll extends AbstractControll<NaturezaFinance
     private List<NaturezaFinanceira> naturezas;
     private String mascara;
     private boolean classificacao;
+    private String exibirPorNivel;
+
+    private TreeNode root;
+
+    @Override
+    public ERPLazyDataModel<NaturezaFinanceira> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(NaturezaFinanceira.class);
+            dataModel.setDao(dao);
+        }
+        dataModel.setOrdernarPor("classificacao");
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {
         super.doCreate();
         classificacao = true;
+        naturezas = null;
     }
 
     @Override
@@ -88,15 +106,20 @@ public class NaturezaFinanceiraControll extends AbstractControll<NaturezaFinance
     }
 
     public void selecionarPlano(SelectEvent event) {
-        PlanoNaturezaFinanceira plano = (PlanoNaturezaFinanceira) event.getObject();
-        List<Filtro> filtros = new ArrayList<>();
-        int nivel = plano.getNiveis() > 1 ? plano.getNiveis() - 1 : 1;
-        naturezas = (nivel - 1) == 0 ? null : dao.getEntitys(NaturezaFinanceira.class, "planoNaturezaFinanceira.niveis", nivel);
-        definirMascara();
+
+        try {
+            PlanoNaturezaFinanceira plano = (PlanoNaturezaFinanceira) event.getObject();
+            List<Filtro> filtros = new ArrayList<>();
+            int nivel = plano.getNiveis() >= 1 ? plano.getNiveis() - 1 : 1;
+            naturezas = nivel == 0 ? null : dao.getEntitys(NaturezaFinanceira.class, "planoNaturezaFinanceira.niveis", nivel);
+            definirMascara();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void buscarNaturezas() {
-        naturezas = dao.getEntitys(NaturezaFinanceira.class, new Object[]{"classificacao", "descricao", "tipo", "planoNaturezaFinanceira.niveis"});
+        naturezas = dao.getEntitys(NaturezaFinanceira.class, new ArrayList<>(), "classificacao", SortOrder.ASCENDING, new Object[]{"classificacao", "descricao", "tipo", "planoNaturezaFinanceira.niveis"});
         String descricao = "";
         int nivel;
         for (NaturezaFinanceira n : naturezas) {
@@ -105,6 +128,10 @@ public class NaturezaFinanceiraControll extends AbstractControll<NaturezaFinance
             descricao += n.getDescricao();
             n.setDescricao(descricao);
         }
+
+    }
+
+    public void buscarNaturezaPornivel() {
 
     }
 
@@ -151,5 +178,23 @@ public class NaturezaFinanceiraControll extends AbstractControll<NaturezaFinance
 
     public void setClassificacao(boolean classificacao) {
         this.classificacao = classificacao;
+    }
+
+
+    public String getExibirPorNivel() {
+        return exibirPorNivel;
+    }
+
+    public void setExibirPorNivel(String exibirPorNivel) {
+        this.exibirPorNivel = exibirPorNivel;
+    }
+
+
+    public TreeNode getRoot() {
+        return root;
+    }
+
+    public void setRoot(TreeNode root) {
+        this.root = root;
     }
 }

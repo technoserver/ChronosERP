@@ -5,34 +5,25 @@
   <persistence-unit name="ChronosUP">
 <!--    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>-->
     <non-jta-data-source>java:comp/env/jdbc/chronosLightDB</non-jta-data-source>
-      <class>com.chronos.modelo.entidades.view.ViewPessoa</class>
-      <class>com.chronos.modelo.entidades.view.ViewFinLancamentoPagar</class>
-      <class>com.chronos.modelo.entidades.TributIcmsUfteste</class>
-      <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/chronosLight"/>
       <property name="javax.persistence.jdbc.user" value="postgres"/>
       <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
       <property name="javax.persistence.jdbc.password" value="p@ssw0rd"/>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
-        <property name="toplink.jdbc.url" value="jdbc:postgresql://localhost:5432/chronosLight"/>
-        <property name="toplink.jdbc.driver" value="org.postgresql.Driver"/>
-        <property name="hibernate.connection.url" value="jdbc:postgresql://localhost:5432/chronosLight"/>
-        <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-        <property name="openjpa.ConnectionURL" value="jdbc:postgresql://localhost:5432/chronosLight"/>
-        <property name="openjpa.ConnectionDriverName" value="org.postgresql.Driver"/>
-        <property name="eclipselink.jdbc.url" value="jdbc:postgresql://localhost:5432/chronosLight"/>
-        <property name="eclipselink.jdbc.driver" value="org.postgresql.Driver"/>
-        <!--
-             <property name="hibernate.show_sql" value="true"/>
-             <property name="hibernate.connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider"/>
-             <property name="hibernate.c3p0.max_size" value="20"/>
-             <property name="hibernate.c3p0.min_size" value="5"/>
-             <property name="hibernate.c3p0.acquire_increment" value="1"/>
-             <property name="hibernate.c3p0.idle_test_period" value="300"/>
-             <property name="hibernate.c3p0.max_statements" value="50"/>
-             <property name="hibernate.c3p0.timeout" value="300"/>
-         -->
+
+      <!--
+           <property name="hibernate.show_sql" value="true"/>
+           <property name="hibernate.connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider"/>
+           <property name="hibernate.c3p0.max_size" value="20"/>
+           <property name="hibernate.c3p0.min_size" value="5"/>
+           <property name="hibernate.c3p0.acquire_increment" value="1"/>
+           <property name="hibernate.c3p0.idle_test_period" value="300"/>
+           <property name="hibernate.c3p0.max_statements" value="50"/>
+           <property name="hibernate.c3p0.timeout" value="300"/>
+       -->
     </properties>
   </persistence-unit>
 </persistence>
