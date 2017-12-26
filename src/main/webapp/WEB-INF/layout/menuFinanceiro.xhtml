@@ -15,26 +15,38 @@
 
                 <erp:subMenu caminho="/modulo/financeiro/diversos/finTipoPagamento"
                              label="Tipo Pagamento"
+                             exibir="#{seguranca.isTemAcesso('TIPO_PAGAMENTO')}"
                              funcao="finTipoPagamento"/>
 
                 <erp:subMenu caminho="/modulo/financeiro/diversos/finTipoRecebimento"
                              label="Tipo Recebimento"
+                             exibir="#{seguranca.isTemAcesso('TIPO_RECEBIMENTO')}"
                              funcao="finTipoRecebimento"/>
                 <erp:subMenu caminho="/modulo/financeiro/diversos/finStatusParcela"
                              label="Status Parcela"
+                             exibir="#{seguranca.isTemAcesso('STATUS_PARCELA')}"
                              funcao="finStatusParcela"/>
                 <erp:subMenu caminho="/modulo/financeiro/diversos/planoCentroResultado"
                              label="Plano Centro Resultado"
+                             exibir="#{seguranca.isTemAcesso('PLANO_CENTRO_RESULTADO')}"
                              funcao="planoCentroResultado"/>
                 <erp:subMenu caminho="/modulo/financeiro/diversos/centroResultado"
                              label="Centro Resultado"
+                             exibir="#{seguranca.isTemAcesso('CENTRO_RESULTADO')}"
                              funcao="centroResultado"/>
                 <erp:subMenu caminho="/modulo/financeiro/diversos/planoNaturezaFinanceira"
                              label="Plano Natureza Financeira"
+                             exibir="#{seguranca.isTemAcesso('PLANO_NATUREZA_FINANCEIRA')}"
                              funcao="planoNaturezaFinanceira"/>
                 <erp:subMenu caminho="/modulo/financeiro/diversos/naturezaFinanceira"
                              label="Natureza Financeira"
+                             exibir="#{seguranca.isTemAcesso('NATUREZA_FINANCEIRA')}"
                              funcao="naturezaFinanceira"/>
+
+                <erp:subMenu caminho="/modulo/financeiro/diversos/centroResultadoNatureza"
+                             label="Centro por Nat. Financeira"
+                             exibir="#{seguranca.isTemAcesso('CENTRO_RESULTADO_NATUREZA')}"
+                             funcao="centroResultadoNatureza"/>
 
 
             </ul>
@@ -44,9 +56,11 @@
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/financeiro/pagamento/finLancamentoPagar"
                              label="Lançamento a Pagar"
+                             exibir="#{seguranca.isTemAcesso('LANCAMENTO_PAGAR')}"
                              funcao="finLancamentoPagar"/>
                 <erp:subMenu caminho="/modulo/financeiro/pagamento/finPagamento"
                              label="Pagamento"
+                             exibir="#{seguranca.isTemAcesso('PAGAMENTO')}"
                              funcao="finPagamento"/>
                 <!--<erp:subMenu caminho="/modulo/financeiro/pagamento/finPagamentoFixo"-->
                 <!--label="Pagamento Fixo/Recorrente"-->
@@ -58,12 +72,14 @@
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/financeiro/recebimento/finLancamentoReceber"
                              label="Lançamento a Receber"
+                             exibir="#{seguranca.isTemAcesso('LANCAMENTO_RECEBER')}"
                              funcao="finLancamentoReceber"/>
                 <!--<erp:subMenu caminho="/modulo/financeiro/recebimento/finParcelaRecebimento"-->
                 <!--label="Recebimento"-->
                 <!--funcao="finParcelaRecebimento"/>-->
                 <erp:subMenu caminho="/modulo/financeiro/recebimento/finRecebimento"
                              label="Recebimento"
+                             exibir="#{seguranca.isTemAcesso('RECEBIMENTO')}"
                              funcao="finRecebimento"/>
                 <!--<erp:subMenu caminho="/modulo/financeiro/recebimento/finCobranca"-->
                 <!--label="Cobrança"-->
@@ -76,9 +92,11 @@
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/financeiro/movimento/finFluxoCaixa"
                              label="Fluxo Caixa"
+                             exibir="#{seguranca.isTemAcesso('FLUXO_CAIXA')}"
                              funcao="finFluxoCaixa"/>
                 <erp:subMenu caminho="/modulo/financeiro/movimento/finMovimentoCaixaBanco"
                              label="Movimento Caixa Banco"
+                             exibir="#{seguranca.isTemAcesso('MOVIMENTO_CAIXA_BANCO')}"
                              funcao="finMovimentoCaixaBanco"/>
             </ul>
         </li>

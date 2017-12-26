@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Centro de Resultado por Natureza Financeira
+    </ui:define>
+
+    <ui:define name="tela">
+        #{centroResultadoNaturezaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Centro de Resultado por Natureza Financeira
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{centroResultadoNaturezaControll}"
+                       idDataTable="dataTableCentroResultado"
+                       nomeFuncao="Centro de resultado"
+                       id="telaGrid"
+        >
+            <p:column headerText="Centro de resultado">
+                <h:outputLabel value="#{row.centroResultado.descricao}"/>
+            </p:column>
+            <p:column headerText="Natureza Financeira">
+                <h:outputLabel value="#{row.naturezaFinanceira.descricao}"/>
+            </p:column>
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{centroResultadoNaturezaControll}"
+                                   nomeFuncao="Centro de resultado"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Centro de Resultado"
+                                  itemLabel="#{objeto.descricao}"
+                                  controller="#{centroResultadoNaturezaControll}"
+                                  completeMethod="getListCentroResultado"
+                                  nomeAtributo="#{centroResultadoNaturezaControll.objeto.centroResultado}"
+                                  idComponente="centroResultado"/>
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Natureza Financeira"
+                                  itemLabel="#{objeto.descricao}"
+                                  controller="#{centroResultadoNaturezaControll}"
+                                  completeMethod="getListnaturezaFinanceira"
+                                  nomeAtributo="#{centroResultadoNaturezaControll.objeto.naturezaFinanceira}"
+                                  idComponente="naturezaFinanceira"/>
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

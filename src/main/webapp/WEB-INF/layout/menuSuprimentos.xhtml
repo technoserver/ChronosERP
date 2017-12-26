@@ -25,9 +25,11 @@
                         <!--funcao="requisicaoInternaCabecalho"/>-->
                         <erp:subMenu caminho="/modulo/estoque/estoqueReajuste"
                                      label="Reajuste"
+                                     exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
                                      funcao="estoqueReajuste"/>
                         <erp:subMenu caminho="/modulo/estoque/entradaNotaFiscal"
                                      label="Entra NFe"
+                                     exibir="#{seguranca.isTemAcesso('NFE_ENTRADA')}"
                                      funcao="entradaNotaFiscal"/>
                     </li>
                     <li class="${fn:contains(view.viewId,'modulo/estoque/relatorios/')?'active':''}">
@@ -64,6 +66,7 @@
                         <!--funcao="compraMapaComparativo"/>-->
                         <erp:subMenu caminho="/modulo/compras/compraPedido"
                                      label="Pedido"
+                                     exibir="#{seguranca.isTemAcesso('COMPRA_PEDIDO')}"
                                      funcao="compraPedido"/>
                         <!--<erp:subMenu caminho="/modulo/compras/compraSugerida"-->
                         <!--label="Compra Sugerida"-->

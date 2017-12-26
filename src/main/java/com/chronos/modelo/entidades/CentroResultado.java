@@ -33,6 +33,12 @@ public class CentroResultado implements Serializable {
     public CentroResultado() {
     }
 
+    public CentroResultado(Integer id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
+
+
     public Integer getId() {
         return id;
     }

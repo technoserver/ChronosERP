@@ -27,24 +27,31 @@
                     <ul class="nav nav-bedroom-level">
                         <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/cargo"
                                      label="Cargo"
+                                     exibir="#{seguranca.isTemAcesso('CARGO')}"
                                      funcao="cargo"/>
                         <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/nivelFormacao"
                                      label="Nivel Formação"
+                                     exibir="#{seguranca.isTemAcesso('NIVEl_FORMACAO')}"
                                      funcao="nivelFormacao"/>
                         <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/tipoAdmissao"
                                      label="Tipo Admissao"
+                                     exibir="#{seguranca.isTemAcesso('TIPO_ADIMISSAO')}"
                                      funcao="tipoAdmissao"/>
                         <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/tipoRelacionamento"
                                      label="Tipo Relacionamento"
+                                     exibir="#{seguranca.isTemAcesso('TIPO_RELCIONAMENTO')}"
                                      funcao="tipoRelacionamento"/>
                         <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/tipoColaborador"
                                      label="Tipo Colaborador"
+                                     exibir="#{seguranca.isTemAcesso('TIPO_COLABORADOR')}"
                                      funcao="tipoColaborador"/>
                         <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/situacaoColaborador"
                                      label="Situacao Colaborador"
+                                     exibir="#{seguranca.isTemAcesso('SITUACAO_COLBORADOR')}"
                                      funcao="situacaoColaborador"/>
                         <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/colaborador"
                                      label="Colaborador"
+                                     exibir="#{seguranca.isTemAcesso('COLABORADOR')}"
                                      funcao="colaborador/colaborador"/>
                     </ul>
                 </li>
@@ -57,21 +64,26 @@
 
                 <erp:subMenu caminho="/modulo/cadastros/comercial/atividadeForCli"
                              label="Atividade"
+                             exibir="#{seguranca.isTemAcesso('ATIVIDADE_FOR_CLIENTE')}"
                              funcao="atividadeForCli"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/comercial/situacaoForCli"
                              label="Situação"
+                             exibir="#{seguranca.isTemAcesso('SITUACAO_FOR_CLIENTE')}"
                              funcao="situacaoForCli"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/comercial/cliente"
                              label="Cliente"
+                             exibir="#{seguranca.isTemAcesso('CLIENTE')}"
                              funcao="cliente"/>
                 <erp:subMenu caminho="/modulo/cadastros/comercial/fornecedor"
                              label="Fornecedor"
+                             exibir="#{seguranca.isTemAcesso('FORNECEDOR')}"
                              funcao="fornecedor"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/comercial/transportadora"
                              label="Transportadora"
+                             exibir="#{seguranca.isTemAcesso('TRANSPORTADORA')}"
                              funcao="transportadora"/>
 
             </ul>
@@ -81,22 +93,27 @@
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/cadastros/financeiro/bancos"
                              label="Banco"
+                             exibir="#{seguranca.isTemAcesso('BANCO')}"
                              funcao="bancos"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/financeiro/agenciaBanco"
                              label="Agencia Bancaria"
+                             exibir="#{seguranca.isTemAcesso('AGENCIA_BANCO')}"
                              funcao="agenciaBanco"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/financeiro/contaCaixa"
                              label="Conta Caixa"
+                             exibir="#{seguranca.isTemAcesso('CONTA_CAIXA')}"
                              funcao="contaCaixa"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/financeiro/talonarioCheque"
                              label="Talonário Cheque"
+                             exibir="#{seguranca.isTemAcesso('TALONARIO_CHEQUE')}"
                              funcao="talonarioCheque"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/financeiro/cheque"
                              label="Cheque"
+                             exibir="#{seguranca.isTemAcesso('CHEQUE')}"
                              funcao="cheque"/>
             </ul>
         </li>
@@ -107,22 +124,27 @@
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/cadastros/produto/subGrupo"
                              label="SubGrupo"
+                             exibir="#{seguranca.isTemAcesso('SUBGRUPO')}"
                              funcao="subGrupo"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/produto/grupo"
                              label="Grupo"
+                             exibir="#{seguranca.isTemAcesso('GRUPO')}"
                              funcao="grupo"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/produto/marca"
                              label="Marca"
+                             exibir="#{seguranca.isTemAcesso('MARCA')}"
                              funcao="marca"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/produto/unidadeMedida"
                              label="UM"
+                             exibir="#{seguranca.isTemAcesso('UNIDADE_MEDIDA')}"
                              funcao="unidadeMedida"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/produto/produtos"
                              label="Produto"
+                             exibir="#{seguranca.isTemAcesso('PRODUTO')}"
                              funcao="produtos"/>
 
 
@@ -136,16 +158,20 @@
 
                 <erp:subMenu caminho="/modulo/cadastros/diversos/almoxarifado"
                              label="Almoxarifado"
+                             exibir="#{seguranca.isTemAcesso('ALMOXARIFADO')}"
                              funcao="almoxarifado"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/diversos/setor"
                              label="Setor"
+                             exibir="#{seguranca.isTemAcesso('SETOR')}"
                              funcao="setor"/>
                 <erp:subMenu caminho="/modulo/cadastros/diversos/operadoraCartao"
                              label="Operadora de Cartão"
+                             exibir="#{seguranca.isTemAcesso('OPERADORA_CARTAO')}"
                              funcao="operadoraCartao"/>
                 <erp:subMenu caminho="/modulo/cadastros/diversos/operadoraPlanoSaude"
                              label="Operadora Plano Saude"
+                             exibir="#{seguranca.isTemAcesso('OPERADORA_PLANO_SAUDE')}"
                              funcao="operadoraPlanoSaude"/>
             </ul>
         </li>
@@ -155,18 +181,22 @@
 
                 <erp:subMenu caminho="/modulo/cadastros/tabelas/cfop"
                              label="CFOP"
+                             exibir="#{seguranca.isTemAcesso('CFOP')}"
                              funcao="cfop"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/tabelas/cest"
                              label="CEST"
+                             exibir="#{seguranca.isTemAcesso('CEST')}"
                              funcao="cest"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/tabelas/ibpt"
                              label="IBPT"
+                             exibir="#{seguranca.isTemAcesso('IBPT')}"
                              funcao="ibpt"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/tabelas/feriados"
                              label="Feriados"
+                             exibir="#{seguranca.isTemAcesso('FERIADOS')}"
                              funcao="feriados"/>
 
             </ul>
@@ -198,18 +228,22 @@
 
                 <erp:subMenu caminho="/modulo/cadastros/administrativo/empresa"
                              label="Empresa"
+                             exibir="#{seguranca.temAcessoEpresa}"
                              funcao="empresa"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/administrativo/vendedores"
                              label="Vendedores"
+                             exibir="#{seguranca.isTemAcesso('VENDEDOR')}"
                              funcao="vendedores"/>
 
 
                 <erp:subMenu caminho="/modulo/cadastros/administrativo/papel"
                              label="Papel"
+                             exibir="#{seguranca.isTemAcesso('PAPEL')}"
                              funcao="papel"/>
                 <erp:subMenu caminho="/modulo/cadastros/administrativo/usuario"
                              label="Usuario"
+                             exibir="#{seguranca.isTemAcesso('USUARIO')}"
                              funcao="usuario"/>
 
 

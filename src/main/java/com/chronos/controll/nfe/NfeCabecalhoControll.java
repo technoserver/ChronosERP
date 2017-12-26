@@ -579,7 +579,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     @Override
     protected String getFuncaoBase() {
-        return "NFE_CABECALHO";
+        return "NFE";
     }
 
     @Override

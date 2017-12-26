@@ -20,17 +20,21 @@
 
                         <erp:subMenu caminho="/modulo/fiscal/tributacao/tributOperacaoFiscal"
                                      label="Operação Fiscal"
+                                     exibir="#{seguranca.isTemAcesso('OPERACAO_FISCAL')}"
                                      funcao="tributOperacaoFiscal"/>
                         <erp:subMenu caminho="/modulo/fiscal/tributacao/tributGrupoTributario"
                                      label="Grupo Tributário"
+                                     exibir="#{seguranca.isTemAcesso('GRUPO_TRIBUTARIO')}"
                                      funcao="tributGrupoTributario"/>
 
                         <erp:subMenu caminho="/modulo/fiscal/tributacao/tributacao"
                                      label="Tributacao"
+                                     exibir="#{seguranca.isTemAcesso('TRIBUTACAO')}"
                                      funcao="tributacao/tributacao"/>
 
                         <erp:subMenu caminho="/modulo/fiscal/tributacao/tributIcmsCustom"
                                      label="ICMS Customizado"
+                                     exibir="#{seguranca.isTemAcesso('ICMS_CUSTOMIZADO')}"
                                      funcao="tributacao/tributIcmsCustom"/>
 
                     </li>
@@ -44,6 +48,7 @@
 
                 <erp:subMenu caminho="/modulo/fiscal/apuracao/apuracaoICMS"
                              label="Apuração ICMS"
+                             exibir="#{seguranca.isTemAcesso('ICMS_CUSTOMIZADO')}"
                              funcao="apuracaoICMS"/>
 
                 <erp:subMenu caminho="/modulo/fiscal/sped/spedFiscal"

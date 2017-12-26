@@ -88,6 +88,16 @@ public class Seguranca {
         return empresa;
     }
 
+
+    public boolean isTemAcessoEpresa() {
+        return FacesUtil.isUserInRole("SOFTHOUSE");
+    }
+
+    public boolean isTemAcesso(String modulo) {
+        return FacesUtil.isUserInRole(modulo + "_CONSULTAR") || FacesUtil.isUserInRole("ADMIN");
+
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Modulo Comercial">
     public boolean isComercial() {
         return isUserNfe() || isUserNfce() || isUserCte() || isUserNFSe() || isUserComissoes() || isUserOs();

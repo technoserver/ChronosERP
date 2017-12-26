@@ -19,22 +19,27 @@
                     <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
                         <erp:subMenu caminho="/modulo/comercial/vendas/condicoesPagamento"
                                      label="Condições de Pagamento"
+                                     exibir="#{seguranca.isTemAcesso('CONDICOES_PAGAMENTO')}"
                                      funcao="condicoesPagamento"/>
                         <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
                                      label="Orçamento"
+                                     exibir="#{seguranca.isTemAcesso('VENDA_ORCAMENTO')}"
                                      funcao="tipo=O">
                             <f:param name="tipo" value="O"/>
                         </erp:subMenu>
                         <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
                                      label="Pedido"
+                                     exibir="#{seguranca.isTemAcesso('VENDA_ORCAMENTO')}"
                                      funcao="tipo=P">
                             <f:param name="tipo" value="P"/>
                         </erp:subMenu>
                         <erp:subMenu caminho="/modulo/comercial/vendas/vendas"
                                      label="Vendas"
+                                     exibir="#{seguranca.isTemAcesso('VENDA')}"
                                      funcao="modulo/comercial/vendas/vendas"/>
                         <erp:subMenu caminho="/modulo/comercial/vendas/balcao"
                                      label="Balcao"
+                                     exibir="#{seguranca.isTemAcesso('BALCAO')}"
                                      funcao="modulo/comercial/vendas/balcao"/>
 
                     </li>
@@ -72,14 +77,17 @@
                 <ul class="nav nav-third-level">
                     <erp:subMenu caminho="/modulo/comercial/os/equipamentos"
                                  label="Equipamento"
+                                 exibir="#{seguranca.isTemAcesso('OS_EQUIPAMENTO')}"
                                  funcao="equipamento"/>
 
                     <erp:subMenu caminho="/modulo/comercial/os/osAbertura"
                                  label="OS"
+                                 exibir="#{seguranca.isTemAcesso('OS_ABERTURA')}"
                                  funcao="osAbertura"/>
 
                     <erp:subMenu caminho="/modulo/comercial/os/historico"
                                  label="Historico"
+                                 exibir="#{seguranca.isTemAcesso('OS_HISTORICO')}"
                                  funcao="historico"/>
 
                     <li class="${fn:contains(view.viewId,'modulo/comercial/os/relatorios/')?'active':''}">
@@ -105,18 +113,23 @@
 
                     <erp:subMenu caminho="/modulo/comercial/nfe/nfe"
                                  label="NF-e"
+                                 exibir="#{seguranca.isTemAcesso('NFE')}"
                                  funcao="nfe"/>
 
                     <erp:subMenu caminho="/modulo/comercial/nfe/inutilizarNumeroNfe"
                                  label="Inutilizar Número"
+                                 exibir="#{seguranca.isTemAcesso('INUTILIZAR_NUMERO_NFE')}"
                                  funcao="inutilizarNumeroNfe"/>
 
                     <erp:subMenu caminho="/modulo/comercial/nfe/statusNfe"
                                  label="Status Serviço"
+
+                                 exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
                                  funcao="statusNfe"/>
 
                     <erp:subMenu caminho="/modulo/comercial/nfe/nfeConfiguracao"
                                  label="Configuração"
+                                 exibir="#{seguranca.isTemAcesso('STATUS_NFE')}"
                                  funcao="/nfe/nfeConfiguracao"/>
 
                     <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/relatorios/')?'active':''}">
@@ -150,12 +163,15 @@
                     <!--funcao="movimentoCaixa"/>-->
                     <erp:subMenu caminho="/modulo/comercial/nfce/pdv"
                                  label="PDV"
+                                 exibir="#{seguranca.isTemAcesso('NFCE')}"
                                  funcao="pdv"/>
                     <erp:subMenu caminho="/modulo/comercial/nfce/listaPdv"
                                  label="Lista NFCe"
+                                 exibir="#{seguranca.isTemAcesso('NFCE')}"
                                  funcao="listaPdv"/>
                     <erp:subMenu caminho="/modulo/comercial/nfce/nfceConfiguracao"
                                  label="Configuração"
+                                 exibir="#{seguranca.isTemAcesso('NFCE_CONFIGURACAO')}"
                                  funcao="nfceConfiguracao"/>
 
                 </ul>

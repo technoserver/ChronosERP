@@ -25,23 +25,6 @@
         <div class="ibox-content">
             <div class="row">
 
-                <div class="col-md-4">
-                    <p:outputLabel value="Pessoa" for="pessoa"/>
-
-                    <br/>
-                    <p:autoComplete id="pessoa"
-                                    value="#{clienteControll.objeto.pessoa}"
-                                    completeMethod="#{clienteControll.getListaPessoa}" var="objeto"
-                                    itemLabel="#{objeto.nome}" itemValue="#{objeto}"
-                                    queryDelay="500"
-                                    dropdown="true"
-                                    converter="defaultConverter" forceSelection="true"
-                                    minQueryLength="3" maxResults="10" required="true"
-                                    style="width: 100%" emptyMessage="Nenhum registro encontrado">
-
-
-                    </p:autoComplete>
-                </div>
 
 
                 <erp:campoData nomeAtributo="#{vendaRelatorioControll.dataInicial}"

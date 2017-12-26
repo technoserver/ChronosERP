@@ -22,6 +22,7 @@ public class NaturezaFinanceira implements Serializable {
     private Integer id;
     @NotBlank
     @Column(name = "CLASSIFICACAO")
+    @OrderBy("classificacao ASC")
     private String classificacao;
     @Column(name = "DESCRICAO")
     private String descricao;
@@ -40,6 +41,8 @@ public class NaturezaFinanceira implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private PlanoNaturezaFinanceira planoNaturezaFinanceira;
+    @Transient
+    private int idnaturezapai;
 
     public NaturezaFinanceira() {
     }
@@ -52,6 +55,23 @@ public class NaturezaFinanceira implements Serializable {
     public NaturezaFinanceira(Integer id,String descricao) {
         this.id = id;
         this.descricao = descricao;
+    }
+
+    public NaturezaFinanceira(Integer id, String classificacao, String descricao, String tipo, int nivel) {
+        this.id = id;
+        this.classificacao = classificacao;
+        this.descricao = descricao;
+        this.tipo = tipo;
+        this.planoNaturezaFinanceira = new PlanoNaturezaFinanceira(nivel);
+    }
+
+    public NaturezaFinanceira(Integer id, String classificacao, String descricao, String tipo, int nivel, int idnaturezapai) {
+        this.id = id;
+        this.classificacao = classificacao;
+        this.descricao = descricao;
+        this.tipo = tipo;
+        this.planoNaturezaFinanceira = new PlanoNaturezaFinanceira(nivel);
+        this.idnaturezapai = idnaturezapai;
     }
 
     public Integer getId() {
@@ -126,6 +146,14 @@ public class NaturezaFinanceira implements Serializable {
 
     public void setNaturezaFinanceira(NaturezaFinanceira naturezaFinanceira) {
         this.naturezaFinanceira = naturezaFinanceira;
+    }
+
+    public int getIdnaturezapai() {
+        return idnaturezapai;
+    }
+
+    public void setIdnaturezapai(int idnaturezapai) {
+        this.idnaturezapai = idnaturezapai;
     }
 
     @Override

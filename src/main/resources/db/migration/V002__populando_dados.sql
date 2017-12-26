@@ -20116,6 +20116,31 @@ insert into fin_tipo_recebimento (ID, ID_EMPRESA, ID_CONTA_CAIXA, TIPO, DESCRICA
 insert into fin_tipo_recebimento (ID, ID_EMPRESA, ID_CONTA_CAIXA, TIPO, DESCRICAO) values('2','1','1','02','Cheque');
 insert into fin_tipo_recebimento (ID, ID_EMPRESA, ID_CONTA_CAIXA, TIPO, DESCRICAO) values('3','1','1','03','Cartao');
 
+
+
+insert into plano_centro_resultado (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('1','1','PRIMEIRO NIVEL','2016-01-01','#','1');
+insert into plano_centro_resultado (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('2','1','SEGUNDO NIVEL','2016-01-01','#.##','2');
+insert into plano_centro_resultado (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('3','1','TERCEIRO NIVEL','2016-01-01','#.##.###','3');
+insert into plano_centro_resultado (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('4','1','QUARTO NIVEL','2016-01-01','#.##.###.####','4');
+
+
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(1,3,'1.01.000','Diretoria Adm','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(2,3,'1.01.001','Diretor adm','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(3,3,'1.01.002','Secretaria adm','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(4,3,'1.02.000','Financeiro','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(5,3,'1.02.001','Gerencia Financeira','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(6,3,'1.02.002','Operacional financeiro','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(7,3,'2.00.000','Produção','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(8,3,'2.01.000','Diretoria Produção','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(9,3,'2.01.001','Diretor','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(10,3,'2.02.000','Gerencia','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(11,3,'2.02.001','gerente','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(12,3,'2.03.000','Linhas/Barracoes/Fluxo de Produção','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(13,3,'2.03.001','Linha de Produção-1','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(14,3,'2.03.002','Linha de Produção-2','N');
+insert into centro_resultado(id,id_plano_centro_resultado,classificacao,descricao,sofre_rateiro) values(15,3,'2.03.003','Equipamento especial','N');
+
+
 insert into plano_natureza_financeira (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('1','1','PRIMEIRO NIVEL','2016-01-01','#','1');
 insert into plano_natureza_financeira (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('2','1','SEGUNDO NIVEL','2016-01-01','#.##','2');
 insert into plano_natureza_financeira (ID, ID_EMPRESA, NOME, DATA_INCLUSAO, MASCARA, NIVEIS) values('3','1','TERCEIRO NIVEL','2016-01-01','#.##.###','3');
@@ -21568,6 +21593,7 @@ INSERT INTO funcao(nome,formulario) VALUES ('CONDICOES DE PAGAMENTO','CONDICOES_
 INSERT INTO funcao(nome,formulario) VALUES ('CONTROLE DE FRETE','VENDA_FRETE');
 INSERT INTO funcao(nome,formulario) VALUES ('ORCAMENTO/PEDIDO','VENDA_ORCAMENTO');
 INSERT INTO funcao(nome,formulario) VALUES ('ROMANEIO DE ENTREGA','ROMANEIO_ENTREGA');
+INSERT INTO funcao(nome,formulario) VALUES ('CENTRO DE RESULTADO POR NATUREZA','CENTRO_RESULTADO_NATUREZA');
 
 
 INSERT INTO adm_modulo VALUES (1, '110', 'GED', 'MODULO ADM', 'N');
