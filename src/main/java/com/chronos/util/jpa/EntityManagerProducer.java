@@ -14,6 +14,8 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +24,7 @@ import java.util.Map;
  * @author john
  */
 @ApplicationScoped
-public class EntityManagerProducer {
+public class EntityManagerProducer implements ServletContextListener {
 
 
     private final Map<String, EntityManagerFactory> FACTORIES = new HashMap<>();
@@ -49,5 +51,15 @@ public class EntityManagerProducer {
 
     public void closeEntityManager(@Disposes EntityManager manager) {
         manager.close();
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+
     }
 }
