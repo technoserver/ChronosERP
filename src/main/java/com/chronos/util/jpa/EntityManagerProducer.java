@@ -16,6 +16,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -24,6 +26,8 @@ import javax.servlet.ServletContextListener;
 @ApplicationScoped
 public class EntityManagerProducer implements ServletContextListener {
 
+
+    private final Map<String, EntityManagerFactory> FACTORIES = new HashMap<>();
 
     private EntityManagerFactory factory;
 
