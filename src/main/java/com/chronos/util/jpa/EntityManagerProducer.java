@@ -14,13 +14,15 @@ import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 /**
  *
  * @author john
  */
 @ApplicationScoped
-public class EntityManagerProducer {
+public class EntityManagerProducer implements ServletContextListener {
 
 
     private EntityManagerFactory factory;
@@ -47,4 +49,13 @@ public class EntityManagerProducer {
     }
 
 
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+
+    }
 }
