@@ -12,18 +12,13 @@ import com.chronos.modelo.entidades.Usuario;
 import com.chronos.modelo.entidades.enuns.AcaoLog;
 import com.chronos.modelo.entidades.enuns.Estados;
 import com.chronos.repository.Repository;
-import com.chronos.security.UsuarioLogado;
-import com.chronos.security.UsuarioSistema;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Produces;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -51,6 +46,7 @@ public abstract class AbstractControll<T> implements Serializable {
 
     private String titulo;
     private int activeTabIndex;
+
     protected Usuario usuario;
     protected Empresa empresa;
     protected EmpresaEndereco enderecoEmpresa;
@@ -161,8 +157,8 @@ public abstract class AbstractControll<T> implements Serializable {
         dataModel = new ERPLazyDataModel<>();
         dataModel.setClazz(getClazz());
         dataModel.setDao(dao);
-        usuario = getUsuarioLogado();
-        empresa = getEmpresaUsuario();
+        usuario = FacesUtil.getUsuarioSessao();
+        empresa = FacesUtil.getEmpresaUsuario();
         atributos = new Object[]{"nome"};
 
         //Cadastros
@@ -620,40 +616,13 @@ public abstract class AbstractControll<T> implements Serializable {
             log.setDataRegistro(agora);
             log.setHoraRegistro(new SimpleDateFormat("hh:mm:ss").format(agora));
             log.setJanelaController(janela);
-            log.setUsuario(getUsuarioLogado());
+            log.setUsuario(usuario);
             auditoriaRepository.salvar(log);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    @Produces
-    @UsuarioLogado
-    public Usuario getUsuarioLogado() {
-        UsuarioSistema user = null;
-
-        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal();
-
-        if (usuario == null && auth != null && auth.getPrincipal() != null) {
-            user = (UsuarioSistema) auth.getPrincipal();
-            usuario = user.getUsuario();
-        }
-
-        return usuario;
-    }
-
-    public Empresa getEmpresaUsuario() {
-        empresa = null;
-        usuario = getUsuarioLogado();
-
-        if (usuario != null) {
-            usuario.getColaborador().getPessoa().getListaEmpresa().stream().forEach((e) -> {
-                empresa = e;
-            });
-        }
-
-        return empresa;
-    }
 
     public HashMap getListaCsosnB() {
         HashMap<String, String> csosnb = new LinkedHashMap<>();

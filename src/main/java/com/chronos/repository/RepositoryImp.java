@@ -17,10 +17,7 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author john
@@ -194,6 +191,15 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Override
     public T get(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
         return get(clazz, atributo, valor, null);
+    }
+
+    @Override
+    public Optional<T> getOptional(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
+        Query q = em.createQuery("SELECT o  FROM " + clazz.getName() + " o WHERE o." + atributo + " = :valor");
+        q.setParameter("valor", valor);
+        return q.getResultList().stream().findFirst();
+
+
     }
 
     @Override

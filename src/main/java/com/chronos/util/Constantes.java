@@ -15,6 +15,7 @@ public interface Constantes {
     int DECIMAIS_QUANTIDADE = 3;
     int DECIMAIS_VALOR = 2;
 
+
     interface FIN{
         FinStatusParcela STATUS_ABERTO = new FinStatusParcela(1);
         FinStatusParcela STATUS_QUITADO = new FinStatusParcela(2);

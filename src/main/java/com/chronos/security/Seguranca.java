@@ -20,7 +20,6 @@ import javax.inject.Named;
 import java.io.File;
 
 /**
- *
  * @author john
  */
 @Named
@@ -30,62 +29,60 @@ public class Seguranca {
     @Inject
     private ExternalContext externalContext;
     private Empresa empresa;
-    private UsuarioSistema usuario;
+
+
+    private Usuario usuario;
+
+
 
     public String getNomeUsuario() {
         String nome = null;
 
-        UsuarioSistema usuarioLogado = getUsuarioLogado();
 
-        if (usuarioLogado != null) {
-            nome = usuarioLogado.getUsuario().getLogin();
+        usuario = getUsuarioLogado();
+
+        if (usuario != null) {
+            nome = usuario.getLogin();
         }
+
 
         return nome;
     }
 
+    //TODO verificar
     public String getFotoFuncionario() {
         String foto = "";
         usuario = getUsuarioLogado();
         if (usuario != null) {
-            empresa = getEmpresaUsuario(getUsuarioLogado().getUsuario());
-            foto = ArquivoUtil.getInstance().getFotoFuncionario(empresa.getCnpj(), usuario.getUsuario().getColaborador().getPessoa().getPessoaFisica().getCpf());
+            empresa = FacesUtil.getEmpresaUsuario();
+            foto = ArquivoUtil.getInstance().getFotoFuncionario(empresa.getCnpj(), usuario.getColaborador().getPessoa().getPessoaFisica().getCpf());
         }
 
 
         return new File(foto).exists() ? foto : null;
     }
 
+    //TODO verificar
     public String getNomeEmpresa() {
-        usuario = getUsuarioLogado();
-        String nomeEmpresa;
-        nomeEmpresa = usuario != null ? getEmpresaUsuario(usuario.getUsuario()).getRazaoSocial() : "";
+        String nomeEmpresa = null;
+        nomeEmpresa = FacesUtil.getEmpresaUsuario().getRazaoSocial();
 
         return nomeEmpresa;
     }
 
     @Produces
     @UsuarioLogado
-    public UsuarioSistema getUsuarioLogado() {
-        usuario = null;
+    public Usuario getUsuarioLogado() {
 
-        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal();
 
-        if (usuario == null && auth != null && auth.getPrincipal() != null) {
-            usuario = (UsuarioSistema) auth.getPrincipal();
+        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken)
+                FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal();
+
+        if (auth != null && auth.getPrincipal() != null && usuario == null) {
+            usuario = FacesUtil.getUsuarioSessao();
         }
 
         return usuario;
-    }
-
-    public Empresa getEmpresaUsuario(Usuario usuario) {
-        empresa = null;
-        if (usuario != null) {
-            usuario.getColaborador().getPessoa().getListaEmpresa().stream().forEach((e) -> {
-                empresa = e;
-            });
-        }
-        return empresa;
     }
 
 
