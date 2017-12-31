@@ -5,10 +5,8 @@
  */
 package com.chronos.security;
 
-import com.chronos.util.flyway.FlyWay;
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 
-import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
 /**
@@ -23,12 +21,12 @@ public class SecurityWebApplicationInitializer extends AbstractSecurityWebApplic
 
     @Override
     protected void afterSpringSecurityFilterChain(ServletContext servletContext) {
-        FlyWay flyWay = new FlyWay();
-        try {
-            flyWay.migration();
-        } catch (NamingException e) {
-            e.printStackTrace();
-        }
+//        FlyWay flyWay = new FlyWay();
+//        try {
+//            flyWay.migration();
+//        } catch (NamingException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

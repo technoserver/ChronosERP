@@ -30,7 +30,7 @@ public class UsuarioService implements Serializable {
         Usuario usuario = null;
         if (auth != null && auth.getPrincipal() != null) {
             user = (UsuarioSistema) auth.getPrincipal();
-            usuario = user.getUsuario();
+            // usuario = user.getUsuario();
         }
 
         return usuario;

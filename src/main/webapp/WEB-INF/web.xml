@@ -14,7 +14,7 @@
     </context-param>
 
     <context-param>
-        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-name>facelets.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
     
@@ -40,12 +40,12 @@
     <!--    <listener>
         <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
     </listener>-->
-    <resource-ref>
-        <description>DataSource datasource</description>
-        <res-ref-name>jdbc/chronosLightDB</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-    </resource-ref>
+    <!--<resource-ref>-->
+    <!--<description>DataSource datasource</description>-->
+    <!--<res-ref-name>jdbc/chronosLightDB</res-ref-name>-->
+    <!--<res-type>javax.sql.DataSource</res-type>-->
+    <!--<res-auth>Container</res-auth>-->
+    <!--</resource-ref>-->
     <resource-env-ref>
         <resource-env-ref-name>BeanManager</resource-env-ref-name>
         <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>

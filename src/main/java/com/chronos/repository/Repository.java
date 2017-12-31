@@ -10,6 +10,7 @@ import org.primefaces.model.SortOrder;
 import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  *
@@ -47,6 +48,8 @@ public interface Repository<T> {
     T get(Integer id, Class<T> clazz) throws PersistenceException;
 
     T get(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
+
+    Optional<T> getOptional(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
 
     T get(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException;
 
