@@ -59,16 +59,13 @@ public class EntityManagerProducer {
         logger.debug("executando conexao para o tenant " + tenant.getNome());
         final EntityManager entityManager = tenantRegistry.getEntityManagerFactory(tenant.getNome()).createEntityManager();
         return (Session) entityManager;
-//        return sessionFactory
-//                .withOptions()
-//                .tenantIdentifier(tenant.getNome())
-//                .openSession();
     }
 
     @Produces
     @RequestScoped
     @EntityManageProduceInject
     public Session createEntityManagerTenant() {
+        logger.debug("executando conexao para base administrativa ");
         return (Session) factory.createEntityManager();
     }
 
