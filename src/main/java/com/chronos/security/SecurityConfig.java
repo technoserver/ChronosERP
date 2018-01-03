@@ -5,6 +5,7 @@
  */
 package com.chronos.security;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import java.beans.PropertyVetoException;
 
 /**
  *
@@ -33,21 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AppUserDetailsService userDetailsService;
 
-//    @Bean
-//    public void migrate(){
-//        new FlyWay().migration();
-//    }
     @Bean
     public ChronosSuccessHandler chronosSuccessHandler() {
         return new ChronosSuccessHandler();
     }
 
-//    @Bean
-//    public UsuarioSistema usuarioSistema() {
-//        return new UsuarioSistema();
-//    }
-//    @Autowired
-//    private UsuarioSistema usuarioSistema;
+
+
+
 
 
     @Override

@@ -1,10 +1,12 @@
 package com.chronos.repository;
 
-import com.chronos.util.jpa.ChronosEntityManagerFactory;
 import org.primefaces.model.SortOrder;
 
 import javax.inject.Inject;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.io.Serializable;
 import java.util.List;
 
@@ -163,48 +165,48 @@ public abstract class AbstractRepository implements Serializable {
         return query;
     }
 
-    public boolean isAutoCommit() {
-        return autoCommit;
-    }
-
-    public void setAutoCommit(boolean autoCommit) {
-        this.autoCommit = autoCommit;
-    }
-
-
-    protected EntityManager abrirConexao() throws Exception {
-        if (em == null || !em.isOpen()) {
-            em = ChronosEntityManagerFactory.createEntityManager();
-            em.getTransaction().begin();
-        }
-        EntityTransaction trx = em.getTransaction();
-        if (!trx.isActive()) {
-            trx.begin();
-            trx.rollback();
-            trx.begin();
-        }
-        return em;
-    }
-
-    public void fecharConexao() throws Exception {
-        if (em != null && em.isOpen()) {
-            try {
-                if (em.getTransaction() != null && em.getTransaction().isActive()) {
-                    if (em.getTransaction().getRollbackOnly()) {
-                        em.getTransaction().rollback();
-                    } else {
-                        em.getTransaction().commit();
-                    }
-                }
-            } catch (Exception e) {
-                if (em.getTransaction() != null && em.getTransaction().isActive()) {
-                    em.getTransaction().rollback();
-                }
-                throw e;
-            } finally {
-                em.close();
-            }
-        }
-    }
+//    public boolean isAutoCommit() {
+//        return autoCommit;
+//    }
+//
+//    public void setAutoCommit(boolean autoCommit) {
+//        this.autoCommit = autoCommit;
+//    }
+//
+//
+//    protected EntityManager abrirConexao() throws Exception {
+//        if (em == null || !em.isOpen()) {
+//            em = ChronosEntityManagerFactory.createEntityManager();
+//            em.getTransaction().begin();
+//        }
+//        EntityTransaction trx = em.getTransaction();
+//        if (!trx.isActive()) {
+//            trx.begin();
+//            trx.rollback();
+//            trx.begin();
+//        }
+//        return em;
+//    }
+//
+//    public void fecharConexao() throws Exception {
+//        if (em != null && em.isOpen()) {
+//            try {
+//                if (em.getTransaction() != null && em.getTransaction().isActive()) {
+//                    if (em.getTransaction().getRollbackOnly()) {
+//                        em.getTransaction().rollback();
+//                    } else {
+//                        em.getTransaction().commit();
+//                    }
+//                }
+//            } catch (Exception e) {
+//                if (em.getTransaction() != null && em.getTransaction().isActive()) {
+//                    em.getTransaction().rollback();
+//                }
+//                throw e;
+//            } finally {
+//                em.close();
+//            }
+//        }
+//    }
 
 }

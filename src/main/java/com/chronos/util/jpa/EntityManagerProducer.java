@@ -39,14 +39,11 @@ public class EntityManagerProducer {
     @Inject
     private TenantRegistry tenantRegistry;
 
-    private SessionFactory sessionFactory;
-
     private EntityManagerFactory factory;
 
 
     public EntityManagerProducer() {
-        factory = Persistence.createEntityManagerFactory("ChronosUP");
-        this.sessionFactory = factory.unwrap(SessionFactory.class);
+        factory = Persistence.createEntityManagerFactory("ChronosAdminUP");
     }
 
 

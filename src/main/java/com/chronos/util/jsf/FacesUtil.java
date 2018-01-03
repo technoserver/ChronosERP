@@ -26,6 +26,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -148,6 +149,18 @@ public class FacesUtil {
         return user.getColaborador().getPessoa().getListaEmpresa().stream()
                 .findFirst()
                 .orElse(null);
+    }
+
+    private static HttpSession getHttpSession() {
+        return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+    }
+
+    public static BigDecimal getRestricaoTaxaMaior() {
+        return (BigDecimal) getHttpSession().getAttribute("restricaoTaxaMaior");
+    }
+
+    public static Integer getRestricaoDataMaior() {
+        return (Integer) getHttpSession().getAttribute("restricaoDataMaior");
     }
 
 

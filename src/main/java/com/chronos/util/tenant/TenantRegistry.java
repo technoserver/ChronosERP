@@ -3,6 +3,7 @@ package com.chronos.util.tenant;
 import com.chronos.modelo.entidades.tenant.Tenant;
 import com.chronos.modelo.entidades.tenant.UsuarioTenant;
 import com.chronos.repository.TenantRepository;
+import org.hibernate.MultiTenancyStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +53,12 @@ public class TenantRegistry implements Serializable {
     private EntityManagerFactory createEntityManagerFactory(final Tenant tenant) {
         final Map<String, String> props = new TreeMap<>();
         logger.debug("Criando entity manager factory para schema '" + tenant.getNome() + "' for tenant '" + tenant.getNome() + "'.");
-        props.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:5432/chronosLight?currentSchema=" + tenant.getNome());
+//        props.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:5432/chronosLight?currentSchema=" + tenant.getNome());
+//        props.put("hibernate.multiTenancy", MultiTenancyStrategy.SCHEMA.name());
+//        props.put("hibernate.multi_tenant_connection_provider", dsProvider);
+//        props.put("hibernate.tenant_identifier_resolver", tenantResolver);;
         props.put("hibernate.default_schema", tenant.getNome());
-        return Persistence.createEntityManagerFactory("ChronosUP", props);
+        return Persistence.createEntityManagerFactory("ChronosLightUP", props);
     }
 
     public EntityManagerFactory getEntityManagerFactory(final String tenantName) {

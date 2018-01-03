@@ -438,6 +438,20 @@ public class Biblioteca {
         return new SimpleDateFormat("MM/yyyy").format(dataA.getTime());
     }
 
+    public static boolean verificaDataMaior(Date dataInicial, Integer qtdeDias) {
+        Calendar dataFinal = Calendar.getInstance();
+        dataFinal.setTime(dataInicial);
+
+        Calendar dataCalculo = Calendar.getInstance();
+        dataCalculo.add(Calendar.DAY_OF_MONTH, qtdeDias);
+
+        if (dataFinal.after(dataCalculo)) {
+            return true;
+        }
+
+        return false;
+    }
+
 
     public static BigDecimal calcTaxa(BigDecimal total, BigDecimal taxa) {
         BigDecimal valor = total.multiply(taxa.divide(new BigDecimal(100)));

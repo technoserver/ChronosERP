@@ -8,6 +8,7 @@ import com.chronos.util.tenant.EntityManageProduceInject;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,5 +25,11 @@ public class TenantRepository {
         Query q = em.createQuery("SELECT u  FROM UsuarioTenant u WHERE u.login = :login");
         q.setParameter("login", nomeUsuario);
         return q.getResultList().stream().findFirst();
+    }
+
+    public List<Tenant> getTenant() {
+        Query q = em.createQuery("SELECT t  FROM Tenant t WHERE t.ativo = :ativo");
+        q.setParameter("ativo", "S");
+        return q.getResultList();
     }
 }

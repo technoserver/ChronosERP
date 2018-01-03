@@ -9,18 +9,27 @@ import com.chronos.modelo.entidades.Auditoria;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.EmpresaEndereco;
 import com.chronos.modelo.entidades.Usuario;
+import com.chronos.modelo.entidades.anotacoes.DataMaior;
+import com.chronos.modelo.entidades.anotacoes.TaxaMaior;
 import com.chronos.modelo.entidades.enuns.AcaoLog;
 import com.chronos.modelo.entidades.enuns.Estados;
 import com.chronos.repository.Repository;
+import com.chronos.repository.Usuarios;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -37,12 +46,18 @@ public abstract class AbstractControll<T> implements Serializable {
     private T objeto;
     private Auditoria log;
     protected ERPLazyDataModel<T> dataModel;
+    private String usuarioSupervisor;
+    private String senhaSupervisor;
+    private boolean necessarioAutorizacaoSupervisor = false;
+    private boolean restricaoLiberada = false;
 
     private boolean telaGrid = true;
     @Inject
     protected Repository<T> dao;
     @Inject
     private Repository<Auditoria> auditoriaRepository;
+    @Inject
+    private Usuarios usuarioRepository;
 
     private String titulo;
     private int activeTabIndex;
@@ -580,6 +595,9 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public void salvar(String mensagem) {
         try {
+            necessarioAutorizacaoSupervisor = false;
+            verificaRestricao();
+
             objeto = dao.atualizar (objeto);
             telaGrid = true;
             Mensagem.addInfoMessage(mensagem != null ? mensagem : "Registro salvo com sucesso!");
@@ -620,6 +638,51 @@ public abstract class AbstractControll<T> implements Serializable {
             auditoriaRepository.salvar(log);
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    protected void verificaRestricao() throws Exception {
+        Field fields[] = objeto.getClass().getDeclaredFields();
+        for (Field f : fields) {
+            if (f.isAnnotationPresent(TaxaMaior.class)) {
+                BigDecimal taxa = FacesUtil.getRestricaoTaxaMaior();
+                if (taxa != null) {
+                    Method metodo = objeto.getClass().getDeclaredMethod("get" + Biblioteca.primeiraMaiuscula(f.getName()));
+                    BigDecimal valorCampo = (BigDecimal) metodo.invoke(objeto);
+                    if (valorCampo != null && valorCampo.compareTo(taxa) == 1) {
+                        necessarioAutorizacaoSupervisor = true;
+                    }
+                }
+            }
+            if (f.isAnnotationPresent(DataMaior.class)) {
+                Integer qtdeDias = FacesUtil.getRestricaoDataMaior();
+                if (qtdeDias != null) {
+                    Method metodo = objeto.getClass().getDeclaredMethod("get" + Biblioteca.primeiraMaiuscula(f.getName()));
+                    Date valorCampo = (Date) metodo.invoke(objeto);
+
+                    if (valorCampo != null && Biblioteca.verificaDataMaior(valorCampo, qtdeDias)) {
+                        necessarioAutorizacaoSupervisor = true;
+                    }
+                }
+            }
+        }
+    }
+
+    public void autorizacaoSupervisor() {
+        try {
+
+
+            Usuario usuario = usuarioRepository.getUsuario(usuarioSupervisor);;
+            PasswordEncoder passwordEnocder = new BCryptPasswordEncoder();
+            if (usuario==null || !passwordEnocder.matches(senhaSupervisor, usuario.getSenha())) {
+                Mensagem.addWarnMessage("Login inválido ou usuário não tem privilégio de supervisor.");
+            } else if(usuario != null && usuario.getAdministrador() != null && usuario.getAdministrador().equals("S")){
+                restricaoLiberada = true;
+                salvar();
+            }
+        } catch (Exception e) {
+            Mensagem.addErrorMessage("Ocorreu um erro", e);
+
         }
     }
 
