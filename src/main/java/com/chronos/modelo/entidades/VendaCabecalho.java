@@ -98,6 +98,15 @@ public class VendaCabecalho implements Serializable {
     public VendaCabecalho() {
     }
 
+    public VendaCabecalho(Integer id, Date dataVenda, Integer numeroFatura, BigDecimal valorTotal, String situacao,String cliente) {
+        this.id = id;
+        this.dataVenda = dataVenda;
+        this.numeroFatura = numeroFatura;
+        this.valorTotal = valorTotal;
+        this.situacao = situacao;
+        this.cliente = new Cliente(0,cliente);
+    }
+
     public Integer getId() {
         return id;
     }

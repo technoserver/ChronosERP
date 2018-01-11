@@ -22,7 +22,7 @@ public class TenantRepository {
     private EntityManager em;
 
     public Optional<UsuarioTenant> getUser(String nomeUsuario) {
-        Query q = em.createQuery("SELECT u  FROM UsuarioTenant u WHERE u.login = :login");
+        Query q = em.createQuery("SELECT u  FROM UsuarioTenant u  JOIN FETCH u.tenant WHERE u.login = :login and u.tenant.ativo = true ");
         q.setParameter("login", nomeUsuario);
         return q.getResultList().stream().findFirst();
     }

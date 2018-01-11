@@ -1,6 +1,7 @@
 package com.chronos.controll.vendas;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
@@ -80,6 +81,19 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private Produto produto2;
 
     private String justificativa;
+
+
+    @Override
+    public ERPLazyDataModel<VendaCabecalho> getDataModel() {
+        if(dataModel == null){
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setDao(dao);
+            dataModel.setClazz(VendaCabecalho.class);
+        }
+
+        dataModel.setAtributos(new Object[]{"dataVenda","numeroFatura","valorTotal","situacao","cliente.pessoa.nome"});
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {
