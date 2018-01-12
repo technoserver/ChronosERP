@@ -3,7 +3,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:sec="http://www.springframework.org/security/tags" xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 <h:head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -18,7 +18,7 @@
           type="text/css"/>
     <!-- Ionicons 2.0.0 -->
     <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css"/>
-    <!--        <f:event type="preRenderView" listener="#{registroControll.verificarRegistro()}" />-->
+   
 
 </h:head>
 <h:body class="theme-dust page-signin" style="">
@@ -98,8 +98,8 @@
         }
     </script>
     <div class="not-a-member">
-        Precisa de Suporte? <a href="javascript:janelaSecundaria('#{configuracaoControll.config.linkSuporte}')"
-                               target="_blank">Acessar Suporte</a>
+        Precisa de Suporte? 
+        <a href="javascript:janelaSecundaria('#{configuracaoControll.config.linkSuporte}')"   target="_blank">Acessar Suporte</a>
     </div>
     <h:outputScript library="primefaces" name="jquery/jquery.js"/>
     <h:outputScript library="js" name="bootstrap.min.js"/>
