@@ -194,10 +194,10 @@ public class VendaToNFe extends ManualCDILookup {
 
     public void definirFormaPagamento() {
         FinTipoRecebimento tipoRecebimento = tipoVenda == TipoVenda.VENDA ? venda.getCondicoesPagamento().getTipoRecebimento() : os.getCondicoesPagamento().getTipoRecebimento();
-        NfceTipoPagamento tipoPagamento = new NfceTipoPagamento();
+        PdvTipoPagamento tipoPagamento = new PdvTipoPagamento();
         tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
         NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
-        nfeFormaPagamento.setNfceTipoPagamento(tipoPagamento);
+        nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
         nfeFormaPagamento.setNfeCabecalho(nfe);
         nfeFormaPagamento.setForma(tipoRecebimento.getTipo());
         nfeFormaPagamento.setValor(tipoVenda == TipoVenda.VENDA ? venda.getValorTotal() : os.getValorTotal());

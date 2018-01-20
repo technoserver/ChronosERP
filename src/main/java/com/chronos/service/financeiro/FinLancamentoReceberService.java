@@ -36,13 +36,13 @@ public class FinLancamentoReceberService implements Serializable {
     private Repository<FinLctoReceberNtFinanceira> parcelaNaturezaRepository;
 
 
-    public void gerarLancamento(BigDecimal valor, Cliente cliente, String numDocumento, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws Exception {
+    public void gerarLancamento(int id , BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws Exception {
         LancamentoReceber lancamento = new LancamentoReceber();
         lancamento.setCliente(cliente);
         lancamento.setCondicoesPagamento(condicoesPagamento);
         lancamento.setDataLancamento(new Date());
         lancamento.setValorTotal(valor);
-        lancamento.setNumDocumento(numDocumento);
+        lancamento.setId(id);
         lancamento.setCodigoModulo(codModulo);
         lancamento.setEmrpesa(empresa);
         gerarContasReceber(lancamento, naturezaFinanceira);
@@ -54,7 +54,11 @@ public class FinLancamentoReceberService implements Serializable {
         if (condicoesParcelas.getVistaPrazo().equals("1")) {
             condicoesParcelas.setParcelas(condicoes.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesParcelas.getId()));
         }
-
+        String identificador = "E" + lancamento.getEmrpesa().getId()
+                + "M" + lancamento.getCodigoModulo()
+                + "V" + lancamento.getId()
+                + "C" + lancamento.getCliente().getId()
+                + "Q" + condicoesParcelas.getParcelas().size();
 
         FinLancamentoReceber lancamentoReceber = new FinLancamentoReceber();
         lancamentoReceber.setCliente(lancamento.getCliente());
@@ -63,7 +67,7 @@ public class FinLancamentoReceberService implements Serializable {
         lancamentoReceber.setValorTotal(lancamento.getValorTotal());
         lancamentoReceber.setValorAReceber(lancamento.getValorTotal());
         lancamentoReceber.setDataLancamento(lancamento.getDataLancamento());
-        lancamentoReceber.setNumeroDocumento(lancamento.getNumDocumento());
+        lancamentoReceber.setNumeroDocumento(identificador);
         lancamentoReceber.setCodigoModuloLcto(lancamento.getCodigoModulo());
         lancamentoReceber.setEmpresa(lancamento.getEmrpesa());
 

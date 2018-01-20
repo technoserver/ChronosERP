@@ -19,21 +19,45 @@
                 </legend>
                 <div class="">
                     <h:selectOneMenu id="PedidoFormaPagamentoId"
-                                     value="#{balcaoControll.venda.condicoesPagamento}"
+                                     value="#{balcaoControll.tipoPagamento}"
+                                     class="form-control"
+                                     converter="defaultConverter">
+                        <f:selectItems value="#{balcaoControll.listTipoPagamento}" var="obj" itemValue="#{obj}"
+                                       itemLabel="#{obj.descricao}"/>
+                        <p:ajax process="@this" event="change"
+                                update=":formCentro:condicoes"
+                                listener="#{balcaoControll.definirCondicoess()}"/>
+                    </h:selectOneMenu>
+                </div>
+                <h:panelGroup id="condicoes" layout="block" styleClass="m-t">
+                    <h:selectOneMenu id="condicoesPagamento"
+                                     value="#{balcaoControll.condicaoPagamento}"
+                                     rendered="#{balcaoControll.exibirCondicoes}"
                                      class="form-control"
                                      converter="defaultConverter">
                         <f:selectItems value="#{balcaoControll.condicoesPagamentos}" var="obj" itemValue="#{obj}"
                                        itemLabel="#{obj.nome}"/>
                     </h:selectOneMenu>
-                </div>
+                </h:panelGroup>
 
                 <div class="margin-top-10px row">
                     <div class="col-sm-8 col-md-8 col-lg-8">
                         <h4>TOTAL PAGO</h4>
                         <div class="input-group">
                             <p:inputNumber id="PedidoValorPago"
-                                           readonly="true"
-                                           value="#{balcaoControll.venda.valorTotal}"/>
+                                           styleClass="input-valor-pagar"
+                                           value="#{balcaoControll.valorPago}"/>
+                            <p:commandLink class="input-group-addon btn btn-lg btn-primary"
+                                           action="#{balcaoControll.lancaPagamento}"
+                                           disabled="#{balcaoControll.podeLancaPagamento}"
+                                           update=":formCentro:botao-confirma-pagamento,:formCentro:mensagem,:formCentro:tablePagamentos,:formCentro:PedidoValorPago,:formCentro:panelValoresPagamento"
+                                           process="@this,:formCentro:PedidoFormaPagamentoId,:formCentro:PedidoValorPago"
+                                           id="botao-confirma-pagamento"
+                                           style="background-color: #1ab394">
+                                <h4 style="color:#FFFFFF">
+                                    <i class="fa fa-angle-double-right margin-right-10px"></i>Confirmar
+                                </h4>
+                            </p:commandLink>
 
                         </div>
                     </div>
@@ -48,7 +72,7 @@
                     </h3>
                 </legend>
                 <div class="table-responsive">
-                    <h:dataTable value="#{balcaoControll.venda.listaVendaDetalhe}" var="row"
+                    <h:dataTable value="#{balcaoControll.venda.listaPdvVendaDetalhe}" var="row"
                                  class="table table-striped">
                         <h:column>
                             <f:facet name="header">
@@ -84,7 +108,40 @@
                 </div>
             </fieldset>
         </div>
-        <div class="col-sm-6 col-md-6 col-lg-6">
+        <h:panelGroup layout="block" class="col-sm-6 col-md-6 col-lg-6" id="panelValoresPagamento">
+
+            <fieldset id="box-pagamentos" class="muted" style="padding:0 !important">
+                <legend>
+                    <h3 class="margin-top-0">
+                        <i class="fa icon-resellerhosting margin-right-10px"></i>Pagamentos
+                    </h3>
+                </legend>
+                <h:dataTable id="tablePagamentos" var="pag" value="#{balcaoControll.venda.listaFormaPagamento}"
+                             width="100%" cellpadding="5" cellspacing="5">
+                    <h:column>
+                        #{pag.pdvTipoPagamento.descricao}
+                        <small><i class="text-muted">(1x)</i></small>
+                    </h:column>
+                    <h:column class="nowrap" width="1">
+                        R$
+                        <h:outputText value="#{pag.valor}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column width="1">
+                        <p:commandLink type="button"
+                                       process="@this,:formCentro:tablePagamentos"
+                                       update=":formCentro:panelValoresPagamento,:formCentro:tablePagamentos,:formCentro:PedidoValorPago,:formCentro:botao-confirma-pagamento"
+                                       action="#{balcaoControll.excluirPagamento}"
+                                       class="btn btn-md btn-danger remove-pagamento">
+                            <i class="glyphicon glyphicon-remove"></i>
+                            <f:setPropertyActionListener value="#{pag}"
+                                                         target="#{balcaoControll.formaPagamentoSelecionado}"/>
+                        </p:commandLink>
+                    </h:column>
+                </h:dataTable>
+            </fieldset>
+
             <fieldset class="muted" style="padding:0 !important">
                 <legend>
                     <h3 class="margin-top-0">
@@ -93,35 +150,106 @@
                 </legend>
                 <table width="100%" cellpadding="5" cellspacing="0" class="margin-bottom-10px">
                     <tbody>
-                    <tr class="border-bottom-1px">
-                        <td>
-                            <h4>SUBTOTAL:</h4>
-                        </td>
-                        <td class="nowrap" width="1">
-                            <h4>R$ <span id="sub-total">#{balcaoControll.venda.valorSubTotalFormatado()}</span></h4>
-                        </td>
-                    </tr>
-                    <tr class="border-bottom-1px">
-                        <td><h4>DESCONTOS:</h4></td>
-                        <td class="nowrap" width="1"><h4>R$ <span
-                                id="descontos">#{balcaoControll.venda.valorDescontoFormatado()}</span></h4></td>
-                    </tr>
-                    <tr>
-                        <td><h4>TOTAL A PAGAR:</h4></td>
-                        <td class="nowrap" width="1"><h4>R$ <span
-                                id="valor-receber">#{balcaoControll.venda.valorTotalFormatado()}</span></h4></td>
-                    </tr>
+                        <tr class="border-bottom-1px">
+                            <td>
+                                <h4>SUBTOTAL:</h4>
+                            </td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="sub-total">
+                                        <h:outputText value="#{balcaoControll.venda.valorSubtotal}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4>DESCONTOS:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="descontos">
+                                        <h:outputText value="#{balcaoControll.desconto}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4>ACRECIMOS:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="acrescimos">
+                                        <h:outputText value="#{balcaoControll.acrescimo}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4>PAGAMENTOS:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="pagamentos">
+                                        <h:outputText value="#{balcaoControll.totalRecebido}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4>RESTANTE:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="restante">
+                                        <h:outputText value="#{balcaoControll.saldoRestante}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+
+                        <tr class="border-bottom-1px">
+                            <td><h4>TROCO:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="troco">
+                                        <h:outputText value="#{balcaoControll.troco}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><h4>TOTAL A PAGAR:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="valor-receber">
+                                        <h:outputText value="#{balcaoControll.totalReceber}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </fieldset>
             <div class="both margin-top-10px text-right">
-                <h:commandLink id="botao-finalizar"
+                <p:commandLink id="botao-finalizar"
                                action="#{balcaoControll.faturarVenda}"
+                               disabled="#{!balcaoControll.podeFinalzarVenda}"
                                class="btn btn-lg btn-success">
-                    <span class="glyphicon glyphicon-ok margin-right-10px"></span>Finalizar
+                    <i class="glyphicon glyphicon-ok margin-right-10px"></i>Finalizar
                     <p:ajax update=":formCentro:growl,formCentro:tela-pagamento,:formCentro:telaPdv"
                             process="@form"/>
-                </h:commandLink>
+                </p:commandLink>
                 &nbsp;
                 <h:commandLink class="btn btn-lg btn-danger"
                                action="#{balcaoControll.cancelar}">
@@ -129,7 +257,7 @@
                     <span class="glyphicon glyphicon-remove margin-right-10px"></span>Cancelar
                 </h:commandLink>
             </div>
-        </div>
+        </h:panelGroup>
     </div>
 
 </ui:composition>

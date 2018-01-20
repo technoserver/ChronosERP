@@ -48,7 +48,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     @Inject
     private EstoqueRepository estoqueRepositoy;
     @Inject
-    private Repository<NfceTipoPagamento> tipoPagamentoRepository;
+    private Repository<PdvTipoPagamento> tipoPagamentoRepository;
 
 
     @Inject
@@ -59,7 +59,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeDetalhe nfeDetalheSelecionado;
     private NfeReferenciada nfeReferenciada;
     private NfeReferenciada nfeReferenciadaSelecionado;
-    private NfceTipoPagamento tipoPagamento;
+    private PdvTipoPagamento tipoPagamento;
     private VendaCondicoesPagamento condicoesPagamento;
     private NfeConfiguracao configuracao;
     private int qtdParcelas;
@@ -121,7 +121,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         try {
             super.doEdit();
             NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
-            tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getNfceTipoPagamento();
+            tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getPdvTipoPagamento();
             setObjeto(nfe);
             dadosSalvos = true;
         } catch (Exception ex) {
@@ -137,7 +137,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             nfeService.validacaoNfe(getObjeto());
             if (getObjeto().getId() == null) {
                 NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
-                nfeFormaPagamento.setNfceTipoPagamento(tipoPagamento);
+                nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
                 nfeFormaPagamento.setNfeCabecalho(getObjeto());
                 nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
                 nfeFormaPagamento.setValor(getObjeto().getValorTotal());
@@ -560,14 +560,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         nfeDetalhe.setValorUnitarioComercial(Optional.ofNullable(produto.getValorVenda()).orElse(BigDecimal.ZERO));
     }
 
-    public List<NfceTipoPagamento> getListaNfceTipoPagamento(String nome) {
-        List<NfceTipoPagamento> listaNfceTipoPagamento = new ArrayList<>();
+    public List<PdvTipoPagamento> getListaNfceTipoPagamento(String nome) {
+        List<PdvTipoPagamento> listaPdvTipoPagamento = new ArrayList<>();
         try {
-            listaNfceTipoPagamento = tipoPagamentoRepository.getEntitys(NfceTipoPagamento.class, "descricao", nome);
+            listaPdvTipoPagamento = tipoPagamentoRepository.getEntitys(PdvTipoPagamento.class, "descricao", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        return listaNfceTipoPagamento;
+        return listaPdvTipoPagamento;
     }
 
     // </editor-fold>
@@ -703,11 +703,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         this.justificativa = justificativa;
     }
 
-    public NfceTipoPagamento getTipoPagamento() {
+    public PdvTipoPagamento getTipoPagamento() {
         return tipoPagamento;
     }
 
-    public void setTipoPagamento(NfceTipoPagamento tipoPagamento) {
+    public void setTipoPagamento(PdvTipoPagamento tipoPagamento) {
         this.tipoPagamento = tipoPagamento;
     }
 

@@ -68,7 +68,7 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
 
         endereco = getObjeto().getListaEndereco().stream().filter((e) -> e.getPrincipal().equals("S")).findFirst().orElse(new EmpresaEndereco());
         cidade = new Municipio(0, endereco.getCidade(), endereco.getMunicipioIbge());
-
+        logo = getObjeto().getImagemLogotipo();
     }
 
     @Override
@@ -113,6 +113,9 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
         }
     }
 
+    public boolean isPodeCadastrarEmpresa(){
+        return FacesUtil.isUserInRole("SOFTHOUSE");
+    }
 
     @Override
     protected Class<Empresa> getClazz() {

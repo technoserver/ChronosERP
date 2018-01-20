@@ -10,10 +10,10 @@ import java.util.Optional;
 
 
 @Entity
-@Table(name = "NFCE_MOVIMENTO")
-public class NfceMovimento implements Serializable {
+@Table(name = "PDV_MOVIMENTO")
+public class PdvMovimento implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -35,7 +35,8 @@ public class NfceMovimento implements Serializable {
     private BigDecimal totalSuprimento;
     @Column(name = "TOTAL_SANGRIA")
     private BigDecimal totalSangria;
-    @Column(name = "TOTAL_NAO_FISCAL")
+//    @Column(name = "TOTAL_NAO_FISCAL")
+    @Transient
     private BigDecimal totalNaoFiscal;
     @Column(name = "TOTAL_VENDA")
     private BigDecimal totalVenda;
@@ -56,17 +57,54 @@ public class NfceMovimento implements Serializable {
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
-    @JoinColumn(name = "ID_NFCE_TURNO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PDV_TURNO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NfceTurno nfceTurno;
-    @JoinColumn(name = "ID_NFCE_OPERADOR", referencedColumnName = "ID")
+    private PdvTurno pdvTurno;
+    @JoinColumn(name = "ID_PDV_OPERADOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NfceOperador nfceOperador;
-    @JoinColumn(name = "ID_NFCE_CAIXA", referencedColumnName = "ID")
+    private PdvOperador pdvOperador;
+    @JoinColumn(name = "ID_PDV_CAIXA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NfceCaixa nfceCaixa;
+    private PdvCaixa pdvCaixa;
 
-    public NfceMovimento() {
+    public PdvMovimento() {
+        this.totalRecebido = BigDecimal.ZERO;
+        this.totalAcrescimo = BigDecimal.ZERO;
+        this.totalCancelado = BigDecimal.ZERO;
+        this.totalDesconto = BigDecimal.ZERO;
+        this.totalFinal = BigDecimal.ZERO;
+        this.totalSangria = BigDecimal.ZERO;
+        this.totalSuprimento = BigDecimal.ZERO;
+        this.totalTroco = BigDecimal.ZERO;
+        this.totalVenda = BigDecimal.ZERO;
+        this.statusMovimento = "A";
+        this.pdvTurno = new PdvTurno(1);
+        this.pdvCaixa = new PdvCaixa(1);
+        this.pdvOperador = new PdvOperador(1);
+
+    }
+
+    public PdvMovimento(Integer id, Integer idGerenteSupervisor, Date dataAbertura, String horaAbertura, Date dataFechamento, String horaFechamento, BigDecimal totalSuprimento, BigDecimal totalSangria, BigDecimal totalVenda, BigDecimal totalDesconto, BigDecimal totalAcrescimo,  BigDecimal totalFinal,BigDecimal totalRecebido, BigDecimal totalTroco, BigDecimal totalCancelado, String statusMovimento,Integer idempresa) {
+        this.id = id;
+        this.idGerenteSupervisor = idGerenteSupervisor;
+        this.dataAbertura = dataAbertura;
+        this.horaAbertura = horaAbertura;
+        this.dataFechamento = dataFechamento;
+        this.horaFechamento = horaFechamento;
+        this.totalSuprimento = totalSuprimento;
+        this.totalSangria = totalSangria;
+        this.totalFinal = totalFinal;
+        this.totalVenda = totalVenda;
+        this.totalDesconto = totalDesconto;
+        this.totalAcrescimo = totalAcrescimo;
+        this.totalRecebido = totalRecebido;
+        this.totalTroco = totalTroco;
+        this.totalCancelado = totalCancelado;
+        this.statusMovimento = statusMovimento;
+        this.empresa = new Empresa(1);
+        this.pdvTurno = new PdvTurno(1);
+        this.pdvOperador = new PdvOperador(1);
+        this.pdvCaixa = new PdvCaixa(1);
     }
 
     public Integer getId() {
@@ -223,41 +261,41 @@ public class NfceMovimento implements Serializable {
         this.empresa = empresa;
     }
 
-    public NfceTurno getNfceTurno() {
-        return nfceTurno;
+    public PdvTurno getPdvTurno() {
+        return pdvTurno;
     }
 
-    public void setNfceTurno(NfceTurno nfceTurno) {
-        this.nfceTurno = nfceTurno;
+    public void setPdvTurno(PdvTurno pdvTurno) {
+        this.pdvTurno = pdvTurno;
     }
 
-    public NfceOperador getNfceOperador() {
-        return nfceOperador;
+    public PdvOperador getPdvOperador() {
+        return pdvOperador;
     }
 
-    public void setNfceOperador(NfceOperador nfceOperador) {
-        this.nfceOperador = nfceOperador;
+    public void setPdvOperador(PdvOperador pdvOperador) {
+        this.pdvOperador = pdvOperador;
     }
 
-    public NfceCaixa getNfceCaixa() {
-        return nfceCaixa;
+    public PdvCaixa getPdvCaixa() {
+        return pdvCaixa;
     }
 
-    public void setNfceCaixa(NfceCaixa nfceCaixa) {
-        this.nfceCaixa = nfceCaixa;
+    public void setPdvCaixa(PdvCaixa pdvCaixa) {
+        this.pdvCaixa = pdvCaixa;
     }
-
 
     public BigDecimal calcularTotalFinal() {
-        totalFinal = BigDecimal.ZERO;
+        BigDecimal valor = BigDecimal.ZERO;
 
-        totalFinal = totalFinal
+        totalFinal = valor
                 .add(getTotalAcrescimo())
                 .subtract(getTotalDesconto())
                 .subtract(getTotalSangria())
                 .add(getTotalSuprimento())
                 .add(getTotalRecebido())
-                .add(getTotalVenda());
+                .add(getTotalVenda())
+                .add(getTotalFinal());
 
 
         return totalFinal;

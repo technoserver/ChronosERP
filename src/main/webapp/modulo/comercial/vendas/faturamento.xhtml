@@ -1,0 +1,166 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-5 col-md-5">
+
+            <fieldset class="muted">
+                <legend>
+                    <h3 class="margin-top-0">
+                        <i class="fa fa-money margin-right-10px"></i>Forma de pagamento
+                    </h3>
+                </legend>
+                <div class="">
+                    <h:selectOneMenu id="PedidoFormaPagamentoId"
+                                     value="#{vendaCabecalhoControll.tipoPagamento}"
+                                     class="form-control"
+                                     converter="defaultConverter">
+                        <f:selectItems value="#{vendaCabecalhoControll.listTipoPagamento}" var="obj" itemValue="#{obj}"
+                                       itemLabel="#{obj.descricao}"/>
+                    </h:selectOneMenu>
+                </div>
+
+                <div class="margin-top-10px row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <h4>TOTAL PAGO</h4>
+                        <div class="input-group">
+                            <p:inputNumber id="PedidoValorPago"
+                                           styleClass="valor-pago"
+                                           value="#{vendaCabecalhoControll.valorPago}"/>
+
+                            <h:commandLink class="input-group-addon btn btn-lg btn-primary"
+                                           action="#{vendaCabecalhoControll.lancaPagamento}"
+                                           disabled="#{vendaCabecalhoControll.podeLancaPagamento}"
+                                           id="botao-confirma-pagamento"
+                                           style="background-color: #00c6c6">
+                                <p:ajax update=":formOutrasTelas4:botao-confirma-pagamento,:formCentro:mensagem,:formOutrasTelas4:tablePagamentos,:formOutrasTelas4:PedidoValorPago,formOutrasTelas4:panelFaturamento"
+                                        process="@this,:formOutrasTelas4:PedidoValorPago,:formOutrasTelas4:PedidoFormaPagamentoId"/>
+                                <h4 style="color:#FFFFFF">
+                                    <i class="fa fa-angle-double-right margin-right-10px"></i>Confirmar
+                                </h4>
+                            </h:commandLink>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+
+        </div>
+        <div class="col-xs-12 col-sm-7 col-md-7">
+
+            <fieldset id="forma-pagamentos" class="muted" style="padding:0 !important">
+                <legend>
+                    <h3 class="margin-top-0">
+                        <i class="fa icon-resellerhosting margin-right-10px"></i>Pagamentos
+                    </h3>
+                </legend>
+                <h:dataTable id="tablePagamentos" var="pag" value="#{vendaCabecalhoControll.objeto.listaVendaFormaPagamento}"
+                             width="100%" cellpadding="5" cellspacing="5">
+                    <h:column>
+                        #{pag.pdvTipoPagamento.descricao}
+                        <small><i class="text-muted">(1x)</i></small>
+                    </h:column>
+                    <h:column class="nowrap" width="1">
+                        R$
+                        <h:outputText value="#{pag.valor}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column width="1">
+                        <p:commandLink type="button"
+                                       process="@this,:formCentro:tablePagamentos"
+
+                                       action="#{vendaCabecalhoControll.excluirPagamento}"
+                                       class="btn btn-md btn-danger remove-pagamento">
+                            <i class="glyphicon glyphicon-remove"></i>
+                            <f:setPropertyActionListener value="#{pag}"
+                                                         target="#{vendaCabecalhoControll.formaPagamentoSelecionado}"/>
+                        </p:commandLink>
+                    </h:column>
+                </h:dataTable>
+            </fieldset>
+        </div>
+
+        <div class="col-xs-12 col-sm-12">
+            <fieldset id="box-pagamentos" class="muted" style="padding:0 !important">
+
+                <legend>
+                    <h3 class="margin-top-0">
+                        <i class="fa icon-resellerhosting margin-right-10px"></i>Pagamentos
+                    </h3>
+                </legend>
+                <table width="100%" cellpadding="5" cellspacing="0" class="margin-bottom-10px">
+                    <tbody>
+                    <tr class="border-bottom-1px">
+                        <td>
+                            <h4>SUBTOTAL:</h4>
+                        </td>
+                        <td class="nowrap" width="1">
+                            <h4>R$ <span id="sub-total">0</span></h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>DESCONTOS:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="descontos">0</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>ACRECIMOS:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="acrescimos">0</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>PAGAMENTOS:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="pagamentos">0</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>RESTANTE:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="restante">0</span>
+                            </h4>
+                        </td>
+                    </tr>
+
+                    <tr class="border-bottom-1px">
+                        <td><h4>TROCO:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="troco">0</span>
+                            </h4>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><h4>TOTAL A PAGAR:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="valor-receber">0</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+
+        </div>
+    </div>
+
+</ui:composition>

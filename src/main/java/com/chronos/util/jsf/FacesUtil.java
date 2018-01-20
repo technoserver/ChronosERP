@@ -5,11 +5,9 @@
  */
 package com.chronos.util.jsf;
 
-import com.chronos.modelo.entidades.AdmModulo;
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.PapelFuncao;
-import com.chronos.modelo.entidades.Usuario;
+import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.tenant.Tenant;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.repository.Usuarios;
 import com.chronos.security.UsuarioSistema;
@@ -28,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -200,4 +199,38 @@ public class FacesUtil {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    public static PdvMovimento getMovimento() {
+
+        PdvMovimento movimento = null;
+        try{
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+            movimento = (PdvMovimento) session.getAttribute("caixaERP");
+            if(movimento==null){
+                Repository<PdvMovimento> repository = CDIServiceLocator.getBean(Repository.class);
+                List<Filtro> filtros = new ArrayList<>();
+                filtros.add(new Filtro("statusMovimento","A"));
+                filtros.add(new Filtro("pdvTurno.id",1));
+                filtros.add(new Filtro("pdvCaixa.id",1));
+                filtros.add(new Filtro("pdvOperador.id",1));
+                Object[] atributos;
+                atributos = new Object[]{"idGerenteSupervisor","dataAbertura","horaAbertura","dataFechamento","horaFechamento","totalSuprimento","totalSangria","totalVenda","totalDesconto","totalAcrescimo","totalFinal","totalRecebido","totalTroco","totalCancelado","statusMovimento","empresa.id"};
+                movimento = repository.get(PdvMovimento.class,filtros,atributos);
+                session.setAttribute("caixaERP", movimento);
+            }
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return movimento;
+    }
+
+    public static void setMovimento(PdvMovimento movimento) {
+        try{
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+            session.removeAttribute("caixaERP");
+            session.setAttribute("caixaERP", movimento);
+        }catch (Exception ex){
+
+        }
+    }
 }

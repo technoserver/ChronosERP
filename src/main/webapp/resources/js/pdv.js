@@ -63,6 +63,6 @@ $(document).bind('keydown', function (event) {
 
 });
 $(document).ready(function () {
-    $('.navbar-minimalize').trigger('click');
+    //$('.navbar-minimalize').trigger('click');
     $('.inputs input').addClass('quantidade col-sm-12 col-md-12 col-lg-12 form-control-table');
 });

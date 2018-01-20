@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "NFCE_TURNO")
-public class NfceTurno implements Serializable {
+@Table(name = "PDV_TURNO")
+public class PdvTurno implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -23,7 +23,11 @@ public class NfceTurno implements Serializable {
     @Column(name = "HORA_FIM")
     private String horaFim;
 
-    public NfceTurno() {
+    public PdvTurno() {
+    }
+
+    public PdvTurno(Integer id) {
+        this.id = id;
     }
 
     public Integer getId() {
@@ -59,8 +63,17 @@ public class NfceTurno implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return "com.t2tierp.model.bean.nfce.NfceTurno[id=" + id + "]";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PdvTurno)) return false;
+
+        PdvTurno pdvTurno = (PdvTurno) o;
+
+        return getId() != null ? getId().equals(pdvTurno.getId()) : pdvTurno.getId() == null;
     }
 
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }

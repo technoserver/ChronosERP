@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 
 
 @Entity
-@Table(name = "NFCE_FECHAMENTO")
-public class NfceFechamento implements Serializable, Comparable<NfceFechamento> {
+@Table(name = "PDV_FECHAMENTO")
+public class PdvFechamento implements Serializable, Comparable<PdvFechamento> {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -23,9 +23,9 @@ public class NfceFechamento implements Serializable, Comparable<NfceFechamento> 
     private BigDecimal valor;
     @JoinColumn(name = "ID_NFCE_MOVIMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NfceMovimento nfceMovimento;
+    private PdvMovimento pdvMovimento;
 
-    public NfceFechamento() {
+    public PdvFechamento() {
     }
 
     public Integer getId() {
@@ -52,12 +52,12 @@ public class NfceFechamento implements Serializable, Comparable<NfceFechamento> 
         this.valor = valor;
     }
 
-    public NfceMovimento getNfceMovimento() {
-        return nfceMovimento;
+    public PdvMovimento getPdvMovimento() {
+        return pdvMovimento;
     }
 
-    public void setNfceMovimento(NfceMovimento nfceMovimento) {
-        this.nfceMovimento = nfceMovimento;
+    public void setPdvMovimento(PdvMovimento pdvMovimento) {
+        this.pdvMovimento = pdvMovimento;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class NfceFechamento implements Serializable, Comparable<NfceFechamento> 
     }
 
     @Override
-    public int compareTo(NfceFechamento outro) {
+    public int compareTo(PdvFechamento outro) {
         if (this.getTipoPagamento().equals(outro.getTipoPagamento())) {
             return -1;
         }

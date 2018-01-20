@@ -5,17 +5,19 @@ import com.chronos.dto.ProdutoDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.SituacaoVenda;
-import com.chronos.modelo.entidades.enuns.TipoFrete;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.service.comercial.VendaPdvService;
 import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,7 +41,7 @@ public class BalcaoControll implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private Repository<VendaCabecalho> vendas;
+    private Repository<PdvVendaCabecalho> vendas;
     @Inject
     private Repository<EmpresaProduto> produtos;
     @Inject
@@ -55,23 +57,34 @@ public class BalcaoControll implements Serializable {
     @Inject
     private Repository<TributOperacaoFiscal> operacaoRepository;
     @Inject
+    private Repository<PdvTipoPagamento> tipoPagamentoRepository;
+    @Inject
     private UsuarioService userService;
     @Inject
     private FinLancamentoReceberService recebimentoService;
     @Inject
     private NfeService nfeService;
+    @Inject
+    private VendaPdvService service;
 
     @Inject
     private VendaService vendaService;
 
-    private VendaCabecalho venda;
-    private VendaDetalhe item;
+    @Inject
+    protected FacesContext facesContext;
+
+    private PdvVendaCabecalho venda;
+    private PdvVendaDetalhe item;
+    private PdvTipoPagamento tipoPagamento;
+    private List<PdvTipoPagamento> listTipoPagamento;
+    private PdvFormaPagamento formaPagamentoSelecionado;
     private Empresa empresa;
     private Usuario usuario;
     private Vendedor vendedor;
     private Cliente cliente;
     private ProdutoDTO produto;
     private List<Vendedor> listVendedores;
+    private VendaCondicoesPagamento condicaoPagamento;
     private List<VendaCondicoesPagamento> condicoesPagamentos;
     private BigDecimal desconto;
 
@@ -81,73 +94,66 @@ public class BalcaoControll implements Serializable {
     private boolean telaVenda;
     private boolean telaPagamentos;
     private boolean telaImpressao;
+    private boolean telaCaixa;
+    private boolean exibirCondicoes;
+    private boolean telaGrid = true;
+    private BigDecimal totalVenda;
+    private BigDecimal acrescimo;
+    private BigDecimal totalReceber;
+    private BigDecimal troco;
+    private BigDecimal totalRecebido;
+    private BigDecimal saldoRestante;
+    private BigDecimal valorPago;
+
+
+
+    public String doBalcao() {
+        return verificarMovimento();
+    }
 
     @PostConstruct
     private void init() {
-        novaVenda();
+
+        empresa = FacesUtil.getEmpresaUsuario();
+        usuario = FacesUtil.getUsuarioSessao();
+
     }
 
     public void novaVenda() {
+
         telaVenda = true;
         telaPagamentos = false;
-        empresa = userService.getEmpresaUsuario();
-        usuario = userService.getUsuarioLogado();
-        venda = new VendaCabecalho();
+        venda = new PdvVendaCabecalho();
         venda.setEmpresa(empresa);
-        venda.setListaVendaDetalhe(new ArrayList<>());
-        venda.setDataVenda(new Date());
-        venda.setSituacao(SituacaoVenda.Digitacao.getCodigo());
-        venda.setTipoFrete(TipoFrete.CIF.getCodigo());
+        venda.setListaPdvVendaDetalhe(new ArrayList<>());
+        venda.setDataHoraVenda(new Date());
+        venda.setStatusVenda(SituacaoVenda.Digitacao.getCodigo());
         vendedor = instanciarVendedor(usuario);
-        cliente = new Cliente(1, "CLIENTE PADRAO");
         venda.setVendedor(vendedor);
-        venda.setCliente(cliente);
-        item = new VendaDetalhe();
+        item = new PdvVendaDetalhe();
         desconto = BigDecimal.ZERO;
         telaPagamentos = false;
         telaVenda = true;
         telaImpressao = false;
+        exibirCondicoes = false;
     }
 
-    public void finalizarVenda() {
 
-        if (venda.getListaVendaDetalhe().isEmpty()) {
-            Mensagem.addInfoMessage("Não foi adcionado nenhum item");
-        } else if (cliente == null) {
-            Mensagem.addInfoMessage("É preciso informar o cliente");
-        } else {
-            telaVenda = false;
-            telaPagamentos = true;
-        }
 
-        if (condicoesPagamentos == null) {
-            condicoesPagamentos = condicoes.getAll(VendaCondicoesPagamento.class);
-        }
-
-    }
-
-    public void faturarVenda() {
-
-        try {
-
-            if (cliente.getId() == 1 && !venda.getCondicoesPagamento().getVistaPrazo().equals("0")) {
-                Mensagem.addErrorMessage("Venda para cliente padrão não pode ser parcelada");
-                return;
+    public String verificarMovimento(){
+        try{
+            PdvMovimento movimento = FacesUtil.getMovimento();
+            if(movimento == null ){
+                return "/modulo/comercial/caixa/movimentos.xhtml";
+            }else{
+                return "/modulo/comercial/vendas/balcao.xhtml";
             }
-
-            telaVenda = false;
-            telaPagamentos = false;
-            telaImpressao = true;
-
-            venda = vendaService.faturarVenda(venda);
-            Mensagem.addInfoMessage("Venda faturada com sucesso");
-        } catch (Exception ex) {
+        }catch (Exception ex){
             ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
+            throw new RuntimeException("Não foi possivel fazer o redirecionamento para o abertura de caixa");
         }
 
     }
-
 
 
     public void cancelar() {
@@ -165,7 +171,7 @@ public class BalcaoControll implements Serializable {
                 venda.getCliente().setTributOperacaoFiscal(operacao);
             }
             boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
-            vendaService.transmitirNFe(venda, modelo, estoque);
+          //  vendaService.transmitirNFe(venda, modelo, estoque);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
@@ -174,8 +180,8 @@ public class BalcaoControll implements Serializable {
 
     public void danfe() {
         try {
-            int idnfe = venda.getNumeroFatura();
-            NfeCabecalho nfe = nfeRepository.get(idnfe, NfeCabecalho.class);
+
+            NfeCabecalho nfe = null;//nfeRepository.get(idnfe, NfeCabecalho.class);
             ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
             ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
             nfeService.danfe(nfe, configuracao);
@@ -202,8 +208,8 @@ public class BalcaoControll implements Serializable {
     public void selecionarProduto(SelectEvent event) {
         ProdutoDTO produtoSelecionado = (ProdutoDTO) event.getObject();
         desconto = BigDecimal.ZERO;
-        item = new VendaDetalhe();
-        item.setVendaCabecalho(venda);
+        item = new PdvVendaDetalhe();
+        item.setPdvVendaCabecalho(venda);
         item.setValorUnitario(produtoSelecionado.getProduto().getValorVenda());
         item.setQuantidade(BigDecimal.ONE);
         item.setProduto(produtoSelecionado.getProduto());
@@ -229,23 +235,23 @@ public class BalcaoControll implements Serializable {
     }
 
     public void addProduto() {
-        Optional<VendaDetalhe> itemOpt = getItemVenda(item.getProduto());
+        Optional<PdvVendaDetalhe> itemOpt = getItemVenda(item.getProduto());
         BigDecimal quantidade = item.getQuantidade();
         if (itemOpt.isPresent()) {
             item = itemOpt.get();
             item.setQuantidade(quantidade);
         } else {
-            venda.getListaVendaDetalhe().add(0, item);
+            venda.getListaPdvVendaDetalhe().add(0, item);
         }
 
         venda.calcularValorTotal();
-        item = new VendaDetalhe();
+        item = new PdvVendaDetalhe();
         produto = new ProdutoDTO();
 
     }
 
     public void alterarQuantidade(Produto produto, BigDecimal quantidade) {
-        Optional<VendaDetalhe> itemOpt = getItemVenda(produto);
+        Optional<PdvVendaDetalhe> itemOpt = getItemVenda(produto);
         if (itemOpt.isPresent()) {
             itemOpt.get().setQuantidade(quantidade);
         }
@@ -253,13 +259,13 @@ public class BalcaoControll implements Serializable {
 
     public void excluir(Produto produto) {
 
-        int indice = IntStream.range(0, venda.getListaVendaDetalhe().size()).filter(i -> venda.getListaVendaDetalhe().get(i).getProduto().equals(produto)).findAny()
+        int indice = IntStream.range(0, venda.getListaPdvVendaDetalhe().size()).filter(i -> venda.getListaPdvVendaDetalhe().get(i).getProduto().equals(produto)).findAny()
                 .getAsInt();
-        venda.getListaVendaDetalhe().remove(indice);
+        venda.getListaPdvVendaDetalhe().remove(indice);
     }
 
-    private Optional<VendaDetalhe> getItemVenda(Produto produto) {
-        return venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().equals(produto)).findAny();
+    private Optional<PdvVendaDetalhe> getItemVenda(Produto produto) {
+        return venda.getListaPdvVendaDetalhe().stream().filter(i -> i.getProduto().equals(produto)).findAny();
 
     }
 
@@ -283,7 +289,10 @@ public class BalcaoControll implements Serializable {
     }
 
     public void selecionarCliente() {
-        venda.setCliente(cliente);
+        if(cliente.getId()!=null){
+            venda.setCliente(cliente);
+        }
+
     }
 
     // </editor-fold>
@@ -310,6 +319,165 @@ public class BalcaoControll implements Serializable {
         listVendedores = vendedores.getEntitys(Vendedor.class);
     }
     // </editor-fold>
+
+
+
+
+    // <editor-fold defaultstate="collapsed" desc="Procedimentos Pagamentos ">
+    public void iniciarPagamentosVenda() {
+        telaVenda = true;
+        telaImpressao = false;
+        telaCaixa = false;
+        telaPagamentos = false;
+        exibirCondicoes = false;
+
+        if (venda.getListaPdvVendaDetalhe().isEmpty()) {
+            Mensagem.addInfoMessage("Não foram informados itens nessa venda");
+        } else {
+            telaVenda = false;
+            telaImpressao = false;
+            telaCaixa = false;
+            telaPagamentos = true;
+            listTipoPagamento = tipoPagamentoRepository.getAll(PdvTipoPagamento.class);
+        }
+
+        totalVenda = BigDecimal.ZERO;
+        desconto = BigDecimal.ZERO;
+        acrescimo = BigDecimal.ZERO;
+        totalReceber = BigDecimal.ZERO;
+        troco = BigDecimal.ZERO;
+        totalRecebido = BigDecimal.ZERO;
+        saldoRestante = BigDecimal.ZERO;
+
+        //guarda valores para calculo
+        totalVenda = venda.getValorTotal();
+        desconto = venda.getValorDesconto();
+        acrescimo = BigDecimal.ZERO;
+        totalReceber = Biblioteca.soma(totalVenda, acrescimo);
+        totalReceber = Biblioteca.subtrai(totalReceber, desconto);
+        saldoRestante = totalReceber;
+
+        valorPago = saldoRestante;
+        venda.setListaFormaPagamento(new ArrayList<>());
+    }
+
+    public void lancaPagamento() {
+        try {
+
+            if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
+                Mensagem.addInfoMessage("Todos os valores já foram recebidos. Finalize a venda.");
+            } else {
+                if (cliente==null && tipoPagamento.getGeraParcelas().equals("S")) {
+                    Mensagem.addInfoMessage("Para gera contas a receber é preciso informar um cliente");
+                } else {
+
+                    incluiPagamento(tipoPagamento, valorPago);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+        }
+
+
+    }
+
+    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) throws Exception {
+        Optional<PdvFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
+        if (formaPagamentoOpt.isPresent()) {
+            Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
+        } else {
+            if(totalReceber.compareTo(valorPago)<0 && tipoPagamento.getPermiteTroco().equals("N")){
+                Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " não permite troco");
+            }else {
+                PdvFormaPagamento formaPagamento = new PdvFormaPagamento();
+                formaPagamento.setPdvVendaCabecalho(venda);
+                formaPagamento.setPdvTipoPagamento(tipoPagamento);
+                formaPagamento.setValor(valor);
+                formaPagamento.setForma(tipoPagamento.getCodigo());
+                formaPagamento.setEstorno("N");
+
+                venda.getListaFormaPagamento().add(formaPagamento);
+
+
+                totalRecebido = Biblioteca.soma(totalRecebido, valor);
+                troco = Biblioteca.subtrai(totalRecebido, totalReceber);
+                if (troco.compareTo(BigDecimal.ZERO) == -1) {
+                    troco = BigDecimal.ZERO;
+                }
+                verificaSaldoRestante();
+            }
+
+        }
+
+    }
+
+    private Optional<PdvFormaPagamento> bucarTipoPagamento(PdvTipoPagamento tipoPagamento) {
+        Optional<PdvFormaPagamento> formaPagamentoOpt = venda.getListaFormaPagamento()
+                .stream()
+                .filter(fp -> fp.getPdvTipoPagamento().equals(tipoPagamento))
+                .findAny();
+        return formaPagamentoOpt;
+    }
+
+
+    public void excluirPagamento() {
+        if (formaPagamentoSelecionado != null) {
+            venda.getListaFormaPagamento().remove(formaPagamentoSelecionado);
+            verificaSaldoRestante();
+        }
+        Mensagem.addInfoMessage("Forma de pagamento removida");
+    }
+
+    public void finalizarVenda() {
+        verificaSaldoRestante();
+        if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
+            venda.setTroco(troco);
+            service.finalizarVenda(venda);
+        } else {
+            Mensagem.addInfoMessage("Valores informados não são suficientes para finalizar a venda.");
+        }
+    }
+
+
+
+    private void verificaSaldoRestante() {
+        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
+        List<PdvFormaPagamento> listaPagamento = venda.getListaFormaPagamento();
+        for (PdvFormaPagamento p : listaPagamento) {
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+        }
+
+        saldoRestante = Biblioteca.subtrai(totalReceber, recebidoAteAgora);
+        totalRecebido = recebidoAteAgora;
+        valorPago = saldoRestante;
+        if (valorPago.compareTo(BigDecimal.ZERO) == -1) {
+            valorPago = BigDecimal.ZERO;
+        }
+        if (saldoRestante.compareTo(BigDecimal.ZERO) == -1) {
+            saldoRestante = BigDecimal.ZERO;
+        }
+    }
+
+    public void cancelarPagamento() {
+        telaVenda = true;
+        telaImpressao = false;
+        telaCaixa = false;
+        telaPagamentos = false;
+    }
+
+    public void definirCondicoess(){
+
+        exibirCondicoes = tipoPagamento.getGeraParcelas().equals("S") && !tipoPagamento.getCodigo().equals("02");
+        if(exibirCondicoes){
+            condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class,new Object[]{"nome"});
+        }
+
+    }
+
+    //</editor-fold>
+
+
 
     public void selecionarVendedor() {
         venda.setVendedor(vendedor);
@@ -338,12 +506,11 @@ public class BalcaoControll implements Serializable {
     }
 
 
-
-    public VendaDetalhe getItem() {
+    public PdvVendaDetalhe getItem() {
         return item;
     }
 
-    public void setItem(VendaDetalhe item) {
+    public void setItem(PdvVendaDetalhe item) {
         this.item = item;
     }
 
@@ -363,8 +530,12 @@ public class BalcaoControll implements Serializable {
         this.desconto = desconto;
     }
 
-    public VendaCabecalho getVenda() {
+    public PdvVendaCabecalho getVenda() {
         return venda;
+    }
+
+    public void setVenda(PdvVendaCabecalho venda) {
+        this.venda = venda;
     }
 
     public boolean isTelaVenda() {
@@ -405,5 +576,124 @@ public class BalcaoControll implements Serializable {
 
     public void setProduto(ProdutoDTO produto) {
         this.produto = produto;
+    }
+
+    public PdvTipoPagamento getTipoPagamento() {
+        return tipoPagamento;
+    }
+
+    public void setTipoPagamento(PdvTipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
+    }
+
+    public List<PdvTipoPagamento> getListTipoPagamento() {
+        return listTipoPagamento;
+    }
+
+    public void setListTipoPagamento(List<PdvTipoPagamento> listTipoPagamento) {
+        this.listTipoPagamento = listTipoPagamento;
+    }
+
+    public boolean isTelaCaixa() {
+        return telaCaixa;
+    }
+
+    public void setTelaCaixa(boolean telaCaixa) {
+        this.telaCaixa = telaCaixa;
+    }
+
+    public BigDecimal getTotalVenda() {
+        return totalVenda;
+    }
+
+    public void setTotalVenda(BigDecimal totalVenda) {
+        this.totalVenda = totalVenda;
+    }
+
+    public BigDecimal getAcrescimo() {
+        return acrescimo;
+    }
+
+    public void setAcrescimo(BigDecimal acrescimo) {
+        this.acrescimo = acrescimo;
+    }
+
+    public BigDecimal getTotalReceber() {
+        return totalReceber;
+    }
+
+    public void setTotalReceber(BigDecimal totalReceber) {
+        this.totalReceber = totalReceber;
+    }
+
+    public BigDecimal getTroco() {
+        return troco;
+    }
+
+    public void setTroco(BigDecimal troco) {
+        this.troco = troco;
+    }
+
+    public BigDecimal getTotalRecebido() {
+        return totalRecebido;
+    }
+
+    public void setTotalRecebido(BigDecimal totalRecebido) {
+        this.totalRecebido = totalRecebido;
+    }
+
+    public BigDecimal getSaldoRestante() {
+        return saldoRestante;
+    }
+
+    public void setSaldoRestante(BigDecimal saldoRestante) {
+        this.saldoRestante = saldoRestante;
+    }
+
+    public BigDecimal getValorPago() {
+        return valorPago;
+    }
+
+    public void setValorPago(BigDecimal valorPago) {
+        this.valorPago = valorPago;
+    }
+
+    public PdvFormaPagamento getFormaPagamentoSelecionado() {
+        return formaPagamentoSelecionado;
+    }
+
+    public void setFormaPagamentoSelecionado(PdvFormaPagamento formaPagamentoSelecionado) {
+        this.formaPagamentoSelecionado = formaPagamentoSelecionado;
+    }
+
+    public boolean isPodeFinalzarVenda() {
+        return saldoRestante.signum() == 0;
+    }
+    public boolean isPodeLancaPagamento() {
+        return valorPago.signum() == 0;
+    }
+
+    public boolean isExibirCondicoes() {
+        return exibirCondicoes;
+    }
+
+    public void setExibirCondicoes(boolean exibirCondicoes) {
+        this.exibirCondicoes = exibirCondicoes;
+    }
+
+    public VendaCondicoesPagamento getCondicaoPagamento() {
+        return condicaoPagamento;
+    }
+
+    public void setCondicaoPagamento(VendaCondicoesPagamento condicaoPagamento) {
+        this.condicaoPagamento = condicaoPagamento;
+    }
+
+    public boolean isTelaGrid() {
+        return telaGrid;
+    }
+
+    public void setTelaGrid(boolean telaGrid) {
+        this.telaGrid = telaGrid;
     }
 }

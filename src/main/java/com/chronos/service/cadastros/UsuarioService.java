@@ -1,7 +1,7 @@
 package com.chronos.service.cadastros;
 
 import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.NfceMovimento;
+import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.security.UsuarioLogado;
 import com.chronos.security.UsuarioSistema;
@@ -19,7 +19,7 @@ public class UsuarioService implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Empresa empresa;
-    private NfceMovimento movimento;
+    private PdvMovimento movimento;
 
     @Produces
     @UsuarioLogado
@@ -30,7 +30,7 @@ public class UsuarioService implements Serializable {
         Usuario usuario = null;
         if (auth != null && auth.getPrincipal() != null) {
             user = (UsuarioSistema) auth.getPrincipal();
-            // usuario = user.getUsuario();
+            //usuario = user.getUsuario();
         }
 
         return usuario;

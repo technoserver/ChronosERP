@@ -130,238 +130,318 @@
                 white-space: nowrap;
             }
 
+            .input-pdv {
+                font-size: 20px !important;
+                height: 60px !important;
+            }
+
+            .input-valor-pagar input {
+                font-weight: bold;
+                font-size: 20px !important;
+                height: 60px !important;
+            }
+
         </style>
     </ui:define>
-
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewAction action="#{balcaoControll.verificarMovimento()}"/>
+        </f:metadata>
+    </ui:define>
 
     <ui:define name="gridDados">
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{balcaoControll.telaGrid}">
+                <div class="ibox-content">
 
+                    <erp:msgPermissao permissao="#{vendaCabecalhoControll.podeConsultar()}"/>
+                    <p:dataTable
+                            value="#{vendaCabecalhoControll.dataModel}"
+                            var="row" id="tableVenda" paginator="true"
+                            rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                            reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
+                            resizableColumns="true" lazy="true" sortBy="#{row.id}" sortOrder="descending"
+                    >
+
+                        <p:column headerText="Data Venda" width="130">
+                            <h:outputLabel value="#{row.dataHoraVenda}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Subtotal" class="coluna-monetaria" width="130">
+                            <h:outputLabel value="#{row.valorSubtotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Desconto" class="coluna-monetaria" width="130">
+                            <h:outputLabel value="#{row.valorDesconto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
+                            <h:outputLabel value="#{row.valorTotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Situacao" sortBy="#{row.situacao}" width="130">
+                            <h:outputLabel
+                                    value=""/>
+                        </p:column>
+
+                        <p:column headerText="Ações" width="160" class="text-center">
+
+                            <p:menuButton>
+                                <p:menuitem value="Imprimir A4"
+
+                                            icon="fa fa-print" ajax="false"/>
+
+
+
+                            </p:menuButton>
+
+
+                        </p:column>
+
+                    </p:dataTable>
+
+
+                </div>
+                <div class="ibox-footer">
+
+                </div>
+            </p:outputPanel>
+        </p:outputPanel>
 
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <p:focus context="formCentro:produto"/>
+        <h:panelGroup layout="block" id="outputPanelDetalhe">
+            <p:outputPanel rendered="#{!balcaoControll.telaGrid}">
+                <p:focus context="formCentro:produto"/>
 
-        <h:panelGroup id="telaPdv" layout="block">
-            <div id="pdv" class="row">
-                <div id="botao-operacoes">
-                    <i class="fa fa-cogs"></i>
-                </div>
-                <h:panelGroup layout="block" id="tela-inicial" class="etapa" style="overflow: hidden"
-                              rendered="#{balcaoControll.telaVenda}">
-                    <ui:include src="telaPrincipalPdv.xhtml"/>
-                </h:panelGroup>
-
-                <h:panelGroup layout="block" id="tela-pagamento" class="etapa" style="overflow: hidden"
-                              rendered="#{balcaoControll.telaPagamentos}">
-                    <ui:include src="telaPagamentoBalcao.xhtml"/>
-                    <div class="hidden-xs teclas">
-                        F7 = Finalizar Venda | F8 = Cancelar
-                    </div>
-                </h:panelGroup>
-                <h:panelGroup layout="block" id="tela-impressao" class="etapa" style="overflow: hidden"
-                              rendered="#{balcaoControll.telaImpressao}">
-
-                    <div>
-                        <div class="text-center text-success" style="font-size:200px; line-height:1">
-                            <i class="fa icon-shopping"></i>
+                <h:panelGroup id="telaPdv" layout="block">
+                    <div id="pdv" class="row">
+                        <div id="botao-operacoes">
+                            <i class="fa fa-cogs"></i>
                         </div>
-                        <h1 class="text-center text-success margin-top-10">VENDA FINALIZADA COM SUCESSO!</h1>
-                        <br/>
-                        <div class="text-center">
-                            <h:commandButton value="INICIAR NOVA VENDA"
-                                             id="nova-venda"
-                                             action="#{balcaoControll.novaVenda}"
-                                             class="btn btn-success btn-lg">
-                                <p:ajax update=":formCentro:tela-impressao,:formCentro:telaPdv"/>
-                            </h:commandButton>
-                            &nbsp;
-                            <h:commandButton id="imprimir-cupom"
-                                             value="IMPRIMIR CUPOM"
-                                             class="btn btn-primary btn-lg"
-                                             rendered="#{empty balcaoControll.venda.numeroFatura}"
-                                             actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(balcaoControll.venda.id)}">
-                                <p:ajax disabled="true"/>
-                            </h:commandButton>
+                        <h:panelGroup layout="block" id="tela-inicial" class="etapa" style="overflow: hidden"
+                                      rendered="#{balcaoControll.telaVenda}">
+                            <ui:include src="telaPrincipalPdv.xhtml"/>
+                        </h:panelGroup>
 
-                            <h:commandButton id="imprimir-nfce"
-                                             value="IMPRIMIR CUPOM"
-                                             class="btn btn-primary btn-lg"
-                                             rendered="#{not empty balcaoControll.venda.numeroFatura}"
-                                             actionListener="#{balcaoControll.danfe}">
-                                <p:ajax disabled="true"/>
-                            </h:commandButton>
-                            &nbsp;
-                            <h:commandButton id="emitir-nfc" type="button"
-                                             value="EMITIR NFC"
-                                             rendered="#{empty balcaoControll.venda.numeroFatura}"
-                                             action="#{balcaoControll.gerarNfce}"
-                                             class="btn btn-maroon btn-lg">
-                                <p:ajax update=":formCentro:growl,:formCentro:mensagem,:formCentro:tela-impressao"/>
-                            </h:commandButton>
+                        <h:panelGroup layout="block" id="tela-pagamento" class="etapa" style="overflow: hidden"
+                                      rendered="#{balcaoControll.telaPagamentos}">
+                            <ui:include src="telaPagamentoBalcao.xhtml"/>
+                            <div class="hidden-xs teclas">
+                                F7 = Finalizar Venda | F8 = Cancelar
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGroup layout="block" id="tela-impressao" class="etapa" style="overflow: hidden"
+                                      rendered="#{balcaoControll.telaImpressao}">
 
-                        </div>
-                    </div>
-                    <div class="hidden-xs teclas">
-                        F2 = Imprimir Cupom | F3 = Emitir NFC | F4 = Nova Venda
-                    </div>
+                            <div>
+                                <div class="text-center text-success" style="font-size:200px; line-height:1">
+                                    <i class="fa icon-shopping"></i>
+                                </div>
+                                <h1 class="text-center text-success margin-top-10">VENDA FINALIZADA COM SUCESSO!</h1>
+                                <br/>
+                                <div class="text-center">
+                                    <h:commandButton value="INICIAR NOVA VENDA"
+                                                     id="nova-venda"
+                                                     action="#{balcaoControll.novaVenda}"
+                                                     class="btn btn-success btn-lg">
+                                        <p:ajax update=":formCentro:tela-impressao,:formCentro:telaPdv"/>
+                                    </h:commandButton>
+                                    &nbsp;
+                                    <h:commandButton id="imprimir-cupom"
+                                                     value="IMPRIMIR CUPOM"
+                                                     class="btn btn-primary btn-lg"
+                                                     rendered="#{empty balcaoControll.venda.numeroFatura}"
+                                                     actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(balcaoControll.venda.id)}">
+                                        <p:ajax disabled="true"/>
+                                    </h:commandButton>
 
-                </h:panelGroup>
+                                    <h:commandButton id="imprimir-nfce"
+                                                     value="IMPRIMIR CUPOM"
+                                                     class="btn btn-primary btn-lg"
+                                                     rendered="#{not empty balcaoControll.venda.numeroFatura}"
+                                                     actionListener="#{balcaoControll.danfe}">
+                                        <p:ajax disabled="true"/>
+                                    </h:commandButton>
+                                    &nbsp;
+                                    <h:commandButton id="emitir-nfc" type="button"
+                                                     value="EMITIR NFC"
+                                                     rendered="#{empty balcaoControll.venda.numeroFatura}"
+                                                     action="#{balcaoControll.gerarNfce}"
+                                                     class="btn btn-maroon btn-lg">
+                                        <p:ajax update=":formCentro:growl,:formCentro:mensagem,:formCentro:tela-impressao"/>
+                                    </h:commandButton>
+
+                                </div>
+                            </div>
+                            <div class="hidden-xs teclas">
+                                F2 = Imprimir Cupom | F3 = Emitir NFC | F4 = Nova Venda
+                            </div>
+
+                        </h:panelGroup>
 
 
-                <!--Modal Teclas-->
-                <div class="modal" id="painel-teclas-atalho" tabindex="-1" role="dialog" aria-hidden="false"
-                     style="display: none;">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" style="opacity:0.8;margin-top: 10px"
-                                        data-dismiss="modal" aria-label="Close">
+                        <!--Modal Teclas-->
+                        <div class="modal" id="painel-teclas-atalho" tabindex="-1" role="dialog" aria-hidden="false"
+                             style="display: none;">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" style="opacity:0.8;margin-top: 10px"
+                                                data-dismiss="modal" aria-label="Close">
                             <span class="btn btn-xs btn-danger">
                                 <i class="glyphicon glyphicon-remove"></i>
                             </span>
-                                </button>
-                                <h2 class="margin-top-10px"><i class="fa fa-keyboard-o"></i> TECLAS DE ATALHO</h2>
-                                <p>CONHEÇA OS ATALHOS DE TECLADO QUE PODEM AGILIZAR SUAS OPERAÇÕES DENTRO DO PDV</p>
+                                        </button>
+                                        <h2 class="margin-top-10px"><i class="fa fa-keyboard-o"></i> TECLAS DE ATALHO
+                                        </h2>
+                                        <p>CONHEÇA OS ATALHOS DE TECLADO QUE PODEM AGILIZAR SUAS OPERAÇÕES DENTRO DO PDV</p>
+                                    </div>
+                                    <div class="modal-body margin-top-10px" style="overflow-y: auto">
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">F1</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    TECLAS DE ATALHO
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">F2</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    BUSCAR PRODUTO
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">F3</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    MUDAR QUANTIDADE
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">F4</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    ADICIONAR PRODUTO
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">F6</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    FINALIZAR VENDA
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">F7</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    AGUARDAR VENDA
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">F8</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    CANCELAR VENDA
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">SHIFT+C</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    INDICAR CLIENTE
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">SHIFT+V</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    INDICAR VENDEDOR
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">SHIFT+S</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    REALIZAR SANGRIA
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">SHIFT+R</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    REALIZAR REFORÇO
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">SHIFT+D</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    REALIZAR DEVOLUÇÃO
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
+                                            <div class="row">
+                                                <div class="col-sm-4 col-md-4 col-lg-4">
+                                                    <div class="tecla">SHIFT+F</div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6 col-lg-6">
+                                                    FECHAR CAIXA
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer"></div>
+                                </div>
                             </div>
-                            <div class="modal-body margin-top-10px" style="overflow-y: auto">
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">F1</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            TECLAS DE ATALHO
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">F2</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            BUSCAR PRODUTO
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">F3</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            MUDAR QUANTIDADE
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">F4</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            ADICIONAR PRODUTO
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">F6</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            FINALIZAR VENDA
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">F7</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            AGUARDAR VENDA
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">F8</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            CANCELAR VENDA
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">SHIFT+C</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            INDICAR CLIENTE
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">SHIFT+V</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            INDICAR VENDEDOR
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">SHIFT+S</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            REALIZAR SANGRIA
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">SHIFT+R</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            REALIZAR REFORÇO
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">SHIFT+D</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            REALIZAR DEVOLUÇÃO
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 col-md-4 col-lg-3 margin-bottom-20px">
-                                    <div class="row">
-                                        <div class="col-sm-4 col-md-4 col-lg-4">
-                                            <div class="tecla">SHIFT+F</div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 col-lg-6">
-                                            FECHAR CAIXA
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer"></div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </h:panelGroup>
+            </p:outputPanel>
         </h:panelGroup>
 
 
@@ -426,6 +506,15 @@
                                           idComponente="clienteSelecionado">
 
                         </erp:autoComplete>
+                    </div>
+                    <div class="row">
+                        <erp:campoCpf idComponente="cpfCnpjCliente" styleClass="col-xs-12 col-sm-6 col-md-6" label="CPF"
+                                      nomeAtributo="#{balcaoControll.venda.cpfCnpjCliente}"/>
+                        <erp:campoTexto idComponente="nomeCliente"
+                                        styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        label="Nome"
+                                        tamanhoMaximo="100"
+                                        nomeAtributo="#{balcaoControll.venda.nomeCliente}"/>
                     </div>
                 </p:outputPanel>
                 <f:facet name="footer">

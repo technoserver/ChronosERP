@@ -7,8 +7,8 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "NFCE_POSICAO_COMPONENTES")
-public class NfcePosicaoComponentes implements Serializable {
+@Table(name = "PDV_POSICAO_COMPONENTES")
+public class PdvPosicaoComponentes implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -30,11 +30,11 @@ public class NfcePosicaoComponentes implements Serializable {
     private Integer tamanhoFonte;
     @Column(name = "TEXTO")
     private String texto;
-    @JoinColumn(name = "ID_NFCE_RESOLUCAO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PDV_RESOLUCAO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NfceResolucao nfceResolucao;
+    private PdvResolucao pdvResolucao;
 
-    public NfcePosicaoComponentes() {
+    public PdvPosicaoComponentes() {
     }
 
     public Integer getId() {
@@ -101,12 +101,12 @@ public class NfcePosicaoComponentes implements Serializable {
         this.texto = texto;
     }
 
-    public NfceResolucao getNfceResolucao() {
-        return nfceResolucao;
+    public PdvResolucao getPdvResolucao() {
+        return pdvResolucao;
     }
 
-    public void setNfceResolucao(NfceResolucao nfceResolucao) {
-        this.nfceResolucao = nfceResolucao;
+    public void setPdvResolucao(PdvResolucao pdvResolucao) {
+        this.pdvResolucao = pdvResolucao;
     }
 
     @Override
@@ -127,7 +127,7 @@ public class NfcePosicaoComponentes implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final NfcePosicaoComponentes other = (NfcePosicaoComponentes) obj;
+        final PdvPosicaoComponentes other = (PdvPosicaoComponentes) obj;
         return Objects.equals(this.id, other.id);
     }
 

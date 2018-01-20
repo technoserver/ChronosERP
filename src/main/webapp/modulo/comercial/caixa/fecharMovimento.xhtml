@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <h1 class="margin-top-0">FECHAMENTO DE CAIXA</h1>
+        <h3 class="margin-top-0 text-center text-primary">
+            Valores disponíveis em caixa
+        </h3>
+        <div class="text-center  row">
+            <div class="col-sm-offset-4 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-4 col-lg-4">
+
+                <fieldset class="muted" style="padding:0 !important">
+                    <legend>
+                        <h3 class="margin-top-0">
+                            <i class="fa icon-moneybag margin-right-10px"></i>Total
+                        </h3>
+                    </legend>
+                    <table width="100%" cellpadding="5" cellspacing="0" class="margin-bottom-10px">
+                        <tbody>
+                        <tr class="border-bottom-1px">
+                            <td>
+                                <h4 class="m-l">Suprimentos:</h4>
+                            </td>
+                            <td class="nowrap" width="1">
+                                <h4 class="m-r text-right">R$
+                                    <span id="sub-total">
+                                        <h:outputText value="#{pdvMovimentoControll.movimento.totalSuprimento}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4 class="m-l">Acrescimos:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4 class="m-r text-right">R$
+                                    <span id="descontos">
+                                        <h:outputText value="#{pdvMovimentoControll.movimento.totalAcrescimo}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4 class="m-l">Sangria:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4 class="m-r text-right">R$
+                                    <span id="acrescimos">
+                                        <h:outputText value="#{pdvMovimentoControll.movimento.totalSangria}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4 class="m-l">Recebimentos:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4 class="m-r text-right">R$
+                                    <span id="pagamentos">
+                                        <h:outputText value="#{pdvMovimentoControll.movimento.totalRecebido}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4 class="m-l">Vendas:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4 class="m-r text-right">R$
+                                    <span id="restante">
+                                        <h:outputText value="#{pdvMovimentoControll.movimento.totalVenda}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+
+                        <tr class="border-bottom-1px">
+                            <td><h4 class="m-l">Descontos:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4 class="m-r text-right">R$
+                                    <span id="troco">
+                                        <h:outputText value="#{pdvMovimentoControll.movimento.totalDesconto}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4 class="m-l">Troco:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4 class="m-r text-right">R$
+                                    <span id="valor-receber">
+                                        <h:outputText value="#{pdvMovimentoControll.movimento.totalTroco}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><h4 class="m-l">Total em Caixa:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4 class="m-r text-right">R$
+                                    <span id="valor-receber">
+                                        <h:outputText value="#{pdvMovimentoControll.movimento.totalFinal}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
+                                </h4>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+
+
+            </div>
+
+
+            <div class="margin-top-5px margin-bottom-10px col-sm-12 col-md-12 col-lg-12">
+
+
+            </div>
+        </div>
+        <div class="text-center  row">
+            <div class="col-sm-offset-4 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-4 col-lg-4">
+                <h:commandLink class="btn btn-lg btn-success"
+                               action="#{pdvMovimentoControll.confirmarFechamento}"
+                               style="width:100%">
+                    <h3 class="margin-top-0 margin-bottom-0"><i
+                            class="fa fa-sign-in"></i> CONFIRMAR FECHAMENTO</h3>
+                    <p:ajax update=":formCentro:growl,:formMovimento:dialogMovimento,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                            oncomplete="if (args.movimentoIniciado) {PF('dialogMovimento').show(); };"
+                            process="@form"/>
+                </h:commandLink>
+            </div>
+
+        </div>
+    </div>
+</ui:composition>

@@ -241,89 +241,6 @@ CREATE TABLE NCM (
   PRIMARY KEY (ID)
 );
 
--- ------------------------------------------------------------
--- Armazena os dados dos terminais de caixa.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_CAIXA (
-  ID            SERIAL NOT NULL,
-  NOME          VARCHAR(30),
-  DATA_CADASTRO DATE,
-  PRIMARY KEY (ID)
-);
-
-
-
-
--- ------------------------------------------------------------
--- Armazena as resoluções que podem ser trabalhadas pelo terminal de caixa. Pode ser importado da retaguarda ou armazenado localmente através do sistema configurador.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_RESOLUCAO (
-  ID             SERIAL NOT NULL,
-  RESOLUCAO_TELA VARCHAR(20),
-  LARGURA        INTEGER,
-  ALTURA         INTEGER,
-  IMAGEM_TELA    VARCHAR(50),
-  IMAGEM_MENU    VARCHAR(50),
-  IMAGEM_SUBMENU VARCHAR(50),
-  PRIMARY KEY (ID)
-);
-
-
-
--- ------------------------------------------------------------
--- Armazena os turnos que podem ser utilizados em determinado movimento. Exemplos:
---
--- Manha
--- Tarde
--- Noite
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_TURNO (
-  ID          SERIAL NOT NULL,
-  DESCRICAO   VARCHAR(10),
-  HORA_INICIO VARCHAR(8),
-  HORA_FIM    VARCHAR(8),
-  PRIMARY KEY (ID)
-);
-
--- ------------------------------------------------------------
--- Armazena os possíveis tipos de pagamento:
---
--- Dinheiro
--- Cartão
--- Cheque
--- Etc.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_TIPO_PAGAMENTO (
-  ID            SERIAL NOT NULL,
-  CODIGO        CHAR(2),
-  DESCRICAO     VARCHAR(20),
-  PERMITE_TROCO CHAR(1),
-  GERA_PARCELAS CHAR(1),
-  PRIMARY KEY (ID)
-);
-
-
-
-
-
-
--- ------------------------------------------------------------
--- Armazena os operadores de caixa. Tem relacionamento com a tabela de funcionários, que vem do banco de dados principal.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_OPERADOR (
-  ID                SERIAL NOT NULL,
-  LOGIN             VARCHAR(20),
-  SENHA             VARCHAR(20),
-  NIVEL_AUTORIZACAO CHAR(1),
-  PRIMARY KEY (ID)
-);
-
-
 
 
 -- ------------------------------------------------------------
@@ -1069,28 +986,8 @@ CREATE TABLE PESSOA_ALTERACAO (
 CREATE INDEX FK_PESSOA_ALTERACAO
   ON PESSOA_ALTERACAO (ID_PESSOA);
 
--- ------------------------------------------------------------
--- Armazena os dados dos componentes para que sejam arrumados na tela de acordo com a resolução selecionada. Pode ser importado da retaguarda ou armazenado localmente através do sistema configurador.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_POSICAO_COMPONENTES (
-  ID                SERIAL  NOT NULL,
-  ID_NFCE_RESOLUCAO INTEGER NOT NULL,
-  NOME              VARCHAR(100),
-  ALTURA            INTEGER,
-  LARGURA           INTEGER,
-  TOPO              INTEGER,
-  ESQUERDA          INTEGER,
-  TAMANHO_FONTE     INTEGER DEFAULT 0,
-  TEXTO             VARCHAR(250),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_NFCE_RESOLUCAO)
-  REFERENCES NFCE_RESOLUCAO (ID)
-);
 
 
-CREATE INDEX FK_RES_POSICAO_COMPONENTES
-  ON NFCE_POSICAO_COMPONENTES (ID_NFCE_RESOLUCAO);
 
 -- ------------------------------------------------------------
 -- Tabela com a relação de CEPs do Brasil.
@@ -1474,74 +1371,6 @@ CREATE INDEX FK_NF_TIPO_MODELO
   ON NOTA_FISCAL_TIPO (ID_NOTA_FISCAL_MODELO);
 
 -- ------------------------------------------------------------
--- Armazena as configurações do terminal de caixa. Esses dados podem ser importados da retaguarda ou armazenados diretamente no banco local através do sistema configurador.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_CONFIGURACAO (
-  ID                          SERIAL  NOT NULL,
-  ID_EMPRESA                  INTEGER NOT NULL,
-  ID_NFCE_CAIXA               INTEGER NOT NULL,
-  ID_NFCE_RESOLUCAO           INTEGER NOT NULL,
-  MENSAGEM_CUPOM              VARCHAR(250),
-  TITULO_TELA_CAIXA           VARCHAR(100),
-  CAMINHO_IMAGENS_PRODUTOS    VARCHAR(250),
-  CAMINHO_IMAGENS_MARKETING   VARCHAR(250),
-  CAMINHO_IMAGENS_LAYOUT      VARCHAR(250),
-  COR_JANELAS_INTERNAS        VARCHAR(20),
-  MARKETING_ATIVO             CHAR(1),
-  CFOP                        INTEGER,
-  DECIMAIS_QUANTIDADE         INTEGER,
-  DECIMAIS_VALOR              INTEGER,
-  QUANTIDADE_MAXIMA_PARCELA   INTEGER,
-  IMPRIME_PARCELA             CHAR(1),
-  CODIGO_CSC                  VARCHAR(32),
-  ID_TOKEN_CSC                VARCHAR(6),
-  CERTIFICADO_DIGITAL_SERIE   VARCHAR(100),
-  CERTIFICADO_DIGITAL_CAMINHO TEXT,
-  CERTIFICADO_DIGITAL_SENHA   VARCHAR(100),
-  TIPO_EMISSAO                INTEGER,
-  FORMATO_IMPRESSAO_DANFE     INTEGER,
-  PROCESSO_EMISSAO            INTEGER,
-  VERSAO_PROCESSO_EMISSAO     VARCHAR(20),
-  CAMINHO_LOGOMARCA           TEXT,
-  SALVAR_XML                  CHAR(1),
-  CAMINHO_SALVAR_XML          TEXT,
-  CAMINHO_SCHEMAS             TEXT,
-  CAMINHO_ARQUIVO_DANFE       TEXT,
-  CAMINHO_SALVAR_PDF          TEXT,
-  WEBSERVICE_UF               CHAR(2),
-  WEBSERVICE_AMBIENTE         INTEGER,
-  WEBSERVICE_PROXY_HOST       VARCHAR(100),
-  WEBSERVICE_PROXY_PORTA      INTEGER,
-  WEBSERVICE_PROXY_USUARIO    VARCHAR(100),
-  WEBSERVICE_PROXY_SENHA      VARCHAR(100),
-  WEBSERVICE_VISUALIZAR       CHAR(1),
-  EMAIL_SERVIDOR_SMTP         VARCHAR(100),
-  EMAIL_PORTA                 INTEGER,
-  EMAIL_USUARIO               VARCHAR(100),
-  EMAIL_SENHA                 VARCHAR(100),
-  EMAIL_ASSUNTO               VARCHAR(100),
-  EMAIL_AUTENTICA_SSL         CHAR(1),
-  EMAIL_TEXTO                 TEXT,
-  OBERVACAO_PADRAO            TEXT,
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_NFCE_RESOLUCAO)
-  REFERENCES NFCE_RESOLUCAO (ID),
-  FOREIGN KEY (ID_NFCE_CAIXA)
-  REFERENCES NFCE_CAIXA (ID),
-  FOREIGN KEY (ID_EMPRESA)
-  REFERENCES EMPRESA (ID)
-);
-
-
-CREATE INDEX FK_RESOLUCAO_CONFIGURACAO
-  ON NFCE_CONFIGURACAO (ID_NFCE_RESOLUCAO);
-CREATE INDEX FK_NFCE_CAIXA_CONFIG
-  ON NFCE_CONFIGURACAO (ID_NFCE_CAIXA);
-CREATE INDEX FK_EMPRESA_NFCE_CONFIG
-  ON NFCE_CONFIGURACAO (ID_EMPRESA);
-
--- ------------------------------------------------------------
 -- Tabela com a relaçao de fornecedores das empresas.
 -- ------------------------------------------------------------
 
@@ -1581,60 +1410,8 @@ CREATE INDEX FK_ATIVIDADE_FORNECEDOR
 CREATE INDEX FK_PESSOA_FORNECEDOR
   ON FORNECEDOR (ID_PESSOA);
 
--- ------------------------------------------------------------
--- Armazena os movimentos para determinado caixa. Podem haver vários movimentos durante um dia. Um movimento deve ter obrigatoriamente:
---
--- -Operador
--- -Caixa (terminal)
--- -Impressora
--- -Turno
--- -Status
---
--- É através dessa tabela que o caixa deve funcionar. Sem um movimento aberto não pode haver movimentação no caixa.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_MOVIMENTO (
-  ID                    SERIAL  NOT NULL,
-  ID_NFCE_CAIXA         INTEGER NOT NULL,
-  ID_NFCE_OPERADOR      INTEGER NOT NULL,
-  ID_NFCE_TURNO         INTEGER NOT NULL,
-  ID_EMPRESA            INTEGER NOT NULL,
-  ID_GERENTE_SUPERVISOR INTEGER NOT NULL,
-  DATA_ABERTURA         DATE,
-  HORA_ABERTURA         VARCHAR(8),
-  DATA_FECHAMENTO       DATE,
-  HORA_FECHAMENTO       VARCHAR(8),
-  TOTAL_SUPRIMENTO      DECIMAL(18, 6),
-  TOTAL_SANGRIA         DECIMAL(18, 6),
-  TOTAL_NAO_FISCAL      DECIMAL(18, 6),
-  TOTAL_VENDA           DECIMAL(18, 6),
-  TOTAL_DESCONTO        DECIMAL(18, 6),
-  TOTAL_ACRESCIMO       DECIMAL(18, 6),
-  TOTAL_FINAL           DECIMAL(18, 6),
-  TOTAL_RECEBIDO        DECIMAL(18, 6),
-  TOTAL_TROCO           DECIMAL(18, 6),
-  TOTAL_CANCELADO       DECIMAL(18, 6),
-  STATUS_MOVIMENTO      CHAR(1),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_EMPRESA)
-  REFERENCES EMPRESA (ID),
-  FOREIGN KEY (ID_NFCE_TURNO)
-  REFERENCES NFCE_TURNO (ID),
-  FOREIGN KEY (ID_NFCE_OPERADOR)
-  REFERENCES NFCE_OPERADOR (ID),
-  FOREIGN KEY (ID_NFCE_CAIXA)
-  REFERENCES NFCE_CAIXA (ID)
-);
 
 
-CREATE INDEX FK_EMPRESA_NFCE_MOV
-  ON NFCE_MOVIMENTO (ID_EMPRESA);
-CREATE INDEX FK_NFCE_TURNO_MOV
-  ON NFCE_MOVIMENTO (ID_NFCE_TURNO);
-CREATE INDEX FK_NFCE_OPERADOR_MOV
-  ON NFCE_MOVIMENTO (ID_NFCE_OPERADOR);
-CREATE INDEX FK_NFCE_CAIXA_MOV
-  ON NFCE_MOVIMENTO (ID_NFCE_CAIXA);
 
 -- ------------------------------------------------------------
 -- Tabela que armazena os tipos de pagamento: DINHEIRO, CARTÃO, CHEQUE, etc.
@@ -1696,75 +1473,11 @@ CREATE TABLE INVENTARIO_CONTAGEM_CAB (
 CREATE INDEX FK_EMPRESA_CONT_ESTOQUE
   ON INVENTARIO_CONTAGEM_CAB (ID_EMPRESA);
 
--- ------------------------------------------------------------
--- Armazena as configurações do leitor serial.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_CONFIGURACAO_LEITOR_SER (
-  ID                   SERIAL  NOT NULL,
-  ID_NFCE_CONFIGURACAO INTEGER NOT NULL,
-  USA                  CHAR(1),
-  PORTA                CHAR(4),
-  BAUD                 INTEGER,
-  HAND_SHAKE           INTEGER,
-  PARITY               INTEGER,
-  STOP_BITS            INTEGER,
-  DATA_BITS            INTEGER,
-  INTERVALO            INTEGER,
-  USAR_FILA            CHAR(1),
-  HARD_FLOW            CHAR(1),
-  SOFT_FLOW            CHAR(1),
-  SUFIXO               VARCHAR(20),
-  EXCLUIR_SUFIXO       CHAR(1),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_NFCE_CONFIGURACAO)
-  REFERENCES NFCE_CONFIGURACAO (ID)
-);
 
 
-CREATE INDEX FK_CONF_LEITOR_SER
-  ON NFCE_CONFIGURACAO_LEITOR_SER (ID_NFCE_CONFIGURACAO);
 
 
-CREATE TABLE NFCE_FECHAMENTO (
-  ID                SERIAL  NOT NULL,
-  ID_NFCE_MOVIMENTO INTEGER NOT NULL,
-  TIPO_PAGAMENTO    VARCHAR(20),
-  VALOR             DECIMAL(18, 6),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_NFCE_MOVIMENTO)
-  REFERENCES NFCE_MOVIMENTO (ID)
-);
 
-
-CREATE INDEX FK_NFCE_MOV_FECHA
-  ON NFCE_FECHAMENTO (ID_NFCE_MOVIMENTO);
-
--- ------------------------------------------------------------
--- Armazena as configurações da balança.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_CONFIGURACAO_BALANCA (
-  ID                   SERIAL  NOT NULL,
-  ID_NFCE_CONFIGURACAO INTEGER NOT NULL,
-  MODELO               INTEGER,
-  IDENTIFICADOR        CHAR(1),
-  HAND_SHAKE           INTEGER,
-  PARITY               INTEGER,
-  STOP_BITS            INTEGER,
-  DATA_BITS            INTEGER,
-  BAUD_RATE            INTEGER,
-  PORTA                CHAR(4),
-  TIMEOUT              INTEGER,
-  TIPO_CONFIGURACAO    VARCHAR(20),
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_NFCE_CONFIGURACAO)
-  REFERENCES NFCE_CONFIGURACAO (ID)
-);
-
-
-CREATE INDEX FK_CONF_BALANCA
-  ON NFCE_CONFIGURACAO_BALANCA (ID_NFCE_CONFIGURACAO);
 
 -- ------------------------------------------------------------
 -- Tabela com as cidades de determinado Estado.
@@ -1969,44 +1682,8 @@ CREATE TABLE NFE_CONFIGURACAO (
 CREATE INDEX FK_EMPRESA_NFE_CONFIG
   ON NFE_CONFIGURACAO (ID_EMPRESA);
 
--- ------------------------------------------------------------
--- Armazena todos os suprimentos que são feitos no caixa. Tem relacionamento direto com a tabela de movimento, já que um suprimento só pode ser feito se houver um movimento aberto.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_SUPRIMENTO (
-  ID                SERIAL  NOT NULL,
-  ID_NFCE_MOVIMENTO INTEGER NOT NULL,
-  DATA_SUPRIMENTO   DATE,
-  VALOR             DECIMAL(18, 6),
-  OBSERVACAO        TEXT,
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_NFCE_MOVIMENTO)
-  REFERENCES NFCE_MOVIMENTO (ID)
-);
 
 
-CREATE INDEX FK_NFCE_MOV_SUPRIMENTO
-  ON NFCE_SUPRIMENTO (ID_NFCE_MOVIMENTO);
-
--- ------------------------------------------------------------
--- Armazena todas as sangrias que são feitas no caixa. Tem relacionamento direto com a tabela de movimento, já que uma sangria só pode ser feita se houver um
--- movimento aberto.
--- ------------------------------------------------------------
-
-CREATE TABLE NFCE_SANGRIA (
-  ID                SERIAL  NOT NULL,
-  ID_NFCE_MOVIMENTO INTEGER NOT NULL,
-  DATA_SANGRIA      DATE,
-  VALOR             DECIMAL(18, 6),
-  OBSERVACAO        TEXT,
-  PRIMARY KEY (ID),
-  FOREIGN KEY (ID_NFCE_MOVIMENTO)
-  REFERENCES NFCE_MOVIMENTO (ID)
-);
-
-
-CREATE INDEX FK_NFCE_MOV_SANGRIA
-  ON NFCE_SANGRIA (ID_NFCE_MOVIMENTO);
 
 -- ------------------------------------------------------------
 -- Dados do sócio.
@@ -5465,19 +5142,6 @@ CREATE TABLE movimento_caixa
 );
 
 
-CREATE TABLE fechamento_caixa
-(
-  id                 INTEGER NOT NULL DEFAULT nextval('nfce_fechamento_id_seq' :: REGCLASS),
-  id_movimento_caixa INTEGER NOT NULL,
-  tipo_pagamento     CHARACTER VARYING(20),
-  valor              NUMERIC(18, 6),
-  PRIMARY KEY (id),
-  FOREIGN KEY (id_movimento_caixa) REFERENCES movimento_caixa (id)
-);
-
-
-
-
 -- ------------------------------------------------------------
 -- Tabela que armazena o cabeçalho das vendas do sistema.
 -- ------------------------------------------------------------
@@ -5550,35 +5214,6 @@ CREATE INDEX FK_VENDA_ROMANEIO
 CREATE INDEX FK_EMPRESA_VENDA_CAB
   ON VENDA_CABECALHO (ID_EMPRESA);
 
-
-CREATE TABLE venda_tipo_pagamento
-(
-  id            SERIAL NOT NULL,
-  codigo        CHARACTER(2),
-  descricao     CHARACTER VARYING(20),
-  permite_troco CHARACTER(1),
-  gera_parcelas CHARACTER(1),
-  PRIMARY KEY (id)
-);
-
-
-CREATE TABLE venda_pagamentos
-(
-  id                      SERIAL  NOT NULL,
-  id_venda_tipo_pagamento INTEGER NOT NULL,
-  id_venda_cabecalho      INTEGER NOT NULL,
-  forma                   CHARACTER(2),
-  valor                   NUMERIC(18, 6),
-  cartao_tipo_integracao  CHARACTER(1),
-  cnpj_operadora_cartao   CHARACTER VARYING(14),
-  bandeira                CHARACTER(2),
-  numero_autorizacao      CHARACTER VARYING(20),
-  estorno                 CHARACTER(1),
-  troco                   NUMERIC(18, 6),
-  PRIMARY KEY (id),
-  FOREIGN KEY (id_venda_tipo_pagamento) REFERENCES venda_tipo_pagamento (id),
-  FOREIGN KEY (id_venda_cabecalho) REFERENCES venda_cabecalho (id)
-);
 
 
 
@@ -5843,13 +5478,376 @@ CREATE INDEX FK_REQUISICAO_COTACAO_DETALHE
 CREATE INDEX FK_COTACAO_REQ_DETALHE
   ON COMPRA_REQ_COTACAO_DETALHE (ID_COMPRA_COTACAO);
 
+
+-- ------------------------------------------------------------
+-- Tabelas a baixo referente ao pdv
+-- ------------------------------------------------------------
+
+
+-- ------------------------------------------------------------
+-- Armazena os turnos que podem ser utilizados em determinado movimento. Exemplos:
+--
+-- Manha
+-- Tarde
+-- Noite
+-- ------------------------------------------------------------
+
+CREATE TABLE pdv_turno
+(
+  id serial NOT NULL,
+  descricao varchar(10),
+  hora_inicio varchar(8),
+  hora_fim varchar(8),
+  PRIMARY KEY (id)
+);
+
+-- ------------------------------------------------------------
+-- Armazena os dados dos terminais de caixa.
+-- ------------------------------------------------------------
+
+CREATE TABLE pdv_caixa
+(
+  id serial NOT NULL,
+  nome varchar(30),
+  data_cadastro date,
+  PRIMARY KEY (id)
+);
+
+-- ------------------------------------------------------------
+-- Armazena os operadores de caixa. Tem relacionamento com a tabela de funcionários, que vem do banco de dados principal.
+-- ------------------------------------------------------------
+
+
+CREATE TABLE pdv_operador
+(
+  id serial NOT NULL,
+  login varchar(20),
+  senha varchar(20),
+  nivel_autorizacao char(1),
+  PRIMARY KEY (id)
+);
+
+-- ------------------------------------------------------------
+-- Armazena as resoluções que podem ser trabalhadas pelo terminal de caixa. Pode ser importado da retaguarda ou armazenado localmente através do sistema configurador.
+-- ------------------------------------------------------------
+
+CREATE TABLE pdv_resolucao
+(
+  id serial NOT NULL,
+  resolucao_tela varchar(20),
+  largura integer,
+  altura integer,
+  imagem_tela varchar(50),
+  imagem_menu varchar(50),
+  imagem_submenu varchar(50),
+  PRIMARY KEY (id)
+);
+
+-- ------------------------------------------------------------
+-- Armazena os dados dos componentes para que sejam arrumados na tela de acordo com a resolução selecionada. Pode ser importado da retaguarda ou armazenado localmente através do sistema configurador.
+-- ------------------------------------------------------------
+
+CREATE TABLE pdv_posicao_componentes
+(
+  id serial NOT NULL,
+  id_pdv_resolucao integer NOT NULL,
+  nome varchar(100),
+  altura integer,
+  largura integer,
+  topo integer,
+  esquerda integer,
+  tamanho_fonte integer DEFAULT 0,
+  texto varchar(250),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_pdv_resolucao) REFERENCES pdv_resolucao (id)
+);
+
+-- ------------------------------------------------------------
+-- Armazena as configurações do terminal de caixa. Esses dados podem ser importados da retaguarda ou armazenados diretamente no banco local através do sistema configurador.
+-- ------------------------------------------------------------
+
+
+
+CREATE TABLE pdv_configuracao
+(
+  id serial NOT NULL,
+  id_empresa integer NOT NULL,
+  id_pdv_caixa integer NOT NULL,
+  id_pdv_resolucao integer NOT NULL,
+  mensagem_cupom varchar(250),
+  titulo_tela_caixa varchar(100),
+  caminho_imagens_produtos varchar(250),
+  caminho_imagens_marketing varchar(250),
+  caminho_imagens_layout varchar(250),
+  cor_janelas_internas varchar(20),
+  marketing_ativo char(1),
+  cfop integer,
+  decimais_quantidade integer,
+  decimais_valor integer,
+  quantidade_maxima_parcela integer,
+  imprime_parcela char(1),
+  codigo_csc varchar(32),
+  id_token_csc varchar(6),
+  certificado_digital_serie varchar(100),
+  certificado_digital_caminho text,
+  certificado_digital_senha varchar(100),
+  tipo_emissao integer,
+  formato_impressao_danfe integer,
+  processo_emissao integer,
+  versao_processo_emissao varchar(20),
+  caminho_logomarca text,
+  salvar_xml char(1),
+  caminho_salvar_xml text,
+  caminho_schemas text,
+  caminho_arquivo_danfe text,
+  caminho_salvar_pdf text,
+  webservice_uf char(2),
+  webservice_ambiente integer,
+  webservice_proxy_host varchar(100),
+  webservice_proxy_porta integer,
+  webservice_proxy_usuario varchar(100),
+  webservice_proxy_senha varchar(100),
+  webservice_visualizar char(1),
+  email_servidor_smtp varchar(100),
+  email_porta integer,
+  email_usuario varchar(100),
+  email_senha varchar(100),
+  email_assunto varchar(100),
+  email_autentica_ssl char(1),
+  email_texto text,
+  obervacao_padrao text,
+  PRIMARY KEY (id),FOREIGN KEY (id_empresa) REFERENCES empresa (id),
+  FOREIGN KEY (id_pdv_caixa) REFERENCES pdv_caixa (id),
+  FOREIGN KEY (id_pdv_resolucao) REFERENCES pdv_resolucao (id)
+);
+
+-- ------------------------------------------------------------
+-- Armazena as configurações da balança.
+-- ------------------------------------------------------------
+
+CREATE TABLE pdv_configuracao_balanca
+(
+  id serial NOT NULL,
+  id_pdv_configuracao integer NOT NULL,
+  modelo integer,
+  identificador char(1),
+  hand_shake integer,
+  parity integer,
+  stop_bits integer,
+  data_bits integer,
+  baud_rate integer,
+  porta char(4),
+  timeout integer,
+  tipo_configuracao varchar(20),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_pdv_configuracao) REFERENCES pdv_configuracao (id)
+);
+
+-- ------------------------------------------------------------
+-- Armazena as configurações do leitor serial.
+-- ------------------------------------------------------------
+
+CREATE TABLE pdv_configuracao_leitor_ser
+(
+  id serial NOT NULL,
+  id_pdv_configuracao integer NOT NULL,
+  usa char(1),
+  porta char(4),
+  baud integer,
+  hand_shake integer,
+  parity integer,
+  stop_bits integer,
+  data_bits integer,
+  intervalo integer,
+  usar_fila char(1),
+  hard_flow char(1),
+  soft_flow char(1),
+  sufixo varchar(20),
+  excluir_sufixo char(1),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_pdv_configuracao) REFERENCES pdv_configuracao (id)
+);
+
+
+-- ------------------------------------------------------------
+-- Armazena os movimentos para determinado caixa. Podem haver vários movimentos durante um dia. Um movimento deve ter obrigatoriamente:
+--
+-- -Operador
+-- -Caixa (terminal)
+-- -Impressora
+-- -Turno
+-- -Status
+--
+-- É através dessa tabela que o caixa deve funcionar. Sem um movimento aberto não pode haver movimentação no caixa.
+-- ------------------------------------------------------------
+
+CREATE TABLE pdv_movimento
+(
+  id serial NOT NULL,
+  id_pdv_caixa integer NOT NULL,
+  id_pdv_operador integer NOT NULL,
+  id_pdv_turno integer NOT NULL,
+  id_empresa integer NOT NULL,
+  id_gerente_supervisor integer NOT NULL,
+  data_abertura date,
+  hora_abertura varchar(8),
+  data_fechamento date,
+  hora_fechamento varchar(8),
+  total_suprimento decimal(18,6),
+  total_sangria decimal(18,6),
+  total_venda decimal(18,6),
+  total_desconto decimal(18,6),
+  total_acrescimo decimal(18,6),
+  total_final decimal(18,6),
+  total_recebido decimal(18,6),
+  total_troco decimal(18,6),
+  total_cancelado decimal(18,6),
+  status_movimento char(1),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_empresa) REFERENCES empresa (id),
+  FOREIGN KEY (id_pdv_caixa) REFERENCES pdv_caixa (id),
+  FOREIGN KEY (id_pdv_operador) REFERENCES pdv_operador (id),
+  FOREIGN KEY (id_pdv_turno) REFERENCES pdv_turno (id)
+);
+
+CREATE TABLE pdv_fechamento
+(
+  id serial NOT NULL,
+  id_pdv_movimento integer NOT NULL,
+  tipo_pagamento varchar(20),
+  valor decimal(18,6),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_pdv_movimento) REFERENCES pdv_movimento (id)
+);
+
+
+-- ------------------------------------------------------------
+-- Armazena todos os suprimentos que são feitos no caixa. Tem relacionamento direto com a tabela de movimento, já que um suprimento só pode ser feito se houver um movimento aberto.
+-- ------------------------------------------------------------
+
+
+CREATE TABLE pdv_sangria
+(
+  id serial NOT NULL,
+  id_pdv_movimento integer NOT NULL,
+  data_sangria date,
+  valor decimal(18,6),
+  observacao text,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_pdv_movimento) REFERENCES pdv_movimento (id)
+);
+
+
+-- ------------------------------------------------------------
+-- Armazena todas as sangrias que são feitas no caixa. Tem relacionamento direto com a tabela de movimento, já que uma sangria só pode ser feita se houver um
+-- movimento aberto.
+-- ------------------------------------------------------------
+
+CREATE TABLE pdv_suprimento
+(
+  id serial NOT NULL,
+  id_pdv_movimento integer NOT NULL,
+  data_suprimento date,
+  valor decimal(18,6),
+  observacao text,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_pdv_movimento) REFERENCES pdv_movimento (id)
+);
+
+CREATE TABLE pdv_venda_cabecalho
+(
+  id serial NOT NULL,
+  id_empresa integer NOT NULL,
+  id_cliente integer,
+  id_vendedor integer NOT NULL,
+  id_pdv_operador integer,
+  id_pdv_movimento integer,
+  data_hora_venda timestamp,
+  valor_subtotal decimal(18,6),
+  taxa_comissao decimal(18,6),
+  valor_comissao decimal(18,6),
+  taxa_desconto decimal(18,6),
+  valor_desconto decimal(18,6),
+  valor_total decimal(18,6),
+  troco decimal(18,6),
+  status_venda char(1),
+  nome_cliente varchar(100),
+  cpf_cnpj_cliente varchar(14),
+  sicronizado char(1) default 'N',
+  data_sincronizacao date,
+  hora_sincronizacao varchar(8),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_empresa) REFERENCES empresa (id),
+  FOREIGN KEY (id_cliente) REFERENCES cliente (id),
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor (id),
+  FOREIGN KEY (id_pdv_operador) REFERENCES pdv_operador (id),
+  FOREIGN KEY (id_pdv_movimento) REFERENCES pdv_movimento (id)
+);
+
+CREATE TABLE pdv_venda_detalhe
+(
+  id serial NOT NULL,
+  id_produto integer,
+  id_pdv_venda_cabecalho integer,
+  quantidade decimal(18,6),
+  valor_unitario decimal(18,6),
+  valor_subtotal decimal(18,6),
+  taxa_desconto decimal(18,6),
+  valor_desconto decimal(18,6),
+  valor_total decimal(18,6),
+  taxa_comissao decimal(18,6),
+  valor_comissao decimal(18,6),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_pdv_venda_cabecalho) REFERENCES pdv_venda_cabecalho (id),
+  FOREIGN KEY (id_produto) REFERENCES produto (id)
+);
+
+-- ------------------------------------------------------------
+-- Armazena os possíveis tipos de pagamento:
+--
+-- Dinheiro
+-- Cartão
+-- Cheque
+-- Etc.
+-- ------------------------------------------------------------
+
+CREATE TABLE pdv_tipo_pagamento
+(
+  id serial NOT NULL,
+  codigo char(2),
+  descricao varchar(20),
+  permite_troco char(1),
+  gera_parcelas char(1),
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE pdv_forma_pagamento
+(
+  id serial NOT NULL,
+  id_pdv_tipo_pagamento integer NOT NULL,
+  id_pdv_venda_cabecalho integer NOT NULL,
+  forma char(2),
+  valor decimal(18,6),
+  cartao_tipo_integracao char(1),
+  cnpj_operadora_cartao varchar(14),
+  bandeira char(2),
+  numero_autorizacao varchar(20),
+  estorno char(1),
+  troco decimal(18,6),
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_pdv_tipo_pagamento) REFERENCES pdv_tipo_pagamento (id),
+  FOREIGN KEY (id_pdv_venda_cabecalho) REFERENCES pdv_venda_cabecalho (id)
+);
+
+
+
 -- ------------------------------------------------------------
 -- Tabela que armazena o cabeçalho das notas fiscais eletrônicas.
 -- ------------------------------------------------------------
 
 CREATE TABLE NFE_CABECALHO (
   ID                            SERIAL NOT NULL,
-  ID_NFCE_MOVIMENTO             INTEGER,
+  ID_PDV_MOVIMENTO              INTEGER,
   ID_VENDEDOR                   INTEGER,
   ID_TRIBUT_OPERACAO_FISCAL     INTEGER,
   ID_VENDA_CABECALHO            INTEGER,
@@ -5954,8 +5952,8 @@ CREATE TABLE NFE_CABECALHO (
   REFERENCES TRIBUT_OPERACAO_FISCAL (ID),
   FOREIGN KEY (ID_VENDEDOR)
   REFERENCES VENDEDOR (ID),
-  FOREIGN KEY (ID_NFCE_MOVIMENTO)
-  REFERENCES NFCE_MOVIMENTO (ID)
+  FOREIGN KEY (ID_PDV_MOVIMENTO)
+  REFERENCES PDV_MOVIMENTO (ID)
 );
 
 
@@ -5971,8 +5969,8 @@ CREATE INDEX FK_TRIBUT_NFE
   ON NFE_CABECALHO (ID_TRIBUT_OPERACAO_FISCAL);
 CREATE INDEX FK_VENDEDOR_NFECAB
   ON NFE_CABECALHO (ID_VENDEDOR);
-CREATE INDEX FK_NFCE_MOV_NFE_CAB
-  ON NFE_CABECALHO (ID_NFCE_MOVIMENTO);
+CREATE INDEX FK_PDV_MOV_NFE_CAB
+  ON NFE_CABECALHO (ID_PDV_MOVIMENTO);
 
 -- ------------------------------------------------------------
 -- Grupo de informações da NF de produtor rural referenciada
@@ -6395,7 +6393,7 @@ CREATE INDEX FK_PRODUTO_NFE
 
 CREATE TABLE NFE_FORMA_PAGAMENTO (
   ID                     SERIAL  NOT NULL,
-  ID_NFCE_TIPO_PAGAMENTO INTEGER NOT NULL,
+  ID_PDV_TIPO_PAGAMENTO INTEGER NOT NULL,
   ID_NFE_CABECALHO       INTEGER NOT NULL,
   FORMA                  CHAR(2),
   VALOR                  DECIMAL(18, 6),
@@ -6408,15 +6406,15 @@ CREATE TABLE NFE_FORMA_PAGAMENTO (
   PRIMARY KEY (ID),
   FOREIGN KEY (ID_NFE_CABECALHO)
   REFERENCES NFE_CABECALHO (ID),
-  FOREIGN KEY (ID_NFCE_TIPO_PAGAMENTO)
-  REFERENCES NFCE_TIPO_PAGAMENTO (ID)
+  FOREIGN KEY (ID_PDV_TIPO_PAGAMENTO)
+  REFERENCES PDV_TIPO_PAGAMENTO (ID)
 );
 
 
 CREATE INDEX FK_NFE_FORMA_PAGAMENTO
   ON NFE_FORMA_PAGAMENTO (ID_NFE_CABECALHO);
-CREATE INDEX FK_NFCE_TOTAL_PGTO
-  ON NFE_FORMA_PAGAMENTO (ID_NFCE_TIPO_PAGAMENTO);
+CREATE INDEX FK_PDV_TOTAL_PGTO
+  ON NFE_FORMA_PAGAMENTO (ID_PDV_TIPO_PAGAMENTO);
 
 -- ------------------------------------------------------------
 -- Informações dos transportes.
@@ -7506,3 +7504,8 @@ CREATE INDEX FK_MDFE_INFORMACAO_SEGURO
   ON MDFE_INFORMACAO_SEGURO (ID_MDFE_CABECALHO);
 CREATE INDEX IFK_FK_MDFE_INFORMACAO_SEGURO
   ON MDFE_INFORMACAO_SEGURO (ID_MDFE_CABECALHO);
+
+
+
+
+

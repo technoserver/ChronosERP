@@ -8,8 +8,8 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "NFCE_CAIXA")
-public class NfceCaixa implements Serializable {
+@Table(name = "PDV_CAIXA")
+public class PdvCaixa implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -23,7 +23,11 @@ public class NfceCaixa implements Serializable {
     @Column(name = "DATA_CADASTRO")
     private Date dataCadastro;
 
-    public NfceCaixa() {
+    public PdvCaixa() {
+    }
+
+    public PdvCaixa(Integer id) {
+        this.id = id;
     }
 
     public Integer getId() {
@@ -68,7 +72,7 @@ public class NfceCaixa implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final NfceCaixa other = (NfceCaixa) obj;
+        final PdvCaixa other = (PdvCaixa) obj;
         return Objects.equals(this.id, other.id);
     }
 

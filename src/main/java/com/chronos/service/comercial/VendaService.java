@@ -2,6 +2,7 @@ package com.chronos.service.comercial;
 
 import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.dto.ProdutoVendaDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.entidades.VendaCabecalho;
@@ -22,7 +23,9 @@ import com.chronos.util.jsf.Mensagem;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by john on 06/09/17.
@@ -46,16 +49,16 @@ public class VendaService implements Serializable {
     @Transactional
     public VendaCabecalho faturarVenda(VendaCabecalho venda) {
         try {
-            if (venda.getCondicoesPagamento() != null) {
-                venda.setFormaPagamento(venda.getCondicoesPagamento().getVistaPrazo().equals("V")
-                        ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
-            }
-            VendaCondicoesPagamento condicao = venda.getCondicoesPagamento();
+
             venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
             venda = repository.atualizar(venda);
-            estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), venda.getListaVendaDetalhe());
-            finLancamentoReceberService.gerarLancamento(venda.getValorTotal(), venda.getCliente(),
-                    new DecimalFormat("VD0000000").format(venda.getId()), condicao, Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
+            List<ProdutoVendaDTO> produtos = new ArrayList<>();
+            venda.getListaVendaDetalhe().forEach(p->{
+                produtos.add(new ProdutoVendaDTO(p.getId(),p.getQuantidade()));
+            });
+            estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
+            finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
+                    venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
 
             gerarComissao(venda);
 

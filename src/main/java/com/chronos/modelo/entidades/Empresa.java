@@ -100,6 +100,10 @@ public class Empresa implements Serializable {
     public Empresa() {
     }
 
+    public Empresa(Integer id) {
+        this.id = id;
+    }
+
     public Empresa(Integer id, String razaoSocial) {
         this.id = id;
         this.razaoSocial = razaoSocial;

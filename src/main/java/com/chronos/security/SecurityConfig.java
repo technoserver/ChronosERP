@@ -86,6 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/modulo/comercial/mdfe/**").hasAnyRole("MDFE")
                 .antMatchers("/modulo/comercial/os/**").hasAnyRole("OS")
                 .antMatchers("/modulo/comercial/vendas/**").hasAnyRole("VENDA")
+                .antMatchers("/modulo/comercial/caixa/**").hasAnyRole("VENDA","OS")
                 .antMatchers("/modulo/compras/**").hasAnyRole("COMPRAS")
                 .antMatchers("/modulo/configuracoes/**").hasRole("ADMIN")
                 .antMatchers("/modulo/estoque/**").hasAnyRole("ESTOQUE")

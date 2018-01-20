@@ -2,10 +2,10 @@ package com.chronos.controll.nfce;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
-import com.chronos.modelo.entidades.NfceFechamento;
-import com.chronos.modelo.entidades.NfceMovimento;
-import com.chronos.modelo.entidades.NfceSangria;
-import com.chronos.modelo.entidades.NfceSuprimento;
+import com.chronos.modelo.entidades.PdvFechamento;
+import com.chronos.modelo.entidades.PdvMovimento;
+import com.chronos.modelo.entidades.PdvSangria;
+import com.chronos.modelo.entidades.PdvSuprimento;
 import com.chronos.modelo.entidades.enuns.StatusMovimentoCaixa;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
@@ -29,19 +29,19 @@ import java.util.*;
  */
 @Named
 @ViewScoped
-public class NfceMovimentoControll extends AbstractControll<NfceMovimento> implements Serializable {
+public class NfceMovimentoControll extends AbstractControll<PdvMovimento> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Inject
-    private Repository<NfceSangria> sangriaRepository;
+    private Repository<PdvSangria> sangriaRepository;
     @Inject
-    private Repository<NfceSuprimento> suprimentoRepository;
+    private Repository<PdvSuprimento> suprimentoRepository;
     @Inject
-    private Repository<NfceFechamento> fechamentoRepository;
+    private Repository<PdvFechamento> fechamentoRepository;
     @Inject
     protected FacesContext facesContext;
 
-    private List<NfceFechamento> fechamentos;
+    private List<PdvFechamento> fechamentos;
     private BigDecimal valor;
     private String observacao;
     private StringBuilder linhasRelatorio;
@@ -63,12 +63,12 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
     }
 
     @Override
-    public ERPLazyDataModel<NfceMovimento> getDataModel() {
+    public ERPLazyDataModel<PdvMovimento> getDataModel() {
 
         if (dataModel == null) {
             dataModel = new ERPLazyDataModel<>();
             dataModel.setDao(dao);
-            dataModel.setClazz(NfceMovimento.class);
+            dataModel.setClazz(PdvMovimento.class);
         }
         dataModel.addFiltro("statusMovimento", StatusMovimentoCaixa.ABERTO.getCodigo());
 
@@ -78,14 +78,14 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
     @Override
     public void doEdit() {
         super.doEdit();
-        fechamentos = fechamentoRepository.getEntitys(NfceFechamento.class, "nfceMovimento.id", getObjeto().getId());
+        fechamentos = fechamentoRepository.getEntitys(PdvFechamento.class, "nfceMovimento.id", getObjeto().getId());
         BigDecimal valor = BigDecimal.ZERO;
         String pagamento = "";
         String pagamentoAux = "";
         detalhe = new LinkedHashMap<>();
         Collections.sort(fechamentos);
         int i = 0;
-        for (NfceFechamento fechamento : fechamentos) {
+        for (PdvFechamento fechamento : fechamentos) {
             i++;
             pagamento = fechamento.getTipoPagamento();
 
@@ -119,7 +119,7 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
             getObjeto().setHoraFechamento(FormatValor.getInstance().formatarHora(new Date()));
             getObjeto().setStatusMovimento("F");
             getObjeto().calcularTotalFinal();
-            fechamentos = fechamentoRepository.getEntitys(NfceFechamento.class, "nfceMovimento.id", getObjeto().getId());
+            fechamentos = fechamentoRepository.getEntitys(PdvFechamento.class, "nfceMovimento.id", getObjeto().getId());
             imprimirFechamento();
             Mensagem.addInfoMessage("Movimento encerrado com sucesso");
         } catch (Exception ex) {
@@ -133,7 +133,7 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
         try {
             linhasRelatorio = new StringBuilder();
             setObjeto(getObjetoSelecionado());
-            fechamentos = fechamentoRepository.getEntitys(NfceFechamento.class, "nfceMovimento.id", getObjeto().getId());
+            fechamentos = fechamentoRepository.getEntitys(PdvFechamento.class, "nfceMovimento.id", getObjeto().getId());
             imprimirFechamento();
             Mensagem.addInfoMessage("Impressão gerada com sucesso");
         } catch (Exception ex) {
@@ -150,8 +150,8 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
 
     public void lancarSuprimentos() {
         try {
-            NfceSuprimento suprimento = new NfceSuprimento();
-            suprimento.setNfceMovimento(getObjeto());
+            PdvSuprimento suprimento = new PdvSuprimento();
+            suprimento.setPdvMovimento(getObjeto());
             suprimento.setDataSuprimento(new Date());
             suprimento.setObservacao(observacao.trim());
             suprimento.setValor(valor);
@@ -171,8 +171,8 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
 
     public void lancarSangria() {
         try {
-            NfceSangria sangria = new NfceSangria();
-            sangria.setNfceMovimento(getObjetoSelecionado());
+            PdvSangria sangria = new PdvSangria();
+            sangria.setPdvMovimento(getObjetoSelecionado());
             sangria.setDataSangria(new Date());
             sangria.setValor(valor);
             sangria.setObservacao(observacao.trim());
@@ -204,7 +204,7 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
 //            append("HORA DE ABERTURA  : " + getObjeto().getHoraAbertura());
 //            append("DATA DE FECHAMENTO: " + FormatValor.getInstance().formatarData(getObjeto().getDataFechamento()));
 //            append("HORA DE FECHAMENTO: " + getObjeto().getHoraFechamento());
-//            append(getObjeto().getNfceCaixa().getNome() + "  OPERADOR: " + getObjeto().getNfceOperador().getLogin());
+//            append(getObjeto().getNfceCaixa().getNome() + "  OPERADOR: " + getObjeto().getPdvOperador().getLogin());
 //            append("MOVIMENTO: " + getObjeto().getId());
 //            append(Biblioteca.repete("=", 48));
 //            append("");
@@ -249,7 +249,7 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
 //
 //            totDeclarado = BigDecimal.ZERO;
 //
-//            for (NfceFechamento f : fechamentos) {
+//            for (PdvFechamento f : fechamentos) {
 //
 //                valorDeclarado = f.getValor();
 //                declarado = FormatValor.getInstance().formatoDecimal("V", valorDeclarado.doubleValue());
@@ -310,8 +310,8 @@ public class NfceMovimentoControll extends AbstractControll<NfceMovimento> imple
     }
 
     @Override
-    protected Class<NfceMovimento> getClazz() {
-        return NfceMovimento.class;
+    protected Class<PdvMovimento> getClazz() {
+        return PdvMovimento.class;
     }
 
     @Override

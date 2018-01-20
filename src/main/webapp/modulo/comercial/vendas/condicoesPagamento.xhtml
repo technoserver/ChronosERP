@@ -68,11 +68,14 @@
                                   completeMethod="getListaFinTipoRecebimento"
                                   nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.tipoRecebimento}"
                                   idComponente="vendaCondicoesPagamentoFinTipoRecebimento"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                                 idComponente="condicoesPagamentoNome" label="Nome"
                                 nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.nome}"
                                 tamanhoMaximo="50"/>
-
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="faturamentoMinimo"
+                                  label="Valor Minimo"
+                                  nomeAtributo="#{vendaCondicoesPagamentoControll.objeto.faturamentoMinimo}"/>
 
                 <div class="col-xs-12 col-sm-2 col-md-2">
                     <h:outputLabel value="Forma de Pagamento" for="vistaPrazo"/>

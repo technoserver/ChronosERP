@@ -3,7 +3,7 @@ package com.chronos.controll.nfce;
 import br.com.samuelweb.certificado.Certificado;
 import br.com.samuelweb.certificado.CertificadoService;
 import com.chronos.controll.AbstractControll;
-import com.chronos.modelo.entidades.NfceConfiguracao;
+import com.chronos.modelo.entidades.PdvConfiguracao;
 import com.chronos.modelo.entidades.enuns.TipoArquivo;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -23,7 +23,7 @@ import java.nio.file.Path;
  */
 @Named
 @ViewScoped
-public class NfceConfiguracaoControll extends AbstractControll<NfceConfiguracao> implements Serializable {
+public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -81,8 +81,8 @@ public class NfceConfiguracaoControll extends AbstractControll<NfceConfiguracao>
     }
 
     @Override
-    protected Class<NfceConfiguracao> getClazz() {
-        return NfceConfiguracao.class;
+    protected Class<PdvConfiguracao> getClazz() {
+        return PdvConfiguracao.class;
     }
 
     @Override

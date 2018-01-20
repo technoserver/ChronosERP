@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "NFCE_CONFIGURACAO")
-public class NfceConfiguracao implements Serializable {
+public class PdvConfiguracao implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -104,15 +104,15 @@ public class NfceConfiguracao implements Serializable {
     private String observacaoPadrao;
     @JoinColumn(name = "ID_NFCE_RESOLUCAO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NfceResolucao nfceResolucao;
+    private PdvResolucao pdvResolucao;
     @JoinColumn(name = "ID_NFCE_CAIXA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NfceCaixa nfceCaixa;
+    private PdvCaixa pdvCaixa;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
 
-    public NfceConfiguracao() {
+    public PdvConfiguracao() {
     }
 
     public Integer getId() {
@@ -451,20 +451,20 @@ public class NfceConfiguracao implements Serializable {
         this.emailTexto = emailTexto;
     }
 
-    public NfceResolucao getNfceResolucao() {
-        return nfceResolucao;
+    public PdvResolucao getPdvResolucao() {
+        return pdvResolucao;
     }
 
-    public void setNfceResolucao(NfceResolucao nfceResolucao) {
-        this.nfceResolucao = nfceResolucao;
+    public void setPdvResolucao(PdvResolucao pdvResolucao) {
+        this.pdvResolucao = pdvResolucao;
     }
 
-    public NfceCaixa getNfceCaixa() {
-        return nfceCaixa;
+    public PdvCaixa getPdvCaixa() {
+        return pdvCaixa;
     }
 
-    public void setNfceCaixa(NfceCaixa nfceCaixa) {
-        this.nfceCaixa = nfceCaixa;
+    public void setPdvCaixa(PdvCaixa pdvCaixa) {
+        this.pdvCaixa = pdvCaixa;
     }
 
     public Empresa getEmpresa() {
@@ -501,7 +501,7 @@ public class NfceConfiguracao implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final NfceConfiguracao other = (NfceConfiguracao) obj;
+        final PdvConfiguracao other = (PdvConfiguracao) obj;
         return Objects.equals(this.id, other.id);
     }
 

@@ -53,23 +53,23 @@ public class NfceControll implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Inject
-    private Repository<NfceMovimento> movimentos;
+    private Repository<PdvMovimento> movimentos;
     @Inject
-    private Repository<NfceTurno> turnos;
+    private Repository<PdvTurno> turnos;
     @Inject
-    private Repository<NfceOperador> operadores;
+    private Repository<PdvOperador> operadores;
     @Inject
-    private Repository<NfceSuprimento> suprimentos;
+    private Repository<PdvSuprimento> suprimentos;
     @Inject
-    private Repository<NfceConfiguracao> configuracoes;
+    private Repository<PdvConfiguracao> configuracoes;
     @Inject
     private Repository<ViewNfceCliente> clientes;
     @Inject
     private Repository<Vendedor> vendedores;
     @Inject
-    private Repository<NfceTipoPagamento> nfceTipoPagamentoRepository;
+    private Repository<PdvTipoPagamento> nfceTipoPagamentoRepository;
     @Inject
-    private Repository<NfceFechamento> nfceFechamentoRepository;
+    private Repository<PdvFechamento> nfceFechamentoRepository;
     @Inject
     private EstoqueRepository estoqueRepositoy;
     @Inject
@@ -82,19 +82,16 @@ public class NfceControll implements Serializable {
     @Inject
     private NfeService nfeService;
 
-    private NfceMovimento movimento;
-    private List<NfceTurno> listTurno;
+    private PdvMovimento movimento;
+    private List<PdvTurno> listTurno;
 
 
     private NfeDetalhe item;
     private NfeDetalhe itemSelecionado;
-    private NfceTipoPagamento tipoPagamento;
-    private List<NfceTipoPagamento> listTipoPagamento;
+    private PdvTipoPagamento tipoPagamento;
+    private List<PdvTipoPagamento> listTipoPagamento;
     private NfeFormaPagamento formaPagamentoSelecionado;
-    private NfceTurno turno;
-    private NfceOperador gerente;
-    private NfceOperador operador;
-    private NfceConfiguracao configuracao;
+    private PdvConfiguracao configuracao;
     private NfeCabecalho venda;
     private NfeCabecalho vendaSelecionada;
     private Empresa empresa;
@@ -131,8 +128,7 @@ public class NfceControll implements Serializable {
     private String senhaGerente;
     private String userOperador;
     private String senhaOperador;
-    private StringBuilder linhasRelatorio;
-    private String nomeImpressaoMovimento;
+
     private ExternalContext context;
     private String nomeCupom;
 
@@ -145,7 +141,7 @@ public class NfceControll implements Serializable {
     private void init() {
 
         // verificarMovimento();
-        linhasRelatorio = new StringBuilder();
+
         empresa = FacesUtil.getEmpresaUsuario();
         usuario = FacesUtil.getUsuarioSessao();
         vendedor = instanciarVendedor(usuario);
@@ -174,26 +170,9 @@ public class NfceControll implements Serializable {
 
     public void verificarMovimento() {
         try {
-            movimento = movimentos.get(NfceMovimento.class, "statusMovimento", "A");
+            movimento = movimentos.get(PdvMovimento.class, "statusMovimento", "A");
             if (movimento == null) {
-                telaCaixa = true;
-                telaVenda = false;
-                listTurno = turnos.getAll(NfceTurno.class);
-                turno = new NfceTurno();
-                movimento = new NfceMovimento();
 
-                valorSuprimento = BigDecimal.ZERO;
-
-                movimento.setStatusMovimento(StatusMovimentoCaixa.ABERTO.getCodigo());
-                movimento.setTotalAcrescimo(BigDecimal.ZERO);
-                movimento.setTotalCancelado(BigDecimal.ZERO);
-                movimento.setTotalDesconto(BigDecimal.ZERO);
-                movimento.setTotalFinal(BigDecimal.ZERO);
-                movimento.setTotalNaoFiscal(BigDecimal.ZERO);
-                movimento.setTotalRecebido(BigDecimal.ZERO);
-                movimento.setTotalSangria(BigDecimal.ZERO);
-                movimento.setTotalTroco(BigDecimal.ZERO);
-                movimento.setTotalVenda(BigDecimal.ZERO);
             } else {
                 telaVenda = true;
             }
@@ -202,111 +181,12 @@ public class NfceControll implements Serializable {
         }
     }
 
-    public void confimarMovimento() {
-
-        try {
-            List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro("login", userOperador));
-            filtros.add(new Filtro("senha", senhaOperador));
-            operador = operadores.get(NfceOperador.class, filtros, new Object[]{});
-            if (operador == null) {
-                throw new Exception("Usuario ou senha invalido para o Operador");
-            }
-            filtros.clear();
-            filtros.add(new Filtro("login", userGerente));
-            filtros.add(new Filtro("senha", senhaGerente));
-            filtros.add(new Filtro(Filtro.OR, "nivelAutorizacao", Filtro.IGUAL, NivelAutorizacaoCaixa.SUPERVISOR.getCodigo()));
-            filtros.add(new Filtro(Filtro.OR, "nivelAutorizacao", Filtro.IGUAL, NivelAutorizacaoCaixa.GERENTE.getCodigo()));
-
-            gerente = operadores.get(NfceOperador.class, filtros, new Object[]{});
-
-            if (gerente == null) {
-                throw new Exception("Usuario ou senha invalido para o Gerente ou Supervisor");
-            }
-            movimento.setNfceTurno(turno);
-            movimento.setEmpresa(FacesUtil.getEmpresaUsuario());
-            movimento.setNfceOperador(operador);
-            movimento.setNfceCaixa(getConfiguraNfce().getNfceCaixa());
-            movimento.setIdGerenteSupervisor(gerente.getId());
-            movimento.setDataAbertura(new Date());
-            movimento.setHoraAbertura(FormatValor.getInstance().formatarHora(new Date()));
-            movimento.setTotalSuprimento(valorSuprimento);
-
-            movimento = movimentos.atualizar(movimento);
-            if (valorSuprimento != null && valorSuprimento.signum() > 0) {
-                addSuprimento(valorSuprimento);
-            }
-            movimento.calcularTotalFinal();
-            movimentos.atualizar(movimento);
-            imprimeAbertura();
-
-            telaCaixa = false;
-            telaVenda = true;
 
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
-        }
-    }
-
-    private void addSuprimento(BigDecimal valor) {
-        NfceSuprimento suprimento = new NfceSuprimento();
-        suprimento.setNfceMovimento(movimento);
-        suprimento.setDataSuprimento(new Date());
-        suprimento.setObservacao("Abertura do Caixa");
-        suprimento.setValor(valor);
-
-        suprimentos.salvar(suprimento);
-    }
 
 
-    private void imprimeAbertura() {
-        try {
 
-            linhasRelatorio.setLength(0);
-            append(Biblioteca.repete("=", 48));
-            append("               ABERTURA DE CAIXA ");
-            append("");
-            append("DATA DE ABERTURA: " + FormatValor.getInstance().formatarData(movimento.getDataAbertura()));
-            append("HORA DE ABERTURA: " + movimento.getHoraAbertura());
-            append(movimento.getNfceCaixa().getNome() + "  OPERADOR: " + movimento.getNfceOperador().getLogin());
-            append("MOVIMENTO: " + movimento.getId());
-            append(Biblioteca.repete("=", 48));
-            append("");
-            append("SUPRIMENTO...: " + FormatValor.getInstance().formatoDecimal("V", movimento.getTotalSuprimento().doubleValue()));
-            append("");
-            append("");
-            append("");
-            append(" ________________________________________ ");
-            append("             VISTO DO CAIXA ");
-            append("");
-            append("");
-            append("");
-            append(" ________________________________________ ");
-            append("           VISTO DO SUPERVISOR ");
 
-            Map map = new HashMap();
-            File fileTemp = new File(context.getRealPath("/") + System.getProperty("file.separator") + "temp");
-            if (!fileTemp.exists()) {
-                fileTemp.mkdir();
-            }
-            map.put("CONTEUDO", linhasRelatorio.toString());
-            String caminhoJasper = "/com/chronos/erplight/relatorios/comercial/nfce/relatorioMovimento.jasper";
-            InputStream inputStream = this.getClass().getResourceAsStream(caminhoJasper);
-            JasperPrint jp = JasperFillManager.fillReport(inputStream, map, new JREmptyDataSource());
-            byte[] pdfFile = JasperExportManager.exportReportToPdf(jp);
-            Path localPdf = getDefault().getPath(fileTemp.getPath());
-            nomeImpressaoMovimento = "movimento" + movimento.getId() + ".pdf";
-            ArquivoUtil.getInstance().escrever(pdfFile, nomeImpressaoMovimento, localPdf.toString());
-            RequestContext.getCurrentInstance().addCallbackParam("movimentoIniciado", true);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro ao imprimir o relatório de abertura de movimento.\n.", ex);
-
-        }
-    }
 
     //</editor-fold>
 
@@ -365,7 +245,7 @@ public class NfceControll implements Serializable {
             telaImpressao = false;
             telaCaixa = false;
             telaPagamentos = true;
-            listTipoPagamento = nfceTipoPagamentoRepository.getAll(NfceTipoPagamento.class);
+            listTipoPagamento = nfceTipoPagamentoRepository.getAll(PdvTipoPagamento.class);
         }
 
         totalVenda = BigDecimal.ZERO;
@@ -390,6 +270,7 @@ public class NfceControll implements Serializable {
 
     public void lancaPagamento() {
         try {
+
             if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
                 Mensagem.addInfoMessage("Todos os valores já foram recebidos. Finalize a venda.");
             } else {
@@ -408,14 +289,14 @@ public class NfceControll implements Serializable {
 
     }
 
-    private void incluiPagamento(NfceTipoPagamento tipoPagamento, BigDecimal valor) throws Exception {
+    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) throws Exception {
         Optional<NfeFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
         if (formaPagamentoOpt.isPresent()) {
             Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
         } else {
             NfeFormaPagamento formaPagamento = new NfeFormaPagamento();
             formaPagamento.setNfeCabecalho(venda);
-            formaPagamento.setNfceTipoPagamento(tipoPagamento);
+            formaPagamento.setPdvTipoPagamento(tipoPagamento);
             formaPagamento.setValor(valor);
             formaPagamento.setForma(tipoPagamento.getCodigo());
             formaPagamento.setEstorno("N");
@@ -433,10 +314,10 @@ public class NfceControll implements Serializable {
 
     }
 
-    private Optional<NfeFormaPagamento> bucarTipoPagamento(NfceTipoPagamento tipoPagamento) {
+    private Optional<NfeFormaPagamento> bucarTipoPagamento(PdvTipoPagamento tipoPagamento) {
         Optional<NfeFormaPagamento> formaPagamentoOpt = venda.getListaNfeFormaPagamento()
                 .stream()
-                .filter(fp -> fp.getNfceTipoPagamento().equals(tipoPagamento))
+                .filter(fp -> fp.getPdvTipoPagamento().equals(tipoPagamento))
                 .findAny();
         return formaPagamentoOpt;
     }
@@ -464,9 +345,9 @@ public class NfceControll implements Serializable {
 
         venda.getListaNfeFormaPagamento().stream()
                 .forEach(p -> {
-                    NfceFechamento fechamento = new NfceFechamento();
-                    fechamento.setNfceMovimento(movimento);
-                    fechamento.setTipoPagamento(p.getNfceTipoPagamento().getDescricao());
+                    PdvFechamento fechamento = new PdvFechamento();
+                    fechamento.setPdvMovimento(movimento);
+                    fechamento.setTipoPagamento(p.getPdvTipoPagamento().getDescricao());
                     fechamento.setValor(p.getValor());
                     nfceFechamentoRepository.salvar(fechamento);
 
@@ -626,10 +507,10 @@ public class NfceControll implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos NFce">
 
-    public NfceConfiguracao getConfiguraNfce() throws Exception {
+    public PdvConfiguracao getConfiguraNfce() throws Exception {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
-        configuracao = configuracao == null ? configuracoes.get(NfceConfiguracao.class, filtros) : configuracao;
+        configuracao = configuracao == null ? configuracoes.get(PdvConfiguracao.class, filtros) : configuracao;
         return configuracao;
     }
 
@@ -840,9 +721,7 @@ public class NfceControll implements Serializable {
         return saldoRestante.signum() == 0;
     }
 
-    private void append(String texto) {
-        linhasRelatorio.append(texto + "\n");
-    }
+
 
     public boolean isTelaVenda() {
         return telaVenda;
@@ -876,21 +755,15 @@ public class NfceControll implements Serializable {
         this.telaCaixa = telaCaixa;
     }
 
-    public List<NfceTurno> getListTurno() {
+    public List<PdvTurno> getListTurno() {
         return listTurno;
     }
 
-    public void setListTurno(List<NfceTurno> listTurno) {
+    public void setListTurno(List<PdvTurno> listTurno) {
         this.listTurno = listTurno;
     }
 
-    public NfceTurno getTurno() {
-        return turno;
-    }
 
-    public void setTurno(NfceTurno turno) {
-        this.turno = turno;
-    }
 
     public BigDecimal getValorSuprimento() {
         return valorSuprimento;
@@ -932,9 +805,7 @@ public class NfceControll implements Serializable {
         this.senhaOperador = senhaOperador;
     }
 
-    public String getNomeImpressaoMovimento() {
-        return nomeImpressaoMovimento;
-    }
+
 
     public ViewNfceCliente getCliente() {
         return cliente;
@@ -1002,19 +873,19 @@ public class NfceControll implements Serializable {
 
 
 
-    public List<NfceTipoPagamento> getListTipoPagamento() {
+    public List<PdvTipoPagamento> getListTipoPagamento() {
         return listTipoPagamento;
     }
 
-    public void setListTipoPagamento(List<NfceTipoPagamento> listTipoPagamento) {
+    public void setListTipoPagamento(List<PdvTipoPagamento> listTipoPagamento) {
         this.listTipoPagamento = listTipoPagamento;
     }
 
-    public NfceTipoPagamento getTipoPagamento() {
+    public PdvTipoPagamento getTipoPagamento() {
         return tipoPagamento;
     }
 
-    public void setTipoPagamento(NfceTipoPagamento tipoPagamento) {
+    public void setTipoPagamento(PdvTipoPagamento tipoPagamento) {
         this.tipoPagamento = tipoPagamento;
     }
 

@@ -12,7 +12,8 @@ import java.util.Date;
  */
 public class LancamentoReceber {
 
-    public String numDocumento;
+    private int id;
+    private String numDocumento;
     private BigDecimal valorTotal;
     private Date dataLancamento;
     private Cliente cliente;
@@ -22,6 +23,14 @@ public class LancamentoReceber {
 
     public LancamentoReceber() {
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNumDocumento() {

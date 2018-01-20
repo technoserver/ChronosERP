@@ -104,7 +104,7 @@
                 <h:dataTable id="tablePagamentos" var="pag" value="#{nfceControll.venda.listaNfeFormaPagamento}"
                              width="100%" cellpadding="5" cellspacing="5">
                     <h:column>
-                        #{pag.nfceTipoPagamento.descricao}
+                        #{pag.pdvTipoPagamento.descricao}
                         <small><i class="text-muted">(1x)</i></small>
                     </h:column>
                     <h:column class="nowrap" width="1">
@@ -135,64 +135,64 @@
                 </legend>
                 <table width="100%" cellpadding="5" cellspacing="0" class="margin-bottom-10px">
                     <tbody>
-                    <tr class="border-bottom-1px">
-                        <td>
-                            <h4>SUBTOTAL:</h4>
-                        </td>
-                        <td class="nowrap" width="1">
-                            <h4>R$ <span id="sub-total">#{balcaoControll.venda.valorSubTotalFormatado()}</span></h4>
-                        </td>
-                    </tr>
-                    <tr class="border-bottom-1px">
-                        <td><h4>DESCONTOS:</h4></td>
-                        <td class="nowrap" width="1">
-                            <h4>R$
-                                <span id="descontos">#{nfceControll.formatarValor(nfceControll.desconto)}</span>
-                            </h4>
-                        </td>
-                    </tr>
-                    <tr class="border-bottom-1px">
-                        <td><h4>ACRECIMOS:</h4></td>
-                        <td class="nowrap" width="1">
-                            <h4>R$
-                                <span id="acrescimos">#{nfceControll.formatarValor(nfceControll.acrescimo)}</span>
-                            </h4>
-                        </td>
-                    </tr>
-                    <tr class="border-bottom-1px">
-                        <td><h4>PAGAMENTOS:</h4></td>
-                        <td class="nowrap" width="1">
-                            <h4>R$
-                                <span id="pagamentos">#{nfceControll.formatarValor(nfceControll.totalRecebido)}</span>
-                            </h4>
-                        </td>
-                    </tr>
-                    <tr class="border-bottom-1px">
-                        <td><h4>RESTANTE:</h4></td>
-                        <td class="nowrap" width="1">
-                            <h4>R$
-                                <span id="restante">#{nfceControll.formatarValor(nfceControll.saldoRestante)}</span>
-                            </h4>
-                        </td>
-                    </tr>
+                        <tr class="border-bottom-1px">
+                            <td>
+                                <h4>SUBTOTAL:</h4>
+                            </td>
+                            <td class="nowrap" width="1">
+                                <h4>R$ <span id="sub-total">#{nfceControll.venda.valorTotalFormatado()}</span></h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4>DESCONTOS:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="descontos">#{nfceControll.formatarValor(nfceControll.desconto)}</span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4>ACRECIMOS:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="acrescimos">#{nfceControll.formatarValor(nfceControll.acrescimo)}</span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4>PAGAMENTOS:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="pagamentos">#{nfceControll.formatarValor(nfceControll.totalRecebido)}</span>
+                                </h4>
+                            </td>
+                        </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4>RESTANTE:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="restante">#{nfceControll.formatarValor(nfceControll.saldoRestante)}</span>
+                                </h4>
+                            </td>
+                        </tr>
 
-                    <tr class="border-bottom-1px">
-                        <td><h4>TROCO:</h4></td>
-                        <td class="nowrap" width="1">
-                            <h4>R$
-                                <span id="troco">#{nfceControll.formatarValor(nfceControll.troco)}</span>
-                            </h4>
-                        </td>
-                    </tr>
+                        <tr class="border-bottom-1px">
+                            <td><h4>TROCO:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="troco">#{nfceControll.formatarValor(nfceControll.troco)}</span>
+                                </h4>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <td><h4>TOTAL A PAGAR:</h4></td>
-                        <td class="nowrap" width="1">
-                            <h4>R$
-                                <span id="valor-receber">#{nfceControll.formatarValor(nfceControll.totalReceber)}</span>
-                            </h4>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td><h4>TOTAL A PAGAR:</h4></td>
+                            <td class="nowrap" width="1">
+                                <h4>R$
+                                    <span id="valor-receber">#{nfceControll.formatarValor(nfceControll.totalReceber)}</span>
+                                </h4>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </fieldset>

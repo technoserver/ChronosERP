@@ -17,6 +17,7 @@
     <cc:attribute name="dataModel" default="#{cc.attrs.controller.dataModel}"/>
     <cc:attribute name="telaDetalhePadrao" default="#{true}"/>
 
+
 </cc:interface>
 
 <!-- IMPLEMENTATION -->
@@ -76,7 +77,7 @@
                                     update=":formCentro:telaGrid:outputPanelGrid,#{cc.attrs.telaDetalhePadrao?':formCentro:telaDetalhe:outputPanelDetalhe':':formCentro:outputPanelDetalhe'},navegacao,:formCentro:mensagem"/>
                         </h:commandButton>
                     </div>
-                    <div class="col-xs-6 col-lg-6">
+                    <div class=" #{(!cc.attrs.somenteConsulta)? 'col-xs-6 col-lg-6':'col-xs-12 col-lg-12'}">
                         <h:commandButton value="Cancelar" class="btn btn-default center-block"
                                          id="btnCancelar"
                                          action="#{cc.attrs.controller.doIndex()}" immediate="true"

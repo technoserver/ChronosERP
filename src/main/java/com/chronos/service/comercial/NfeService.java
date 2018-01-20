@@ -67,7 +67,7 @@ public class NfeService implements Serializable {
     @Inject
     private Repository<NfeConfiguracao> configuracoesNfe;
     @Inject
-    private Repository<NfceConfiguracao> configuracoesNfce;
+    private Repository<PdvConfiguracao> configuracoesNfce;
     @Inject
     private Repository<NfeCabecalho> repository;
     @Inject
@@ -114,7 +114,7 @@ public class NfeService implements Serializable {
             }
             configuracaoDTO = new ConfiguracaoEmissorDTO(configuracao);
         } else {
-            NfceConfiguracao configuracao = configuracoesNfce.get(NfceConfiguracao.class, filtros);
+            PdvConfiguracao configuracao = configuracoesNfce.get(PdvConfiguracao.class, filtros);
             if (configuracao == null) {
                 throw new Exception("Configurações da NFC-e  não definidas");
             }
@@ -143,7 +143,7 @@ public class NfeService implements Serializable {
 
 
         } else {
-            NfceConfiguracao configuracao = configuracoesNfce.get(NfceConfiguracao.class, filtros);
+            PdvConfiguracao configuracao = configuracoesNfce.get(PdvConfiguracao.class, filtros);
             if (configuracao == null) {
                 throw new Exception("Configurações da NFC-e  não definidas");
             }

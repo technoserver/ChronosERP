@@ -8,8 +8,8 @@ import java.util.Set;
 
 
 @Entity
-@Table(name = "NFCE_RESOLUCAO")
-public class NfceResolucao implements Serializable {
+@Table(name = "PDV_RESOLUCAO")
+public class PdvResolucao implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -29,10 +29,10 @@ public class NfceResolucao implements Serializable {
     private String imagemMenu;
     @Column(name = "IMAGEM_SUBMENU")
     private String imagemSubmenu;
-    @OneToMany(mappedBy = "nfceResolucao", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<NfcePosicaoComponentes> listaNfcePosicaoComponentes;
+    @OneToMany(mappedBy = "pdvResolucao", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<PdvPosicaoComponentes> listaPdvPosicaoComponentes;
 
-    public NfceResolucao() {
+    public PdvResolucao() {
     }
 
     public Integer getId() {
@@ -91,17 +91,14 @@ public class NfceResolucao implements Serializable {
         this.imagemSubmenu = imagemSubmenu;
     }
 
-    @Override
-    public String toString() {
-        return "com.t2tierp.model.bean.nfce.NfceResolucao[id=" + id + "]";
+
+
+    public Set<PdvPosicaoComponentes> getListaPdvPosicaoComponentes() {
+        return listaPdvPosicaoComponentes;
     }
 
-    public Set<NfcePosicaoComponentes> getListaNfcePosicaoComponentes() {
-        return listaNfcePosicaoComponentes;
-    }
-
-    public void setListaNfcePosicaoComponentes(Set<NfcePosicaoComponentes> listaNfcePosicaoComponentes) {
-        this.listaNfcePosicaoComponentes = listaNfcePosicaoComponentes;
+    public void setListaPdvPosicaoComponentes(Set<PdvPosicaoComponentes> listaPdvPosicaoComponentes) {
+        this.listaPdvPosicaoComponentes = listaPdvPosicaoComponentes;
     }
 
     @Override
@@ -122,7 +119,7 @@ public class NfceResolucao implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final NfceResolucao other = (NfceResolucao) obj;
+        final PdvResolucao other = (PdvResolucao) obj;
         return Objects.equals(this.id, other.id);
     }
 

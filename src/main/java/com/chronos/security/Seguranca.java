@@ -87,7 +87,7 @@ public class Seguranca {
 
 
     public boolean isTemAcessoEpresa() {
-        return FacesUtil.isUserInRole("SOFTHOUSE");
+        return getUsuarioLogado().getAdministrador().equals("S");
     }
 
     public boolean isTemAcesso(String modulo) {

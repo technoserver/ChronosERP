@@ -8,8 +8,8 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "NFCE_SANGRIA")
-public class NfceSangria implements Serializable {
+@Table(name = "PDV_SUPRIMENTO")
+public class PdvSuprimento implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -18,17 +18,17 @@ public class NfceSangria implements Serializable {
     @Column(name = "ID")
     private Integer id;
     @Temporal(TemporalType.DATE)
-    @Column(name = "DATA_SANGRIA")
-    private Date dataSangria;
+    @Column(name = "DATA_SUPRIMENTO")
+    private Date dataSuprimento;
     @Column(name = "VALOR")
     private BigDecimal valor;
     @Column(name = "OBSERVACAO")
     private String observacao;
-    @JoinColumn(name = "ID_NFCE_MOVIMENTO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PDV_MOVIMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NfceMovimento nfceMovimento;
+    private PdvMovimento pdvMovimento;
 
-    public NfceSangria() {
+    public PdvSuprimento() {
     }
 
     public Integer getId() {
@@ -39,12 +39,12 @@ public class NfceSangria implements Serializable {
         this.id = id;
     }
 
-    public Date getDataSangria() {
-        return dataSangria;
+    public Date getDataSuprimento() {
+        return dataSuprimento;
     }
 
-    public void setDataSangria(Date dataSangria) {
-        this.dataSangria = dataSangria;
+    public void setDataSuprimento(Date dataSuprimento) {
+        this.dataSuprimento = dataSuprimento;
     }
 
     public BigDecimal getValor() {
@@ -63,12 +63,12 @@ public class NfceSangria implements Serializable {
         this.observacao = observacao;
     }
 
-    public NfceMovimento getNfceMovimento() {
-        return nfceMovimento;
+    public PdvMovimento getPdvMovimento() {
+        return pdvMovimento;
     }
 
-    public void setNfceMovimento(NfceMovimento nfceMovimento) {
-        this.nfceMovimento = nfceMovimento;
+    public void setPdvMovimento(PdvMovimento pdvMovimento) {
+        this.pdvMovimento = pdvMovimento;
     }
 
 

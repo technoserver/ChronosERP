@@ -192,7 +192,7 @@
         <!--Inicio Produtos Selecionado -->
         <div id="produtos-selecionados">
             <div id="lista" class="table-responsive">
-                <h:dataTable var="row" value="#{balcaoControll.venda.listaVendaDetalhe}"
+                <h:dataTable var="row" value="#{balcaoControll.venda.listaPdvVendaDetalhe}"
                              class="table table-striped" id="tableProduto">
                     <h:column>
                         <f:facet name="header">
@@ -251,7 +251,7 @@
             <div class="margin-top-10px col-sm-12 col-md-12 col-lg-12">
                 <h:commandButton id="botao-pagar"
                                  value="FINALIZAR VENDA"
-                                 action="#{balcaoControll.finalizarVenda}"
+                                 action="#{balcaoControll.iniciarPagamentosVenda}"
                                  class="btn btn-success btn-lg" style="width:100%">
                     <p:ajax update=":formCentro:growl,:formCentro:telaPdv,:formCentro:tela-inicial"/>
                 </h:commandButton>

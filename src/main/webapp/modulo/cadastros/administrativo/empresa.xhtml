@@ -22,28 +22,82 @@
 
 
     <ui:define name="gridDados">
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{empresaControll.telaGrid}">
+                <div class="ibox-content">
+                    <erp:msgPermissao permissao="#{empresaControll.podeConsultar()}"/>
+                    <p:dataTable value="#{empresaControll.dataModel}"
+                                 var="row" id="dataTabelEmpresa" paginator="true"
+                                 rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                                 reflow="true" rendered="#{empresaControll.podeConsultar()}"
+                                 resizableColumns="true" lazy="true"
+                                 >
 
-        <erp:gridDados controller="#{empresaControll}"
-                       idDataTable="dataTableEmpresa"
-                       nomeFuncao="Empresa"
-                       id="telaGrid"
-        >
+                        <p:column headerText="Razão Social">
+                            <h:outputLabel value="#{row.razaoSocial}"/>
+                        </p:column>
+                        <p:column headerText="CNPJ">
+                            <h:outputLabel value="#{row.cnpj}"/>
+                        </p:column>
+                        <p:column headerText="tipo">
+                            <h:outputLabel value="#{row.tipo eq 'M'?'MATRIZ':'FILIAL'}"/>
+                        </p:column>
+                        <p:column headerText="CRT">
+                            <h:outputLabel value="#{empresaControll.keyFromValue(empresaControll.crt, row.crt)}"/>
+                        </p:column>
 
-            <p:column headerText="Razão Social">
-                <h:outputLabel value="#{row.razaoSocial}"/>
-            </p:column>
-            <p:column headerText="CNPJ">
-                <h:outputLabel value="#{row.cnpj}"/>
-            </p:column>
-            <p:column headerText="tipo">
-                <h:outputLabel value="#{row.tipo eq 'M'?'MATRIZ':'FILIAL'}"/>
-            </p:column>
-            <p:column headerText="CRT">
-                <h:outputLabel value="#{empresaControll.keyFromValue(empresaControll.crt, row.crt)}"/>
-            </p:column>
+                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                            <p:commandLink title="Alterar" action="#{empresaControll.doEdit()}" class=" btn btn-default"
+                                           update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                           id="btnAlterar">
+                                <i class="fa fa-file-text-o"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{empresaControll.objetoSelecionado}"/>
+                            </p:commandLink>
+                            &nbsp;
+                            <p:commandLink title="Excluir" action="#{empresaControll.remover()}"
+                                           update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                           process="dataTabelEmpresa"
+                                           oncomplete="atualizarMsg();"
+                                           id="btnExcluir"
+                                           class="btn btn-default"
+                                           disabled="#{!empresaControll.podeExcluir()}">
+                                <i class="fa fa-times"></i>
+                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{empresaControll.objetoSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+                <div class="ibox-footer">
+                    <div class="row">
+                        <p:outputPanel class="col-xs-6 col-lg-6" rendered="#{empresaControll.podeCadastrarEmpresa}">
+                            <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
+                                             actionListener="#{empresaControll.doCreate()}"
+                                             id="btnCadastrar">
+                                <p:resetInput target=":formCentro"/>
+                                <p:ajax process="@form"
+                                        oncomplete="addClass()"
+                                        update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
+                            </h:commandButton>
+                        </p:outputPanel>
+
+                        <div class=" #{(empresaControll.podeCadastrarEmpresa)? 'col-xs-6 col-lg-6':'col-xs-12 col-lg-12'}">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             id="btnCancelar"
+                                             action="#{empresaControll.doIndex()}" immediate="true"
+                            />
+                        </div>
+
+                    </div>
+                </div>
+            </p:outputPanel>
+        </p:outputPanel>
 
 
-        </erp:gridDados>
     </ui:define>
 
 
@@ -51,7 +105,7 @@
         <erp:telaInclusaoAlteracao controller="#{empresaControll}"
                                    nomeFuncao="Empresa"
                                    id="telaDetalhe"
-        >
+                                   gridPadrao="false">
 
 
             <p:tabView id="tabEmpresa" style="border: 0px;"

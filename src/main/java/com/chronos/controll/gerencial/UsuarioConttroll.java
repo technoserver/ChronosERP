@@ -5,8 +5,13 @@ import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.entidades.Usuario;
+import com.chronos.modelo.entidades.tenant.Tenant;
+import com.chronos.modelo.entidades.tenant.UsuarioTenant;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.repository.TenantRepository;
+import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -30,6 +35,9 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     private Repository<Papel> papelRepository;
     @Inject
     private Repository<Colaborador> colaboradores;
+    @Inject
+    private TenantRepository tenantRepository;
+
     private String senha;
 
 
@@ -52,11 +60,13 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
 
     }
 
+
     @Override
     public void salvar() {
 
         boolean existeColaborador = dao.existeRegisro(Usuario.class, "colaborador.id", getObjeto().getColaborador().getId());
         boolean existeUsuario = dao.existeRegisro(Usuario.class, "login", getObjeto().getLogin().toLowerCase());
+        Integer id = getObjeto().getId();
         if (existeColaborador) {
             Mensagem.addInfoMessage("já existe usuário definido para esse colaborador");
         } else if (existeUsuario) {
@@ -72,6 +82,19 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
                 getObjeto().setSenha(encoder.encode(senha));
             }
             super.salvar();
+
+            if(id==null){
+                Tenant tenant  = FacesUtil.getTenantId();
+
+                UsuarioTenant user = new UsuarioTenant();
+                user.setLogin(getObjeto().getLogin());
+                user.setSenha(getObjeto().getSenha());
+
+                user.setTenant(tenant);
+
+                tenantRepository.salvar(user);
+            }
+
         }
 
     }

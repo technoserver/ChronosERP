@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <h1 class="margin-top-0">ABERTURA DE CAIXA</h1>
+        <h3 class="margin-top-0 text-center text-primary">
+            Informe os valores disponíveis para iniciar suas operações
+        </h3>
+        <div class="text-center  row">
+            <div class="col-sm-12 col-md-4 col-lg-12">
+                <i class="fa-lg fa fa-laptop"></i>
+            </div>
+        </div>
+        <div class="text-center  row">
+            <div class="col-sm-offset-4 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-4 col-lg-4">
+
+                <h3 class="margin-top-0">DISPONÍVEL EM CAIXA</h3>
+                <p:focus context="CaixaValor"/>
+                <p:inputNumber id="CaixaValor" value="#{pdvMovimentoControll.suprimentos}"/>
+
+            </div>
+
+
+            <div class="margin-top-5px margin-bottom-10px col-sm-12 col-md-12 col-lg-12">
+
+
+            </div>
+        </div>
+        <div class="text-center  row">
+            <div class="col-sm-offset-4 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-4 col-lg-4">
+                <h:commandLink class="btn btn-lg btn-success"
+                               action="#{pdvMovimentoControll.confimarMovimento}"
+                               style="width:100%">
+                    <h3 class="margin-top-0 margin-bottom-0"><i
+                            class="fa fa-sign-in"></i> CONFIRMAR ABERTURA</h3>
+                    <p:ajax update="formCentro:growl,:formMovimento:dialogMovimento,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                            oncomplete="if (args.movimentoIniciado) {PF('dialogMovimento').show(); };"
+                            process="@form"/>
+                </h:commandLink>
+            </div>
+
+        </div>
+    </div>
+</ui:composition>

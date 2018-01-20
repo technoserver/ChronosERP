@@ -1,6 +1,6 @@
 package com.chronos.dto;
 
-import com.chronos.modelo.entidades.NfceConfiguracao;
+import com.chronos.modelo.entidades.PdvConfiguracao;
 import com.chronos.modelo.entidades.NfeConfiguracao;
 
 /**
@@ -80,7 +80,7 @@ public class ConfiguracaoEmissorDTO {
 
     }
 
-    public ConfiguracaoEmissorDTO(NfceConfiguracao configuracao) {
+    public ConfiguracaoEmissorDTO(PdvConfiguracao configuracao) {
         this.certificadoDigitalSenha = configuracao.getCertificadoDigitalSenha();
         this.caminhoLogomarca = configuracao.getCaminhoLogomarca();
         this.caminhoSchemas = configuracao.getCaminhoSchemas();

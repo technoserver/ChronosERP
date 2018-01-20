@@ -7,10 +7,10 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "NFCE_TIPO_PAGAMENTO")
-public class NfceTipoPagamento implements Serializable {
+@Table(name = "PDV_TIPO_PAGAMENTO")
+public class PdvTipoPagamento implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -25,10 +25,10 @@ public class NfceTipoPagamento implements Serializable {
     @Column(name = "GERA_PARCELAS")
     private String geraParcelas;
 
-    public NfceTipoPagamento() {
+    public PdvTipoPagamento() {
     }
 
-    public NfceTipoPagamento(Integer id) {
+    public PdvTipoPagamento(Integer id) {
         this.id = id;
     }
 
@@ -73,19 +73,23 @@ public class NfceTipoPagamento implements Serializable {
     }
 
     @Transient
-    public NfceTipoPagamento buscarPorCodigo(String codigo) {
-        NfceTipoPagamento tipo;
+    public PdvTipoPagamento buscarPorCodigo(String codigo) {
+        PdvTipoPagamento tipo;
         switch (codigo) {
             case "01":
-                tipo = new NfceTipoPagamento(1);
+                tipo = new PdvTipoPagamento(1);
+                break;
             case "02":
-                tipo = new NfceTipoPagamento(2);
+                tipo = new PdvTipoPagamento(2);
+                break;
             case "03":
-                tipo = new NfceTipoPagamento(3);
+                tipo = new PdvTipoPagamento(3);
+                break;
             case "04":
-                tipo = new NfceTipoPagamento(4);
+                tipo = new PdvTipoPagamento(4);
+                break;
             default:
-                tipo = new NfceTipoPagamento(1);
+                tipo = new PdvTipoPagamento(1);
 
         }
 
@@ -107,7 +111,7 @@ public class NfceTipoPagamento implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final NfceTipoPagamento other = (NfceTipoPagamento) obj;
+        final PdvTipoPagamento other = (PdvTipoPagamento) obj;
         return Objects.equals(this.id, other.id);
     }
 

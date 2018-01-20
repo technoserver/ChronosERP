@@ -2,6 +2,7 @@ package com.chronos.repository;
 
 import com.chronos.dto.EstoqueIdealDTO;
 import com.chronos.dto.ProdutoDTO;
+import com.chronos.dto.ProdutoVendaDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.view.ViewProdutoEmpresa;
 
@@ -34,9 +35,9 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
 
-    public void atualizaEstoqueVerificado(Integer idEmpresa, List<VendaDetalhe> itens) throws Exception {
-        for (VendaDetalhe item : itens) {
-            atualizaEstoqueEmpresaControle(idEmpresa, item.getProduto().getId(), item.getQuantidade().negate());
+    public void atualizaEstoqueVerificado(Integer idEmpresa, List<ProdutoVendaDTO> itens) throws Exception {
+        for (ProdutoVendaDTO item : itens) {
+            atualizaEstoqueEmpresaControle(idEmpresa, item.getId(), item.getQuantidade().negate());
         }
     }
 

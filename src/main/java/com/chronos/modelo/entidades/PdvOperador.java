@@ -6,10 +6,10 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "NFCE_OPERADOR")
-public class NfceOperador implements Serializable {
+@Table(name = "PDV_OPERADOR")
+public class PdvOperador implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -23,10 +23,10 @@ public class NfceOperador implements Serializable {
     private String nivelAutorizacao;
 
 
-    public NfceOperador() {
+    public PdvOperador() {
     }
 
-    public NfceOperador(Integer id) {
+    public PdvOperador(Integer id) {
         this.id = id;
     }
 
