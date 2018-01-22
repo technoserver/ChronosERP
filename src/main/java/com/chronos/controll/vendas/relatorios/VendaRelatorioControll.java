@@ -1,6 +1,7 @@
 package com.chronos.controll.vendas.relatorios;
 
 import com.chronos.controll.AbstractRelatorioControll;
+import com.chronos.modelo.entidades.PdvVendaCabecalho;
 import com.chronos.modelo.entidades.Vendedor;
 import com.chronos.repository.Repository;
 
@@ -22,11 +23,14 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     private static final long serialVersionUID = 1L;
     @Inject
     private Repository<Vendedor> vendedorRepository;
+    @Inject
+    private Repository<PdvVendaCabecalho> pdvRepository;
 
     private Date dataInicial;
     private Date dataFinal;
     private Integer idvendedor;
-
+    private int idcupom;
+    private PdvVendaCabecalho vendaCupom;
     private Map<String, Integer> listaVendedor;
 
     @PostConstruct
@@ -38,9 +42,20 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         listaVendedor = new LinkedHashMap<>();
         listaVendedor.putAll(list.stream()
                 .collect(Collectors.toMap((Vendedor::getNome), Vendedor::getId)));
+        if(idcupom > 0){
+
+        }
+    }
+    public void buscarPedido(){
+        try{
+            if(idcupom>0){
+                vendaCupom = pdvRepository.get(idcupom,PdvVendaCabecalho.class);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
 
     }
-
     public void imprimirPedido(int id) {
         parametros = new HashMap<>();
         parametros.put("idvenda", id);
@@ -151,5 +166,21 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void setListaVendedor(Map<String, Integer> listaVendedor) {
         this.listaVendedor = listaVendedor;
+    }
+
+    public int getIdcupom() {
+        return idcupom;
+    }
+
+    public void setIdcupom(int idcupom) {
+        this.idcupom = idcupom;
+    }
+
+    public PdvVendaCabecalho getVendaCupom() {
+        return vendaCupom;
+    }
+
+    public void setVendaCupom(PdvVendaCabecalho vendaCupom) {
+        this.vendaCupom = vendaCupom;
     }
 }

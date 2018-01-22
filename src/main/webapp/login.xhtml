@@ -18,7 +18,7 @@
           type="text/css"/>
     <!-- Ionicons 2.0.0 -->
     <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css"/>
-   
+
 
 </h:head>
 <h:body class="theme-dust page-signin" style="">
@@ -51,7 +51,7 @@
                     autenticado
                 </c:if>
                 <c:if test="isAnonymous()">
-                   nao autenticado
+                    nao autenticado
                 </c:if>
                 <div class="signin-text">
                     <span>Acesso ao sistema </span>
@@ -98,8 +98,9 @@
         }
     </script>
     <div class="not-a-member">
-        Precisa de Suporte? 
-        <a href="javascript:janelaSecundaria('#{configuracaoControll.config.linkSuporte}')"   target="_blank">Acessar Suporte</a>
+        Precisa de Suporte?
+        <a href="javascript:janelaSecundaria('#{configuracaoControll.config.linkSuporte}')"
+           target="_blank">Acessar Suporte</a>
     </div>
     <h:outputScript library="primefaces" name="jquery/jquery.js"/>
     <h:outputScript library="js" name="bootstrap.min.js"/>

@@ -99,6 +99,12 @@ public class MovimentoService implements Serializable {
         movimento.setTotalVenda(Biblioteca.soma(movimento.getTotalVenda(), valor));
         atualizar(movimento);
     }
+    public void lancaVenda(BigDecimal valorVenda, BigDecimal desconto, BigDecimal troco) {
+        movimento.setTotalVenda(Biblioteca.soma(movimento.getTotalVenda(), valorVenda));
+        movimento.setTotalDesconto(Biblioteca.soma(movimento.getTotalDesconto(),Optional.ofNullable(desconto).orElse(BigDecimal.ZERO)));
+        movimento.setTotalTroco(Biblioteca.soma(movimento.getTotalDesconto(), Optional.ofNullable(troco).orElse(BigDecimal.ZERO)));
+        atualizar(movimento);
+    }
 
     public void lancaSangria(BigDecimal valor){
         movimento.setTotalSangria(Biblioteca.soma(movimento.getTotalSangria(), valor));

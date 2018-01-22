@@ -58,7 +58,7 @@ public class FinLancamentoReceberService implements Serializable {
                 + "M" + lancamento.getCodigoModulo()
                 + "V" + lancamento.getId()
                 + "C" + lancamento.getCliente().getId()
-                + "Q" + condicoesParcelas.getParcelas().size();
+                + "Q" + (condicoesParcelas.getParcelas()!=null? condicoesParcelas.getParcelas().size():1);
 
         FinLancamentoReceber lancamentoReceber = new FinLancamentoReceber();
         lancamentoReceber.setCliente(lancamento.getCliente());

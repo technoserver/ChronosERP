@@ -5,60 +5,79 @@
 
 
 $(document).bind('keydown', function (event) {
-    if (event.which == 112) {
-        $('#painel-teclas-atalho').modal('show');
-        return false;
-    }
-    //buscar produto
-    if (event.which == 113) {
-        $('#token-input-BuscaProduto').val('').focus().select();
-        $('#BuscaProduto').tokenInput('clearCache');
-        return false;
-    }
-    //alterar quantidadfe
-    if (event.which == 114) {
-        $('#PedidoQuantidade').focus().select();
-        return false;
-    }
-    //adcionar produto
-    if (event.which == 115) {
-        $('#adicionar-produto').find('#salva-produto').click();
-        $('#token-input-BuscaProduto').val('').focus().select();
-        $('#BuscaProduto').tokenInput('clearCache');
-        return false;
-    }
-    //pagar
-    if (event.which == 117) {
-        $('#botao-pagar').click();
-        return false;
-    }
-    //aguardar
-    if (event.which == 118) {
-        $('#aguardar').click();
-        return false;
-    }
-    //cancelar venda
-    if (event.which == 119) {
-        $('#cancelar').click();
-        return false;
-    }
-    //indicar cliente
-    if (event.which === 67 && event.shiftKey) {
-        if (!$('input').is(':focus')) {
-            // $('#botao-indicar-cliente').click();
-            document.getElementById('formCentro:botao-indicar-cliente').click();
+
+
+    if($('#formCentro\\:tela-inicial').css('display') == 'block'){
+        if (event.which == 112) {
+            $('#painel-teclas-atalho').modal('show');
+            return false;
+        }
+        //buscar produto
+        if (event.which == 113) {
+            $('#formCentro\\:produto_input').val('').focus().select();
+            return false;
+        }
+        //alterar quantidadfe
+        if (event.which == 114) {
+            $('#PedidoQuantidade').focus().select();
+            return false;
+        }
+        //adcionar produto
+        if (event.which == 115) {
+            $('#pdv').find('#formCentro\\:salva-produto').click();
+            return false;
+        }
+        //pagar
+        if (event.which == 117) {
+            $('#formCentro\\:botao-pagar').click();
+            return false;
+        }
+        //aguardar
+        if (event.which == 118) {
+            $('#aguardar').click();
+            return false;
+        }
+        //cancelar venda
+        if (event.which == 119) {
+            $('#pdv').find('#formCentro\\:cancelar-venda').click();
+            return false;
+        }
+        //indicar cliente
+        if (event.which === 67 && event.shiftKey) {
+            $('#pdv').find('#formCentro\\:indicar-cliente').click();
             $('#ClientePfCpf').focus().select();
             return false;
+
+        }
+        //indicar vendedor
+        if (event.which === 86 && event.shiftKey) {
+
+            $('#pdv').find('#formCentro\\:indicar-vendedor').click();
+            $('#PedidoVendedorId').focus().select();
+            return false;
+
         }
     }
-    //indicar vendedor
-    if (event.which === 86 && event.shiftKey) {
-        if (!$('input').is(':focus')) {
-            document.getElementById('formCentro:botao-indicar-vendedor').click();
-            $('#PedidoVendedorId').focus().select();
+
+    if($('#formCentro\\:tela-pagamento').css('display') == 'block'){
+        if(event.which == 116){
+           var formarPagamento =  $('#formCentro\\:PedidoFormaPagamentoId');
+           var opcao = $('#formCentro\\:PedidoFormaPagamentoId > option:selected');
+           var primeiroRegistro = 1;
+           var proximoRegistro;
+
+           proximoRegistro = opcao.next().val();
+           if(proximoRegistro){
+               formarPagamento.focus().select().val(proximoRegistro).change();
+           }else{
+               formarPagamento.focus().select().val(primeiroRegistro).change();
+           }
+
             return false;
         }
     }
+
+
 
 
 });

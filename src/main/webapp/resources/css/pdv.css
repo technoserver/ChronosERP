@@ -7,7 +7,7 @@
     -moz-box-shadow: 0px 1px 22px 0px rgba(50, 50, 50, 0.75);
     box-shadow: 0px 1px 22px 0px rgba(50, 50, 50, 0.75);
     padding-bottom: 50px;
-    min-height: 85vh
+    min-height: 80vh
 }
 
 #pdv #botao-operacoes {
@@ -114,11 +114,11 @@ div.token-input-dropdown {
     font-size: 20px
 }
 
-#pdv #produtos-selecionados {
-    padding-bottom: 10px
+#pdv .produtos-selecionados {
+    padding-bottom: 50px
 }
 
-#pdv #produtos-selecionados #lista {
+#pdv .produtos-selecionados #lista {
     height: 200px;
     overflow: auto;
 }

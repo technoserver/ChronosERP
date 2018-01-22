@@ -3,6 +3,7 @@ package com.chronos.controll;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.enuns.Estados;
 import com.chronos.service.cadastros.UsuarioService;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import com.chronos.util.report.ExecutorRelatorio;
 import org.hibernate.Session;
@@ -43,7 +44,7 @@ public class AbstractRelatorioControll implements Serializable {
 
     @PostConstruct
     protected void init() {
-        this.empresa = getEmpresaUsuario();
+        this.empresa = FacesUtil.getEmpresaUsuario();
     }
 
 
@@ -82,4 +83,12 @@ public class AbstractRelatorioControll implements Serializable {
         return StringUtils.isEmpty(valor) ? "%" : "%" + valor + "%";
     }
 
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
 }

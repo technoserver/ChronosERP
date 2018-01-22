@@ -52,7 +52,7 @@ public class PdvVendaCabecalho implements Serializable {
     @Column(name = "status_venda")
     private String statusVenda;
 
-    @JoinColumn(name = "ID_NFCE_MOVIMENTO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PDV_MOVIMENTO", referencedColumnName = "ID")
     @ManyToOne
     private PdvMovimento pdvMovimento;
 

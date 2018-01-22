@@ -295,7 +295,7 @@ public class PdvMovimento implements Serializable {
                 .add(getTotalSuprimento())
                 .add(getTotalRecebido())
                 .add(getTotalVenda())
-                .add(getTotalFinal());
+                ;
 
 
         return totalFinal;

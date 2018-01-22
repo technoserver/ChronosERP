@@ -42,7 +42,7 @@ public class PdvVendaDetalhe {
     private BigDecimal taxaComissao;
     @Column(name = "VALOR_COMISSAO")
     private BigDecimal valorComissao;
-    @JoinColumn(name = "ID_VENDA_CABECALHO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PDV_VENDA_CABECALHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private PdvVendaCabecalho pdvVendaCabecalho;

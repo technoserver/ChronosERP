@@ -1,5 +1,6 @@
 package com.chronos.controll.vendas;
 
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
@@ -12,9 +13,13 @@ import com.chronos.service.comercial.VendaPdvService;
 import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.util.Biblioteca;
+import com.chronos.util.jpa.EntityManagerProducer;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -39,6 +44,8 @@ import java.util.stream.IntStream;
 public class BalcaoControll implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = LoggerFactory.getLogger(BalcaoControll.class);
 
     @Inject
     private Repository<PdvVendaCabecalho> vendas;
@@ -73,6 +80,8 @@ public class BalcaoControll implements Serializable {
     @Inject
     protected FacesContext facesContext;
 
+    private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
+
     private PdvVendaCabecalho venda;
     private PdvVendaDetalhe item;
     private PdvTipoPagamento tipoPagamento;
@@ -104,12 +113,10 @@ public class BalcaoControll implements Serializable {
     private BigDecimal totalRecebido;
     private BigDecimal saldoRestante;
     private BigDecimal valorPago;
+    private int id;
 
 
 
-    public String doBalcao() {
-        return verificarMovimento();
-    }
 
     @PostConstruct
     private void init() {
@@ -119,8 +126,18 @@ public class BalcaoControll implements Serializable {
 
     }
 
-    public void novaVenda() {
 
+    public ERPLazyDataModel<PdvVendaCabecalho> getDataModel(){
+        if(dataModel == null){
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setDao(vendas);
+            dataModel.setClazz(PdvVendaCabecalho.class);
+        }
+        return dataModel;
+    }
+
+    public void novaVenda() {
+        telaGrid = false;
         telaVenda = true;
         telaPagamentos = false;
         venda = new PdvVendaCabecalho();
@@ -146,7 +163,7 @@ public class BalcaoControll implements Serializable {
             if(movimento == null ){
                 return "/modulo/comercial/caixa/movimentos.xhtml";
             }else{
-                return "/modulo/comercial/vendas/balcao.xhtml";
+                return "";
             }
         }catch (Exception ex){
             ex.printStackTrace();
@@ -159,6 +176,7 @@ public class BalcaoControll implements Serializable {
     public void cancelar() {
         telaVenda = true;
         telaPagamentos = false;
+        novaVenda();
     }
 
     public void gerarNfce() {
@@ -291,6 +309,37 @@ public class BalcaoControll implements Serializable {
     public void selecionarCliente() {
         if(cliente.getId()!=null){
             venda.setCliente(cliente);
+            venda.setNomeCliente(cliente.getPessoa().getNome());
+
+        }else{
+
+            if(StringUtils.isEmpty(venda.getCpfCnpjCliente())){
+                Mensagem.addErrorMessage("CPF/CNPJ obrigatorio");
+                FacesContext.getCurrentInstance().validationFailed();
+            }else if(StringUtils.isEmpty(venda.getNomeCliente())){
+                Mensagem.addErrorMessage("Nome obrigatorio");
+                FacesContext.getCurrentInstance().validationFailed();
+            }else{
+                boolean cpfValido = true;
+                if(venda.getCpfCnpjCliente().length() == 14){
+                    cpfValido = Biblioteca.cnpjValido(venda.getCpfCnpjCliente());
+                    if(!cpfValido){
+                        Mensagem.addErrorMessage("CNPJ invalido");
+                        FacesContext.getCurrentInstance().validationFailed();
+                    }
+
+                }else{
+                    cpfValido = Biblioteca.cpfValido(venda.getCpfCnpjCliente());
+                    if(!cpfValido){
+                        Mensagem.addErrorMessage("CPF invalido");
+                        FacesContext.getCurrentInstance().validationFailed();
+                    }
+
+
+                }
+            }
+            cliente = null;
+
         }
 
     }
@@ -354,7 +403,6 @@ public class BalcaoControll implements Serializable {
         desconto = venda.getValorDesconto();
         acrescimo = BigDecimal.ZERO;
         totalReceber = Biblioteca.soma(totalVenda, acrescimo);
-        totalReceber = Biblioteca.subtrai(totalReceber, desconto);
         saldoRestante = totalReceber;
 
         valorPago = saldoRestante;
@@ -365,17 +413,17 @@ public class BalcaoControll implements Serializable {
         try {
 
             if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
-                Mensagem.addInfoMessage("Todos os valores já foram recebidos. Finalize a venda.");
+                Mensagem.addErrorMessage("Todos os valores já foram recebidos. Finalize a venda.");
             } else {
                 if (cliente==null && tipoPagamento.getGeraParcelas().equals("S")) {
-                    Mensagem.addInfoMessage("Para gera contas a receber é preciso informar um cliente");
+                    Mensagem.addErrorMessage("Para gera contas a receber é preciso informar um cliente");
                 } else {
 
                     incluiPagamento(tipoPagamento, valorPago);
                 }
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error(ex.getMessage());
             Mensagem.addErrorMessage("", ex);
         }
 
@@ -396,6 +444,10 @@ public class BalcaoControll implements Serializable {
                 formaPagamento.setValor(valor);
                 formaPagamento.setForma(tipoPagamento.getCodigo());
                 formaPagamento.setEstorno("N");
+
+                if(tipoPagamento.getGeraParcelas().equals("S")){
+                    formaPagamento.setCondicao(condicaoPagamento);
+                }
 
                 venda.getListaFormaPagamento().add(formaPagamento);
 
@@ -430,12 +482,23 @@ public class BalcaoControll implements Serializable {
     }
 
     public void finalizarVenda() {
-        verificaSaldoRestante();
-        if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
-            venda.setTroco(troco);
-            service.finalizarVenda(venda);
-        } else {
-            Mensagem.addInfoMessage("Valores informados não são suficientes para finalizar a venda.");
+
+
+        try{
+            verificaSaldoRestante();
+            if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
+                venda.setTroco(troco);
+               venda =  service.finalizarVenda(venda);
+                telaVenda = false;
+                telaPagamentos = false;
+                telaImpressao = true;
+                id = venda.getId();
+            } else {
+                Mensagem.addInfoMessage("Valores informados não são suficientes para finalizar a venda.");
+            }
+        }catch (Exception ex){
+            logger.error(ex.getMessage());
+            Mensagem.addErrorMessage("Erro ao finalziar venda",ex);
         }
     }
 
@@ -470,7 +533,7 @@ public class BalcaoControll implements Serializable {
 
         exibirCondicoes = tipoPagamento.getGeraParcelas().equals("S") && !tipoPagamento.getCodigo().equals("02");
         if(exibirCondicoes){
-            condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class,new Object[]{"nome"});
+            condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class,new Object[]{"nome","vistaPrazo","tipoRecebimento"});
         }
 
     }
@@ -695,5 +758,13 @@ public class BalcaoControll implements Serializable {
 
     public void setTelaGrid(boolean telaGrid) {
         this.telaGrid = telaGrid;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

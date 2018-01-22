@@ -70,6 +70,14 @@ public class VendaCondicoesPagamento implements Serializable {
         this.id = id;
         this.nome = nome;
         this.vistaPrazo = vistaPrazo;
+
+    }
+
+    public VendaCondicoesPagamento(Integer id, String nome, String vistaPrazo,FinTipoRecebimento tipoRecebimento) {
+        this.id = id;
+        this.nome = nome;
+        this.vistaPrazo = vistaPrazo;
+        this.tipoRecebimento = tipoRecebimento;
     }
 
     public Integer getId() {

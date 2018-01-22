@@ -68,13 +68,12 @@
                         </th>
                         <td class="padding-top-10px">
                             <p:inputNumber id="quantidade"
-                                           decimalPlaces="2"
-                                           minValue="0.001" maxValue="999"
+                                           decimalPlaces="4"
+
                                            value="#{balcaoControll.item.quantidade}"
                                            required="true"
                                            requiredMessage="Informe a quantidade"
                                            class="inputs"
-                                           dir="rtl"
                                            disabled="#{empty balcaoControll.item.produto}"
                                            onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:valorUnitario_input').focus(); return false;}"
                                            style="width: 100%"/>
@@ -109,7 +108,6 @@
                             <div class="input-group">
                                 <p:inputNumber id="desconto"
                                                decimalPlaces="2"
-                                               minValue="0.01" maxValue="99.99"
                                                value="#{balcaoControll.desconto}"
                                                class="inputs"
                                                dir="rtl"
@@ -149,9 +147,10 @@
                             <h:commandButton id="salva-produto" class="btn btn-primary btn-lg"
                                              style="width:100%"
                                              value="ADICIONAR PRODUTO"
+                                             disabled="#{empty balcaoControll.item.produto}"
                                              action="#{balcaoControll.addProduto}">
                                 <p:ajax process="@form"
-                                        update="formCentro:tableProduto,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido"
+                                        update="formCentro:tableProduto,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
                                         oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
                             </h:commandButton>
 
@@ -169,15 +168,15 @@
         <div class="box-cliente small-box bg-green">
             <div class="inner">
                 <div>CLIENTE:
-                    <p:commandLink id="botao-indicar-cliente"
+                    <p:commandLink id="indicar-cliente"
                                    action="#{balcaoControll.buscarCliente}"
                                    oncomplete="PF('dialogCliente').show()"
                                    update=":formOutrasTelas1:panelCliente">
-                        #{empty balcaoControll.cliente?'Não Informado' : balcaoControll.cliente.pessoa.nome}
+                        #{empty balcaoControll.venda.nomeCliente?'Não Informado' : balcaoControll.venda.nomeCliente}
                     </p:commandLink>
                 </div>
                 <div>VENDEDOR:
-                    <p:commandLink id="botao-indicar-vendedor"
+                    <p:commandLink id="indicar-vendedor"
                                    action="#{balcaoControll.buscarVendedores}"
                                    oncomplete="PF('dialogVendedor').show()"
                                    update=":formOutrasTelas:panelVendedor">
@@ -190,15 +189,16 @@
             </div>
         </div>
         <!--Inicio Produtos Selecionado -->
-        <div id="produtos-selecionados">
+        <h:panelGroup id="produtos-selecionados" layout="block" styleClass="produtos-selecionados">
             <div id="lista" class="table-responsive">
                 <h:dataTable var="row" value="#{balcaoControll.venda.listaPdvVendaDetalhe}"
+
                              class="table table-striped" id="tableProduto">
-                    <h:column>
+                    <h:column >
                         <f:facet name="header">
                             <h:outputText value="Qtd."/>
                         </f:facet>
-                        <h:outputText value="#{row.quantidade}">
+                        <h:outputText value="#{row.quantidade}" rendered="#{not empty row}">
                             <f:convertNumber pattern="#,##0.00"/>
                         </h:outputText>
                     </h:column>
@@ -206,13 +206,13 @@
                         <f:facet name="header">
                             <h:outputText value="Produto"/>
                         </f:facet>
-                        <h:outputText value="#{row.produto.descricaoPdv}"/>
+                        <h:outputText value="#{row.produto.descricaoPdv}" rendered="#{not empty row}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Desc."/>
                         </f:facet>
-                        <h:outputText value="#{row.valorDesconto}">
+                        <h:outputText value="#{row.valorDesconto}" rendered="#{not empty row}">
                             <f:convertNumber pattern="#,##0.00"/>
                         </h:outputText>
                     </h:column>
@@ -220,7 +220,7 @@
                         <f:facet name="header">
                             <h:outputText value="Preço"/>
                         </f:facet>
-                        <h:outputText value="#{row.valorUnitario}">
+                        <h:outputText value="#{row.valorUnitario}" rendered="#{not empty row}">
                             <f:convertNumber pattern="#,##0.00"/>
                         </h:outputText>
                     </h:column>
@@ -229,28 +229,40 @@
             <h4>TOTAL DO PEDIDO</h4>
             <div class="total-pedido">
                 <h:panelGroup layout="block" id="totalPedido">
-                    R$ #{balcaoControll.venda.valorTotalFormatado()}
+                    R$ <h:outputText value="#{balcaoControll.venda.valorTotal == null ?0:balcaoControll.venda.valorTotal}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                     </h:outputText>
+
                 </h:panelGroup>
 
             </div>
-        </div>
+        </h:panelGroup>
+
+
 
         <!-- Fim produtos Selecionados -->
 
         <div class="row">
             <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
                 <button id="aguardar" type="button" class="btn btn-warning btn-lg" onclick="aguardar();"
-                        style="width:100%">AGUARDAR
+                        disabled="true"
+                        style="width:100%">PRE-VENDA
                 </button>
             </div>
             <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
-                <button id="cancelar" type="button" class="btn btn-danger btn-lg"
-                        onclick="cancelarPedido();" style="width:100%">CANCELAR
-                </button>
+                <h:commandButton id="cancelar-venda"
+                                 value="CANCELAR"
+                                 styleClass="btn btn-danger btn-lg"
+
+                                 action="#{balcaoControll.cancelar}"
+                                 style="width:100%">
+                    <p:ajax process="@this" update="formCentro:produtos-selecionados" oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
+                </h:commandButton>
             </div>
             <div class="margin-top-10px col-sm-12 col-md-12 col-lg-12">
                 <h:commandButton id="botao-pagar"
                                  value="FINALIZAR VENDA"
+                                 disabled="#{balcaoControll.venda.listaPdvVendaDetalhe.size() eq 0 }"
                                  action="#{balcaoControll.iniciarPagamentosVenda}"
                                  class="btn btn-success btn-lg" style="width:100%">
                     <p:ajax update=":formCentro:growl,:formCentro:telaPdv,:formCentro:tela-inicial"/>
@@ -259,9 +271,12 @@
         </div>
     </div>
     <div class="hidden-xs teclas">
-        <b>F1</b> = Ver Atalhos <b>|</b> <b>F2</b> = Nova Busca <b>|</b> <b>F3</b> = Mudar Quantidade
-        <b>|</b> <b>F4</b> = Adicionar Produto <b>|</b> <b>F6</b> = Finalizar Venda <b>|</b>
-        <b>Shift + C</b> = Indicar Cliente <b>|</b> <b>Shift + V</b> = Indicar Vendedor
+        <b>F2</b> = Nova Busca <b>|</b>
+        <b>F4</b> = Adicionar Produto <b>|</b>
+        <b>F6</b> = Finalizar Venda <b>|</b>
+        <b>F8</b> = Cancelar Venda <b>|</b>
+        <b>Shift + C</b> = Indicar Cliente <b>|</b>
+        <b>Shift + V</b> = Indicar Vendedor
     </div>
 
 
