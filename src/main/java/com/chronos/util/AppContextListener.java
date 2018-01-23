@@ -5,6 +5,7 @@
  */
 package com.chronos.util;
 
+import com.chronos.util.tenant.ConstantsTenant;
 import com.chronos.util.validation.NotBlankClientValidationConstraint;
 import org.hibernate.validator.constraints.NotBlank;
 import org.primefaces.validate.bean.BeanValidationMetadataMapper;
@@ -22,6 +23,9 @@ public class AppContextListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         System.out.print("Destruindo o contexto");
+        ConstantsTenant.FACTORIES.forEach((tenantName, entityManagerFactory) -> entityManagerFactory.close());
+        ConstantsTenant.FACTORIES.clear();
+        ConstantsTenant.TENANTS.clear();
     }
 
     @Override

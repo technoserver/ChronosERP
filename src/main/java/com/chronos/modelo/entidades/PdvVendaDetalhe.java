@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
@@ -13,8 +14,9 @@ import java.util.Optional;
  */
 @Entity
 @Table(name = "pdv_venda_detalhe")
-public class PdvVendaDetalhe {
+public class PdvVendaDetalhe implements Serializable {
 
+    private static final long serialVersionUID = 8697637540671349717L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

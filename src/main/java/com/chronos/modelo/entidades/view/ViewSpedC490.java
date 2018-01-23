@@ -85,4 +85,22 @@ public class ViewSpedC490 implements Serializable {
     public void setSomaIcms(BigDecimal somaIcms) {
         this.somaIcms = somaIcms;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewSpedC490)) return false;
+
+        ViewSpedC490 that = (ViewSpedC490) o;
+
+        if (getCst() != null ? !getCst().equals(that.getCst()) : that.getCst() != null) return false;
+        return getCfop() != null ? getCfop().equals(that.getCfop()) : that.getCfop() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getCst() != null ? getCst().hashCode() : 0;
+        result = 31 * result + (getCfop() != null ? getCfop().hashCode() : 0);
+        return result;
+    }
 }

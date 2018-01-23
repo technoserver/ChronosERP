@@ -97,4 +97,21 @@ public class ViewSpedC390 implements Serializable {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewSpedC390)) return false;
+
+        ViewSpedC390 that = (ViewSpedC390) o;
+
+        if (getCst() != null ? !getCst().equals(that.getCst()) : that.getCst() != null) return false;
+        return getCfop() != null ? getCfop().equals(that.getCfop()) : that.getCfop() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getCst() != null ? getCst().hashCode() : 0;
+        result = 31 * result + (getCfop() != null ? getCfop().hashCode() : 0);
+        return result;
+    }
 }

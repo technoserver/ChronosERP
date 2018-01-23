@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence"
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 
     <persistence-unit name="ChronosAdminUP">
@@ -15,7 +15,6 @@
             <property name="javax.persistence.jdbc.password" value="p@ssw0rd"/>
 
 
-
             <property name="hibernate.connection.provider_class"
                       value="org.hibernate.connection.C3P0ConnectionProvider"/>
             <property name="hibernate.c3p0.max_size" value="20"/>
@@ -24,6 +23,8 @@
             <property name="hibernate.c3p0.idle_test_period" value="300"/>
             <property name="hibernate.c3p0.max_statements" value="50"/>
             <property name="hibernate.c3p0.timeout" value="300"/>
+            <property name="hibernate.c3p0.acquireRetryAttempts" value="1"/>
+            <property name="hibernate.c3p0.acquireRetryDelay" value="250"/>
 
         </properties>
     </persistence-unit>
@@ -39,6 +40,11 @@
             <property name="javax.persistence.jdbc.password" value="p@ssw0rd"/>
 
 
+            <property name="hibernate.multiTenancy" value="SCHEMA"/>
+            <property name="hibernate.tenant_identifier_resolver"
+                      value="com.chronos.util.tenant.MultiTenantSchemaResolver"/>
+            <property name="hibernate.multi_tenant_connection_provider"
+                      value="com.chronos.util.tenant.MultiTenantConnectionProviderImpl"/>
 
             <property name="hibernate.connection.provider_class"
                       value="org.hibernate.connection.C3P0ConnectionProvider"/>
@@ -48,6 +54,7 @@
             <property name="hibernate.c3p0.idle_test_period" value="300"/>
             <property name="hibernate.c3p0.max_statements" value="50"/>
             <property name="hibernate.c3p0.timeout" value="300"/>
+
 
         </properties>
     </persistence-unit>

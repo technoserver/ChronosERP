@@ -11,6 +11,7 @@ import java.util.Date;
 
 @Embeddable
 public class ViewSpedC425 implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Column(name = "ID_ECF_PRODUTO")
     private Integer idEcfProduto;
@@ -97,4 +98,18 @@ public class ViewSpedC425 implements Serializable {
         this.somaCofins = somaCofins;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewSpedC425)) return false;
+
+        ViewSpedC425 that = (ViewSpedC425) o;
+
+        return getIdEcfProduto() != null ? getIdEcfProduto().equals(that.getIdEcfProduto()) : that.getIdEcfProduto() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getIdEcfProduto() != null ? getIdEcfProduto().hashCode() : 0;
+    }
 }

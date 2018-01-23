@@ -35,12 +35,10 @@ public class AbstractRelatorioControll implements Serializable {
 
     @Inject
     protected EntityManager em;
+    protected Map<String, Object> parametros;
+    protected Empresa empresa;
     @Inject
     private UsuarioService userService;
-
-    protected Map<String, Object> parametros;
-
-    protected Empresa empresa;
 
     @PostConstruct
     protected void init() {
@@ -72,10 +70,6 @@ public class AbstractRelatorioControll implements Serializable {
         }
     }
 
-    protected Empresa getEmpresaUsuario() {
-
-        return userService.getEmpresaUsuario();
-    }
 
 
 

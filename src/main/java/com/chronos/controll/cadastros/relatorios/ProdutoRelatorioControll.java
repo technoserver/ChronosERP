@@ -28,7 +28,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
     private Repository<ProdutoSubGrupo> subGrupos;
 
     private String produto;
-    private String subgrupo;
+    private String nomeSubgrupo;
     private String inativo;
     private String tipoProduto;
     private ProdutoGrupo grupo;
@@ -39,7 +39,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     public void executarRelatorio() {
 
-        empresa = getEmpresaUsuario();
+
         parametros = new HashMap<>();
         parametros.put("produto", retornaValorPadrao(produto));
         parametros.put("subgrupo", retornaValorPadrao(getSubGrupo().getNome()));
@@ -96,13 +96,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         this.produto = produto;
     }
 
-    public String getSubgrupo() {
-        return subgrupo;
-    }
 
-    public void setSubgrupo(String subgrupo) {
-        this.subgrupo = subgrupo;
-    }
 
     public String getInativo() {
         return inativo;

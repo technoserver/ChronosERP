@@ -41,33 +41,28 @@ import java.util.*;
 public abstract class AbstractControll<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private T objetoSelecionado;
-    private T objeto;
-    private Auditoria log;
     protected ERPLazyDataModel<T> dataModel;
-    private String usuarioSupervisor;
-    private String senhaSupervisor;
-    private boolean necessarioAutorizacaoSupervisor = false;
-    private boolean restricaoLiberada = false;
-
-    private boolean telaGrid = true;
     @Inject
     protected Repository<T> dao;
-    @Inject
-    private Repository<Auditoria> auditoriaRepository;
-    @Inject
-    private Usuarios usuarioRepository;
-
-    private String titulo;
-    private int activeTabIndex;
-
     protected Usuario usuario;
     protected Empresa empresa;
     protected EmpresaEndereco enderecoEmpresa;
     protected Object[] atributos;
     protected Object[] joinFetch;
-
+    private T objetoSelecionado;
+    private T objeto;
+    private Auditoria log;
+    private String usuarioSupervisor;
+    private String senhaSupervisor;
+    private boolean necessarioAutorizacaoSupervisor = false;
+    private boolean restricaoLiberada = false;
+    private boolean telaGrid = true;
+    @Inject
+    private Repository<Auditoria> auditoriaRepository;
+    @Inject
+    private Usuarios usuarioRepository;
+    private String titulo;
+    private int activeTabIndex;
     private Map<String, String> simNao;
     private Map<String, String> naoSim;
     private Map<String, String> tipoPessoa;
@@ -676,7 +671,7 @@ public abstract class AbstractControll<T> implements Serializable {
             PasswordEncoder passwordEnocder = new BCryptPasswordEncoder();
             if (usuario==null || !passwordEnocder.matches(senhaSupervisor, usuario.getSenha())) {
                 Mensagem.addWarnMessage("Login inválido ou usuário não tem privilégio de supervisor.");
-            } else if(usuario != null && usuario.getAdministrador() != null && usuario.getAdministrador().equals("S")){
+            } else if (usuario.getAdministrador() != null && usuario.getAdministrador().equals("S")) {
                 restricaoLiberada = true;
                 salvar();
             }
@@ -783,7 +778,7 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public boolean podeConsultar() {
-        // return false;
+        /* return false; */
         boolean teste = FacesUtil.isUserInRole(getFuncaoBase() + "_CONSULTAR")
                 || FacesUtil.isUserInRole("ADMIN");
         return teste;

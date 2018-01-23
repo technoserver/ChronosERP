@@ -13,7 +13,6 @@ import com.chronos.service.comercial.VendaPdvService;
 import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.jpa.EntityManagerProducer;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
@@ -46,7 +45,8 @@ public class BalcaoControll implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final Logger logger = LoggerFactory.getLogger(BalcaoControll.class);
-
+    @Inject
+    protected FacesContext facesContext;
     @Inject
     private Repository<PdvVendaCabecalho> vendas;
     @Inject
@@ -73,13 +73,8 @@ public class BalcaoControll implements Serializable {
     private NfeService nfeService;
     @Inject
     private VendaPdvService service;
-
     @Inject
     private VendaService vendaService;
-
-    @Inject
-    protected FacesContext facesContext;
-
     private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
 
     private PdvVendaCabecalho venda;
@@ -527,6 +522,7 @@ public class BalcaoControll implements Serializable {
         telaImpressao = false;
         telaCaixa = false;
         telaPagamentos = false;
+        tipoPagamento = null;
     }
 
     public void definirCondicoess(){

@@ -10,7 +10,6 @@ import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.tenant.EntityManageProduceInject;
 import com.chronos.util.tenant.TenantRegistry;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,8 +53,15 @@ public class EntityManagerProducer {
 
         tenant = FacesUtil.getTenantId();
         logger.debug("executando conexao para o tenant " + tenant.getNome());
-        final EntityManager entityManager = tenantRegistry.getEntityManagerFactory(tenant.getNome()).createEntityManager();
-        return (Session) entityManager;
+        final EntityManagerFactory factoryTenant = tenantRegistry.getEntityManagerFactory(tenant.getNome());
+
+        // server para quando não definimos o tenant_identifier_resolve
+        // SessionFactory sessionFactory = ((Session)factoryTenant.createEntityManager()).getSessionFactory();
+        // session.withOptions().tenantIdentifier(tenant).openSession();
+        //  EntityManagerFactory factory = Persistence.createEntityManagerFactory("ChronosLightUP");
+        Session session = (Session) factoryTenant.createEntityManager();
+
+        return (Session) session;
     }
 
     @Produces

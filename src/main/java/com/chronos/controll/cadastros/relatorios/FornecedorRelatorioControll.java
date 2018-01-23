@@ -24,7 +24,7 @@ public class FornecedorRelatorioControll extends AbstractRelatorioControll imple
 
 
     public void executarRelatorio() {
-        empresa = getEmpresaUsuario();
+
         parametros = new HashMap<>();
         parametros.put("uf", retornaValorPadrao(uf).replace("Selecione", ""));
         parametros.put("cidade", retornaValorPadrao(cidade));

@@ -1,14 +1,13 @@
 
 package com.chronos.modelo.entidades.view;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Embeddable
 public class ViewFinChequeNaoCompensado implements Serializable {
@@ -99,4 +98,26 @@ public class ViewFinChequeNaoCompensado implements Serializable {
         this.valor = valor;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewFinChequeNaoCompensado)) return false;
+
+        ViewFinChequeNaoCompensado that = (ViewFinChequeNaoCompensado) o;
+
+        if (getIdContaCaixa() != null ? !getIdContaCaixa().equals(that.getIdContaCaixa()) : that.getIdContaCaixa() != null)
+            return false;
+        if (getNumeroTalao() != null ? !getNumeroTalao().equals(that.getNumeroTalao()) : that.getNumeroTalao() != null)
+            return false;
+        return getNumeroCheque() != null ? getNumeroCheque().equals(that.getNumeroCheque()) : that.getNumeroCheque() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getIdContaCaixa() != null ? getIdContaCaixa().hashCode() : 0;
+        result = 31 * result + (getNumeroTalao() != null ? getNumeroTalao().hashCode() : 0);
+        result = 31 * result + (getNumeroCheque() != null ? getNumeroCheque().hashCode() : 0);
+        return result;
+    }
 }
