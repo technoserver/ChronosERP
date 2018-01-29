@@ -3,6 +3,7 @@ package com.chronos.controll.nfce;
 import br.com.samuelweb.certificado.Certificado;
 import br.com.samuelweb.certificado.CertificadoService;
 import com.chronos.controll.AbstractControll;
+import com.chronos.modelo.entidades.PdvCaixa;
 import com.chronos.modelo.entidades.PdvConfiguracao;
 import com.chronos.modelo.entidades.enuns.TipoArquivo;
 import com.chronos.util.ArquivoUtil;
@@ -39,6 +40,7 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
         getObjeto().setFormatoImpressaoDanfe(1);
         getObjeto().setProcessoEmissao(0);
         getObjeto().setSalvarXml("S");
+        getObjeto().setPdvCaixa(new PdvCaixa(1));
 
     }
 

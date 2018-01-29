@@ -11,7 +11,6 @@ import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Created by john on 18/01/18.
@@ -28,6 +27,9 @@ public class PdvVendaCabecalho implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Transient
+    //@Column(name = "id_nfe_cabecalho")
+    private Integer idnfe;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_hora_venda")
     private Date dataHoraVenda;
@@ -81,6 +83,14 @@ public class PdvVendaCabecalho implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdnfe() {
+        return idnfe;
+    }
+
+    public void setIdnfe(Integer idnfe) {
+        this.idnfe = idnfe;
     }
 
     public Date getDataHoraVenda() {

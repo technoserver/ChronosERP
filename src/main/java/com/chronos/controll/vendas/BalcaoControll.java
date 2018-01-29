@@ -167,6 +167,9 @@ public class BalcaoControll implements Serializable {
 
     }
 
+    public void cancelarVenda() {
+
+    }
 
     public void cancelar() {
         telaVenda = true;
@@ -178,16 +181,16 @@ public class BalcaoControll implements Serializable {
 
 
         try {
-            ModeloDocumento modelo = ModeloDocumento.NFCE;
-            if (cliente.getId() == 1) {
-                TributOperacaoFiscal operacao = operacaoRepository.get(1, TributOperacaoFiscal.class);
-                venda.getCliente().setTributOperacaoFiscal(operacao);
-            }
+
             boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
-          //  vendaService.transmitirNFe(venda, modelo, estoque);
+            venda = vendas.getJoinFetch(venda.getId(), PdvVendaCabecalho.class);
+            if (!venda.getListaPdvVendaDetalhe().isEmpty()) {
+                vendaService.transmitirNFe(venda, estoque);
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
+            Mensagem.addErrorMessage("Erro ao gera NFCe \n", ex);
         }
     }
 

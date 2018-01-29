@@ -86,16 +86,10 @@ public class Empresa implements Serializable {
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne
     private Empresa empresa;
-    @OneToMany(mappedBy="empresa", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "empresa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EmpresaEndereco> listaEndereco;
     @Transient
     private byte[] imagem;
-
-    @PrePersist
-    @PreUpdate
-    private void prePersist() {
-        this.cnpj = cnpj == null ? "" : cnpj.replaceAll("\\D", "");
-    }
 
     public Empresa() {
     }
@@ -107,6 +101,12 @@ public class Empresa implements Serializable {
     public Empresa(Integer id, String razaoSocial) {
         this.id = id;
         this.razaoSocial = razaoSocial;
+    }
+
+    @PrePersist
+    @PreUpdate
+    private void prePersist() {
+        this.cnpj = cnpj == null ? "" : cnpj.replaceAll("\\D", "");
     }
 
     public Integer getId() {

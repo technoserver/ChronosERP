@@ -66,7 +66,7 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
     public void doEdit() {
         super.doEdit();
 
-        endereco = getObjeto().getListaEndereco().stream().filter((e) -> e.getPrincipal().equals("S")).findFirst().orElse(new EmpresaEndereco());
+        endereco = getObjeto().buscarEnderecoPrincipal();
         cidade = new Municipio(0, endereco.getCidade(), endereco.getMunicipioIbge());
         logo = getObjeto().getImagemLogotipo();
     }

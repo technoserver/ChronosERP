@@ -1,6 +1,9 @@
 package com.chronos.bo.nfe;
 
+import com.chronos.modelo.entidades.OsProdutoServico;
+import com.chronos.modelo.entidades.PdvVendaDetalhe;
 import com.chronos.modelo.entidades.Produto;
+import com.chronos.modelo.entidades.VendaDetalhe;
 
 import java.math.BigDecimal;
 
@@ -19,6 +22,34 @@ public class ItemVendaDTO {
 
     public ItemVendaDTO() {
     }
+
+    public ItemVendaDTO(OsProdutoServico itemOs) {
+        this.setDesconto(itemOs.getValorDesconto());
+        this.setProduto(itemOs.getProduto());
+        this.setQuantidade(itemOs.getQuantidade());
+        this.setValor(itemOs.getValorUnitario());
+        this.setSubtotal(itemOs.getValorSubtotal());
+        this.setTotal(itemOs.getValorTotal());
+    }
+
+    public ItemVendaDTO(VendaDetalhe itemVenda) {
+        this.setDesconto(itemVenda.getValorDesconto());
+        this.setProduto(itemVenda.getProduto());
+        this.setQuantidade(itemVenda.getQuantidade());
+        this.setValor(itemVenda.getValorUnitario());
+        this.setSubtotal(itemVenda.getValorSubtotal());
+        this.setTotal(itemVenda.getValorTotal());
+    }
+
+    public ItemVendaDTO(PdvVendaDetalhe itemPdv) {
+        this.setDesconto(itemPdv.getValorDesconto());
+        this.setProduto(itemPdv.getProduto());
+        this.setQuantidade(itemPdv.getQuantidade());
+        this.setValor(itemPdv.getValorUnitario());
+        this.setSubtotal(itemPdv.getValorSubtotal());
+        this.setTotal(itemPdv.getValorTotal());
+    }
+
 
     public Produto getProduto() {
         return produto;

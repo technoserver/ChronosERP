@@ -5,14 +5,14 @@ import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoVendaDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.NfeCabecalho;
+import com.chronos.modelo.entidades.PdvVendaCabecalho;
 import com.chronos.modelo.entidades.VendaCabecalho;
 import com.chronos.modelo.entidades.VendaComissao;
-import com.chronos.modelo.entidades.VendaCondicoesPagamento;
-import com.chronos.modelo.entidades.enuns.FormaPagamento;
 import com.chronos.modelo.entidades.enuns.Modulo;
 import com.chronos.modelo.entidades.enuns.SituacaoVenda;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
 import com.chronos.repository.EstoqueRepository;
+import com.chronos.repository.Repository;
 import com.chronos.repository.VendaComissaoRepository;
 import com.chronos.repository.VendaRepository;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
@@ -22,7 +22,6 @@ import com.chronos.util.jsf.Mensagem;
 
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +43,8 @@ public class VendaService implements Serializable {
     private VendaRepository repository;
     @Inject
     private NfeService nfeService;
+    @Inject
+    private Repository<PdvVendaCabecalho> pdvRepository;
 
 
     @Transactional
@@ -72,6 +73,26 @@ public class VendaService implements Serializable {
     }
 
     @Transactional
+    public void transmitirNFe(PdvVendaCabecalho venda, boolean atualizarEstoque) throws Exception {
+
+        SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getStatusVenda());
+        if (situacao == SituacaoVenda.NotaFiscal) {
+            throw new Exception("Essa venda já possue NFe");
+        }
+        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(venda.getEmpresa(), ModeloDocumento.NFCE);
+
+        VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, configuracao, venda);
+        NfeCabecalho nfe = vendaNfe.gerarNfe();
+        StatusTransmissao status = transmitirNFe(nfe, configuracao, atualizarEstoque);
+
+        if (status == StatusTransmissao.AUTORIZADA) {
+            venda.setStatusVenda(SituacaoVenda.NotaFiscal.getCodigo());
+            pdvRepository.atualizar(venda);
+            Mensagem.addInfoMessage("NFCe transmitida com sucesso");
+        }
+    }
+
+    @Transactional
     public void transmitirNFe(VendaCabecalho venda, ModeloDocumento modelo, boolean atualizarEstoque) {
         try {
             SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getSituacao());
@@ -84,7 +105,7 @@ public class VendaService implements Serializable {
             NfeCabecalho nfe;
             VendaToNFe vendaNfe = new VendaToNFe(modelo, configuracao, venda);
             nfe = vendaNfe.gerarNfe();
-            nfe.setCsc(configuracao.getCsc());
+
             nfe.setVendaCabecalho(venda);
 
             StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao, atualizarEstoque);
@@ -99,6 +120,15 @@ public class VendaService implements Serializable {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
         }
+    }
+
+    @Transactional
+    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao, boolean atualizarEstoque) throws Exception {
+
+        nfe.setCsc(configuracao.getCsc());
+        StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao, atualizarEstoque);
+
+        return status;
     }
 
 

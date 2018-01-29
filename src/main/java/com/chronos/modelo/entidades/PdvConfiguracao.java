@@ -8,10 +8,10 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "NFCE_CONFIGURACAO")
+@Table(name = "PDV_CONFIGURACAO")
 public class PdvConfiguracao implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 3L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -102,10 +102,10 @@ public class PdvConfiguracao implements Serializable {
     //@Column(name = "observacao_padrao")
     @Transient
     private String observacaoPadrao;
-    @JoinColumn(name = "ID_NFCE_RESOLUCAO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PDV_RESOLUCAO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private PdvResolucao pdvResolucao;
-    @JoinColumn(name = "ID_NFCE_CAIXA", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PDV_CAIXA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private PdvCaixa pdvCaixa;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")

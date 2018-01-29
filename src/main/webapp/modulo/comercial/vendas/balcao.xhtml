@@ -213,6 +213,22 @@
 
                                             icon="fa fa-print" ajax="false"/>
 
+                                <p:menuitem value="Emitir NFCe"
+                                            update=":formCentro:growl,tableVenda"
+                                            action="#{balcaoControll.gerarNfce}"
+                                >
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{balcaoControll.venda}"/>
+                                </p:menuitem>
+
+                                <p:menuitem value="Emitir NFCe"
+                                            update=":formCentro:growl,tableVenda"
+                                            action="#{balcaoControll.cancelarVenda}"
+                                >
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{balcaoControll.venda}"/>
+                                </p:menuitem>
+
 
                             </p:menuButton>
 
@@ -303,6 +319,15 @@
                                     >
                                         <f:param name="idcupom" value="#{balcaoControll.venda.id}"/>
                                     </h:link>
+                                    &nbsp;
+                                    <h:commandButton value="EMITIR NFCe"
+                                                     id="emitir-nfce"
+                                                     action="#{balcaoControll.gerarNfce}"
+
+                                                     class="btn btn-warning btn-lg">
+                                        <p:ajax update=":formCentro:growl"
+                                        />
+                                    </h:commandButton>
 
                                 </div>
                             </div>

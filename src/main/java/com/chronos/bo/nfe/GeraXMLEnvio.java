@@ -340,7 +340,7 @@ public class GeraXMLEnvio {
         TEnderEmi enderecoEmi = new TEnderEmi();
         enderecoEmi.setXLgr(emitente.getLogradouro());
         enderecoEmi.setNro(emitente.getNumero());
-        enderecoEmi.setXCpl(emitente.getComplemento());
+        enderecoEmi.setXCpl(StringUtils.isEmpty(emitente.getComplemento()) ? null : emitente.getComplemento());
         enderecoEmi.setXBairro(emitente.getBairro());
         enderecoEmi.setCMun(emitente.getCodigoMunicipio().toString());
         enderecoEmi.setXMun(emitente.getNomeMunicipio());
@@ -348,7 +348,7 @@ public class GeraXMLEnvio {
         enderecoEmi.setCEP(emitente.getCep());
         enderecoEmi.setCPais("1058");
         enderecoEmi.setXPais("BRASIL");
-        enderecoEmi.setFone(emitente.getTelefone());
+        enderecoEmi.setFone(StringUtils.isEmpty(emitente.getTelefone()) ? null : emitente.getTelefone());
         return enderecoEmi;
     }
 

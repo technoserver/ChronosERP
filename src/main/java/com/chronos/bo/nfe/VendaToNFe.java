@@ -7,6 +7,7 @@ import com.chronos.infra.enuns.LocalDestino;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.TipoVenda;
+import com.chronos.repository.Repository;
 import com.chronos.util.cdi.ManualCDILookup;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +26,7 @@ public class VendaToNFe extends ManualCDILookup {
     private Empresa empresa;
     private List<ItemVendaDTO> itens;
     private VendaCabecalho venda;
+    private PdvVendaCabecalho pdvVenda;
     private OsAbertura os;
     private TipoVenda tipoVenda;
     private TributOperacaoFiscal operacaoFiscal;
@@ -53,6 +55,18 @@ public class VendaToNFe extends ManualCDILookup {
 
     }
 
+    public VendaToNFe(ModeloDocumento modelo, ConfiguracaoEmissorDTO configuracao, PdvVendaCabecalho pdvVenda) {
+        this.modelo = modelo;
+        this.pdvVenda = pdvVenda;
+        cliente = pdvVenda.getCliente();
+        empresa = pdvVenda.getEmpresa();
+        tipoVenda = TipoVenda.PDV;
+        this.configuracao = configuracao;
+        nfeUtil = new NfeUtil();
+
+    }
+
+
     public NfeCabecalho gerarNfe() throws Exception {
         nfe = new NfeCabecalho();
         valoresPadrao();
@@ -70,16 +84,16 @@ public class VendaToNFe extends ManualCDILookup {
     }
 
     private void definirOperacaoTributaria() throws java.lang.Exception {
-        if (cliente.getTributOperacaoFiscal() == null) {
+        if (cliente != null && cliente.getTributOperacaoFiscal() == null) {
             throw new Exception("Operação tributaria do Cliente " + cliente.getPessoa().getNome() + " não definida");
         }
-        operacaoFiscal = cliente.getTributOperacaoFiscal();
+        operacaoFiscal = cliente == null ? getOperacaoFiscalPadrao() : cliente.getTributOperacaoFiscal();
         nfe.setTributOperacaoFiscal(operacaoFiscal);
         nfe.setNaturezaOperacao(StringUtils.isEmpty(operacaoFiscal.getDescricaoNaNf()) ? operacaoFiscal.getDescricao() : operacaoFiscal.getDescricaoNaNf());
     }
 
     private void definirDestinatario() {
-        if (cliente.getId() != 1) {
+        if (cliente != null && cliente.getId() != 1) {
             nfe.setCliente(cliente);
             PessoaEndereco endereco = cliente.getPessoa().buscarEnderecoPrincipal();
             nfe.getDestinatario().setCpfCnpj(cliente.getPessoa().getIdentificador());
@@ -135,25 +149,17 @@ public class VendaToNFe extends ManualCDILookup {
         itens = new ArrayList<>();
         if (tipoVenda == TipoVenda.VENDA) {
             venda.getListaVendaDetalhe().stream().forEach((itemVenda) -> {
-                ItemVendaDTO item = new ItemVendaDTO();
-                item.setDesconto(itemVenda.getValorDesconto());
-                item.setProduto(itemVenda.getProduto());
-                item.setQuantidade(itemVenda.getQuantidade());
-                item.setValor(itemVenda.getValorUnitario());
-                item.setSubtotal(itemVenda.getValorSubtotal());
-                item.setTotal(itemVenda.getValorTotal());
+                ItemVendaDTO item = new ItemVendaDTO(itemVenda);
+                itens.add(item);
+            });
+        } else if (tipoVenda == TipoVenda.OS) {
+            os.getListaOsProdutoServico().stream().forEach((itemOs) -> {
+                ItemVendaDTO item = new ItemVendaDTO(itemOs);
                 itens.add(item);
             });
         } else {
-            os.getListaOsProdutoServico().stream().forEach((itemOs) -> {
-                ItemVendaDTO item = new ItemVendaDTO();
-                item.setDesconto(itemOs.getValorDesconto());
-                item.setProduto(itemOs.getProduto());
-                item.setQuantidade(itemOs.getQuantidade());
-                item.setValor(itemOs.getValorUnitario());
-                item.setSubtotal(itemOs.getValorSubtotal());
-                item.setTotal(itemOs.getValorTotal());
-
+            pdvVenda.getListaPdvVendaDetalhe().stream().forEach((itemPdv) -> {
+                ItemVendaDTO item = new ItemVendaDTO(itemPdv);
                 itens.add(item);
             });
         }
@@ -193,19 +199,44 @@ public class VendaToNFe extends ManualCDILookup {
     }
 
     public void definirFormaPagamento() {
-        FinTipoRecebimento tipoRecebimento = tipoVenda == TipoVenda.VENDA ? venda.getCondicoesPagamento().getTipoRecebimento() : os.getCondicoesPagamento().getTipoRecebimento();
-        PdvTipoPagamento tipoPagamento = new PdvTipoPagamento();
-        tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
-        NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
-        nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
-        nfeFormaPagamento.setNfeCabecalho(nfe);
-        nfeFormaPagamento.setForma(tipoRecebimento.getTipo());
-        nfeFormaPagamento.setValor(tipoVenda == TipoVenda.VENDA ? venda.getValorTotal() : os.getValorTotal());
-        nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
+
+
+        if (tipoVenda == TipoVenda.PDV) {
+            pdvVenda.getListaFormaPagamento().stream().forEach(f -> {
+                NfeFormaPagamento pagamento = new NfeFormaPagamento();
+                pagamento.setTroco(f.getTroco());
+                pagamento.setBandeira(f.getBandeira());
+                pagamento.setCartaoTipoIntegracao(f.getCartaoTipoIntegracao());
+                pagamento.setCnpjOperadoraCartao(f.getCnpjOperadoraCartao());
+                pagamento.setEstorno(f.getEstorno());
+                pagamento.setForma(f.getForma());
+                pagamento.setNumeroAutorizacao(f.getNumeroAutorizacao());
+                pagamento.setPdvTipoPagamento(f.getPdvTipoPagamento());
+                pagamento.setNfeCabecalho(nfe);
+                pagamento.setValor(f.getValor());
+                nfe.getListaNfeFormaPagamento().add(pagamento);
+            });
+        } else {
+            FinTipoRecebimento tipoRecebimento = tipoVenda == TipoVenda.VENDA ? venda.getCondicoesPagamento().getTipoRecebimento() : os.getCondicoesPagamento().getTipoRecebimento();
+            PdvTipoPagamento tipoPagamento = new PdvTipoPagamento();
+            tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
+            NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
+            nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
+            nfeFormaPagamento.setNfeCabecalho(nfe);
+            nfeFormaPagamento.setForma(tipoRecebimento.getTipo());
+            nfeFormaPagamento.setValor(tipoVenda == TipoVenda.VENDA ? venda.getValorTotal() : os.getValorTotal());
+            nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
+        }
     }
 
     private LocalDestino getLocalDestino(String uf, String ufDestino) {
         return uf.equals(ufDestino) ? LocalDestino.INTERNA : LocalDestino.INTERESTADUAL;
+    }
+
+    private TributOperacaoFiscal getOperacaoFiscalPadrao() {
+        Repository<TributOperacaoFiscal> operacaoRepository = getFacadeWithJNDI(Repository.class);
+
+        return operacaoRepository.get(1, TributOperacaoFiscal.class);
     }
 
 
