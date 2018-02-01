@@ -154,6 +154,8 @@ public abstract class AbstractControll<T> implements Serializable {
     private HashMap<String, Integer> compromissoTipo;
     private HashMap<String, Integer> compromissoRecorrente;
 
+    //pdv
+    private HashMap<String, String> pdvCodigoTipoPagamento;
 
 
     protected abstract Class<T> getClazz();
@@ -526,6 +528,16 @@ public abstract class AbstractControll<T> implements Serializable {
         compromissoRecorrente.put("Mensal", 3);
         compromissoRecorrente.put("Anual", 4);
 
+        //PDV
+
+        pdvCodigoTipoPagamento = new LinkedHashMap<>();
+        pdvCodigoTipoPagamento.put("01", "DINHEIRO");
+        pdvCodigoTipoPagamento.put("02", "CHEQUE");
+        pdvCodigoTipoPagamento.put("03", "CARTAO DE CREDITO");
+        pdvCodigoTipoPagamento.put("04", "CARTAO DE DEBITO");
+        pdvCodigoTipoPagamento.put("05", "TICKET");
+        pdvCodigoTipoPagamento.put("06", "DUPLICATA");
+        pdvCodigoTipoPagamento.put("07", "CREDITO CLIENTE");
 
 
     }
@@ -1126,5 +1138,9 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, Integer> getCompromissoRecorrente() {
         return compromissoRecorrente;
+    }
+
+    public HashMap<String, String> getPdvCodigoTipoPagamento() {
+        return pdvCodigoTipoPagamento;
     }
 }

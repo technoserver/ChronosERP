@@ -6,7 +6,7 @@
 package com.chronos.security;
 
 
-import com.chronos.modelo.entidades.tenant.UsuarioTenant;
+import com.chronos.modelo.entidades.view.ViewUsuarioTenant;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -20,14 +20,14 @@ public class UsuarioSistema extends User {
 
     private static final long serialVersionUID = 1L;
 
-    private UsuarioTenant usuario;
+    private ViewUsuarioTenant usuario;
 
-    public UsuarioSistema(UsuarioTenant usuario, Collection<? extends GrantedAuthority> authorities) {
+    public UsuarioSistema(ViewUsuarioTenant usuario, Collection<? extends GrantedAuthority> authorities) {
          super(usuario.getLogin(), usuario.getSenha(), authorities);
         this.usuario = usuario;
     }
 
-    public UsuarioTenant getUsuario() {
+    public ViewUsuarioTenant getUsuario() {
         return usuario;
     }
 }

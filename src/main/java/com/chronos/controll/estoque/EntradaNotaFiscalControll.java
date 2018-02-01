@@ -191,6 +191,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
 
     public void gerarValores(NfeDetalhe item) {
+        item.calcularValorTotalProduto();
         valorTotalFrete = Biblioteca.soma(valorTotalFrete, item.getValorFrete());
         valorTotalDesconto = Biblioteca.soma(valorTotalDesconto, item.getValorDesconto());
         valorTotalProdutos = Biblioteca.soma(valorTotalProdutos, item.getValorSubtotal());
@@ -229,7 +230,9 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         valorTotalNF = getObjeto().getValorTotal();
 
         getObjeto().getListaNfeDetalhe().forEach(item -> {
+            item.calcularValorTotalProduto();
             if (item.getNfeDetalheImpostoIcms() != null) {
+
                 valorTotalBaseCalcIcms = Biblioteca.soma(valorTotalBaseCalcIcms, item.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
                 valorTotalIcms = Biblioteca.soma(valorTotalIcms, item.getNfeDetalheImpostoIcms().getValorIcms());
                 valorTotalBaseCalcIcmsST = Biblioteca.soma(valorTotalBaseCalcIcmsST, item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
@@ -347,6 +350,9 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             podeIncluirProduto = false;
             Mensagem.addInfoMessage("Antes de incluir produtos selecione a Operação Fiscal.");
 
+        } else if (StringUtils.isEmpty(empresa.getCrt())) {
+            podeIncluirProduto = false;
+            Mensagem.addInfoMessage("CRT da empresa não definido.");
         } else {
             tipoCstIcms = Integer.valueOf(empresa.getCrt());
             nfeDetalhe = new NfeDetalhe();
@@ -441,6 +447,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
                 Mensagem.addInfoMessage("Produto salvo!");
             }
+            gerarValores(nfeDetalhe);
             nfeDetalhe.calcularValorTotalProduto();
             calcularTotais();
 

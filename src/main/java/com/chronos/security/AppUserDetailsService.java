@@ -6,7 +6,7 @@
 package com.chronos.security;
 
 import com.chronos.modelo.entidades.AdmModulo;
-import com.chronos.modelo.entidades.tenant.UsuarioTenant;
+import com.chronos.modelo.entidades.view.ViewUsuarioTenant;
 import com.chronos.repository.Repository;
 import com.chronos.repository.Usuarios;
 import com.chronos.util.cdi.CDIServiceLocator;
@@ -32,7 +32,7 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
 
     private Usuarios dao;
     private List<GrantedAuthority> grantedAuths;
-    private UsuarioTenant usr;
+    private ViewUsuarioTenant usr;
     private Repository<AdmModulo> admModuloRepository;
 
 
@@ -54,7 +54,7 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
 
 
             tenantRegistry = CDIServiceLocator.getBean(TenantRegistry.class);
-            Optional<UsuarioTenant> userOptional = tenantRegistry.getTenant(usuario);
+            Optional<ViewUsuarioTenant> userOptional = tenantRegistry.getTenant(usuario);
             usr = userOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos"));
 //            PasswordEncoder passwordEnocder = new BCryptPasswordEncoder();
 //            if (passwordEnocder.matches("admin", usr.getSenha())) {

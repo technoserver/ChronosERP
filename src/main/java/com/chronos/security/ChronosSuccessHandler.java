@@ -1,6 +1,7 @@
 package com.chronos.security;
 
 
+import com.chronos.modelo.entidades.tenant.Tenant;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
@@ -16,7 +17,8 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         try {
             UsuarioSistema user = (UsuarioSistema) authentication.getPrincipal();
-            request.getSession().setAttribute("tenantId", user.getUsuario().getTenant());
+            Tenant tenant = new Tenant(user.getUsuario().getIdtenant(), user.getUsuario().getNomeTenant());
+            request.getSession().setAttribute("tenantId", tenant);
             request.getSession().setAttribute("usuarioSistema", user.getUsuario().getLogin());
 
         } catch (Exception e) {

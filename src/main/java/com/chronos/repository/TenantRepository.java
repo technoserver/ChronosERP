@@ -3,8 +3,8 @@ package com.chronos.repository;
 
 import com.chronos.modelo.entidades.tenant.Tenant;
 import com.chronos.modelo.entidades.tenant.UsuarioTenant;
+import com.chronos.modelo.entidades.view.ViewUsuarioTenant;
 import com.chronos.util.jpa.Transactional;
-
 import com.chronos.util.tenant.EntityManageProduceInject;
 
 import javax.inject.Inject;
@@ -26,8 +26,10 @@ public class TenantRepository implements Serializable {
     @EntityManageProduceInject
     private EntityManager em;
 
-    public Optional<UsuarioTenant> getUser(String nomeUsuario) {
-        Query q = em.createQuery("SELECT u  FROM UsuarioTenant u  JOIN FETCH u.tenant WHERE u.login = :login and u.tenant.ativo = true ");
+    public Optional<ViewUsuarioTenant> getUser(String nomeUsuario) {
+
+        Query q = em.createQuery("SELECT u  FROM ViewUsuarioTenant u WHERE u.login = :login");
+        q.setMaxResults(1);
         q.setParameter("login", nomeUsuario);
         return q.getResultList().stream().findFirst();
     }

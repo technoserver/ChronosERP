@@ -25,6 +25,14 @@ public class Tenant implements Serializable {
     private Boolean  ativo;
 
 
+    public Tenant() {
+    }
+
+    public Tenant(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

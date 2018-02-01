@@ -1,13 +1,14 @@
 package com.chronos.service.comercial;
 
 import com.chronos.dto.ProdutoVendaDTO;
-import com.chronos.modelo.entidades.FinLancamentoReceber;
+import com.chronos.modelo.entidades.ContaPessoa;
 import com.chronos.modelo.entidades.PdvFormaPagamento;
-import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
 import com.chronos.modelo.entidades.enuns.Modulo;
+import com.chronos.modelo.entidades.enuns.TipoLancamento;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
+import com.chronos.service.financeiro.ContaPessoaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.financeiro.MovimentoService;
 import com.chronos.util.Constantes;
@@ -34,7 +35,11 @@ public class VendaPdvService implements Serializable {
     private EstoqueRepository estoqueRepositoy;
     @Inject
     private MovimentoService movimentoService;
+    @Inject
+    private ContaPessoaService contaPessoaService;
 
+    @Inject
+    private Repository<ContaPessoa> contaPessoaRepository;
 
     @Transactional
     public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda){
@@ -50,6 +55,16 @@ public class VendaPdvService implements Serializable {
             for (PdvFormaPagamento p:pagamentos) {
                 if(p.getPdvTipoPagamento().getGeraParcelas().equals("S")){
                     finLancamentoReceberService.gerarLancamento(venda.getId(), p.getValor(),venda.getCliente(),p.getCondicao(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
+                }
+
+                if (p.getPdvTipoPagamento().getCodigo().equals("07")) {
+                    ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
+
+                    if (conta == null || conta.getSaldo().compareTo(p.getValor()) <= 0) {
+                        throw new Exception("Saldo insuficiente para debita na conta do cliente");
+                    } else {
+                        contaPessoaService.lancaMovimento(conta, p.getValor(), TipoLancamento.DEBITO, Modulo.VENDA.getCodigo(), venda.getId().toString());
+                    }
                 }
             }
             movimentoService.lancaVenda(venda.getValorTotal(),venda.getValorDesconto(),venda.getTroco());

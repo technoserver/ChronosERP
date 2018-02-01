@@ -1,7 +1,7 @@
 package com.chronos.util.tenant;
 
 import com.chronos.modelo.entidades.tenant.Tenant;
-import com.chronos.modelo.entidades.tenant.UsuarioTenant;
+import com.chronos.modelo.entidades.view.ViewUsuarioTenant;
 import com.chronos.repository.TenantRepository;
 
 import javax.annotation.PreDestroy;
@@ -22,14 +22,19 @@ public class TenantRegistry implements Serializable {
     @Inject
     private TenantRepository repository;
 
-    public Optional<UsuarioTenant> getTenant(final String login) {
-        Optional<UsuarioTenant> tenantUsuario = repository.getUser(login);
+    public Optional<ViewUsuarioTenant> getTenant(final String login) {
+        Optional<ViewUsuarioTenant> tenantUsuario = repository.getUser(login);
 
 
-        if (tenantUsuario.isPresent() && !ConstantsTenant.TENANTS.contains(tenantUsuario.get().getTenant())) {
-            ConstantsTenant.TENANTS.add(tenantUsuario.get().getTenant());
-            final EntityManagerFactory emf = createEntityManagerFactory(tenantUsuario.get().getTenant());
-            ConstantsTenant.FACTORIES.put(tenantUsuario.get().getTenant().getNome(), emf);
+        if (tenantUsuario.isPresent()) {
+
+            Tenant tenant = new Tenant(tenantUsuario.get().getId(), tenantUsuario.get().getNomeTenant());
+            if (!ConstantsTenant.TENANTS.contains(tenant)) {
+                ConstantsTenant.TENANTS.add(tenant);
+                final EntityManagerFactory emf = createEntityManagerFactory(tenant);
+                ConstantsTenant.FACTORIES.put(tenant.getNome(), emf);
+            }
+
         }
         return tenantUsuario;
     }
