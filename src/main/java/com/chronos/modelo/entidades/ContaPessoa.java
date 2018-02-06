@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -9,6 +11,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Table(name = "conta_pessoa")
+@DynamicUpdate
 public class ContaPessoa implements Serializable {
 
     private static final long serialVersionUID = 1L;

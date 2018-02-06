@@ -10,6 +10,7 @@ import com.chronos.modelo.entidades.Usuario;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.FacesUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.util.StringUtils;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -55,7 +56,10 @@ public class Seguranca {
         usuario = getUsuarioLogado();
         if (usuario != null) {
             empresa = FacesUtil.getEmpresaUsuario();
-            foto = ArquivoUtil.getInstance().getFotoFuncionario(empresa.getCnpj(), usuario.getColaborador().getPessoa().getPessoaFisica().getCpf());
+            if(!StringUtils.isEmpty(usuario.getColaborador().getPessoa().getPessoaFisica().getCpf())){
+                foto = ArquivoUtil.getInstance().getFotoFuncionario(empresa.getCnpj(), usuario.getColaborador().getPessoa().getPessoaFisica().getCpf());
+            }
+
         }
 
 

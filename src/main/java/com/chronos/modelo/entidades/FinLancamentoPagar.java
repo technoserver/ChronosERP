@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -69,7 +70,7 @@ public class FinLancamentoPagar implements Serializable {
     @ManyToOne(optional = false)
     private Empresa empresa;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "finLancamentoPagar", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<FinParcelaPagar> listaFinParcelaPagar;
+    private List<FinParcelaPagar> listaFinParcelaPagar;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "finLancamentoPagar", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FinLctoPagarNtFinanceira> listaFinLctoPagarNtFinanceira;
 
@@ -224,11 +225,11 @@ public class FinLancamentoPagar implements Serializable {
         this.fornecedor = fornecedor;
     }
 
-    public Set<FinParcelaPagar> getListaFinParcelaPagar() {
+    public List<FinParcelaPagar> getListaFinParcelaPagar() {
         return listaFinParcelaPagar;
     }
 
-    public void setListaFinParcelaPagar(Set<FinParcelaPagar> listaFinParcelaPagar) {
+    public void setListaFinParcelaPagar(List<FinParcelaPagar> listaFinParcelaPagar) {
         this.listaFinParcelaPagar = listaFinParcelaPagar;
     }
 

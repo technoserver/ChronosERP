@@ -2,6 +2,7 @@ package com.chronos.controll.financeiro;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.NaturezaFinanceira;
 import com.chronos.modelo.entidades.PlanoNaturezaFinanceira;
 import com.chronos.repository.Filtro;
@@ -196,5 +197,9 @@ public class NaturezaFinanceiraControll extends AbstractControll<NaturezaFinance
 
     public void setRoot(TreeNode root) {
         this.root = root;
+    }
+
+    public Empresa getEmpresaUsuario(){
+        return empresa;
     }
 }

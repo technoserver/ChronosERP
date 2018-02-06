@@ -57,7 +57,7 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
     public void doCreate() {
         super.doCreate();
 
-        getObjeto().setListaFinParcelaPagar(new HashSet<>());
+        getObjeto().setListaFinParcelaPagar(new ArrayList<>());
         getObjeto().setListaFinLctoPagarNtFinanceira(new HashSet<>());
         getObjeto().setEmpresa(empresa);
         getObjeto().setDataLancamento(new Date());
@@ -202,7 +202,7 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
                     p.setFinLancamentoPagar(lancamentoMesclado);
                     p.setListaFinParcelaPagamento(null);
                 }
-                lancamentoMesclado.setListaFinParcelaPagar(new HashSet<>());
+                lancamentoMesclado.setListaFinParcelaPagar(new ArrayList<>());
 
                 dao.salvar(lancamentoMesclado);
 

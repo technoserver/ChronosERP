@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Table(name = "NFE_FORMA_PAGAMENTO")
 public class NfeFormaPagamento implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -35,7 +35,7 @@ public class NfeFormaPagamento implements Serializable {
     @JoinColumn(name = "ID_NFE_CABECALHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private NfeCabecalho nfeCabecalho;
-    @JoinColumn(name = "ID_NFCE_TIPO_PAGAMENTO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PDV_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private PdvTipoPagamento pdvTipoPagamento;
 

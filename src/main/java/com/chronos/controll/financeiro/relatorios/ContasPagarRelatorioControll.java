@@ -49,7 +49,7 @@ public class ContasPagarRelatorioControll extends AbstractRelatorioControll impl
 
             executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoContasPagar.pdf");
         } catch (Exception ex) {
-            new RuntimeException("Erro ao tenta gera o relatorio", ex);
+            new RuntimeException("Erro ao tenta gera o relatorio", ex.getCause());
         }
     }
 

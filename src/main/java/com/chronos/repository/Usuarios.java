@@ -63,7 +63,7 @@ public class Usuarios implements Serializable {
 //        CriteriaQuery<Usuario> criteria = build.createQuery(Usuario.class);
 //        Root<Usuario> usuario = criteria.from(Usuario.class);
 //        Join<Usuario,Papel> papel = ((Join)usuario.fetch("papel"));
-//        Join<Papel,PapelFuncao> papelFuncao = (Join)papel.fetch("listaPapelFuncao",JoinType.LEFT);
+//        Join<Papel,PapelFuncao> papelFuncao = (Join)papel.fetch("listaPapelFuncao", JoinType.LEFT);
 //
 //        criteria.where(build.equal(usuario.get("login"), login));
 //        TypedQuery<Usuario> query = em.createQuery(criteria);

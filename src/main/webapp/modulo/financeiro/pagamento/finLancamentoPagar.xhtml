@@ -149,9 +149,9 @@
 
                     <p:dataTable id="dataTableFinParcelaPagar" var="obj" reflow="true"
                                  value="#{finLancamentoPagarControll.objeto.listaFinParcelaPagar}"
-                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                                 resizableColumns="true" paginatorPosition="bottom"
-                                 rowKey="#{obj.id}">
+                                 resizableColumns="true"
+                                 sortBy="#{obj.dataVencimento}"
+                                 >
 
 
                         <p:column headerText="Numero Parcela">

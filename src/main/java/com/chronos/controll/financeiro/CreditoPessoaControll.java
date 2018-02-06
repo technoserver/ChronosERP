@@ -86,7 +86,8 @@ public class CreditoPessoaControll extends AbstractControll<ContaPessoa> impleme
     public void doEdit() {
         super.doEdit();
         valor = BigDecimal.ZERO;
-
+        ContaPessoa conta = dao.get(getObjeto().getId(),ContaPessoa.class);
+        setObjeto(conta);
 
     }
 

@@ -182,7 +182,7 @@ public class BalcaoControll implements Serializable {
 
             boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
             venda = vendas.getJoinFetch(venda.getId(), PdvVendaCabecalho.class);
-            if (!venda.getListaPdvVendaDetalhe().isEmpty()) {
+            if (!venda.getListaPdvVendaDetalhe().isEmpty() && !venda.getListaFormaPagamento().isEmpty()) {
                 vendaService.transmitirNFe(venda, estoque);
             }
 

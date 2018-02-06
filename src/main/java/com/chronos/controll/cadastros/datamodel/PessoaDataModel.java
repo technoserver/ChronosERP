@@ -22,8 +22,6 @@ public class PessoaDataModel extends ERPLazyDataModel<ViewPessoa> {
     public List<ViewPessoa> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         try {
             atributos = new Object[]{"nome", "cpfCnpj", "logradouro", "cidade", "uf", "fone", "tipo"};
-            filtros.add(new Filtro("id", Filtro.DIFERENTE, 1));
-            filtros.add(new Filtro("id", Filtro.DIFERENTE, 2));
             List<ViewPessoa> clietes = repository.getEntitys(getClazz(), filtros, first, pageSize, sortField, sortOrder, joinFetch, atributos);
             Long totalRegistros = repository.getTotalRegistros(getClazz(), filtros);
             this.setRowCount(totalRegistros.intValue());

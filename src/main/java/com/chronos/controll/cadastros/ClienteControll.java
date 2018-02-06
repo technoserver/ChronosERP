@@ -129,8 +129,6 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         try {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("nome", Filtro.LIKE, nome));
-            filtros.add(new Filtro("id", Filtro.DIFERENTE, 1));
-            filtros.add(new Filtro("id", Filtro.DIFERENTE, 2));
             listaPessoa = pessoas.getEntitys(Pessoa.class, filtros, atributos);
         } catch (Exception e) {
              e.printStackTrace();

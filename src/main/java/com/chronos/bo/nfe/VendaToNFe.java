@@ -93,7 +93,7 @@ public class VendaToNFe extends ManualCDILookup {
     }
 
     private void definirDestinatario() {
-        if (cliente != null && cliente.getId() != 1) {
+        if (cliente != null ) {
             nfe.setCliente(cliente);
             PessoaEndereco endereco = cliente.getPessoa().buscarEnderecoPrincipal();
             nfe.getDestinatario().setCpfCnpj(cliente.getPessoa().getIdentificador());

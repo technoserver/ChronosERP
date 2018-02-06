@@ -106,7 +106,7 @@ public class VendaService implements Serializable {
             NfeCabecalho nfe;
             VendaToNFe vendaNfe = new VendaToNFe(modelo, configuracao, venda);
             nfe = vendaNfe.gerarNfe();
-
+            nfe.setCsc(configuracao.getCsc());
             nfe.setVendaCabecalho(venda);
 
             StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao, atualizarEstoque);
