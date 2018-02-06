@@ -14,7 +14,9 @@ import com.chronos.service.estoque.EntradaNotaFiscalService;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
+import jdk.nashorn.internal.runtime.ECMAException;
 import org.apache.commons.io.FileUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.util.StringUtils;
@@ -57,6 +59,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private Repository<NaturezaFinanceira> naturezas;
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
+    @Inject
+    private Repository<VendaCondicoesParcelas> parcelasRepository;
     @Inject
     private EstoqueRepository estoques;
     @Inject
@@ -540,9 +544,14 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void incluirDuplicata() {
 
         duplicata = new NfeDuplicata();
-        if (contaCaixa == null || naturezaFinanceira == null) {
+        if ( naturezaFinanceira == null) {
             FacesContext.getCurrentInstance().validationFailed();
-            Mensagem.addErrorMessage("É preciso seleciona a natureza e a conta caixa !!!");
+            Mensagem.addErrorMessage("É preciso seleciona a natureza financeira !!!");
+        }else if(StringUtils.isEmpty(getObjeto().getNumero())){
+            FacesContext.getCurrentInstance().validationFailed();
+            Mensagem.addErrorMessage("Numero da NFe não definido !!!");
+        }else{
+            RequestContext.getCurrentInstance().execute("PF('dialogDuplicata').show()");
         }
 
     }
@@ -590,7 +599,12 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         getObjeto().setIndicadorFormaPagamento(1);
 
         int numero = 0;
-        condicao = pagamentoRepository.getEntityJoinFetch(condicao.getId(), VendaCondicoesPagamento.class);
+        if(condicao == null || condicao.getId()==null){
+            throw new Exception("Condição de pagamento não definida");
+        }
+
+        List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class,"vendaCondicoesPagamento.id",condicao.getId());
+        condicao.setParcelas(parcelas);
         for (VendaCondicoesParcelas p : condicao.getParcelas()) {
 
             numero++;
@@ -714,7 +728,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public List<NaturezaFinanceira> getListaNaturezaFinanceira(String nome) {
         List<NaturezaFinanceira> listaNaturezaFinanceira = new ArrayList<>();
         try {
-            listaNaturezaFinanceira = naturezas.getEntitys(NaturezaFinanceira.class, "descricao", nome);
+            atributos = new Object[]{"descricao"};
+            listaNaturezaFinanceira = naturezas.getEntitys(NaturezaFinanceira.class, "descricao", nome, atributos);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -975,5 +990,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setPodeIncluirProduto(boolean podeIncluirProduto) {
         this.podeIncluirProduto = podeIncluirProduto;
+    }
+
+    public NaturezaFinanceira getNaturezaFinanceira() {
+        return naturezaFinanceira;
+    }
+
+    public void setNaturezaFinanceira(NaturezaFinanceira naturezaFinanceira) {
+        this.naturezaFinanceira = naturezaFinanceira;
     }
 }

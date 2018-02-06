@@ -183,16 +183,12 @@
                 </p:outputPanel>
                 <f:facet name="footer">
                     <div class="row">
-                        <div class="col-xs-6 col-sm-6 col-md-6">
-                            <h:commandButton value="Salvar"
+                        <div class="col-xs-6 col-sm-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
                                              id="btnSalvarDuplicata"
                                              action="#{entradaNotaFiscalControll.salvarDuplicata()}"
-                                             styleClass="btn btn-danger center-block"
-                            >
-                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogDuplicata').hide();}"
-                                        process="@form"
-                                        update=":formCentro:growl,formCentro:mensagem,:formCentro:mensagem"/>
-                            </h:commandButton>
+                                             oncomplete="if (!args.validationFailed) {PF('dialogDuplicata').hide();}"
+                                             update=":formCentro:growl,formCentro:mensagem,:formCentro:tabNfe:dataTableDuplicata"/>
 
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6">

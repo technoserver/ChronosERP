@@ -5,6 +5,7 @@ import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.security.UsuarioLogado;
 import com.chronos.security.UsuarioSistema;
+import com.chronos.util.jsf.FacesUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import javax.enterprise.inject.Produces;
@@ -24,14 +25,10 @@ public class UsuarioService implements Serializable {
     @Produces
     @UsuarioLogado
     public Usuario getUsuarioLogado() {
-        UsuarioSistema user = null;
 
-        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken) FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal();
-        Usuario usuario = null;
-        if (auth != null && auth.getPrincipal() != null) {
-            user = (UsuarioSistema) auth.getPrincipal();
-            //usuario = user.getUsuario();
-        }
+
+
+        Usuario usuario = FacesUtil.getUsuarioSessao();
 
         return usuario;
     }

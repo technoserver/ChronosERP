@@ -82,6 +82,7 @@
                                         idComponente="nfeCabecalhoNumero" label="Numero"
                                         nomeAtributo="#{entradaNotaFiscalControll.objeto.numero}"
                                         tamanhoMaximo="9"
+                                        id="componeteNfeCabecalhoNumero"
                                         requerido="true"/>
                     </div>
 
@@ -265,17 +266,28 @@
         <p:tab title="Cobrança">
             <div class="row">
                 <div class="col-lg-12">
-                    <h:commandLink title="Novo" class="btn btn-default margem-bottom-10"
+                    <h:commandLink title="Novo" class="btn btn-default"
                                    id="btnNovaDuplicata"
                                    action="#{entradaNotaFiscalControll.incluirDuplicata()}"
                                    type="button">
                         <i class="glyphicon glyphicon-plus"/>
                         <p:ajax update=":formCentro:growl,:formOutrasTelas1:panelDuplicatas,:formOutrasTelas1:panelDuplicatas"
-                                oncomplete="PF('dialogDuplicata').show()"
-                                process="@this"/>
+                                process="@this,formCentro:tabNfe:naturezaFinanceira:componenteNaturezaFinanceira,:formCentro:tabNfe:componeteNfeCabecalhoNumero:componeteNfeCabecalhoNumero"/>
                     </h:commandLink>
                 </div>
             </div>
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6 m-b"
+                                  label="Natureza Financeira"
+                                  id="naturezaFinanceira"
+                                  itemLabel="#{objeto.descricao}"
+                                  controller="#{entradaNotaFiscalControll}"
+                                  completeMethod="getListaNaturezaFinanceira"
+                                  nomeAtributo="#{entradaNotaFiscalControll.naturezaFinanceira}"
+                                  idComponente="componenteNaturezaFinanceira"
+                                  />
+            </div>
+
             <p:dataTable id="dataTableDuplicata" var="obj"
                          value="#{entradaNotaFiscalControll.objeto.listaDuplicata}"
                          paginator="true" rows="10" rowsPerPageTemplate="10,20,30"

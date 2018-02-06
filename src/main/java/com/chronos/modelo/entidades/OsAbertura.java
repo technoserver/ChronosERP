@@ -50,7 +50,7 @@ public class OsAbertura implements Serializable {
     private String observacaoCliente;
     @Column(name = "OBSERVACAO_ABERTURA")
     private String observacaoAbertura;
-    @Column(name = "VALOR_TOTAL_PRODUTOS")
+    @Column(name = "VALOR_TOTAL_PRODUTO")
     private BigDecimal valorTotalProduto;
     @Column(name = "VALOR_TOTAL_SERVICOS")
     private BigDecimal valorTotalServico;

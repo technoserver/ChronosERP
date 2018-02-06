@@ -47,6 +47,27 @@
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
+    <orderEntry type="library" name="Maven: com.outjected:simple-email:0.2.5" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-email:1.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-taglibs:4.1.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.security:spring-security-acl:4.1.3.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:4.3.2.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-tx:4.3.2.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: javax.servlet:jstl:1.2" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.8.2" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.chronosnfe:chronosnfe:3.1.11" level="project" />
+    <orderEntry type="library" name="Maven: br.com.autocom:nfe-wsdl:3.10c" level="project" />
+    <orderEntry type="library" name="Maven: br.com.autocom:nfe-xsd:8.i.2_DFe1.02a" level="project" />
+    <orderEntry type="library" name="Maven: br.com.samuelweb:cte-xsd:2.00a.0_3.00.6" level="project" />
+    <orderEntry type="library" name="Maven: br.com.samuelweb:java_certificado:1.3" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.txw2:txw2:20110809" level="project" />
+    <orderEntry type="library" name="Maven: relaxngDatatype:relaxngDatatype:20020414" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.fontes:courier-new:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.fontes:san-serif:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.fontes:lucida-console:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.themes:custom-theme:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos.calc:ChronosCalcTribut:1.0.15" level="project" />
+    <orderEntry type="library" name="Maven: com.chronos:sped:1.0.5" level="project" />
     <orderEntry type="library" name="Maven: postgresql:postgresql:9.1-901-1.jdbc4" level="project" />
     <orderEntry type="library" name="Maven: org.flywaydb:flyway-core:4.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.poi:poi:3.11" level="project" />
