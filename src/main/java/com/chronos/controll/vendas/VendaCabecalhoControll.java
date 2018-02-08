@@ -6,12 +6,10 @@ import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.FormaPagamento;
-import com.chronos.modelo.entidades.enuns.Modulo;
-import com.chronos.modelo.entidades.enuns.SituacaoVenda;
-import com.chronos.modelo.entidades.enuns.TipoFrete;
+import com.chronos.modelo.entidades.enuns.*;
 import com.chronos.modelo.entidades.view.PessoaCliente;
 import com.chronos.repository.EstoqueRepository;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaService;
@@ -27,9 +25,7 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 16/08/17.
@@ -238,6 +234,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         try {
             SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(getObjetoSelecionado().getSituacao());
             if (situacao == SituacaoVenda.Faturado) {
+
                 setObjeto(getObjetoSelecionado());
                 getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());
                 finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
@@ -256,7 +253,11 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                 if (cancelada) {
                     finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
                     getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());
-                    salvar();
+                    Map<String, Object> atributos = new HashMap<>();
+                    atributos.put("situacao", SituacaoVenda.CANCELADA.getCodigo());
+                    List<Filtro> filtros = new LinkedList<>();
+                    filtros.add(new Filtro("id", getObjeto().getId()));
+                    dao.updateNativo(VendaCabecalho.class, filtros, atributos);
                     if (estoque) {
                         for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
                             estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());

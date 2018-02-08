@@ -2,6 +2,8 @@ package com.chronos.service.comercial;
 
 import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.dto.LancamentoReceber;
+import com.chronos.dto.ProdutoVendaDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.Modulo;
@@ -19,6 +21,8 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -98,6 +102,23 @@ public class OsService implements Serializable {
     }
 
     @Transactional
+    public void faturar(OsAbertura os) throws Exception {
+        os.setOsStatus(Constantes.OS.STATUS_FATURADO);
+        os = repository.atualizar(os);
+        List<ProdutoVendaDTO> produtos = new ArrayList<>();
+        os.getListaOsProdutoServico()
+                .stream()
+                .filter(p -> p.getProduto().getServico().equalsIgnoreCase("N"))
+                .forEach(p -> {
+                    produtos.add(new ProdutoVendaDTO(p.getId(), p.getQuantidade()));
+                });
+
+        estoqueRepositoy.atualizaEstoqueVerificado(os.getEmpresa().getId(), produtos);
+        finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
+                os.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, os.getEmpresa());
+    }
+
+    @Transactional
     public void cancelarOs(OsAbertura os, boolean estoque) throws Exception {
         boolean cancelado = true;
         if (os.getOsStatus().getId() == 6) {
@@ -127,10 +148,18 @@ public class OsService implements Serializable {
         Mensagem.addInfoMessage("OS cancelada com sucesso");
     }
 
+    public void gerarDanfe(OsAbertura os) throws Exception {
+        NfeCabecalho nfe = nfeRepository.get(os.getIdnfeCabecalho(), NfeCabecalho.class);
+        ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
+        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
+        nfeService.danfe(nfe, configuracao);
+    }
+
     private Optional<OsProdutoServico> buscarItem(Produto produto) {
         return itens.stream().filter(i -> i.getProduto().equals(produto))
                 .findAny();
     }
+
 
 
 }

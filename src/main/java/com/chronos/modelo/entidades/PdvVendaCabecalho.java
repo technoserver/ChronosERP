@@ -27,8 +27,7 @@ public class PdvVendaCabecalho implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Transient
-    //@Column(name = "id_nfe_cabecalho")
+    @Column(name = "id_nfe_cabecalho")
     private Integer idnfe;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_hora_venda")

@@ -215,20 +215,20 @@
 
                                 <p:menuitem value="Emitir NFCe"
                                             update=":formCentro:growl,tableVenda"
+                                            rendered="#{empty row.idnfe}"
                                             action="#{balcaoControll.gerarNfce}"
-                                >
+                                            >
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{balcaoControll.venda}"/>
                                 </p:menuitem>
 
-                                <p:menuitem value="Emitir NFCe"
-                                            update=":formCentro:growl,tableVenda"
-                                            action="#{balcaoControll.cancelarVenda}"
-                                >
+                                <p:menuitem value="Danfe"
+                                            icon="fa fa-print" ajax="false"
+                                            rendered="#{not empty row.idnfe}"
+                                            action="#{balcaoControll.danfe}">
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{balcaoControll.venda}"/>
                                 </p:menuitem>
-
 
                             </p:menuButton>
 
@@ -316,16 +316,23 @@
                                             class="btn btn-primary btn-lg"
                                             outcome="/modulo/comercial/vendas/relatorios/cupomBalcao"
                                             target="blank"
-                                    >
+                                            rendered="#{empty balcaoControll.venda.idnfe}">
                                         <f:param name="idcupom" value="#{balcaoControll.venda.id}"/>
                                     </h:link>
+                                    <h:commandButton value="IMPRIMIR CUPOM"
+                                                     id="imprimir-nfce"
+                                                     action="#{balcaoControll.danfe}"
+                                                     rendered="#{not empty balcaoControll.venda.idnfe}"
+                                                     class="btn btn-primary btn-lg">
+                                        <p:ajax update=":formCentro:growl" />
+                                    </h:commandButton>
                                     &nbsp;
                                     <h:commandButton value="EMITIR NFCe"
                                                      id="emitir-nfce"
                                                      action="#{balcaoControll.gerarNfce}"
-
+                                                     rendered="#{empty balcaoControll.venda.idnfe}"
                                                      class="btn btn-warning btn-lg">
-                                        <p:ajax update=":formCentro:growl"
+                                        <p:ajax update=":formCentro:growl,:formCentro:tela-impressao"
                                         />
                                     </h:commandButton>
 

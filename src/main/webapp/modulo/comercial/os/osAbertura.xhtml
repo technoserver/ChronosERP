@@ -90,16 +90,17 @@
 
                         </p:menuitem>
                         <p:menuitem value="Faturar OS"
-                                    icon="fa fa-print"
+                                    action="#{osAberturaControll.faturar}"
+                                    update=":formCentro:mensagem"
                                     rendered="#{osAberturaControll.isTemAcesso('FINANCEIRO')}">
                             <f:setPropertyActionListener value="#{row}"
-                                                         target="#{nfceControll.vendaSelecionada}"/>
+                                                         target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
                         <p:menuitem value="Gerar NFe"
                                     action="#{osAberturaControll.gerarNFe}"
                                     update=":formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     rendered="#{osAberturaControll.isTemAcesso('NFE') and empty row.idnfeCabecalho}"
-                        >
+                                   >
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
@@ -114,9 +115,9 @@
                         <p:menuitem value="Gerar Danfe"
                                     icon="fa fa-print" ajax="false"
                                     rendered="#{(osAberturaControll.isTemAcesso('NFCE') or osAberturaControll.isTemAcesso('NFE'))  and not empty row.idnfeCabecalho}"
-                                    action="#{nfceControll.danfe}">
+                                    action="#{osAberturaControll.danfe}">
                             <f:setPropertyActionListener value="#{row}"
-                                                         target="#{nfceControll.vendaSelecionada}"/>
+                                                         target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
                     </p:menuButton>
 

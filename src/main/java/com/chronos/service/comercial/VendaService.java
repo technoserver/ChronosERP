@@ -83,11 +83,11 @@ public class VendaService implements Serializable {
 
         VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, configuracao, venda);
         NfeCabecalho nfe = vendaNfe.gerarNfe();
+        nfe.setPdv(venda);
         StatusTransmissao status = transmitirNFe(nfe, configuracao, atualizarEstoque);
 
         if (status == StatusTransmissao.AUTORIZADA) {
             venda.setStatusVenda(SituacaoVenda.NotaFiscal.getCodigo());
-            venda.setId(nfe.getId());
             pdvRepository.atualizar(venda);
             Mensagem.addInfoMessage("NFCe transmitida com sucesso");
         }

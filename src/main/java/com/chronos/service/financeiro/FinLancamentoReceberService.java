@@ -12,10 +12,7 @@ import com.chronos.util.jpa.Transactional;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 09/09/17.
@@ -74,7 +71,7 @@ public class FinLancamentoReceberService implements Serializable {
         // pega o primeiro vencimento
         lancamentoReceber.setPrimeiroVencimento(lancamento.getDataLancamento());
         lancamentoReceber.setIntervaloEntreParcelas(null);
-        lancamentoReceber.setListaFinParcelaReceber(new HashSet<>());
+        lancamentoReceber.setListaFinParcelaReceber(new ArrayList<>());
         lancamentoReceber.setListaFinLctoReceberNtFinanceira(new HashSet<>());
 
         FinParcelaReceber parcelaReceber;

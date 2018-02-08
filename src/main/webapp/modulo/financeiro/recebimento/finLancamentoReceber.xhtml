@@ -142,11 +142,11 @@
                 <p:tab title="Parcelas"
                        disabled="#{empty finLancamentoReceberControll.objeto.id}">
 
-                    <p:dataTable id="dataTableFinParcelaReceber" var="obj"
+                    <p:dataTable id="dataTableFinParcelaPagar" var="obj" reflow="true"
                                  value="#{finLancamentoReceberControll.objeto.listaFinParcelaReceber}"
-                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                                 resizableColumns="true" paginatorPosition="bottom"
-                                 rowKey="#{obj.id}">
+                                 resizableColumns="true"
+                                 sortBy="#{obj.dataVencimento}"
+                    >
 
 
 
@@ -158,7 +158,7 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy" />
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Data Vencimento">
+                        <p:column headerText="Data Vencimento" sortBy="#{obj.dataVencimento}">
                             <h:outputLabel value="#{obj.dataVencimento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy" />
                             </h:outputLabel>

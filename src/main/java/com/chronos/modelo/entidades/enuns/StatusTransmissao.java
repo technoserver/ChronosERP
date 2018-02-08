@@ -19,6 +19,7 @@ public enum StatusTransmissao {
     private int codigo;
     private String nomeExibicao;
 
+
     StatusTransmissao(int codigo, String nomeExibicao) {
         this.codigo = codigo;
         this.nomeExibicao = nomeExibicao;

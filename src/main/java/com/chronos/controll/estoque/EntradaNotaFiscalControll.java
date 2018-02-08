@@ -547,9 +547,12 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         if ( naturezaFinanceira == null) {
             FacesContext.getCurrentInstance().validationFailed();
             Mensagem.addErrorMessage("É preciso seleciona a natureza financeira !!!");
-        }else if(StringUtils.isEmpty(getObjeto().getNumero())){
+        }else if(StringUtils.isEmpty(getObjeto().getNumero())) {
             FacesContext.getCurrentInstance().validationFailed();
             Mensagem.addErrorMessage("Numero da NFe não definido !!!");
+        }else if(getObjeto().getValorTotal() == null || getObjeto().getValorTotal().compareTo(BigDecimal.ZERO)<=0){
+            FacesContext.getCurrentInstance().validationFailed();
+            Mensagem.addErrorMessage("É preciso informar o valor total!!!");
         }else{
             RequestContext.getCurrentInstance().execute("PF('dialogDuplicata').show()");
         }

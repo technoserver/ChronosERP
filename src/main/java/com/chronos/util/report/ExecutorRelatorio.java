@@ -51,6 +51,9 @@ public class ExecutorRelatorio implements Work {
     public void execute(Connection connection) throws SQLException {
         try {
             InputStream relatorioStream = this.getClass().getResourceAsStream(this.diretorioRelatorio + File.separator + this.nomeRelatorio);
+            if(relatorioStream == null){
+                throw  new Exception("relatório "+this.nomeRelatorio+" não localizado");
+            }
             parametros.put("SUBREPORT_DIR", this.getClass().getResource(this.diretorioRelatorio + File.separator).getPath());
 
             JasperPrint print = JasperFillManager.fillReport(relatorioStream, this.parametros, connection);
@@ -68,7 +71,7 @@ public class ExecutorRelatorio implements Work {
                 exportador.exportReport();
             }
         } catch (Exception e) {
-            throw new SQLException("Erro ao executar relatório " + this.diretorioRelatorio + File.separator + this.nomeRelatorio, e);
+            throw new SQLException("Erro ao executar relatório " + this.diretorioRelatorio + "/" + this.nomeRelatorio, e);
         }
     }
 

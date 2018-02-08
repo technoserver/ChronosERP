@@ -15,8 +15,9 @@ public class NfeRepository extends AbstractRepository implements Serializable {
 
     private NfeCabecalho nfe;
     public NfeCabecalho procedimentoNfeAutorizada(NfeCabecalho nfe, boolean atualizarEstoque) throws Exception {
-        this.nfe = nfe;
+        this. nfe = nfe;
         nfe = atualizar(nfe);
+
         if (atualizarEstoque) {
             if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
                 atualizaEstoqueEmpresaEstoqueVerificado(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
@@ -32,7 +33,7 @@ public class NfeRepository extends AbstractRepository implements Serializable {
     }
 
     public NfeCabecalho procedimentoNfeCancelada(NfeCabecalho nfe, boolean estoque) throws Exception {
-        nfe = atualizar(nfe);
+        this.nfe = atualizar(nfe);
         if (estoque) {
             for (NfeDetalhe nfeDetalhe : nfe.getListaNfeDetalhe()) {
 
@@ -48,19 +49,31 @@ public class NfeRepository extends AbstractRepository implements Serializable {
             }
         }
 
-        return nfe;
+        return this.nfe;
     }
 
 
     public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+
+        listaNfeDetalhe.stream()
+                .filter(item->item.getProduto().getServico().equalsIgnoreCase("N"))
+                .forEach(nfeDetalhe->{
+
+                });
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
-            atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+            if(nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")){
+                atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+            }
+
         }
     }
 
     public void atualizaEstoqueVerificado(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
-            atualizaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+            if(nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")){
+                atualizaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+            }
+
         }
     }
 
@@ -68,8 +81,11 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         String codigo = nfe.getCodigoModelo().equals("55") ? Modulo.NFe.getCodigo() : Modulo.NFCe.getCodigo();
         String numero = listaNfeDetalhe.get(0).getNfeCabecalho().getNumero();
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
-            atualizaEstoqueEmpresaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
-            atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial().negate(), codigo, numero, "S");
+            if(nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")){
+                atualizaEstoqueEmpresaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+                atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial().negate(), codigo, numero, "S");
+            }
+
         }
     }
 

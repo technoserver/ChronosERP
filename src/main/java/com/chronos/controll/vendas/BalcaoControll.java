@@ -184,6 +184,8 @@ public class BalcaoControll implements Serializable {
             venda = vendas.getJoinFetch(venda.getId(), PdvVendaCabecalho.class);
             if (!venda.getListaPdvVendaDetalhe().isEmpty() && !venda.getListaFormaPagamento().isEmpty()) {
                 vendaService.transmitirNFe(venda, estoque);
+            }else{
+                Mensagem.addInfoMessage("não foram encotrado itens para essa venda");
             }
 
         } catch (Exception ex) {
@@ -195,7 +197,7 @@ public class BalcaoControll implements Serializable {
     public void danfe() {
         try {
 
-            NfeCabecalho nfe = null;//nfeRepository.get(idnfe, NfeCabecalho.class);
+            NfeCabecalho nfe = nfeRepository.get(venda.getIdnfe(), NfeCabecalho.class);
             ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
             ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
             nfeService.danfe(nfe, configuracao);

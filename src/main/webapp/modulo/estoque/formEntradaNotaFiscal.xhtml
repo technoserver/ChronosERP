@@ -140,11 +140,13 @@
 
                         <div class="row">
                             <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              id="componeteNfeCabecalhoValorTotalProdutos"
                                               idComponente="nfeCabecalhoValorTotalProdutos"
                                               label="Valor Total Produtos"
                                               nomeAtributo="#{entradaNotaFiscalControll.objeto.valorTotalProdutos}"
                                               requerido="true"/>
                             <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              id="componeteNfeCabecalhoValorTotal"
                                               idComponente="nfeCabecalhoValorTotal" label="Valor Total"
                                               nomeAtributo="#{entradaNotaFiscalControll.objeto.valorTotal}"
                                               requerido="true"/>
@@ -272,7 +274,7 @@
                                    type="button">
                         <i class="glyphicon glyphicon-plus"/>
                         <p:ajax update=":formCentro:growl,:formOutrasTelas1:panelDuplicatas,:formOutrasTelas1:panelDuplicatas"
-                                process="@this,formCentro:tabNfe:naturezaFinanceira:componenteNaturezaFinanceira,:formCentro:tabNfe:componeteNfeCabecalhoNumero:componeteNfeCabecalhoNumero"/>
+                                process="@this,formCentro:tabNfe:naturezaFinanceira:componenteNaturezaFinanceira,:formCentro:tabNfe:componeteNfeCabecalhoNumero:componeteNfeCabecalhoNumero,:formCentro:tabNfe:componeteNfeCabecalhoValorTotal:nfeCabecalhoValorTotal"/>
                     </h:commandLink>
                 </div>
             </div>

@@ -60,7 +60,7 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     @Override
     public void doCreate() {
         super.doCreate();
-        getObjeto().setListaFinParcelaReceber(new HashSet<>());
+        getObjeto().setListaFinParcelaReceber(new ArrayList<>());
         getObjeto().setListaFinLctoReceberNtFinanceira(new HashSet<>());
         getObjeto().setDataLancamento(new Date());
         getObjeto().setPrimeiroVencimento(new Date());
@@ -195,7 +195,7 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
                     p.setFinLancamentoReceber(lancamentoMesclado);
                     p.setListaFinParcelaRecebimento(null);
                 }
-                lancamentoMesclado.setListaFinParcelaReceber(new HashSet<>());
+                lancamentoMesclado.setListaFinParcelaReceber(new ArrayList<>());
 
                 dao.salvar(lancamentoMesclado);
 

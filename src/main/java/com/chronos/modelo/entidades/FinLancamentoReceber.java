@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -73,7 +74,7 @@ public class FinLancamentoReceber implements Serializable {
     @ManyToOne(optional = false)
     private Empresa empresa;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "finLancamentoReceber", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<FinParcelaReceber> listaFinParcelaReceber;
+    private List<FinParcelaReceber> listaFinParcelaReceber;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "finLancamentoReceber", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FinLctoReceberNtFinanceira> listaFinLctoReceberNtFinanceira;
 
@@ -89,7 +90,7 @@ public class FinLancamentoReceber implements Serializable {
         this.numeroDocumento = numeroDocumento;
     }
 
-    public FinLancamentoReceber(Integer id, Set<FinParcelaReceber> listaFinParcelaReceber, Set<FinLctoReceberNtFinanceira> listaFinLctoReceberNtFinanceira) {
+    public FinLancamentoReceber(Integer id, List<FinParcelaReceber> listaFinParcelaReceber, Set<FinLctoReceberNtFinanceira> listaFinLctoReceberNtFinanceira) {
         this.id = id;
         this.listaFinParcelaReceber = listaFinParcelaReceber;
         this.listaFinLctoReceberNtFinanceira = listaFinLctoReceberNtFinanceira;
@@ -215,12 +216,11 @@ public class FinLancamentoReceber implements Serializable {
         this.cliente = cliente;
     }
 
-    public Set<FinParcelaReceber> getListaFinParcelaReceber() {
+    public List<FinParcelaReceber> getListaFinParcelaReceber() {
         return listaFinParcelaReceber;
     }
 
-    public void setListaFinParcelaReceber(Set<FinParcelaReceber> listaFinParcelaReceber) {
-
+    public void setListaFinParcelaReceber(List<FinParcelaReceber> listaFinParcelaReceber) {
         this.listaFinParcelaReceber = listaFinParcelaReceber;
     }
 

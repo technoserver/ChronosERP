@@ -252,6 +252,8 @@ public class NfeCabecalho implements Serializable {
     private String csc;
     @Transient
     private OsAbertura os;
+    @Transient
+    private PdvVendaCabecalho pdv;
 
     public NfeCabecalho() {
     }
@@ -1841,6 +1843,14 @@ public class NfeCabecalho implements Serializable {
 
     public void setOs(OsAbertura os) {
         this.os = os;
+    }
+
+    public PdvVendaCabecalho getPdv() {
+        return pdv;
+    }
+
+    public void setPdv(PdvVendaCabecalho pdv) {
+        this.pdv = pdv;
     }
 
     /**

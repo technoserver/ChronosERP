@@ -342,7 +342,9 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 if (iss == null) {
                     throw new Exception("Não existe tributação de ISS definida para o " + item.getProduto().getNome() + " informados. Operação não realizada.");
                 }
-
+                if(StringUtils.isEmpty(item.getProduto().getCodigoLst().trim()) || item.getProduto().getCodigoLst().trim().isEmpty()){
+                    throw new Exception("Não existe código de LST para o " + item.getProduto().getNome() + " informados. Operação não realizada.");
+                }
                 tributos.setPercentualIssqn(iss.getAliquotaPorcento());
                 item.getNfeDetalheImpostoIssqn().setMunicipioIssqn(Integer.valueOf(empresa.getInscricaoMunicipal()));
                 item.getNfeDetalheImpostoIssqn().setItemListaServicos(Integer.valueOf(item.getProduto().getCodigoLst().trim()));

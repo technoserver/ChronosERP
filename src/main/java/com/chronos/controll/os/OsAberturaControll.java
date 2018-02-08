@@ -2,6 +2,7 @@ package com.chronos.controll.os;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
@@ -125,6 +126,13 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void faturar() {
         try {
+            OsAbertura os = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+            if(os.getOsStatus().getId()>4){
+                Mensagem.addInfoMessage("Está OS não pode ser mais faturada");
+            }else{
+                osService.faturar(os);
+                Mensagem.addInfoMessage("OS Faturada com sucesso");
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -164,7 +172,12 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     }
 
     public void danfe() {
-
+        try {
+            osService.gerarDanfe(getObjetoSelecionado());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao gera o danfe ", ex);
+        }
     }
 
     public void cancelar() {

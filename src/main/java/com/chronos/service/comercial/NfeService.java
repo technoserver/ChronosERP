@@ -454,6 +454,7 @@ public class NfeService implements Serializable {
         validacaoNfe(nfe);
         VendaCabecalho venda = nfe.getVendaCabecalho();
         OsAbertura os = nfe.getOs();
+        PdvVendaCabecalho pdv = nfe.getPdv();
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         StatusTransmissao status = StatusTransmissao.ENVIADA;
         String schemas = context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE);
@@ -485,6 +486,10 @@ public class NfeService implements Serializable {
                     os.setOsStatus(Constantes.OS.STATUS_EMITIDO);
                     os.setIdnfeCabecalho(nfe.getId());
                     osRepository.atualizar(os);
+                }
+                if(pdv!=null){
+                    pdv.setIdnfe(nfe.getId());
+                    nfe.setPdv(pdv);
                 }
                 status = StatusTransmissao.AUTORIZADA;
 
