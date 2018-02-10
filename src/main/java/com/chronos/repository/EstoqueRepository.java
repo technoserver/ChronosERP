@@ -7,9 +7,7 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.view.ViewProdutoEmpresa;
 
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -69,7 +67,6 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
 
-
     public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
 
         String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
@@ -124,30 +121,34 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) throws Exception {
 
 //        CriteriaBuilder builder = em.getCriteriaBuilder();
-//        CriteriaQuery<Produto> criteria = builder.createQuery(Produto.class);
-//        Root<ViewProdutoEmpresa> root = criteria.from(ViewProdutoEmpresa.class);
+//        CriteriaQuery<ProdutoDTO> criteria = builder.createQuery(ProdutoDTO.class);
+//        Root<Produto> root = criteria.from(Produto.class);
+//        Join<Produto, EmpresaProduto> empresaProduto = root.join("produtosEmpresa", JoinType.INNER);
+//        Join<Produto, UnidadeProduto> unidade = root.join("unidadeProduto", JoinType.INNER);
+//        Join<Produto, TributGrupoTributario> grupo = root.join("tributGrupoTributario", JoinType.LEFT);
+//        Join<Produto, TributGrupoTributario> icmsCustm = root.join("tributIcmsCustomCab", JoinType.LEFT);
 //
-//        criteria.select(builder.construct(Produto.class
-//                ,root.get("id"), root.get("nome")
-//                ,root.get("valorVenda"), root.get("quantidade"),
-//                root.get("controle"), root.get("ncm")
-//                ,root.get("imagem"), root.get("tributGrupoTributario")),
-//                root.get("tributIcmsCustomCab"), root.get("unidadeProduto"));
-
-
-//        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();;
-//        CriteriaQuery<Produto> criteriaQuery = criteriaBuilder.createQuery(Produto.class);
-//        Root<Produto> root = criteriaQuery.from(Produto.class);
-//        Join<Pessoa, EmpresaProduto> join = root.join("ep", JoinType.INNER);
+//        criteria.select(builder.construct(ProdutoDTO.class
+//                , root.get("id")
+//                , root.get("nome")
+//                , root.get("servico")
+//                , root.get("codigoLst")
+//                , root.get("valorVenda")
+//                , empresaProduto.get("quantidadeEstoque")
+//                , empresaProduto.get("estoqueVerificado")
+//                , root.get("ncm")
+//                , root.get("imagem")
+//                , grupo.get("id")
+//                , icmsCustm.get("id")
+//                , unidade.get("sigla")
+//                , unidade.get("podeFracionar")
+//
+//        ));
+//        criteria.where(builder.equal(root.get("servico"),"N"),builder.equal(root.get("tipo"),"V"));
 //
 //
-//        Predicate or = criteriaBuilder.or(
-//                criteriaBuilder.isNotNull(root.get("tributIcmsCustomCab")),criteriaBuilder.isNotNull(root.get("tributGrupoTributario")));
-//
-//        criteriaQuery.select(root).where(criteriaBuilder.equal(join.get("tipo"), "TIPO")).where(or);
-//
-//        TypedQuery typedQuery = em.createQuery(criteriaQuery);
-//        typedQuery.getResultList();
+//        TypedQuery typedQuery = em.createQuery(criteria);
+//        List<ProdutoDTO> produtos = typedQuery.getResultList();
 
         String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.servico,p.codigoLst,p.valorVenda,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla,un.podeFracionar) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
@@ -157,8 +158,6 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
         List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, "%" + nome.toLowerCase().trim() + "%", empresa.getId());
         return produtos;
-
-
     }
 
     public List<EstoqueIdealDTO> getItensCompraSugerida(Empresa empresa) throws Exception {
@@ -177,7 +176,6 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         query.setParameter("idempresa", idEmpresa);
         query.executeUpdate();
     }
-
 
 
 }

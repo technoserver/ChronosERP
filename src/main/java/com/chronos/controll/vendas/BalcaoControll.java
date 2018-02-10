@@ -214,7 +214,7 @@ public class BalcaoControll implements Serializable {
 
         try {
 
-            listaProduto = nfeService.getListaProdutoDTO(nome);
+            listaProduto = nfeService.getListaProdutoDTO(nome,true);
         } catch (Exception e) {
             e.printStackTrace();
         }

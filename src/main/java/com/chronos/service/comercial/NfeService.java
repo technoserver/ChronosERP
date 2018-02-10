@@ -307,7 +307,7 @@ public class NfeService implements Serializable {
         return listaProduto;
     }
 
-    public List<ProdutoDTO> getListaProdutoDTO(String descricao) throws Exception {
+    public List<ProdutoDTO> getListaProdutoDTO(String descricao,boolean moduloVenda) throws Exception {
         List<ProdutoDTO> listaProduto;
         List<Filtro> filtros = new ArrayList<>();
         if (org.apache.commons.lang3.StringUtils.isNumeric(descricao)) {
@@ -317,7 +317,10 @@ public class NfeService implements Serializable {
             filtros.add(new Filtro(Filtro.AND, "nome", Filtro.LIKE, descricao.trim()));
             //  listaProduto = produtoDao.getEntitys(Produto.class, filtros);
         }
-
+        if(moduloVenda){
+            filtros.add(new Filtro(Filtro.AND, "servico","N" ));
+            filtros.add(new Filtro(Filtro.AND, "tipo","V" ));
+        }
         listaProduto = produtos.getProdutoDTO(descricao, empresa);
         return listaProduto;
     }

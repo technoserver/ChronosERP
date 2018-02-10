@@ -689,7 +689,7 @@ public class NfceControll implements Serializable {
         List<Produto> listaProduto = new ArrayList<>();
 
         try {
-            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao);
+            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao,true);
             listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();

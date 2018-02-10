@@ -547,7 +547,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         List<Produto> listaProduto = new ArrayList<>();
 
         try {
-            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao);
+            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao,false);
             listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
