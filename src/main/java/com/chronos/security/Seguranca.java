@@ -56,7 +56,8 @@ public class Seguranca {
         usuario = getUsuarioLogado();
         if (usuario != null) {
             empresa = FacesUtil.getEmpresaUsuario();
-            if(!StringUtils.isEmpty(usuario.getColaborador().getPessoa().getPessoaFisica().getCpf())){
+
+            if(usuario.getColaborador().getPessoa().getTipo().equals("F") && !StringUtils.isEmpty(usuario.getColaborador().getPessoa().getPessoaFisica().getCpf())){
                 foto = ArquivoUtil.getInstance().getFotoFuncionario(empresa.getCnpj(), usuario.getColaborador().getPessoa().getPessoaFisica().getCpf());
             }
 
