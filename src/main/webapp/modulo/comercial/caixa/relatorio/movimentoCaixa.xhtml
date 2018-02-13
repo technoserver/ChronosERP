@@ -6,7 +6,7 @@
       xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsp/jstl/core"
       xml:lang="en" lang="en">
 <head>
-    <title>CUPOM</title>
+    <title>Resumo caixa</title>
 
     <style type="text/css">
 
@@ -23,7 +23,7 @@
             background: #FFFFFF;
             margin: 0 auto;
             padding: 10px;
-            height: 90%;
+            height: 85%;
         }
 
         .text-center {
@@ -60,17 +60,17 @@
     </style>
     <h:outputScript library="primefaces" name="jquery/jquery.js"/>
     <script type="text/javascript">
-                // $(document).ready(function () {
-                //     window.print();
-                //     setTimeout(function () {
-                //         window.onmouseover = function () {
-                //             window.close();
-                //         }
-                //     }, 1000);
-                // });
+        // $(document).ready(function () {
+        //     window.print();
+        //     setTimeout(function () {
+        //         window.onmouseover = function () {
+        //             window.close();
+        //         }
+        //     }, 1000);
+        // });
     </script>
     <f:metadata>
-        <f:viewParam name="idcupom" value="#{movimentoCaixaRelatorioControll.idcupom}"/>
+        <f:viewParam name="idmovimento" value="#{movimentoCaixaRelatorioControll.idmovimento}"/>
         <f:viewAction action="#{movimentoCaixaRelatorioControll.buscarMovimentos}"/>
     </f:metadata>
 </head>
@@ -81,118 +81,202 @@
 
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
-                <td>
-                    <div id="empresa" class="text-center">
-                        <b>#{movimentoCaixaRelatorioControll.movimento.empresa.razaoSocial}</b></div>
+                <td></td>
+                <td width="60%">
+                    <div id="empresa">
+                        <b>#{movimentoCaixaRelatorioControll.movimento.empresa.razaoSocial}</b>
+                    </div>
                     <div>#{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().logradouro}, #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().numero}, #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().bairro}</div>
                     <div>#{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().cep} - #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().cidade} ­ #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().uf}</div>
 
                     #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().fone}
-                    <div>Operador: PADRAO</div>
                 </td>
             </tr>
-        </table>
 
+        </table>
+        <br/>
 
         <div>
-            <div>==================================================</div>
-            <div class="text-center">PEDIDO Nº 1.</div>
+            <div class="text-center"
+                 style="font-weight: bold;font-size: 20px">#{movimentoCaixaRelatorioControll.movimento.pdvCaixa.nome}</div>
             <div>==================================================</div>
 
             <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
-                    <td>Data: <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.dataAbertura}">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/></h:outputText> .
+                    <td>Data de abertura</td>
+                    <td class="text-right">Data de fechamento</td>
+                </tr>
+                <tr>
+                    <td>
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.dataAbertura}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                        &nbsp; #{movimentoCaixaRelatorioControll.movimento.horaAbertura}
                     </td>
-                    <td class="text-right">Hora: <h:outputText
-                            value="#{vendaRelatorioControll.vendaCupom.dataHoraVenda}"> <f:convertDateTime
-                            pattern="HH:mm"/></h:outputText></td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.dataFechamento}">
+                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                        </h:outputText>
+                    </td>
                 </tr>
             </table>
         </div>
 
         <div>
-            <div>=====================PRODUTOS=====================</div>
+            <div>==================================================</div>
             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                    <td width="30%">Nome</td>
-                    <td class="text-right">Qtd.</td>
-                    <td class="text-right">Vr. unt.</td>
-                    <td class="text-right">Desc.</td>
-                    <td class="text-right">Subtotal</td>
+                    <td>SUPRIMENTOS..........................R$</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalSuprimento}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>SANGRIA..............................R$</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalSuprimento}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>VENDAS...............................R$</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalVenda}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>DESCONTOS............................R$</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalDesconto}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ACRESCIMO............................R$</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalAcrescimo}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>RECEBIDO.............................R$</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalRecebido}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>TROCO................................R$</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalTroco}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>TOTAL FINAL..........................R$</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalFinal}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
                 </tr>
 
-                <ui:forEach var="row" items="#{vendaRelatorioControll.vendaCupom.listaPdvVendaDetalhe}">
-                    <tr>
-                        <td colspan="5">
-                            -------------------------------------------------
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <h:outputText value="#{row.produto.descricaoPdv}"/>
-                        </td>
-                        <td class="text-right"><h:outputText value="#{row.quantidade}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                        <td class="text-right"><h:outputText value="#{row.valorUnitario}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                        <td class="text-right">
-                            <h:outputText value="#{row.valorDesconto}">  <f:convertNumber pattern="#,##0.00"/></h:outputText>
-                        </td>
-                        <td class="text-right"><h:outputText value="#{row.valorTotal}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                    </tr>
-                </ui:forEach>
+
             </table>
-            <div>=====================PAGAMENTO====================</div>
+            <div>==================================================</div>
+            <div class="text-center" style="font-weight: bold;font-size: 20px">Forma de pagamento</div>
             <table cellpadding="0" cellspacing="0" border="0" width="100%">
 
-                <tr>
-                    <td>Subtotal:</td>
-                    <td class="text-right"><h:outputText value="#{vendaRelatorioControll.vendaCupom.valorSubtotal}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                </tr>
-                <tr>
-                    <td>Desconto:</td>
-                    <td class="text-right"><h:outputText value="#{vendaRelatorioControll.vendaCupom.valorDesconto}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                </tr>
-                <tr>
-                    <td>Comissão:</td>
-                    <td class="text-right"><h:outputText value="#{empty vendaRelatorioControll.vendaCupom.valorComissao?0:vendaRelatorioControll.vendaCupom.valorComissao}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                </tr>
-                <tr>
-                    <td>Total:</td>
-                    <td class="text-right"><h:outputText value="#{vendaRelatorioControll.vendaCupom.valorTotal}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                </tr>
-                <tr>
-                    <td>Troco:</td>
-                    <td class="text-right"><h:outputText value="#{vendaRelatorioControll.vendaCupom.troco}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                </tr>
 
                 <tr>
-                    <td colspan="4">-------------------------------------------------</td>
+                    <td colspan="4">--------------------------------------------------</td>
                 </tr>
             </table>
             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                    <td>Vencimento</td>
-                    <td>Valor</td>
-                    <td width="40%">Forma de pagamento</td>
+                    <td>Descrição</td>
+                    <td class="text-right">Valor</td>
                 </tr>
-                <ui:forEach var="row" items="#{vendaRelatorioControll.vendaCupom.listaFormaPagamento}">
-                    <tr>
-                        <td>21/01/2018</td>
-                        <td><h:outputText value="#{row.valor}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
-                        <td>#{row.pdvTipoPagamento.descricao}</td>
-                    </tr>
-                </ui:forEach>
-
                 <tr>
-                    <td colspan="4">-------------------------------------------------</td>
+                    <td colspan="4">--------------------------------------------------</td>
                 </tr>
+                <tr>
+                    <td>Dinheiro</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.dinheiro}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cheque</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.cheque}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cartão de credito</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.cartaoCredito}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cartão de debito</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.cartaoDebito}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Ticket</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.ticket}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Duplicata</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.duplicata}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Credito cliente</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.credito}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">--------------------------------------------------</td>
+                </tr>
+
             </table>
 
         </div>
-        <div class="text-center">*** Este ticket não é documento fiscal ***</div>
+
         <br/>
 
-        <div class="text-center">OBRIGADO E VOLTE SEMPRE!</div>
+        <div class="text-center">Chronosinfo Sistemas!</div>
     </div>
 </h:body>
 </html>

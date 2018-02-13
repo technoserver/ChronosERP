@@ -237,12 +237,15 @@
                         </p:column>
                         <p:column headerText="Ações" class="text-center">
                             <p:menuButton>
-                                <p:menuitem value="Imprimir A4"
+                                <p:menuitem value="Movimento"
 
                                             icon="fa fa-print" ajax="false"/>
-                                <p:menuitem value="Imprimir Cupom"
-
-                                            icon="fa fa-print" ajax="false"/>
+                                <p:menuitem value="Resumo"
+                                            target="blank"
+                                            outcome="/modulo/comercial/caixa/relatorio/movimentoCaixa"
+                                            icon="fa fa-print" ajax="false">
+                                    <f:param name="idmovimento" value="#{row.id}"/>
+                                </p:menuitem>
 
                             </p:menuButton>
                         </p:column>
