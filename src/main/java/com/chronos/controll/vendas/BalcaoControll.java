@@ -83,6 +83,7 @@ public class BalcaoControll implements Serializable {
     private PdvTipoPagamento tipoPagamento;
     private List<PdvTipoPagamento> listTipoPagamento;
     private PdvFormaPagamento formaPagamentoSelecionado;
+    private PdvMovimento movimento;
     private Empresa empresa;
     private Usuario usuario;
     private Vendedor vendedor;
@@ -141,6 +142,7 @@ public class BalcaoControll implements Serializable {
         venda.setStatusVenda(SituacaoVenda.Digitacao.getCodigo());
         vendedor = instanciarVendedor(usuario);
         venda.setVendedor(vendedor);
+        venda.setPdvMovimento(movimento);
         item = new PdvVendaDetalhe();
         desconto = BigDecimal.ZERO;
         telaPagamentos = false;
@@ -152,7 +154,7 @@ public class BalcaoControll implements Serializable {
 
     public String verificarMovimento() {
         try {
-            PdvMovimento movimento = FacesUtil.getMovimento();
+            movimento = FacesUtil.getMovimento();
             if (movimento == null) {
                 return "/modulo/comercial/caixa/movimentos.xhtml";
             } else {

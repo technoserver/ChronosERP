@@ -202,7 +202,7 @@
                                disabled="#{!nfceControll.podeFinalzarVenda}"
                                class="btn btn-lg btn-success" value="Finalizar">
                     <span class="glyphicon glyphicon-ok margin-right-10px"></span>
-                    <p:ajax update=":formCentro:growl,formCentro:tela-pagamento,:formCentro:telaPdv,,:formDanfe:dialogDanfe"
+                    <p:ajax update=":formCentro:growl,formCentro:tela-pagamento,:formCentro:telaPdv,:formDanfe:dialogDanfe"
                             oncomplete="if (args.vendaFinalizada) {PF('dialogDanfe').show(); };"
                             process="@form"/>
                 </h:commandLink>

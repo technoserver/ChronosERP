@@ -209,7 +209,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         try {
 
             setObjeto(osService.salvarItem(getObjeto(), osProdutoServico));
-            Mensagem.addInfoMessage("Produto " + osProdutoServico + " add com sucesso !");
+            Mensagem.addInfoMessage("Produto " + osProdutoServico.getProduto().getNome() + " add com sucesso !");
 
             temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
             setActiveTabIndex(1);

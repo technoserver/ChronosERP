@@ -45,6 +45,14 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     }
 
+    @Override
+    public <S extends T> S saveAndFlush(S bean) {
+        S obj  = em.merge(bean);
+        em.flush();
+        return obj;
+    }
+
+
     @Transactional
     @Override
     public void salvar(List<T> beans) throws PersistenceException {
@@ -67,6 +75,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return em.merge(bean);
 
     }
+
 
     @Transactional
     @Override

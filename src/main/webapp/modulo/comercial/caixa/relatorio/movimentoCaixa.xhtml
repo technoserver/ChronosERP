@@ -1,0 +1,198 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsp/jstl/core"
+      xml:lang="en" lang="en">
+<head>
+    <title>CUPOM</title>
+
+    <style type="text/css">
+
+        html, body {
+            font-family: "courier";
+            font-size: 10pt;
+            background: #CCCCCC;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        .conteudo {
+            width: 400px;
+            background: #FFFFFF;
+            margin: 0 auto;
+            padding: 10px;
+            height: 90%;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .rodape {
+            position: fixed;
+            left: 0px;
+            bottom: 20px;
+            right: 0px;
+            text-align: center;
+            width: 100%;
+            border-top: #000000 solid 1px
+        }
+
+        .rodape h2 {
+            margin: 0
+        }
+
+        table th, table td {
+
+        }
+
+
+    </style>
+    <h:outputScript library="primefaces" name="jquery/jquery.js"/>
+    <script type="text/javascript">
+                // $(document).ready(function () {
+                //     window.print();
+                //     setTimeout(function () {
+                //         window.onmouseover = function () {
+                //             window.close();
+                //         }
+                //     }, 1000);
+                // });
+    </script>
+    <f:metadata>
+        <f:viewParam name="idcupom" value="#{movimentoCaixaRelatorioControll.idcupom}"/>
+        <f:viewAction action="#{movimentoCaixaRelatorioControll.buscarMovimentos}"/>
+    </f:metadata>
+</head>
+<h:body>
+
+
+    <div class="conteudo">
+
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+                <td>
+                    <div id="empresa" class="text-center">
+                        <b>#{movimentoCaixaRelatorioControll.movimento.empresa.razaoSocial}</b></div>
+                    <div>#{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().logradouro}, #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().numero}, #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().bairro}</div>
+                    <div>#{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().cep} - #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().cidade} ­ #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().uf}</div>
+
+                    #{movimentoCaixaRelatorioControll.movimento.empresa.buscarEnderecoPrincipal().fone}
+                    <div>Operador: PADRAO</div>
+                </td>
+            </tr>
+        </table>
+
+
+        <div>
+            <div>==================================================</div>
+            <div class="text-center">PEDIDO Nº 1.</div>
+            <div>==================================================</div>
+
+            <table cellpadding="0" cellspacing="0" width="100%">
+                <tr>
+                    <td>Data: <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.dataAbertura}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/></h:outputText> .
+                    </td>
+                    <td class="text-right">Hora: <h:outputText
+                            value="#{vendaRelatorioControll.vendaCupom.dataHoraVenda}"> <f:convertDateTime
+                            pattern="HH:mm"/></h:outputText></td>
+                </tr>
+            </table>
+        </div>
+
+        <div>
+            <div>=====================PRODUTOS=====================</div>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                    <td width="30%">Nome</td>
+                    <td class="text-right">Qtd.</td>
+                    <td class="text-right">Vr. unt.</td>
+                    <td class="text-right">Desc.</td>
+                    <td class="text-right">Subtotal</td>
+                </tr>
+
+                <ui:forEach var="row" items="#{vendaRelatorioControll.vendaCupom.listaPdvVendaDetalhe}">
+                    <tr>
+                        <td colspan="5">
+                            -------------------------------------------------
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h:outputText value="#{row.produto.descricaoPdv}"/>
+                        </td>
+                        <td class="text-right"><h:outputText value="#{row.quantidade}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                        <td class="text-right"><h:outputText value="#{row.valorUnitario}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                        <td class="text-right">
+                            <h:outputText value="#{row.valorDesconto}">  <f:convertNumber pattern="#,##0.00"/></h:outputText>
+                        </td>
+                        <td class="text-right"><h:outputText value="#{row.valorTotal}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                    </tr>
+                </ui:forEach>
+            </table>
+            <div>=====================PAGAMENTO====================</div>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+
+                <tr>
+                    <td>Subtotal:</td>
+                    <td class="text-right"><h:outputText value="#{vendaRelatorioControll.vendaCupom.valorSubtotal}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                </tr>
+                <tr>
+                    <td>Desconto:</td>
+                    <td class="text-right"><h:outputText value="#{vendaRelatorioControll.vendaCupom.valorDesconto}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                </tr>
+                <tr>
+                    <td>Comissão:</td>
+                    <td class="text-right"><h:outputText value="#{empty vendaRelatorioControll.vendaCupom.valorComissao?0:vendaRelatorioControll.vendaCupom.valorComissao}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                </tr>
+                <tr>
+                    <td>Total:</td>
+                    <td class="text-right"><h:outputText value="#{vendaRelatorioControll.vendaCupom.valorTotal}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                </tr>
+                <tr>
+                    <td>Troco:</td>
+                    <td class="text-right"><h:outputText value="#{vendaRelatorioControll.vendaCupom.troco}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                </tr>
+
+                <tr>
+                    <td colspan="4">-------------------------------------------------</td>
+                </tr>
+            </table>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                    <td>Vencimento</td>
+                    <td>Valor</td>
+                    <td width="40%">Forma de pagamento</td>
+                </tr>
+                <ui:forEach var="row" items="#{vendaRelatorioControll.vendaCupom.listaFormaPagamento}">
+                    <tr>
+                        <td>21/01/2018</td>
+                        <td><h:outputText value="#{row.valor}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                        <td>#{row.pdvTipoPagamento.descricao}</td>
+                    </tr>
+                </ui:forEach>
+
+                <tr>
+                    <td colspan="4">-------------------------------------------------</td>
+                </tr>
+            </table>
+
+        </div>
+        <div class="text-center">*** Este ticket não é documento fiscal ***</div>
+        <br/>
+
+        <div class="text-center">OBRIGADO E VOLTE SEMPRE!</div>
+    </div>
+</h:body>
+</html>

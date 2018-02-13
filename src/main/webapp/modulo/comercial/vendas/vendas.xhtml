@@ -397,6 +397,7 @@
                                     <h:panelGroup layout="block" class="btn-group"
                                                   rendered="#{!vendaCabecalhoControll.objeto.emitido and !vendaCabecalhoControll.objeto.cancelado}">
                                         <h:commandButton value="Salvar" class="btn btn-primary"
+                                                         id="btnSalvar"
                                                          rendered="#{empty vendaCabecalhoControll.objeto.id}"
                                                          action="#{vendaCabecalhoControll.salvar()}"
                                                          disabled="#{!vendaCabecalhoControll.podeInserir()}"
@@ -406,7 +407,8 @@
                                                     update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
                                         </h:commandButton>
                                         <h:commandButton value="Salvar" class="btn btn-primary"
-                                                         rendered="#{not empty vendaCabecalhoControll.objeto.id}"
+                                                         id="btnAtualizar"
+                                                         rendered="#{not empty vendaCabecalhoControll.objeto.id and !vendaCabecalhoControll.objeto.temProduto()}"
                                                          actionListener="#{vendaCabecalhoControll.salvar()}"
                                                          disabled="#{!vendaCabecalhoControll.podeAlterar()}"
                                         >
@@ -415,26 +417,16 @@
                                                     update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
                                         </h:commandButton>
                                         <c:if test="#{!vendaCabecalhoControll.telaGrid and vendaCabecalhoControll.objeto.temProduto()}">
-                                            <button type="button" class="btn btn-primary  dropdown-toggle"
-                                                    data-toggle="dropdown"
-                                                    style="padding: 13.5px 8px;border-color: mediumaquamarine;">
-                                                <span class="caret"></span>
-                                            </button>
 
-                                            <ul class="dropdown-menu">
-                                                <c:if test="#{!vendaCabecalhoControll.objeto.faturado}">
-                                                    <li>
-                                                        <h:commandLink value="Salvar e Faturar"
-                                                                       action="#{vendaCabecalhoControll.faturarVenda}"
-                                                                       disabled="#{vendaCabecalhoControll.objeto.faturado || osAberturaControll.objeto.emitido}"
+                                            <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar}" icon="ui-icon-disk">
+                                                <p:menuitem value="Salvar e Faturar" actionListener="#{vendaCabecalhoControll.faturarVenda}"
+                                                            update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                                                            rendered="#{!vendaCabecalhoControll.objeto.faturado}"
+                                                            icon="ui-icon-arrowrefresh-1-w"/>
 
-                                                        >
-                                                            <p:ajax process="@form"
-                                                                    update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"/>
-                                                        </h:commandLink>
-                                                    </li>
-                                                </c:if>
-                                            </ul>
+                                            </p:splitButton>
+
+
                                         </c:if>
                                     </h:panelGroup>
 

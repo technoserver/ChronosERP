@@ -209,10 +209,6 @@
                                             icon="fa fa-print" ajax="false">
                                     <f:param name="idcupom" value="#{row.id}"/>
                                 </p:menuitem>
-                                <p:menuitem value="Imprimir A4"
-
-                                            icon="fa fa-print" ajax="false"/>
-
                                 <p:menuitem value="Emitir NFCe"
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.idnfe}"
@@ -324,7 +320,7 @@
                                                      action="#{balcaoControll.danfe}"
                                                      rendered="#{not empty balcaoControll.venda.idnfe}"
                                                      class="btn btn-primary btn-lg">
-                                        <p:ajax update=":formCentro:growl" />
+                                        <p:ajax disabled="true" />
                                     </h:commandButton>
                                     &nbsp;
                                     <h:commandButton value="EMITIR NFCe"

@@ -559,7 +559,7 @@ public class NfeService implements Serializable {
         String camLogo = ArquivoUtil.getInstance().getImagemTransmissao(empresa.getCnpj());
         camLogo = new File(camLogo).exists() ? camLogo : context.getRealPath("resources/images/logo_nfe_peq.png");
         Image logo = new ImageIcon(camLogo).getImage();
-        parametrosRelatorio.put("danfe_logo", logo);
+        parametrosRelatorio.put("Logo", logo);
         String expressaoDataSource = "";
         String nomeRelatorioJasper = "";
         if (statusTransmissao == StatusTransmissao.AUTORIZADA) {

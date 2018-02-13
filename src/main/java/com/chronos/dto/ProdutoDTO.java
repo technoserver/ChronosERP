@@ -17,6 +17,7 @@ public class ProdutoDTO implements Serializable {
 
     private Integer id;
     private String nome;
+    private String descricaoPdv;
     private BigDecimal valorVenda;
     private BigDecimal quantidadeEstoque;
     private BigDecimal estoqueVerificado;
@@ -33,9 +34,10 @@ public class ProdutoDTO implements Serializable {
     public ProdutoDTO() {
     }
 
-    public ProdutoDTO(Integer id, String nome, String servico, String codigoLst, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
+    public ProdutoDTO(Integer id, String nome,String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
         this.id = id;
         this.nome = nome;
+        this.descricaoPdv = descricaoPdv;
         this.valorVenda = valorVenda;
         this.quantidadeEstoque = quantidadeEstoque;
         this.estoqueVerificado = estoqueVerificado;
@@ -50,6 +52,7 @@ public class ProdutoDTO implements Serializable {
         this.produto.getUnidadeProduto().setPodeFracionar(podeFracionar);
         this.produto.setCodigoLst(codigoLst);
         this.produto.setControle(estoqueVerificado);
+        this.produto.setDescricaoPdv(this.descricaoPdv);
         if (idgrupotributario != null) {
             produto.setTributGrupoTributario(new TributGrupoTributario(idgrupotributario));
         } else {
@@ -145,5 +148,21 @@ public class ProdutoDTO implements Serializable {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public String getDescricaoPdv() {
+        return descricaoPdv;
+    }
+
+    public void setDescricaoPdv(String descricaoPdv) {
+        this.descricaoPdv = descricaoPdv;
+    }
+
+    public String getServico() {
+        return servico;
+    }
+
+    public void setServico(String servico) {
+        this.servico = servico;
     }
 }

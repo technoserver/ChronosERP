@@ -435,7 +435,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void salvaProduto() {
         try {
-            if (!getObjeto().getListaNfeDetalhe().contains(nfeDetalhe)) {
+            Optional<NfeDetalhe> itemNfeOptional = buscarItemPorProduto(nfeDetalhe.getProduto());
+            if (!itemNfeOptional.isPresent()) {
                 nfeDetalhe.setValorSubtotal(nfeDetalhe.calcularSubTotalProduto());
                 nfeDetalhe.setValorTotal(nfeDetalhe.calcularValorTotalProduto());
                 nfeDetalhe.setCodigoProduto(nfeDetalhe.getProduto().getId().toString());
@@ -460,6 +461,12 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao salvar o registro", e);
         }
+    }
+
+    private Optional<NfeDetalhe> buscarItemPorProduto(Produto produto) {
+        return getObjeto().getListaNfeDetalhe().stream()
+                .filter(i -> i.getProduto().equals(produto))
+                .findAny();
     }
 
     public void cadastrarProduto() {

@@ -104,7 +104,7 @@ public class OsService implements Serializable {
     @Transactional
     public void faturar(OsAbertura os) throws Exception {
         os.setOsStatus(Constantes.OS.STATUS_FATURADO);
-        os = repository.atualizar(os);
+
         List<ProdutoVendaDTO> produtos = new ArrayList<>();
         os.getListaOsProdutoServico()
                 .stream()
@@ -116,6 +116,7 @@ public class OsService implements Serializable {
         estoqueRepositoy.atualizaEstoqueVerificado(os.getEmpresa().getId(), produtos);
         finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
                 os.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, os.getEmpresa());
+        os = repository.saveAndFlush(os);
     }
 
     @Transactional
