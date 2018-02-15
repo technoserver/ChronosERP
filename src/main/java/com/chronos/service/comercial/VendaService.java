@@ -52,7 +52,7 @@ public class VendaService implements Serializable {
         try {
 
             venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
-            venda = repository.atualizar(venda);
+
             List<ProdutoVendaDTO> produtos = new ArrayList<>();
             venda.getListaVendaDetalhe().forEach(p->{
                 produtos.add(new ProdutoVendaDTO(p.getId(),p.getQuantidade()));
@@ -62,7 +62,7 @@ public class VendaService implements Serializable {
                     venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
 
             gerarComissao(venda);
-
+            venda = repository.salvarFlush(venda);
 
         } catch (Exception ex) {
             ex.printStackTrace();

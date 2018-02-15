@@ -27,6 +27,12 @@ public abstract class AbstractRepository implements Serializable {
         em.persist(bean);
     }
 
+    public <T> T salvarFlush(T bean) {
+       T obj =   em.merge(bean);
+       em.flush();
+       return obj;
+    }
+
     public <T> T atualizar(T bean) throws PersistenceException {
         return em.merge(bean);
 
