@@ -34,7 +34,7 @@ public class SecurityWebApplicationInitializer extends AbstractSecurityWebApplic
 
     @Override
     protected void beforeSpringSecurityFilterChain(ServletContext servletContext) {
-       
+     //  super.insertFilters(servletContext,new FilterUserInadiplente());
     }
     
     

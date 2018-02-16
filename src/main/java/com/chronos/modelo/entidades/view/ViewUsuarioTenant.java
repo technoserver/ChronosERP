@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -16,15 +17,15 @@ public class ViewUsuarioTenant implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Column(name = "login")
-    public String login;
+    private String login;
     @Column(name = "senha")
-    public String senha;
+    private String senha;
     @Column(name = "id_tenant")
-    public Integer idtenant;
+    private Integer idtenant;
     @Column(name = "nome_tenant")
-    public String nomeTenant;
+    private String nomeTenant;
     @Column(name = "data_vencimento")
-    public Date dataVencimento;
+    private LocalDate dataVencimento;
     @Id
     @Column(name = "id")
     private Integer id;
@@ -69,11 +70,11 @@ public class ViewUsuarioTenant implements Serializable {
         this.nomeTenant = nomeTenant;
     }
 
-    public Date getDataVencimento() {
+    public LocalDate getDataVencimento() {
         return dataVencimento;
     }
 
-    public void setDataVencimento(Date dataVencimento) {
+    public void setDataVencimento(LocalDate dataVencimento) {
         this.dataVencimento = dataVencimento;
     }
 

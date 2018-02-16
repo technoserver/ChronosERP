@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.beans.PropertyVetoException;
@@ -36,14 +37,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AppUserDetailsService userDetailsService;
 
+    @Autowired
+    private FilterUserInadiplente filtro;
+
     @Bean
     public ChronosSuccessHandler chronosSuccessHandler() {
         return new ChronosSuccessHandler();
     }
+    @Bean
+    public ChronosAuthenticationEntryPoint chronosAuthenticationEntryPoint(){
+        return new ChronosAuthenticationEntryPoint();
+    }
 
-
-
-
+    @Bean
+    public FilterUserInadiplente criarFiltro(){
+        return new FilterUserInadiplente();
+    }
 
 
     @Override
@@ -75,12 +84,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .authorizeRequests()
                 .antMatchers("/login.xhtml").permitAll()
-                .antMatchers("/index.xhtml").authenticated()
+
                 //.antMatchers("/modulo/**").hasAnyRole("ADMINISTRADORES") apenas se usa hasAnyRole quando tiver ROLE na frente
                 // ex ROLE_ADMINISTRADORES, caso esteja esteja apenas ADMINISTRADORES é usado hasAuthority
+                .antMatchers("/index*").authenticated()
+                .antMatchers("/modulo/cadastros/administrativo/**").access("hasRole('ADMIN') and hasRole('ADMIN')")
+                .antMatchers("/modulo/cadastros/**").authenticated()
                 .antMatchers("/modulo/cadastros/**").authenticated()
                 .antMatchers("/modulo/agenda/**").authenticated()
-                .antMatchers("/modulo/cadastros/administrativo/**").hasRole("ADMIN")
                 .antMatchers("/modulo/comercial/nfe/**").hasAnyRole("NFE")
                 .antMatchers("/modulo/comercial/nfce/**").hasAnyRole("NFCE")
                 .antMatchers("/modulo/comercial/mdfe/**").hasAnyRole("MDFE")
@@ -99,6 +110,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/modulo/fiscal/tributacao/**").hasAnyRole("TRIBUTACAO")
                 .antMatchers("/modulo/fiscal/sped/**").hasAnyRole("SPED")
                 .and()
+                .addFilterAfter(filtro,BasicAuthenticationFilter.class)
             .formLogin()
                 .loginPage("/login.xhtml")
                 .failureUrl("/login.xhtml?invalid=true")
@@ -110,6 +122,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .exceptionHandling()
                 .accessDeniedPage("/error/acessoNegado.xhtml")
                 .authenticationEntryPoint(jsfLoginEntry)
-                .accessDeniedHandler(jsfDeniedEntry);
+                .accessDeniedHandler(jsfDeniedEntry)
+                ;
+
     }
 }

@@ -13,12 +13,14 @@ import com.chronos.util.cdi.CDIServiceLocator;
 import com.chronos.util.cdi.ManualCDILookup;
 import com.chronos.util.tenant.TenantRegistry;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,8 +64,14 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
 //            } else {
 //                // Senha inválida
 //            }
-
-            return new UsuarioSistema(usr, new ArrayList<>());
+            LocalDate dataPermitida  = LocalDate.now().plusDays(5);
+            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+            if(dataPermitida.isBefore(usr.getDataVencimento())){
+                authorities.add(new SimpleGrantedAuthority("ROLE_INADIPLENTE"));
+            }else{
+                authorities.add(new SimpleGrantedAuthority("ROLE_ADIMPLENTE"));
+            }
+            return new UsuarioSistema(usr, authorities);
         } catch (Exception e) {
             if (!(e instanceof NoResultException)) {
                 e.printStackTrace();

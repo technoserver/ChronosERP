@@ -6,6 +6,7 @@
 package com.chronos.security;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.util.UrlUtils;
 
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- *
  * @author john
  */
 public class JsfAccessDeniedHandler implements AccessDeniedHandler {
@@ -41,6 +41,7 @@ public class JsfAccessDeniedHandler implements AccessDeniedHandler {
             response.setContentType("text/xml");
             response.getWriter().write(ajaxRedirectXml);
         } else {
+           
             response.sendRedirect(redirectUrl);
         }
     }
