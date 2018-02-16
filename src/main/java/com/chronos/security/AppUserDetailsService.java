@@ -66,7 +66,7 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
 //            }
             LocalDate dataPermitida  = LocalDate.now().plusDays(5);
             List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-            if(dataPermitida.isBefore(usr.getDataVencimento())){
+            if(dataPermitida.isAfter(usr.getDataVencimento())){
                 authorities.add(new SimpleGrantedAuthority("ROLE_INADIPLENTE"));
             }else{
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADIMPLENTE"));
