@@ -5,17 +5,17 @@
  */
 package com.chronos.util.jsf;
 
-import com.chronos.modelo.entidades.*;
+import com.chronos.dto.UsuarioDTO;
+import com.chronos.modelo.entidades.Empresa;
+import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.tenant.Tenant;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
-import com.chronos.repository.Usuarios;
 import com.chronos.security.UsuarioSistema;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.cdi.CDIServiceLocator;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.faces.application.FacesMessage;
@@ -26,10 +26,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.IntStream;
 
 /**
  * @author john
@@ -69,14 +66,8 @@ public class FacesUtil {
     }
 
     public static boolean isUserInRole(String role) {
-
-
         try {
-            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-            Usuario usuario = (Usuario) session.getAttribute("userChronosERP");
-            if (usuario == null) {
-                getUsuarioSessao();
-            }
+
             return FacesContext.getCurrentInstance().getExternalContext().isUserInRole(role);
         } catch (Exception ex) {
 
@@ -84,12 +75,12 @@ public class FacesUtil {
         return false;
     }
 
-    public static Usuario setUsuarioSessao(Usuario user) {
+    public static UsuarioDTO setUsuarioSessao(UsuarioDTO user) {
         try {
 
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-            session.removeAttribute("usuarioSistema");
-            session.setAttribute("usuarioSistema", user);
+            session.removeAttribute("userChronosERP");
+            session.setAttribute("userChronosERP", user);
             return user;
         } catch (Exception e) {
             adicionaMensagem(FacesMessage.SEVERITY_ERROR, "Erro ao buscar os dados do usuario logado.", e.getMessage());
@@ -97,32 +88,12 @@ public class FacesUtil {
         return null;
     }
 
-
-    public static void setEmpresaUsuario(Empresa empresa) {
-        Usuario user = getUsuarioSessao();
-        List<Empresa> empresas = new ArrayList<>();
-        empresas.addAll(user.getColaborador().getPessoa().getListaEmpresa());
-        int indice = IntStream.range(0, empresas.size()).filter(i -> empresas.get(i).getId().equals(empresa.getId())).findAny()
-                .getAsInt();
-        empresas.remove(indice);
-        empresas.add(empresa);
-        user.getColaborador().getPessoa().setListaEmpresa(new HashSet<>(empresas));
-        setUsuarioSessao(user);
-    }
-
-    public static Usuario getUsuarioSessao() {
+    public static UsuarioDTO getUsuarioSessao() {
         try {
 
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 
-            Usuario usuario = (Usuario) session.getAttribute("userChronosERP");
-            if (usuario == null) {
-                Usuarios dao = CDIServiceLocator.getBean(Usuarios.class);
-                String login = (String) session.getAttribute("usuarioSistema");
-                usuario = dao.getUsuario(login);
-                definirPermissoes(usuario);
-                session.setAttribute("userChronosERP", usuario);
-            }
+            UsuarioDTO usuario = (UsuarioDTO) session.getAttribute("userChronosERP");
 
             return usuario;
         } catch (Exception ex) {
@@ -133,21 +104,38 @@ public class FacesUtil {
 
     public static Tenant getTenantId() {
         try {
+            Tenant tenant = null;
+            SecurityContext contexto = SecurityContextHolder.getContext();
+            if (contexto != null) {
+                Authentication auth = contexto.getAuthentication();
+                if (auth != null) {
+                    if (auth.getPrincipal() instanceof UsuarioSistema) {
+                        UsuarioSistema user = (UsuarioSistema) auth.getPrincipal();
+                        tenant = new Tenant(user.getUsuario().getId(), user.getUsuario().getNomeTenant());
+                    } else if (auth.getPrincipal() instanceof String) {
+                        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+                        tenant = (Tenant) session.getAttribute("tenantId");
+                    }
+                }
 
-            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-            Tenant tenant = (Tenant) session.getAttribute("tenantId");
+            }
+
             return tenant;
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return null;
     }
 
     public static Empresa getEmpresaUsuario() {
-        Usuario user = getUsuarioSessao();
-        return user.getColaborador().getPessoa().getListaEmpresa().stream()
-                .findFirst()
-                .orElse(null);
+        UsuarioDTO user = getUsuarioSessao();
+        return user.getEmpresa();
+    }
+
+    public static void setEmpresaUsuario(Empresa empresa) {
+        UsuarioDTO user = getUsuarioSessao();
+        user.setEmpresa(empresa);
+        setUsuarioSessao(user);
     }
 
     private static HttpSession getHttpSession() {
@@ -163,41 +151,7 @@ public class FacesUtil {
     }
 
 
-    private static void definirPermissoes(Usuario usuario) {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        List<PapelFuncao> funcoes = usuario.getPapel().getListaPapelFuncao();
 
-        if (usuario.getPapel().getAcessoCompleto().equals("S") || usuario.getAdministrador().equals("S")) {
-
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        }
-
-        if (usuario.getLogin().equals("admin")) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_SOFTHOUSE"));
-        }
-
-        funcoes.stream().forEach((p) -> {
-            if (p.getPodeConsultar() != null && p.getPodeConsultar().equals("S")) {
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + p.getFuncao().getFormulario() + "_CONSULTAR"));
-            }
-            if (p.getPodeInserir() != null && p.getPodeInserir().equals("S")) {
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + p.getFuncao().getFormulario() + "_INSERIR"));
-            }
-            if (p.getPodeAlterar() != null && p.getPodeAlterar().equals("S")) {
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + p.getFuncao().getFormulario() + "_ALTERAR"));
-            }
-            if (p.getPodeExcluir() != null && p.getPodeExcluir().equals("S")) {
-                authorities.add(new SimpleGrantedAuthority("ROLE_" + p.getFuncao().getFormulario() + "_EXCLUIR"));
-            }
-        });
-        Repository<AdmModulo> admModuloRepository = CDIServiceLocator.getBean(Repository.class);
-        List<AdmModulo> modulos = admModuloRepository.getEntitys(AdmModulo.class, "ativo", "S");
-        modulos.forEach(m -> {
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + m.getNome()));
-        });
-        Authentication authentication = new UsernamePasswordAuthenticationToken(usuario.getLogin(), usuario.getSenha(), authorities);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 
     public static PdvMovimento getMovimento() {
 

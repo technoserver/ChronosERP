@@ -6,29 +6,16 @@
 package com.chronos.util.flyway;
 
 import com.chronos.modelo.entidades.tenant.Tenant;
-import com.chronos.repository.TenantRepository;
-import com.chronos.security.DataSourceProperty;
-import com.chronos.util.cdi.CDIServiceLocator;
-import com.chronos.util.jpa.ChronosEntityManagerFactory;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * @author john
@@ -39,41 +26,36 @@ public class FlyWay {
 
     public void migration() throws Exception {
 
-//        Context initCtx = new InitialContext();
-//        Context envCtx = (Context) initCtx.lookup("java:comp/env");
-//
-//        ds = (DataSource) envCtx.lookup("jdbc/chronosLightDB");
+        Context initCtx = new InitialContext();
+        Context envCtx = (Context) initCtx.lookup("java:comp/env");
+
+        ds = (DataSource) envCtx.lookup("jdbc/chronosLightDB");
 
 
-        List<Tenant> tenants = getTenants();
-        Properties prop = new Properties();
-        InputStream in = getClass().getResourceAsStream("/datasource.properties");
-        prop.load(in);
-        in.close();
+
 
         // Inicialição do FlyWay
         Flyway flyway = new Flyway();
 
         flyway.setBaselineOnMigrate(true);
         flyway.setTable("version");
-      //  flyway.setDataSource(ds);
-        flyway.setDataSource(prop.getProperty("chronos.url"), prop.getProperty("chronos.username"), prop.getProperty("chronos.password"));
+        flyway.setDataSource(ds);
+
         flyway.setValidateOnMigrate(true);
 
         // executa Migração;
-        for(Tenant t : tenants){
-         // flyway.setDataSource(prop.getProperty("chronos.url")+"?currentSchema="+t.getNome(), prop.getProperty("chronos.username"), prop.getProperty("chronos.password"));
-            flyway.setSchemas(t.getNome());
-            flyway.migrate();
-        }
+//        for(Tenant t : tenants){
+//         // flyway.setDataSource(prop.getProperty("chronos.url")+"?currentSchema="+t.getNome(), prop.getProperty("chronos.username"), prop.getProperty("chronos.password"));
+//            flyway.setSchemas(t.getNome());
+//            flyway.migrate();
+//        }
 
     }
 
 
-
-    public List<Tenant> getTenants() throws Exception {
-        EntityManager em = null;
-        List<Tenant>  tenants ;
+    public List<Tenant> getTenants() {
+        EntityManager em;
+        List tenants;
         try{
 
             EntityManagerFactory factory = Persistence.createEntityManagerFactory("ChronosAdminUP");
@@ -88,8 +70,6 @@ public class FlyWay {
 
         }catch (Exception ex){
             throw ex;
-
-        }finally {
 
         }
         return tenants;

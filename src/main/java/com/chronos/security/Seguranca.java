@@ -5,20 +5,17 @@
  */
 package com.chronos.security;
 
+import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.Usuario;
-import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.FacesUtil;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
 import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
+import java.util.Optional;
 
 /**
  * @author john
@@ -32,16 +29,16 @@ public class Seguranca {
     private Empresa empresa;
 
 
-    private Usuario usuario;
+    private UsuarioDTO usuario;
 
-
+    @PostConstruct
+    private void init() {
+        usuario = FacesUtil.getUsuarioSessao();
+        empresa = FacesUtil.getEmpresaUsuario();
+    }
 
     public String getNomeUsuario() {
         String nome = null;
-
-
-        usuario = getUsuarioLogado();
-
         if (usuario != null) {
             nome = usuario.getLogin();
         }
@@ -53,46 +50,27 @@ public class Seguranca {
     //TODO verificar
     public String getFotoFuncionario() {
         String foto = "";
-        usuario = getUsuarioLogado();
         if (usuario != null) {
-            empresa = FacesUtil.getEmpresaUsuario();
-
-            if(usuario.getColaborador().getPessoa().getTipo().equals("F") && !StringUtils.isEmpty(usuario.getColaborador().getPessoa().getPessoaFisica().getCpf())){
-                foto = ArquivoUtil.getInstance().getFotoFuncionario(empresa.getCnpj(), usuario.getColaborador().getPessoa().getPessoaFisica().getCpf());
-            }
-
+            foto = Optional.ofNullable(usuario.getFoto()).orElse("");
         }
-
-
         return new File(foto).exists() ? foto : null;
     }
 
     //TODO verificar
     public String getNomeEmpresa() {
         String nomeEmpresa = null;
-        nomeEmpresa = FacesUtil.getEmpresaUsuario().getRazaoSocial();
+        nomeEmpresa = empresa.getRazaoSocial();
 
         return nomeEmpresa;
     }
 
-    @Produces
-    @UsuarioLogado
-    public Usuario getUsuarioLogado() {
 
-
-        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken)
-                FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal();
-
-        if (auth != null && auth.getPrincipal() != null && usuario == null) {
-            usuario = FacesUtil.getUsuarioSessao();
-        }
-
-        return usuario;
+    public String getCargo() {
+        return usuario.getCargo();
     }
 
-
     public boolean isTemAcessoEpresa() {
-        return getUsuarioLogado().getAdministrador().equals("S");
+        return usuario.getAdministrador().equals("S");
     }
 
     public boolean isTemAcesso(String modulo) {

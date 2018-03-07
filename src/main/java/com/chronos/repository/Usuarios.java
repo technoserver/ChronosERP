@@ -5,12 +5,15 @@
  */
 package com.chronos.repository;
 
+import com.chronos.dto.UsuarioDTO;
+import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.entidades.PapelFuncao;
 import com.chronos.modelo.entidades.Usuario;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -48,14 +51,14 @@ public class Usuarios implements Serializable {
         return (List<PapelFuncao>) q.getResultList();
     }
 
-    public List<PapelFuncao> getPapelFuncao(int idusuario) throws Exception {
-        String jpql = "select pf from PapelFuncao pf , Usuario u "
-                + "INNER JOIN FETCH pf.Funcao f "
-                + "INNER JOIN FETCH pf.Papel p "
-                + "where u.id = 1 and u.papel.id = p.id";
-        Query q = em.createQuery(jpql);
-        // q.setParameter("papel", usuario.getPapel());
-        return (List<PapelFuncao>) q.getResultList();
+    public Papel getPapelFuncao(int idusuario) throws Exception {
+        String jpql = "select u.papel from Usuario u "
+                + "INNER JOIN u.papel p "
+                + "LEFT JOIN FETCH p.listaPapelFuncao "
+                + "where u.id =:id";
+        TypedQuery<Papel> q = em.createQuery(jpql, Papel.class);
+        q.setParameter("id", idusuario);
+        return q.getResultList().stream().findFirst().orElse(null);
     }
 
     public Usuario getUsuario(String login) throws Exception {
@@ -77,6 +80,18 @@ public class Usuarios implements Serializable {
         return user.get(0);
         
         
+    }
+
+    public UsuarioDTO getUsuarioDTO(String login) {
+        String jpql = "SELECT new com.chronos.dto.UsuarioDTO(u.id,u.login,u.senha,u.administrador,p.nome,c.foto34,c.id,cg.nome ,e) " +
+                "FROM Usuario u ,IN(u.colaborador.pessoa.listaEmpresa) e " +
+                "INNER JOIN u.colaborador c " +
+                "INNER JOIN c.cargo cg " +
+                "INNER JOIN c.pessoa p " +
+                "WHERE u.login = :login";
+        Query q = em.createQuery(jpql);
+        q.setParameter("login", login);
+        return (UsuarioDTO) q.getSingleResult();
     }
 
 }

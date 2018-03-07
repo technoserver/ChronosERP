@@ -41,6 +41,13 @@ public class Usuario implements Serializable {
         this.papel = new Papel(idpapel);
     }
 
+    public Usuario(Integer id, String login, String senha) {
+        this.id = id;
+        this.login = login;
+        this.senha = senha;
+
+    }
+
     public Usuario(Integer id) {
         this.id = id;
     }

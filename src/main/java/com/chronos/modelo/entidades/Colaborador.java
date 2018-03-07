@@ -149,6 +149,11 @@ public class Colaborador implements Serializable {
     public Colaborador() {
     }
 
+    public Colaborador(Integer id) {
+        this.id = id;
+
+    }
+
     public Colaborador(Integer id,Integer idpessoa,String nome) {
         this.id = id;
         this.nome = nome;

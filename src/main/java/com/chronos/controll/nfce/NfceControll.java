@@ -3,24 +3,23 @@ package com.chronos.controll.nfce;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
+import com.chronos.dto.UsuarioDTO;
 import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.NivelAutorizacaoCaixa;
-import com.chronos.modelo.entidades.enuns.StatusMovimentoCaixa;
 import com.chronos.modelo.entidades.enuns.StatusTransmissao;
 import com.chronos.modelo.entidades.view.ViewNfceCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
-import com.chronos.util.ArquivoUtil;
+import com.chronos.service.comercial.VendedorService;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.JRException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.util.StringUtils;
@@ -33,11 +32,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -81,6 +78,8 @@ public class NfceControll implements Serializable {
     protected FacesContext facesContext;
     @Inject
     private NfeService nfeService;
+    @Inject
+    private VendedorService vendedorService;
 
     private PdvMovimento movimento;
     private List<PdvTurno> listTurno;
@@ -95,7 +94,7 @@ public class NfceControll implements Serializable {
     private NfeCabecalho venda;
     private NfeCabecalho vendaSelecionada;
     private Empresa empresa;
-    private Usuario usuario;
+    private UsuarioDTO usuario;
     private ViewNfceCliente cliente;
     private Vendedor vendedor;
     private List<Vendedor> listVendedores;
@@ -507,7 +506,7 @@ public class NfceControll implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos NFce">
 
-    public PdvConfiguracao getConfiguraNfce() throws Exception {
+    private PdvConfiguracao getConfiguraNfce() {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
         configuracao = configuracao == null ? configuracoes.get(PdvConfiguracao.class, filtros) : configuracao;
@@ -524,7 +523,7 @@ public class NfceControll implements Serializable {
     }
 
     @Transactional
-    public void transmitirNfe() {
+    private void transmitirNfe() {
         try {
 
 
@@ -538,11 +537,6 @@ public class NfceControll implements Serializable {
                 gerarCupom();
                 Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 RequestContext.getCurrentInstance().addCallbackParam("vendaFinalizada", true);
-            } else if (status == StatusTransmissao.DUPLICIDADE) {
-
-                // nfeService.getNotaFicalTipo("55",empresa);
-
-                //  transmitirNfe();
             }
 
 
@@ -583,9 +577,7 @@ public class NfceControll implements Serializable {
     }
 
 
-
-
-    public void gerarCupom() throws JRException, IOException {
+    private void gerarCupom() throws JRException, IOException {
 
         try {
             configuracao = getConfiguraNfce();
@@ -665,20 +657,10 @@ public class NfceControll implements Serializable {
         listVendedores = listVendedores.isEmpty() ? vendedores.getEntitys(Vendedor.class) : listVendedores;
     }
 
-    private Vendedor instanciarVendedor(Usuario usuario) {
-        Vendedor vendedor = vendedores.get(Vendedor.class, "colaborador.id", usuario.getColaborador().getId());
+    private Vendedor instanciarVendedor(UsuarioDTO usuario) {
+        return vendedorService.instaciarVendedor(usuario.getIdcolaborador());
 
-        if (vendedor == null) {
-            vendedor = new Vendedor();
-            vendedor.setGerente('N');
-            vendedor.setComissao(BigDecimal.ZERO);
-            vendedor.setMetaVendas(BigDecimal.ZERO);
-            vendedor.setComissao(BigDecimal.ZERO);
-            vendedor.setColaborador(usuario.getColaborador());
-            vendedor = vendedores.atualizar(vendedor);
-        }
 
-        return vendedor;
     }
 
     //</editor-fold>
@@ -702,15 +684,13 @@ public class NfceControll implements Serializable {
 
 
     public String formatarValor(BigDecimal valor) {
-        String valorFormatado = FormatValor.getInstance().formatoDecimal("V", valor.doubleValue());
-        return valorFormatado;
+        return FormatValor.getInstance().formatoDecimal("V", valor.doubleValue());
     }
 
     public boolean podeConsultar() {
         // return false;
-        boolean teste = FacesUtil.isUserInRole("NFCE_CONSULTA")
+        return FacesUtil.isUserInRole("NFCE_CONSULTA")
                 || FacesUtil.isUserInRole("ADMIN");
-        return teste;
     }
 
     public boolean isPodeLancaPagamento() {

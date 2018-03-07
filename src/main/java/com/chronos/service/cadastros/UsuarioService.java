@@ -1,15 +1,10 @@
 package com.chronos.service.cadastros;
 
+import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.PdvMovimento;
-import com.chronos.modelo.entidades.Usuario;
-import com.chronos.security.UsuarioLogado;
-import com.chronos.security.UsuarioSistema;
 import com.chronos.util.jsf.FacesUtil;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import javax.enterprise.inject.Produces;
-import javax.faces.context.FacesContext;
 import java.io.Serializable;
 
 /**
@@ -22,13 +17,11 @@ public class UsuarioService implements Serializable {
     private Empresa empresa;
     private PdvMovimento movimento;
 
-    @Produces
-    @UsuarioLogado
-    public Usuario getUsuarioLogado() {
+
+    public UsuarioDTO getUsuarioLogado() {
 
 
-
-        Usuario usuario = FacesUtil.getUsuarioSessao();
+        UsuarioDTO usuario = FacesUtil.getUsuarioSessao();
 
         return usuario;
     }
@@ -36,9 +29,7 @@ public class UsuarioService implements Serializable {
     public Empresa getEmpresaUsuario() {
         empresa = null;
 
-        getUsuarioLogado().getColaborador().getPessoa().getListaEmpresa().stream().forEach((e) -> {
-            empresa = e;
-        });
+        empresa = getUsuarioLogado().getEmpresa();
         return empresa;
     }
 }

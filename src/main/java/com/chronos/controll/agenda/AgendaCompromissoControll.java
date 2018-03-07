@@ -3,8 +3,8 @@ package com.chronos.controll.agenda;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.AgendaCategoriaCompromisso;
 import com.chronos.modelo.entidades.AgendaCompromisso;
-import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.cadastros.AgendaService;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
@@ -32,6 +32,9 @@ public class AgendaCompromissoControll extends AbstractControll<AgendaCompromiss
 
     @Inject
     private Repository<AgendaCategoriaCompromisso> categoriaRepository;
+
+    @Inject
+    private AgendaService service;
 
 
     private Integer recorrente;
@@ -153,42 +156,11 @@ public class AgendaCompromissoControll extends AbstractControll<AgendaCompromiss
 
     public void atualizaCalendario() throws Exception {
         eventModel.clear();
-        List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro(Filtro.AND, "colaborador", Filtro.IGUAL, getObjeto().getColaborador()));
-        List<AgendaCompromisso> compromissos = dao.getEntitys(AgendaCompromisso.class, filtros);
-        for (AgendaCompromisso c : compromissos) {
-            String styleClass;
-            switch (c.getAgendaCategoriaCompromisso().getCor()) {
-                case "Amarelo": {
-                    styleClass = "eventoCalendarioAmarelo";
-                    break;
-                }
-                case "Azul": {
-                    styleClass = "eventoCalendarioAzul";
-                    break;
-                }
-                case "Branco": {
-                    styleClass = "eventoCalendarioBranco";
-                    break;
-                }
-                case "Verde": {
-                    styleClass = "eventoCalendarioVerde";
-                    break;
-                }
-                case "Vermelho": {
-                    styleClass = "eventoCalendarioVermelho";
-                    break;
-                }
-                default: {
-                    styleClass = "eventoCalendarioPreto";
-                    break;
-                }
-            }
+        service.definirEventoColaborador(getObjeto().getColaborador().getId()).forEach(e -> {
+            eventModel.addEvent(e);
+        });
 
-            ScheduleEvent event = new DefaultScheduleEvent(c.getDescricao(), c.getDataCompromisso(), c.getDataCompromisso(), styleClass);
 
-            eventModel.addEvent(event);
-        }
     }
 
     public void adicionaEvento() {

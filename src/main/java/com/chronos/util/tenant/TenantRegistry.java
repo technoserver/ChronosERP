@@ -29,11 +29,11 @@ public class TenantRegistry implements Serializable {
         if (tenantUsuario.isPresent()) {
 
             Tenant tenant = new Tenant(tenantUsuario.get().getId(), tenantUsuario.get().getNomeTenant());
-            if (!ConstantsTenant.TENANTS.contains(tenant)) {
-                ConstantsTenant.TENANTS.add(tenant);
+            if (ConstantsTenant.FACTORIES.isEmpty()) {
                 final EntityManagerFactory emf = createEntityManagerFactory(tenant);
-                ConstantsTenant.FACTORIES.put(tenant.getNome(), emf);
+                ConstantsTenant.FACTORIES.put("ChronosLightUP", emf);
             }
+
 
         }
         return tenantUsuario;
@@ -47,14 +47,6 @@ public class TenantRegistry implements Serializable {
     }
 
     private EntityManagerFactory createEntityManagerFactory(final Tenant tenant) {
-
-//
-//        logger.debug("Criando entity manager factory para schema '" + tenant.getNome() + "' for tenant '" + tenant.getNome() + "'.");
-//        props.put("javax.persistence.jdbc.url", "jdbc:postgresql://localhost:5432/chronosLight?currentSchema=" + tenant.getNome());
-//       // props.put("hibernate.multiTenancy", MultiTenancyStrategy.SCHEMA.name());
-//      //  props.put("hibernate.multi_tenant_connection_provider", dsProvider);
-//      //  props.put("hibernate.tenant_identifier_resolver", tenant.getNome());;
-//       // props.put("hibernate.default_schema", tenant.getNome());
         return Persistence.createEntityManagerFactory("ChronosLightUP");
     }
 

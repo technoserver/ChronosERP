@@ -3,6 +3,7 @@ package com.chronos.controll.vendas;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
+import com.chronos.dto.UsuarioDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.entidades.enuns.SituacaoVenda;
@@ -11,6 +12,7 @@ import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaPdvService;
 import com.chronos.service.comercial.VendaService;
+import com.chronos.service.comercial.VendedorService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
@@ -76,6 +78,10 @@ public class BalcaoControll implements Serializable {
     private VendaPdvService service;
     @Inject
     private VendaService vendaService;
+    @Inject
+    private VendedorService vendedorService;
+
+
     private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
 
     private PdvVendaCabecalho venda;
@@ -85,7 +91,7 @@ public class BalcaoControll implements Serializable {
     private PdvFormaPagamento formaPagamentoSelecionado;
     private PdvMovimento movimento;
     private Empresa empresa;
-    private Usuario usuario;
+    private UsuarioDTO usuario;
     private Vendedor vendedor;
     private Cliente cliente;
     private ProdutoDTO produto;
@@ -348,20 +354,8 @@ public class BalcaoControll implements Serializable {
 
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos vendedor">
-    private Vendedor instanciarVendedor(Usuario usuario) {
-        Vendedor vendedor = vendedores.get(Vendedor.class, "colaborador.id", usuario.getColaborador().getId());
-
-        if (vendedor == null) {
-            vendedor = new Vendedor();
-            vendedor.setGerente('N');
-            vendedor.setComissao(BigDecimal.ZERO);
-            vendedor.setMetaVendas(BigDecimal.ZERO);
-            vendedor.setComissao(BigDecimal.ZERO);
-            vendedor.setColaborador(usuario.getColaborador());
-            vendedor = vendedores.atualizar(vendedor);
-        }
-
-        return vendedor;
+    private Vendedor instanciarVendedor(UsuarioDTO usuario) {
+        return vendedorService.instaciarVendedor(usuario.getIdcolaborador());
     }
 
     public void buscarVendedores() {
@@ -464,11 +458,10 @@ public class BalcaoControll implements Serializable {
     }
 
     private Optional<PdvFormaPagamento> bucarTipoPagamento(PdvTipoPagamento tipoPagamento) {
-        Optional<PdvFormaPagamento> formaPagamentoOpt = venda.getListaFormaPagamento()
+        return venda.getListaFormaPagamento()
                 .stream()
                 .filter(fp -> fp.getPdvTipoPagamento().equals(tipoPagamento))
                 .findAny();
-        return formaPagamentoOpt;
     }
 
 
@@ -512,10 +505,10 @@ public class BalcaoControll implements Serializable {
         saldoRestante = Biblioteca.subtrai(totalReceber, recebidoAteAgora);
         totalRecebido = recebidoAteAgora;
         valorPago = saldoRestante;
-        if (valorPago.compareTo(BigDecimal.ZERO) == -1) {
+        if (valorPago.compareTo(BigDecimal.ZERO) < 0) {
             valorPago = BigDecimal.ZERO;
         }
-        if (saldoRestante.compareTo(BigDecimal.ZERO) == -1) {
+        if (saldoRestante.compareTo(BigDecimal.ZERO) < 0) {
             saldoRestante = BigDecimal.ZERO;
         }
     }

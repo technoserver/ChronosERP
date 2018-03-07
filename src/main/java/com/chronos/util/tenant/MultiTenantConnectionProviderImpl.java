@@ -1,16 +1,16 @@
 package com.chronos.util.tenant;
 
 import org.hibernate.HibernateException;
-import org.hibernate.engine.config.spi.ConfigurationService;
-import org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.hibernate.service.spi.ServiceRegistryAwareService;
 import org.hibernate.service.spi.ServiceRegistryImplementor;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -22,18 +22,19 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
     private Logger log = Logger.getLogger(MultiTenantConnectionProviderImpl.class.getName());
 
 
-    private DriverManagerConnectionProviderImpl provider = new DriverManagerConnectionProviderImpl();
+    //private DriverManagerConnectionProviderImpl provider = new DriverManagerConnectionProviderImpl();
 
+    private DataSource dataSource;
 
     @Override
     public Connection getAnyConnection() throws SQLException {
-        return provider.getConnection();
+        return dataSource.getConnection();
 
     }
 
     @Override
     public void releaseAnyConnection(Connection connection) throws SQLException {
-        provider.closeConnection(connection);
+        connection.close();
     }
 
     @Override
@@ -55,15 +56,7 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
 
     @Override
     public void releaseConnection(String tenantIdentifier, Connection connection) throws SQLException {
-        StringBuilder sql = new StringBuilder();
-        sql.append("SET search_path TO ");
-        sql.append(tenantIdentifier);
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(sql.toString());
-        } catch (SQLException e) {
-            throw new HibernateException("Problem setting schema to " + tenantIdentifier, e);
-        }
-        provider.closeConnection(connection);
+        releaseAnyConnection(connection);
     }
 
     @Override
@@ -73,19 +66,32 @@ public class MultiTenantConnectionProviderImpl implements MultiTenantConnectionP
 
     @Override
     public boolean isUnwrappableAs(Class aClass) {
-        return provider.isUnwrappableAs(aClass);
+        //  return provider.isUnwrappableAs(aClass);
+        return false;
     }
 
     @Override
     public <T> T unwrap(Class<T> aClass) {
-        return provider.unwrap(aClass);
+        // return dataSource.unwrap(aClass);
+        return null;
     }
 
 
     @Override
     public void injectServices(ServiceRegistryImplementor registry) {
-        Map settings = registry.getService(ConfigurationService.class).getSettings();
-        provider.configure(settings);
-        provider.injectServices(registry);
+//        Map settings = registry.getService(ConfigurationService.class).getSettings();
+//        provider.configure(settings);
+//        provider.injectServices(registry);
+
+
+        try {
+            final Context init = new InitialContext();
+
+            Context envCtx = (Context) init.lookup("java:comp/env");
+            dataSource = (DataSource) envCtx.lookup("jdbc/chronosLightDB");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 }

@@ -27,8 +27,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(RepositoryImp.class);
 
-    public RepositoryImp() {
-    }
+
 
     @Inject
     protected EntityManager em;
@@ -80,22 +79,21 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Transactional
     @Override
     public void atualizar(T bean, List<Filtro> filtros, Map<String, Object> atributos) throws PersistenceException {
-        String jpql = "UPDATE " + bean.getClass().getName() + " o SET ";
+        StringBuilder jpql = new StringBuilder("UPDATE " + bean.getClass().getName() + " o SET ");
 
         for (String atributo : atributos.keySet()) {
             Object valor = atributos.get(atributo);
 
-            jpql += "o." + atributo + " = " + ((valor.getClass() == String.class) ? "'" + valor + "'," : valor + ",");
+            jpql.append("o.").append(atributo).append(" = ").append((valor.getClass() == String.class) ? "'" + valor + "'," : valor + ",");
         }
 
-        jpql = jpql.substring(0, jpql.length() - 1);
+        jpql = new StringBuilder(jpql.substring(0, jpql.length() - 1));
 
-        jpql += " where 1=1 ";
+        jpql.append(" where 1=1 ");
         for (Filtro f : filtros) {
-            jpql += f.getOperadorLogico() + " o." + f.getAtributo() + " " + f.getOperadorRelacional() +
-                    ((f.getValor().getClass() == String.class) ? "'" + f.getValor() + "'" : f.getValor());
+            jpql.append(f.getOperadorLogico()).append(" o.").append(f.getAtributo()).append(" ").append(f.getOperadorRelacional()).append((f.getValor().getClass() == String.class) ? "'" + f.getValor() + "'" : f.getValor());
         }
-        executeCommand(jpql);
+        executeCommand(jpql.toString());
 
 
     }
@@ -104,23 +102,22 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Transactional
     @Override
     public boolean updateNativo(Class<T> clazz, List<Filtro> filtros, Map<String, Object> atributos) {
-        String sql = "update " + clazz.getAnnotation(Table.class).name() + " set ";
+        StringBuilder sql = new StringBuilder("update " + clazz.getAnnotation(Table.class).name() + " set ");
 
         for (String atributo : atributos.keySet()) {
             Object valor = atributos.get(atributo);
 
-            sql += atributo + " = " + ((valor.getClass() == String.class) ? "'" + valor + "'," : valor + ",");
+            sql.append(atributo).append(" = ").append((valor.getClass() == String.class) ? "'" + valor + "'," : valor + ",");
         }
-        sql = sql.substring(0, sql.length() - 1);
+        sql = new StringBuilder(sql.substring(0, sql.length() - 1));
 
-        sql += " where 1=1 ";
+        sql.append(" where 1=1 ");
         for (Filtro f : filtros) {
-            sql += f.getOperadorLogico() + " " + f.getAtributo() + " " + f.getOperadorRelacional() +
-                    ((f.getValor().getClass() == String.class) ? "'" + f.getValor() + "'" : f.getValor());
+            sql.append(f.getOperadorLogico()).append(" ").append(f.getAtributo()).append(" ").append(f.getOperadorRelacional()).append((f.getValor().getClass() == String.class) ? "'" + f.getValor() + "'" : f.getValor());
         }
 
 
-        return executarQueryNativa(sql);
+        return executarQueryNativa(sql.toString());
     }
 
 
@@ -168,7 +165,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Override
     public boolean existeRegisro(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
         String jpql = "select count(o.id) from " + clazz.getName() + " o where o." + atributo + "=:valor";
-        Query query = em.createQuery(jpql.toString());
+        Query query = em.createQuery(jpql);
         query.setParameter("valor", valor);
         return (Long) query.getSingleResult() > 0;
 
@@ -176,16 +173,16 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Override
     public Object getObject(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException {
-        String jpql = "SELECT o.id ";
+        StringBuilder jpql = new StringBuilder("SELECT o.id ");
 
         if (atributos != null && atributos.length > 0) {
             for (Object obj : atributos) {
-                jpql += ", o." + obj.toString();
+                jpql.append(", o.").append(obj.toString());
             }
-            jpql += " FROM " + clazz.getName() + " o ";
+            jpql.append(" FROM ").append(clazz.getName()).append(" o ");
         }
-        jpql += " WHERE o." + atributo + " = :valor";
-        Query query = em.createQuery(jpql);
+        jpql.append(" WHERE o.").append(atributo).append(" = :valor");
+        Query query = em.createQuery(jpql.toString());
         query.setParameter("valor", valor);
         Object obj = query.getResultList().stream().findFirst().orElse(null);
         return obj;
@@ -258,8 +255,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     public List<T> getAll(Class<T> clazz) throws PersistenceException {
 
         Query query = createQuery("SELECT o FROM " + clazz.getName() + " o");
-        List beans = query.getResultList();
-        return beans;
+        return query.getResultList();
     }
 
 
@@ -388,8 +384,8 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Override
     public List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int qtdRegistro, String sortField, SortOrder sortOrder) throws PersistenceException {
-        Object atributos[] = null;
-        return getEntitys(clazz, filters, 0, qtdRegistro, sortField, sortOrder, atributos);
+
+        return getEntitys(clazz, filters, 0, qtdRegistro, sortField, sortOrder, null);
     }
 
     @Override
@@ -452,7 +448,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return beans;
     }
 
-    protected int executeCommand(String query, Object... values) {
+    private int executeCommand(String query, Object... values) {
         Query qr = createQuery(query, values);
         return qr.executeUpdate();
     }
@@ -531,9 +527,9 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     private String addCondicao(List<Filtro> filters, String andOr) throws Exception {
-        String jpql = "";
+        StringBuilder jpql = new StringBuilder();
         if (!filters.isEmpty()) {
-            jpql = " AND (";
+            jpql = new StringBuilder(" AND (");
             boolean primeiraCondicao = true;
             for (Filtro f : filters) {
                 String atributo = f.getAtributo();
@@ -541,25 +537,25 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
                 if (valor != null) {
                     if (valor.getClass() == String.class) {
                         if (primeiraCondicao) {
-                            jpql += " LOWER(o." + atributo + ") like :" + atributo.replaceAll("\\.", "");
+                            jpql.append(" LOWER(o.").append(atributo).append(") like :").append(atributo.replaceAll("\\.", ""));
                             primeiraCondicao = false;
                         } else {
-                            jpql += " " + andOr + " LOWER(o." + atributo + ") like :" + atributo.replaceAll("\\.", "");
+                            jpql.append(" ").append(andOr).append(" LOWER(o.").append(atributo).append(") like :").append(atributo.replaceAll("\\.", ""));
                         }
                     } else {
                         if (primeiraCondicao) {
-                            jpql += " o." + atributo + " = :" + atributo.replaceAll("\\.", "");
+                            jpql.append(" o.").append(atributo).append(" = :").append(atributo.replaceAll("\\.", ""));
                             primeiraCondicao = false;
                         } else {
-                            jpql += " " + andOr + " o." + atributo + " = :" + atributo.replaceAll("\\.", "");
+                            jpql.append(" ").append(andOr).append(" o.").append(atributo).append(" = :").append(atributo.replaceAll("\\.", ""));
                         }
                     }
                 }
             }
-            jpql += ")";
+            jpql.append(")");
         }
 
-        return jpql;
+        return jpql.toString();
     }
 
     private Query queryPrepared(String jpql, List<Filtro> filters) {
@@ -593,9 +589,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
             result =  em.createNativeQuery(query).executeUpdate() > 0;
         }catch (Exception ex){
             ex.printStackTrace();
-            logger.error("Erro ao Executa sql " + ex.getMessage().toString());
-
-        }finally {
+            logger.error("Erro ao Executa sql " + ex.getMessage());
 
         }
 

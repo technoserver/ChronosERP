@@ -42,7 +42,7 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
         super.doCreate();
         getObjeto().setListaEstoqueReajusteDetalhe(new HashSet<>());
         getObjeto().setDataReajuste(new Date());
-        getObjeto().setColaborador(usuario.getColaborador());
+        getObjeto().setColaborador(new Colaborador(usuario.getIdcolaborador()));
         produtoSubgrupo = new ProdutoSubGrupo();
     }
 

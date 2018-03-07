@@ -5,6 +5,7 @@
  */
 package com.chronos.controll;
 
+import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.Auditoria;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.EmpresaEndereco;
@@ -44,7 +45,7 @@ public abstract class AbstractControll<T> implements Serializable {
     protected ERPLazyDataModel<T> dataModel;
     @Inject
     protected Repository<T> dao;
-    protected Usuario usuario;
+    protected UsuarioDTO usuario;
     protected Empresa empresa;
     protected EmpresaEndereco enderecoEmpresa;
     protected Object[] atributos;
@@ -632,7 +633,7 @@ public abstract class AbstractControll<T> implements Serializable {
         }
     }
 
-    public void gerarLog(AcaoLog acao, String conteudo, String janela) {
+    protected void gerarLog(AcaoLog acao, String conteudo, String janela) {
         try {
             Date agora = new Date();
             log = new Auditoria();
@@ -641,14 +642,14 @@ public abstract class AbstractControll<T> implements Serializable {
             log.setDataRegistro(agora);
             log.setHoraRegistro(new SimpleDateFormat("hh:mm:ss").format(agora));
             log.setJanelaController(janela);
-            log.setUsuario(usuario);
+            log.setUsuario(new Usuario(usuario.getId()));
             auditoriaRepository.salvar(log);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    protected void verificaRestricao() throws Exception {
+    private void verificaRestricao() throws Exception {
         Field fields[] = objeto.getClass().getDeclaredFields();
         for (Field f : fields) {
             if (f.isAnnotationPresent(TaxaMaior.class)) {
@@ -656,7 +657,7 @@ public abstract class AbstractControll<T> implements Serializable {
                 if (taxa != null) {
                     Method metodo = objeto.getClass().getDeclaredMethod("get" + Biblioteca.primeiraMaiuscula(f.getName()));
                     BigDecimal valorCampo = (BigDecimal) metodo.invoke(objeto);
-                    if (valorCampo != null && valorCampo.compareTo(taxa) == 1) {
+                    if (valorCampo != null && valorCampo.compareTo(taxa) > 0) {
                         necessarioAutorizacaoSupervisor = true;
                     }
                 }
@@ -679,7 +680,7 @@ public abstract class AbstractControll<T> implements Serializable {
         try {
 
 
-            Usuario usuario = usuarioRepository.getUsuario(usuarioSupervisor);;
+            Usuario usuario = usuarioRepository.getUsuario(usuarioSupervisor);
             PasswordEncoder passwordEnocder = new BCryptPasswordEncoder();
             if (usuario==null || !passwordEnocder.matches(senhaSupervisor, usuario.getSenha())) {
                 Mensagem.addWarnMessage("Login inválido ou usuário não tem privilégio de supervisor.");
@@ -791,9 +792,8 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public boolean podeConsultar() {
         /* return false; */
-        boolean teste = FacesUtil.isUserInRole(getFuncaoBase() + "_CONSULTAR")
+        return FacesUtil.isUserInRole(getFuncaoBase() + "_CONSULTAR")
                 || FacesUtil.isUserInRole("ADMIN");
-        return teste;
     }
 
     public boolean podeInserir() {

@@ -54,7 +54,7 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
     public void init() {
         super.init();
         List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro("colaborador.id", usuario.getColaborador().getId()));
+        filtros.add(new Filtro("colaborador.id", usuario.getIdcolaborador()));
         filtros.add(new Filtro("dataCompromisso", Filtro.BETWEEN, new Object[]{Biblioteca.getDataInicial(new Date()), Biblioteca.ultimoDiaMes(new Date())}));
         listContas = contasRepository.getAll(ViewResumoContasID.class);
         compromissos = compromissoRepository.getEntitys(AgendaCompromisso.class, filtros, new Object[]{"descricao", "dataCompromisso", "hora", "onde"});

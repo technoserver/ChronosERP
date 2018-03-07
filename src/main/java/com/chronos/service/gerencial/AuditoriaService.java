@@ -1,5 +1,6 @@
 package com.chronos.service.gerencial;
 
+import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.Auditoria;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.modelo.entidades.enuns.AcaoLog;
@@ -23,8 +24,8 @@ public class AuditoriaService implements Serializable {
     @Inject
     private Repository<Auditoria> repository;
 
-    @Inject
-    private Usuario usuario;
+
+    private UsuarioDTO usuario;
 
     @PostConstruct
     private void init() {
@@ -56,7 +57,7 @@ public class AuditoriaService implements Serializable {
             log.setDataRegistro(agora);
             log.setHoraRegistro(new SimpleDateFormat("hh:mm:ss").format(agora));
             log.setJanelaController(janela);
-            log.setUsuario(usuario);
+            log.setUsuario(new Usuario(usuario.getId()));
             repository.salvar(log);
         } catch (Exception ex) {
 

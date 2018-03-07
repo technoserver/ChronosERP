@@ -5,10 +5,10 @@ import com.chronos.modelo.entidades.AgendaCompromisso;
 import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.cadastros.AgendaService;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +32,9 @@ public class AgendaAniversarianteControll extends AbstractControll<Colaborador> 
     private ScheduleModel eventModel;
     @Inject
     private Repository<AgendaCompromisso> compromissoRepository;
+
+    @Inject
+    private AgendaService service;
 
     @PostConstruct
     @Override
@@ -72,43 +75,10 @@ public class AgendaAniversarianteControll extends AbstractControll<Colaborador> 
             }
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
+        service.definirEventoColaborador(usuario.getColaborador().getId()).forEach(e -> {
+            eventModel.addEvent(e);
+        });
 
-        filtros.clear();
-        filtros.add(new Filtro(Filtro.AND, "colaborador", Filtro.IGUAL, usuario.getColaborador()));
-        List<AgendaCompromisso> compromissos = compromissoRepository.getEntitys(AgendaCompromisso.class, filtros, new Object[]{"descricao", "dataCompromisso", "agendaCategoriaCompromisso.cor"});
-        for (AgendaCompromisso c : compromissos) {
-            String styleClass;
-            switch (c.getCategoria()) {
-                case "Amarelo": {
-                    styleClass = "eventoCalendarioAmarelo";
-                    break;
-                }
-                case "Azul": {
-                    styleClass = "eventoCalendarioAzul";
-                    break;
-                }
-                case "Branco": {
-                    styleClass = "eventoCalendarioBranco";
-                    break;
-                }
-                case "Verde": {
-                    styleClass = "eventoCalendarioVerde";
-                    break;
-                }
-                case "Vermelho": {
-                    styleClass = "eventoCalendarioVermelho";
-                    break;
-                }
-                default: {
-                    styleClass = "eventoCalendarioPreto";
-                    break;
-                }
-            }
-
-            ScheduleEvent event = new DefaultScheduleEvent(c.getDescricao(), c.getDataCompromisso(), c.getDataCompromisso(), styleClass);
-
-            eventModel.addEvent(event);
-        }
 
 
     }

@@ -25,8 +25,8 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="" />
         <datasource-mapping>
-          <factory-entry name="ChronosAdminUP" />
-          <factory-entry name="ChronosLightUP" />
+          <factory-entry name="ChronosAdminUP" value="b86a92be-3096-4472-81e2-0c698a66e5e2" />
+          <factory-entry name="ChronosLightUP" value="e704dca7-28de-4588-8d13-a7d93e5ef9d1" />
           <factory-entry name="ChronosUP" value="e704dca7-28de-4588-8d13-a7d93e5ef9d1" />
         </datasource-mapping>
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />

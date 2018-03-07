@@ -6,7 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
 
 /**
  * Created by john on 01/02/18.
@@ -16,6 +15,10 @@ import java.util.Date;
 public class ViewUsuarioTenant implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Id
+    @Column(name = "id")
+    private Integer id;
+
     @Column(name = "login")
     private String login;
     @Column(name = "senha")
@@ -26,9 +29,7 @@ public class ViewUsuarioTenant implements Serializable {
     private String nomeTenant;
     @Column(name = "data_vencimento")
     private LocalDate dataVencimento;
-    @Id
-    @Column(name = "id")
-    private Integer id;
+
 
     public Integer getId() {
         return id;
