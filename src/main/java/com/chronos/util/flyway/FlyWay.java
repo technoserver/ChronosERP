@@ -5,16 +5,17 @@
  */
 package com.chronos.util.flyway;
 
-import com.chronos.modelo.entidades.tenant.Tenant;
 import org.flywaydb.core.Flyway;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,12 +29,7 @@ public class FlyWay {
 
         Context initCtx = new InitialContext();
         Context envCtx = (Context) initCtx.lookup("java:comp/env");
-
         ds = (DataSource) envCtx.lookup("jdbc/chronosLightDB");
-
-
-
-
         // Inicialição do FlyWay
         Flyway flyway = new Flyway();
 
@@ -42,36 +38,39 @@ public class FlyWay {
         flyway.setDataSource(ds);
 
         flyway.setValidateOnMigrate(true);
-
-        // executa Migração;
-//        for(Tenant t : tenants){
-//         // flyway.setDataSource(prop.getProperty("chronos.url")+"?currentSchema="+t.getNome(), prop.getProperty("chronos.username"), prop.getProperty("chronos.password"));
-//            flyway.setSchemas(t.getNome());
-//            flyway.migrate();
-//        }
+        getTenants().forEach(t -> {
+            flyway.setSchemas(t);
+            flyway.migrate();
+        });
 
     }
 
 
-    public List<Tenant> getTenants() {
-        EntityManager em;
-        List tenants;
+    public List<String> getTenants() {
+
+        List<String> tenants = new ArrayList<>();
+        Connection conn = null;
         try{
 
-            EntityManagerFactory factory = Persistence.createEntityManagerFactory("ChronosAdminUP");
-            em = factory.createEntityManager();
-            em.getTransaction().begin();
-            Query q = em.createQuery("SELECT t  FROM Tenant t WHERE t.ativo = :ativo");
-            q.setParameter("ativo", true);
-            tenants  =  q.getResultList();
-            if (factory != null && factory.isOpen()) {
-                factory.close();
+            Context initCtx = new InitialContext();
+            Context envCtx = (Context) initCtx.lookup("java:comp/env");
+            DataSource ds = (DataSource) envCtx.lookup("jdbc/chronosAdminDB");
+            conn = ds.getConnection();
+            Statement statement = conn.createStatement();
+            ResultSet result = statement.executeQuery("SELECT t.nome FROM tenant t WHERE t.ativo = TRUE ");
+            while (result.next()) {
+                String str = result.getString("nome");
+                tenants.add(str);
             }
+            conn.close();
 
-        }catch (Exception ex){
-            throw ex;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
 
+        } catch (NamingException e) {
+            e.printStackTrace();
         }
+
         return tenants;
     }
 

@@ -32,7 +32,7 @@ public class Usuarios implements Serializable {
     public Usuarios() {
     }
 
-    public Usuario getUsuario(String nomeUsuario, String senhaUsuario) throws Exception {
+    public Usuario getUsuario(String nomeUsuario, String senhaUsuario) {
         Query q = em.createQuery("SELECT u FROM Usuario u WHERE u.login = :login AND u.senha = :senha");
         q.setParameter("login", nomeUsuario);
         q.setParameter("senha", senhaUsuario);
@@ -45,13 +45,13 @@ public class Usuarios implements Serializable {
         return q.getResultList().stream().findFirst();
     }
 
-    public List<PapelFuncao> getPapelFuncao(Usuario usuario) throws Exception {
+    public List<PapelFuncao> getPapelFuncao(Usuario usuario) {
         Query q = em.createQuery("SELECT p FROM PapelFuncao p join fetch p.papel join fetch p.funcao WHERE p.papel = :papel");
         q.setParameter("papel", usuario.getPapel());
         return (List<PapelFuncao>) q.getResultList();
     }
 
-    public Papel getPapelFuncao(int idusuario) throws Exception {
+    public Papel getPapelFuncao(int idusuario) {
         String jpql = "select u.papel from Usuario u "
                 + "INNER JOIN u.papel p "
                 + "LEFT JOIN FETCH p.listaPapelFuncao "
@@ -61,16 +61,7 @@ public class Usuarios implements Serializable {
         return q.getResultList().stream().findFirst().orElse(null);
     }
 
-    public Usuario getUsuario(String login) throws Exception {
-//        CriteriaBuilder build  = em.getCriteriaBuilder();
-//        CriteriaQuery<Usuario> criteria = build.createQuery(Usuario.class);
-//        Root<Usuario> usuario = criteria.from(Usuario.class);
-//        Join<Usuario,Papel> papel = ((Join)usuario.fetch("papel"));
-//        Join<Papel,PapelFuncao> papelFuncao = (Join)papel.fetch("listaPapelFuncao", JoinType.LEFT);
-//
-//        criteria.where(build.equal(usuario.get("login"), login));
-//        TypedQuery<Usuario> query = em.createQuery(criteria);
-//        List<Usuario> user =  query.getResultList();
+    public Usuario getUsuario(String login) {
 
 
         Query q = em.createQuery("SELECT u FROM Usuario u WHERE u.login = :login");
