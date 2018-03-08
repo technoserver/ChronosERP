@@ -8,6 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "CEST")
+@Cacheable
 public class Cest implements Serializable {
 
     private static final long serialVersionUID = 1L;

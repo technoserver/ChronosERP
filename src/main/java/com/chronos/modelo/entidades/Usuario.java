@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.Email;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -17,6 +19,7 @@ public class Usuario implements Serializable {
     @Column(name = "ID")
     private Integer id;
     @Column(name = "LOGIN")
+    @Email
     private String login;
     @Column(name = "SENHA")
     private String senha;

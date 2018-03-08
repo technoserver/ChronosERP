@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,14 @@ public class TenantRepository implements Serializable {
         Query q = em.createQuery("SELECT t  FROM Tenant t WHERE t.ativo = :ativo");
         q.setParameter("ativo", "S");
         return q.getResultList();
+    }
+
+
+    public boolean existeUsuario(String login) {
+        String jpql = "SELECT COUNT(u.id) FROM UsuarioTenant u WHERE u.login = :login";
+        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
+        query.setParameter("login", login);
+        return query.getSingleResult() > 0;
     }
 
     @Transactional
@@ -71,4 +80,5 @@ public class TenantRepository implements Serializable {
             }
         }
     }
+
 }

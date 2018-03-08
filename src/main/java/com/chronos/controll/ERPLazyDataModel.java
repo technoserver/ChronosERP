@@ -35,6 +35,7 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     protected Object[] joinFetch;
     protected Object[] atributos;
     protected String ordernarPor;
+    private boolean cachear;
 
     
     public ERPLazyDataModel() {
@@ -145,5 +146,10 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
 
     public void setOrdernarPor(String ordernarPor) {
         this.ordernarPor = ordernarPor;
+    }
+
+
+    public void setCachear(boolean cachear) {
+        this.cachear = cachear;
     }
 }

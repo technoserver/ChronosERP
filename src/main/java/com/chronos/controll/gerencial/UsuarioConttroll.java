@@ -2,6 +2,7 @@ package com.chronos.controll.gerencial;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
+import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.entidades.Usuario;
@@ -10,7 +11,6 @@ import com.chronos.modelo.entidades.tenant.UsuarioTenant;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.repository.TenantRepository;
-import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -49,7 +49,6 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
             dataModel.setDao(dao);
         }
         dataModel.getFiltros().clear();
-        dataModel.addFiltro("id", 1, Filtro.DIFERENTE);
         return dataModel;
     }
 
@@ -61,42 +60,63 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     }
 
 
+
     @Override
     public void salvar() {
 
         boolean existeColaborador = dao.existeRegisro(Usuario.class, "colaborador.id", getObjeto().getColaborador().getId());
-        boolean existeUsuario = dao.existeRegisro(Usuario.class, "login", getObjeto().getLogin().toLowerCase());
+
+
         Integer id = getObjeto().getId();
         if (existeColaborador) {
             Mensagem.addInfoMessage("já existe usuário definido para esse colaborador");
-        } else if (existeUsuario) {
+            return;
+        }
+        boolean existeUsuarioTenant = tenantRepository.existeUsuario(getObjeto().getLogin().toLowerCase());
+        if (existeUsuarioTenant) {
             Mensagem.addInfoMessage("já existe usuário definido com esse login");
-        } else {
-            if (getObjeto().getPapel().getId() == 1) {
-                getObjeto().setAdministrador("S");
-            } else {
-                getObjeto().setAdministrador("N");
-            }
-            if (getObjeto().getId() == null) {
-                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-                getObjeto().setSenha(encoder.encode(senha));
-            }
-            super.salvar();
-
-            if(id==null){
-                Tenant tenant  = FacesUtil.getTenantId();
-
-                UsuarioTenant user = new UsuarioTenant();
-                user.setLogin(getObjeto().getLogin());
-                user.setSenha(getObjeto().getSenha());
-
-                user.setTenant(tenant);
-
-                tenantRepository.salvar(user);
-            }
-
+            return;
+        }
+        boolean existeUsuario = dao.existeRegisro(Usuario.class, "login", getObjeto().getLogin().toLowerCase());
+        if (existeUsuario) {
+            Mensagem.addInfoMessage("já existe usuário definido com esse login");
+            return;
         }
 
+        if (getObjeto().getPapel().getId() == 1) {
+            getObjeto().setAdministrador("S");
+        } else {
+            getObjeto().setAdministrador("N");
+        }
+        if (getObjeto().getId() == null) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            getObjeto().setSenha(encoder.encode(senha));
+        }
+        super.salvar();
+
+        if (id == null) {
+            Tenant tenant = FacesUtil.getTenantId();
+
+            UsuarioTenant user = new UsuarioTenant();
+            user.setLogin(getObjeto().getLogin());
+            user.setSenha(getObjeto().getSenha());
+
+            user.setTenant(tenant);
+
+            tenantRepository.salvar(user);
+        }
+
+
+    }
+
+    @Override
+    public void remover() {
+        UsuarioDTO user = FacesUtil.getUsuarioSessao();
+        if (user.getId() == getObjetoSelecionado().getId()) {
+            Mensagem.addInfoMessage("Exclusão do usuario logado não permitida");
+            return;
+        }
+        super.remover();
     }
 
     public List<Papel> getListPapel(String nome) {

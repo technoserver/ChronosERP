@@ -9,12 +9,10 @@ import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.util.jsf.FacesUtil;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.ExternalContext;
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
+import java.io.Serializable;
 import java.util.Optional;
 
 /**
@@ -22,36 +20,20 @@ import java.util.Optional;
  */
 @Named
 @RequestScoped
-public class Seguranca {
-
-    @Inject
-    private ExternalContext externalContext;
-    private Empresa empresa;
+public class Seguranca implements Serializable {
 
 
-    private UsuarioDTO usuario;
 
-    @PostConstruct
-    private void init() {
-        usuario = FacesUtil.getUsuarioSessao();
-        empresa = FacesUtil.getEmpresaUsuario();
-    }
 
     public String getNomeUsuario() {
-        String nome = null;
-        if (usuario != null) {
-            nome = usuario.getLogin();
-        }
-
-
-        return nome;
+        return getUsuarioLogado().getNome();
     }
 
     //TODO verificar
     public String getFotoFuncionario() {
         String foto = "";
-        if (usuario != null) {
-            foto = Optional.ofNullable(usuario.getFoto()).orElse("");
+        if (getUsuarioLogado() != null) {
+            foto = Optional.ofNullable(getUsuarioLogado().getFoto()).orElse("");
         }
         return new File(foto).exists() ? foto : null;
     }
@@ -59,23 +41,32 @@ public class Seguranca {
     //TODO verificar
     public String getNomeEmpresa() {
         String nomeEmpresa = null;
-        nomeEmpresa = empresa.getRazaoSocial();
+        nomeEmpresa = getEmpresa().getRazaoSocial();
 
         return nomeEmpresa;
     }
 
 
     public String getCargo() {
-        return usuario.getCargo();
+        return getUsuarioLogado().getCargo();
     }
 
     public boolean isTemAcessoEpresa() {
-        return usuario.getAdministrador().equals("S");
+        return getUsuarioLogado().getAdministrador().equals("S");
     }
+
 
     public boolean isTemAcesso(String modulo) {
         return FacesUtil.isUserInRole(modulo + "_CONSULTAR") || FacesUtil.isUserInRole("ADMIN");
 
+    }
+
+    private UsuarioDTO getUsuarioLogado() {
+        return FacesUtil.getUsuarioSessao();
+    }
+
+    private Empresa getEmpresa() {
+        return FacesUtil.getEmpresaUsuario();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Modulo Comercial">

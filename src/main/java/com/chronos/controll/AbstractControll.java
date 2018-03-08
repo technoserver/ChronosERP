@@ -165,6 +165,7 @@ public abstract class AbstractControll<T> implements Serializable {
 
     protected abstract boolean auditar();
 
+
     @PostConstruct
     public void init() {
         dataModel = new ERPLazyDataModel<>();

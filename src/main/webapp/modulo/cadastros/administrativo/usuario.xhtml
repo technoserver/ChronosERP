@@ -50,7 +50,7 @@
         <erp:telaInclusaoAlteracao controller="#{usuarioConttroll}"
                                    nomeFuncao="USUARIO"
                                    id="telaDetalhe"
-        >
+                                   somenteConsulta="true">
 
             <div class="row">
 
@@ -80,15 +80,17 @@
                                 idComponente="login" label="Login"
                                 nomeAtributo="#{usuarioConttroll.objeto.login}"
                                 requerido="true"
-                                tamanhoMaximo="20"/>
+                                tamanhoMaximo="60"/>
                 <div class="col-xs-12 col-sm-3 col-md-3">
-                    <p:outputLabel for="pwd1" value="Senha"/>
+                    <p:outputLabel for="pwd1" value="Senha" rendered="#{empty usuarioConttroll.objeto.id}"/>
                     <p:password id="pwd1" value="#{usuarioConttroll.senha}" match="pwd2" required="true"
+                                rendered="#{empty usuarioConttroll.objeto.id}"
                                 validatorMessage="Senha não confere"/>
                 </div>
                 <div class="col-xs-12 col-sm-3 col-md-3">
-                    <p:outputLabel for="pwd2" value="Confirmar senha"/>
-                    <p:password id="pwd2" value="#{usuarioConttroll.senha}" required="true"/>
+                    <p:outputLabel for="pwd2" value="Confirmar senha" rendered="#{empty usuarioConttroll.objeto.id}"/>
+                    <p:password id="pwd2" value="#{usuarioConttroll.senha}" required="true"
+                                rendered="#{empty usuarioConttroll.objeto.id}"/>
                 </div>
 
             </div>
