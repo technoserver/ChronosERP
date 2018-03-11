@@ -51,6 +51,12 @@ public class Usuario implements Serializable {
 
     }
 
+    public Usuario(Integer id, String login) {
+        this.id = id;
+        this.login = login;
+
+    }
+
     public Usuario(Integer id) {
         this.id = id;
     }

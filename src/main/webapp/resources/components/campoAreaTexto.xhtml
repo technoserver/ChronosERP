@@ -13,6 +13,7 @@
         <cc:attribute name="styleClass" />
         <cc:attribute name="styleClassInput" />
         <cc:attribute name="linhas" />
+        <cc:attribute name="desabilitado" default="false"/>
     </cc:interface>
 
     <!-- IMPLEMENTATION -->
@@ -22,8 +23,10 @@
                            for="#{cc.attrs.idComponente}" />
              
             <h:inputTextarea id="#{cc.attrs.idComponente}"
-                             value="#{cc.attrs.nomeAtributo}" 
-                             required="#{cc.attrs.requerido}" rows="#{cc.attrs.linhas}"
+                             value="#{cc.attrs.nomeAtributo}"
+                             required="#{cc.attrs.requerido}"
+                             rows="#{cc.attrs.linhas}"
+                             disabled="#{cc.attrs.desabilitado}"
                              class="form-control"/>
         </div>
     </cc:implementation>

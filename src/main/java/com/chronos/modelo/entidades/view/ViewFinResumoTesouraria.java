@@ -1,14 +1,13 @@
 
 package com.chronos.modelo.entidades.view;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Embeddable
 public class ViewFinResumoTesouraria implements Serializable {
@@ -110,4 +109,18 @@ public class ViewFinResumoTesouraria implements Serializable {
         this.operacao = operacao;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViewFinResumoTesouraria)) return false;
+
+        ViewFinResumoTesouraria that = (ViewFinResumoTesouraria) o;
+
+        return getIdContaCaixa() != null ? getIdContaCaixa().equals(that.getIdContaCaixa()) : that.getIdContaCaixa() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getIdContaCaixa() != null ? getIdContaCaixa().hashCode() : 0;
+    }
 }

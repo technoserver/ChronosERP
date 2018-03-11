@@ -102,6 +102,11 @@ public class Seguranca implements Serializable {
         return FacesUtil.isUserInRole("OS");
     }
 
+
+    public boolean isAdministrador() {
+        return FacesUtil.isUserInRole("ADMIN");
+    }
+
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="Modulo Administrativo">
     public boolean isAdministrativo() {

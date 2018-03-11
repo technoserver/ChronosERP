@@ -7,7 +7,6 @@
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,7 +17,6 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "auditoria")
-@XmlRootElement
 
 public class Auditoria  implements Serializable {
     
@@ -45,6 +43,16 @@ public class Auditoria  implements Serializable {
 
     
     public Auditoria() {
+    }
+
+    public Auditoria(Integer id, Date dataRegistro, String horaRegistro, String janelaController, String acao, String conteudo, String login) {
+        this.id = id;
+        this.dataRegistro = dataRegistro;
+        this.horaRegistro = horaRegistro;
+        this.janelaController = janelaController;
+        this.acao = acao;
+        this.conteudo = conteudo;
+        this.usuario = new Usuario(0, login);
     }
 
     public Auditoria(Integer id) {

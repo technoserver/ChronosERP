@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Auditoria
+    </ui:define>
+
+    <ui:define name="tela">
+        #{auditoriaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Auditoria
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{auditoriaControll}"
+                       idDataTable="dataTableAuditoria"
+                       nomeFuncao="AUDITORIA"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="Usuário">
+                <h:outputLabel value="#{row.usuario.login}"/>
+            </p:column>
+
+            <p:column headerText="Data ocorrencia">
+                <h:outputLabel value="#{row.dataRegistro}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Hora ocorrencia">
+                <h:outputLabel value="#{row.horaRegistro}"/>
+            </p:column>
+            <p:column headerText="janela">
+                <h:outputLabel value="#{row.janelaController}"/>
+            </p:column>
+            <p:column headerText="ação">
+                <h:outputLabel value="#{row.acao}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{auditoriaControll}"
+                                   nomeFuncao="AUDITORIA"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="usuario" label="Usuário"
+                                nomeAtributo="#{auditoriaControll.objeto.usuario.login}"
+                                desabilitado="true"
+                                tamanhoMaximo="10"/>
+
+                <div class="col-xs-12 col-sm-3 col-md-2">
+                    <h:outputLabel value="Data Ocorrência" for="dataOcorrencia"/>
+                    <h:inputText id="dataOcorrencia"
+                                 styleClass="form-control"
+                                 disabled="true"
+                                 value="#{auditoriaControll.objeto.dataRegistro}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:inputText>
+                </div>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="ncm" label="Hora ocorrência"
+                                nomeAtributo="#{auditoriaControll.objeto.horaRegistro}"
+                                desabilitado="true"
+                                tamanhoMaximo="15"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="ncm" label="Janela"
+                                nomeAtributo="#{auditoriaControll.objeto.janelaController}"
+                                desabilitado="true"
+                                tamanhoMaximo="15"/>
+            </div>
+
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="cfopAplicacao" label="Aplicacao"
+                                    desabilitado="true" linhas="5"
+                                    nomeAtributo="#{auditoriaControll.objeto.conteudo}"/>
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>
