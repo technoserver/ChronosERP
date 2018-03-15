@@ -3,7 +3,7 @@ package com.chronos.service.gerencial;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.Auditoria;
 import com.chronos.modelo.entidades.Usuario;
-import com.chronos.modelo.entidades.enuns.AcaoLog;
+import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.repository.Repository;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jsf.FacesUtil;

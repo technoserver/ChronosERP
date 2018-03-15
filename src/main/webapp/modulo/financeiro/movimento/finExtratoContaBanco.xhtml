@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <ui:define name="title">
+        Conciliacao Bancaria
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finExtratoContaBancoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Conciliacao Bancaria
+    </ui:define>
+
+    <ui:define name="gridDados">
+        <erp:gridDados controller="#{finExtratoContaBancoControll}"
+                       idDataTable="dataTableContaCaixa"
+                       nomeFuncao="Conciliacao Bancaria"
+                       somenteConsulta="true"
+                       id="telaGrid">
+
+            <p:column headerText="Agencia">
+                <h:outputLabel value="#{row.agenciaBanco.nome}"/>
+            </p:column>
+            <p:column headerText="Codigo">
+                <h:outputLabel value="#{row.codigo}"/>
+            </p:column>
+            <p:column headerText="Digito">
+                <h:outputLabel value="#{row.digito}"/>
+            </p:column>
+            <p:column headerText="Nome" width="20%">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+            <p:column headerText="Descricao" width="30%">
+                <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+            <p:column headerText="Tipo">
+                <h:outputLabel
+                        value="#{finExtratoContaBancoControll.keyFromValue(finExtratoContaBancoControll.tipoContaCaixa, row.tipo)}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finExtratoContaBancoControll}"
+                                   nomeFuncao="Extrato Conta Banco"
+                                   id="telaDetalhe"
+        >
+
+            <p:dataTable id="dataTableFinExtratoContaBanco" var="obj"
+                         value="#{finExtratoContaBancoControll.extratoContaBanco}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         resizableColumns="true">
+
+                <f:facet name="header">
+                    <p:commandButton process="dataTableFinExtratoContaBanco"
+                                     title="Importa Arquivo OFX" icon=" ui-icon-arrowthick-1-n"
+                                     update=":formUploadArquivo:dialogUploadArquivo"
+                                     oncomplete="PF('dialogUploadArquivo').show()"/>
+                    <p:commandButton process="dataTableFinExtratoContaBanco"
+                                     title="Conciliar Lançamentos" icon="ui-icon-check"
+                                     actionListener="#{finExtratoContaBancoControll.conciliaLancamentos()}"
+                                     update="dataTableFinExtratoContaBanco"/>
+                    <p:commandButton process="dataTableFinExtratoContaBanco"
+                                     title="Conciliar Cheques" icon="ui-icon-check"
+                                     actionListener="#{finExtratoContaBancoControll.conciliaCheques}"
+                                     update="dataTableFinExtratoContaBanco"/>
+                    <p:commandButton title="Salvar Extrato" icon="ui-icon-disk"
+                                     actionListener="#{finExtratoContaBancoControll.salvaExtrato()}"
+                                     update=":form1:growl,:form1:telaDetalhe:outputPanelDetalhe"/>
+
+                    <p:outputPanel style="width: 20%; float: right;">
+                        <p:outputPanel style="width: 80%; float: left;">
+                            <p:calendar value="#{finExtratoContaBancoControll.periodo}"
+                                        placeholder="Informe o Periodo"
+                                        pattern="MM/yyyy"
+                                        required="true"/>
+                        </p:outputPanel>
+                        <p:outputPanel style="width: 20%; float: right;">
+                            <p:commandButton title="Atualizar" icon="ui-icon-refresh"
+                                             actionListener="#{finExtratoContaBancoControll.buscaDados}"
+                                             update="dataTableFinExtratoContaBanco,:form1:growl"/>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                </f:facet>
+
+                <p:column headerText="Data Movimento">
+                    <h:outputLabel value="#{obj.dataMovimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Balancete">
+                    <h:outputLabel value="#{obj.dataBalancete}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Historico">
+                    <h:outputLabel value="#{obj.historico}"/>
+                </p:column>
+                <p:column headerText="Documento">
+                    <h:outputLabel value="#{obj.documento}"/>
+                </p:column>
+                <p:column headerText="Valor">
+                    <h:outputLabel value="#{obj.valor}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Conciliado">
+                    <h:outputLabel
+                            value="#{finExtratoContaBancoControll.keyFromValue(finExtratoContaBancoControll.simNao, obj.conciliado)}"/>
+                </p:column>
+                <p:column headerText="Observacao">
+                    <h:outputLabel value="#{obj.observacao}"/>
+                </p:column>
+
+                <f:facet name="footer">
+                    <p:outputLabel value="#{finExtratoContaBancoControll.totais}"/>
+                </f:facet>
+            </p:dataTable>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

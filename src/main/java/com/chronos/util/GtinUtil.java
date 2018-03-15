@@ -7,7 +7,7 @@ package com.chronos.util;
 
 
 import com.chronos.execption.GtinFormatException;
-import com.chronos.modelo.entidades.enuns.GtinFormat;
+import com.chronos.modelo.enuns.GtinFormat;
 
 import java.io.Serializable;
 

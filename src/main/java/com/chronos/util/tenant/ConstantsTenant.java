@@ -1,6 +1,6 @@
 package com.chronos.util.tenant;
 
-import com.chronos.modelo.entidades.tenant.Tenant;
+import com.chronos.modelo.tenant.Tenant;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;

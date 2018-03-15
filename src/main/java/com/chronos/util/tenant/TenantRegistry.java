@@ -1,7 +1,7 @@
 package com.chronos.util.tenant;
 
-import com.chronos.modelo.entidades.tenant.Tenant;
-import com.chronos.modelo.entidades.view.ViewUsuarioTenant;
+import com.chronos.modelo.tenant.Tenant;
+import com.chronos.modelo.view.ViewUsuarioTenant;
 import com.chronos.repository.TenantRepository;
 
 import javax.annotation.PreDestroy;

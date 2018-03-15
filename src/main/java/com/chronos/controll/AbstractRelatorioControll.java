@@ -1,7 +1,7 @@
 package com.chronos.controll;
 
 import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.enuns.Estados;
+import com.chronos.modelo.enuns.Estados;
 import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;

@@ -6,7 +6,7 @@ import com.chronos.dto.ProdutoDTO;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.SituacaoVenda;
+import com.chronos.modelo.enuns.SituacaoVenda;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
@@ -62,6 +62,9 @@ public class BalcaoControll implements Serializable {
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
+    private Repository<OperadoraCartao> operadoraCartaoRepository;
+
+    @Inject
     private Repository<NfeCabecalho> nfeRepository;
     @Inject
     private Repository<TributOperacaoFiscal> operacaoRepository;
@@ -97,7 +100,9 @@ public class BalcaoControll implements Serializable {
     private ProdutoDTO produto;
     private List<Vendedor> listVendedores;
     private VendaCondicoesPagamento condicaoPagamento;
+    private OperadoraCartao operadoraCartao;
     private List<VendaCondicoesPagamento> condicoesPagamentos;
+    private List<OperadoraCartao> operadoras;
     private BigDecimal desconto;
 
 
@@ -108,6 +113,7 @@ public class BalcaoControll implements Serializable {
     private boolean telaImpressao;
     private boolean telaCaixa;
     private boolean exibirCondicoes;
+    private boolean exibirQtdParcelas;
     private boolean telaGrid = true;
     private BigDecimal totalVenda;
     private BigDecimal acrescimo;
@@ -117,6 +123,7 @@ public class BalcaoControll implements Serializable {
     private BigDecimal saldoRestante;
     private BigDecimal valorPago;
     private int id;
+    private int qtdParcelas = 1;
 
 
     @PostConstruct
@@ -192,7 +199,7 @@ public class BalcaoControll implements Serializable {
             venda = vendas.getJoinFetch(venda.getId(), PdvVendaCabecalho.class);
             if (!venda.getListaPdvVendaDetalhe().isEmpty() && !venda.getListaFormaPagamento().isEmpty()) {
                 vendaService.transmitirNFe(venda, estoque);
-            }else{
+            } else {
                 Mensagem.addInfoMessage("não foram encotrado itens para essa venda");
             }
 
@@ -222,7 +229,7 @@ public class BalcaoControll implements Serializable {
 
         try {
 
-            listaProduto = nfeService.getListaProdutoDTO(nome,true);
+            listaProduto = nfeService.getListaProdutoDTO(nome, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -371,6 +378,7 @@ public class BalcaoControll implements Serializable {
         telaCaixa = false;
         telaPagamentos = false;
         exibirCondicoes = false;
+        exibirQtdParcelas = false;
 
         if (venda.getListaPdvVendaDetalhe().isEmpty()) {
             Mensagem.addInfoMessage("Não foram informados itens nessa venda");
@@ -411,6 +419,8 @@ public class BalcaoControll implements Serializable {
                     Mensagem.addErrorMessage("Para gera contas a receber é preciso informar um cliente");
                 } else if (cliente == null && tipoPagamento.getCodigo().equals("07")) {
                     Mensagem.addErrorMessage("Para pagamento com crédito é preciso informa um cliente");
+                } else if (tipoPagamento.getCodigo().equals("03") && operadoraCartao == null) {
+                    Mensagem.addErrorMessage("Para pagamento com Cartão de crédito é preciso informa uma operadora");
                 } else {
                     incluiPagamento(tipoPagamento, valorPago);
                 }
@@ -440,6 +450,11 @@ public class BalcaoControll implements Serializable {
 
                 if (tipoPagamento.getGeraParcelas().equals("S")) {
                     formaPagamento.setCondicao(condicaoPagamento);
+                }
+
+                if (tipoPagamento.getCodigo().equals("03")) {
+                    formaPagamento.setQtdParcelas(qtdParcelas);
+                    formaPagamento.setOperadoraCartao(operadoraCartao);
                 }
 
                 venda.getListaFormaPagamento().add(formaPagamento);
@@ -474,8 +489,6 @@ public class BalcaoControll implements Serializable {
     }
 
     public void finalizarVenda() {
-
-
         try {
             verificaSaldoRestante();
             if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
@@ -522,12 +535,20 @@ public class BalcaoControll implements Serializable {
     }
 
     public void definirCondicoess() {
-
         exibirCondicoes = tipoPagamento.getGeraParcelas().equals("S") && !tipoPagamento.getCodigo().equals("02");
+        exibirQtdParcelas = tipoPagamento.getCodigo().equals("03");
+        qtdParcelas = 1;
         if (exibirCondicoes) {
             condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class, new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
         }
+        if (exibirQtdParcelas) {
+            operadoras = operadoraCartaoRepository.getEntitys(OperadoraCartao.class, new Object[]{"nome", "taxaAdm", "contaCaixa.id"});
+        }
 
+    }
+
+    public void definirQtdParcelas(int qtd) {
+        this.qtdParcelas = qtd;
     }
 
     //</editor-fold>
@@ -736,6 +757,10 @@ public class BalcaoControll implements Serializable {
         this.exibirCondicoes = exibirCondicoes;
     }
 
+    public boolean isExibirQtdParcelas() {
+        return exibirQtdParcelas;
+    }
+
     public VendaCondicoesPagamento getCondicaoPagamento() {
         return condicaoPagamento;
     }
@@ -758,5 +783,25 @@ public class BalcaoControll implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getQtdParcelas() {
+        return qtdParcelas;
+    }
+
+    public OperadoraCartao getOperadoraCartao() {
+        return operadoraCartao;
+    }
+
+    public void setOperadoraCartao(OperadoraCartao operadoraCartao) {
+        this.operadoraCartao = operadoraCartao;
+    }
+
+    public List<OperadoraCartao> getOperadoras() {
+        return operadoras;
+    }
+
+    public void setOperadoras(List<OperadoraCartao> operadoras) {
+        this.operadoras = operadoras;
     }
 }

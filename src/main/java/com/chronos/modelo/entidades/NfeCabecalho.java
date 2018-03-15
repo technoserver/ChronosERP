@@ -1,6 +1,6 @@
 package com.chronos.modelo.entidades;
 
-import com.chronos.modelo.entidades.enuns.StatusTransmissao;
+import com.chronos.modelo.enuns.StatusTransmissao;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;

@@ -8,7 +8,7 @@ package com.chronos.util.jsf;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.PdvMovimento;
-import com.chronos.modelo.entidades.tenant.Tenant;
+import com.chronos.modelo.tenant.Tenant;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.security.UsuarioSistema;
@@ -33,11 +33,9 @@ import java.util.List;
  */
 public class FacesUtil {
 
-    private UsuarioSistema usuario;
-
     @Inject
     protected FacesContext facesContext;
-
+    private UsuarioSistema usuario;
 
     public static boolean isPostback() {
         return FacesContext.getCurrentInstance().isPostback();

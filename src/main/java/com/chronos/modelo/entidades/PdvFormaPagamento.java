@@ -39,7 +39,11 @@ public class PdvFormaPagamento implements Serializable {
     @ManyToOne(optional = false)
     private PdvTipoPagamento pdvTipoPagamento;
     @Transient
+    private int qtdParcelas;
+    @Transient
     private VendaCondicoesPagamento condicao;
+    @Transient
+    private OperadoraCartao operadoraCartao;
 
     public PdvFormaPagamento() {
     }
@@ -138,6 +142,22 @@ public class PdvFormaPagamento implements Serializable {
 
     public void setCondicao(VendaCondicoesPagamento condicao) {
         this.condicao = condicao;
+    }
+
+    public int getQtdParcelas() {
+        return qtdParcelas;
+    }
+
+    public void setQtdParcelas(int qtdParcelas) {
+        this.qtdParcelas = qtdParcelas;
+    }
+
+    public OperadoraCartao getOperadoraCartao() {
+        return operadoraCartao;
+    }
+
+    public void setOperadoraCartao(OperadoraCartao operadoraCartao) {
+        this.operadoraCartao = operadoraCartao;
     }
 
     @Override

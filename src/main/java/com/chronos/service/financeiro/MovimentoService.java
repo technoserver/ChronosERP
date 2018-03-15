@@ -1,7 +1,8 @@
 package com.chronos.service.financeiro;
 
-import com.chronos.modelo.entidades.*;
-import com.chronos.repository.Filtro;
+import com.chronos.modelo.entidades.PdvMovimento;
+import com.chronos.modelo.entidades.PdvOperador;
+import com.chronos.modelo.entidades.PdvSuprimento;
 import com.chronos.repository.Repository;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.Biblioteca;
@@ -24,7 +25,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import static java.nio.file.FileSystems.getDefault;
 
@@ -68,7 +72,7 @@ public class MovimentoService implements Serializable {
         movimento.setHoraAbertura(FormatValor.getInstance().formatarHora(new Date()));
         movimento.setTotalSuprimento(valorSuprimento);
 
-        atualizar(movimento);
+        atualizar();
 
         addSuprimento(valorSuprimento);
         imprimeAbertura();
@@ -97,38 +101,37 @@ public class MovimentoService implements Serializable {
 
     public void lancaVenda(BigDecimal valor) {
         movimento.setTotalVenda(Biblioteca.soma(movimento.getTotalVenda(), valor));
-        atualizar(movimento);
+        atualizar();
     }
     public void lancaVenda(BigDecimal valorVenda, BigDecimal desconto, BigDecimal troco) {
         movimento.setTotalVenda(Biblioteca.soma(movimento.getTotalVenda(), valorVenda));
         movimento.setTotalDesconto(Biblioteca.soma(movimento.getTotalDesconto(),Optional.ofNullable(desconto).orElse(BigDecimal.ZERO)));
         movimento.setTotalTroco(Biblioteca.soma(movimento.getTotalDesconto(), Optional.ofNullable(troco).orElse(BigDecimal.ZERO)));
-        atualizar(movimento);
+        atualizar();
     }
 
     public void lancaSangria(BigDecimal valor){
         movimento.setTotalSangria(Biblioteca.soma(movimento.getTotalSangria(), valor));
-        atualizar(movimento);
+        atualizar();
     }
 
     public void lancaAcrescimo(BigDecimal valor){
         movimento.setTotalAcrescimo(Biblioteca.soma(movimento.getTotalAcrescimo(), valor));
-        atualizar(movimento);
+        atualizar();
     }
 
     public void lancaRecebimento(BigDecimal valor){
         movimento.setTotalRecebido(Biblioteca.soma(movimento.getTotalRecebido(), valor));
-        atualizar(movimento);
+        atualizar();
     }
 
     public void lancaTroco(BigDecimal valor){
         movimento.setTotalTroco(Biblioteca.soma(movimento.getTotalTroco(), valor));
-        atualizar(movimento);
+        atualizar();
     }
 
     @Transactional
-    public void atualizar(PdvMovimento movimento){
-        this.movimento = movimento;
+    public void atualizar() {
         this.movimento.calcularTotalFinal();
         this.movimento = repository.atualizar(movimento);
         FacesUtil.setMovimento(movimento);

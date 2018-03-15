@@ -4,7 +4,7 @@ import br.com.samuelweb.certificado.Certificado;
 import br.com.samuelweb.certificado.CertificadoService;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.NfeConfiguracao;
-import com.chronos.modelo.entidades.enuns.TipoArquivo;
+import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;

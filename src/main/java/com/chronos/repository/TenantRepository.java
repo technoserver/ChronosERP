@@ -1,9 +1,9 @@
 package com.chronos.repository;
 
 
-import com.chronos.modelo.entidades.tenant.Tenant;
-import com.chronos.modelo.entidades.tenant.UsuarioTenant;
-import com.chronos.modelo.entidades.view.ViewUsuarioTenant;
+import com.chronos.modelo.tenant.Tenant;
+import com.chronos.modelo.tenant.UsuarioTenant;
+import com.chronos.modelo.view.ViewUsuarioTenant;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.tenant.EntityManageProduceInject;
 

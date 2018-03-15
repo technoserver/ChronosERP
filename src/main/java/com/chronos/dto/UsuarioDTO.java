@@ -2,7 +2,7 @@ package com.chronos.dto;
 
 import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.tenant.Tenant;
+import com.chronos.modelo.tenant.Tenant;
 
 import java.time.LocalDate;
 

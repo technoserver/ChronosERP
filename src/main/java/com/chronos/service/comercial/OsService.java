@@ -2,12 +2,11 @@ package com.chronos.service.comercial;
 
 import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
-import com.chronos.dto.LancamentoReceber;
 import com.chronos.dto.ProdutoVendaDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.Modulo;
-import com.chronos.modelo.entidades.enuns.StatusTransmissao;
+import com.chronos.modelo.enuns.Modulo;
+import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.financeiro.FinLancamentoReceberService;

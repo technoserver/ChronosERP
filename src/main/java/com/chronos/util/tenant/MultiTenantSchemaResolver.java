@@ -1,6 +1,6 @@
 package com.chronos.util.tenant;
 
-import com.chronos.modelo.entidades.tenant.Tenant;
+import com.chronos.modelo.tenant.Tenant;
 import com.chronos.util.jsf.FacesUtil;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.springframework.web.context.request.RequestContextHolder;

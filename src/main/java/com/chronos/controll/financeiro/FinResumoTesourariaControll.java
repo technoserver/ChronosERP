@@ -1,7 +1,7 @@
 package com.chronos.controll.financeiro;
 
 import com.chronos.controll.AbstractControll;
-import com.chronos.modelo.entidades.view.ViewFinResumoTesourariaID;
+import com.chronos.modelo.view.ViewFinResumoTesourariaID;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;

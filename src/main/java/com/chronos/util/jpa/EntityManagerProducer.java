@@ -5,7 +5,7 @@
  */
 package com.chronos.util.jpa;
 
-import com.chronos.modelo.entidades.tenant.Tenant;
+import com.chronos.modelo.tenant.Tenant;
 import com.chronos.util.tenant.EntityManageProduceInject;
 import com.chronos.util.tenant.TenantRegistry;
 import org.hibernate.Session;

@@ -1,7 +1,7 @@
 package com.chronos.service.fiscal;
 
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.view.*;
+import com.chronos.modelo.view.*;
 import com.chronos.repository.EcfNotaFiscalCabecalhoRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;

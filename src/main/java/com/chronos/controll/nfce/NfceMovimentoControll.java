@@ -6,7 +6,7 @@ import com.chronos.modelo.entidades.PdvFechamento;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.PdvSangria;
 import com.chronos.modelo.entidades.PdvSuprimento;
-import com.chronos.modelo.entidades.enuns.StatusMovimentoCaixa;
+import com.chronos.modelo.enuns.StatusMovimentoCaixa;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.FormatValor;
@@ -33,14 +33,13 @@ public class NfceMovimentoControll extends AbstractControll<PdvMovimento> implem
 
     private static final long serialVersionUID = 1L;
     @Inject
+    protected FacesContext facesContext;
+    @Inject
     private Repository<PdvSangria> sangriaRepository;
     @Inject
     private Repository<PdvSuprimento> suprimentoRepository;
     @Inject
     private Repository<PdvFechamento> fechamentoRepository;
-    @Inject
-    protected FacesContext facesContext;
-
     private List<PdvFechamento> fechamentos;
     private BigDecimal valor;
     private String observacao;

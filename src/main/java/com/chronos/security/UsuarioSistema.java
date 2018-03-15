@@ -6,7 +6,7 @@
 package com.chronos.security;
 
 
-import com.chronos.modelo.entidades.view.ViewUsuarioTenant;
+import com.chronos.modelo.view.ViewUsuarioTenant;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 

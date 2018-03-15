@@ -9,7 +9,7 @@ import com.chronos.modelo.entidades.AtividadeForCli;
 import com.chronos.modelo.entidades.Fornecedor;
 import com.chronos.modelo.entidades.Pessoa;
 import com.chronos.modelo.entidades.SituacaoForCli;
-import com.chronos.modelo.entidades.enuns.TelaPessoa;
+import com.chronos.modelo.enuns.TelaPessoa;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;

@@ -2,7 +2,7 @@ package com.chronos.controll.nfe.relatorios;
 
 import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.modelo.entidades.NfeCabecalho;
-import com.chronos.modelo.entidades.enuns.StatusTransmissao;
+import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;

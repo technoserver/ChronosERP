@@ -5,7 +5,7 @@
  */
 package com.chronos.util;
 
-import com.chronos.modelo.entidades.enuns.TipoArquivo;
+import com.chronos.modelo.enuns.TipoArquivo;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,13 +30,12 @@ import static java.nio.file.FileSystems.getDefault;
  */
 public class ArquivoUtil {
 
+    private static final Logger logger = LoggerFactory.getLogger(ArquivoUtil.class);
+    private static ArquivoUtil instance;
     private Path local;
     private Path localTemporario;
     private Path localImagem;
     private Path localProduto;
-    private static final Logger logger = LoggerFactory.getLogger(ArquivoUtil.class);
-
-    private static ArquivoUtil instance;
 
     private ArquivoUtil() {
         this(getDefault().getPath(diretorioRaiz(),".chronos"));
@@ -50,6 +49,19 @@ public class ArquivoUtil {
         criarPastas();
     }
 
+    private static String diretorioRaiz() {
+
+        String sistema = (String) System.getProperties().get("os.name");
+        return sistema.startsWith("Windows") ? "c://" : System.getenv("HOME");
+    }
+
+    public static ArquivoUtil getInstance() {
+        if (instance == null) {
+            instance = new ArquivoUtil();
+            return instance;
+        }
+        return instance;
+    }
 
     public String escrever(TipoArquivo tipoArquivo, String cnpj, InputStream origem, String nomeArquivo) throws IOException {
 
@@ -95,26 +107,6 @@ public class ArquivoUtil {
         Path localArquivo = getDefault().getPath(arquivo);
         Files.copy(localArquivo, copia, StandardCopyOption.REPLACE_EXISTING);
         return arquivo;
-    }
-
-
-
-    private static String diretorioRaiz() {
-
-        String sistema = (String) System.getProperties().get("os.name");
-        return sistema.startsWith("Windows") ? "c://" : System.getenv("HOME");
-    }
-
-
-
-
-
-    public static ArquivoUtil getInstance() {
-        if (instance == null) {
-            instance = new ArquivoUtil();
-            return instance;
-        }
-        return instance;
     }
 
     public String getDiretorioCnpj(String cnpj) {

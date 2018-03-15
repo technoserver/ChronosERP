@@ -3,7 +3,7 @@ package com.chronos.controll.cadastros;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.cadastros.datamodel.PessoaDataModel;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.view.ViewPessoa;
+import com.chronos.modelo.view.ViewPessoa;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;

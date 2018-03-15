@@ -24,6 +24,8 @@ public class PdvTipoPagamento implements Serializable {
     private String permiteTroco;
     @Column(name = "GERA_PARCELAS")
     private String geraParcelas;
+    @Transient
+    private String identificador;
 
     public PdvTipoPagamento() {
     }
@@ -70,6 +72,14 @@ public class PdvTipoPagamento implements Serializable {
 
     public void setGeraParcelas(String geraParcelas) {
         this.geraParcelas = geraParcelas;
+    }
+
+    public String getIdentificador() {
+        return identificador;
+    }
+
+    public void setIdentificador(String identificador) {
+        this.identificador = identificador;
     }
 
     @Transient

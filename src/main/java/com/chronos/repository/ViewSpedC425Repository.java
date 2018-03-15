@@ -1,11 +1,5 @@
 package com.chronos.repository;
 
-import com.chronos.modelo.entidades.view.ViewSpedC425Id;
-
-import javax.persistence.Query;
-import java.util.Date;
-import java.util.List;
-
 /**
  * Created by john on 28/09/17.
  */

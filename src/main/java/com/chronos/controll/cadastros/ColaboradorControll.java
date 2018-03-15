@@ -7,7 +7,7 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.TelaPessoa;
+import com.chronos.modelo.enuns.TelaPessoa;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;

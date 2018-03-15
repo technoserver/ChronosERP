@@ -2,12 +2,13 @@ package com.chronos.service.financeiro;
 
 import com.chronos.dto.LancamentoReceber;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.Modulo;
+import com.chronos.modelo.enuns.Modulo;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.FinLancamentoReceberRepository;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -23,6 +24,10 @@ public class FinLancamentoReceberService implements Serializable {
 
     @Inject
     private FinLancamentoReceberRepository lancamentos;
+
+    @Inject
+    private Repository<FinLancamentoReceberCartao> lancamentoReceberCartaoRepository;
+
     @Inject
     private Repository<FinParcelaRecebimento> recebimentoRepository;
     @Inject
@@ -44,6 +49,7 @@ public class FinLancamentoReceberService implements Serializable {
         lancamento.setEmrpesa(empresa);
         gerarContasReceber(lancamento, naturezaFinanceira);
     }
+
 
     @Transactional
     public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) throws Exception {
@@ -127,6 +133,64 @@ public class FinLancamentoReceberService implements Serializable {
 
         geraNaturezaFinanceira(lancamentoReceber, naturezaFinanceira);
         lancamentos.salvar(lancamentoReceber);
+
+    }
+
+    public void gerarLancamentoCartao(int id, BigDecimal valor, OperadoraCartao operadoraCartao, int qtdParcelas, String codModulo, Empresa empresa, String identificador) {
+
+        String numDoc = "E" + empresa.getId()
+                + "M" + codModulo
+                + "V" + id
+                + "O" + operadoraCartao.getId()
+                + "Q" + qtdParcelas;
+
+        if (!StringUtils.isEmpty(identificador)) {
+            numDoc += "NSU" + identificador;
+        }
+
+        FinLancamentoReceberCartao lancamento = new FinLancamentoReceberCartao();
+
+        lancamento.setValorBruto(valor);
+        lancamento.setTaxaAplicada(operadoraCartao.getTaxaAdm());
+        BigDecimal valorEcargos = valor.multiply(operadoraCartao.getTaxaAdm()).divide(BigDecimal.valueOf(100), BigDecimal.ROUND_HALF_DOWN);
+        lancamento.setValorEncargos(valorEcargos);
+        lancamento.setValorLiquido(valor.subtract(valorEcargos));
+
+        lancamento.setDataLancamento(lancamento.getDataLancamento());
+        lancamento.setNumeroDocumento(numDoc);
+        lancamento.setCodigoModuloLcto(codModulo);
+        lancamento.setEmpresa(empresa);
+        lancamento.setOperadoraCartao(operadoraCartao);
+
+        // pega o primeiro vencimento
+        lancamento.setPrimeiroVencimento(new Date());
+        lancamento.setDataLancamento(new Date());
+        lancamento.setIntervaloEntreParcelas(30);
+        lancamento.setQuantidadeParcela(qtdParcelas);
+        lancamento.setListaFinParcelaReceberCartao(new ArrayList<>());
+
+        FinParcelaReceberCartao parcelaReceber;
+        int number = 1;
+        BigDecimal valorParcela = valor.divide(BigDecimal.valueOf(qtdParcelas), BigDecimal.ROUND_DOWN);
+        for (int i = 0; i < qtdParcelas; i++) {
+            parcelaReceber = new FinParcelaReceberCartao();
+            parcelaReceber.setFinLancamentoReceberCartao(lancamento);
+            parcelaReceber.setNumeroParcela(number++);
+            parcelaReceber.setPago(false);
+            parcelaReceber.setContaCaixa(operadoraCartao.getContaCaixa());
+            parcelaReceber.setDataEmissao(lancamento.getDataLancamento());
+            parcelaReceber.setDataVencimento(Biblioteca.addDay(lancamento.getDataLancamento(), 30));
+
+            parcelaReceber.setValorBruto(valorParcela);
+            parcelaReceber.setTaxaAplicada(operadoraCartao.getTaxaAdm());
+            BigDecimal valorEcargosParcela = Biblioteca.calcTaxa(valorParcela, operadoraCartao.getTaxaAdm());
+            parcelaReceber.setValorEncargos(valorEcargosParcela);
+            parcelaReceber.setValorLiquido(valorParcela.subtract(valorEcargos));
+
+            lancamento.getListaFinParcelaReceberCartao().add(parcelaReceber);
+        }
+
+        lancamentoReceberCartaoRepository.salvar(lancamento);
 
     }
 

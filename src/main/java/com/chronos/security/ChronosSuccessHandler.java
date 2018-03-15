@@ -4,7 +4,7 @@ package com.chronos.security;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.AdmModulo;
 import com.chronos.modelo.entidades.Papel;
-import com.chronos.modelo.entidades.tenant.Tenant;
+import com.chronos.modelo.tenant.Tenant;
 import com.chronos.repository.Repository;
 import com.chronos.repository.Usuarios;
 import com.chronos.util.cdi.CDIServiceLocator;

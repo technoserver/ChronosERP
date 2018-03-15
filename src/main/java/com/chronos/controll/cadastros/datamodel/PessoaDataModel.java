@@ -1,8 +1,7 @@
 package com.chronos.controll.cadastros.datamodel;
 
 import com.chronos.controll.ERPLazyDataModel;
-import com.chronos.modelo.entidades.view.ViewPessoa;
-import com.chronos.repository.Filtro;
+import com.chronos.modelo.view.ViewPessoa;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

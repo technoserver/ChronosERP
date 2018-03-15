@@ -6,14 +6,14 @@
 package com.chronos.controll;
 
 import com.chronos.dto.UsuarioDTO;
+import com.chronos.modelo.anotacoes.DataMaior;
+import com.chronos.modelo.anotacoes.TaxaMaior;
 import com.chronos.modelo.entidades.Auditoria;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.EmpresaEndereco;
 import com.chronos.modelo.entidades.Usuario;
-import com.chronos.modelo.entidades.anotacoes.DataMaior;
-import com.chronos.modelo.entidades.anotacoes.TaxaMaior;
-import com.chronos.modelo.entidades.enuns.AcaoLog;
-import com.chronos.modelo.entidades.enuns.Estados;
+import com.chronos.modelo.enuns.AcaoLog;
+import com.chronos.modelo.enuns.Estados;
 import com.chronos.repository.Repository;
 import com.chronos.repository.Usuarios;
 import com.chronos.util.Biblioteca;

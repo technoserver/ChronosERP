@@ -6,7 +6,7 @@ import com.chronos.infra.enuns.IndicadorIe;
 import com.chronos.infra.enuns.LocalDestino;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.TipoVenda;
+import com.chronos.modelo.enuns.TipoVenda;
 import com.chronos.repository.Repository;
 import com.chronos.util.cdi.ManualCDILookup;
 import org.springframework.util.StringUtils;

@@ -3,7 +3,7 @@ package com.chronos.controll.financeiro.relatorios;
 import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.dto.MapDTO;
 import com.chronos.modelo.entidades.PdvMovimento;
-import com.chronos.modelo.entidades.view.ViewMovimentoCaixa;
+import com.chronos.modelo.view.ViewMovimentoCaixa;
 import com.chronos.repository.Repository;
 
 import javax.enterprise.context.RequestScoped;

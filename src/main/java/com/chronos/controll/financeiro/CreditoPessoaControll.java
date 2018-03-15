@@ -5,7 +5,7 @@ import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.ContaPessoa;
 import com.chronos.modelo.entidades.MovimentoContaPessoa;
 import com.chronos.modelo.entidades.Pessoa;
-import com.chronos.modelo.entidades.enuns.TipoLancamento;
+import com.chronos.modelo.enuns.TipoLancamento;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.financeiro.ContaPessoaService;

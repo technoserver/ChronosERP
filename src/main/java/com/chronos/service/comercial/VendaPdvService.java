@@ -4,8 +4,8 @@ import com.chronos.dto.ProdutoVendaDTO;
 import com.chronos.modelo.entidades.ContaPessoa;
 import com.chronos.modelo.entidades.PdvFormaPagamento;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
-import com.chronos.modelo.entidades.enuns.Modulo;
-import com.chronos.modelo.entidades.enuns.TipoLancamento;
+import com.chronos.modelo.enuns.Modulo;
+import com.chronos.modelo.enuns.TipoLancamento;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.financeiro.ContaPessoaService;
@@ -66,6 +66,10 @@ public class VendaPdvService implements Serializable {
                         contaPessoaService.lancaMovimento(conta, p.getValor(), TipoLancamento.DEBITO, Modulo.VENDA.getCodigo(), venda.getId().toString());
                     }
                 }
+                if (p.getPdvTipoPagamento().getCodigo().equals("03")) {
+                    finLancamentoReceberService.gerarLancamentoCartao(venda.getId(), p.getValor(), p.getOperadoraCartao(), p.getQtdParcelas(), Modulo.VENDA.getCodigo(), venda.getEmpresa(), p.getPdvTipoPagamento().getIdentificador());
+                }
+
             }
             movimentoService.lancaVenda(venda.getValorTotal(),venda.getValorDesconto(),venda.getTroco());
             return venda;

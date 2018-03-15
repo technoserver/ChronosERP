@@ -7,8 +7,8 @@ import com.chronos.dto.UsuarioDTO;
 import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.enuns.StatusTransmissao;
-import com.chronos.modelo.entidades.view.ViewNfceCliente;
+import com.chronos.modelo.enuns.StatusTransmissao;
+import com.chronos.modelo.view.ViewNfceCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
@@ -50,6 +50,8 @@ public class NfceControll implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Inject
+    protected FacesContext facesContext;
+    @Inject
     private Repository<PdvMovimento> movimentos;
     @Inject
     private Repository<PdvTurno> turnos;
@@ -73,9 +75,6 @@ public class NfceControll implements Serializable {
     private Repository<NfeCabecalho> nfeRepositoy;
     @Inject
     private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
-
-    @Inject
-    protected FacesContext facesContext;
     @Inject
     private NfeService nfeService;
     @Inject

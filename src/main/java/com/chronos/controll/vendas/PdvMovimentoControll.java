@@ -5,11 +5,8 @@ import com.chronos.modelo.entidades.PdvCaixa;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.PdvOperador;
 import com.chronos.modelo.entidades.PdvTurno;
-import com.chronos.modelo.entidades.enuns.NivelAutorizacaoCaixa;
-import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.financeiro.MovimentoService;
-import com.chronos.util.FormatValor;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 
@@ -19,8 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**

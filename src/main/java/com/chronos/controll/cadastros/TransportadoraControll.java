@@ -7,7 +7,7 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.modelo.entidades.Pessoa;
 import com.chronos.modelo.entidades.Transportadora;
-import com.chronos.modelo.entidades.enuns.TelaPessoa;
+import com.chronos.modelo.enuns.TelaPessoa;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
 

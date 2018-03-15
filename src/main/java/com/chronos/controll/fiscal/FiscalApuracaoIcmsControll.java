@@ -2,9 +2,9 @@ package com.chronos.controll.fiscal;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.FiscalApuracaoIcms;
-import com.chronos.modelo.entidades.view.ViewSpedC190Id;
-import com.chronos.modelo.entidades.view.ViewSpedC390Id;
-import com.chronos.modelo.entidades.view.ViewSpedC490Id;
+import com.chronos.modelo.view.ViewSpedC190Id;
+import com.chronos.modelo.view.ViewSpedC390Id;
+import com.chronos.modelo.view.ViewSpedC490Id;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
@@ -108,7 +108,7 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
             filtros.add(new Filtro(Filtro.AND, "viewSpedC190.dataEmissao", Filtro.BETWEEN, new Object[]{dataInicio, dataFim}));
 
 
-            String sql = "SELECT o FROM com.chronos.modelo.entidades.view.ViewSpedC190Id o  WHERE 1 = 1 AND o.viewSpedC190.dataEmissao  BETWEEN ?1 AND  :?2";
+            String sql = "SELECT o FROM com.chronos.modelo.view.ViewSpedC190Id o  WHERE 1 = 1 AND o.viewSpedC190.dataEmissao  BETWEEN ?1 AND  :?2";
 
             List<ViewSpedC190Id> listaNfeAnalitico = viewSpedC190IdRepository.getEntitys(ViewSpedC190Id.class, filtros);
 

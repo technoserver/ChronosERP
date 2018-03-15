@@ -6,7 +6,7 @@
 package com.chronos.security;
 
 import com.chronos.modelo.entidades.AdmModulo;
-import com.chronos.modelo.entidades.view.ViewUsuarioTenant;
+import com.chronos.modelo.view.ViewUsuarioTenant;
 import com.chronos.repository.Repository;
 import com.chronos.repository.Usuarios;
 import com.chronos.util.cdi.CDIServiceLocator;

@@ -5,7 +5,7 @@ import br.com.samuelweb.certificado.CertificadoService;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.PdvCaixa;
 import com.chronos.modelo.entidades.PdvConfiguracao;
-import com.chronos.modelo.entidades.enuns.TipoArquivo;
+import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;

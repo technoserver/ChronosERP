@@ -68,6 +68,99 @@ public class FinExtratoContaBancoControll extends AbstractControll<ContaCaixa> i
         }
     }
 
+//    public void conciliaCheques() {
+//        try {
+//            if (extratoContaBanco.isEmpty()) {
+//                throw new Exception("Nenhum lançamento para conciliar!");
+//            }
+//
+//            for (FinExtratoContaBanco e : extratoContaBanco) {
+//                if (e.getHistorico().contains("Cheque")) {
+//                    List<Filtro> filtros = new ArrayList<>();
+//                    filtros.add(new Filtro(Filtro.AND, "cheque.numero", Filtro.IGUAL, Integer.valueOf(e.getDocumento())));
+//                    filtros.add(new Filtro(Filtro.AND, "cheque.talonarioCheque.contaCaixa", Filtro.IGUAL, getObjeto()));
+//
+//                    FinChequeEmitido chequeEmitido = cheques.getBean(filtros);
+//
+//                    if (chequeEmitido != null) {
+//                        e.setConciliado("S");
+//                        if (chequeEmitido.getValor().compareTo(e.getValor().negate()) != 0) {
+//                            e.setObservacao("VALOR DO CHEQUE NO EXTRATO DIFERE DO VALOR ARMAZENADO NO BANCO DE DADOS - CHEQUE NAO CONCILIADO");
+//                            e.setConciliado("N");
+//                        }
+//                    } else {
+//                        e.setConciliado("N");
+//                    }
+//                }
+//            }
+//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_INFO, "Conciliação realizada!", "");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_ERROR, "Erro ao conciliar cheque!", e.getMessage());
+//        }
+//    }
+
+//    public void salvaExtrato() {
+//        try {
+//            if (mesAno() == null) {
+//                throw new Exception("Período inválido!");
+//            }
+//
+//            if (extratoContaBanco.isEmpty()) {
+//                throw new Exception("Nenhum registro para salvar!");
+//            }
+//
+//            for (FinExtratoContaBanco e : extratoContaBanco) {
+//                e.setMesAno(mesAno());
+//                e.setMes(mesAno().substring(0, 2));
+//                e.setAno(mesAno().substring(3, 7));
+//
+//                extratos.merge(e);
+//            }
+//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_INFO, "Extrato Salvo com sucesso!", "");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_ERROR, "Erro ao salvar o extrato!", e.getMessage());
+//        }
+//    }
+
+//    public void conciliaLancamentos() {
+//        try {
+//            if (extratoContaBanco.isEmpty()) {
+//                throw new Exception("Nenhum lançamento para conciliar!");
+//            }
+//
+//            for (FinExtratoContaBanco e : extratoContaBanco) {
+//                if (!e.getHistorico().contains("Cheque")) {
+//                    List<Filtro> filtros = new ArrayList<>();
+//                    filtros.add(new Filtro(Filtro.AND, "contaCaixa", Filtro.IGUAL, getObjeto()));
+//
+//                    if (e.getValor().compareTo(BigDecimal.ZERO) < 0) {
+//                        filtros.add(new Filtro(Filtro.AND, "dataPagamento", Filtro.IGUAL, e.getDataMovimento()));
+//                        filtros.add(new Filtro(Filtro.AND, "valorPago", Filtro.IGUAL, e.getValor().negate()));
+//                        if (parcelaPagamentoDao.getBeans(filtros).isEmpty()) {
+//                            e.setConciliado("N");
+//                        } else {
+//                            e.setConciliado("S");
+//                        }
+//                    } else {
+//                        filtros.add(new Filtro(Filtro.AND, "dataRecebimento", Filtro.IGUAL, e.getDataMovimento()));
+//                        filtros.add(new Filtro(Filtro.AND, "valorRecebido", Filtro.IGUAL, e.getValor()));
+//                        if (parcelaRecebimentoDao.getBeans(filtros).isEmpty()) {
+//                            e.setConciliado("N");
+//                        } else {
+//                            e.setConciliado("S");
+//                        }
+//                    }
+//                }
+//            }
+//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_INFO, "Conciliação realizada!", "");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_ERROR, "Erro ao conciliar lançamentos!", e.getMessage());
+//        }
+//    }
+
     public String getTotais() {
         if (extratoContaBanco != null) {
             BigDecimal creditos = BigDecimal.ZERO;

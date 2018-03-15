@@ -3,7 +3,7 @@ package com.chronos.controll.financeiro;
 import com.chronos.controll.AbstractControll;
 import com.chronos.dto.MapDTO;
 import com.chronos.modelo.entidades.ContaCaixa;
-import com.chronos.modelo.entidades.view.ViewFinFluxoCaixaID;
+import com.chronos.modelo.view.ViewFinFluxoCaixaID;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;

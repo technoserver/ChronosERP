@@ -1,7 +1,7 @@
 package com.chronos.service.cadastros;
 
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.view.PessoaCliente;
+import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.Repository;
 
 import javax.inject.Inject;

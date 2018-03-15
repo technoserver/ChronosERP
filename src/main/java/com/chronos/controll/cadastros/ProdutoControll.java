@@ -9,7 +9,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.controll.cadastros.datamodel.ProdutoEmpresaDataModel;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.view.ViewProdutoEmpresa;
+import com.chronos.modelo.view.ViewProdutoEmpresa;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.ArquivoUtil;

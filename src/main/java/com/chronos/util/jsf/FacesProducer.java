@@ -5,20 +5,16 @@
  */
 package com.chronos.util.jsf;
 
-import com.chronos.modelo.entidades.tenant.Tenant;
+import com.chronos.modelo.tenant.Tenant;
 import com.chronos.util.tenant.TenantInject;
 import com.chronos.util.tenant.TenantRegistry;
 import com.chronos.util.tenant.TenantRegistyInject;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.springframework.context.annotation.Bean;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
-import java.beans.PropertyVetoException;
 
 /**
  * @author john

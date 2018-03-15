@@ -45,6 +45,9 @@
                              label="Centro por Nat. Financeira"
                              exibir="#{seguranca.isTemAcesso('CENTRO_RESULTADO_NATUREZA')}"
                              funcao="centroResultadoNatureza"/>
+                <erp:subMenu caminho="/modulo/financeiro/diversos/operadoraCartao"
+                             label="Operadora Cartão"
+                             funcao="operadoraCartao"/>
 
 
             </ul>
@@ -72,6 +75,10 @@
                              label="Lançamento a Receber"
                              exibir="#{seguranca.isTemAcesso('LANCAMENTO_RECEBER')}"
                              funcao="finLancamentoReceber"/>
+                <erp:subMenu caminho="/modulo/financeiro/recebimento/finLancamentoReceberCartao"
+                             label="Lançamento Cartão"
+                             exibir="#{seguranca.isTemAcesso('LANCAMENTO_RECEBER_CARTAO')}"
+                             funcao="finLancamentoReceberCartao"/>
                 <!--<erp:subMenu caminho="/modulo/financeiro/recebimento/finParcelaRecebimento"-->
                 <!--label="Recebimento"-->
                 <!--funcao="finParcelaRecebimento"/>-->

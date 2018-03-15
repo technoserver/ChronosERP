@@ -2,8 +2,8 @@ package com.chronos.service.financeiro;
 
 import com.chronos.modelo.entidades.ContaPessoa;
 import com.chronos.modelo.entidades.MovimentoContaPessoa;
-import com.chronos.modelo.entidades.enuns.AcaoLog;
-import com.chronos.modelo.entidades.enuns.TipoLancamento;
+import com.chronos.modelo.enuns.AcaoLog;
+import com.chronos.modelo.enuns.TipoLancamento;
 import com.chronos.repository.Repository;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.util.FormatValor;

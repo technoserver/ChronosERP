@@ -2,7 +2,7 @@ package com.chronos.repository;
 
 import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.entidades.NfeDetalhe;
-import com.chronos.modelo.entidades.enuns.Modulo;
+import com.chronos.modelo.enuns.Modulo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

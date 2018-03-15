@@ -2,7 +2,7 @@ package com.chronos.controll.financeiro;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.entidades.view.ViewFinLancamentoPagar;
+import com.chronos.modelo.view.ViewFinLancamentoPagar;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.ParcelaPagarRepository;
 import com.chronos.repository.Repository;

@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Lancamento de Cartão de Crédito
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finLancamentoReceberCartaoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Lancamento de Cartão de Crédito
+    </ui:define>
+
+    <ui:define name="gridDados">
+        <erp:gridDados controller="#{finLancamentoReceberCartaoControll}"
+                       idDataTable="dataTableFinLancamentoReceber"
+                       nomeFuncao=" Lancamento de contas Receber"
+                       id="telaGrid">
+
+            <p:column headerText="Documento" width="250">
+                <h:outputLabel value="#{row.numeroDocumento}"/>
+            </p:column>
+            <p:column headerText="Operadora">
+                <h:outputLabel value="#{row.operadoraCartao.nome}"/>
+            </p:column>
+            <p:column headerText="Qtde Parcela" width="120" styleClass="text-center">
+                <h:outputLabel value="#{row.quantidadeParcela}"/>
+            </p:column>
+            <p:column headerText="Valor bruto" styleClass="text-right" width="140">
+                <h:outputLabel value="#{row.valorBruto}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Encargos" styleClass="text-right" width="140">
+                <h:outputLabel value="#{row.valorEncargos}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Valor liquido" styleClass="text-right" width="140">
+                <h:outputLabel value="#{row.valorLiquido}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Data Lancamento" styleClass="text-center" width="160">
+                <h:outputLabel value="#{row.dataLancamento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="1º Vencimento" styleClass="text-center" width="140">
+                <h:outputLabel value="#{row.primeiroVencimento}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+
+        </erp:gridDados>
+    </ui:define>
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finLancamentoReceberCartaoControll}"
+                                   nomeFuncao=" Lancamento de contas Receber"
+                                   id="telaDetalhe"
+        >
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+</ui:composition>
