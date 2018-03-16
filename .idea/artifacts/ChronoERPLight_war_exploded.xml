@@ -137,6 +137,11 @@
           <element id="library" level="project" name="Maven: com.chronos.themes:custom-theme:1.0.0" />
           <element id="library" level="project" name="Maven: com.chronos.calc:ChronosCalcTribut:1.0.15" />
           <element id="library" level="project" name="Maven: com.chronos:sped:1.0.5" />
+          <element id="library" level="project" name="Maven: net.sf.ofx4j:ofx4j:1.5" />
+          <element id="library" level="project" name="Maven: be.cyberelf.nanoxml:nanoxml:2.2.3" />
+          <element id="library" level="project" name="Maven: net.sf.apt-jelly:apt-jelly-freemarker:2.4" />
+          <element id="library" level="project" name="Maven: net.sf.apt-jelly:apt-jelly-core:2.4" />
+          <element id="library" level="project" name="Maven: freemarker:freemarker:2.3.6" />
         </element>
       </element>
       <element id="directory" name="META-INF">

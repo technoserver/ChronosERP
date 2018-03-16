@@ -1,14 +1,19 @@
 package com.chronos.controll.financeiro;
 
+import com.chronos.bo.financeiro.ImportaOFX;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
+import org.apache.commons.io.FileUtils;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -68,98 +73,102 @@ public class FinExtratoContaBancoControll extends AbstractControll<ContaCaixa> i
         }
     }
 
-//    public void conciliaCheques() {
-//        try {
-//            if (extratoContaBanco.isEmpty()) {
-//                throw new Exception("Nenhum lançamento para conciliar!");
-//            }
-//
-//            for (FinExtratoContaBanco e : extratoContaBanco) {
-//                if (e.getHistorico().contains("Cheque")) {
-//                    List<Filtro> filtros = new ArrayList<>();
-//                    filtros.add(new Filtro(Filtro.AND, "cheque.numero", Filtro.IGUAL, Integer.valueOf(e.getDocumento())));
-//                    filtros.add(new Filtro(Filtro.AND, "cheque.talonarioCheque.contaCaixa", Filtro.IGUAL, getObjeto()));
-//
-//                    FinChequeEmitido chequeEmitido = cheques.getBean(filtros);
-//
-//                    if (chequeEmitido != null) {
-//                        e.setConciliado("S");
-//                        if (chequeEmitido.getValor().compareTo(e.getValor().negate()) != 0) {
-//                            e.setObservacao("VALOR DO CHEQUE NO EXTRATO DIFERE DO VALOR ARMAZENADO NO BANCO DE DADOS - CHEQUE NAO CONCILIADO");
-//                            e.setConciliado("N");
-//                        }
-//                    } else {
-//                        e.setConciliado("N");
-//                    }
-//                }
-//            }
-//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_INFO, "Conciliação realizada!", "");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_ERROR, "Erro ao conciliar cheque!", e.getMessage());
-//        }
-//    }
+    public void conciliaCheques() {
+        try {
+            if (extratoContaBanco.isEmpty()) {
+                throw new Exception("Nenhum lançamento para conciliar!");
+            }
 
-//    public void salvaExtrato() {
-//        try {
-//            if (mesAno() == null) {
-//                throw new Exception("Período inválido!");
-//            }
-//
-//            if (extratoContaBanco.isEmpty()) {
-//                throw new Exception("Nenhum registro para salvar!");
-//            }
-//
-//            for (FinExtratoContaBanco e : extratoContaBanco) {
-//                e.setMesAno(mesAno());
-//                e.setMes(mesAno().substring(0, 2));
-//                e.setAno(mesAno().substring(3, 7));
-//
-//                extratos.merge(e);
-//            }
-//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_INFO, "Extrato Salvo com sucesso!", "");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_ERROR, "Erro ao salvar o extrato!", e.getMessage());
-//        }
-//    }
+            for (FinExtratoContaBanco e : extratoContaBanco) {
+                if (e.getHistorico().contains("Cheque")) {
+                    List<Filtro> filtros = new ArrayList<>();
+                    filtros.add(new Filtro(Filtro.AND, "cheque.numero", Filtro.IGUAL, Integer.valueOf(e.getDocumento())));
+                    filtros.add(new Filtro(Filtro.AND, "cheque.talonarioCheque.contaCaixa", Filtro.IGUAL, getObjeto()));
 
-//    public void conciliaLancamentos() {
-//        try {
-//            if (extratoContaBanco.isEmpty()) {
-//                throw new Exception("Nenhum lançamento para conciliar!");
-//            }
-//
-//            for (FinExtratoContaBanco e : extratoContaBanco) {
-//                if (!e.getHistorico().contains("Cheque")) {
-//                    List<Filtro> filtros = new ArrayList<>();
-//                    filtros.add(new Filtro(Filtro.AND, "contaCaixa", Filtro.IGUAL, getObjeto()));
-//
-//                    if (e.getValor().compareTo(BigDecimal.ZERO) < 0) {
-//                        filtros.add(new Filtro(Filtro.AND, "dataPagamento", Filtro.IGUAL, e.getDataMovimento()));
-//                        filtros.add(new Filtro(Filtro.AND, "valorPago", Filtro.IGUAL, e.getValor().negate()));
-//                        if (parcelaPagamentoDao.getBeans(filtros).isEmpty()) {
-//                            e.setConciliado("N");
-//                        } else {
-//                            e.setConciliado("S");
-//                        }
-//                    } else {
-//                        filtros.add(new Filtro(Filtro.AND, "dataRecebimento", Filtro.IGUAL, e.getDataMovimento()));
-//                        filtros.add(new Filtro(Filtro.AND, "valorRecebido", Filtro.IGUAL, e.getValor()));
-//                        if (parcelaRecebimentoDao.getBeans(filtros).isEmpty()) {
-//                            e.setConciliado("N");
-//                        } else {
-//                            e.setConciliado("S");
-//                        }
-//                    }
-//                }
-//            }
-//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_INFO, "Conciliação realizada!", "");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            FacesContextUtil.adicionaMensagem(FacesMessage.SEVERITY_ERROR, "Erro ao conciliar lançamentos!", e.getMessage());
-//        }
-//    }
+                    FinChequeEmitido chequeEmitido = cheques.get(FinChequeEmitido.class, filtros);
+
+                    if (chequeEmitido != null) {
+                        e.setConciliado("S");
+                        if (chequeEmitido.getValor().compareTo(e.getValor().negate()) != 0) {
+                            e.setObservacao("VALOR DO CHEQUE NO EXTRATO DIFERE DO VALOR ARMAZENADO NO BANCO DE DADOS - CHEQUE NAO CONCILIADO");
+                            e.setConciliado("N");
+                        }
+                    } else {
+                        e.setConciliado("N");
+                    }
+                }
+            }
+            Mensagem.addInfoMessage("Conciliação realizada!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao conciliar cheque!", e);
+        }
+    }
+
+    public void salvaExtrato() {
+        try {
+            if (mesAno() == null) {
+                throw new Exception("Período inválido!");
+            }
+
+            if (extratoContaBanco.isEmpty()) {
+                throw new Exception("Nenhum registro para salvar!");
+            }
+
+            for (FinExtratoContaBanco e : extratoContaBanco) {
+                e.setMesAno(mesAno());
+                e.setMes(mesAno().substring(0, 2));
+                e.setAno(mesAno().substring(3, 7));
+
+                extratos.atualizar(e);
+            }
+
+            Mensagem.addInfoMessage("Extrato Salvo com sucesso!");
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Mensagem.addErrorMessage("Erro ao salvar o extrato!", e);
+        }
+    }
+
+    public void conciliaLancamentos() {
+        try {
+            if (extratoContaBanco.isEmpty()) {
+                throw new Exception("Nenhum lançamento para conciliar!");
+            }
+
+            for (FinExtratoContaBanco e : extratoContaBanco) {
+                if (!e.getHistorico().contains("Cheque")) {
+                    List<Filtro> filtros = new ArrayList<>();
+                    filtros.add(new Filtro(Filtro.AND, "contaCaixa", Filtro.IGUAL, getObjeto()));
+
+                    if (e.getValor().compareTo(BigDecimal.ZERO) < 0) {
+                        filtros.add(new Filtro(Filtro.AND, "dataPagamento", Filtro.IGUAL, e.getDataMovimento()));
+                        filtros.add(new Filtro(Filtro.AND, "valorPago", Filtro.IGUAL, e.getValor().negate()));
+                        if (pagamentos.getEntitys(FinParcelaPagamento.class, filtros).isEmpty()) {
+                            e.setConciliado("N");
+                        } else {
+                            e.setConciliado("S");
+                        }
+                    } else {
+                        filtros.add(new Filtro(Filtro.AND, "dataRecebimento", Filtro.IGUAL, e.getDataMovimento()));
+                        filtros.add(new Filtro(Filtro.AND, "valorRecebido", Filtro.IGUAL, e.getValor()));
+                        if (recebimentos.getEntitys(FinParcelaRecebimento.class, filtros).isEmpty()) {
+                            e.setConciliado("N");
+                        } else {
+                            e.setConciliado("S");
+                        }
+                    }
+                }
+            }
+
+            Mensagem.addInfoMessage("Conciliação realizada!");
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Mensagem.addErrorMessage("Erro ao conciliar lançamentos!", e);
+        }
+    }
 
     public String getTotais() {
         if (extratoContaBanco != null) {
@@ -182,6 +191,27 @@ public class FinExtratoContaBancoControll extends AbstractControll<ContaCaixa> i
             return texto;
         }
         return "";
+    }
+
+    public void importaOFX(FileUploadEvent event) {
+        try {
+            UploadedFile arquivo = event.getFile();
+            File file = File.createTempFile("extrato", ".ofx");
+            FileUtils.copyInputStreamToFile(arquivo.getInputstream(), file);
+
+            ImportaOFX importa = new ImportaOFX();
+            extratoContaBanco = importa.importaArquivoOFX(file);
+            //seta os dados do extrato
+            for (FinExtratoContaBanco e : extratoContaBanco) {
+                e.setContaCaixa(getObjeto());
+            }
+
+            Mensagem.addInfoMessage("Extrato importado com sucesso.!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao importar o extrato.!", e);
+
+        }
     }
 
     private String mesAno() {

@@ -57,20 +57,29 @@
                                    nomeFuncao="Extrato Conta Banco"
                                    id="telaDetalhe"
         >
+            <div class="row m-b">
+                <div class="col-xs-12 col-md-2">
 
-            <p:dataTable id="dataTableFinExtratoContaBanco" var="obj"
-                         value="#{finExtratoContaBancoControll.extratoContaBanco}"
-                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                         resizableColumns="true">
+                    <p:calendar value="#{finExtratoContaBancoControll.periodo}"
+                                id="perido"
+                                placeholder="Informe o Periodo"
+                                pattern="MM/yyyy"
+                                required="true"/>
 
-                <f:facet name="header">
+                </div>
+                <div class="col-md-8">
+
+                    <p:commandButton title="Atualizar" icon="ui-icon-refresh"
+                                     actionListener="#{finExtratoContaBancoControll.buscaDados}"
+                                     update="dataTableFinExtratoContaBanco,:formCentro:growl"/>
+
                     <p:commandButton process="dataTableFinExtratoContaBanco"
                                      title="Importa Arquivo OFX" icon=" ui-icon-arrowthick-1-n"
                                      update=":formUploadArquivo:dialogUploadArquivo"
                                      oncomplete="PF('dialogUploadArquivo').show()"/>
                     <p:commandButton process="dataTableFinExtratoContaBanco"
                                      title="Conciliar Lançamentos" icon="ui-icon-check"
-                                     actionListener="#{finExtratoContaBancoControll.conciliaLancamentos()}"
+                                     actionListener="#{finExtratoContaBancoControll.conciliaLancamentos}"
                                      update="dataTableFinExtratoContaBanco"/>
                     <p:commandButton process="dataTableFinExtratoContaBanco"
                                      title="Conciliar Cheques" icon="ui-icon-check"
@@ -78,23 +87,16 @@
                                      update="dataTableFinExtratoContaBanco"/>
                     <p:commandButton title="Salvar Extrato" icon="ui-icon-disk"
                                      actionListener="#{finExtratoContaBancoControll.salvaExtrato()}"
-                                     update=":form1:growl,:form1:telaDetalhe:outputPanelDetalhe"/>
+                                     update=":formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"/>
+                </div>
+            </div>
 
-                    <p:outputPanel style="width: 20%; float: right;">
-                        <p:outputPanel style="width: 80%; float: left;">
-                            <p:calendar value="#{finExtratoContaBancoControll.periodo}"
-                                        placeholder="Informe o Periodo"
-                                        pattern="MM/yyyy"
-                                        required="true"/>
-                        </p:outputPanel>
-                        <p:outputPanel style="width: 20%; float: right;">
-                            <p:commandButton title="Atualizar" icon="ui-icon-refresh"
-                                             actionListener="#{finExtratoContaBancoControll.buscaDados}"
-                                             update="dataTableFinExtratoContaBanco,:form1:growl"/>
-                        </p:outputPanel>
-                    </p:outputPanel>
+            <p:dataTable id="dataTableFinExtratoContaBanco" var="obj"
+                         value="#{finExtratoContaBancoControll.extratoContaBanco}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         paginatorPosition="bottom"
+                         resizableColumns="true">
 
-                </f:facet>
 
                 <p:column headerText="Data Movimento">
                     <h:outputLabel value="#{obj.dataMovimento}">
@@ -131,6 +133,29 @@
             </p:dataTable>
 
         </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formUploadArquivo" enctype="multipart/form-data">
+            <p:dialog id="dialogUploadArquivo" header="Selecionar Arquivo"
+                      widgetVar="dialogUploadArquivo" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelUploadArquivo">
+                    <div class="t2ti-campo-100">
+                        <p:fileUpload
+                                fileUploadListener="#{finExtratoContaBancoControll.importaOFX}"
+                                mode="advanced" fileLimit="1" allowTypes="/(\.|\/)(ofx)$/"
+                                update=":formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                oncomplete="PF('dialogUploadArquivo').hide()"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Cancelar"
+                                     oncomplete="PF('dialogUploadArquivo').hide();" process="@this"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 </ui:composition>

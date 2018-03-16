@@ -328,6 +328,13 @@
             <version>${java-sped.version}</version>
         </dependency>
 
+        <!--abstração do projeto para importa arquivo OFX-->
+        <dependency>
+            <groupId>net.sf.ofx4j</groupId>
+            <artifactId>ofx4j</artifactId>
+            <version>1.5</version>
+        </dependency>
+
 
     </dependencies>
 
