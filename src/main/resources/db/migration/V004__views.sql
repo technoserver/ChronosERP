@@ -460,6 +460,55 @@ CREATE OR REPLACE VIEW view_pessoa_cliente_empresa AS
 
 --View FInanceiro
 
+CREATE OR REPLACE VIEW view_movimento_caixa AS
+  SELECT
+    concat(m.id, s.id, 1) :: INTEGER AS id,
+    m.id                             AS idmovimento,
+    s.id                             AS idorigem,
+    s.data_sangria                   AS data_hora,
+    'Saída - Sangria'                AS descricao,
+    s.valor,
+    '01'                             AS codigo_forma_pagamento,
+    'Dinheiro'                       AS forma_pagamento,
+    'S'                              AS tipo,
+    'Sangria'                        AS origem,
+    s.observacao
+  FROM pdv_movimento m
+    INNER JOIN pdv_sangria s ON s.id_pdv_movimento = m.id
+  UNION
+  SELECT
+    concat(m.id, s.id, 2) :: INTEGER AS id,
+    m.id                             AS idmovimento,
+    s.id                             AS idorigem,
+    s.data_suprimento                AS data_hora,
+    'Entrada - Acrécimo' :: TEXT     AS descricao,
+    s.valor,
+    '01' :: TEXT                     AS codigo_forma_pagamento,
+    'Dinheiro' :: TEXT               AS forma_pagamento,
+    'E' :: TEXT                      AS tipo,
+    'Suprimentos' :: TEXT            AS origem,
+    s.observacao
+  FROM pdv_movimento m
+    JOIN pdv_suprimento s ON s.id_pdv_movimento = m.id
+  UNION
+  SELECT
+    concat(m.id, v.id, t.id, 3) :: INTEGER AS id,
+    m.id                                   AS idmovimento,
+    v.id                                   AS idorigem,
+    v.data_hora_venda                      AS data_hora,
+    'Venda nº ' || v.id                    AS descricao,
+    f.valor,
+    t.codigo                               AS codigo_forma_pagamento,
+    t.descricao                            AS forma_pagamento,
+    'E'                                    AS tipo,
+    'PDV'                                  AS origem,
+    ''                                     AS observacao
+  FROM pdv_movimento m
+    INNER JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
+    INNER JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
+    INNER JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
+  ORDER BY 4;
+
 
 CREATE OR REPLACE VIEW view_fin_lancamento_pagar AS
   SELECT

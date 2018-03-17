@@ -107,9 +107,6 @@ CREATE TABLE RESTRICAO_SISTEMA (
 );
 
 
-
-
-
 CREATE TABLE LOG_IMPORTACAO (
   ID              SERIAL NOT NULL,
   DATA_IMPORTACAO DATE,
@@ -240,8 +237,6 @@ CREATE TABLE NCM (
   OBSERVACAO TEXT,
   PRIMARY KEY (ID)
 );
-
-
 
 -- ------------------------------------------------------------
 -- Tabela que armazena os dados da PESSOA. Demais tabelas devem especializar esta tabela com seus próprios dados: FORNECEDOR, TRANSPORTADORA, CLIENTE, etc.
@@ -986,9 +981,6 @@ CREATE TABLE PESSOA_ALTERACAO (
 CREATE INDEX FK_PESSOA_ALTERACAO
   ON PESSOA_ALTERACAO (ID_PESSOA);
 
-
-
-
 -- ------------------------------------------------------------
 -- Tabela com a relação de CEPs do Brasil.
 -- ------------------------------------------------------------
@@ -1410,9 +1402,6 @@ CREATE INDEX FK_ATIVIDADE_FORNECEDOR
 CREATE INDEX FK_PESSOA_FORNECEDOR
   ON FORNECEDOR (ID_PESSOA);
 
-
-
-
 -- ------------------------------------------------------------
 -- Tabela que armazena os tipos de pagamento: DINHEIRO, CARTÃO, CHEQUE, etc.
 -- Tipos padões já cadastrados pelo sistema para toda empresa:
@@ -1472,12 +1461,6 @@ CREATE TABLE INVENTARIO_CONTAGEM_CAB (
 
 CREATE INDEX FK_EMPRESA_CONT_ESTOQUE
   ON INVENTARIO_CONTAGEM_CAB (ID_EMPRESA);
-
-
-
-
-
-
 
 -- ------------------------------------------------------------
 -- Tabela com as cidades de determinado Estado.
@@ -1681,9 +1664,6 @@ CREATE TABLE NFE_CONFIGURACAO (
 
 CREATE INDEX FK_EMPRESA_NFE_CONFIG
   ON NFE_CONFIGURACAO (ID_EMPRESA);
-
-
-
 
 -- ------------------------------------------------------------
 -- Dados do sócio.
@@ -3510,6 +3490,28 @@ CREATE INDEX FK_TABELA_PRECO_CLIENTE
 CREATE INDEX FK_REGIAO_CLIENTE
   ON CLIENTE (ID_REGIAO);
 
+
+CREATE TABLE CONTA_PESSOA (
+  ID                           SERIAL  NOT NULL,
+  ID_PESSOA                    INTEGER NOT NULL,
+  SALDO                        DECIMAL(18, 6),
+  CLASSIFICACAO_CONTABIL_CONTA VARCHAR(30),
+  PRIMARY KEY (ID),
+  FOREIGN KEY (ID_PESSOA) REFERENCES PESSOA (ID)
+);
+
+CREATE TABLE MOVIMENTO_CONTA_PESSOA (
+  ID               SERIAL  NOT NULL,
+  ID_CONTA_PESSOA  INTEGER NOT NULL,
+  DATA_MOVIMENTO   DATE,
+  TIPO_MOVIMENTO   CHAR(1),
+  NUMERO_DOCUMENTO VARCHAR(50),
+  CODIGO_MODULO    CHAR(3),
+  VALOR            DECIMAL(18, 6),
+  PRIMARY KEY (ID),
+  FOREIGN KEY (ID_CONTA_PESSOA) REFERENCES CONTA_PESSOA (ID)
+);
+
 -- ------------------------------------------------------------
 -- Tabela com os colaboradores da empresa.
 -- ------------------------------------------------------------
@@ -4665,17 +4667,9 @@ CREATE TABLE ESTOQUE_PRODUTO_MOVIMENTACAO (
   SALDO_FINANCEIRO   DECIMAL(18, 6),
   ENTRADA_SAIDA      CHAR(1),
   PRIMARY KEY (ID),
-  FOREIGN KEY (ID_PRODUTO)
-  REFERENCES PRODUTO (ID),
-  FOREIGN KEY (id_empresa_produto)
-  REFERENCES empresa (ID)
+  FOREIGN KEY (ID_PRODUTO)  REFERENCES PRODUTO (ID),
+  FOREIGN KEY (id_empresa_produto)  REFERENCES empresa_produto (ID)
 );
-
-
-CREATE INDEX FK_ESTOQUE_PROD_MOVIMENTA
-  ON ESTOQUE_PRODUTO_MOVIMENTACAO (ID_PRODUTO);
-CREATE INDEX IFK_FK_ESTOQUE_PROD_MOVIMENTA
-  ON ESTOQUE_PRODUTO_MOVIMENTACAO (ID_PRODUTO);
 
 -- ------------------------------------------------------------
 -- Esta tabela é para permitir que um lançamento a receber possa ter varias naturezas financeiras e varias lançamentos contábeis a elas vinculadas.
@@ -5141,7 +5135,6 @@ CREATE TABLE movimento_caixa
   FOREIGN KEY (id_turno_caixa) REFERENCES turno_caixa (id)
 );
 
-
 -- ------------------------------------------------------------
 -- Tabela que armazena o cabeçalho das vendas do sistema.
 -- ------------------------------------------------------------
@@ -5213,10 +5206,6 @@ CREATE INDEX FK_VENDA_ROMANEIO
   ON VENDA_CABECALHO (ID_VENDA_ROMANEIO_ENTREGA);
 CREATE INDEX FK_EMPRESA_VENDA_CAB
   ON VENDA_CABECALHO (ID_EMPRESA);
-
-
-
-
 
 -- ------------------------------------------------------------
 -- Para controlar a entrega total ou parcial da mercadoria, no caso de uma venda para entrega futura.
@@ -5478,7 +5467,6 @@ CREATE INDEX FK_REQUISICAO_COTACAO_DETALHE
 CREATE INDEX FK_COTACAO_REQ_DETALHE
   ON COMPRA_REQ_COTACAO_DETALHE (ID_COMPRA_COTACAO);
 
-
 -- ------------------------------------------------------------
 -- Tabelas a baixo referente ao pdv
 -- ------------------------------------------------------------
@@ -5494,10 +5482,10 @@ CREATE INDEX FK_COTACAO_REQ_DETALHE
 
 CREATE TABLE pdv_turno
 (
-  id serial NOT NULL,
-  descricao varchar(10),
-  hora_inicio varchar(8),
-  hora_fim varchar(8),
+  id          SERIAL NOT NULL,
+  descricao   VARCHAR(10),
+  hora_inicio VARCHAR(8),
+  hora_fim    VARCHAR(8),
   PRIMARY KEY (id)
 );
 
@@ -5507,9 +5495,9 @@ CREATE TABLE pdv_turno
 
 CREATE TABLE pdv_caixa
 (
-  id serial NOT NULL,
-  nome varchar(30),
-  data_cadastro date,
+  id            SERIAL NOT NULL,
+  nome          VARCHAR(30),
+  data_cadastro DATE,
   PRIMARY KEY (id)
 );
 
@@ -5520,10 +5508,10 @@ CREATE TABLE pdv_caixa
 
 CREATE TABLE pdv_operador
 (
-  id serial NOT NULL,
-  login varchar(20),
-  senha varchar(20),
-  nivel_autorizacao char(1),
+  id                SERIAL NOT NULL,
+  login             VARCHAR(20),
+  senha             VARCHAR(20),
+  nivel_autorizacao CHAR(1),
   PRIMARY KEY (id)
 );
 
@@ -5533,13 +5521,13 @@ CREATE TABLE pdv_operador
 
 CREATE TABLE pdv_resolucao
 (
-  id serial NOT NULL,
-  resolucao_tela varchar(20),
-  largura integer,
-  altura integer,
-  imagem_tela varchar(50),
-  imagem_menu varchar(50),
-  imagem_submenu varchar(50),
+  id             SERIAL NOT NULL,
+  resolucao_tela VARCHAR(20),
+  largura        INTEGER,
+  altura         INTEGER,
+  imagem_tela    VARCHAR(50),
+  imagem_menu    VARCHAR(50),
+  imagem_submenu VARCHAR(50),
   PRIMARY KEY (id)
 );
 
@@ -5549,15 +5537,15 @@ CREATE TABLE pdv_resolucao
 
 CREATE TABLE pdv_posicao_componentes
 (
-  id serial NOT NULL,
-  id_pdv_resolucao integer NOT NULL,
-  nome varchar(100),
-  altura integer,
-  largura integer,
-  topo integer,
-  esquerda integer,
-  tamanho_fonte integer DEFAULT 0,
-  texto varchar(250),
+  id               SERIAL  NOT NULL,
+  id_pdv_resolucao INTEGER NOT NULL,
+  nome             VARCHAR(100),
+  altura           INTEGER,
+  largura          INTEGER,
+  topo             INTEGER,
+  esquerda         INTEGER,
+  tamanho_fonte    INTEGER DEFAULT 0,
+  texto            VARCHAR(250),
   PRIMARY KEY (id),
   FOREIGN KEY (id_pdv_resolucao) REFERENCES pdv_resolucao (id)
 );
@@ -5567,56 +5555,56 @@ CREATE TABLE pdv_posicao_componentes
 -- ------------------------------------------------------------
 
 
-
 CREATE TABLE pdv_configuracao
 (
-  id serial NOT NULL,
-  id_empresa integer NOT NULL,
-  id_pdv_caixa integer NOT NULL,
-  id_pdv_resolucao integer NOT NULL,
-  mensagem_cupom varchar(250),
-  titulo_tela_caixa varchar(100),
-  caminho_imagens_produtos varchar(250),
-  caminho_imagens_marketing varchar(250),
-  caminho_imagens_layout varchar(250),
-  cor_janelas_internas varchar(20),
-  marketing_ativo char(1),
-  cfop integer,
-  decimais_quantidade integer,
-  decimais_valor integer,
-  quantidade_maxima_parcela integer,
-  imprime_parcela char(1),
-  codigo_csc varchar(32),
-  id_token_csc varchar(6),
-  certificado_digital_serie varchar(100),
-  certificado_digital_caminho text,
-  certificado_digital_senha varchar(100),
-  tipo_emissao integer,
-  formato_impressao_danfe integer,
-  processo_emissao integer,
-  versao_processo_emissao varchar(20),
-  caminho_logomarca text,
-  salvar_xml char(1),
-  caminho_salvar_xml text,
-  caminho_schemas text,
-  caminho_arquivo_danfe text,
-  caminho_salvar_pdf text,
-  webservice_uf char(2),
-  webservice_ambiente integer,
-  webservice_proxy_host varchar(100),
-  webservice_proxy_porta integer,
-  webservice_proxy_usuario varchar(100),
-  webservice_proxy_senha varchar(100),
-  webservice_visualizar char(1),
-  email_servidor_smtp varchar(100),
-  email_porta integer,
-  email_usuario varchar(100),
-  email_senha varchar(100),
-  email_assunto varchar(100),
-  email_autentica_ssl char(1),
-  email_texto text,
-  obervacao_padrao text,
-  PRIMARY KEY (id),FOREIGN KEY (id_empresa) REFERENCES empresa (id),
+  id                          SERIAL  NOT NULL,
+  id_empresa                  INTEGER NOT NULL,
+  id_pdv_caixa                INTEGER NOT NULL,
+  id_pdv_resolucao            INTEGER,
+  mensagem_cupom              VARCHAR(250),
+  titulo_tela_caixa           VARCHAR(100),
+  caminho_imagens_produtos    VARCHAR(250),
+  caminho_imagens_marketing   VARCHAR(250),
+  caminho_imagens_layout      VARCHAR(250),
+  cor_janelas_internas        VARCHAR(20),
+  marketing_ativo             CHAR(1),
+  cfop                        INTEGER,
+  decimais_quantidade         INTEGER,
+  decimais_valor              INTEGER,
+  quantidade_maxima_parcela   INTEGER,
+  imprime_parcela             CHAR(1),
+  codigo_csc                  VARCHAR(32),
+  id_token_csc                VARCHAR(6),
+  certificado_digital_serie   VARCHAR(100),
+  certificado_digital_caminho TEXT,
+  certificado_digital_senha   VARCHAR(100),
+  tipo_emissao                INTEGER,
+  formato_impressao_danfe     INTEGER,
+  processo_emissao            INTEGER,
+  versao_processo_emissao     VARCHAR(20),
+  caminho_logomarca           TEXT,
+  salvar_xml                  CHAR(1),
+  caminho_salvar_xml          TEXT,
+  caminho_schemas             TEXT,
+  caminho_arquivo_danfe       TEXT,
+  caminho_salvar_pdf          TEXT,
+  webservice_uf               CHAR(2),
+  webservice_ambiente         INTEGER,
+  webservice_proxy_host       VARCHAR(100),
+  webservice_proxy_porta      INTEGER,
+  webservice_proxy_usuario    VARCHAR(100),
+  webservice_proxy_senha      VARCHAR(100),
+  webservice_visualizar       CHAR(1),
+  email_servidor_smtp         VARCHAR(100),
+  email_porta                 INTEGER,
+  email_usuario               VARCHAR(100),
+  email_senha                 VARCHAR(100),
+  email_assunto               VARCHAR(100),
+  email_autentica_ssl         CHAR(1),
+  email_texto                 TEXT,
+  obervacao_padrao            TEXT,
+  PRIMARY KEY (id),
+  FOREIGN KEY (id_empresa) REFERENCES empresa (id),
   FOREIGN KEY (id_pdv_caixa) REFERENCES pdv_caixa (id),
   FOREIGN KEY (id_pdv_resolucao) REFERENCES pdv_resolucao (id)
 );
@@ -5627,18 +5615,18 @@ CREATE TABLE pdv_configuracao
 
 CREATE TABLE pdv_configuracao_balanca
 (
-  id serial NOT NULL,
-  id_pdv_configuracao integer NOT NULL,
-  modelo integer,
-  identificador char(1),
-  hand_shake integer,
-  parity integer,
-  stop_bits integer,
-  data_bits integer,
-  baud_rate integer,
-  porta char(4),
-  timeout integer,
-  tipo_configuracao varchar(20),
+  id                  SERIAL  NOT NULL,
+  id_pdv_configuracao INTEGER NOT NULL,
+  modelo              INTEGER,
+  identificador       CHAR(1),
+  hand_shake          INTEGER,
+  parity              INTEGER,
+  stop_bits           INTEGER,
+  data_bits           INTEGER,
+  baud_rate           INTEGER,
+  porta               CHAR(4),
+  timeout             INTEGER,
+  tipo_configuracao   VARCHAR(20),
   PRIMARY KEY (id),
   FOREIGN KEY (id_pdv_configuracao) REFERENCES pdv_configuracao (id)
 );
@@ -5649,25 +5637,24 @@ CREATE TABLE pdv_configuracao_balanca
 
 CREATE TABLE pdv_configuracao_leitor_ser
 (
-  id serial NOT NULL,
-  id_pdv_configuracao integer NOT NULL,
-  usa char(1),
-  porta char(4),
-  baud integer,
-  hand_shake integer,
-  parity integer,
-  stop_bits integer,
-  data_bits integer,
-  intervalo integer,
-  usar_fila char(1),
-  hard_flow char(1),
-  soft_flow char(1),
-  sufixo varchar(20),
-  excluir_sufixo char(1),
+  id                  SERIAL  NOT NULL,
+  id_pdv_configuracao INTEGER NOT NULL,
+  usa                 CHAR(1),
+  porta               CHAR(4),
+  baud                INTEGER,
+  hand_shake          INTEGER,
+  parity              INTEGER,
+  stop_bits           INTEGER,
+  data_bits           INTEGER,
+  intervalo           INTEGER,
+  usar_fila           CHAR(1),
+  hard_flow           CHAR(1),
+  soft_flow           CHAR(1),
+  sufixo              VARCHAR(20),
+  excluir_sufixo      CHAR(1),
   PRIMARY KEY (id),
   FOREIGN KEY (id_pdv_configuracao) REFERENCES pdv_configuracao (id)
 );
-
 
 -- ------------------------------------------------------------
 -- Armazena os movimentos para determinado caixa. Podem haver vários movimentos durante um dia. Um movimento deve ter obrigatoriamente:
@@ -5683,26 +5670,26 @@ CREATE TABLE pdv_configuracao_leitor_ser
 
 CREATE TABLE pdv_movimento
 (
-  id serial NOT NULL,
-  id_pdv_caixa integer NOT NULL,
-  id_pdv_operador integer NOT NULL,
-  id_pdv_turno integer NOT NULL,
-  id_empresa integer NOT NULL,
-  id_gerente_supervisor integer NOT NULL,
-  data_abertura date,
-  hora_abertura varchar(8),
-  data_fechamento date,
-  hora_fechamento varchar(8),
-  total_suprimento decimal(18,6),
-  total_sangria decimal(18,6),
-  total_venda decimal(18,6),
-  total_desconto decimal(18,6),
-  total_acrescimo decimal(18,6),
-  total_final decimal(18,6),
-  total_recebido decimal(18,6),
-  total_troco decimal(18,6),
-  total_cancelado decimal(18,6),
-  status_movimento char(1),
+  id                    SERIAL  NOT NULL,
+  id_pdv_caixa          INTEGER NOT NULL,
+  id_pdv_operador       INTEGER NOT NULL,
+  id_pdv_turno          INTEGER NOT NULL,
+  id_empresa            INTEGER NOT NULL,
+  id_gerente_supervisor INTEGER NOT NULL,
+  data_abertura         DATE,
+  hora_abertura         VARCHAR(8),
+  data_fechamento       DATE,
+  hora_fechamento       VARCHAR(8),
+  total_suprimento      DECIMAL(18, 6),
+  total_sangria         DECIMAL(18, 6),
+  total_venda           DECIMAL(18, 6),
+  total_desconto        DECIMAL(18, 6),
+  total_acrescimo       DECIMAL(18, 6),
+  total_final           DECIMAL(18, 6),
+  total_recebido        DECIMAL(18, 6),
+  total_troco           DECIMAL(18, 6),
+  total_cancelado       DECIMAL(18, 6),
+  status_movimento      CHAR(1),
   PRIMARY KEY (id),
   FOREIGN KEY (id_empresa) REFERENCES empresa (id),
   FOREIGN KEY (id_pdv_caixa) REFERENCES pdv_caixa (id),
@@ -5712,14 +5699,13 @@ CREATE TABLE pdv_movimento
 
 CREATE TABLE pdv_fechamento
 (
-  id serial NOT NULL,
-  id_pdv_movimento integer NOT NULL,
-  tipo_pagamento varchar(20),
-  valor decimal(18,6),
+  id               SERIAL  NOT NULL,
+  id_pdv_movimento INTEGER NOT NULL,
+  tipo_pagamento   VARCHAR(20),
+  valor            DECIMAL(18, 6),
   PRIMARY KEY (id),
   FOREIGN KEY (id_pdv_movimento) REFERENCES pdv_movimento (id)
 );
-
 
 -- ------------------------------------------------------------
 -- Armazena todos os suprimentos que são feitos no caixa. Tem relacionamento direto com a tabela de movimento, já que um suprimento só pode ser feito se houver um movimento aberto.
@@ -5728,15 +5714,14 @@ CREATE TABLE pdv_fechamento
 
 CREATE TABLE pdv_sangria
 (
-  id serial NOT NULL,
-  id_pdv_movimento integer NOT NULL,
-  data_sangria date,
-  valor decimal(18,6),
-  observacao text,
+  id               SERIAL  NOT NULL,
+  id_pdv_movimento INTEGER NOT NULL,
+  data_sangria     DATE,
+  valor            DECIMAL(18, 6),
+  observacao       TEXT,
   PRIMARY KEY (id),
   FOREIGN KEY (id_pdv_movimento) REFERENCES pdv_movimento (id)
 );
-
 
 -- ------------------------------------------------------------
 -- Armazena todas as sangrias que são feitas no caixa. Tem relacionamento direto com a tabela de movimento, já que uma sangria só pode ser feita se houver um
@@ -5745,58 +5730,60 @@ CREATE TABLE pdv_sangria
 
 CREATE TABLE pdv_suprimento
 (
-  id serial NOT NULL,
-  id_pdv_movimento integer NOT NULL,
-  data_suprimento date,
-  valor decimal(18,6),
-  observacao text,
+  id               SERIAL  NOT NULL,
+  id_pdv_movimento INTEGER NOT NULL,
+  data_suprimento  DATE,
+  valor            DECIMAL(18, 6),
+  observacao       TEXT,
   PRIMARY KEY (id),
   FOREIGN KEY (id_pdv_movimento) REFERENCES pdv_movimento (id)
 );
 
 CREATE TABLE pdv_venda_cabecalho
 (
-  id serial NOT NULL,
-  id_empresa integer NOT NULL,
-  id_cliente integer,
-  id_vendedor integer NOT NULL,
-  id_pdv_operador integer,
-  id_pdv_movimento integer,
-  data_hora_venda timestamp,
-  valor_subtotal decimal(18,6),
-  taxa_comissao decimal(18,6),
-  valor_comissao decimal(18,6),
-  taxa_desconto decimal(18,6),
-  valor_desconto decimal(18,6),
-  valor_total decimal(18,6),
-  troco decimal(18,6),
-  status_venda char(1),
-  nome_cliente varchar(100),
-  cpf_cnpj_cliente varchar(14),
-  sicronizado char(1) default 'N',
-  data_sincronizacao date,
-  hora_sincronizacao varchar(8),
+  id                 SERIAL  NOT NULL,
+  id_empresa         INTEGER NOT NULL,
+  id_cliente         INTEGER,
+  id_vendedor        INTEGER NOT NULL,
+  id_pdv_operador    INTEGER,
+  id_pdv_movimento   INTEGER,
+  id_nfe_cabecalho   INTEGER,
+  data_hora_venda    TIMESTAMP,
+  valor_subtotal     DECIMAL(18, 6),
+  taxa_comissao      DECIMAL(18, 6),
+  valor_comissao     DECIMAL(18, 6),
+  taxa_desconto      DECIMAL(18, 6),
+  valor_desconto     DECIMAL(18, 6),
+  valor_total        DECIMAL(18, 6),
+  troco              DECIMAL(18, 6),
+  status_venda       CHAR(1),
+  nome_cliente       VARCHAR(100),
+  cpf_cnpj_cliente   VARCHAR(14),
+  sicronizado        CHAR(1) DEFAULT 'N',
+  data_sincronizacao DATE,
+  hora_sincronizacao VARCHAR(8),
   PRIMARY KEY (id),
   FOREIGN KEY (id_empresa) REFERENCES empresa (id),
   FOREIGN KEY (id_cliente) REFERENCES cliente (id),
   FOREIGN KEY (id_vendedor) REFERENCES vendedor (id),
   FOREIGN KEY (id_pdv_operador) REFERENCES pdv_operador (id),
   FOREIGN KEY (id_pdv_movimento) REFERENCES pdv_movimento (id)
+
 );
 
 CREATE TABLE pdv_venda_detalhe
 (
-  id serial NOT NULL,
-  id_produto integer,
-  id_pdv_venda_cabecalho integer,
-  quantidade decimal(18,6),
-  valor_unitario decimal(18,6),
-  valor_subtotal decimal(18,6),
-  taxa_desconto decimal(18,6),
-  valor_desconto decimal(18,6),
-  valor_total decimal(18,6),
-  taxa_comissao decimal(18,6),
-  valor_comissao decimal(18,6),
+  id                     SERIAL NOT NULL,
+  id_produto             INTEGER,
+  id_pdv_venda_cabecalho INTEGER,
+  quantidade             DECIMAL(18, 6),
+  valor_unitario         DECIMAL(18, 6),
+  valor_subtotal         DECIMAL(18, 6),
+  taxa_desconto          DECIMAL(18, 6),
+  valor_desconto         DECIMAL(18, 6),
+  valor_total            DECIMAL(18, 6),
+  taxa_comissao          DECIMAL(18, 6),
+  valor_comissao         DECIMAL(18, 6),
   PRIMARY KEY (id),
   FOREIGN KEY (id_pdv_venda_cabecalho) REFERENCES pdv_venda_cabecalho (id),
   FOREIGN KEY (id_produto) REFERENCES produto (id)
@@ -5813,33 +5800,31 @@ CREATE TABLE pdv_venda_detalhe
 
 CREATE TABLE pdv_tipo_pagamento
 (
-  id serial NOT NULL,
-  codigo char(2),
-  descricao varchar(20),
-  permite_troco char(1),
-  gera_parcelas char(1),
+  id            SERIAL NOT NULL,
+  codigo        CHAR(2),
+  descricao     VARCHAR(20),
+  permite_troco CHAR(1),
+  gera_parcelas CHAR(1),
   PRIMARY KEY (id)
 );
 
 CREATE TABLE pdv_forma_pagamento
 (
-  id serial NOT NULL,
-  id_pdv_tipo_pagamento integer NOT NULL,
-  id_pdv_venda_cabecalho integer NOT NULL,
-  forma char(2),
-  valor decimal(18,6),
-  cartao_tipo_integracao char(1),
-  cnpj_operadora_cartao varchar(14),
-  bandeira char(2),
-  numero_autorizacao varchar(20),
-  estorno char(1),
-  troco decimal(18,6),
+  id                     SERIAL  NOT NULL,
+  id_pdv_tipo_pagamento  INTEGER NOT NULL,
+  id_pdv_venda_cabecalho INTEGER NOT NULL,
+  forma                  CHAR(2),
+  valor                  DECIMAL(18, 6),
+  cartao_tipo_integracao CHAR(1),
+  cnpj_operadora_cartao  VARCHAR(14),
+  bandeira               CHAR(2),
+  numero_autorizacao     VARCHAR(20),
+  estorno                CHAR(1),
+  troco                  DECIMAL(18, 6),
   PRIMARY KEY (id),
   FOREIGN KEY (id_pdv_tipo_pagamento) REFERENCES pdv_tipo_pagamento (id),
   FOREIGN KEY (id_pdv_venda_cabecalho) REFERENCES pdv_venda_cabecalho (id)
 );
-
-
 
 -- ------------------------------------------------------------
 -- Tabela que armazena o cabeçalho das notas fiscais eletrônicas.
@@ -6393,7 +6378,7 @@ CREATE INDEX FK_PRODUTO_NFE
 
 CREATE TABLE NFE_FORMA_PAGAMENTO (
   ID                     SERIAL  NOT NULL,
-  ID_PDV_TIPO_PAGAMENTO INTEGER NOT NULL,
+  ID_PDV_TIPO_PAGAMENTO  INTEGER NOT NULL,
   ID_NFE_CABECALHO       INTEGER NOT NULL,
   FORMA                  CHAR(2),
   VALOR                  DECIMAL(18, 6),
@@ -7030,7 +7015,7 @@ CREATE TABLE OS_ABERTURA (
   FONE_CONTATO                 VARCHAR(15),
   VALOR_TOTAL                  DECIMAL(18, 6),
   VALOR_TOTAL_DESCONTO         DECIMAL(18, 6),
-  VALOR_TOTAL_PRODUTO          DECIMAL(18, 6),
+  VALOR_TOTAL_PRODUTOS          DECIMAL(18, 6),
   VALOR_TOTAL_SERVICOS         DECIMAL(18, 6),
   OBSERVACAO_CLIENTE           TEXT,
   OBSERVACAO_ABERTURA          TEXT,
@@ -7505,7 +7490,6 @@ CREATE INDEX FK_MDFE_INFORMACAO_SEGURO
 CREATE INDEX IFK_FK_MDFE_INFORMACAO_SEGURO
   ON MDFE_INFORMACAO_SEGURO (ID_MDFE_CABECALHO);
 
-
-
-
-
+--Relacionamentos
+ALTER TABLE pdv_venda_cabecalho
+  ADD CONSTRAINT pdv_venda_cabecalho_id_nfe_cabecalho_fkey FOREIGN KEY (id_nfe_cabecalho) REFERENCES nfe_cabecalho (id);
