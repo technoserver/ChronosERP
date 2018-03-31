@@ -37,4 +37,8 @@ public interface Constantes {
         OsStatus STATUS_CANCELADO = new OsStatus(7, "CANCELADO");
     }
 
+    interface MODULO {
+        String NFE = "230";
+    }
+
 }

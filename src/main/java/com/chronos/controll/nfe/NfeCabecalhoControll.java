@@ -66,7 +66,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private int intervaloParcelas;
     private Date primeiroVencimento;
     private String observacao;
-    private boolean podeIncluirProduto;
+    private boolean podeIncluirProduto = false;
     private boolean duplicidade;
     private boolean dadosSalvos;
     private String justificativa;
@@ -424,6 +424,17 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao enviar a carta de correção!", e);
+        }
+    }
+
+    public void verificarSituacao() {
+        try {
+            configuracao = configuracao != null ? configuracao : configuraNfe();
+            nfeService.verificarSituacao(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Ocorreu um erro ao consultar a nfe!", ex);
         }
     }
 

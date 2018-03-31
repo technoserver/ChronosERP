@@ -42,7 +42,10 @@
                                nomeAtributo="#{nfeCabecalhoControll.dataFinal}"/>
             </div>
 
-            <erp:gridDadosSemForm idDataTable="dataTableNfe" controller="#{nfeCabecalhoControll}">
+            <erp:gridDadosSemForm idDataTable="dataTableNfe"
+                                  id="table"
+                                  exibirAcoes="false"
+                                  controller="#{nfeCabecalhoControll}">
                 <p:column headerText="Cliente" sortBy="#{row.cliente.pessoa.nome}">
                     <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
                 </p:column>
@@ -71,6 +74,32 @@
                     <h:outputLabel
                             value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
+                <p:column headerText="Ações" width="110" styleClass="text-center">
+                    <p:commandLink title="Alterar"
+                                   action="#{nfeCabecalhoControll.doEdit()}"
+                                   class=" btn btn-default"
+                                   oncomplete="addClass()"
+                                   update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                    >
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{nfeCabecalhoControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{nfeCabecalhoControll.remover()}"
+                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                   process="formCentro:telaGrid:table:dataTableNfe"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default"
+                                   rendered="#{row.podeExcluir}"
+                    >
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{nfeCabecalhoControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
             </erp:gridDadosSemForm>
         </erp:formularioGrid>
 
@@ -85,6 +114,16 @@
 
             <div class="row">
                 <div class="col-xs-12 col-md-12">
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Consultar NF-e"
+                                   value="Verificar Situação"
+                                   actionListener="#{nfeCabecalhoControll.verificarSituacao}"
+                                   rendered="#{nfeCabecalhoControll.objeto.enviada}"
+                                   id="btnConsultarNfe">
+                        <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                    </h:commandLink>
+
                     <h:commandLink class="btn btn-default"
                                    title="Transmitir NF-e"
                                    actionListener="#{nfeCabecalhoControll.transmitirNfe}"

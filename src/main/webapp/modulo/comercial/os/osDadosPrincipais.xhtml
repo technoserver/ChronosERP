@@ -91,10 +91,11 @@
         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                        idComponente="osAberturaDataPrevisao" label="Data Previsao"
                        nomeAtributo="#{osAberturaControll.objeto.dataPrevisao}"/>
-        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                        idComponente="osAberturaHoraPrevisao" label="Hora Previsao"
-                        nomeAtributo="#{osAberturaControll.objeto.horaPrevisao}"
-                        tamanhoMaximo="8"/>
+        <erp:campoMascara mascara="99:99"
+                          styleClass="col-xs-12 col-sm-2 col-md-2"
+                          idComponente="osAberturaHoraPrevisao" label="Hora Previsao"
+                          nomeAtributo="#{osAberturaControll.objeto.horaPrevisao}"/>
+
 
     </div>
 

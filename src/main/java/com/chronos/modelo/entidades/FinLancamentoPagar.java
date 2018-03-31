@@ -10,10 +10,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "FIN_LANCAMENTO_PAGAR")
@@ -74,8 +71,13 @@ public class FinLancamentoPagar implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "finLancamentoPagar", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FinLctoPagarNtFinanceira> listaFinLctoPagarNtFinanceira;
 
-    public FinLancamentoPagar() {
+
+    @PrePersist
+    @PreUpdate
+    private void prePersist() {
+        this.quantidadeParcela = quantidadeParcela == null ? getListaFinParcelaPagar().size() : this.quantidadeParcela;
     }
+
 
     public Integer getId() {
         return id;
@@ -226,7 +228,7 @@ public class FinLancamentoPagar implements Serializable {
     }
 
     public List<FinParcelaPagar> getListaFinParcelaPagar() {
-        return listaFinParcelaPagar;
+        return Optional.ofNullable(listaFinParcelaPagar).orElse(new ArrayList<>());
     }
 
     public void setListaFinParcelaPagar(List<FinParcelaPagar> listaFinParcelaPagar) {
@@ -234,7 +236,7 @@ public class FinLancamentoPagar implements Serializable {
     }
 
     public Set<FinLctoPagarNtFinanceira> getListaFinLctoPagarNtFinanceira() {
-        return listaFinLctoPagarNtFinanceira;
+        return Optional.ofNullable(listaFinLctoPagarNtFinanceira).orElse(new HashSet<>());
     }
 
     public void setListaFinLctoPagarNtFinanceira(Set<FinLctoPagarNtFinanceira> listaFinLctoPagarNtFinanceira) {

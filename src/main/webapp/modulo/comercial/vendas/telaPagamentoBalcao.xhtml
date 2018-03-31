@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
@@ -234,6 +234,8 @@
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputText>
                         </h:column>
+
+
                     </h:dataTable>
                 </div>
             </fieldset>
@@ -287,10 +289,10 @@
                         <td class="nowrap" width="1">
                             <h4>R$
                                 <span id="sub-total">
-                                        <h:outputText value="#{balcaoControll.venda.valorSubtotal}">
-                                            <f:convertNumber pattern="#,##0.00"/>
-                                        </h:outputText>
-                                    </span>
+                                    <h:outputText value="#{balcaoControll.venda.valorSubtotal}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </span>
                             </h4>
                         </td>
                     </tr>
@@ -299,10 +301,10 @@
                         <td class="nowrap" width="1">
                             <h4>R$
                                 <span id="descontos">
-                                        <h:outputText value="#{balcaoControll.desconto}">
-                                            <f:convertNumber pattern="#,##0.00"/>
-                                        </h:outputText>
-                                    </span>
+                                    <h:outputText value="#{balcaoControll.desconto}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </span>
                             </h4>
                         </td>
                     </tr>
@@ -311,10 +313,10 @@
                         <td class="nowrap" width="1">
                             <h4>R$
                                 <span id="acrescimos">
-                                        <h:outputText value="#{balcaoControll.acrescimo}">
-                                            <f:convertNumber pattern="#,##0.00"/>
-                                        </h:outputText>
-                                    </span>
+                                    <h:outputText value="#{balcaoControll.acrescimo}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </span>
                             </h4>
                         </td>
                     </tr>
@@ -323,10 +325,10 @@
                         <td class="nowrap" width="1">
                             <h4>R$
                                 <span id="pagamentos">
-                                        <h:outputText value="#{balcaoControll.totalRecebido}">
-                                            <f:convertNumber pattern="#,##0.00"/>
-                                        </h:outputText>
-                                    </span>
+                                    <h:outputText value="#{balcaoControll.totalRecebido}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </span>
                             </h4>
                         </td>
                     </tr>
@@ -335,10 +337,10 @@
                         <td class="nowrap" width="1">
                             <h4>R$
                                 <span id="restante">
-                                        <h:outputText value="#{balcaoControll.saldoRestante}">
-                                            <f:convertNumber pattern="#,##0.00"/>
-                                        </h:outputText>
-                                    </span>
+                                    <h:outputText value="#{balcaoControll.saldoRestante}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </span>
                             </h4>
                         </td>
                     </tr>
@@ -348,10 +350,10 @@
                         <td class="nowrap" width="1">
                             <h4>R$
                                 <span id="troco">
-                                        <h:outputText value="#{balcaoControll.troco}">
-                                            <f:convertNumber pattern="#,##0.00"/>
-                                        </h:outputText>
-                                    </span>
+                                    <h:outputText value="#{balcaoControll.troco}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </span>
                             </h4>
                         </td>
                     </tr>
@@ -361,10 +363,10 @@
                         <td class="nowrap" width="1">
                             <h4>R$
                                 <span id="valor-receber">
-                                        <h:outputText value="#{balcaoControll.totalReceber}">
-                                            <f:convertNumber pattern="#,##0.00"/>
-                                        </h:outputText>
-                                    </span>
+                                    <h:outputText value="#{balcaoControll.totalReceber}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
+                                </span>
                             </h4>
                         </td>
                     </tr>
@@ -383,6 +385,7 @@
                 </p:commandLink>
                 &nbsp;
                 <h:commandLink class="btn btn-lg btn-danger"
+                               id="botao-cancelar"
                                action="#{balcaoControll.cancelarPagamento}">
                     <p:ajax update="formCentro:tela-pagamento,:formCentro:telaPdv"/>
                     <span class="glyphicon glyphicon-remove margin-right-10px"></span>Cancelar

@@ -1,31 +1,28 @@
 package com.chronos.dto;
 
-import com.chronos.modelo.entidades.Cliente;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.Fornecedor;
+import com.chronos.modelo.entidades.NfeDuplicata;
 import com.chronos.modelo.entidades.VendaCondicoesPagamento;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by john on 09/09/17.
  */
-public class LancamentoReceber {
+public class LancamentoPagar {
 
     private int id;
-    private String numDocumento;
     private BigDecimal valorTotal;
     private Date dataLancamento;
-    private Cliente cliente;
     private Fornecedor fornecedor;
     private String codigoModulo;
     private VendaCondicoesPagamento condicoesPagamento;
-    private Empresa emrpesa;
+    private Set<NfeDuplicata> duplicatas;
+    private Empresa empresa;
 
-    public LancamentoReceber() {
-
-    }
 
     public int getId() {
         return id;
@@ -35,13 +32,6 @@ public class LancamentoReceber {
         this.id = id;
     }
 
-    public String getNumDocumento() {
-        return numDocumento;
-    }
-
-    public void setNumDocumento(String numDocumento) {
-        this.numDocumento = numDocumento;
-    }
 
     public BigDecimal getValorTotal() {
         return valorTotal;
@@ -59,13 +49,6 @@ public class LancamentoReceber {
         this.dataLancamento = dataLancamento;
     }
 
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
 
     public VendaCondicoesPagamento getCondicoesPagamento() {
         return condicoesPagamento;
@@ -83,12 +66,12 @@ public class LancamentoReceber {
         this.codigoModulo = codigoModulo;
     }
 
-    public Empresa getEmrpesa() {
-        return emrpesa;
+    public Empresa getEmpresa() {
+        return empresa;
     }
 
-    public void setEmrpesa(Empresa emrpesa) {
-        this.emrpesa = emrpesa;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     public Fornecedor getFornecedor() {
@@ -97,5 +80,13 @@ public class LancamentoReceber {
 
     public void setFornecedor(Fornecedor fornecedor) {
         this.fornecedor = fornecedor;
+    }
+
+    public Set<NfeDuplicata> getDuplicatas() {
+        return duplicatas;
+    }
+
+    public void setDuplicatas(Set<NfeDuplicata> duplicatas) {
+        this.duplicatas = duplicatas;
     }
 }

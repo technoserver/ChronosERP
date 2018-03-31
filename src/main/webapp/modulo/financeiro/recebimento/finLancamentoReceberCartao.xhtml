@@ -68,6 +68,45 @@
                                    nomeFuncao=" Lancamento de contas Receber"
                                    id="telaDetalhe"
         >
+            <p:dataTable id="dataTableFinExtratoContaBanco" var="row"
+                         value="#{finLancamentoReceberCartaoControll.objeto.listaFinParcelaReceberCartao}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         paginatorPosition="bottom"
+                         resizableColumns="true">
+
+                <p:column headerText="Num. Parcela" width="100">
+                    <h:outputLabel value="#{row.numeroParcela}"/>
+                </p:column>
+
+                <p:column headerText="Valor bruto" styleClass="text-right" width="140">
+                    <h:outputLabel value="#{row.valorBruto}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Encargos" styleClass="text-right" width="140">
+                    <h:outputLabel value="#{row.valorEncargos}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor liquido" styleClass="text-right" width="140">
+                    <h:outputLabel value="#{row.valorLiquido}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data emissão" styleClass="text-center" width="160">
+                    <h:outputLabel value="#{row.dataEmissao}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Vencimento" styleClass="text-center" width="140">
+                    <h:outputLabel value="#{row.dataVencimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Pago" styleClass="text-center" width="150">
+                    <i class="fa #{row.pago?'fa-check text-success' :'fa-ban text-danger'}" aria-hidden="true"></i>
+                </p:column>
+            </p:dataTable>
         </erp:telaInclusaoAlteracao>
     </ui:define>
 

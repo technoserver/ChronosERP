@@ -361,7 +361,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
 
                 listaFiltro.add(new Filtro("idTributOperacaoFiscal", operacaoFiscal.getId()));
                 listaFiltro.add(new Filtro("idTributGrupoTributario", item.getProduto().getTributGrupoTributario().getId()));
-                listaFiltro.add(new Filtro("ufDestino", "=", destinatario.getUf() == null ? ufEmpresa : destinatario.getUf()));
+                listaFiltro.add(new Filtro("ufDestino", "=", destinatario == null || destinatario.getUf() == null ? ufEmpresa : destinatario.getUf()));
 
                 ViewTributacaoIcms icms = icmsRepository.get(ViewTributacaoIcms.class, listaFiltro);
                 if (icms != null) {

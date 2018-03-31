@@ -26,6 +26,9 @@ public class NfeDuplicata implements Serializable {
     @ManyToOne(optional = false)
     private NfeCabecalho nfeCabecalho;
 
+    @Transient
+    private ContaCaixa contaCaixa;
+
     public NfeDuplicata() {
     }
 
@@ -69,4 +72,26 @@ public class NfeDuplicata implements Serializable {
         this.nfeCabecalho = nfeCabecalho;
     }
 
+    public ContaCaixa getContaCaixa() {
+        return contaCaixa;
+    }
+
+    public void setContaCaixa(ContaCaixa contaCaixa) {
+        this.contaCaixa = contaCaixa;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NfeDuplicata)) return false;
+
+        NfeDuplicata that = (NfeDuplicata) o;
+
+        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }

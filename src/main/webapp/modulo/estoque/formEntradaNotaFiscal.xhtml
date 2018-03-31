@@ -278,8 +278,8 @@
                     </h:commandLink>
                 </div>
             </div>
-            <div class="row">
-                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6 m-b"
+            <div class="row m-b">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                   label="Natureza Financeira"
                                   id="naturezaFinanceira"
                                   itemLabel="#{objeto.descricao}"
@@ -288,6 +288,15 @@
                                   nomeAtributo="#{entradaNotaFiscalControll.naturezaFinanceira}"
                                   idComponente="componenteNaturezaFinanceira"
                                   />
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Conta caixa"
+                                  id="contaCaixa"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{entradaNotaFiscalControll}"
+                                  completeMethod="getListaContaCaixa"
+                                  nomeAtributo="#{entradaNotaFiscalControll.contaCaixa}"
+                                  idComponente="entradaContaCaixa"
+                />
             </div>
 
             <p:dataTable id="dataTableDuplicata" var="obj"

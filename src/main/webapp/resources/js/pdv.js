@@ -75,6 +75,42 @@ $(document).bind('keydown', function (event) {
 
             return false;
         }
+        if (event.which == 117) {
+            $('#pdv').find('#formCentro\\:botao-confirma-pagamento').click();
+            return false;
+        }
+
+        if (event.which == 118) {
+            $('#pdv').find('#formCentro\\:botao-finalizar').click();
+            return false;
+        }
+
+        if (event.which == 119) {
+            $('#pdv').find('#formCentro\\:botao-cancelar').click();
+            return false;
+        }
+
+
+    }
+
+    if ($('#formCentro\\:tela-impressao').css('display') == 'block') {
+
+
+        if (event.which == 116) {
+            var $link = $('#pdv').find('#formCentro\\:imprimir-cupom');
+            window.open($link.attr('href'), '_blank');
+            return false;
+        }
+
+        if (event.which == 117) {
+            $('#pdv').find('#formCentro\\:emitir-nfce').click();
+            return false;
+        }
+
+        if (event.which == 118) {
+            $('#pdv').find('#formCentro\\:nova-venda').click();
+            return false;
+        }
     }
 
 

@@ -23,6 +23,10 @@
 
         <h:outputStylesheet library="css" name="pdv.css"/>
         <style type="text/css">
+            #pdv {
+                font-family: 'Source Sans Pro', sans-serif;
+            }
+
             li.token-input-token p, li.token-input-token span {
                 padding-top: 12px
             }
@@ -91,6 +95,7 @@
 
             .bg-green {
                 background-color: #00a65a !important;
+                color: #fff;
             }
 
             .form-control-table[disabled], .form-control-table[readonly], fieldset[disabled] .form-control-table {
@@ -135,87 +140,157 @@
                 height: 60px !important;
             }
 
-            .label-pdv > label {
+            .input-valor-pagar input {
+                font-weight: bold;
                 font-size: 20px !important;
-                font-weight: normal !important;
+                height: 60px !important;
             }
 
-            .input-group .input-group-addon {
-                border-radius: 0;
-                background-color: #f4f4f4;
+            .table-striped > thead > tr:nth-child(odd) > td,
+            .table-striped > thead > tr:nth-child(odd) > th {
+                background-color: #dadada;
             }
 
-            .input-group-addon:last-child {
-                border-left: 0;
-            }
 
-            .btn.btn-primary {
-                background-color: #0C1B25;
-                border-color: #1F4968;
-            }
 
-            .btn.btn-primary {
-                border-color: #0C1B25;
-            }
 
         </style>
     </ui:define>
 
 
     <ui:define name="gridDados">
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{nfceControll.telaGrid}" id="telaGrid">
+                <div class="ibox-content">
+                    <erp:msgPermissao permissao="#{nfceControll.podeConsultar()}"/>
+                    <p:dataTable value="#{nfceControll.dataModel}"
+                                 var="row" id="dataTableNfce" paginator="true"
+                                 rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                                 reflow="true" rendered="#{nfceControll.podeConsultar()}"
+                                 resizableColumns="true" lazy="true"
+                    >
+
+
+                        <p:column headerText="Número" sortBy="#{row.numero}" width="120">
+                            <h:outputLabel value="#{row.numero}">
+                                <f:convertNumber type="number" parent="0"/>
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="Chave Acesso">
+                            <h:outputLabel value="#{row.chaveAcesso}#{row.digitoChaveAcesso}"/>
+                        </p:column>
+                        <p:column headerText="Data Emissão"
+                                  sortBy="#{row.dataHoraEmissao}" width="120">
+                            <h:outputLabel value="#{row.dataHoraEmissao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Total" style="text-align: right;" width="100">
+                            <h:outputLabel value="#{row.valorTotal}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Status" sortBy="#{row.statusNota}" width="120">
+                            <h:outputLabel
+                                    value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
+                        </p:column>
+                        <p:column headerText="Ações" width="60">
+                            <p:menuButton>
+                                <p:menuitem value="Cancelar NFCe"
+                                            icon="fa fa-ban"
+                                            update=":formJustificativaCancelamento:panelJustificativaCancelamento"
+                                            oncomplete="PF('dialogJustificativaCancelamento').show();"
+                                >
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{nfceControll.vendaSelecionada}"/>
+                                </p:menuitem>
+                                <p:menuitem value="Cupom"
+                                            icon="fa fa-print" ajax="false"
+                                            rendered="#{row.podeCancelar}"
+                                            action="#{nfceControll.danfe}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{nfceControll.vendaSelecionada}"/>
+                                </p:menuitem>
+                            </p:menuButton>
+                        </p:column>
+
+
+                    </p:dataTable>
+                </div>
+                <h:panelGroup class="ibox-footer" layout="block">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6  text-center">
+
+                            <p:commandButton value="Nova Venda"
+                                             actionListener="#{nfceControll.novaVenda}"
+                                             process="@this"
+                                             oncomplete="if (!args.validationFailed) {$('.navbar-minimalize').trigger('click');$('.ibox-title').css({ display: 'none' });}"
+                                             update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                            >
+
+                            </p:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             id="btnCancelar"
+                                             action="/privado/index?faces-redirect=true" immediate="true"
+                            />
+                        </div>
+                    </div>
+
+                </h:panelGroup>
+            </p:outputPanel>
+        </p:outputPanel>
 
 
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <h:panelGroup id="telaPdv" layout="block">
-            <div id="pdv" class="row">
-                <div id="botao-operacoes">
-                    <i class="fa fa-cogs"></i>
-                </div>
-                <h:panelGroup layout="block" id="tela-caixa" class="etapa" style="overflow: hidden"
-                              rendered="#{nfceControll.telaCaixa}">
-                    <ui:include src="iniciarMovimento.xhtml"/>
+
+        <h:panelGroup layout="block" id="outputPanelDetalhe">
+            <p:outputPanel rendered="#{!nfceControll.telaGrid}">
+
+                <h:panelGroup id="telaPdv" layout="block">
+                    <div id="pdv" class="row">
+                        <p:focus context="formCentro:produto"/>
+                        <h:panelGroup layout="block" id="mensagem-pdv">
+                            <h:messages showSummary="true"/>
+                        </h:panelGroup>
+                        <div id="botao-operacoes">
+                            <i class="fa fa-cogs"></i>
+                        </div>
+                        <h:panelGroup layout="block" id="tela-caixa" class="etapa" style="overflow: hidden"
+                                      rendered="#{nfceControll.telaCaixa}">
+                            <ui:include src="iniciarMovimento.xhtml"/>
+
+                        </h:panelGroup>
+                        <h:panelGroup layout="block" id="tela-inicial" class="etapa" style="overflow: hidden"
+                                      rendered="#{nfceControll.telaVenda}">
+                            <ui:include src="telaVendaPdv.xhtml"/>
+                        </h:panelGroup>
+                        <h:panelGroup layout="block" id="tela-pagamento" class="etapa" style="overflow: hidden"
+                                      rendered="#{nfceControll.telaPagamentos}">
+                            <ui:include src="pagamentos.xhtml"/>
+                            <div class="hidden-xs teclas">
+                                F5 = Mudar Forma de Pagamento | F6 = Confirmar Pagamento | F7 = Finalizar Venda | F8 = Cancelar
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGroup layout="block" id="tela-impressao" class="etapa" style="overflow: hidden"
+                                      rendered="#{nfceControll.telaImpressao}">
+
+                        </h:panelGroup>
+                    </div>
 
                 </h:panelGroup>
-                <h:panelGroup layout="block" id="tela-inicial" class="etapa" style="overflow: hidden"
-                              rendered="#{nfceControll.telaVenda}">
-                    <ui:include src="telaVendaPdv.xhtml"/>
-                </h:panelGroup>
-                <h:panelGroup layout="block" id="tela-pagamento" class="etapa" style="overflow: hidden"
-                              rendered="#{nfceControll.telaPagamentos}">
-                    <ui:include src="pagamentos.xhtml"/>
-                </h:panelGroup>
-                <h:panelGroup layout="block" id="tela-impressao" class="etapa" style="overflow: hidden"
-                              rendered="#{nfceControll.telaImpressao}">
-
-                </h:panelGroup>
-            </div>
-
+            </p:outputPanel>
         </h:panelGroup>
+
+
     </ui:define>
 
-    <ui:define name="outrasTelas2">
-        <h:form id="formMovimento">
-            <p:dialog id="dialogMovimento" header="Movimento" widgetVar="dialogMovimento"
-                      showEffect="slide" width="700" height="350" hideEffect="slide" closable="false"
-                      resizable="true" modal="true" dynamic="true" responsive="true">
-                <p:outputPanel id="panelMovimento">
-                    <iframe src="#{facesContext.externalContext.request.contextPath}/temp/#{nfceControll.nomeImpressaoMovimento}"
-                            width="100%" height="100%" scrolling="yes"></iframe>
-                </p:outputPanel>
-
-                <f:facet name="footer">
-                    <p:commandButton value="Fechar"
-                                     oncomplete="PF('dialogMovimento').hide(); "
-                                     update=":formCentro:telaPdv"
-                                     process="@this"/>
-                </f:facet>
-
-            </p:dialog>
-        </h:form>
-    </ui:define>
 
 
     <ui:define name="outrasTelas">
@@ -241,7 +316,7 @@
                             <h:commandButton class="btn btn-primary btn-lg"
                                              action="#{balcaoControll.selecionarVendedor}"
                                              value="salvar">
-                                <p:ajax update=":formOutrasTelas:panelVendedor,formCentro:botao-indicar-vendedor,:formCentro"
+                                <p:ajax update=":formOutrasTelas:panelVendedor,formCentro:indicar-vendedor,:formCentro"
                                         oncomplete="if (!args.validationFailed) {PF('dialogVendedor').hide();}"
                                         process="@form"/>
                             </h:commandButton>
@@ -295,7 +370,7 @@
                             <h:commandButton class="btn btn-primary btn-lg"
                                              action="#{nfceControll.vincularCliente}"
                                              value="salvar">
-                                <p:ajax update=":formOutrasTelas1:panelCliente,formCentro:botao-indicar-cliente,:formCentro"
+                                <p:ajax update=":formOutrasTelas1:panelCliente,formCentro:indicar-cliente,:formCentro"
                                         oncomplete="if (!args.validationFailed) {PF('dialogCliente').hide();}"
                                         process="@form"/>
                             </h:commandButton>
@@ -310,6 +385,29 @@
             </p:dialog>
         </h:form>
     </ui:define>
+
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formMovimento">
+            <p:dialog id="dialogMovimento" header="Movimento" widgetVar="dialogMovimento"
+                      showEffect="slide" width="700" height="350" hideEffect="slide" closable="false"
+                      resizable="true" modal="true" dynamic="true" responsive="true">
+                <p:outputPanel id="panelMovimento">
+                    <iframe src="#{facesContext.externalContext.request.contextPath}/temp/#{nfceControll.nomeImpressaoMovimento}"
+                            width="100%" height="100%" scrolling="yes"></iframe>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar"
+                                     oncomplete="PF('dialogMovimento').hide(); "
+                                     update=":formCentro:telaPdv"
+                                     process="@this"/>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
 
     <ui:define name="outrasTelas3">
         <h:form id="formDanfe">
@@ -333,6 +431,52 @@
         </h:form>
     </ui:define>
 
+    <ui:define name="outrasTelas4">
+        <h:form id="formJustificativaCancelamento">
+            <p:dialog id="dialogJustificativaCancelamento"
+                      header="Justificativa Cancelamento" responsive="true"
+                      widgetVar="dialogJustificativaCancelamento" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelJustificativaCancelamento">
+                    <div class="row">
+
+                        <erp:campoTexto idComponente="labelJustificativaCancelamento"
+                                        label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        nomeAtributo="#{nfceControll.justificativa}"
+                                        tamanhoMaximo="255" requerido="true" tamanhoMinimo="15">
+
+                        </erp:campoTexto>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Enviar"
+                                             actionListener="#{nfceControll.cancelarNfce()}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogJustificativaCancelamento').hide();}"
+                                        process="@form"
+                                        update="panelJustificativaCancelamento,:formCentro:growl"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogJustificativaCancelamento').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
     <ui:define name="javaScript">
         <h:outputScript library="js" name="pdv.js"/>
         <script type="application/javascript">
@@ -346,6 +490,8 @@
                     PrimeFaces.focus('formCentro:produto');
                 });
             }
+
+
         </script>
     </ui:define>
 

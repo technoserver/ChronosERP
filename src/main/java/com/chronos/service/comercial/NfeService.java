@@ -5,6 +5,7 @@ import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TProcEvento;
 import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TRetEnvEvento;
 import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema.envinfe.TRetEnviNFe;
+import br.inf.portalfiscal.nfe.schema.retconssitnfe.TRetConsSitNFe;
 import com.chronos.bo.nfe.NfeTransmissao;
 import com.chronos.bo.nfe.NfeUtil;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
@@ -314,7 +315,9 @@ public class NfeService implements Serializable {
             filtros.add(new Filtro(Filtro.AND, "id", Filtro.IGUAL, descricao));
             // listaProduto = produtoDao.getEntitys(Produto.class, filtros);
         } else {
-            filtros.add(new Filtro(Filtro.AND, "nome", Filtro.LIKE, descricao.trim()));
+            filtros.add(new Filtro(Filtro.OR, "nome", Filtro.LIKE, descricao.trim()));
+            filtros.add(new Filtro(Filtro.OR, "gtin", Filtro.LIKE, descricao.trim()));
+            filtros.add(new Filtro(Filtro.OR, "codigoInterno", Filtro.LIKE, descricao.trim()));
             //  listaProduto = produtoDao.getEntitys(Produto.class, filtros);
         }
         if(moduloVenda){
@@ -337,9 +340,9 @@ public class NfeService implements Serializable {
             nfe.setListaDuplicata(new HashSet<>());
         }
         nfe.getListaDuplicata().clear();
-        BigDecimal residuo = BigDecimal.ZERO;
+        BigDecimal residuo;
         BigDecimal somaParcelas = BigDecimal.ZERO;
-        BigDecimal valorParcela = BigDecimal.ZERO;
+        BigDecimal valorParcela;
         if (condicoesPagamento != null) {
             int number = 0;
             for (VendaCondicoesParcelas parcelas : condicoesPagamento.getParcelas()) {
@@ -560,6 +563,7 @@ public class NfeService implements Serializable {
         camLogo = new File(camLogo).exists() ? camLogo : context.getRealPath("resources/images/logo_nfe_peq.png");
         Image logo = new ImageIcon(camLogo).getImage();
         parametrosRelatorio.put("Logo", logo);
+        parametrosRelatorio.put("danfe_logo", logo);
         String expressaoDataSource = "";
         String nomeRelatorioJasper = "";
         if (statusTransmissao == StatusTransmissao.AUTORIZADA) {
@@ -680,6 +684,40 @@ public class NfeService implements Serializable {
         return cancelado;
     }
 
+    @Transactional
+    public void verificarSituacao(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
+
+
+        TRetConsSitNFe result = consultarNfe(nfe.getChaveAcessoCompleta(), configuracao);
+
+        if (result.getCStat().equals("100")) {
+            NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(nfe.getCodigoModelo(), empresa);
+            TEnviNFe nfeEnv = gerarNfeEnv(nfe, configuracao);
+            nfe.setNumeroProtocolo(result.getProtNFe().getInfProt().getNProt());
+            nfe.setVersaoAplicativo(result.getProtNFe().getInfProt().getVerAplic());
+            String xmlProc = XmlUtil.criaNfeProc(nfeEnv, result.getProtNFe());
+            nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
+            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false);
+            if (Integer.valueOf(nfe.getNumero()) == notaFiscalTipo.getUltimoNumero()) {
+                atualizarNumeroNfe(notaFiscalTipo, Integer.valueOf(nfe.getNumero()));
+            }
+            salvaNfeXml(xmlProc, nfe);
+            salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml());
+        } else {
+            nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
+            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false);
+        }
+    }
+
+    public TRetConsSitNFe consultarNfe(String chave, ConfiguracaoEmissorDTO configuracao) throws Exception {
+        NfeTransmissao transmissao = new NfeTransmissao(empresa);
+        String schemas = org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : configuracao.getCaminhoSchemas();
+        configuracao.setCaminhoSchemas(schemas);
+        TRetConsSitNFe result = transmissao.consultarNfe(chave, configuracao);
+
+        return result;
+    }
+
     public void validacaoNfe(NfeCabecalho nfe) throws Exception {
         if (StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             throw new Exception("Esta NF-e já foi autorizada. Operação não permitida ");
@@ -713,6 +751,7 @@ public class NfeService implements Serializable {
         }
 
         BigDecimal valorDucplicata = BigDecimal.ZERO;
+
         if (nfe.getListaDuplicata() != null && !nfe.getListaDuplicata().isEmpty()) {
             valorDucplicata = nfe.getListaDuplicata().stream()
                     .map(NfeDuplicata::getValor)

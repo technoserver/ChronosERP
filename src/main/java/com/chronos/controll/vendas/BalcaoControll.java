@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
 
 /**
  * Created by john on 19/09/17.
@@ -89,6 +88,7 @@ public class BalcaoControll implements Serializable {
 
     private PdvVendaCabecalho venda;
     private PdvVendaDetalhe item;
+    private PdvVendaDetalhe itemSelecionado;
     private PdvTipoPagamento tipoPagamento;
     private List<PdvTipoPagamento> listTipoPagamento;
     private PdvFormaPagamento formaPagamentoSelecionado;
@@ -288,11 +288,10 @@ public class BalcaoControll implements Serializable {
         }
     }
 
-    public void excluir(Produto produto) {
 
-        int indice = IntStream.range(0, venda.getListaPdvVendaDetalhe().size()).filter(i -> venda.getListaPdvVendaDetalhe().get(i).getProduto().equals(produto)).findAny()
-                .getAsInt();
-        venda.getListaPdvVendaDetalhe().remove(indice);
+    public void excluir() {
+        venda.getListaPdvVendaDetalhe().remove(itemSelecionado);
+        venda.calcularValorTotal();
     }
 
     private Optional<PdvVendaDetalhe> getItemVenda(Produto produto) {
@@ -803,5 +802,13 @@ public class BalcaoControll implements Serializable {
 
     public void setOperadoras(List<OperadoraCartao> operadoras) {
         this.operadoras = operadoras;
+    }
+
+    public PdvVendaDetalhe getItemSelecionado() {
+        return itemSelecionado;
+    }
+
+    public void setItemSelecionado(PdvVendaDetalhe itemSelecionado) {
+        this.itemSelecionado = itemSelecionado;
     }
 }

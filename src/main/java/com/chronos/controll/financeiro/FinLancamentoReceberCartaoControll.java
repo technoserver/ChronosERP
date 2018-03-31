@@ -30,6 +30,13 @@ public class FinLancamentoReceberCartaoControll extends AbstractControll<FinLanc
     }
 
     @Override
+    public void doEdit() {
+        FinLancamentoReceberCartao lan = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        setObjeto(lan);
+        setTelaGrid(false);
+    }
+
+    @Override
     protected Class<FinLancamentoReceberCartao> getClazz() {
         return FinLancamentoReceberCartao.class;
     }

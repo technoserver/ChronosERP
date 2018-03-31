@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -208,7 +208,7 @@
                         </f:facet>
                         <h:outputText value="#{row.produto.descricaoPdv}" rendered="#{not empty row}"/>
                     </h:column>
-                    <h:column>
+                    <h:column pt:style="text-align:right;">
                         <f:facet name="header">
                             <h:outputText value="Desc."/>
                         </f:facet>
@@ -216,13 +216,23 @@
                             <f:convertNumber pattern="#,##0.00"/>
                         </h:outputText>
                     </h:column>
-                    <h:column>
+                    <h:column pt:style="text-align:right;">
                         <f:facet name="header">
                             <h:outputText value="Preço"/>
                         </f:facet>
                         <h:outputText value="#{row.valorUnitario}" rendered="#{not empty row}">
                             <f:convertNumber pattern="#,##0.00"/>
                         </h:outputText>
+                    </h:column>
+                    <h:column pt:style="width:10px;text-align:center;">
+                        <h:commandLink styleClass="btn btn-default"
+                                       action="#{balcaoControll.excluir}">
+                            <p:ajax process="@this"
+                                    update=":formCentro:produtos-selecionados"
+                                    oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
+                            <f:setPropertyActionListener value="#{row}" target="#{balcaoControll.itemSelecionado}"/>
+                            <i class="glyphicon glyphicon-remove"></i>
+                        </h:commandLink>
                     </h:column>
                 </h:dataTable>
             </div>

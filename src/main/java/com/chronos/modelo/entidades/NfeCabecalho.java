@@ -1946,7 +1946,7 @@ public class NfeCabecalho implements Serializable {
 
     public boolean isPodeEnviar() {
         StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
-        return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA);
+        return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA) && (status != StatusTransmissao.ENVIADA);
     }
 
     public boolean isPodeCancelar() {
@@ -1955,7 +1955,11 @@ public class NfeCabecalho implements Serializable {
 
     public boolean isPodeExcluir() {
         StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
-        return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA);
+        return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA) && (status != StatusTransmissao.ENVIADA);
+    }
+
+    public boolean isEnviada() {
+        return StatusTransmissao.ENVIADA == StatusTransmissao.valueOfCodigo(statusNota);
     }
 
     public boolean isTemProduto() {

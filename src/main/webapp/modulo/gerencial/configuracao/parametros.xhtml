@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Paramentros
+    </ui:define>
+
+    <ui:define name="tela">
+        Paramentros
+    </ui:define>
+    <ui:define name="controle">
+        Paramentros
+    </ui:define>
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{admParametrosControll}"
+                                   nomeFuncao="AUDITORIA"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Comissao Perfil"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{comissaoObjetivoControll}"
+                                  completeMethod="getListaComissaoPerfil"
+                                  nomeAtributo="#{comissaoObjetivoControll.objeto.comissaoPerfil}"
+                                  idComponente="comissaoObjetivoComissaoPerfil"/>
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+</ui:composition>

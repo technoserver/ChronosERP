@@ -19,9 +19,10 @@ import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import net.sf.jasperreports.engine.JRException;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -30,16 +31,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static java.nio.file.FileSystems.getDefault;
 
 /**
  * Created by john on 04/10/17.
@@ -47,6 +43,8 @@ import static java.nio.file.FileSystems.getDefault;
 @Named
 @ViewScoped
 public class NfceControll implements Serializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(NfceControll.class);
 
     private static final long serialVersionUID = 1L;
     @Inject
@@ -146,7 +144,7 @@ public class NfceControll implements Serializable {
         context = facesContext.getExternalContext();
         listVendedores = new ArrayList<>();
         operacao = operacaoFiscalRepository.get(1, TributOperacaoFiscal.class);
-        novaVenda();
+        telaGrid = true;
 
     }
 
@@ -192,30 +190,24 @@ public class NfceControll implements Serializable {
 
     public void novaVenda() {
         try {
+            configuracao = getConfiguraNfce();
             telaVenda = true;
+            telaGrid = false;
             telaImpressao = false;
             telaCaixa = false;
             telaPagamentos = false;
-            if (venda != null && venda.getId() != null) {
-                nomeCupom = "cupom" + venda.getNumero() + ".pdf";
-                String caminho = context.getRealPath("/") + System.getProperty("file.separator") + "temp";
-                File fileTemp = new File(context.getRealPath("/") + System.getProperty("file.separator") + "temp");
-                Files.deleteIfExists(getDefault().getPath(fileTemp.getPath(), nomeCupom));
-
-            }
             venda = new NfeCabecalho();
             venda.setTributOperacaoFiscal(operacao);
             item = new NfeDetalhe();
-            configuracao = getConfiguraNfce();
+
+
             nfeService.dadosPadroes(venda, ModeloDocumento.NFCE, empresa, new ConfiguracaoEmissorDTO(configuracao));
             desconto = BigDecimal.ZERO;
 
-            File fileTemp = new File(context.getRealPath("/") + System.getProperty("file.separator") + "temp");
-            if (!fileTemp.exists()) {
-                fileTemp.mkdir();
-            }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            FacesContext.getCurrentInstance().validationFailed();
+            logger.error("Erro ao iniciar nova venda", ex);
+            Mensagem.addErrorMessage("", ex);
         }
 
     }
@@ -446,7 +438,7 @@ public class NfceControll implements Serializable {
             venda = nfeService.atualizarTotais(venda);
             Mensagem.addInfoMessage("Produto exluso com sucesso");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("erro ao exluir item", ex);
             Mensagem.addErrorMessage("", ex);
         }
     }
@@ -505,19 +497,19 @@ public class NfceControll implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos NFce">
 
-    private PdvConfiguracao getConfiguraNfce() {
+    private PdvConfiguracao getConfiguraNfce() throws Exception {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
         configuracao = configuracao == null ? configuracoes.get(PdvConfiguracao.class, filtros) : configuracao;
+        if (configuracao == null) {
+            throw new Exception("NFC-e não configurada !!!");
+        }
         return configuracao;
     }
 
     private void definirNumeroItens() {
-
         int i = 0;
-        for (NfeDetalhe item : venda.getListaNfeDetalhe()) {
-            item.setNumeroItem(++i);
-        }
+        for (NfeDetalhe item : venda.getListaNfeDetalhe()) item.setNumeroItem(++i);
 
     }
 
@@ -532,7 +524,6 @@ public class NfceControll implements Serializable {
             boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
             StatusTransmissao status = nfeService.transmitirNFe(venda, new ConfiguracaoEmissorDTO(configuracao), estoque);
             if (status == StatusTransmissao.AUTORIZADA) {
-                // lancaMovimentos();
                 gerarCupom();
                 Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 RequestContext.getCurrentInstance().addCallbackParam("vendaFinalizada", true);
@@ -548,10 +539,11 @@ public class NfceControll implements Serializable {
 
                 }
             }
-            ex.printStackTrace();
+            logger.error("erro de time out", ex.getCause());
             Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("Erro ao transmitir", ex.getCause());
+
             Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
         }
     }
@@ -569,21 +561,21 @@ public class NfceControll implements Serializable {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("erro ao cancelar NFCe", e.getCause());
             Mensagem.addErrorMessage("Ocorreu um erro ao cancelar a NFC-e!\n", e);
         }
 
     }
 
 
-    private void gerarCupom() throws JRException, IOException {
+    private void gerarCupom() throws Exception {
 
         try {
             configuracao = getConfiguraNfce();
             nfeService.gerarDanfe(venda, new ConfiguracaoEmissorDTO(configuracao));
             nomeCupom = "cupom" + venda.getNumero() + ".pdf";
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("erro ao gerar cupom", ex.getCause());
             Mensagem.addErrorMessage("", ex);
         }
     }
@@ -596,7 +588,7 @@ public class NfceControll implements Serializable {
             nfeService.danfe(vendaSelecionada, new ConfiguracaoEmissorDTO(configuracao));
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.error("erro ao gerar danfe", ex.getMessage());
             Mensagem.addErrorMessage("", ex);
         }
     }
@@ -673,7 +665,7 @@ public class NfceControll implements Serializable {
             List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao,true);
             listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Erro ao lista os produtos", e.getMessage());
         }
         return listaProduto;
     }
@@ -687,7 +679,7 @@ public class NfceControll implements Serializable {
     }
 
     public boolean podeConsultar() {
-        // return false;
+
         return FacesUtil.isUserInRole("NFCE_CONSULTA")
                 || FacesUtil.isUserInRole("ADMIN");
     }
@@ -932,5 +924,13 @@ public class NfceControll implements Serializable {
 
     public void setJustificativa(String justificativa) {
         this.justificativa = justificativa;
+    }
+
+    public NfeDetalhe getItemSelecionado() {
+        return itemSelecionado;
+    }
+
+    public void setItemSelecionado(NfeDetalhe itemSelecionado) {
+        this.itemSelecionado = itemSelecionado;
     }
 }

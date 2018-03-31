@@ -153,7 +153,7 @@
                                              disabled="#{!nfceControll.item.produtoValido}"
                                              action="#{nfceControll.salvaProduto}">
                                 <p:ajax process="@form"
-                                        update="formCentro:tableProduto,formCentro:mensagem,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,:formCentro:panelBotoes"
+                                        update="formCentro:tableProduto,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
                                         oncomplete="$(function(){PrimeFaces.focus('formCentro:produto');})"/>
                             </h:commandButton>
 

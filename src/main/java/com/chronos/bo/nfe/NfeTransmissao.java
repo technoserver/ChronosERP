@@ -1,9 +1,11 @@
 package com.chronos.bo.nfe;
 
+import br.inf.portalfiscal.nfe.schema.conssitnfe.TConsSitNFe;
 import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento;
 import br.inf.portalfiscal.nfe.schema.envcce.TRetEnvEvento;
 import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema.inutnfe.TInutNFe;
+import br.inf.portalfiscal.nfe.schema.retconssitnfe.TRetConsSitNFe;
 import br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe;
 import br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe.InfInut;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
@@ -73,6 +75,18 @@ public class NfeTransmissao {
         TRetEnvEvento retorno = Nfe.cce(evento, false, ConstantesNFe.NFE);
 
         return retorno;
+    }
+
+    public TRetConsSitNFe consultarNfe(String chave, ConfiguracaoEmissorDTO configuracao) throws Exception {
+        instanciarConfiguracoes(configuracao);
+        TConsSitNFe consSitNFe = new TConsSitNFe();
+        consSitNFe.setVersao("3.10");
+        consSitNFe.setTpAmb(configuracao.getWebserviceAmbiente().toString());
+        consSitNFe.setXServ("CONSULTAR");
+        consSitNFe.setChNFe(chave);
+
+        return Nfe.consultaXml(consSitNFe, false, ConstantesNFe.NFE);
+
     }
 
     public void instanciarConfiguracoes(ConfiguracaoEmissorDTO configuracao) throws Exception {

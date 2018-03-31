@@ -4,15 +4,12 @@ import com.chronos.bo.nfe.ImportaXMLNFe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.enuns.AcaoLog;
-import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.FornecedorService;
 import com.chronos.service.cadastros.ProdutoFornecedorService;
 import com.chronos.service.estoque.EntradaNotaFiscalService;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
 import org.apache.commons.io.FileUtils;
 import org.primefaces.context.RequestContext;
@@ -60,12 +57,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
     private Repository<VendaCondicoesParcelas> parcelasRepository;
-    @Inject
-    private EstoqueRepository estoques;
+
     @Inject
     private Repository<TributOperacaoFiscal> operacoes;
     @Inject
     private Repository<VendaCondicoesPagamento> pagamentoRepository;
+    @Inject
+    private Repository<ContaCaixa> contaCaixaRepository;
 
     @Inject
     private EntradaNotaFiscalService entradaService;
@@ -154,35 +152,12 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     }
 
-    @Transactional
+
     @Override
     public void salvar() {
         try {
-            boolean inclusao = false;
-            if (getObjeto().getId() == null) {
-                inclusao = true;
-                for (NfeDetalhe detalhe : getObjeto().getListaNfeDetalhe()) {
-                    atualizarEstoque(detalhe);
 
-                }
-            } else {
-                List<NfeDetalhe> listaNfeDetOld = estoques.getItens(getObjeto());
-                for (NfeDetalhe detalhe : listaNfeDetOld) {
-                    atualizarEstoque(detalhe);
-                }
-                if (getObjeto().getTributOperacaoFiscal().getEstoqueVerificado() && getObjeto().getTributOperacaoFiscal().getEstoque()) {
-                    estoques.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), getObjeto().getListaNfeDetalhe());
-                } else if (getObjeto().getTributOperacaoFiscal().getEstoqueVerificado()) {
-                    estoques.atualizaEstoqueEmpresaControle(empresa.getId(), getObjeto().getListaNfeDetalhe());
-                } else {
-                    estoques.atualizaEstoqueEmpresa(empresa.getId(), getObjeto().getListaNfeDetalhe());
-                }
-            }
-            String descricao = "Entrada da NFe :" + getObjeto().getNumero() + " Fornecedor :" + getObjeto().getEmitente().getNome();
-            super.salvar();
-            if (inclusao) {
-                gerarLog(AcaoLog.INSERT, descricao, "Entrada de NF");
-            }
+            entradaService.salvar(getObjeto(), contaCaixa, naturezaFinanceira);
 
             setTelaGrid(true);
         } catch (Exception ex) {
@@ -319,7 +294,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             }
         } catch (Exception ex) {
             Mensagem.addErrorMessage("Erro ao importa XML", ex);
-            throw new RuntimeException("Erro ao importa XML : " + ex.getMessage());
+            ex.printStackTrace();
 
 
         }
@@ -553,7 +528,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         if ( naturezaFinanceira == null) {
             FacesContext.getCurrentInstance().validationFailed();
             Mensagem.addErrorMessage("É preciso seleciona a natureza financeira !!!");
-        }else if(StringUtils.isEmpty(getObjeto().getNumero())) {
+        } else if (contaCaixa == null) {
+            FacesContext.getCurrentInstance().validationFailed();
+            Mensagem.addErrorMessage("É preciso seleciona a conta caixa !!!");
+        } else if (StringUtils.isEmpty(getObjeto().getNumero())) {
             FacesContext.getCurrentInstance().validationFailed();
             Mensagem.addErrorMessage("Numero da NFe não definido !!!");
         }else if(getObjeto().getValorTotal() == null || getObjeto().getValorTotal().compareTo(BigDecimal.ZERO)<=0){
@@ -619,6 +597,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             numero++;
 
             NfeDuplicata d = new NfeDuplicata();
+            d.setContaCaixa(contaCaixa);
             d.setNfeCabecalho(getObjeto());
             d.setNumero(Integer.valueOf(getObjeto().getNumero()) + "/" + String.valueOf(numero));
             d.setValor(Biblioteca.multiplica(getObjeto().getValorTotal(), p.getTaxa()).divide(BigDecimal.valueOf(100), RoundingMode.HALF_DOWN));
@@ -745,18 +724,20 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         return listaNaturezaFinanceira;
     }
 
+
+    public List<ContaCaixa> getListaContaCaixa(String nome) {
+        List<ContaCaixa> listaContaCaixa = new ArrayList<>();
+        try {
+            atributos = new Object[]{"nome"};
+            listaContaCaixa = contaCaixaRepository.getEntitys(ContaCaixa.class, "nome", nome, atributos);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaContaCaixa;
+    }
+
     // </editor-fold>
 
-
-    private void atualizarEstoque(NfeDetalhe detalhe) throws Exception {
-        if (getObjeto().getTributOperacaoFiscal().getEstoqueVerificado() && getObjeto().getTributOperacaoFiscal().getEstoque()) {
-            estoques.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
-        } else if (getObjeto().getTributOperacaoFiscal().getEstoqueVerificado()) {
-            estoques.atualizaEstoqueEmpresaControle(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
-        } else {
-            estoques.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
-        }
-    }
 
     private void validarDados() throws Exception {
 
@@ -1007,5 +988,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setNaturezaFinanceira(NaturezaFinanceira naturezaFinanceira) {
         this.naturezaFinanceira = naturezaFinanceira;
+    }
+
+    public ContaCaixa getContaCaixa() {
+        return contaCaixa;
+    }
+
+    public void setContaCaixa(ContaCaixa contaCaixa) {
+        this.contaCaixa = contaCaixa;
     }
 }

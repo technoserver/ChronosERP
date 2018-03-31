@@ -42,7 +42,7 @@ public class NfeCalculoControll {
         }
         Crt crt = Crt.valueOfCodigo(Integer.valueOf(empresa.getCrt()));
         TipoOperacao tipoOperacao = isOperacaoInterestadual();
-        TipoPessoa tipoPessoa = destinatario.getCpfCnpj() == null || destinatario.getCpfCnpj().length() == 11 ? TipoPessoa.Fisica : TipoPessoa.Juridica;
+        TipoPessoa tipoPessoa = destinatario == null || destinatario.getCpfCnpj() == null || destinatario.getCpfCnpj().length() == 11 ? TipoPessoa.Fisica : TipoPessoa.Juridica;
         imposto = tributacao.tributarNfe(produto, crt, tipoOperacao, tipoPessoa);
 
         if (produto.isServico()) {
@@ -126,7 +126,9 @@ public class NfeCalculoControll {
     private TipoOperacao isOperacaoInterestadual() {
         TipoOperacao tipoOperacao = TipoOperacao.OperacaoInterestadual;
         for (EmpresaEndereco end : empresa.getListaEndereco()) {
-            if (end.getPrincipal().equals("S") && !end.getUf().equals(destinatario.getUf())) {
+            if (destinatario == null || destinatario.getUf() == null) {
+                tipoOperacao = TipoOperacao.OperacaoInterna;
+            } else if (end.getPrincipal().equals("S") && !end.getUf().equals(destinatario.getUf())) {
                 tipoOperacao = TipoOperacao.OperacaoInterna;
             }
         }

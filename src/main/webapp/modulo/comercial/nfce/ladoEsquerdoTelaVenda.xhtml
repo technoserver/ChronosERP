@@ -4,6 +4,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
@@ -14,7 +15,7 @@
             <div class="inner">
                 <div>
                     <label style="margin-right: 5px;color: #FFFFFF">CLIENTE:</label>
-                    <p:commandLink id="botao-indicar-cliente"
+                    <p:commandLink id="indicar-cliente"
                                    style="font-size: 14px;font-family: 'Source Sans Pro', sans-serif;"
                                    action="#{nfceControll.indentificarCliente}"
                                    oncomplete="PF('dialogCliente').show()"
@@ -24,7 +25,7 @@
                 </div>
                 <div>
                     <label style="margin-right: 5px;color: #FFFFFF">VENDEDOR:</label>
-                    <p:commandLink id="botao-indicar-vendedor"
+                    <p:commandLink id="indicar-vendedor"
                                    action="#{nfceControll.buscarVendedores}"
                                    oncomplete="PF('dialogVendedor').show()"
                                    update=":formOutrasTelas:panelVendedor">
@@ -37,7 +38,7 @@
             </div>
         </div>
         <!--Inicio Produtos Selecionado -->
-        <div id="produtos-selecionados">
+        <h:panelGroup id="produtos-selecionados" layout="block" styleClass="produtos-selecionados">
             <div id="lista" class="table-responsive">
                 <h:dataTable var="row" value="#{nfceControll.venda.listaNfeDetalhe}"
                              class="table table-striped" id="tableProduto">
@@ -71,6 +72,16 @@
                             <f:convertNumber pattern="#,##0.00"/>
                         </h:outputText>
                     </h:column>
+                    <h:column pt:style="width:10px;text-align:center;">
+                        <h:commandLink styleClass="btn btn-default"
+                                       action="#{nfceControll.excluirItem}">
+                            <p:ajax process="@this"
+                                    update=":formCentro:produtos-selecionados"
+                                    oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
+                            <f:setPropertyActionListener value="#{row}" target="#{nfceControll.itemSelecionado}"/>
+                            <i class="glyphicon glyphicon-remove"></i>
+                        </h:commandLink>
+                    </h:column>
                 </h:dataTable>
             </div>
             <h4>TOTAL DA VENDA</h4>
@@ -80,9 +91,11 @@
                 </h:panelGroup>
 
             </div>
-        </div>
+        </h:panelGroup>
 
         <!-- Fim produtos Selecionados -->
+
+
         <h:panelGroup layout="block" id="panelBotoes" class="row">
             <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
                 <h:commandButton id="aguardar"
@@ -93,11 +106,10 @@
                 </h:commandButton>
             </div>
             <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
-                <h:commandButton id="cancelar"
+                <h:commandButton id="cancelar-venda"
                                  value="CANCELAR"
-
                                  type="button" class="btn btn-danger btn-lg" style="width:100%"
-                                 disabled="#{nfceControll.venda.temProduto}">
+                >
                     <f:passThroughAttribute name="data-toggle" value="modal"/>
                     <f:passThroughAttribute name="data-target" value="#myModal"/>
                 </h:commandButton>

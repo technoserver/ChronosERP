@@ -11,44 +11,46 @@
     <div class="row">
         <div class="col-sm-6 col-md-6 col-lg-6">
 
+            <h:panelGroup id="panelFormaPagamento" layout="block">
+                <fieldset class="muted">
+                    <legend>
+                        <h3 class="margin-top-0">
+                            <i class="fa fa-money margin-right-10px"></i>Forma de pagamento
+                        </h3>
+                    </legend>
+                    <div class="">
+                        <h:selectOneMenu id="PedidoFormaPagamentoId"
+                                         value="#{nfceControll.tipoPagamento}"
+                                         class="form-control"
+                                         converter="defaultConverter">
+                            <f:selectItems value="#{nfceControll.listTipoPagamento}" var="obj" itemValue="#{obj}"
+                                           itemLabel="#{obj.descricao}"/>
+                        </h:selectOneMenu>
+                    </div>
 
-            <fieldset class="muted">
-                <legend>
-                    <h3 class="margin-top-0">
-                        <i class="fa fa-money margin-right-10px"></i>Forma de pagamento
-                    </h3>
-                </legend>
-                <div class="">
-                    <h:selectOneMenu id="PedidoFormaPagamentoId"
-                                     value="#{nfceControll.tipoPagamento}"
-                                     class="form-control"
-                                     converter="defaultConverter">
-                        <f:selectItems value="#{nfceControll.listTipoPagamento}" var="obj" itemValue="#{obj}"
-                                       itemLabel="#{obj.descricao}"/>
-                    </h:selectOneMenu>
-                </div>
+                    <div class="margin-top-10px row">
+                        <div class="col-sm-8 col-md-8 col-lg-8">
+                            <h4>TOTAL PAGO</h4>
+                            <div class="input-group">
+                                <p:inputNumber id="PedidoValorPago"
+                                               value="#{nfceControll.valorPago}"/>
+                                <h:commandLink class="input-group-addon btn btn-lg btn-primary"
+                                               action="#{nfceControll.lancaPagamento}"
+                                               disabled="#{nfceControll.podeLancaPagamento}"
+                                               style="background-color: #1ab394"
+                                               id="botao-confirma-pagamento">
+                                    <p:ajax update=":formCentro:panelFormaPagamento,:formCentro:mensagem-pdv,:formCentro:tablePagamentos,:formCentro:PedidoValorPago,:formCentro:panelValoresPagamento"
+                                            process="@this,:formCentro:PedidoFormaPagamentoId,:formCentro:PedidoValorPago"/>
+                                    <h4 style="color:#FFFFFF">
+                                        <i class="fa fa-angle-double-right margin-right-10px"></i>Confirmar
+                                    </h4>
+                                </h:commandLink>
 
-                <div class="margin-top-10px row">
-                    <div class="col-sm-8 col-md-8 col-lg-8">
-                        <h4>TOTAL PAGO</h4>
-                        <div class="input-group">
-                            <p:inputNumber id="PedidoValorPago"
-                                           value="#{nfceControll.valorPago}"/>
-                            <h:commandLink class="input-group-addon btn btn-lg btn-primary"
-                                           action="#{nfceControll.lancaPagamento}"
-                                           disabled="#{nfceControll.podeLancaPagamento}"
-                                           id="botao-confirma-pagamento">
-                                <p:ajax update=":formCentro:botao-confirma-pagamento,:formCentro:mensagem,:formCentro:tablePagamentos,:formCentro:PedidoValorPago,:formCentro:panelValoresPagamento"
-                                        process="@this,:formCentro:PedidoFormaPagamentoId,:formCentro:PedidoValorPago"/>
-                                <h4 style="color:#FFFFFF">
-                                    <i class="fa fa-angle-double-right margin-right-10px"></i>Confirmar
-                                </h4>
-                            </h:commandLink>
-
+                            </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
+                </fieldset>
+            </h:panelGroup>
 
 
             <fieldset class="hidden-xs muted" style="max-height: 300px; overflow: auto;">
@@ -135,77 +137,76 @@
                 </legend>
                 <table width="100%" cellpadding="5" cellspacing="0" class="margin-bottom-10px">
                     <tbody>
-                        <tr class="border-bottom-1px">
-                            <td>
-                                <h4>SUBTOTAL:</h4>
-                            </td>
-                            <td class="nowrap" width="1">
-                                <h4>R$ <span id="sub-total">#{nfceControll.venda.valorTotalFormatado()}</span></h4>
-                            </td>
-                        </tr>
-                        <tr class="border-bottom-1px">
-                            <td><h4>DESCONTOS:</h4></td>
-                            <td class="nowrap" width="1">
-                                <h4>R$
-                                    <span id="descontos">#{nfceControll.formatarValor(nfceControll.desconto)}</span>
-                                </h4>
-                            </td>
-                        </tr>
-                        <tr class="border-bottom-1px">
-                            <td><h4>ACRECIMOS:</h4></td>
-                            <td class="nowrap" width="1">
-                                <h4>R$
-                                    <span id="acrescimos">#{nfceControll.formatarValor(nfceControll.acrescimo)}</span>
-                                </h4>
-                            </td>
-                        </tr>
-                        <tr class="border-bottom-1px">
-                            <td><h4>PAGAMENTOS:</h4></td>
-                            <td class="nowrap" width="1">
-                                <h4>R$
-                                    <span id="pagamentos">#{nfceControll.formatarValor(nfceControll.totalRecebido)}</span>
-                                </h4>
-                            </td>
-                        </tr>
-                        <tr class="border-bottom-1px">
-                            <td><h4>RESTANTE:</h4></td>
-                            <td class="nowrap" width="1">
-                                <h4>R$
-                                    <span id="restante">#{nfceControll.formatarValor(nfceControll.saldoRestante)}</span>
-                                </h4>
-                            </td>
-                        </tr>
+                    <tr class="border-bottom-1px">
+                        <td>
+                            <h4>SUBTOTAL:</h4>
+                        </td>
+                        <td class="nowrap" width="1">
+                            <h4>R$ <span id="sub-total">#{nfceControll.venda.valorTotalFormatado()}</span></h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>DESCONTOS:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="descontos">#{nfceControll.formatarValor(nfceControll.desconto)}</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>ACRECIMOS:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="acrescimos">#{nfceControll.formatarValor(nfceControll.acrescimo)}</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>PAGAMENTOS:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="pagamentos">#{nfceControll.formatarValor(nfceControll.totalRecebido)}</span>
+                            </h4>
+                        </td>
+                    </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>RESTANTE:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="restante">#{nfceControll.formatarValor(nfceControll.saldoRestante)}</span>
+                            </h4>
+                        </td>
+                    </tr>
 
-                        <tr class="border-bottom-1px">
-                            <td><h4>TROCO:</h4></td>
-                            <td class="nowrap" width="1">
-                                <h4>R$
-                                    <span id="troco">#{nfceControll.formatarValor(nfceControll.troco)}</span>
-                                </h4>
-                            </td>
-                        </tr>
+                    <tr class="border-bottom-1px">
+                        <td><h4>TROCO:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="troco">#{nfceControll.formatarValor(nfceControll.troco)}</span>
+                            </h4>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td><h4>TOTAL A PAGAR:</h4></td>
-                            <td class="nowrap" width="1">
-                                <h4>R$
-                                    <span id="valor-receber">#{nfceControll.formatarValor(nfceControll.totalReceber)}</span>
-                                </h4>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td><h4>TOTAL A PAGAR:</h4></td>
+                        <td class="nowrap" width="1">
+                            <h4>R$
+                                <span id="valor-receber">#{nfceControll.formatarValor(nfceControll.totalReceber)}</span>
+                            </h4>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </fieldset>
             <div class="both margin-top-10px text-right">
-                <h:commandLink id="botao-finalizar" type="button"
+                <p:commandLink id="botao-finalizar" type="button"
                                action="#{nfceControll.finalizarVenda}"
                                disabled="#{!nfceControll.podeFinalzarVenda}"
-                               class="btn btn-lg btn-success" value="Finalizar">
-                    <span class="glyphicon glyphicon-ok margin-right-10px"></span>
-                    <p:ajax update=":formCentro:growl,formCentro:tela-pagamento,:formCentro:telaPdv,:formDanfe:dialogDanfe"
-                            oncomplete="if (args.vendaFinalizada) {PF('dialogDanfe').show(); };"
-                            process="@form"/>
-                </h:commandLink>
+                               class="btn btn-lg btn-success"
+                               update=":formCentro:growl,formCentro:tela-pagamento,:formCentro:telaPdv,:formDanfe:dialogDanfe"
+                               oncomplete="if (args.vendaFinalizada) {PF('dialogDanfe').show(); $('.ibox-title').css({ display: 'none' })};">
+                    <i class="glyphicon glyphicon-ok margin-right-10px"></i>Finalizar
+                </p:commandLink>
                 &nbsp;
                 <h:commandLink class="btn btn-lg btn-danger"
                                action="#{nfceControll.cancelarPagamento}">
