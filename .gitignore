@@ -4,3 +4,4 @@
 /src/main/resources/rebel.xml
 /src/main/temp*
 ChronoERPLight.iml
+/nb-configuration.xml
