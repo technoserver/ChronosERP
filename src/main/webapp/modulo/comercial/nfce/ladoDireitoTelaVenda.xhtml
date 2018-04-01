@@ -76,13 +76,11 @@
                         </th>
                         <td class="padding-top-10px">
                             <p:inputNumber id="quantidade"
-                                           decimalPlaces="2"
-                                           minValue="0.001" maxValue="999"
+                                           decimalPlaces="4"
                                            value="#{nfceControll.item.quantidadeComercial}"
                                            required="true"
                                            requiredMessage="Informe a quantidade"
                                            class="inputs"
-                                           dir="rtl"
                                            disabled="#{empty nfceControll.item.produto}"
                                            onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:valorUnitario_input').focus(); return false;}"
                                            style="width: 100%"/>
@@ -99,7 +97,6 @@
                                            minValue="0.001" maxValue="999"
                                            value="#{nfceControll.item.valorUnitarioComercial}"
                                            required="true"
-                                           dir="rtl"
                                            requiredMessage="Informe o valor"
                                            class="inputs"
                                            disabled="#{empty nfceControll.item.produto}"
