@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
+                 version="2.1">
+
+    <named-native-query name="Vendas.totalPorMes" result-set-mapping="totalPorMesMapping">
+        <query>
+            SELECT
+            v.id,
+            p.nome as cliente,
+            pv.nome as vendedor,
+            v.situacao,
+            v.valor_subtotal,
+            v.valor_desconto,
+            v.valor_total,
+            v.valor_comissao,
+            v.data_venda,
+            n.numero,
+            'V' as origem,
+            empresa.razao_social AS empresa_razao_social,
+            empresa.nome_fantasia AS empresa_nome_fantasia,
+            empresa.cnpj AS empresa_cnpj,
+            empresa.inscricao_estadual AS empresa_inscricao_estadual,
+            empresa.imagem_logotipo AS empresa_imagem_logotipo,
+            empresa_endereco.logradouro AS empresa_endereco_logradouro,
+            empresa_endereco.numero AS empresa_endereco_numero,
+            empresa_endereco.complemento AS empresa_endereco_complemento,
+            empresa_endereco.bairro AS empresa_endereco_bairro,
+            empresa_endereco.cidade AS empresa_endereco_cidade,
+            empresa_endereco.cep AS empresa_endereco_cep,
+            empresa_endereco.fone AS empresa_endereco_fone,
+            empresa_endereco.uf AS empresa_endereco_uf,
+            empresa.email AS empresa_email
+            FROM
+            venda_cabecalho v
+            INNER JOIN cliente c ON v.id_cliente = c.id
+            INNER JOIN pessoa p ON c.id_pessoa = p.id
+            INNER JOIN vendedor vd ON vd.id = v.id_vendedor
+            INNER JOIN colaborador cl ON vd.id_colaborador = cl.id
+            INNER JOIN pessoa pv ON cl.id_pessoa = pv.id
+            INNER JOIN empresa empresa ON v.id_empresa = empresa.id
+            INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+            LEFT JOIN nfe_cabecalho n ON n.id_venda_cabecalho = v.id
+
+            WHERE empresa.id = 1 and empresa_endereco.principal = 'S' and (lower(p.nome) like '%' or p.nome is null )and
+            lower(pv.nome) like '%'
+            and v.data_venda BETWEEN '1990-01-01' and now() and (v.situacao = null or null is null)
+            and (v.id =null or null is null)
+
+
+            UNION
+
+            SELECT
+            v.id,
+            coalesce(TRIM(p.nome), 'Cliente não informado') as cliente,
+            pv.nome as vendedor,
+            v.status_venda,
+            v.valor_subtotal,
+            v.valor_desconto,
+            v.valor_total,
+            v.valor_comissao,
+            v.data_hora_venda as data_venda,
+            n.numero,
+            'B' as origem,
+            empresa.razao_social AS empresa_razao_social,
+            empresa.nome_fantasia AS empresa_nome_fantasia,
+            empresa.cnpj AS empresa_cnpj,
+            empresa.inscricao_estadual AS empresa_inscricao_estadual,
+            empresa.imagem_logotipo AS empresa_imagem_logotipo,
+            empresa_endereco.logradouro AS empresa_endereco_logradouro,
+            empresa_endereco.numero AS empresa_endereco_numero,
+            empresa_endereco.complemento AS empresa_endereco_complemento,
+            empresa_endereco.bairro AS empresa_endereco_bairro,
+            empresa_endereco.cidade AS empresa_endereco_cidade,
+            empresa_endereco.cep AS empresa_endereco_cep,
+            empresa_endereco.fone AS empresa_endereco_fone,
+            empresa_endereco.uf AS empresa_endereco_uf,
+            empresa.email AS empresa_email
+            FROM
+            pdv_venda_cabecalho V
+            LEFT JOIN cliente c ON v.id_cliente = c.id
+            LEFT JOIN pessoa p ON c.id_pessoa = p.id
+            INNER JOIN vendedor vd ON vd.id = v.id_vendedor
+            INNER JOIN colaborador cl ON vd.id_colaborador = cl.id
+            INNER JOIN pessoa pv ON cl.id_pessoa = pv.id
+            INNER JOIN empresa empresa ON v.id_empresa = empresa.id
+            INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+            LEFT JOIN nfe_cabecalho n ON n.id = v.id_nfe_cabecalho
+            WHERE empresa.id = 1 and empresa_endereco.principal = 'S' and (lower(p.nome) like '%' or p.nome is null )and
+            lower(pv.nome) like '%'
+            and v.data_hora_venda BETWEEN '1990-01-01' and now() and (v.status_venda = null or null is null)
+            and (v.id =null or null is null)
+            order by 9 desc
+
+        </query>
+    </named-native-query>
+
+    <sql-result-set-mapping name="totalPorMesMapping">
+        <constructor-result target-class="com.algaworks.brewer.dto.VendaMes">
+            <column name="mes" class="java.lang.String"/>
+            <column name="total" class="java.lang.Integer"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+</entity-mappings>

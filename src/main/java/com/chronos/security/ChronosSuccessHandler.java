@@ -65,8 +65,8 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             }
 
-            LocalDate dataPermitida = LocalDate.now().plusDays(5);
-            if (dataPermitida.isAfter(user.getDataVencimento())) {
+            LocalDate dataPermitida = LocalDate.now();
+            if (dataPermitida.isAfter(user.getDataVencimento().plusDays(5))) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_INADIPLENTE"));
             } else {
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADIMPLENTE"));

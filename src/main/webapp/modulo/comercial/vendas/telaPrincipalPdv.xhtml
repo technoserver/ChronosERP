@@ -29,7 +29,7 @@
             </p:column>
             <p:ajax event="itemSelect" listener="#{balcaoControll.selecionarProduto}"
                     update="formCentro:mostra-produto"
-                    oncomplete="document.getElementById('formCentro:quantidade_input').focus()"/>
+                    oncomplete="document.getElementById('formCentro:quantidade_input').focus(); document.getElementById('formCentro:quantidade_input').select();"/>
         </p:autoComplete>
         <br/>
 
@@ -151,7 +151,7 @@
                                              action="#{balcaoControll.addProduto}">
                                 <p:ajax process="@form"
                                         update="formCentro:tableProduto,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
-                                        oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
+                                        oncomplete="document.getElementById('formCentro:produto_input').focus();"/>
                             </h:commandButton>
 
                         </td>

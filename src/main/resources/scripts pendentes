@@ -17,50 +17,67 @@ cria campo valorTotalTributos em nfecabecalho
 cria coluna de de data de movimento em movimento_produto
 
 
-CREATE OR REPLACE VIEW movimento_caixa AS
- SELECT concat(m.id, s.id, 1)::integer AS id,
-    m.id AS idmovimento,
-    s.id AS idorigem,
-    s.data_sangria AS data_hora,
-    'Saída - Sangria' AS desricao,
-    s.valor,
-    '01'  AS codigo_forma_pagamento,
-    'Dinheiro' AS forma_pagamento,
-    'S'  AS tipo,
-    'Sangria' AS origem,
-    s.observacao
-   FROM pdv_movimento m
-     INNER JOIN pdv_sangria s ON s.id_pdv_movimento = m.id
-UNION
- SELECT concat(m.id, s.id, 2)::integer AS id,
-    m.id AS idmovimento,
-    s.id AS idorigem,
-    s.data_suprimento AS data_hora,
-    'Entrada - Acrécimo'::text AS desricao,
-    s.valor,
-    '01'::text AS codigo_forma_pagamento,
-    'Dinheiro'::text AS forma_pagamento,
-    'E'::text AS tipo,
-    'Suprimentos'::text AS origem,
-    s.observacao
-   FROM pdv_movimento m
-     JOIN pdv_suprimento s ON s.id_pdv_movimento = m.id
-UNION
- SELECT concat(m.id, v.id, t.id, 3)::integer AS id,
-    m.id AS idmovimento,
-    v.id AS idorigem,
-    v.data_hora_venda AS data_hora,
-    'Venda nº ' || v.id,
-    f.valor,
-    t.codigo AS codigo_forma_pagamento,
-    t.descricao AS forma_pagamento,
-    'E' AS tipo,
-    'PDV' AS origem,
-    '' AS observacao
-   FROM pdv_movimento m
-     INNER JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
-     INNER JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
-     INNER JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
-  ORDER BY 4;
+select
+   p.nome,sum(p.quantidade) as quantidade,
+   ROUND(sum(p.porcentagem),2) as porcetagem,
+   empresa_razao_social,
+   empresa_nome_fantasia,
+   empresa_cnpj,
+   empresa_inscricao_estadual,
+   empresa_imagem_logotipo,
+   empresa_endereco_logradouro,
+   empresa_endereco_numero,
+   empresa_endereco_complemento,
+   empresa_endereco_bairro,
+   empresa_endereco_cidade,
+   empresa_endereco_cep,
+   empresa_endereco_fone,
+   empresa_endereco_uf,
+   empresa_email
+ from (SELECT
+        CASE
+            WHEN (sum(i.quantidade) * 100.0 / sum(sum(i.quantidade)) OVER ()) <= 1::numeric THEN 'OUTROS'::character varying
+            ELSE p.nome
+        END AS nome,
+    sum(i.quantidade) AS quantidade,
+    sum(i.quantidade) * 100.0 / sum(sum(i.quantidade)) OVER () AS porcentagem
+   FROM produto p
+     INNER JOIN venda_detalhe i ON i.id_produto = p.id
+     INNER JOIN venda_cabecalho v ON i.id_venda_cabecalho = v.id
+     INNER JOIN pdv_venda_detalhe pi ON pi.id_produto = p.id
+     INNER JOIN pdv_venda_cabecalho pv ON pi.id_pdv_venda_cabecalho = pv.id
+   WHERE v.data_venda BETWEEN $P{dataInicial} and $P{dataFinal}
+  GROUP BY p.nome) as p,view_dados_empresa
+group by p.nome,empresa_razao_social,empresa_nome_fantasia,
+   empresa_cnpj,
+   empresa_inscricao_estadual,
+   empresa_imagem_logotipo,
+   empresa_endereco_logradouro,
+   empresa_endereco_numero,
+   empresa_endereco_complemento,
+   empresa_endereco_bairro,
+   empresa_endereco_cidade,
+   empresa_endereco_cep,
+   empresa_endereco_fone,
+   empresa_endereco_uf,
+   empresa_email
+order by 3 desc
 
 
+CREATE OR REPLACE VIEW view_quantidade_produto_vendido AS
+
+SELECT p.id,v.id_empresa, p.nome,i.quantidade,i.valor_unitario,i.valor_totaL,v.data_venda,COALESCE(p.custo_unitario ,0) as custo
+
+FROM produto p
+     INNER JOIN venda_detalhe i ON i.id_produto = p.id
+     INNER JOIN venda_cabecalho v ON i.id_venda_cabecalho = v.id
+WHERE v.situacao not in ('D','P','X','V')
+
+union
+
+SELECT p.id,v.id_empresa ,p.nome ,i.quantidade,i.valor_unitario,i.valor_totaL,v.data_hora_venda,COALESCE(p.custo_unitario ,0) as custo
+
+FROM produto p
+INNER JOIN pdv_venda_detalhe i ON i.id_produto = p.id
+INNER JOIN pdv_venda_cabecalho v ON i.id_pdv_venda_cabecalho = v.id
+WHERE v.status_venda = 'F';

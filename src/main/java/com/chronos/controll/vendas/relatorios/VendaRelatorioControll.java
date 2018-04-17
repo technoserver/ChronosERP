@@ -100,8 +100,8 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void imprimirComissoes() {
         parametros = new HashMap<>();
-        parametros.put("dataInicial", dataInicial);
-        parametros.put("dataFinal", dataFinal);
+        parametros.put("peridoInicial", dataInicial);
+        parametros.put("peridoFinal", dataFinal);
         parametros.put("idempresa", empresa.getId());
         if (idvendedor > 0) {
             parametros.put("idvendedor", idvendedor);

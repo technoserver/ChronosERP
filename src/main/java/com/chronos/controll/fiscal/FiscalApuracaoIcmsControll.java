@@ -3,7 +3,6 @@ package com.chronos.controll.fiscal;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.FiscalApuracaoIcms;
 import com.chronos.modelo.view.ViewSpedC190Id;
-import com.chronos.modelo.view.ViewSpedC390Id;
 import com.chronos.modelo.view.ViewSpedC490Id;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
@@ -32,8 +31,7 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
 
     @Inject
     private Repository<ViewSpedC190Id> viewSpedC190IdRepository;
-    @Inject
-    private Repository<ViewSpedC390Id> viewSpedC390IdRepository;
+
     @Inject
     private Repository<ViewSpedC490Id> viewSpedC490IdRepository;
 
@@ -120,15 +118,6 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
             }
 
 
-            // REGISTRO C390: REGISTRO ANALÍTICO DAS NOTAS FISCAIS DE VENDA A CONSUMIDOR (CÓDIGO 02)
-            filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
-            filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
-            List<ViewSpedC390Id> listaC390 = viewSpedC390IdRepository.getEntitys(ViewSpedC390Id.class, filtros);
-            for (int i = 0; i < listaC390.size(); i++) {
-                valorTotalDebitos = valorTotalDebitos.add(listaC390.get(i).getViewC390().getSomaIcms());
-            }
-
             // REGISTRO C490: REGISTRO ANALÍTICO DO MOVIMENTO DIÁRIO (CÓDIGO 02, 2D e 60).
             filtros = new ArrayList<>();
             filtros.add(new Filtro(Filtro.AND, "viewC490.dataVenda", Filtro.MAIOR_OU_IGUAL, dataInicio));
@@ -155,10 +144,6 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
                 valorTotalCreditos = valorTotalCreditos.add(listaNfeAnalitico.get(i).getViewSpedC190().getSomaValorIcms());
             }
 
-            // REGISTRO C390: REGISTRO ANALÍTICO DAS NOTAS FISCAIS DE VENDA A CONSUMIDOR (CÓDIGO 02)
-            for (int i = 0; i < listaC390.size(); i++) {
-                valorTotalCreditos = valorTotalCreditos.add(listaC390.get(i).getViewC390().getSomaIcms());
-            }
 
             // REGISTRO C490: REGISTRO ANALÍTICO DO MOVIMENTO DIÁRIO (CÓDIGO 02, 2D e 60).
             for (int i = 0; i < listaC490.size(); i++) {

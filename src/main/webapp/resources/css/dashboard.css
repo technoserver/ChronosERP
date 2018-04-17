@@ -183,10 +183,6 @@ body .ui-button.default-btn.ui-state-active {
     display: inherit !important;
 }
 
-input {
-    text-transform: uppercase !important;
-}
-
 ::-webkit-input-placeholder { /* WebKit browsers */
     text-transform: none !important;
 }
