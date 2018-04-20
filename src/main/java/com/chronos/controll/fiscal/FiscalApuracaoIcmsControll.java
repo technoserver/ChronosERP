@@ -119,13 +119,13 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
 
 
             // REGISTRO C490: REGISTRO ANALÍTICO DO MOVIMENTO DIÁRIO (CÓDIGO 02, 2D e 60).
-            filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND, "viewC490.dataVenda", Filtro.MAIOR_OU_IGUAL, dataInicio));
-            filtros.add(new Filtro(Filtro.AND, "viewC490.dataVenda", Filtro.MENOR_OU_IGUAL, dataFim));
-            List<ViewSpedC490Id> listaC490 = viewSpedC490IdRepository.getEntitys(ViewSpedC490Id.class, filtros);
-            for (int i = 0; i < listaC490.size(); i++) {
-                valorTotalDebitos = valorTotalDebitos.add(listaC490.get(i).getViewC490().getSomaIcms());
-            }
+//            filtros = new ArrayList<>();
+//            filtros.add(new Filtro(Filtro.AND, "viewC490.dataVenda", Filtro.MAIOR_OU_IGUAL, dataInicio));
+//            filtros.add(new Filtro(Filtro.AND, "viewC490.dataVenda", Filtro.MENOR_OU_IGUAL, dataFim));
+//            List<ViewSpedC490Id> listaC490 = viewSpedC490IdRepository.getEntitys(ViewSpedC490Id.class, filtros);
+//            for (int i = 0; i < listaC490.size(); i++) {
+//                valorTotalDebitos = valorTotalDebitos.add(listaC490.get(i).getViewC490().getSomaIcms());
+//            }
 
             getObjeto().setValorTotalDebito(valorTotalDebitos);
 
@@ -146,9 +146,9 @@ public class FiscalApuracaoIcmsControll extends AbstractControll<FiscalApuracaoI
 
 
             // REGISTRO C490: REGISTRO ANALÍTICO DO MOVIMENTO DIÁRIO (CÓDIGO 02, 2D e 60).
-            for (int i = 0; i < listaC490.size(); i++) {
-                valorTotalCreditos = valorTotalCreditos.add(listaC490.get(i).getViewC490().getSomaIcms());
-            }
+//            for (int i = 0; i < listaC490.size(); i++) {
+//                valorTotalCreditos = valorTotalCreditos.add(listaC490.get(i).getViewC490().getSomaIcms());
+//            }
 
             getObjeto().setValorTotalCredito(valorTotalCreditos);
 

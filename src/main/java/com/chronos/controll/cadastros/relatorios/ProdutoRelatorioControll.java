@@ -5,7 +5,7 @@ import com.chronos.modelo.entidades.ProdutoGrupo;
 import com.chronos.modelo.entidades.ProdutoSubGrupo;
 import com.chronos.repository.Repository;
 
-import javax.enterprise.context.RequestScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -13,12 +13,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by john on 14/09/17.
  */
 @Named
-@RequestScoped
+@ViewScoped
 public class ProdutoRelatorioControll extends AbstractRelatorioControll implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -28,13 +29,13 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
     private Repository<ProdutoSubGrupo> subGrupos;
 
     private String produto;
-    private String nomeSubgrupo;
+    private String subGrupo;
     private String inativo;
     private String tipoProduto;
     private ProdutoGrupo grupo;
-    private ProdutoSubGrupo subGrupo;
-    private List<ProdutoSubGrupo> listSubGrupos;
-    private List<String> tstStrings;
+
+    private List<String> listSubGrupos = new ArrayList<>();
+
 
 
     public void executarRelatorio() {
@@ -42,7 +43,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
         parametros = new HashMap<>();
         parametros.put("produto", retornaValorPadrao(produto));
-        parametros.put("subgrupo", retornaValorPadrao(getSubGrupo().getNome()));
+        parametros.put("subgrupo", subGrupo == null || subGrupo.equals("selecione") ? "%" : subGrupo);
         parametros.put("inativo", inativo);
         parametros.put("tipoProduto", tipoProduto);
         parametros.put("idempresa", empresa.getId());
@@ -58,6 +59,12 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         List<ProdutoGrupo> list = new LinkedList<>();
         try {
             list = grupos.getEntitys(ProdutoGrupo.class, "nome", "%", new Object[]{"nome"});
+
+            if (listSubGrupos.isEmpty()) {
+                listSubGrupos.add("selecione");
+            }
+
+
         } catch (Exception ex) {
 
         }
@@ -71,22 +78,20 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         listSubGrupos = new ArrayList<>();
         try {
             grupo = grupo == null ? new ProdutoGrupo(0, "") : grupo;
-            tstStrings = new ArrayList<>();
-            tstStrings.add("teste");
-            listSubGrupos = subGrupos.getEntitys(ProdutoSubGrupo.class, "produtoGrupo.id", grupo.getId(), new Object[]{"nome"});
+            listSubGrupos = subGrupos.getEntitys(ProdutoSubGrupo.class, "produtoGrupo.id", grupo.getId(), new Object[]{"nome"})
+                    .stream()
+                    .map(ProdutoSubGrupo::getNome)
+                    .collect(Collectors.toList());
+            listSubGrupos.add(0, "Selecione");
+            produto = "teste";
         } catch (Exception ex) {
-
+            ex.printStackTrace();
         }
 
-        listSubGrupos.stream().forEach(s -> {
-            s.setProdutoGrupo(grupo);
-        });
 
     }
 
-    public void teste() {
-        subGrupo = subGrupo == null ? new ProdutoSubGrupo() : subGrupo;
-    }
+
 
     public String getProduto() {
         return produto;
@@ -122,28 +127,20 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         this.grupo = grupo;
     }
 
-    public ProdutoSubGrupo getSubGrupo() {
-        return subGrupo == null ? new ProdutoSubGrupo() : subGrupo;
+
+    public String getSubGrupo() {
+        return subGrupo;
     }
 
-    public void setSubGrupo(ProdutoSubGrupo subGrupo) {
+    public void setSubGrupo(String subGrupo) {
         this.subGrupo = subGrupo;
     }
 
-    public List<ProdutoSubGrupo> getListSubGrupos() {
+    public List<String> getListSubGrupos() {
         return listSubGrupos;
     }
 
-    public void setListSubGrupos(List<ProdutoSubGrupo> listSubGrupos) {
+    public void setListSubGrupos(List<String> listSubGrupos) {
         this.listSubGrupos = listSubGrupos;
-    }
-
-    public List<String> getTstStrings() {
-
-        return tstStrings;
-    }
-
-    public void setTstStrings(List<String> tstStrings) {
-        this.tstStrings = tstStrings;
     }
 }

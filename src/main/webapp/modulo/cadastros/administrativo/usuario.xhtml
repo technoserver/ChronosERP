@@ -50,9 +50,10 @@
         <erp:telaInclusaoAlteracao controller="#{usuarioConttroll}"
                                    nomeFuncao="USUARIO"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+                                   somenteConsulta="#{ ! usuarioConttroll.podeAlterarSenha}">
 
             <div class="row">
+
 
                 <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                   label="Colaborador"

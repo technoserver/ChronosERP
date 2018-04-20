@@ -37,7 +37,7 @@
             </p:column>
             <p:ajax event="itemSelect" listener="#{nfceControll.selecionarProduto}"
                     update="formCentro:mostra-produto"
-                    oncomplete="document.getElementById('formCentro:quantidade_input').focus()"/>
+                    oncomplete="$('#formCentro\\:quantidade_input').focus().select()"/>
         </p:autoComplete>
         <br/>
 

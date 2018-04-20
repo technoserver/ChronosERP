@@ -8,8 +8,11 @@ package com.chronos.security;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.util.jsf.FacesUtil;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import java.io.File;
 import java.io.Serializable;
@@ -44,6 +47,21 @@ public class Seguranca implements Serializable {
         nomeEmpresa = getEmpresa().getRazaoSocial();
 
         return nomeEmpresa;
+    }
+
+    @Produces
+    @UsuarioLogado
+    public String getLogin() {
+        UsuarioSistema usuario = null;
+
+        UsernamePasswordAuthenticationToken auth = (UsernamePasswordAuthenticationToken)
+                FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal();
+
+        if (auth != null && auth.getPrincipal() != null) {
+            return auth.getPrincipal().toString();
+        }
+
+        return "";
     }
 
 
