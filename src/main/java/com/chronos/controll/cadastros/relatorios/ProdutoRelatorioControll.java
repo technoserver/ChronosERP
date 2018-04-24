@@ -4,13 +4,14 @@ import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.modelo.entidades.ProdutoGrupo;
 import com.chronos.modelo.entidades.ProdutoSubGrupo;
 import com.chronos.repository.Repository;
+import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,12 +30,12 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
     private Repository<ProdutoSubGrupo> subGrupos;
 
     private String produto;
-    private String subGrupo;
+    private Integer subGrupo;
     private String inativo;
     private String tipoProduto;
     private ProdutoGrupo grupo;
 
-    private List<String> listSubGrupos = new ArrayList<>();
+    private HashMap<String, Integer> listSubGrupos = new LinkedHashMap<>();
 
 
 
@@ -43,9 +44,9 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
         parametros = new HashMap<>();
         parametros.put("produto", retornaValorPadrao(produto));
-        parametros.put("subgrupo", subGrupo == null || subGrupo.equals("selecione") ? "%" : subGrupo);
-        parametros.put("inativo", inativo);
-        parametros.put("tipoProduto", tipoProduto);
+        parametros.put("idsubgrupo", subGrupo);
+        parametros.put("inativo", StringUtils.isEmpty(inativo) ? null : inativo);
+        parametros.put("tipoProduto", StringUtils.isEmpty(tipoProduto) ? null : tipoProduto);
         parametros.put("idempresa", empresa.getId());
         parametros.put("estoqueVerificado", grupo.getId() == 999);
 
@@ -61,7 +62,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
             list = grupos.getEntitys(ProdutoGrupo.class, "nome", "%", new Object[]{"nome"});
 
             if (listSubGrupos.isEmpty()) {
-                listSubGrupos.add("selecione");
+                listSubGrupos.put("selecione", null);
             }
 
 
@@ -75,15 +76,14 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     public void buscarSubGrupo() {
 
-        listSubGrupos = new ArrayList<>();
+        listSubGrupos = new LinkedHashMap<>();
         try {
             grupo = grupo == null ? new ProdutoGrupo(0, "") : grupo;
-            listSubGrupos = subGrupos.getEntitys(ProdutoSubGrupo.class, "produtoGrupo.id", grupo.getId(), new Object[]{"nome"})
+            listSubGrupos.putAll(subGrupos.getEntitys(ProdutoSubGrupo.class, "produtoGrupo.id", grupo.getId(), new Object[]{"nome"})
                     .stream()
-                    .map(ProdutoSubGrupo::getNome)
-                    .collect(Collectors.toList());
-            listSubGrupos.add(0, "Selecione");
-            produto = "teste";
+                    .collect(Collectors.toMap(ProdutoSubGrupo::getNome, ProdutoSubGrupo::getId)));
+
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -128,19 +128,19 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
     }
 
 
-    public String getSubGrupo() {
+    public Integer getSubGrupo() {
         return subGrupo;
     }
 
-    public void setSubGrupo(String subGrupo) {
+    public void setSubGrupo(Integer subGrupo) {
         this.subGrupo = subGrupo;
     }
 
-    public List<String> getListSubGrupos() {
+    public HashMap<String, Integer> getListSubGrupos() {
         return listSubGrupos;
     }
 
-    public void setListSubGrupos(List<String> listSubGrupos) {
+    public void setListSubGrupos(HashMap<String, Integer> listSubGrupos) {
         this.listSubGrupos = listSubGrupos;
     }
 }

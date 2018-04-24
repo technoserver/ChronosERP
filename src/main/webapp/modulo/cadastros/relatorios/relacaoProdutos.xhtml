@@ -30,16 +30,17 @@
                         <h:outputLabel value="Inativo" for="inativo"/>
                         <h:selectOneMenu id="inativo" class="form-control"
                                          value="#{produtoRelatorioControll.inativo}">
-                            <f:selectItem itemLabel="Todos" itemValue="%"/>
-                            <f:selectItem itemLabel="Sim" itemValue="S"/>
+                            <f:selectItem itemLabel="Todos" itemValue="#{null}"/>
                             <f:selectItem itemLabel="Nao" itemValue="N"/>
+                            <f:selectItem itemLabel="Sim" itemValue="S"/>
+
                         </h:selectOneMenu>
                     </div>
                     <div class="col-xs-12 col-sm-2 col-md-2">
                         <h:outputLabel value="Tipo" for="tipo"/>
                         <h:selectOneMenu id="tipo" class="form-control"
                                          value="#{produtoRelatorioControll.tipoProduto}">
-                            <f:selectItem itemLabel="Todos" itemValue="%"/>
+                            <f:selectItem itemLabel="Todos" itemValue="#{null}"/>
                             <f:selectItem itemLabel="Venda" itemValue="V"/>;
                             <f:selectItem itemLabel="Composição" itemValue="C"/>
                             <f:selectItem itemLabel="Produção" itemValue="P"/>
@@ -82,8 +83,7 @@
                         <h:selectOneMenu id="subgrupo" class="form-control"
                                          value="#{produtoRelatorioControll.subGrupo}"
                         >
-                            <f:selectItems var="#{obj}" itemValue="#{obj}"
-                                           value="#{produtoRelatorioControll.listSubGrupos}"/>
+                            <f:selectItems value="#{produtoRelatorioControll.listSubGrupos}"/>
 
                         </h:selectOneMenu>
                     </div>

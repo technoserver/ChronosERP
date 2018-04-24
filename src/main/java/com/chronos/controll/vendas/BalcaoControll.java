@@ -434,7 +434,7 @@ public class BalcaoControll implements Serializable {
 
     private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) throws Exception {
         Optional<PdvFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
-        if (formaPagamentoOpt.isPresent()) {
+        if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
             Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
         } else {
             if (totalReceber.compareTo(valorPago) < 0 && tipoPagamento.getPermiteTroco().equals("N")) {

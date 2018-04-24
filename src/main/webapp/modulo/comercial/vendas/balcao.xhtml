@@ -24,6 +24,7 @@
 
         <h:outputStylesheet library="css" name="pdv.css"/>
         <style type="text/css">
+
             #pdv {
                 font-family: 'Source Sans Pro', sans-serif;
             }
@@ -90,7 +91,7 @@
                 -webkit-border-radius: 2px;
                 -moz-border-radius: 2px;
                 border-radius: 2px;
-                margin-bottom: 15px;
+                margin-bottom: 1px;
                 cursor: pointer;
             }
 
@@ -151,6 +152,221 @@
             .table-striped > thead > tr:nth-child(odd) > th {
                 background-color: #dadada;
             }
+
+            ul {
+                list-style: none;
+                padding: 0;
+            }
+
+            .total-pedido2 {
+                background-color: #0c1b25;
+                color: #fff;
+                border-bottom: 1px solid #8f8f90;
+                padding: 1%;
+                height: 80px;
+                text-transform: uppercase;
+                margin-bottom: 10px;
+            }
+
+            .total-pedido2 .sub {
+                float: left;
+                width: 202px;
+            }
+
+            .total-pedido2 .sub li .desc {
+                font-size: 10px;
+                opacity: .5;
+                text-align: right;
+                display: inline-block;
+                vertical-align: middle;
+                width: 74px;
+            }
+
+            .total-pedido2 .sub li .value {
+                font-size: 15px;
+                font-weight: bold;
+                text-align: left;
+                display: inline-block;
+                vertical-align: middle;
+            }
+
+            .total-pedido2 .valueTotal .desc {
+                font-size: 16px;
+                font-weight: bold;
+                opacity: .5;
+                display: block;
+                line-height: 28px;
+            }
+
+            .valueTotal .value {
+                font-size: 30px;
+                font-weight: bold;
+            }
+
+            .total-pedido2 .valueTotal .value .mini {
+                font-size: 20px;
+            }
+
+            .total-pedido2 .valueTotal {
+                float: right;
+                width: 165px;
+                text-align: center;
+                margin-right: 10px;
+            }
+
+            .descricao-produto {
+                width: 100%;
+                margin-right: 8px;
+                overflow: hidden;
+            }
+
+            .descricao-produto .nome-item {
+                white-space: nowrap;
+                -ms-text-overflow: ellipsis;
+                -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;
+                width: 250px;
+                overflow: hidden;
+            }
+
+            .caixa-preco {
+                width: 130px;
+                padding: 9px 55px 5px 10px;
+                position: absolute;
+                top: 0px;
+                right: 0;
+                z-index: 5;
+            }
+
+            .caixa-preco .preco {
+                text-align: right;
+            }
+
+            .caixa-preco .preco span {
+                display: block;
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .caixa-preco .preco span.preco-unitario {
+                font-size: 12px;
+            }
+
+            .lista {
+                display: inline-block;
+                position: relative;
+                border-top: 3px solid #4d4d4d;
+                height: 242px;
+                width: 387px;
+                overflow-y: auto;
+                background: #e8f0f2;
+            }
+
+            .lista .lista-produtos {
+                display: inline-block;
+                width: 100%;
+            }
+
+            .lista .lista-produtos > li {
+                border-top: 1.5px solid #8f8f90;
+                color: #000;
+                padding: 5px;
+                position: relative;
+            }
+
+            .lista .lista-produtos > li.item {
+                background-color: #e8f0f2;
+                height: 50px;
+            }
+
+            .lista .lista-produtos > li:first-child {
+                border-top: none;
+            }
+
+            .caixa-botoes {
+                float: left;
+            }
+
+            .caixa-botoes {
+                width: 45px;
+            }
+
+            .caixa-botoes input[type=button] {
+                border: none;
+                cursor: pointer;
+            }
+
+            .caixa-botoes .btn-excluir {
+                display: block;
+                position: absolute;
+                top: 0;
+                right: 0;
+                z-index: 10;
+                margin: 15px;
+            }
+
+            .caixa-botoes .btn-excluir {
+                margin: 15px;
+                width: 22px;
+                height: 22px;
+                background: url("#{resource['images/ico_edt_.svg']}") no-repeat center;
+                position: absolute;
+                top: 0;
+                right: 0;
+                z-index: 10;
+                background-size: cover;
+            }
+
+            .box-cliente {
+                width: 387px;
+                height: 77px;
+            }
+
+            .cliente {
+                float: left;
+                width: 220px;
+                position: relative;
+                margin: 13px 0 8px 0px;
+            }
+
+            .cliente .nome {
+                font-size: 16px;
+                font-weight: bold;
+                text-transform: capitalize;
+                -ms-text-overflow: ellipsis;
+                -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 297px;
+                overflow: hidden;
+                float: left;
+                margin-right: 4px;
+            }
+
+            .vendedor {
+                position: absolute;
+                bottom: 0px;
+                left: 10px;
+                font-size: 12px;
+            }
+
+            .vendedor .nome {
+                font-size: 16px;
+                font-weight: bold;
+                text-transform: capitalize;
+                -ms-text-overflow: ellipsis;
+                -o-text-overflow: ellipsis;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 297px;
+                overflow: hidden;
+                float: left;
+                margin-right: 4px;
+            }
+
+
+
+
 
         </style>
     </ui:define>

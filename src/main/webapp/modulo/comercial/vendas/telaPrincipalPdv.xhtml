@@ -1,7 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -141,6 +140,7 @@
                             </h:inputText>
                         </td>
                     </tr>
+
                     <tr>
                         <th class="hidden-xs nowrap"/>
                         <td class="padding-top-10px">
@@ -150,7 +150,7 @@
                                              disabled="#{empty balcaoControll.item.produto}"
                                              action="#{balcaoControll.addProduto}">
                                 <p:ajax process="@form"
-                                        update="formCentro:tableProduto,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
+                                        update=":formCentro:produtos-selecionados,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
                                         oncomplete="document.getElementById('formCentro:produto_input').focus();"/>
                             </h:commandButton>
 
@@ -167,21 +167,29 @@
     <div class="margin-top-10px-xs col-sm-4 col-md-4 col-lg-4">
         <div class="box-cliente small-box bg-green">
             <div class="inner">
-                <div>CLIENTE:
-                    <p:commandLink id="indicar-cliente"
-                                   action="#{balcaoControll.buscarCliente}"
-                                   oncomplete="PF('dialogCliente').show()"
-                                   update=":formOutrasTelas1:panelCliente">
-                        #{empty balcaoControll.venda.nomeCliente?'Não Informado' : balcaoControll.venda.nomeCliente}
-                    </p:commandLink>
+                <div class="cliente">
+                    <p class="nome">
+                        CLIENTE:
+                        <p:commandLink id="indicar-cliente"
+                                       action="#{balcaoControll.buscarCliente}"
+                                       oncomplete="PF('dialogCliente').show()"
+                                       update=":formOutrasTelas1:panelCliente">
+                            #{empty balcaoControll.venda.nomeCliente?'Não Informado' : balcaoControll.venda.nomeCliente}
+                        </p:commandLink>
+                    </p>
+
                 </div>
-                <div>VENDEDOR:
-                    <p:commandLink id="indicar-vendedor"
-                                   action="#{balcaoControll.buscarVendedores}"
-                                   oncomplete="PF('dialogVendedor').show()"
-                                   update=":formOutrasTelas:panelVendedor">
-                        #{balcaoControll.vendedor.colaborador.pessoa.nome}
-                    </p:commandLink>
+                <div class="vendedor">
+                    <p class="nome">
+                        VENDEDOR:
+                        <p:commandLink id="indicar-vendedor"
+                                       action="#{balcaoControll.buscarVendedores}"
+                                       oncomplete="PF('dialogVendedor').show()"
+                                       update=":formOutrasTelas:panelVendedor">
+                            #{balcaoControll.vendedor.colaborador.pessoa.nome}
+                        </p:commandLink>
+                    </p>
+
                 </div>
             </div>
             <div class="icone">
@@ -189,65 +197,113 @@
             </div>
         </div>
         <!--Inicio Produtos Selecionado -->
-        <h:panelGroup id="produtos-selecionados" layout="block" styleClass="produtos-selecionados">
-            <div id="lista" class="table-responsive">
-                <h:dataTable var="row" value="#{balcaoControll.venda.listaPdvVendaDetalhe}"
+        <h:panelGroup id="produtos-selecionados" layout="block">
+            <div class="lista">
+                <ul class="lista-produtos">
+                    <ui:repeat value="#{balcaoControll.venda.listaPdvVendaDetalhe}" var="row">
+                        <li class="item">
+                            <div class="conteudo">
+                                <div class="descricao-produto">
+                                <span class="quantidade itens">
+                                    <h:outputText value="#{row.quantidade}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputText>
 
-                             class="table table-striped" id="tableProduto">
-                    <h:column >
-                        <f:facet name="header">
-                            <h:outputText value="Qtd."/>
-                        </f:facet>
-                        <h:outputText value="#{row.quantidade}" rendered="#{not empty row}">
-                            <f:convertNumber pattern="#,##0.00"/>
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Produto"/>
-                        </f:facet>
-                        <h:outputText value="#{row.produto.descricaoPdv}" rendered="#{not empty row}"/>
-                    </h:column>
-                    <h:column pt:style="text-align:right;">
-                        <f:facet name="header">
-                            <h:outputText value="Desc."/>
-                        </f:facet>
-                        <h:outputText value="#{row.valorDesconto}" rendered="#{not empty row}">
-                            <f:convertNumber pattern="#,##0.00"/>
-                        </h:outputText>
-                    </h:column>
-                    <h:column pt:style="text-align:right;">
-                        <f:facet name="header">
-                            <h:outputText value="Preço"/>
-                        </f:facet>
-                        <h:outputText value="#{row.valorUnitario}" rendered="#{not empty row}">
-                            <f:convertNumber pattern="#,##0.00"/>
-                        </h:outputText>
-                    </h:column>
-                    <h:column pt:style="width:10px;text-align:center;">
-                        <h:commandLink styleClass="btn btn-default"
-                                       action="#{balcaoControll.excluir}">
-                            <p:ajax process="@this"
-                                    update=":formCentro:produtos-selecionados"
-                                    oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
-                            <f:setPropertyActionListener value="#{row}" target="#{balcaoControll.itemSelecionado}"/>
-                            <i class="glyphicon glyphicon-remove"></i>
-                        </h:commandLink>
-                    </h:column>
-                </h:dataTable>
+                                    #{row.produto.unidadeProduto.sigla}
+                                    x
+                                </span>
+                                    <span class="codigo-item">#{row.produto.id}</span>
+                                    <p class="nome-item">
+                                        #{row.produto.descricaoPdv}
+                                    </p>
+                                </div>
+
+                                <div class="caixa-preco">
+                                    <div class="preco">
+                                        <span class="preco-unitario">
+                                            R$
+                                            <h:outputText value="#{row.valorUnitario}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </span>
+                                        <span class="preco-total">
+                                            R$
+                                            <h:outputText value="#{row.valorTotal}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="caixa-botoes">
+                                <h:commandButton styleClass="btn-excluir" type="button"
+                                                 action="#{balcaoControll.excluir}">
+                                    <p:ajax process="@this"
+                                            update=":formCentro:produtos-selecionados"
+                                            oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{balcaoControll.itemSelecionado}"/>
+                                </h:commandButton>
+                            </div>
+
+
+                        </li>
+                    </ui:repeat>
+                </ul>
             </div>
-            <h4>TOTAL DO PEDIDO</h4>
-            <div class="total-pedido">
-                <h:panelGroup layout="block" id="totalPedido">
-                    R$ <h:outputText value="#{balcaoControll.venda.valorTotal == null ?0:balcaoControll.venda.valorTotal}">
-                        <f:convertNumber pattern="#,##0.00"/>
-                     </h:outputText>
+            <!--<h4>TOTAL DO PEDIDO</h4>-->
+            <!--<div class="total-pedido">-->
+            <!--<h:panelGroup layout="block" id="totalPedido">-->
+            <!--R$ <h:outputText-->
+            <!--value="#{balcaoControll.venda.valorTotal == null ?0:balcaoControll.venda.valorTotal}">-->
+            <!--<f:convertNumber pattern="#,##0.00"/>-->
+            <!--</h:outputText>-->
 
-                </h:panelGroup>
+            <!--</h:panelGroup>-->
 
-            </div>
+            <!--</div>-->
+
+            <h:panelGroup layout="block" id="totalPedido" class="total-pedido2">
+                <ul class="sub">
+                    <li style="margin-top: 5px">
+                        <label class="desc">Subtotal</label>
+                        <span class="value subtotal">R$
+                            <h:outputText
+                                    value="#{balcaoControll.venda.valorSubtotal == null ?0:balcaoControll.venda.valorSubtotal}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </span>
+                    </li>
+                    <li>
+                        <label class="desc">Descontos</label>
+                        <span class="value descount ng-binding">R$
+                             <h:outputText
+                                     value="#{balcaoControll.venda.valorDesconto == null ?0:balcaoControll.venda.valorDesconto}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </span>
+                        <!--<button type="button" class="bt_edit" id="btn-desconto">-->
+                        <!--<i class="fa fa-edit"></i>-->
+                        <!--</button>-->
+                    </li>
+
+                </ul>
+                <div class="valueTotal">
+                    <label class="desc">Total a pagar</label>
+                    <span class="value">
+                            <span class="mini">R$</span>
+                            <strong>
+                                <h:outputText
+                                        value="#{balcaoControll.venda.valorTotal == null ?0:balcaoControll.venda.valorTotal}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </strong>
+
+                        </span>
+                </div>
+            </h:panelGroup>
+
         </h:panelGroup>
-
 
 
         <!-- Fim produtos Selecionados -->
@@ -266,7 +322,8 @@
 
                                  action="#{balcaoControll.cancelar}"
                                  style="width:100%">
-                    <p:ajax process="@this" update="formCentro:produtos-selecionados" oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
+                    <p:ajax process="@this" update="formCentro:produtos-selecionados"
+                            oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
                 </h:commandButton>
             </div>
             <div class="margin-top-10px col-sm-12 col-md-12 col-lg-12">
