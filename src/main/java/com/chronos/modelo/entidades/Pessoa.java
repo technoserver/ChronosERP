@@ -4,7 +4,9 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -73,6 +75,7 @@ public class Pessoa implements Serializable {
         this.nome = nome;
         this.email = email;
     }
+
 
     public Pessoa(Integer id, String nome, String cliente, String fornecedor, String colaborador, String transportadora, PessoaFisica pessoaFisica) {
         this.id = id;
@@ -184,7 +187,7 @@ public class Pessoa implements Serializable {
     }
 
     public Set<PessoaEndereco> getListaPessoaEndereco() {
-        return listaPessoaEndereco;
+        return Optional.ofNullable(listaPessoaEndereco).orElse(new HashSet<>());
     }
 
     public void setListaPessoaEndereco(Set<PessoaEndereco> listaPessoaEndereco) {
@@ -229,7 +232,7 @@ public class Pessoa implements Serializable {
     }
 
     public PessoaEndereco buscarEnderecoPrincipal() {
-        return listaPessoaEndereco.stream().filter(e -> e.getPrincipal().equals("S")).findFirst().orElse(null);
+        return getListaPessoaEndereco().stream().filter(e -> e.getPrincipal().equals("S")).findFirst().orElse(null);
     }
 
     @Override

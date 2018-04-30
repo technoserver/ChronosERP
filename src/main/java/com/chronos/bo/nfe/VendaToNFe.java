@@ -58,7 +58,7 @@ public class VendaToNFe extends ManualCDILookup {
     public VendaToNFe(ModeloDocumento modelo, ConfiguracaoEmissorDTO configuracao, PdvVendaCabecalho pdvVenda) {
         this.modelo = modelo;
         this.pdvVenda = pdvVenda;
-        cliente = pdvVenda.getCliente();
+        cliente = instanciaCliente(pdvVenda);
         empresa = pdvVenda.getEmpresa();
         tipoVenda = TipoVenda.PDV;
         this.configuracao = configuracao;
@@ -76,6 +76,31 @@ public class VendaToNFe extends ManualCDILookup {
         addItens();
         definirFormaPagamento();
         return nfe;
+    }
+
+    private Cliente instanciaCliente(PdvVendaCabecalho pdvVenda) {
+        Cliente cliente = pdvVenda.getCliente();
+
+        if (cliente == null && !StringUtils.isEmpty(pdvVenda.getCpfCnpjCliente()) && !StringUtils.isEmpty(pdvVenda.getNomeCliente())) {
+
+            cliente = new Cliente();
+            Pessoa pessoa = new Pessoa();
+            pessoa.setNome(pdvVenda.getNomeCliente());
+            if (pdvVenda.getCpfCnpjCliente().length() > 11) {
+                PessoaJuridica pj = new PessoaJuridica();
+                pj.setCnpj(pdvVenda.getCpfCnpjCliente());
+                pessoa.setPessoaJuridica(pj);
+                pessoa.setTipo("J");
+            } else {
+                PessoaFisica pf = new PessoaFisica();
+                pf.setCpf(pdvVenda.getCpfCnpjCliente());
+                pessoa.setPessoaFisica(pf);
+                pessoa.setTipo("F");
+            }
+            cliente.setPessoa(pessoa);
+        }
+
+        return cliente;
     }
 
     private void valoresPadrao() {
@@ -98,19 +123,22 @@ public class VendaToNFe extends ManualCDILookup {
             PessoaEndereco endereco = cliente.getPessoa().buscarEnderecoPrincipal();
             nfe.getDestinatario().setCpfCnpj(cliente.getPessoa().getIdentificador());
             nfe.getDestinatario().setNome(cliente.getPessoa().getNome());
-            nfe.getDestinatario().setLogradouro(endereco.getLogradouro());
-            nfe.getDestinatario().setComplemento(endereco.getComplemento());
-            nfe.getDestinatario().setNumero(endereco.getNumero());
-            nfe.getDestinatario().setBairro(endereco.getBairro());
-            nfe.getDestinatario().setNomeMunicipio(endereco.getCidade());
-            nfe.getDestinatario().setCodigoMunicipio(endereco.getMunicipioIbge());
-            nfe.getDestinatario().setUf(endereco.getUf());
-            nfe.getDestinatario().setCep(endereco.getCep());
-            nfe.getDestinatario().setTelefone(endereco.getFone());
-            nfe.getDestinatario().setInscricaoEstadual(cliente.getPessoa().getRgOrIe());
-            nfe.getDestinatario().setEmail(cliente.getPessoa().getEmail());
-            nfe.getDestinatario().setCodigoPais(1058);
-            nfe.getDestinatario().setNomePais("Brazil");
+            if (endereco != null) {
+                nfe.getDestinatario().setLogradouro(endereco.getLogradouro());
+                nfe.getDestinatario().setComplemento(endereco.getComplemento());
+                nfe.getDestinatario().setNumero(endereco.getNumero());
+                nfe.getDestinatario().setBairro(endereco.getBairro());
+                nfe.getDestinatario().setNomeMunicipio(endereco.getCidade());
+                nfe.getDestinatario().setCodigoMunicipio(endereco.getMunicipioIbge());
+                nfe.getDestinatario().setUf(endereco.getUf());
+                nfe.getDestinatario().setCep(endereco.getCep());
+                nfe.getDestinatario().setTelefone(endereco.getFone());
+                nfe.getDestinatario().setInscricaoEstadual(cliente.getPessoa().getRgOrIe());
+                nfe.getDestinatario().setEmail(cliente.getPessoa().getEmail());
+                nfe.getDestinatario().setCodigoPais(1058);
+                nfe.getDestinatario().setNomePais("Brazil");
+            }
+
         }
         String ufDestino = nfe.getDestinatario() != null && !StringUtils.isEmpty(nfe.getDestinatario().getUf()) ? nfe.getDestinatario().getUf() : nfe.getEmitente().getUf();
         LocalDestino localDestino = getLocalDestino(nfe.getEmitente().getUf(), ufDestino);

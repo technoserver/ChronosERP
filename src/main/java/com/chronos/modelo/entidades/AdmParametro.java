@@ -56,6 +56,8 @@ public class AdmParametro implements Serializable {
     private Integer compraFinDocOrigem;
     @Column(name = "COMPRA_CONTA_CAIXA")
     private Integer compraContaCaixa;
+    @Column(name = "tribut_operacao_fiscal_padrao")
+    private Integer tributOperacaoFiscalPadrao;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -119,7 +121,13 @@ public class AdmParametro implements Serializable {
         this.compraContaCaixa = compraContaCaixa;
     }
 
-    
+    public Integer getTributOperacaoFiscalPadrao() {
+        return tributOperacaoFiscalPadrao;
+    }
+
+    public void setTributOperacaoFiscalPadrao(Integer tributOperacaoFiscalPadrao) {
+        this.tributOperacaoFiscalPadrao = tributOperacaoFiscalPadrao;
+    }
 
     public Empresa getEmpresa() {
         return empresa;

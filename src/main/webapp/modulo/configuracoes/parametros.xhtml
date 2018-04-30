@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Parametros
+    </ui:define>
+
+    <ui:define name="tela">
+        #{admParametrosControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Parametros
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+
+        <h:panelGroup layout="block" id="panelCentroDetalhe">
+            <div class="ibox-content">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h:panelGroup layout="block" rendered="#{not empty admParametrosControll.objeto}">
+
+                            <div class="row">
+
+                                <erp:campoSelectConverter styleClass="ol-xs-12 col-sm-3 col-md-2"
+
+                                                          idComponente="operacaoFiscal"
+                                                          label="Operação Fiscal padrão"
+                                                          nomeAtributo="#{admParametrosControll.operacaoFiscal}"
+                                                          itens="#{admParametrosControll.operacoesFiscais}"
+                                                          labelItens="#{obj.descricao}"/>
+
+
+                            </div>
+
+                        </h:panelGroup>
+                    </div>
+                </div>
+            </div>
+            <h:panelGroup layout="block" id="box-footer" class="ibox-footer"
+            >
+
+                <h:panelGroup layout="block" rendered="#{not empty admParametrosControll.objeto}">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             rendered="#{empty cc.attrs.controller.objeto.id and !cc.attrs.somenteConsulta}"
+                                             action="#{admParametrosControll.salvar()}"
+                                             disabled="#{!admParametrosControll.podeInserir()}"
+                            >
+                                <p:ajax process="@form"
+                                        update=":formCentro:growl,:formCentro:panelCentroDetalhe,navegacao,:formCentro:mensagem"/>
+                            </h:commandButton>
+                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
+                                             rendered="#{not empty cc.attrs.controller.objeto.id and !cc.attrs.somenteConsulta}"
+                                             actionListener="#{admParametrosControll.salvar()}"
+                                             disabled="#{!admParametrosControllr.podeAlterar()}"
+                            >
+                                <p:ajax process="@form"
+                                        update=":formCentro:growl,:formCentro:panelCentroDetalhe,navegacao,:formCentro:mensagem"/>
+                            </h:commandButton>
+                        </div>
+                        <!--<div class="#{!cc.attrs.somenteConsulta? 'col-xs-6 col-lg-6':'col-xs-12 col-lg-12'}">-->
+                        <!--<h:commandButton value="Cancelar" styleClass="btn btn-default center-block"-->
+                        <!--actionListener="#{cc.attrs.controller.voltar()}"-->
+                        <!--&gt;-->
+                        <!--<p:resetInput target=":formCentro"/>-->
+                        <!--<p:ajax update="#{cc.attrs.gridPadrao ?':formCentro:telaGrid:outputPanelGrid' :':formCentro:outputPanelGrid'},:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"-->
+                        <!--process="@this" resetValues="true"/>-->
+                        <!--</h:commandButton>-->
+                        <!--</div>-->
+                    </div>
+
+                </h:panelGroup>
+
+            </h:panelGroup>
+
+
+        </h:panelGroup>
+
+    </ui:define>
+
+</ui:composition>
