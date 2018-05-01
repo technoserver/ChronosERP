@@ -96,6 +96,8 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getSenha(), authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
             return user;
         } catch (Exception ex) {
             ex.printStackTrace();

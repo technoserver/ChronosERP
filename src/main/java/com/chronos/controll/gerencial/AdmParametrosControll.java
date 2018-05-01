@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.TributOperacaoFiscal;
 import com.chronos.repository.Repository;
+import com.chronos.util.jsf.FacesUtil;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -36,11 +37,18 @@ public class AdmParametrosControll extends AbstractControll<AdmParametro> implem
         AdmParametro parametro = dao.get(AdmParametro.class, "empresa.id", empresa.getId());
         parametro = parametro == null ? new AdmParametro() : parametro;
         setObjeto(parametro);
-        operacoesFiscais = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, new Object[]{"descricao"});
+        operacoesFiscais = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
 
         operacaoFiscal = new TributOperacaoFiscal(getObjeto().getTributOperacaoFiscalPadrao());
     }
 
+    @Override
+    public void salvar() {
+        getObjeto().setTributOperacaoFiscalPadrao(operacaoFiscal.getId());
+        getObjeto().setOperacaoFiscal(operacaoFiscal);
+        FacesUtil.setParamtro(getObjeto());
+        super.salvar();
+    }
 
     @Override
     protected Class<AdmParametro> getClazz() {

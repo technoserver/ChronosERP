@@ -58,9 +58,14 @@ public class AdmParametro implements Serializable {
     private Integer compraContaCaixa;
     @Column(name = "tribut_operacao_fiscal_padrao")
     private Integer tributOperacaoFiscalPadrao;
+    @Column(name = "faturar_venda")
+    private Boolean faturarVenda;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
+
+    @Transient
+    private TributOperacaoFiscal operacaoFiscal;
 
     public AdmParametro() {
     }
@@ -135,6 +140,22 @@ public class AdmParametro implements Serializable {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
+    }
+
+    public Boolean getFaturarVenda() {
+        return faturarVenda;
+    }
+
+    public void setFaturarVenda(Boolean faturarVenda) {
+        this.faturarVenda = faturarVenda;
+    }
+
+    public TributOperacaoFiscal getOperacaoFiscal() {
+        return operacaoFiscal;
+    }
+
+    public void setOperacaoFiscal(TributOperacaoFiscal operacaoFiscal) {
+        this.operacaoFiscal = operacaoFiscal;
     }
 
     @Override

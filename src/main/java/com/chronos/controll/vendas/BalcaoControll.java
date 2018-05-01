@@ -69,6 +69,10 @@ public class BalcaoControll implements Serializable {
     private Repository<TributOperacaoFiscal> operacaoRepository;
     @Inject
     private Repository<PdvTipoPagamento> tipoPagamentoRepository;
+    @Inject
+    private Repository<AdmParametro> parametroRepository;
+    @Inject
+    private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
 
     @Inject
     private UsuarioService userService;
@@ -86,6 +90,7 @@ public class BalcaoControll implements Serializable {
 
     private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
 
+    private AdmParametro parametro;
     private PdvVendaCabecalho venda;
     private PdvVendaDetalhe item;
     private PdvVendaDetalhe itemSelecionado;
@@ -162,6 +167,21 @@ public class BalcaoControll implements Serializable {
         telaVenda = true;
         telaImpressao = false;
         exibirCondicoes = false;
+        instanciarParametro();
+    }
+
+    public void instanciarParametro() {
+        parametro = FacesUtil.getParamentos();
+        if (parametro == null) {
+            parametro = parametroRepository.get(AdmParametro.class, "empresa.id", empresa.getId());
+
+            if (parametro.getTributOperacaoFiscalPadrao() != null) {
+                TributOperacaoFiscal operacaoFiscal = operacaoFiscalRepository.get(TributOperacaoFiscal.class, "id", parametro.getTributOperacaoFiscalPadrao(), new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
+                parametro.setOperacaoFiscal(operacaoFiscal);
+            }
+
+            FacesUtil.setParamtro(parametro);
+        }
     }
 
 
@@ -497,6 +517,11 @@ public class BalcaoControll implements Serializable {
                 telaPagamentos = false;
                 telaImpressao = true;
                 id = venda.getId();
+
+                if (parametro != null && parametro.getFaturarVenda()) {
+                    gerarNfce();
+                }
+
             } else {
                 Mensagem.addInfoMessage("Valores informados não são suficientes para finalizar a venda.");
             }

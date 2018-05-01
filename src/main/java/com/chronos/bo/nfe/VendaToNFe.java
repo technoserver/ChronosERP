@@ -9,6 +9,7 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.TipoVenda;
 import com.chronos.repository.Repository;
 import com.chronos.util.cdi.ManualCDILookup;
+import com.chronos.util.jsf.FacesUtil;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -98,6 +99,12 @@ public class VendaToNFe extends ManualCDILookup {
                 pessoa.setTipo("F");
             }
             cliente.setPessoa(pessoa);
+            TributOperacaoFiscal operacaoFiscal = null;
+            AdmParametro parametro = FacesUtil.getParamentos();
+            if (parametro != null && parametro.getTributOperacaoFiscalPadrao() != null) {
+                operacaoFiscal = parametro.getOperacaoFiscal();
+            }
+            cliente.setTributOperacaoFiscal(operacaoFiscal);
         }
 
         return cliente;
@@ -119,7 +126,10 @@ public class VendaToNFe extends ManualCDILookup {
 
     private void definirDestinatario() {
         if (cliente != null ) {
-            nfe.setCliente(cliente);
+            if (cliente.getId() != null) {
+                nfe.setCliente(cliente);
+            }
+
             PessoaEndereco endereco = cliente.getPessoa().buscarEnderecoPrincipal();
             nfe.getDestinatario().setCpfCnpj(cliente.getPessoa().getIdentificador());
             nfe.getDestinatario().setNome(cliente.getPessoa().getNome());

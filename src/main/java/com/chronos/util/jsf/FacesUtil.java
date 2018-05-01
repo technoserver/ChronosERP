@@ -6,6 +6,7 @@
 package com.chronos.util.jsf;
 
 import com.chronos.dto.UsuarioDTO;
+import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.tenant.Tenant;
@@ -98,6 +99,23 @@ public class FacesUtil {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public static AdmParametro getParamentos() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        AdmParametro parametro = null;
+        try {
+            parametro = (AdmParametro) session.getAttribute("paramChronosERP");
+        } catch (Exception ex) {
+
+        }
+        return parametro;
+    }
+
+    public static void setParamtro(AdmParametro paramtro) {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+        session.removeAttribute("paramChronosERP");
+        session.setAttribute("paramChronosERP", paramtro);
     }
 
     public static Tenant getTenantId() {
