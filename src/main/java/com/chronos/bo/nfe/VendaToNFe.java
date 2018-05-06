@@ -240,6 +240,7 @@ public class VendaToNFe extends ManualCDILookup {
 
 
         if (tipoVenda == TipoVenda.PDV) {
+            nfe.setTroco(pdvVenda.getTroco());
             pdvVenda.getListaFormaPagamento().stream().forEach(f -> {
                 NfeFormaPagamento pagamento = new NfeFormaPagamento();
                 pagamento.setTroco(f.getTroco());

@@ -1052,7 +1052,8 @@ public class GeraXMLEnvio {
         listaNfeFormaPagamento.stream().forEach(p -> {
             Pag pag = new Pag();
             pag.setTPag(p.getForma());
-            pag.setVPag(FormatValor.getInstance().formatarValor(p.getValor()));
+            BigDecimal valor = p.getValor().subtract(Optional.ofNullable(p.getTroco()).orElse(BigDecimal.ZERO));
+            pag.setVPag(FormatValor.getInstance().formatarValor(valor));
             pags.add(pag);
         });
 

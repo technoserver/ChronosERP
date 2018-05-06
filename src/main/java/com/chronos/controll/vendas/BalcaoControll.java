@@ -476,7 +476,7 @@ public class BalcaoControll implements Serializable {
                     formaPagamento.setOperadoraCartao(operadoraCartao);
                 }
 
-                venda.getListaFormaPagamento().add(formaPagamento);
+
 
 
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
@@ -484,6 +484,9 @@ public class BalcaoControll implements Serializable {
                 if (troco.compareTo(BigDecimal.ZERO) == -1) {
                     troco = BigDecimal.ZERO;
                 }
+                formaPagamento.setTroco(troco);
+                venda.getListaFormaPagamento().add(formaPagamento);
+                venda.setTroco(troco);
                 verificaSaldoRestante();
             }
 
