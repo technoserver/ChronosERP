@@ -76,6 +76,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         Pessoa pessoa = novaPessoa("S","N","N","N");
         getObjeto().setPessoa(pessoa);
         getObjeto().setDesde(new Date());
+        getObjeto().setDataCadastro(new Date());
         getObjeto().setBloqueado("N");
         completo = "N";
 
@@ -106,6 +107,8 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
                 pessoa.setCliente("S");
 
                 getObjeto().setPessoa(pessoa);
+
+                getObjeto().setDataAlteracao(new Date());
                 dao.atualizar(getObjeto());
             }
             setTelaGrid(true);
@@ -129,7 +132,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         try {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("nome", Filtro.LIKE, nome));
-            listaPessoa = pessoas.getEntitys(Pessoa.class, filtros, atributos);
+            listaPessoa = pessoas.getEntitys(Pessoa.class, filtros, new Object[]{"nome"});
         } catch (Exception e) {
              e.printStackTrace();
         }

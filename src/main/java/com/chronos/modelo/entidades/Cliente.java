@@ -23,6 +23,9 @@ public class Cliente implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_CADASTRO")
     private Date dataCadastro;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "DATA_ALTERACAO")
+    private Date dataAlteracao;
     @Column(name = "OBSERVACAO")
     private String observacao;
     @Column(name = "CONTA_TOMADOR")
@@ -80,6 +83,12 @@ public class Cliente implements Serializable {
         this.pessoa = new Pessoa(nome, email);
     }
 
+    @PreUpdate
+    @PrePersist
+    private void preUpdate() {
+        this.dataAlteracao = new Date();
+    }
+
     public Integer getId() {
         return id;
     }
@@ -102,6 +111,14 @@ public class Cliente implements Serializable {
 
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public Date getDataAlteracao() {
+        return dataAlteracao;
+    }
+
+    public void setDataAlteracao(Date dataAlteracao) {
+        this.dataAlteracao = dataAlteracao;
     }
 
     public String getObservacao() {

@@ -183,6 +183,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                         produtoEmpresa.setEstoqueVerificado(BigDecimal.ZERO);
                         produtosEmpresa.salvar(produtoEmpresa);
                     } else {
+                        getObjeto().setDataAlteracao(new Date());
                         super.salvar(null);
                         //TODO verificar o fluxo de salva produt alterado.
                         if (nomeProdutoOld != null && !nomeProdutoOld.equals(getObjeto().getNome())) {

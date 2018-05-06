@@ -101,7 +101,7 @@ public class Produto implements Serializable {
     private String totalizadorParcial;
     @Column(name = "CODIGO_BALANCA")
     private Integer codigoBalanca;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_ALTERACAO")
     private Date dataAlteracao;
     @Column(name = "TIPO")
