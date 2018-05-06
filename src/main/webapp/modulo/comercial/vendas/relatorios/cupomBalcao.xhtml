@@ -177,8 +177,16 @@
                 </tr>
                 <ui:forEach var="row" items="#{vendaRelatorioControll.vendaCupom.listaFormaPagamento}">
                     <tr>
-                        <td>21/01/2018</td>
-                        <td><h:outputText value="#{row.valor}">  <f:convertNumber pattern="#,##0.00"/></h:outputText></td>
+                        <td>
+                            <h:outputText value="#{vendaRelatorioControll.vendaCupom.dataHoraVenda}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputText>
+                        </td>
+                        <td>
+                            <h:outputText value="#{row.valorTotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </td>
                         <td>#{row.pdvTipoPagamento.descricao}</td>
                     </tr>
                 </ui:forEach>

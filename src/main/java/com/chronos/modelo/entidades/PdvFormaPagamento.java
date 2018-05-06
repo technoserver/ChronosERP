@@ -4,6 +4,7 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 
 @Entity
@@ -158,6 +159,11 @@ public class PdvFormaPagamento implements Serializable {
 
     public void setOperadoraCartao(OperadoraCartao operadoraCartao) {
         this.operadoraCartao = operadoraCartao;
+    }
+
+
+    public BigDecimal getValorTotal() {
+        return this.valor.subtract(Optional.ofNullable(this.troco).orElse(BigDecimal.ZERO));
     }
 
     @Override
