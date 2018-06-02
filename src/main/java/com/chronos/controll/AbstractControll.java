@@ -157,7 +157,7 @@ public abstract class AbstractControll<T> implements Serializable {
 
     //pdv
     private HashMap<String, String> pdvCodigoTipoPagamento;
-
+    private HashMap<String, String> pdvNivelAutorizacao;
 
     protected abstract Class<T> getClazz();
 
@@ -540,6 +540,10 @@ public abstract class AbstractControll<T> implements Serializable {
         pdvCodigoTipoPagamento.put("05", "TICKET");
         pdvCodigoTipoPagamento.put("06", "DUPLICATA");
         pdvCodigoTipoPagamento.put("07", "CREDITO CLIENTE");
+
+        pdvNivelAutorizacao = new LinkedHashMap<>();
+        pdvNivelAutorizacao.put("SUPERVISOR", "S");
+        pdvNivelAutorizacao.put("GERENTE", "G");
 
 
     }
@@ -1143,5 +1147,9 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, String> getPdvCodigoTipoPagamento() {
         return pdvCodigoTipoPagamento;
+    }
+
+    public HashMap<String, String> getPdvNivelAutorizacao() {
+        return pdvNivelAutorizacao;
     }
 }

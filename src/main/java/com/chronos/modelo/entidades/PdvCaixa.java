@@ -17,6 +17,8 @@ public class PdvCaixa implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "codigo")
+    private String codigo;
     @Column(name = "NOME")
     private String nome;
     @Temporal(TemporalType.DATE)
@@ -24,6 +26,7 @@ public class PdvCaixa implements Serializable {
     private Date dataCadastro;
 
     public PdvCaixa() {
+        this.dataCadastro = new Date();
     }
 
     public PdvCaixa(Integer id) {
@@ -52,6 +55,14 @@ public class PdvCaixa implements Serializable {
 
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     @Override

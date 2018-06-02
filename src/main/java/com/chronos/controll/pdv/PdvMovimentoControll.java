@@ -1,4 +1,4 @@
-package com.chronos.controll.vendas;
+package com.chronos.controll.pdv;
 
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.PdvCaixa;

@@ -72,5 +72,18 @@ public class PdvOperador implements Serializable {
         this.nivelAutorizacao = nivelAutorizacao;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PdvOperador)) return false;
 
+        PdvOperador that = (PdvOperador) o;
+
+        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }

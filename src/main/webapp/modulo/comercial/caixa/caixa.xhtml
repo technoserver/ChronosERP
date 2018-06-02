@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        CAIXA
+    </ui:define>
+
+    <ui:define name="tela">
+        #{pdvCaixaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        CAIXA
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{pdvCaixaControll}"
+                       idDataTable="dataTableCaixa"
+                       nomeFuncao="CAIXA"
+                       id="telaGrid"
+                       somenteConsulta="true">
+
+            <p:column headerText="Código">
+                <h:outputLabel value="#{row.codigo}"/>
+            </p:column>
+
+            <p:column headerText="nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{pdvCaixaControll}"
+                                   nomeFuncao="CAIXA"
+                                   id="telaDetalhe"
+                                   somenteConsulta="true">
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="codigo" label="Código"
+                                nomeAtributo="#{pdvCaixaControll.objeto.codigo}"
+                                tamanhoMaximo="3"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-9 col-md-10"
+                                idComponente="cest" label="CEST"
+                                nomeAtributo="#{pdvCaixaControll.objeto.nome}"
+                                tamanhoMaximo="100"/>
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,3 @@
+ALTER TABLE pdv_caixa  ADD COLUMN codigo VARCHAR(3);
+ALTER SEQUENCE pdv_caixa_id_seq RESTART WITH 2;
+ALTER SEQUENCE pdv_operador_id_seq RESTART WITH 2;

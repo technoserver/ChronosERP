@@ -25,10 +25,12 @@ public class FlyWay {
 
     private DataSource ds;
 
+    private Context envCtx;
+
     public void migration() throws Exception {
 
-        Context initCtx = new InitialContext();
-        Context envCtx = (Context) initCtx.lookup("java:comp/env");
+        initContext();
+
         ds = (DataSource) envCtx.lookup("jdbc/chronosLightDB");
         // Inicialição do FlyWay
         Flyway flyway = new Flyway();
@@ -46,32 +48,40 @@ public class FlyWay {
     }
 
 
-    public List<String> getTenants() {
+    public List<String> getTenants() throws Exception {
 
         List<String> tenants = new ArrayList<>();
-        Connection conn = null;
-        try{
+        final Connection connection = getConnection();
+        try (Statement statement = connection.createStatement()) {
 
-            Context initCtx = new InitialContext();
-            Context envCtx = (Context) initCtx.lookup("java:comp/env");
-            DataSource ds = (DataSource) envCtx.lookup("jdbc/chronosAdminDB");
-            conn = ds.getConnection();
-            Statement statement = conn.createStatement();
-            ResultSet result = statement.executeQuery("SELECT t.nome FROM tenant t WHERE t.ativo = TRUE ");
-            while (result.next()) {
-                String str = result.getString("nome");
-                tenants.add(str);
+
+            try (ResultSet result = statement.executeQuery("SELECT t.nome FROM tenant t WHERE t.ativo = TRUE ")) {
+                while (result.next()) {
+                    String str = result.getString("nome");
+                    tenants.add(str);
+                }
             }
-            conn.close();
+
 
         } catch (SQLException ex) {
             ex.printStackTrace();
 
-        } catch (NamingException e) {
-            e.printStackTrace();
+        } finally {
+            connection.close();
         }
 
         return tenants;
+    }
+
+    private Connection getConnection() throws Exception {
+        DataSource ds = (DataSource) envCtx.lookup("jdbc/chronosAdminDB");
+        return ds.getConnection();
+
+    }
+
+    private void initContext() throws NamingException {
+        Context initCtx = new InitialContext();
+        envCtx = (Context) initCtx.lookup("java:comp/env");
     }
 
 

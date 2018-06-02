@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        OPERADOR
+    </ui:define>
+
+    <ui:define name="tela">
+        #{pdvOperadorControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        OPERADOR
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{pdvOperadorControll}"
+                       idDataTable="dataTableCest"
+                       nomeFuncao="OPERADOR"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="login">
+                <h:outputLabel value="#{row.login}"/>
+            </p:column>
+
+            <p:column headerText="Nivel autorização">
+                <h:outputLabel
+                        value="#{pdvOperadorControll.keyFromValue(pdvOperadorControll.pdvNivelAutorizacao, row.nivelAutorizacao)}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{pdvOperadorControll}"
+                                   nomeFuncao="OPERADOR"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                idComponente="login" label="Login"
+                                requerido="true"
+                                nomeAtributo="#{pdvOperadorControll.objeto.login}"
+                                tamanhoMaximo="20"/>
+                <erp:campoSenha styleClass="col-xs-12 col-sm-5 col-md-5"
+                                nomeAtributo="#{pdvOperadorControll.objeto.senha}"
+                                label="Senha"
+                                tamanhoMaximo="20"
+                                idComponente="senha"
+                                requerido="true"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                                 idComponente="nivelAutorizacao" label="Nível autorizacão"
+                                 nomeAtributo="#{pdvOperadorControll.objeto.nivelAutorizacao}"
+                                 itens="#{pdvOperadorControll.pdvNivelAutorizacao}"/>
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

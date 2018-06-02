@@ -1,4 +1,4 @@
-package com.chronos.controll.financeiro;
+package com.chronos.controll.pdv;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.PdvTipoPagamento;
