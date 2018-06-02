@@ -27,7 +27,7 @@
                        idDataTable="dataTableCaixa"
                        nomeFuncao="CAIXA"
                        id="telaGrid"
-                       somenteConsulta="true">
+                       >
 
             <p:column headerText="Código">
                 <h:outputLabel value="#{row.codigo}"/>
@@ -45,7 +45,7 @@
         <erp:telaInclusaoAlteracao controller="#{pdvCaixaControll}"
                                    nomeFuncao="CAIXA"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+                                   >
 
             <div class="row">
 
@@ -54,7 +54,7 @@
                                 nomeAtributo="#{pdvCaixaControll.objeto.codigo}"
                                 tamanhoMaximo="3"/>
                 <erp:campoTexto styleClass="col-xs-12 col-sm-9 col-md-10"
-                                idComponente="cest" label="CEST"
+                                idComponente="nome" label="Nome"
                                 nomeAtributo="#{pdvCaixaControll.objeto.nome}"
                                 tamanhoMaximo="100"/>
 
