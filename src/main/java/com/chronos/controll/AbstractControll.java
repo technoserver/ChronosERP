@@ -542,6 +542,7 @@ public abstract class AbstractControll<T> implements Serializable {
         pdvCodigoTipoPagamento.put("07", "CREDITO CLIENTE");
 
         pdvNivelAutorizacao = new LinkedHashMap<>();
+        pdvNivelAutorizacao.put("OPERADOR", "O");
         pdvNivelAutorizacao.put("SUPERVISOR", "S");
         pdvNivelAutorizacao.put("GERENTE", "G");
 
