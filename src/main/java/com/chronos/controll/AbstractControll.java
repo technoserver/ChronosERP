@@ -545,6 +545,7 @@ public abstract class AbstractControll<T> implements Serializable {
         pdvNivelAutorizacao.put("OPERADOR", "O");
         pdvNivelAutorizacao.put("SUPERVISOR", "S");
         pdvNivelAutorizacao.put("GERENTE", "G");
+        pdvNivelAutorizacao.put("ADMINISTRADOR", "A");
 
 
     }
