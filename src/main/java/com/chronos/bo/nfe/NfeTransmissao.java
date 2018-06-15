@@ -1,21 +1,27 @@
 package com.chronos.bo.nfe;
 
-import br.inf.portalfiscal.nfe.schema.conssitnfe.TConsSitNFe;
+import br.com.samuelweb.certificado.Certificado;
+import br.com.samuelweb.certificado.CertificadoService;
 import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento;
 import br.inf.portalfiscal.nfe.schema.envcce.TRetEnvEvento;
-import br.inf.portalfiscal.nfe.schema.envinfe.TEnviNFe;
-import br.inf.portalfiscal.nfe.schema.inutnfe.TInutNFe;
-import br.inf.portalfiscal.nfe.schema.retconssitnfe.TRetConsSitNFe;
-import br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe;
-import br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe.InfInut;
-import com.chronos.dto.ConfiguracaoEmissorDTO;
-import com.chronos.infra.enuns.AmbienteEmissao;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TEnviNFe;
+import br.inf.portalfiscal.nfe.schema_4.retConsSitNFe.TRetConsSitNFe;
+import br.inf.portalfiscal.nfe.schema_4.retConsStatServ.TRetConsStatServ;
+import com.chronos.dto.ConfEmissorDTO;
+import com.chronos.dto.EventoDTO;
+import com.chronos.dto.RetornoEventoDTO;
+import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.Estados;
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.EmpresaEndereco;
+import com.chronos.infra.enuns.ModeloDocumento;
+import com.chronos.infra.enuns.StatusEnum;
+import com.chronos.init.Configuracoes;
 import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.nfe.Nfe;
+import com.chronos.util.Constantes;
 import com.chronos.util.ConstantesNFe;
+import com.chronos.util.FormatValor;
+
+import java.util.Date;
 
 
 /**
@@ -24,101 +30,137 @@ import com.chronos.util.ConstantesNFe;
 public class NfeTransmissao {
 
 
-    private final Empresa empresa;
-    private final EmpresaEndereco endereco;
+    private static NfeTransmissao instance;
+    private Configuracoes configuracoes;
 
-    public NfeTransmissao(Empresa empresa) {
-        this.empresa = empresa;
-        this.endereco = getEnderecoPrincipal(empresa);
+    public static NfeTransmissao getInstance() throws EmissorException {
+        if (instance == null) {
+            instance = new NfeTransmissao();
+        }
+        return instance;
     }
 
 
-    public TEnviNFe geraNFeEnv(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
-        instanciarConfiguracoes(configuracao);
+    public TEnviNFe geraNFeEnv(NfeCabecalho nfe) throws Exception {
+
         GeraXMLEnvio geraXmlNfe = new GeraXMLEnvio();
-        TEnviNFe nfeEnv = geraXmlNfe.gerarXmlEnvio(empresa, nfe);
+        TEnviNFe nfeEnv = geraXmlNfe.gerarXmlEnvio(nfe);
 
         return nfeEnv;
     }
 
-    public InfInut inutilizarNFe(ConfiguracaoEmissorDTO configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
+    public br.inf.portalfiscal.nfe.schema_4.inutNFe.TRetInutNFe.InfInut inutilizarNFe(int serie, int numInicial, int numFinal, ModeloDocumento modelo, String cnpj, String justificativa) throws Exception {
+
         if (justificativa.trim().length() < 15) {
             throw new Exception("A justificativa deve ter no mínimo 15 caracteres.");
         }
         if (justificativa.trim().length() > 255) {
             throw new Exception("A justificativa deve ter no máximo 255 caracteres.");
         }
-        instanciarConfiguracoes(configuracao);
-        GeraXMLEnvio gerar = new GeraXMLEnvio();
-        String codigoIBGE = Estados.getUFbySigla(endereco.getUf()).getCodigoIbge();
-        TInutNFe inutNFe = gerar.inutilizarNfe(configuracao.getWebserviceAmbiente().toString(), codigoIBGE, modelo, serie, numInicial, numFinal, empresa.getCnpj(), justificativa);
-        TRetInutNFe retorno = Nfe.inutilizacao(inutNFe, true, modelo.equals("55") ? ConstantesNFe.NFE : ConstantesNFe.NFCE);
-        br.inf.portalfiscal.nfe.schema.retinutnfe.TRetInutNFe.InfInut infRetorno = retorno.getInfInut();
+
+        String id = "ID"
+                + configuracoes.getEstado().getCodigoIbge()
+                + FormatValor.getInstance().formatarAno(new Date())
+                + cnpj
+                + modelo
+                + FormatValor.getInstance().formatarSerieToString(serie)
+                + FormatValor.getInstance().formatarNumeroDocFiscalToString(Integer.valueOf(numInicial))
+                + FormatValor.getInstance().formatarNumeroDocFiscalToString(Integer.valueOf(numFinal));
+
+
+        br.inf.portalfiscal.nfe.schema_4.inutNFe.TRetInutNFe retorno;
+        retorno = Nfe.inutilizacao(id, justificativa, ConstantesNFe.NFE, false);
+        br.inf.portalfiscal.nfe.schema_4.inutNFe.TRetInutNFe.InfInut infRetorno = retorno.getInfInut();
+
         return infRetorno;
     }
 
-    public String statusServico(ConfiguracaoEmissorDTO configuracao) throws Exception {
+    public String statusServico() throws Exception {
+        TRetConsStatServ retorno = Nfe.statusServico(ConstantesNFe.NFE);
         String status;
-        instanciarConfiguracoes(configuracao);
-        GeraXMLEnvio xmlEnvio = new GeraXMLEnvio();
-        String codigoIBGE = Estados.getUFbySigla(endereco.getUf()).getCodigoIbge();
-        status = xmlEnvio.consultarStatus(configuracao.getWebserviceAmbiente().toString(), codigoIBGE, "3.10");
+        status = "Status:" + retorno.getCStat() + "\n";
+        status += "Motivo:" + retorno.getXMotivo() + "\n";
+        status += "Data:" + retorno.getDhRecbto() + "\n";
 
         return status;
     }
 
-    public TRetEnvEvento enviarCartaCorrecao(ConfiguracaoEmissorDTO configuracao, String chave, String correcao) throws Exception {
-        instanciarConfiguracoes(configuracao);
+    public String enviarCartaCorrecao(EventoDTO eventoDTO) throws Exception {
         GeraXMLEnvio gerar = new GeraXMLEnvio();
-        String codigoIBGE = Estados.getUFbySigla(endereco.getUf()).getCodigoIbge();
-        br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento evento = gerar.cartaCorrecao(chave, configuracao.getWebserviceAmbiente().toString(), codigoIBGE, empresa.getCnpj(), correcao);
-        TRetEnvEvento retorno = Nfe.cce(evento, false, ConstantesNFe.NFE);
+
+        br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento envEvento = gerar.cartaCorrecao(eventoDTO);
+
+        TRetEnvEvento retorno = Nfe.cce(envEvento, false, ConstantesNFe.NFE);
+
+        if (!StatusEnum.LOTE_EVENTO_PROCESSADO.getCodigo().equals(retorno.getCStat())) {
+            throw new EmissorException("Status:" + retorno.getCStat() + " - Motivo:" + retorno.getXMotivo());
+        }
+
+        if (!StatusEnum.EVENTO_VINCULADO.getCodigo().equals(retorno.getRetEvento().get(0).getInfEvento().getCStat())) {
+            throw new EmissorException("Status:" + retorno.getCStat() + " - Motivo:" + retorno.getXMotivo());
+        }
+        String result = "";
+        result += "Status:" + retorno.getRetEvento().get(0).getInfEvento().getCStat() + " \n";
+        result += "Motivo:" + retorno.getRetEvento().get(0).getInfEvento().getXMotivo() + " \n";
+        result += "Data:" + retorno.getRetEvento().get(0).getInfEvento().getDhRegEvento();
+
+        return result;
+    }
+
+    public TRetConsSitNFe consultarNfe(String chave) throws Exception {
+
+        TRetConsSitNFe retorno = Nfe.consultaXml(chave, ConstantesNFe.NFE);
+        System.out.println("Status:" + retorno.getCStat());
+        System.out.println("Motivo:" + retorno.getXMotivo());
+        System.out.println("Data:" + retorno.getProtNFe().getInfProt().getDhRecbto());
+
+        return retorno;
+
+    }
+
+
+    public RetornoEventoDTO cancelarNFe(EventoDTO eventoDTO) throws EmissorException {
+
+        if (eventoDTO.getMotivo() == null) {
+            throw new EmissorException("É necessário informar uma justificativa para o cancelamento da NF-e.");
+        }
+        if (eventoDTO.getMotivo().trim().equals("")) {
+            throw new EmissorException("É necessário informar uma justificativa para o cancelamento da NF-e.");
+        }
+        if (eventoDTO.getMotivo().trim().length() < 15) {
+            throw new EmissorException("A justificativa deve ter no mínimo 15 caracteres.");
+        }
+        if (eventoDTO.getMotivo().trim().length() > 255) {
+            throw new EmissorException("A justificativa deve ter no máximo 255 caracteres.");
+        }
+
+        GeraXMLEnvio gerar = new GeraXMLEnvio();
+        TEnvEvento enviEvento = gerar.cancelarNfe(eventoDTO);
+        br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TRetEnvEvento retornoSefaz = Nfe.cancelarNfe(enviEvento, false, ConstantesNFe.NFE);
+
+        RetornoEventoDTO retorno = new RetornoEventoDTO(enviEvento, retornoSefaz);
 
         return retorno;
     }
 
-    public TRetConsSitNFe consultarNfe(String chave, ConfiguracaoEmissorDTO configuracao) throws Exception {
-        instanciarConfiguracoes(configuracao);
-        TConsSitNFe consSitNFe = new TConsSitNFe();
-        consSitNFe.setVersao("3.10");
-        consSitNFe.setTpAmb(configuracao.getWebserviceAmbiente().toString());
-        consSitNFe.setXServ("CONSULTAR");
-        consSitNFe.setChNFe(chave);
+    public void iniciarConfigurações(ConfEmissorDTO conf) {
 
-        return Nfe.consultaXml(consSitNFe, false, ConstantesNFe.NFE);
+        try {
+            // Certificado Arquivo, Parametros: -Caminho Certificado, - Senha
+            Certificado certificado = CertificadoService.certificadoPfx(conf.getCaminhoCertificado(), conf.getSenhaCertificado());
+
+            configuracoes = Configuracoes.iniciaConfiguracoes(Estados.getUFbyIbge(conf.getCodigoUf().toString()), conf.getWebserviceAmbiente().toString(),
+                    certificado, conf.getCaminhoSchemas(), conf.getVersao());
+
+            configuracoes.setLog(Constantes.DESENVOLVIMENTO);
+
+        } catch (Exception ex) {
+            throw new RuntimeException("Erro ao iniciar as configurações de NF-e", ex);
+        }
 
     }
 
-    public void instanciarConfiguracoes(ConfiguracaoEmissorDTO configuracao) throws Exception {
-        ConfigurarAmbienteEmissor conf = new ConfigurarAmbienteEmissor(empresa.getCnpj(), "3.10", AmbienteEmissao.getByCodigo(configuracao.getWebserviceAmbiente()), endereco.getUf(), configuracao.getCaminhoSchemas());
-        conf.validarConfiguracoes();
-        conf.instanciarConfiguracoes(configuracao.getCertificadoDigitalSenha());
-    }
-
-    private EmpresaEndereco getEnderecoPrincipal(Empresa empresa) {
-        return empresa.getListaEndereco().stream()
-                .filter(end -> end.getPrincipal().equals("S"))
-                .findFirst().orElse(new EmpresaEndereco());
-    }
-
-    public TEnvEvento cancelarNFe(ConfiguracaoEmissorDTO configuracao, String protocolo, String uf, String ambiente, String chave, String justificativa) throws Exception {
-        if (justificativa == null) {
-            throw new Exception("É necessário informar uma justificativa para o cancelamento da NF-e.");
-        }
-        if (justificativa.trim().equals("")) {
-            throw new Exception("É necessário informar uma justificativa para o cancelamento da NF-e.");
-        }
-        if (justificativa.trim().length() < 15) {
-            throw new Exception("A justificativa deve ter no mínimo 15 caracteres.");
-        }
-        if (justificativa.trim().length() > 255) {
-            throw new Exception("A justificativa deve ter no máximo 255 caracteres.");
-        }
-        instanciarConfiguracoes(configuracao);
-        GeraXMLEnvio geraXml = new GeraXMLEnvio();
-        String cnpj = empresa.getCnpj();
-        TEnvEvento evento = geraXml.cancelarNfe(chave, protocolo, ambiente, uf, cnpj, justificativa);
-
-        return evento;
+    public Configuracoes getConfiguracoes() {
+        return configuracoes;
     }
 }

@@ -95,10 +95,10 @@ public class NfeService implements Serializable {
         context = FacesContext.getCurrentInstance().getExternalContext();
     }
 
-    public void dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa, ConfiguracaoEmissorDTO configuacao) throws Exception {
+    public void dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa) throws Exception {
         NfeUtil nfeUtil = new NfeUtil();
 
-        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa, configuacao);
+        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa);
         //   setarConfiguracoesNFe(nfe, modelo);
     }
 
@@ -202,7 +202,7 @@ public class NfeService implements Serializable {
         }
     }
 
-    public String inutilizarNFe(ConfiguracaoEmissorDTO configuracao, String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
+    public String inutilizarNFe(String modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
         NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(modelo, empresa);
         if (notaFiscalTipo == null) {
             throw new Exception("Não foi informando numeração para o modelo " + modelo);
@@ -388,7 +388,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public String gerarNfePreProcessada(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
+    public String gerarNfePreProcessada(NfeCabecalho nfe) throws Exception {
         TEnviNFe nfeEnv = gerarNfeEnv(nfe, configuracao);
         String schemas = org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : configuracao.getCaminhoSchemas();
         configuracao.setCaminhoSchemas(schemas);
@@ -400,7 +400,7 @@ public class NfeService implements Serializable {
         return ArquivoUtil.getInstance().escrever(tipoArquivo, empresa.getCnpj(), xml.getBytes(), nomeArquivo);
     }
 
-    public TEnviNFe gerarNfeEnv(NfeCabecalho nfe, ConfiguracaoEmissorDTO confiEmissor) throws Exception {
+    public TEnviNFe gerarNfeEnv(NfeCabecalho nfe) throws Exception {
         NfeTransmissao transmissao = new NfeTransmissao(empresa);
         String schemas = org.springframework.util.StringUtils.isEmpty(confiEmissor.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : confiEmissor.getCaminhoSchemas();
         confiEmissor.setCaminhoSchemas(schemas);
@@ -456,7 +456,7 @@ public class NfeService implements Serializable {
     }
 
     @Transactional
-    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao, boolean atualizarEstoque) throws Exception {
+    public StatusTransmissao transmitirNFe(NfeCabecalho nfe, boolean atualizarEstoque) throws Exception {
         validacaoNfe(nfe);
         VendaCabecalho venda = nfe.getVendaCabecalho();
         OsAbertura os = nfe.getOs();
@@ -528,7 +528,7 @@ public class NfeService implements Serializable {
         return status;
     }
 
-    public void danfe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
+    public void danfe(NfeCabecalho nfe) throws Exception {
         String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj());
         String arquivoPdf = pastaXml + System.getProperty("file.separator") + nfe.getNomePdf();
         String caminhoXml = pastaXml + System.getProperty("file.separator") + nfe.getNomeXml();
@@ -547,7 +547,7 @@ public class NfeService implements Serializable {
         }
     }
 
-    public void gerarDanfe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
+    public void gerarDanfe(NfeCabecalho nfe) throws Exception {
         StatusTransmissao statusTransmissao = StatusTransmissao.valueOfCodigo(nfe.getStatusNota());
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         String caminho = statusTransmissao == StatusTransmissao.AUTORIZADA
@@ -621,7 +621,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public String cartaCorrecao(NfeCabecalho nfe, String justificativa, ConfiguracaoEmissorDTO configuracao) throws Exception {
+    public String cartaCorrecao(NfeCabecalho nfe, String justificativa) throws Exception {
         if (!StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             throw new Exception("NF-e náo autorizada. Cancelamento náo permitido!");
         }
@@ -644,7 +644,7 @@ public class NfeService implements Serializable {
     }
 
     @Transactional
-    public boolean cancelarNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao, boolean estoque) throws Exception {
+    public boolean cancelarNFe(NfeCabecalho nfe, boolean estoque) throws Exception {
 
         boolean cancelado = false;
         if (StatusTransmissao.isCancelada(nfe.getStatusNota())) {
@@ -685,7 +685,7 @@ public class NfeService implements Serializable {
     }
 
     @Transactional
-    public void verificarSituacao(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao) throws Exception {
+    public void verificarSituacao(NfeCabecalho nfe) throws Exception {
 
 
         TRetConsSitNFe result = consultarNfe(nfe.getChaveAcessoCompleta(), configuracao);
@@ -709,7 +709,7 @@ public class NfeService implements Serializable {
         }
     }
 
-    public TRetConsSitNFe consultarNfe(String chave, ConfiguracaoEmissorDTO configuracao) throws Exception {
+    public TRetConsSitNFe consultarNfe(String chave) throws Exception {
         NfeTransmissao transmissao = new NfeTransmissao(empresa);
         String schemas = org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas()) ? context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE) : configuracao.getCaminhoSchemas();
         configuracao.setCaminhoSchemas(schemas);

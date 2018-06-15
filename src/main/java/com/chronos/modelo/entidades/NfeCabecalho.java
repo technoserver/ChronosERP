@@ -256,6 +256,107 @@ public class NfeCabecalho implements Serializable {
     private PdvVendaCabecalho pdv;
 
     public NfeCabecalho() {
+
+        this.emitente = new NfeEmitente();
+        this.emitente.setNfeCabecalho(this);
+        this.destinatario = new NfeDestinatario();
+        this.destinatario.setNfeCabecalho(this);
+        this.localEntrega = new NfeLocalEntrega();
+        this.localEntrega.setNfeCabecalho(this);
+        this.localRetirada = new NfeLocalRetirada();
+        this.localRetirada.setNfeCabecalho(this);
+        this.transporte = new NfeTransporte();
+        this.transporte.setNfeCabecalho(this);
+        this.fatura = new NfeFatura();
+        this.fatura.setNfeCabecalho(this);
+
+        this.listaNfeReferenciada = new HashSet<>();
+        this.listaNfReferenciada = new HashSet<>();
+        this.listaCteReferenciado = new HashSet<>();
+        this.listaProdRuralReferenciada = new HashSet<>();
+        this.listaCupomFiscalReferenciado = new HashSet<>();
+        this.transporte.setListaTransporteReboque(new HashSet<>());
+        this.transporte.setListaTransporteVolume(new HashSet<>());
+        this.listaDuplicata = new LinkedHashSet<>();
+        this.listaNfeDetalhe = new ArrayList<>();
+        this.listaNfeFormaPagamento = new HashSet<>();
+
+
+        this.consumidorOperacao = 1;
+
+        this.tipoEmissao = 1;
+        this.formatoImpressaoDanfe = 1;
+
+        // this.TributOperacaoFiscal(new TributOperacaoFiscal());
+        this.tipoOperacao = 1;
+        this.statusNota = 0;
+        // 0=Sem geracao de DANFE;
+        // 1=DANFE normal,Retrato;
+        // 2=DANFE normal,Paisagem;
+        // 3=DANFE Simplificado;
+        // 4=DANFE NFC-e;
+        // 5=DANFE NFC-e em mensagem eletronica.
+
+        // 1=Operacao presencial;
+        // 4=NFC-e em operacao com entrega em domicilio;
+        this.consumidorOperacao = 1;
+        // 0=Nao;1=Consumidor final;
+
+        // 1=Emissao normal (nao em contingencia);
+        // 2=Contingencia FS-IA, com impressao do DANFE em formulario de seguranca;
+        // 3=Contingencia SCAN (Sistema de Contingencia do Ambiente Nacional);
+        // 4=Contingencia DPEC (Declaracao Previa da Emissao em Contingencia);
+        // 5=Contingencia FS-DA, com impressão do DANFE em formulario de seguranca;
+        // 6=Contingencia SVC-AN (SEFAZ Virtual de Contingencia do AN);
+        // 7=Contingencia SVC-RS (SEFAZ
+        // Virtual de Contingencia do RS);
+        // 9=Contingencia off-line da NFC-e;
+        this.tipoEmissao = 1;
+        this.finalidadeEmissao = 1;
+
+        // 1=Operacao interna;2=Operacao interestadual;3=Operacao com exterior.
+        this.localDestino = 1;
+        // this.getTransporte().setModalidadeFrete(0);
+
+        this.naturezaOperacao = "VENDA";
+
+        this.dataHoraEmissao = new Date();
+        this.dataHoraEntradaSaida = new Date();
+
+        this.baseCalculoIcms = BigDecimal.ZERO;
+        this.valorIcms = BigDecimal.ZERO;
+        this.valorTotalProdutos = BigDecimal.ZERO;
+        this.baseCalculoIcmsSt = BigDecimal.ZERO;
+        this.valorIcmsSt = BigDecimal.ZERO;
+        this.valorIpi = BigDecimal.ZERO;
+        this.valorPis = BigDecimal.ZERO;
+        this.valorCofins = BigDecimal.ZERO;
+        this.valorFrete = BigDecimal.ZERO;
+        this.valorSeguro = BigDecimal.ZERO;
+        this.valorDespesasAcessorias = BigDecimal.ZERO;
+        this.valorDesconto = BigDecimal.ZERO;
+        this.valorTotal = BigDecimal.ZERO;
+        this.valorImpostoImportacao = BigDecimal.ZERO;
+        this.baseCalculoIssqn = BigDecimal.ZERO;
+        this.valorIssqn = BigDecimal.ZERO;
+        this.valorPisIssqn = BigDecimal.ZERO;
+        this.valorCofinsIssqn = BigDecimal.ZERO;
+        this.valorServicos = BigDecimal.ZERO;
+        this.valorRetidoPis = BigDecimal.ZERO;
+        this.valorRetidoCofins = BigDecimal.ZERO;
+        this.valorRetidoCsll = BigDecimal.ZERO;
+        this.baseCalculoIrrf = BigDecimal.ZERO;
+        this.valorRetidoIrrf = BigDecimal.ZERO;
+        this.baseCalculoPrevidencia = BigDecimal.ZERO;
+        this.valorRetidoPrevidencia = BigDecimal.ZERO;
+        this.valorIcmsDesonerado = BigDecimal.ZERO;
+
+        this.valorFcp = BigDecimal.ZERO;
+        this.valorFcpSt = BigDecimal.ZERO;
+        this.valorFcpStRetido = BigDecimal.ZERO;
+        this.valorIpiDevolvido = BigDecimal.ZERO;
+
+        this.statusNota = StatusTransmissao.EDICAO.getCodigo();
     }
 
     public NfeCabecalho(Integer id, String numero) {

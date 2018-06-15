@@ -15,16 +15,15 @@ import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.*;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Prod;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFeSupl;
 import com.chronos.calc.enuns.OrigemMercadoria;
+import com.chronos.dto.EventoDTO;
+import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.AmbienteEmissao;
 import com.chronos.infra.enuns.IndicadorIe;
 import com.chronos.infra.enuns.ModalidadeFrete;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.nfe.Nfe;
-import com.chronos.util.ConstantesNFe;
-import com.chronos.util.FormatValor;
-import com.chronos.util.NFCeUtil;
-import com.chronos.util.WebServiceUtil;
+import com.chronos.util.*;
 import org.springframework.util.StringUtils;
 
 import javax.swing.text.MaskFormatter;
@@ -33,7 +32,10 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.text.ParseException;
-import java.util.*;
+import java.util.Base64;
+import java.util.Date;
+import java.util.Optional;
+import java.util.Set;
 
 //cancelar
 //inutilizar
@@ -50,8 +52,8 @@ public class GeraXMLEnvio {
     private boolean temProduto;
     private BigDecimal valorTotalTributos;
 
-    public TEnviNFe gerarXmlEnvio(Empresa empresa, NfeCabecalho nfeCabecalho) throws Exception {
-        this.empresa = empresa;
+    public TEnviNFe gerarXmlEnvio(NfeCabecalho nfeCabecalho) throws Exception {
+        this.empresa = nfeCabecalho.getEmpresa();
         this.nfeCabecalho = nfeCabecalho;
         endereco = empresa.buscarEnderecoPrincipal();
         modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfeCabecalho.getCodigoModelo()));
@@ -125,7 +127,7 @@ public class GeraXMLEnvio {
         enviNFe.getNFe().add(nfe);
 
         if (modelo == ModeloDocumento.NFCE) {
-            enviNFe.getNFe().get(0).getInfNFe().getPag().addAll(getPags(nfeCabecalho.getListaNfeFormaPagamento()));
+            enviNFe.getNFe().get(0).getInfNFe().setPag(getPag(nfeCabecalho.getListaNfeFormaPagamento()));
         }
 
 
@@ -153,37 +155,35 @@ public class GeraXMLEnvio {
     }
 
 
-    public TEnvEvento cancelarNfe(String chave, String protocolo, String ambiente, String uf, String cnpj,
-                                  String justificativa) throws ParseException {
+    public br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento cancelarNfe(EventoDTO eventoDTO) throws EmissorException {
 
 
-        String id = "ID110111" + chave + "01";
-        Date data = new Date();
-        TEnvEvento enviEvento = new TEnvEvento();
-        enviEvento.setVersao("1.00");
+        String id = "ID" + ConstantesNFe.EVENTO.CANCELAR + eventoDTO.getChave() + "01";
+
+        br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento enviEvento = new br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento();
+        enviEvento.setVersao(ConstantesNFe.VERSAO.EVENTO_CANCELAMENTO);
         enviEvento.setIdLote("1");
 
-        TEvento eventoCancela = new TEvento();
-        eventoCancela.setVersao("1.00");
+        br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento eventoCancela = new br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento();
+        eventoCancela.setVersao(ConstantesNFe.VERSAO.EVENTO_CANCELAMENTO);
 
-        InfEvento infoEvento = new InfEvento();
+        br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento infoEvento = new br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento();
         infoEvento.setId(id);
-        infoEvento.setChNFe(chave);
-        infoEvento.setCOrgao(uf);
-        infoEvento.setTpAmb(ambiente);
+        infoEvento.setChNFe(eventoDTO.getChave());
+        infoEvento.setCOrgao(NfeTransmissao.getInstance().getConfiguracoes().getEstado().getCodigoIbge());
+        infoEvento.setTpAmb(NfeTransmissao.getInstance().getConfiguracoes().getAmbiente());
+        infoEvento.setCNPJ(eventoDTO.getCnpj());
 
-        infoEvento.setCNPJ(cnpj);
-
-        infoEvento.setDhEvento(FormatValor.getInstance().formatarDataNota(data));
-        infoEvento.setTpEvento("110111");
+        infoEvento.setDhEvento(XmlUtil.dataNfe());
+        infoEvento.setTpEvento(ConstantesNFe.EVENTO.CANCELAR);
         infoEvento.setNSeqEvento("1");
-        infoEvento.setVerEvento("1.00");
+        infoEvento.setVerEvento(ConstantesNFe.VERSAO.EVENTO_CANCELAMENTO);
 
-        DetEvento detEvento = new DetEvento();
-        detEvento.setVersao("1.00");
+        br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento.DetEvento detEvento = new br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento.DetEvento();
+        detEvento.setVersao(ConstantesNFe.VERSAO.EVENTO_CANCELAMENTO);
         detEvento.setDescEvento("Cancelamento");
-        detEvento.setNProt(protocolo);
-        detEvento.setXJust(justificativa);
+        detEvento.setNProt(eventoDTO.getProtocolo());
+        detEvento.setXJust(eventoDTO.getMotivo());
         infoEvento.setDetEvento(detEvento);
         eventoCancela.setInfEvento(infoEvento);
         enviEvento.getEvento().add(eventoCancela);
@@ -191,90 +191,50 @@ public class GeraXMLEnvio {
         return enviEvento;
     }
 
-    public br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento cartaCorrecao(String chave, String ambiente,
-                                                                          String codigoUf, String cnpj, String correcao) throws ParseException {
+    public br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento cartaCorrecao(EventoDTO evento) throws EmissorException {
 
-        String id = "ID110110" + chave + "01";
+        String id = "ID"
+                + ConstantesNFe.EVENTO.CCE + evento.getChave()
+                + (evento.getSequencia() < 10 ? org.apache.commons.lang3.StringUtils.leftPad(evento.getSequencia() + "", 2, '0') : evento.getSequencia() + "");
 
-        br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento envEvento = new br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento();
-        envEvento.setVersao("1.00");
+        TEnvEvento envEvento = new TEnvEvento();
+        envEvento.setVersao(ConstantesNFe.VERSAO.EVENTO_CCE);
         envEvento.setIdLote("1");
 
-        br.inf.portalfiscal.nfe.schema.envcce.TEvento evento = new br.inf.portalfiscal.nfe.schema.envcce.TEvento();
-        evento.setVersao("1.00");
+        br.inf.portalfiscal.nfe.schema.envcce.TEvento eventoNfe = new br.inf.portalfiscal.nfe.schema.envcce.TEvento();
+        eventoNfe.setVersao(ConstantesNFe.VERSAO.EVENTO_CCE);
 
         br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento infEvento = new br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento();
         infEvento.setId(id);
-        infEvento.setCOrgao(codigoUf);
-        infEvento.setTpAmb(ambiente);
+        infEvento.setCOrgao(NfeTransmissao.getInstance().getConfiguracoes().getEstado().getCodigoIbge());
+        infEvento.setTpAmb(NfeTransmissao.getInstance().getConfiguracoes().getAmbiente());
+        infEvento.setCNPJ(evento.getCnpj());
+        infEvento.setChNFe(evento.getChave());
 
-        infEvento.setCNPJ(cnpj);
-        infEvento.setChNFe(chave);
-
-        infEvento.setDhEvento(FormatValor.getInstance().formatarDataNota(new Date()));
-        infEvento.setTpEvento("110110");
-        infEvento.setNSeqEvento("1");
-        infEvento.setVerEvento("1.00");
+        // Altere a Data
+        infEvento.setDhEvento(XmlUtil.dataNfe());
+        infEvento.setTpEvento(ConstantesNFe.EVENTO.CCE);
+        infEvento.setNSeqEvento(String.valueOf(evento.getSequencia()));
+        infEvento.setVerEvento(ConstantesNFe.VERSAO.EVENTO_CCE);
 
         br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento.DetEvento detEvento = new br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento.DetEvento();
-        detEvento.setVersao("1.00");
+        detEvento.setVersao(ConstantesNFe.VERSAO.EVENTO_CCE);
         detEvento.setDescEvento("Carta de Correcao");
 
-        detEvento.setXCorrecao(correcao);
-        detEvento.setXCondUso(
-                "A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do destinatario; III - a data de emissao ou de saida.");
+        // Informe a Correção
+        detEvento.setXCorrecao(evento.getMotivo());
+        detEvento.setXCondUso("A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do destinatario; III - a data de emissao ou de saida.");
         infEvento.setDetEvento(detEvento);
-        evento.setInfEvento(infEvento);
-        envEvento.getEvento().add(evento);
+        eventoNfe.setInfEvento(infEvento);
+        envEvento.getEvento().add(eventoNfe);
 
         return envEvento;
     }
 
 
-    public TInutNFe inutilizarNfe(String ambiente, String codigoUf, String modelo, int serie, int numInicial,
-                                  int numFinal, String cnpj, String justificativa) {
 
-        String id = "ID" + codigoUf + FormatValor.getInstance().formatarAno(new Date()) + cnpj + modelo + FormatValor.getInstance().formatarSerieToString(serie)
-                + FormatValor.getInstance().formatarNumeroDocFiscalToString(Integer.valueOf(numInicial)) + FormatValor.getInstance().formatarNumeroDocFiscalToString(Integer.valueOf(numFinal));
 
-        TInutNFe inutNFe = new TInutNFe();
-        inutNFe.setVersao("3.10");
 
-        InfInut infInut = new InfInut();
-        infInut.setId(id);
-        infInut.setTpAmb(ambiente);
-        infInut.setXServ("INUTILIZAR");
-        infInut.setCUF(codigoUf);
-        infInut.setAno(FormatValor.getInstance().formatarAno(new Date()));
-
-        infInut.setCNPJ(cnpj);
-        infInut.setMod(modelo);
-        infInut.setSerie(String.valueOf(serie));
-
-        infInut.setNNFIni(String.valueOf(numInicial));
-        infInut.setNNFFin(String.valueOf(numFinal));
-
-        infInut.setXJust(justificativa);
-        inutNFe.setInfInut(infInut);
-
-        return inutNFe;
-    }
-
-    public String consultarStatus(String ambiente, String codIbge, String versaoNfe) throws Exception {
-        TConsStatServ consStatServ = new TConsStatServ();
-        consStatServ.setTpAmb(ambiente);
-        consStatServ.setCUF(codIbge);
-        consStatServ.setVersao(versaoNfe);
-        consStatServ.setXServ("STATUS");
-
-        TRetConsStatServ retorno = Nfe.statusServico(consStatServ, false, ConstantesNFe.NFE);
-        String status;
-        status = "Status:" + retorno.getCStat() + "\n";
-        status += "Motivo:" + retorno.getXMotivo() + "\n";
-        status += "Data:" + retorno.getDhRecbto() + "\n";
-
-        return status;
-    }
 
     private InfNFe getInfNFe() {
         InfNFe infNfe = new InfNFe();
@@ -289,7 +249,6 @@ public class GeraXMLEnvio {
         ide.setCUF(empresa.getCodigoIbgeUf().toString());
         ide.setCNF(nfeCabecalho.getCodigoNumerico());
         ide.setNatOp(nfeCabecalho.getNaturezaOperacao());
-        ide.setIndPag(String.valueOf(nfeCabecalho.getIndicadorFormaPagamento()));
         ide.setMod(nfeCabecalho.getCodigoModelo() != null ? nfeCabecalho.getCodigoModelo() : "00");
         ide.setSerie(nfeCabecalho.getSerie() != null ? Integer.valueOf(nfeCabecalho.getSerie()).toString() : "000");
         ide.setNNF(nfeCabecalho.getNumero() != null ? Integer.valueOf(nfeCabecalho.getNumero()).toString() : "00000000");
@@ -1038,19 +997,19 @@ public class GeraXMLEnvio {
         return cobr;
     }
 
-    private List<Pag> getPags(Set<NfeFormaPagamento> listaNfeFormaPagamento) {
+    private Pag getPag(Set<NfeFormaPagamento> listaNfeFormaPagamento) {
 
-        List<Pag> pags = new ArrayList<>();
+        Pag pag = new Pag();
 
         listaNfeFormaPagamento.stream().forEach(p -> {
-            Pag pag = new Pag();
-            pag.setTPag(p.getForma());
+            Pag.DetPag detPag = new Pag.DetPag();
+            detPag.setTPag(p.getForma());
             BigDecimal valor = p.getValor().subtract(Optional.ofNullable(p.getTroco()).orElse(BigDecimal.ZERO));
-            pag.setVPag(FormatValor.getInstance().formatarValor(valor));
-            pags.add(pag);
+            detPag.setVPag(FormatValor.getInstance().formatarValor(valor));
+            pag.getDetPag().add(detPag);
         });
 
-        return pags;
+        return pag;
     }
 
 
@@ -1082,12 +1041,17 @@ public class GeraXMLEnvio {
         icmsTot.setVDesc(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorDesconto()));
         icmsTot.setVII(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorImpostoImportacao()));
         icmsTot.setVIPI(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorIpi()));
+        icmsTot.setVIPIDevol(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorIpiDevolvido()));
         icmsTot.setVPIS(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorPis()));
         icmsTot.setVCOFINS(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorCofins()));
         icmsTot.setVOutro(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorDespesasAcessorias()));
         icmsTot.setVNF(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorTotal()));
         icmsTot.setVICMSDeson(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorIcmsDesonerado()));
         icmsTot.setVTotTrib(FormatValor.getInstance().formatarValor(valorTotalTributos));
+
+        icmsTot.setVFCP(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcp()));
+        icmsTot.setVFCPST(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcpSt()));
+        icmsTot.setVFCPSTRet(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcpStRetido()));
 
         if (nfeCabecalho.getValorServicos().compareTo(BigDecimal.ZERO) > 0) {
             TNFe.InfNFe.Total.ISSQNtot issqnTot = new TNFe.InfNFe.Total.ISSQNtot();

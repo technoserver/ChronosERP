@@ -6,10 +6,8 @@ import com.chronos.calc.enuns.Cst;
 import com.chronos.calc.enuns.CstIpi;
 import com.chronos.calc.enuns.CstPisCofins;
 import com.chronos.controll.nfe.NfeCalculoControll;
-import com.chronos.dto.ConfiguracaoEmissorDTO;
-import com.chronos.infra.enuns.*;
+import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.view.*;
 import com.chronos.repository.*;
 import com.chronos.util.cdi.ManualCDILookup;
@@ -19,7 +17,9 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by john on 29/09/17.
@@ -39,75 +39,28 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
     private Repository<NotaFiscalTipo> tiposNotaFiscal;
 
 
-    public NfeCabecalho dadosPadroes(NfeCabecalho nfe, ModeloDocumento modelo, Empresa empresa, ConfiguracaoEmissorDTO configuracao) {
-        nfe.setDestinatario(new NfeDestinatario());
-        nfe.getDestinatario().setNfeCabecalho(nfe);
+    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) {
+        NfeCabecalho nfe = new NfeCabecalho();
+        nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressao.DANFE_NORMAL_PAISAGEM.getCodigo() : FormatoImpressao.DANFE_NFCE.getCodigo());
+        nfe.setUfEmitente(empresa.getCodigoIbgeUf());
+        nfe.setCodigoMunicipio(empresa.getCodigoIbgeCidade());
+        nfe.setCodigoModelo(String.valueOf(modelo));
+        nfe.setEmpresa(empresa);
 
-        nfe.setEmitente(getEmitente(empresa));
         nfe.getEmitente().setNfeCabecalho(nfe);
 
+        nfe.getDestinatario().setNfeCabecalho(nfe);
 
-        nfe.setListaDuplicata(new HashSet<>());
-        nfe.setListaNfeFormaPagamento(new HashSet<>());
-        nfe.setListaNfeReferenciada(new HashSet<>());
-        nfe.setListaNfReferenciada(new HashSet<>());
-        nfe.setListaCteReferenciado(new HashSet<>());
-        nfe.setListaProdRuralReferenciada(new HashSet<>());
-        nfe.setListaCupomFiscalReferenciado(new HashSet<>());
+        nfe.getLocalEntrega().setNfeCabecalho(nfe);
 
-        nfe.setListaNfeDetalhe(new ArrayList<>());
-        ConsumidorOperacao consumidorOperacao = modelo == ModeloDocumento.NFE ? ConsumidorOperacao.NORMAL : ConsumidorOperacao.FINAL;
-        nfe.setConsumidorOperacao(consumidorOperacao.getCodigo());
-        nfe.setTipoEmissao(TipoEmissao.NORMAL.getCodigo());
-        nfe.setTipoOperacao(TipoOperacao.SAIDA.ordinal());
-        nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
-        FormatoImpressaoDanfe formato = modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO : FormatoImpressaoDanfe.DANFE_NFCE;
-        nfe.setFormatoImpressaoDanfe(formato.getCodigo());
+        nfe.getLocalRetirada().setNfeCabecalho(nfe);
+
+        nfe.getTransporte().setNfeCabecalho(nfe);
+
+        nfe.getFatura().setNfeCabecalho(nfe);
 
 
-        nfe.setFinalidadeEmissao(FinalidadeEmissao.NORMAL.getCodigo());
-        nfe.setIndicadorFormaPagamento(IndicadorFormaPagamento.AVISTA.ordinal());
 
-        nfe.setLocalDestino(LocalDestino.INTERNA.getCodigo());
-
-        Date dataAtual = new Date();
-        nfe.setNaturezaOperacao("VENDA");
-        nfe.setEmpresa(empresa);
-        nfe.setUfEmitente(nfe.getEmpresa().getCodigoIbgeUf());
-        nfe.setDataHoraEmissao(dataAtual);
-        nfe.setDataHoraEntradaSaida(dataAtual);
-        nfe.setCodigoMunicipio(empresa.getCodigoIbgeCidade());
-        nfe.setBaseCalculoIcms(BigDecimal.ZERO);
-        nfe.setValorIcms(BigDecimal.ZERO);
-        nfe.setValorTotalProdutos(BigDecimal.ZERO);
-        nfe.setBaseCalculoIcmsSt(BigDecimal.ZERO);
-        nfe.setValorIcmsSt(BigDecimal.ZERO);
-        nfe.setValorIpi(BigDecimal.ZERO);
-        nfe.setValorPis(BigDecimal.ZERO);
-        nfe.setValorCofins(BigDecimal.ZERO);
-        nfe.setValorFrete(BigDecimal.ZERO);
-        nfe.setValorSeguro(BigDecimal.ZERO);
-        nfe.setValorDespesasAcessorias(BigDecimal.ZERO);
-        nfe.setValorDesconto(BigDecimal.ZERO);
-        nfe.setValorTotal(BigDecimal.ZERO);
-        nfe.setValorImpostoImportacao(BigDecimal.ZERO);
-        nfe.setBaseCalculoIssqn(BigDecimal.ZERO);
-        nfe.setValorIssqn(BigDecimal.ZERO);
-        nfe.setValorPisIssqn(BigDecimal.ZERO);
-        nfe.setValorCofinsIssqn(BigDecimal.ZERO);
-        nfe.setValorServicos(BigDecimal.ZERO);
-        nfe.setValorRetidoPis(BigDecimal.ZERO);
-        nfe.setValorRetidoCofins(BigDecimal.ZERO);
-        nfe.setValorRetidoCsll(BigDecimal.ZERO);
-        nfe.setBaseCalculoIrrf(BigDecimal.ZERO);
-        nfe.setValorRetidoIrrf(BigDecimal.ZERO);
-        nfe.setBaseCalculoPrevidencia(BigDecimal.ZERO);
-        nfe.setValorRetidoPrevidencia(BigDecimal.ZERO);
-        nfe.setValorIcmsDesonerado(BigDecimal.ZERO);
-        nfe.setCodigoModelo(String.valueOf(modelo.getCodigo()));
-        nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
-        nfe.setProcessoEmissao(0);
-        nfe.setVersaoProcessoEmissao("3.1.11");
 
         if (configuracao != null) {
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
