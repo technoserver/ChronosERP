@@ -20,6 +20,7 @@ import com.chronos.nfe.Nfe;
 import com.chronos.util.Constantes;
 import com.chronos.util.ConstantesNFe;
 import com.chronos.util.FormatValor;
+import com.chronos.util.jsf.FacesUtil;
 
 import java.util.Date;
 
@@ -33,7 +34,7 @@ public class NfeTransmissao {
     private static NfeTransmissao instance;
     private Configuracoes configuracoes;
 
-    public static NfeTransmissao getInstance() throws EmissorException {
+    public static NfeTransmissao getInstance() {
         if (instance == null) {
             instance = new NfeTransmissao();
         }
@@ -153,12 +154,28 @@ public class NfeTransmissao {
                     certificado, conf.getCaminhoSchemas(), conf.getVersao());
 
             configuracoes.setLog(Constantes.DESENVOLVIMENTO);
-
+            FacesUtil.setConfEmissor(configuracoes);
         } catch (Exception ex) {
             throw new RuntimeException("Erro ao iniciar as configurações de NF-e", ex);
         }
 
     }
+
+    public void iniciarConfiguracoes() {
+        try {
+
+            Configuracoes conf = FacesUtil.getConfEmissor();
+
+            if (conf != null) {
+                Configuracoes.iniciaConfiguracoes(conf.getEstado(), conf.getAmbiente(), conf.getCertificado(), conf.getPastaSchemas(), conf.getVersao());
+            }
+
+
+        } catch (Exception ex) {
+
+        }
+    }
+
 
     public Configuracoes getConfiguracoes() {
         return configuracoes;

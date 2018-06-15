@@ -13,15 +13,15 @@ import org.slf4j.LoggerFactory;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.UUID;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static java.nio.file.FileSystems.getDefault;
 
@@ -61,6 +61,32 @@ public class ArquivoUtil {
             return instance;
         }
         return instance;
+    }
+
+    public static File compactarArquivos(List<String> arqvuivos, String nomeArquivoCompactado) throws Exception {
+        File arquivoZip = File.createTempFile(nomeArquivoCompactado, ".zip");
+        FileOutputStream fos = new FileOutputStream(arquivoZip);
+        ZipOutputStream zipOut = new ZipOutputStream(fos);
+
+        for (String srcFile : arqvuivos) {
+            File fileToZip = new File(srcFile);
+            if (fileToZip.exists()) {
+                FileInputStream fis = new FileInputStream(fileToZip);
+                ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+                zipOut.putNextEntry(zipEntry);
+
+                byte[] bytes = new byte[1024];
+                int length;
+                while ((length = fis.read(bytes)) >= 0) {
+                    zipOut.write(bytes, 0, length);
+                }
+                fis.close();
+            }
+
+        }
+        zipOut.close();
+        fos.close();
+        return arquivoZip;
     }
 
     public String escrever(TipoArquivo tipoArquivo, String cnpj, InputStream origem, String nomeArquivo) throws IOException {
@@ -227,8 +253,6 @@ public class ArquivoUtil {
         return getPastaFotoFuncionario(cnpj) + System.getProperty("file.separator") + "foto_funcionario_" + cpf + ".png";
     }
 
-
-
     public byte[] recuperarImagemTemporaria(String nome) {
         try {
             return Files.readAllBytes(this.localTemporario.resolve(nome));
@@ -247,7 +271,6 @@ public class ArquivoUtil {
         return novoNome;
 
     }
-
 
     private void criarPastas() {
         try {

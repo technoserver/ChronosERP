@@ -1,9 +1,9 @@
 package com.chronos.bo.nfe;
 
-import br.inf.portalfiscal.nfe.schema.procnfe.TIpi;
-import br.inf.portalfiscal.nfe.schema.procnfe.TNFe;
-import br.inf.portalfiscal.nfe.schema.procnfe.TNfeProc;
-import br.inf.portalfiscal.nfe.schema.procnfe.TProtNFe;
+import br.inf.portalfiscal.nfe.schema_4.procNFe.TIpi;
+import br.inf.portalfiscal.nfe.schema_4.procNFe.TNFe;
+import br.inf.portalfiscal.nfe.schema_4.procNFe.TNfeProc;
+import br.inf.portalfiscal.nfe.schema_4.procNFe.TProtNFe;
 import com.chronos.modelo.entidades.*;
 import com.chronos.util.FormatValor;
 
@@ -55,7 +55,6 @@ public class ImportaXMLNFe {
         //cabecalho
         nfeCabecalho.setCodigoNumerico(ide.getCNF());
         nfeCabecalho.setNaturezaOperacao(ide.getNatOp());
-        nfeCabecalho.setIndicadorFormaPagamento(Integer.valueOf(ide.getIndPag()));
         nfeCabecalho.setCodigoModelo(ide.getMod());
         nfeCabecalho.setSerie(FormatValor.getInstance().formatarSerieToString(Integer.valueOf(ide.getSerie())));
         nfeCabecalho.setNumero(FormatValor.getInstance().formatarNumeroDocFiscalToString(Double.valueOf(ide.getNNF())));

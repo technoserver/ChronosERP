@@ -6,6 +6,7 @@
 package com.chronos.util.jsf;
 
 import com.chronos.dto.UsuarioDTO;
+import com.chronos.init.Configuracoes;
 import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.PdvMovimento;
@@ -152,6 +153,28 @@ public class FacesUtil {
         UsuarioDTO user = getUsuarioSessao();
         user.setEmpresa(empresa);
         setUsuarioSessao(user);
+    }
+
+    public static Configuracoes getConfEmissor() {
+        Configuracoes conf = null;
+        try {
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+            conf = (Configuracoes) session.getAttribute("confEm");
+            return conf;
+        } catch (Exception ex) {
+        }
+        return conf;
+    }
+
+    public static void setConfEmissor(Configuracoes conf) {
+
+        try {
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+            session.removeAttribute("confEm");
+            session.setAttribute("confEm", conf);
+        } catch (Exception ex) {
+        }
+
     }
 
     private static HttpSession getHttpSession() {

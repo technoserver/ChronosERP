@@ -1,7 +1,7 @@
 package com.chronos.dto;
 
-import com.chronos.modelo.entidades.PdvConfiguracao;
 import com.chronos.modelo.entidades.NfeConfiguracao;
+import com.chronos.modelo.entidades.PdvConfiguracao;
 
 /**
  * Created by john on 09/10/17.
@@ -66,6 +66,8 @@ public class ConfiguracaoEmissorDTO {
 
     private String observacaoPadrao;
 
+    private int modelo;
+
 
     public ConfiguracaoEmissorDTO() {
     }
@@ -77,6 +79,7 @@ public class ConfiguracaoEmissorDTO {
         this.observacaoPadrao = configuracao.getObservacaoPadrao();
         this.webserviceAmbiente = configuracao.getWebserviceAmbiente();
         this.processoEmissao = configuracao.getProcessoEmissao();
+        this.modelo = 65;
 
     }
 
@@ -88,6 +91,8 @@ public class ConfiguracaoEmissorDTO {
         this.webserviceAmbiente = configuracao.getWebserviceAmbiente();
         this.processoEmissao = configuracao.getProcessoEmissao();
         this.csc = configuracao.getCodigoCsc();
+
+        this.modelo = 55;
     }
 
 
@@ -311,6 +316,10 @@ public class ConfiguracaoEmissorDTO {
         return observacaoPadrao;
     }
 
+    public void setObservacaoPadrao(String observacaoPadrao) {
+        this.observacaoPadrao = observacaoPadrao;
+    }
+
     public String getCsc() {
         return csc;
     }
@@ -319,7 +328,7 @@ public class ConfiguracaoEmissorDTO {
         this.csc = csc;
     }
 
-    public void setObservacaoPadrao(String observacaoPadrao) {
-        this.observacaoPadrao = observacaoPadrao;
+    public int getModelo() {
+        return modelo;
     }
 }

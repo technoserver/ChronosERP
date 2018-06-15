@@ -6,7 +6,6 @@ import com.chronos.calc.enuns.Cst;
 import com.chronos.calc.enuns.CstIpi;
 import com.chronos.calc.enuns.CstPisCofins;
 import com.chronos.controll.nfe.NfeCalculoControll;
-import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.view.*;
 import com.chronos.repository.*;
@@ -39,37 +38,6 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
     private Repository<NotaFiscalTipo> tiposNotaFiscal;
 
 
-    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) {
-        NfeCabecalho nfe = new NfeCabecalho();
-        nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressao.DANFE_NORMAL_PAISAGEM.getCodigo() : FormatoImpressao.DANFE_NFCE.getCodigo());
-        nfe.setUfEmitente(empresa.getCodigoIbgeUf());
-        nfe.setCodigoMunicipio(empresa.getCodigoIbgeCidade());
-        nfe.setCodigoModelo(String.valueOf(modelo));
-        nfe.setEmpresa(empresa);
-
-        nfe.getEmitente().setNfeCabecalho(nfe);
-
-        nfe.getDestinatario().setNfeCabecalho(nfe);
-
-        nfe.getLocalEntrega().setNfeCabecalho(nfe);
-
-        nfe.getLocalRetirada().setNfeCabecalho(nfe);
-
-        nfe.getTransporte().setNfeCabecalho(nfe);
-
-        nfe.getFatura().setNfeCabecalho(nfe);
-
-
-
-
-        if (configuracao != null) {
-            nfe.setAmbiente(configuracao.getWebserviceAmbiente());
-            if (StringUtils.isEmpty(nfe.getInformacoesAddContribuinte())) {
-                nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
-            }
-        }
-        return nfe;
-    }
 
 
 
