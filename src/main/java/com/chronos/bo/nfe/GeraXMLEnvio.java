@@ -6,21 +6,14 @@ package com.chronos.bo.nfe;
 
 //pacotes para envio da nfe
 
-import br.inf.portalfiscal.nfe.schema.consstatserv.TConsStatServ;
-import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento;
-import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento;
-import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento;
-import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento.DetEvento;
-import br.inf.portalfiscal.nfe.schema.envinfe.*;
-import br.inf.portalfiscal.nfe.schema.envinfe.TNFe.InfNFe;
-import br.inf.portalfiscal.nfe.schema.envinfe.TNFe.InfNFe.*;
-import br.inf.portalfiscal.nfe.schema.envinfe.TNFe.InfNFe.Det.Imposto;
-import br.inf.portalfiscal.nfe.schema.envinfe.TNFe.InfNFe.Det.Imposto.*;
-import br.inf.portalfiscal.nfe.schema.envinfe.TNFe.InfNFe.Det.Prod;
-import br.inf.portalfiscal.nfe.schema.envinfe.TNFe.InfNFeSupl;
-import br.inf.portalfiscal.nfe.schema.inutnfe.TInutNFe;
-import br.inf.portalfiscal.nfe.schema.inutnfe.TInutNFe.InfInut;
-import br.inf.portalfiscal.nfe.schema.retconsstatserv.TRetConsStatServ;
+import br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.*;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFe;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFe.*;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Imposto.*;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFe.Det.Prod;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFeSupl;
 import com.chronos.calc.enuns.OrigemMercadoria;
 import com.chronos.infra.enuns.AmbienteEmissao;
 import com.chronos.infra.enuns.IndicadorIe;
