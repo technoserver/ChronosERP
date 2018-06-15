@@ -70,7 +70,6 @@ public class VendaToNFe extends ManualCDILookup {
 
     public NfeCabecalho gerarNfe() throws Exception {
         nfe = new NfeCabecalho();
-        valoresPadrao();
         definirDestinatario();
         definirOperacaoTributaria();
         gerarItensVenda();
@@ -110,10 +109,7 @@ public class VendaToNFe extends ManualCDILookup {
         return cliente;
     }
 
-    private void valoresPadrao() {
 
-        nfe = nfeUtil.dadosPadroes(nfe, modelo, empresa, configuracao);
-    }
 
     private void definirOperacaoTributaria() throws java.lang.Exception {
         if (cliente != null && cliente.getTributOperacaoFiscal() == null) {

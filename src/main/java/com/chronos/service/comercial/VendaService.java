@@ -79,7 +79,7 @@ public class VendaService implements Serializable {
         if (situacao == SituacaoVenda.NotaFiscal) {
             throw new Exception("Essa venda já possue NFe");
         }
-        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(venda.getEmpresa(), ModeloDocumento.NFCE);
+        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(ModeloDocumento.NFCE);
 
         VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, configuracao, venda);
         NfeCabecalho nfe = vendaNfe.gerarNfe();
@@ -102,14 +102,14 @@ public class VendaService implements Serializable {
             }
 
 
-            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(venda.getEmpresa(), modelo);
+            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(modelo);
             NfeCabecalho nfe;
             VendaToNFe vendaNfe = new VendaToNFe(modelo, configuracao, venda);
             nfe = vendaNfe.gerarNfe();
             nfe.setCsc(configuracao.getCsc());
             nfe.setVendaCabecalho(venda);
 
-            StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao, atualizarEstoque);
+            StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
             if (status == StatusTransmissao.AUTORIZADA) {
                 venda.setSituacao(SituacaoVenda.NotaFiscal.getCodigo());
                 venda.setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
@@ -127,7 +127,7 @@ public class VendaService implements Serializable {
     public StatusTransmissao transmitirNFe(NfeCabecalho nfe, ConfiguracaoEmissorDTO configuracao, boolean atualizarEstoque) throws Exception {
 
         nfe.setCsc(configuracao.getCsc());
-        StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao, atualizarEstoque);
+        StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
         return status;
     }

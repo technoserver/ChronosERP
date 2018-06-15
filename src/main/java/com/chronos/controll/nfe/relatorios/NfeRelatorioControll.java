@@ -13,6 +13,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -67,7 +68,7 @@ public class NfeRelatorioControll extends AbstractRelatorioControll implements S
         try {
             List<NfeCabecalho> nfes;
             List<Filtro> filtros = new LinkedList<>();
-
+            String nomeArquivo = empresa.getCnpj() + new SimpleDateFormat("_MM_yyyy").format(periodo);
             filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MAIOR_OU_IGUAL, periodo));
             filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MENOR_OU_IGUAL,
                     new Date(dataFinal.getTime() + (1000 * 60 * 60 * 24))));
@@ -76,7 +77,7 @@ public class NfeRelatorioControll extends AbstractRelatorioControll implements S
             nfes = repository.getEntitys(NfeCabecalho.class, filtros, 0, new Object[]{"chaveAcesso", "digitoChaveAcesso", "statusNota"});
 
             if (nfes.size() > 0) {
-                service.baixaXml(nfes, empresa);
+                service.baixaXml(nfes, nomeArquivo);
             } else {
                 Mensagem.addInfoMessage((modelo.equals("55") ? "NFe " : "NFCe") + " não localizada");
             }

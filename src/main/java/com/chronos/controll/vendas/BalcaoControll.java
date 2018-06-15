@@ -1,10 +1,8 @@
 package com.chronos.controll.vendas;
 
 import com.chronos.controll.ERPLazyDataModel;
-import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.dto.UsuarioDTO;
-import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.SituacaoVenda;
 import com.chronos.repository.Repository;
@@ -233,9 +231,7 @@ public class BalcaoControll implements Serializable {
         try {
 
             NfeCabecalho nfe = nfeRepository.get(venda.getIdnfe(), NfeCabecalho.class);
-            ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
-            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
-            nfeService.danfe(nfe, configuracao);
+            nfeService.danfe(nfe);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

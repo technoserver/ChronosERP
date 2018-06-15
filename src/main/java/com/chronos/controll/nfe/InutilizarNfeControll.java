@@ -1,10 +1,8 @@
 package com.chronos.controll.nfe;
 
-import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.NfeConfiguracao;
 import com.chronos.modelo.entidades.NotaFiscalTipo;
-import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -24,8 +22,7 @@ import java.util.HashMap;
 public class InutilizarNfeControll implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Inject
-    private Repository<NfeConfiguracao> configuracoes;
+
     @Inject
     private NfeService nfeService;
 
@@ -52,12 +49,11 @@ public class InutilizarNfeControll implements Serializable {
 
 
         try {
-            Object atributos[] = new Object[]{"certificadoDigitalSenha", "webserviceAmbiente"};
-            NfeConfiguracao configuracao = configuracoes.get(NfeConfiguracao.class, "empresa.id", 1, atributos);
 
-            NotaFiscalTipo notaFiscalTipo = nfeService.getNotaFicalTipo(modelo, empresa);
+            ModeloDocumento modeloDocumento = ModeloDocumento.getByCodigo(Integer.valueOf(modelo));
+            NotaFiscalTipo notaFiscalTipo = nfeService.getNotaFicalTipo(modeloDocumento);
             int serie = (notaFiscalTipo == null || notaFiscalTipo.getSerie() == null || notaFiscalTipo.getSerie() == null) ? 1 : Integer.valueOf(notaFiscalTipo.getSerie());
-            resultado = nfeService.inutilizarNFe(new ConfiguracaoEmissorDTO(configuracao), modelo, serie, numeroInicial, numeroFinal, justificativa);
+            resultado = nfeService.inutilizarNFe(modeloDocumento, serie, numeroInicial, numeroFinal, justificativa);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

@@ -2,7 +2,6 @@ package com.chronos.controll.vendas;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
-import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
@@ -220,9 +219,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         try {
             int idnfe = getObjetoSelecionado().getNumeroFatura();
             NfeCabecalho nfe = nfeRepository.get(idnfe, NfeCabecalho.class);
-            ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
-            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
-            nfeService.danfe(nfe, configuracao);
+
+
+            nfeService.danfe(nfe);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
@@ -249,10 +248,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                 setObjeto(getObjetoSelecionado());
                 NfeCabecalho nfe = nfeRepository.get(getObjeto().getNumeroFatura(), NfeCabecalho.class);
                 nfe.setJustificativaCancelamento(justificativa);
-                ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
-                ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
+
                 boolean estoque = isTemAcesso("ESTOQUE");
-                boolean cancelada = nfeService.cancelarNFe(nfe, configuracao, estoque);
+                boolean cancelada = nfeService.cancelarNFe(nfe, estoque);
                 if (cancelada) {
                     finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
                     getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());

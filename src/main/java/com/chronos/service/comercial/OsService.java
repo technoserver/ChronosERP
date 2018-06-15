@@ -84,14 +84,14 @@ public class OsService implements Serializable {
     @Transactional
     public void transmitirNFe(OsAbertura os, ModeloDocumento modelo, boolean atualizarEstoque) throws Exception {
 
-        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(os.getEmpresa(), modelo);
+        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(modelo);
         NfeCabecalho nfe;
         VendaToNFe vendaNfe = new VendaToNFe(modelo, configuracao, os);
         nfe = vendaNfe.gerarNfe();
         nfe.setCsc(configuracao.getCsc());
         nfe.setOs(os);
 
-        StatusTransmissao status = nfeService.transmitirNFe(nfe, configuracao, atualizarEstoque);
+        StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
         if (status == StatusTransmissao.AUTORIZADA) {
             String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";
             Mensagem.addInfoMessage(msg);
@@ -124,10 +124,9 @@ public class OsService implements Serializable {
         if (os.getOsStatus().getId() == 6) {
             NfeCabecalho nfe = nfeRepository.get(os.getIdnfeCabecalho(), NfeCabecalho.class);
             nfe.setJustificativaCancelamento("Cancelamento de por informação de valores invalido");
-            ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
-            ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
 
-            cancelado = nfeService.cancelarNFe(nfe, configuracao, estoque);
+
+            cancelado = nfeService.cancelarNFe(nfe, estoque);
             if (cancelado) {
                 finLancamentoReceberService.excluirFinanceiro(os.getNumero(), Modulo.OS);
             }
@@ -150,9 +149,8 @@ public class OsService implements Serializable {
 
     public void gerarDanfe(OsAbertura os) throws Exception {
         NfeCabecalho nfe = nfeRepository.get(os.getIdnfeCabecalho(), NfeCabecalho.class);
-        ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
-        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(empresa, modelo);
-        nfeService.danfe(nfe, configuracao);
+
+        nfeService.danfe(nfe);
     }
 
     private Optional<OsProdutoServico> buscarItem(Produto produto) {

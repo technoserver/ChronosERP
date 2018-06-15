@@ -1,7 +1,6 @@
 package com.chronos.controll.nfce;
 
 import com.chronos.controll.ERPLazyDataModel;
-import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.exception.EmissorException;
@@ -26,14 +25,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -87,7 +88,7 @@ public class NfceControll implements Serializable {
     private PdvTipoPagamento tipoPagamento;
     private List<PdvTipoPagamento> listTipoPagamento;
     private NfeFormaPagamento formaPagamentoSelecionado;
-    private PdvConfiguracao configuracao;
+
     private NfeCabecalho venda;
     private NfeCabecalho vendaSelecionada;
     private Empresa empresa;
@@ -105,11 +106,10 @@ public class NfceControll implements Serializable {
     private boolean telaImpressao;
     private boolean telaCaixa;
     private boolean telaGrid;
-    private boolean encontro;
+
 
     private BigDecimal valorSuprimento;
     private BigDecimal desconto;
-
 
 
     private BigDecimal totalVenda;
@@ -125,7 +125,7 @@ public class NfceControll implements Serializable {
     private String userOperador;
     private String senhaOperador;
 
-    private ExternalContext context;
+
     private String nomeCupom;
 
     private String justificativa;
@@ -141,7 +141,7 @@ public class NfceControll implements Serializable {
         empresa = FacesUtil.getEmpresaUsuario();
         usuario = FacesUtil.getUsuarioSessao();
         vendedor = instanciarVendedor(usuario);
-        context = facesContext.getExternalContext();
+
         listVendedores = new ArrayList<>();
         operacao = operacaoFiscalRepository.get(1, TributOperacaoFiscal.class);
         telaGrid = true;
@@ -178,19 +178,13 @@ public class NfceControll implements Serializable {
     }
 
 
-
-
-
-
-
-
     //</editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Venda">
 
     public void novaVenda() {
         try {
-            configuracao = getConfiguraNfce();
+
             telaVenda = true;
             telaGrid = false;
             telaImpressao = false;
@@ -201,7 +195,7 @@ public class NfceControll implements Serializable {
             item = new NfeDetalhe();
 
 
-            nfeService.dadosPadroes(venda, ModeloDocumento.NFCE, empresa, new ConfiguracaoEmissorDTO(configuracao));
+            venda = nfeService.dadosPadroes(ModeloDocumento.NFCE);
             desconto = BigDecimal.ZERO;
 
         } catch (Exception ex) {
@@ -497,15 +491,6 @@ public class NfceControll implements Serializable {
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos NFce">
 
-    private PdvConfiguracao getConfiguraNfce() throws Exception {
-        List<Filtro> filtros = new LinkedList<>();
-        filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
-        configuracao = configuracao == null ? configuracoes.get(PdvConfiguracao.class, filtros) : configuracao;
-        if (configuracao == null) {
-            throw new Exception("NFC-e não configurada !!!");
-        }
-        return configuracao;
-    }
 
     private void definirNumeroItens() {
         int i = 0;
@@ -518,11 +503,10 @@ public class NfceControll implements Serializable {
         try {
 
 
-            configuracao = getConfiguraNfce();
             definirNumeroItens();
-            venda.setCsc(configuracao.getCodigoCsc());
+
             boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
-            StatusTransmissao status = nfeService.transmitirNFe(venda, new ConfiguracaoEmissorDTO(configuracao), estoque);
+            StatusTransmissao status = nfeService.transmitirNFe(venda, estoque);
             if (status == StatusTransmissao.AUTORIZADA) {
                 gerarCupom();
                 Mensagem.addInfoMessage("NFe transmitida com sucesso");
@@ -553,9 +537,9 @@ public class NfceControll implements Serializable {
         try {
             venda = nfeRepositoy.getJoinFetch(vendaSelecionada.getId(), NfeCabecalho.class);
             venda.setJustificativaCancelamento(justificativa);
-            configuracao = getConfiguraNfce();
+
             boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
-            boolean cancelado = nfeService.cancelarNFe(venda, new ConfiguracaoEmissorDTO(configuracao), estoque);
+            boolean cancelado = nfeService.cancelarNFe(venda, estoque);
             if (cancelado) {
                 Mensagem.addInfoMessage("NFCe cancelada com sucesso");
             }
@@ -571,8 +555,8 @@ public class NfceControll implements Serializable {
     private void gerarCupom() throws Exception {
 
         try {
-            configuracao = getConfiguraNfce();
-            nfeService.gerarDanfe(venda, new ConfiguracaoEmissorDTO(configuracao));
+
+            nfeService.gerarDanfe(venda);
             nomeCupom = "cupom" + venda.getNumero() + ".pdf";
         } catch (Exception ex) {
             logger.error("erro ao gerar cupom", ex.getCause());
@@ -584,8 +568,8 @@ public class NfceControll implements Serializable {
 
 
         try {
-            configuracao = getConfiguraNfce();
-            nfeService.danfe(vendaSelecionada, new ConfiguracaoEmissorDTO(configuracao));
+
+            nfeService.danfe(vendaSelecionada);
 
         } catch (Exception ex) {
             logger.error("erro ao gerar danfe", ex.getMessage());
@@ -662,7 +646,7 @@ public class NfceControll implements Serializable {
         List<Produto> listaProduto = new ArrayList<>();
 
         try {
-            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao,true);
+            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao, true);
             listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Erro ao lista os produtos", e.getMessage());
@@ -691,7 +675,6 @@ public class NfceControll implements Serializable {
     public boolean isPodeFinalzarVenda() {
         return saldoRestante.signum() == 0;
     }
-
 
 
     public boolean isTelaVenda() {
@@ -735,7 +718,6 @@ public class NfceControll implements Serializable {
     }
 
 
-
     public BigDecimal getValorSuprimento() {
         return valorSuprimento;
     }
@@ -775,7 +757,6 @@ public class NfceControll implements Serializable {
     public void setSenhaOperador(String senhaOperador) {
         this.senhaOperador = senhaOperador;
     }
-
 
 
     public ViewNfceCliente getCliente() {
@@ -841,7 +822,6 @@ public class NfceControll implements Serializable {
     public void setTelaGrid(boolean telaGrid) {
         this.telaGrid = telaGrid;
     }
-
 
 
     public List<PdvTipoPagamento> getListTipoPagamento() {

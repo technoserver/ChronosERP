@@ -2,8 +2,6 @@ package com.chronos.controll.nfe;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
-import com.chronos.dto.ConfEmail;
-import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.exception.EmissorException;
 import com.chronos.infra.enuns.LocalDestino;
@@ -16,7 +14,6 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.util.jsf.Mensagem;
-import com.chronos.util.mail.EnvioEmail;
 import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
@@ -61,7 +58,6 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeReferenciada nfeReferenciadaSelecionado;
     private PdvTipoPagamento tipoPagamento;
     private VendaCondicoesPagamento condicoesPagamento;
-    private NfeConfiguracao configuracao;
     private int qtdParcelas;
     private int intervaloParcelas;
     private Date primeiroVencimento;
@@ -103,8 +99,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             super.doCreate();
             getObjeto().setDestinatario(new NfeDestinatario());
             getObjeto().getDestinatario().setNfeCabecalho(getObjeto());
-            configuracao = configuraNfe();
-            nfeService.dadosPadroes(getObjeto(), ModeloDocumento.NFE, empresa, new ConfiguracaoEmissorDTO(configuracao));
+
+            NfeCabecalho nfeCabecalho = nfeService.dadosPadroes(ModeloDocumento.NFE);
+            setObjeto(nfeCabecalho);
             dadosSalvos = false;
             observacao = getObjeto().getInformacoesAddContribuinte();
             this.setActiveTabIndex(0);
@@ -345,19 +342,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos NFe">
-    public NfeConfiguracao configuraNfe() throws Exception {
-        List<Filtro> filtros = new LinkedList<>();
-        filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
-        configuracao = configuracoes.get(NfeConfiguracao.class, filtros);
-        return configuracao;
-    }
+
 
     public void danfe() {
 
 
         try {
-            configuracao = configuraNfe();
-            nfeService.danfe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
+
+            nfeService.danfe(getObjeto());
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -370,9 +362,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         try {
             if (dadosSalvos) {
 
-                configuracao = configuracao != null ? configuracao : configuraNfe();
+
                 boolean estoque = isTemAcesso("ESTOQUE");
-                StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao), estoque);
+                StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), estoque);
                 if (status == StatusTransmissao.AUTORIZADA) {
 
                     Mensagem.addInfoMessage("NFe transmitida com sucesso");
@@ -403,9 +395,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
         try {
             getObjeto().setJustificativaCancelamento(justificativa);
-            configuracao = configuracao != null ? configuracao : configuraNfe();
+
             boolean estoque = isTemAcesso("ESTOQUE");
-            boolean cancelado = nfeService.cancelarNFe(getObjeto(), new ConfiguracaoEmissorDTO(configuracao), estoque);
+            boolean cancelado = nfeService.cancelarNFe(getObjeto(), estoque);
             if (cancelado) {
                 Mensagem.addInfoMessage("NFe cancelada com sucesso");
             }
@@ -419,8 +411,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     public void cartaCorrecao() {
         try {
-            configuracao = configuracao != null ? configuracao : configuraNfe();
-            nfeService.cartaCorrecao(getObjeto(), justificativa, new ConfiguracaoEmissorDTO(configuracao));
+
+            nfeService.cartaCorrecao(getObjeto(), justificativa);
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao enviar a carta de correção!", e);
@@ -429,8 +421,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     public void verificarSituacao() {
         try {
-            configuracao = configuracao != null ? configuracao : configuraNfe();
-            nfeService.verificarSituacao(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
+
+            nfeService.verificarSituacao(getObjeto());
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -441,18 +433,18 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void enviarEmail() {
 
         try {
-            configuracao = configuracao != null ? configuracao : configuraNfe();
-            ConfEmail confEmail = new ConfEmail();
-            confEmail.setHost(configuracao.getEmailServidorSmtp());
-            confEmail.setPorta(configuracao.getEmailPorta());
-            confEmail.setSsl(configuracao.getEmailAutenticaSsl().equals("S"));
-            confEmail.setUsuario(configuracao.getEmailUsuario());
-            confEmail.setSenha(configuracao.getEmailSenha());
-            confEmail.setTsl(!configuracao.getEmailAutenticaSsl().equals("S"));
-            EnvioEmail envio = new EnvioEmail();
-            envio.enviarNfeEmail(confEmail, getObjeto());
-            System.out.print("teste");
-            Mensagem.addInfoMessage("Email enviado com sucesso");
+//            configuracao = configuracao != null ? configuracao : configuraNfe();
+//            ConfEmail confEmail = new ConfEmail();
+//            confEmail.setHost(configuracao.getEmailServidorSmtp());
+//            confEmail.setPorta(configuracao.getEmailPorta());
+//            confEmail.setSsl(configuracao.getEmailAutenticaSsl().equals("S"));
+//            confEmail.setUsuario(configuracao.getEmailUsuario());
+//            confEmail.setSenha(configuracao.getEmailSenha());
+//            confEmail.setTsl(!configuracao.getEmailAutenticaSsl().equals("S"));
+//            EnvioEmail envio = new EnvioEmail();
+//            envio.enviarNfeEmail(confEmail, getObjeto());
+//
+//            Mensagem.addInfoMessage("Email enviado com sucesso");
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao enviar email!", ex);
@@ -466,8 +458,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void visualizarXml() {
         try {
             if (dadosSalvos) {
-                configuracao = configuracao != null ? configuracao : configuraNfe();
-                String caminho = nfeService.gerarNfePreProcessada(getObjeto(), new ConfiguracaoEmissorDTO(configuracao));
+
+                String caminho = nfeService.gerarNfePreProcessada(getObjeto());
 
                 nfeService.visualizarXml(caminho);
             } else {
@@ -580,6 +572,16 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         }
         return listaPdvTipoPagamento;
     }
+
+//    private PdvConfiguracao getConfiguraNfce() throws Exception {
+//        List<Filtro> filtros = new LinkedList<>();
+//        filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
+//        configuracao = configuracao == null ? configuracoes.get(PdvConfiguracao.class, filtros) : configuracao;
+//        if (configuracao == null) {
+//            throw new Exception("NFC-e não configurada !!!");
+//        }
+//        return configuracao;
+//    }
 
     // </editor-fold>
 

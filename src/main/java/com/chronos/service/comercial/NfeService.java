@@ -130,6 +130,8 @@ public class NfeService implements Serializable {
             if (StringUtils.isEmpty(nfe.getInformacoesAddContribuinte())) {
                 nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
             }
+            nfe.setCsc(configuracao.getCsc());
+
         }
 
         return nfe;
@@ -462,6 +464,11 @@ public class NfeService implements Serializable {
         } else if (StatusTransmissao.isCancelada(nfe.getStatusNota())) {
             throw new Exception("Esta NF-e já foi autorizada. Operação não permitida ");
         }
+    }
+
+    public String consultarStatusNfe(ModeloDocumento modelo) throws Exception {
+        iniciarConfEmissor(modelo);
+        return NfeTransmissao.getInstance().statusServico();
     }
 
     private NfeXml salvaNfeXml(String xml, NfeCabecalho nfe) throws Exception {
