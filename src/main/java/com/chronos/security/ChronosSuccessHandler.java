@@ -7,6 +7,7 @@ import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.tenant.Tenant;
 import com.chronos.repository.Repository;
 import com.chronos.repository.Usuarios;
+import com.chronos.util.Constantes;
 import com.chronos.util.cdi.CDIServiceLocator;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -66,7 +67,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
             }
 
             LocalDate dataPermitida = LocalDate.now();
-            if (dataPermitida.isAfter(user.getDataVencimento().plusDays(5))) {
+            if (dataPermitida.isAfter(user.getDataVencimento().plusDays(5)) && !Constantes.DESENVOLVIMENTO) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_INADIPLENTE"));
             } else {
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADIMPLENTE"));

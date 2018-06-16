@@ -7,6 +7,30 @@
 
 
     <ul class="nav nav-second-level collapse ">
+
+        <c:if test="#{seguranca.userVendas eq true }">
+            <li class="${fn:contains(view.viewId,'modulo/comercial/diversos/')?'active':''}">
+                <a href="#">
+                    <span class="nav-label">Diversos</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-third-level">
+                    <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
+                        <erp:subMenu caminho="/modulo/comercial/diversos/regiao"
+                                     label="Região de Venda"
+                                     exibir="#{true}"
+                                     funcao="regiao"/>
+
+                        <erp:subMenu caminho="/modulo/comercial/diversos/tabelaPreco"
+                                     label="Tabela de Preço"
+                                     exibir="#{true}"
+                                     funcao="tabelaPreco"/>
+                    </li>
+                </ul>
+            </li>
+
+        </c:if>
+
         <c:if test="#{seguranca.userVendas eq true or seguranca.userOs eq true }">
             <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
                 <a href="#">

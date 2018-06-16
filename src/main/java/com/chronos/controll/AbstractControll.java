@@ -127,6 +127,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, String> formaPagamento;
     private Map<String, String> vendaResponsavelFrete;
     private Map<String, String> vendaRomaneioSituacao;
+    private HashMap<String, String> metodoTabela;
 
     //comissao
     private HashMap<String, String> tipoContagem;
@@ -363,6 +364,10 @@ public abstract class AbstractControll<T> implements Serializable {
         vendaOrcamentoTipo = new LinkedHashMap<>();
         vendaOrcamentoTipo.put("Orçamento", "O");
         vendaOrcamentoTipo.put("Pedido", "P");
+
+        metodoTabela = new LinkedHashMap<>();
+        metodoTabela.put("Vendedor/cliente", "C");
+        metodoTabela.put("Vendedor/Região", "R");
 
         vendaOrcamentoSituacao = new LinkedHashMap<>();
         vendaOrcamentoSituacao.put("Digitacao", "D");
@@ -1153,5 +1158,9 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, String> getPdvNivelAutorizacao() {
         return pdvNivelAutorizacao;
+    }
+
+    public HashMap<String, String> getMetodoTabela() {
+        return metodoTabela;
     }
 }

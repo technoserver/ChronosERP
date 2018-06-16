@@ -28,15 +28,11 @@
 */
 package com.chronos.modelo.entidades;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -61,8 +57,14 @@ public class TabelaPreco implements Serializable {
     private String metodoUtilizacao;
     @Column(name = "COMISSAO_VENDEDOR")
     private BigDecimal comissaoVendedor;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tabelaPreco", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TabelaPrecoProduto> listaProduto;
 
     public TabelaPreco() {
+        this.listaProduto = new HashSet<>();
+        this.comissaoVendedor = BigDecimal.ZERO;
+        this.coeficiente = BigDecimal.ZERO;
+
     }
 
     public Integer getId() {
@@ -121,9 +123,26 @@ public class TabelaPreco implements Serializable {
         this.comissaoVendedor = comissaoVendedor;
     }
 
-    @Override
-    public String toString() {
-        return "com.t2tierp.model.bean.cadastros.TabelaPreco[id=" + id + "]";
+    public Set<TabelaPrecoProduto> getListaProduto() {
+        return listaProduto;
     }
 
+    public void setListaProduto(Set<TabelaPrecoProduto> listaProduto) {
+        this.listaProduto = listaProduto;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TabelaPreco)) return false;
+
+        TabelaPreco that = (TabelaPreco) o;
+
+        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }

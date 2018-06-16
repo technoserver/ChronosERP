@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Tabela de Preço
+    </ui:define>
+
+    <ui:define name="tela">
+        #{tabelaPrecosControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Tabela de Preço
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{tabelaPrecosControll}"
+                       idDataTable="dataTableTabelaPreco"
+                       nomeFuncao="Regiao"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+            <p:column headerText="Principal">
+                <h:outputLabel value="#{row.principal}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{tabelaPrecosControll}"
+                                   nomeFuncao="Regiao"
+                                   id="telaDetalhe"
+        >
+
+
+            <h:panelGroup rendered="#{tabelaPrecosControll.objeto.listaProduto.size() ==0}" layout="block"
+                          styleClass="row">
+                <div class="col-md-12">
+                    <p:commandButton id="geraProdutos"
+                                     value="Incluir todos os produtos">
+
+                    </p:commandButton>
+                </div>
+
+            </h:panelGroup>
+            <br/>
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="nome" label="Nome"
+                                nomeAtributo="#{tabelaPrecosControll.objeto.nome}"
+                                requerido="true"
+                                tamanhoMaximo="100"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="principal" label="Principal"
+                                 itens="#{tabelaPrecosControll.simNao}"
+                                 nomeAtributo="#{tabelaPrecosControll.objeto.principal}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="custo" label="Se basear no Custo ?"
+                                 itens="#{tabelaPrecosControll.simNao}"
+                                 nomeAtributo="#{tabelaPrecosControll.objeto.baseCusto}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="metodo" label="Método utilizado"
+                                 itens="#{tabelaPrecosControll.metodoTabela}"
+                                 nomeAtributo="#{tabelaPrecosControll.objeto.metodoUtilizacao}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="comissao" label="Comissão"
+                                  nomeAtributo="#{tabelaPrecosControll.objeto.comissaoVendedor}"/>
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>
