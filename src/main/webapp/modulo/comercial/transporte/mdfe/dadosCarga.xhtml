@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:panelGroup layout="block" id="panelDadosCarga">
+
+        <h:panelGroup layout="block" id="panelSeguro" rendered="#{mdfeControll.objeto.tipoEmitente == 1}">
+            <erp:separador label="Informações Seguro"/>
+            <div class="row">
+                <div class="col-md-12">
+                    <h:commandLink title="Novo"
+                                   class="btn btn-default margem-bottom-10"
+                                   action="#{mdfeControll.incluirSeguro}" type="button">
+                        <i class="glyphicon glyphicon-plus"/>
+                        <p:ajax update="formOutrasTelas:panelSeguro"
+                                process="@this" oncomplete="PF('dialogIncluirSeguro').show()"/>
+                    </h:commandLink>
+                </div>
+            </div>
+            <p:dataTable id="dataTableSeguro" var="obj"
+                         value="#{mdfeControll.objeto.listaMdfeInformacaoSeguro}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         reflow="true" resizableColumns="true" paginatorPosition="bottom">
+
+                <p:column headerText="CPF/CNPJ">
+                    <h:outputLabel value="#{obj.cnpjCpf}"/>
+                </p:column>
+                <p:column headerText="Seguradora">
+                    <h:outputLabel value="#{obj.seguradora}"/>
+                </p:column>
+                <p:column headerText="CNPJ Seguradora">
+                    <h:outputLabel value="#{obj.cnpjSeguradora}"/>
+                </p:column>
+                <p:column headerText="Apolice">
+                    <h:outputLabel value="#{obj.apolice}"/>
+                </p:column>
+                <p:column headerText="Averbação">
+                    <h:outputLabel value="#{obj.averbacao}"/>
+                </p:column>
+                <p:column headerText="Ações" width="140">
+
+                </p:column>
+            </p:dataTable>
+        </h:panelGroup>
+        <erp:separador label="Informações de Lacre/Pedagio"/>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="row">
+                    <div class="col-xs-8 col-sm-10 col-md-10">
+                        <p:outputLabel value="Lacres"/>
+                    </div>
+                    <div class="col-xs-4 col-sm-2 col-md-2">
+                        <h:commandLink title="Novo"
+                                       id="btnAddLacre"
+                                       class="btn btn-default margem-bottom-10"
+                                       action="#{mdfeControll.incluirLacre}" type="button">
+                            <i class="glyphicon glyphicon-plus"/>
+                            <p:ajax update="formOutrasTelas1:panelLacre"
+                                    process="@this" oncomplete="PF('dialogLacre').show()"/>
+                        </h:commandLink>
+                    </div>
+                </div>
+                <p:dataTable id="dataTableLacre" var="obj"
+                             value="#{mdfeControll.objeto.listaMdfeLacre}"
+                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                             reflow="true" resizableColumns="true" paginatorPosition="bottom">
+                    <p:column headerText="Número do Lacre" style="width:70%">
+                        <h:outputLabel value="#{obj.numeroLacre}"/>
+                    </p:column>
+                    <p:column headerText="Ações" style="width:30%" styleClass="text-center">
+                        <p:commandLink process="dataTableLacre" title="Editar"
+                                       oncomplete="PF('dialogLacre').show()" styleClass="btn btn-default"
+                                       action="#{mdfeControll.alterarLacre}"
+                                       update=":formOutrasTelas1:panelLacre,dataTableLacre">
+                            <i class="fa fa-search"/>
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{mdfeControll.mdfeLacreSelecionado}"/>
+                        </p:commandLink>
+                        &nbsp;
+                        <p:commandLink process="dataTableLacre" title="Excluir"
+                                       styleClass="btn btn-default"
+                                       action="#{mdfeControll.excluirLacre}"
+                                       update="dataTableLacre">
+                            <i class="fa fa-close"/>
+                            <p:confirm header="Confirmação" message="Confirma Remoção"
+                                       icon="ui-icon-alert"/>
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{mdfeControll.mdfeLacreSelecionado}"/>
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="row">
+                    <div class="col-xs-8 col-sm-10 col-md-10">
+                        <p:outputLabel value="Pedágio"/>
+                    </div>
+                    <div class="col-xs-4 col-sm-2 col-md-2">
+                        <h:commandLink title="Novo"
+                                       id="btnAddPedagio"
+                                       class="btn btn-default margem-bottom-10"
+                                       action="#{mdfeControll.incluirPedagio}" type="button">
+                            <i class="glyphicon glyphicon-plus"/>
+                            <p:ajax update="formOutrasTelas2:panelPedagio"
+                                    process="@this" oncomplete="PF('dialogPedagio').show()"/>
+                        </h:commandLink>
+                    </div>
+                </div>
+
+                <p:dataTable id="dataTablePedagio" var="obj"
+                             value="#{mdfeControll.objeto.mdfeRodoviario.listaMdfeRodoviarioPedagio}"
+                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                             reflow="true" resizableColumns="true" paginatorPosition="bottom">
+                    <p:column headerText="CNPJ Fornecedor" style="width:35%">
+                        <h:outputLabel value="#{obj.cnpjFornecedor}"/>
+                    </p:column>
+                    <p:column headerText="CNPJ/CPF Responsável" style="width:35%">
+                        <h:outputLabel value="#{obj.cnpjCpfResponsavel}"/>
+                    </p:column>
+                    <p:column headerText="Ações" style="width:30%">
+                        <p:commandLink process="dataTablePedagio" title="Editar"
+                                       oncomplete="PF('dialogPedagio').show()"
+                                       styleClass="btn btn-default"
+                                       action="#{mdfeControll.alterarPedagio}"
+                                       update=":formOutrasTelas2:panelPedagio,dataTablePedagio">
+                            <i class="fa fa-search"/>
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{mdfeControll.mdfeRodoviarioPedagioSelecionado}"/>
+                        </p:commandLink>
+                        &nbsp;
+                        <p:commandLink process="dataTablePedagio" title="Excluir"
+                                       styleClass="btn btn-default"
+                                       action="#{mdfeControll.excluirPedagio}"
+                                       update="dataTablePedagio">
+                            <i class="fa fa-close"/>
+                            <p:confirm header="Confirmação" message="Confirma Remoção"
+                                       icon="ui-icon-alert"/>
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{mdfeControll.mdfeRodoviarioPedagioSelecionado}"/>
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+
+
+            </div>
+        </div>
+
+    </h:panelGroup>
+
+</ui:composition>

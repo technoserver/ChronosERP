@@ -243,6 +243,17 @@
 
             </ul>
         </li>
+        <li class="${fn:contains(view.viewId,'cadastros/transporte')?'active':''}">
+            <a href="#">Transporte<span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/cadastros/transporte/proprietarioVeiculo"
+                             label="Proprietário"
+                             funcao="proprietarioVeiculo"/>
+                <erp:subMenu caminho="/modulo/cadastros/transporte/veiculo"
+                             label="Veiculo"
+                             funcao="veiculo"/>
+            </ul>
+        </li>
         <li class="${fn:contains(view.viewId,'cadastros/relatorios')?'active':''}">
             <a href="#">Relatórios<span class="fa arrow"></span></a>
             <ul class="nav nav-third-level">

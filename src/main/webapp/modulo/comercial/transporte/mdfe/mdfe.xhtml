@@ -1,0 +1,402 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        MDFE
+    </ui:define>
+
+    <ui:define name="tela">
+        #{mdfeControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        MDFE
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{mdfeControll}"
+                       idDataTable="dataTableCest"
+                       nomeFuncao="mdfe"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Num." width="85" sortBy="#{row.numeroMdfe}">
+                <h:outputLabel value="#{row.numeroMdfe}"/>
+            </p:column>
+            <p:column headerText="Data Emissão" width="120"
+                      sortBy="#{row.dataHoraEmissao}" styleClass="text-center">
+
+                <h:outputLabel value=" #{row.dataHoraEmissao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Chave Acesso">
+                <h:outputLabel
+                        value="#{row.chaveAcesso} #{row.digitoVerificador}"/>
+            </p:column>
+            <p:column headerText="Valor Total" width="100" styleClass="text-right">
+                <h:outputLabel value="#{row.valorCarga}">
+                    <f:convertNumber pattern="#,###,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+
+            <p:column headerText="Status MDFe" width="120" sortBy="#{row.statusMdfe}" styleClass="text-center">
+                <h:outputLabel
+                        value="#{mdfeControll.keyFromValue(mdfeControll.statusNfe, row.statusMdfe)}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{mdfeControll}"
+                                   nomeFuncao="MDFE"
+                                   id="telaDetalhe"
+        >
+            <p:tabView id="tabMdfe">
+                <p:tab title="Dados Principais"
+                >
+                    <ui:include src="dadosPrincipais.xhtml"/>
+                </p:tab>
+
+                <p:tab title="Modal">
+                    <ui:include src="dadosModal.xhtml"/>
+                </p:tab>
+
+                <p:tab title="Documentos">
+                    <ui:include src="dadosDocumento.xhtml"/>
+                </p:tab>
+                <p:tab title="Total">
+                    <ui:include src="dadosTotais.xhtml"/>
+                </p:tab>
+                <p:tab title="Carga">
+                    <ui:include src="dadosCarga.xhtml"/>
+                </p:tab>
+
+            </p:tabView>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogIncluirSeguro" header="Inclusão de Seguro"
+                      widgetVar="dialogIncluirSeguro" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="800" responsive="true">
+                <p:outputPanel id="panelSeguro">
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-6 col-sm-4 col-md-4"
+                                         idComponente="responsavel"
+                                         label="Responsável pelo Seguro"
+                                         nomeAtributo="#{mdfeControll.mdfeInformacaoSeguro.responsavel}"
+                                         itens="#{mdfeControll.mdfeResponsavelSeguro}"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="mdfeSeguroCnpjCpf" label="CNPJ/CPF Responsável"
+                                        nomeAtributo="#{mdfeControll.mdfeInformacaoSeguro.cnpjCpf}"
+                                        tamanhoMaximo="14"/>
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="mdfeSeguroNumero" label="Apólice"
+                                        nomeAtributo="#{mdfeControll.mdfeInformacaoSeguro.apolice}"
+                                        tamanhoMaximo="20"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="mdfeSeguroNomedaSeguradora" label="Nome da Seguradora"
+                                        nomeAtributo="#{mdfeControll.mdfeInformacaoSeguro.seguradora}"
+                                        tamanhoMaximo="30"/>
+                        <erp:campoCnpj styleClass="col-xs-12 col-sm-4 col-md-4"
+                                       idComponente="mdfeSeguroCNPJSeguradora" label="CNPJ Seguradora"
+                                       nomeAtributo="#{mdfeControll.mdfeInformacaoSeguro.cnpjSeguradora}"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="mdfeSeguroAverbacao" label="Averbação"
+                                        nomeAtributo="#{mdfeControll.mdfeInformacaoSeguro.averbacao}"
+                                        tamanhoMaximo="40"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             action="#{mdfeControll.salvarSeguro}"
+                                             update=":formOutrasTelas:panelSeguro,:formCentro:growl,:formCentro:telaDetalhe:tabMdfe:dataTableSeguro"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogIncluirSeguro').hide();}"
+                                             process="@form">
+
+
+                            </p:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogIncluirSeguro').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas1">
+        <h:form id="formOutrasTelas1">
+            <p:dialog id="dialogLacre" header="Inclusão/Alteração Lacre"
+                      widgetVar="dialogLacre" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="true" width="600"
+                      responsive="true">
+                <p:outputPanel id="panelLacre">
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-md-12"
+                                        idComponente="mdfeLacreNumero" label="Número"
+                                        nomeAtributo="#{mdfeControll.mdfeLacre.numeroLacre}"
+                                        tamanhoMaximo="20" requerido="true"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             action="#{mdfeControll.salvarLacre}"
+                                             id="btnSalvarLacre"
+                                             update=":formOutrasTelas1:panelLacre,:formCentro:growl,:formCentro:telaDetalhe:tabMdfe:dataTableLacre"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogLacre').hide();}"
+                                             process="@form"
+                            >
+                            </p:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogLacre').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+            <p:dialog id="dialogPedagio" header="Inclusão/Alteração Pedágio"
+                      widgetVar="dialogPedagio" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="true" width="600"
+                      responsive="true">
+                <p:outputPanel id="panelPedagio">
+                    <div class="row">
+                        <erp:campoCnpj styleClass="col-xs-12 col-sm-6 col-md-6"
+                                       idComponente="mdfePedagioNumero"
+                                       label="CNPJ Fornecedor"
+                                       requerido="true"
+                                       nomeAtributo="#{mdfeControll.mdfeRodoviarioPedagio.cnpjFornecedor}"/>
+
+
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <p:outputLabel value="CNPJ/CPF Responsável" for="cnpjCpfResponsavel"/><br/>
+                            <p:inputText id="cnpjCpfResponsavel"
+                                         value="#{mdfeControll.mdfeRodoviarioPedagio.cnpjCpfResponsavel}"
+                                         maxlength="14" required="true"
+                                         validator="cnpjCpfValidator">
+                                <f:validateLength minimum="11" maximum="14"/>
+                            </p:inputText>
+
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        idComponente="mdfePedagioNumero" label="Nº Comprovante"
+                                        nomeAtributo="#{mdfeControll.mdfeRodoviarioPedagio.numeroComprovante}"
+                                        tamanhoMaximo="20" requerido="true"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          idComponente="mdfePedagioValor" label="Valor" requerido="true"
+                                          nomeAtributo="#{mdfeControll.mdfeRodoviarioPedagio.valor}"/>
+
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             id="btnSalvarPedagio"
+                                             action="#{mdfeControll.salvarPedagio}"
+                                             update=":formOutrasTelas2:panelPedagio,:formCentro:growl,:formCentro:telaDetalhe:tabMdfe:dataTablePedagio"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogPedagio').hide();}"
+                                             process="@form">
+
+                            </p:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogPedagio').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formOutrasTelas3">
+            <p:dialog id="dialogDocFiscal" header="Inclusão/Alteração Doc Fiscal"
+                      widgetVar="dialogDocFiscal" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="true" width="700"
+                      responsive="true">
+                <p:outputPanel id="panelDocFiscal">
+                    <div class="row">
+
+
+                        <erp:chaveAcesso modelo="55"
+                                         styleClass="col-xs-12 col-sm-8"
+                                         idComponente="mdfeChaveNfe" label="Chave de Acesso"
+                                         nomeAtributo="#{mdfeControll.docFiscal.chave}"/>
+
+                        <div class="col-xs-12 col-md-4">
+                            <h:outputLabel value="Reentrega"/>
+                            <h:selectOneMenu
+                                    value="#{mdfeControll.docFiscal.indicadorReentrega}"
+                                    class="form-control">
+                                <f:selectItems value="#{mdfeControll.simNaoInteiro}"/>
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             action="#{mdfeControll.salvarDoc}"
+                                             update=":formOutrasTelas3:panelDocFiscal,:formCentro:growl,:formCentro:telaDetalhe:tabMdfe:panelDadosDocumento,:formCentro:telaDetalhe:tabMdfe:panelDadosQuantidade"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogDocFiscal').hide();}"
+                                             process="@form"
+                            >
+
+                            </p:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogDocFiscal').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas4">
+        <h:form id="formOutrasTelas4">
+            <p:dialog id="dialogCondutor" header="Inclusão/Alteração Condutor"
+                      widgetVar="dialogCondutor" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="true" width="800"
+                      responsive="true">
+                <p:outputPanel id="panelCondutor">
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                        idComponente="veiculoCodigoInterno"
+                                        label="Nome"
+                                        nomeAtributo="#{mdfeControll.mdfeRodoviarioMotorista.nome}"
+                                        tamanhoMaximo="60"
+                                        requerido="true"/>
+                        <erp:campoCpf styleClass="col-xs-6 col-sm-4 col-md-4"
+                                      idComponente="cpf"
+                                      label="CPF"
+                                      nomeAtributo="#{mdfeControll.mdfeRodoviarioMotorista.cpf}"
+                                      requerido="true"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             action="#{mdfeControll.salvarCondutor}"
+                                             update=":formOutrasTelas4:panelCondutor,:formCentro:growl,:formCentro:telaDetalhe:tabMdfe:dataTableCondutor"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogCondutor').hide();}"
+                                             process="@form"
+                            >
+
+                            </p:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogCondutor').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas5">
+        <h:form id="formOutrasTelas5">
+            <p:dialog id="dialogVeiculo" header="Inclusão/Alteração Veículo"
+                      widgetVar="dialogVeiculo" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="true" width="600"
+                      responsive="true">
+                <p:outputPanel id="panelVeiculo">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
+                                          label="Selecione o Veiculo"
+                                          itemLabel="#{objeto.placa}"
+                                          controller="#{mdfeControll}"
+                                          completeMethod="getListVeiculos"
+                                          nomeAtributo="#{mdfeControll.veiculo}"
+                                          idComponente="veiculo"
+                                          requerido="true"
+                        >
+                            <p:ajax process="@this" event="itemSelecionado"
+                                    listener="#{mdfeControll.selecionarVeiculo}"/>
+                        </erp:autoComplete>
+
+
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             action="#{mdfeControll.salvarVeiculo}"
+                                             update=":formOutrasTelas5:panelVeiculo,:formCentro:growl,:formCentro:telaDetalhe:tabMdfe:dataTableVeiculo"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogVeiculo').hide();}"
+                                             process="@form"
+                            >
+
+                            </p:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogVeiculo').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

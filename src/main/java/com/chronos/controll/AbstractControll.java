@@ -66,6 +66,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private int activeTabIndex;
     private Map<String, String> simNao;
     private Map<String, String> naoSim;
+    private HashMap<String, Integer> simNaoInteiro;
     private Map<String, String> tipoPessoa;
     private Map<String, String> sexo;
     private Map<String, String> tipoSangue;
@@ -159,6 +160,32 @@ public abstract class AbstractControll<T> implements Serializable {
     private HashMap<String, String> pdvCodigoTipoPagamento;
     private HashMap<String, String> pdvNivelAutorizacao;
 
+
+    // CTe
+    private HashMap<String, Integer> cteFormatoImpressaoDacte;
+    private HashMap<String, Integer> cteTipoPeriodo;
+    private HashMap<String, String> cteCodigoUnidadeMedida;
+    private HashMap<String, Integer> cteFormaPagamento;
+    private HashMap<String, Integer> cteTipo;
+    private HashMap<String, Integer> cteTipoServico;
+    private HashMap<String, Integer> cteTomador;
+    private HashMap<String, String> cteModeloNota;
+
+    private HashMap<String, String> veiculoTipoPropriedade;
+    private HashMap<String, Integer> veiculoTipoVeiculo;
+    private HashMap<String, String> veiculoTipoRodado;
+    private HashMap<String, String> veiculoTipoCarroceria;
+    private HashMap<String, String> proprietarioTipo;
+
+    private HashMap<String, String> cteModal;
+    private HashMap<String, Integer> cteTipoEmissao;
+
+    // MDFe
+    private HashMap<String, Integer> mdfeTipoEmitente;
+    private HashMap<String, Integer> mdfeTipoTransportadora;
+    private HashMap<String, String> mdfeCodigoUnidadeMedida;
+    private HashMap<String, Integer> mdfeResponsavelSeguro;
+
     protected abstract Class<T> getClazz();
 
     protected abstract String getFuncaoBase();
@@ -183,6 +210,10 @@ public abstract class AbstractControll<T> implements Serializable {
         naoSim = new LinkedHashMap<>();
         naoSim.put("Não", "N");
         naoSim.put("Sim", "S");
+
+        simNaoInteiro = new HashMap<>();
+        simNaoInteiro.put("Não", 0);
+        simNaoInteiro.put("Sim", 1);
 
 
         tipoPessoa = new LinkedHashMap<>();
@@ -546,6 +577,117 @@ public abstract class AbstractControll<T> implements Serializable {
         pdvNivelAutorizacao.put("SUPERVISOR", "S");
         pdvNivelAutorizacao.put("GERENTE", "G");
         pdvNivelAutorizacao.put("ADMINISTRADOR", "A");
+
+        // cte
+        cteFormatoImpressaoDacte = new HashMap<>();
+        cteFormatoImpressaoDacte.put("Retrato", 1);
+        cteFormatoImpressaoDacte.put("Paisagem", 2);
+
+        cteTipoPeriodo = new HashMap<>();
+        cteTipoPeriodo.put("Sem data definida", 0);
+        cteTipoPeriodo.put("Na data", 1);
+        cteTipoPeriodo.put("Até a data", 2);
+        cteTipoPeriodo.put("A partir da data", 3);
+        cteTipoPeriodo.put("No período", 4);
+
+        cteCodigoUnidadeMedida = new HashMap<>();
+        cteCodigoUnidadeMedida.put("M3", "00");
+        cteCodigoUnidadeMedida.put("KG", "01");
+        cteCodigoUnidadeMedida.put("TON", "02");
+        cteCodigoUnidadeMedida.put("UNIDADE", "03");
+        cteCodigoUnidadeMedida.put("LITROS", "04");
+        cteCodigoUnidadeMedida.put("MMBTU", "05");
+
+        cteFormaPagamento = new HashMap<>();
+        cteFormaPagamento.put("Pago", 0);
+        cteFormaPagamento.put("A pagar", 1);
+        cteFormaPagamento.put("Outros", 2);
+
+        cteTipo = new HashMap<>();
+        cteTipo.put("CT-e Normal", 0);
+        cteTipo.put("CT-e Complementar", 1);
+        cteTipo.put("Anulação", 2);
+        cteTipo.put("Substituição", 3);
+
+        cteTipoServico = new HashMap<>();
+        cteTipoServico.put("Normal", 0);
+        cteTipoServico.put("Subcontratação", 1);
+        cteTipoServico.put("Redespacho", 2);
+        cteTipoServico.put("Redespacho  Intermediário", 3);
+        cteTipoServico.put("Serviço Vinculado a  Multimodal", 4);
+
+        mdfeTipoEmitente = new HashMap<>();
+        mdfeTipoEmitente.put("Prestador de Serviço", 1);
+        mdfeTipoEmitente.put("Carga Própria", 2);
+
+        mdfeResponsavelSeguro = new HashMap<>();
+        mdfeResponsavelSeguro.put("Emitente do MDF-e", 1);
+        mdfeResponsavelSeguro.put("Responsável pela Contratação", 2);
+
+        mdfeTipoTransportadora = new HashMap<>();
+        mdfeTipoTransportadora.put("ETC", 1);
+        mdfeTipoTransportadora.put("TAC", 2);
+        mdfeTipoTransportadora.put("CTC", 3);
+
+        mdfeCodigoUnidadeMedida = new HashMap<>();
+        mdfeCodigoUnidadeMedida.put("KG", "01");
+        mdfeCodigoUnidadeMedida.put("TON ", "02");
+
+        cteTomador = new HashMap<>();
+        cteTomador.put("Remetente", 0);
+        cteTomador.put("Expedidor", 1);
+        cteTomador.put("Recebedor", 2);
+        cteTomador.put("Destinatário", 3);
+        cteTomador.put("Outros", 4);
+
+        cteModeloNota = new HashMap<>();
+        cteModeloNota.put("NF Modelo 01/1A e Avulsa", "01");
+        cteModeloNota.put("NF de Produtor", "04");
+
+        cteModal = new HashMap<>();
+        cteModal.put("Rodoviário", "01");
+        cteModal.put("Aéreo", "02");
+        cteModal.put("Aquaviário", "03");
+        cteModal.put("Ferroviário", "04");
+        cteModal.put("Dutoviário", "05");
+        cteModal.put("Multimodal", "06");
+
+        cteTipoEmissao = new HashMap<>();
+        cteTipoEmissao.put("Normal", 1);
+        cteTipoEmissao.put("EPEC pela SVC", 4);
+        cteTipoEmissao.put("Contingência FSDA", 5);
+        cteTipoEmissao.put("Autorização pela SVC-RS", 7);
+        cteTipoEmissao.put("Autorização pela SVC-SP", 8);
+
+        veiculoTipoPropriedade = new HashMap<>();
+        veiculoTipoPropriedade.put("Próprio", "0");
+        veiculoTipoPropriedade.put("Terceiro", "1");
+
+        veiculoTipoVeiculo = new HashMap<>();
+        veiculoTipoVeiculo.put("Tração", 0);
+        veiculoTipoVeiculo.put("Reboque", 1);
+
+        veiculoTipoRodado = new HashMap<>();
+        veiculoTipoRodado.put("Truck", "01");
+        veiculoTipoRodado.put("Toco", "02");
+        veiculoTipoRodado.put("Cavalo mecânico", "03");
+        veiculoTipoRodado.put("Van", "04");
+        veiculoTipoRodado.put("Utilitário", "05");
+        veiculoTipoRodado.put("Outros", "06");
+
+        veiculoTipoCarroceria = new HashMap<>();
+        veiculoTipoCarroceria.put("Não Aplicável", "00");
+        veiculoTipoCarroceria.put("Aberta", "01");
+        veiculoTipoCarroceria.put("Baú Fechado", "02");
+        veiculoTipoCarroceria.put("Graneleira", "03");
+        veiculoTipoCarroceria.put("Porta Container", "04");
+        veiculoTipoCarroceria.put("Sider", "05");
+
+        proprietarioTipo = new HashMap<>();
+        proprietarioTipo.put("Agregado", "0");
+        proprietarioTipo.put("Independente", "1");
+        proprietarioTipo.put("Outros", "2");
+
 
 
     }
@@ -1153,5 +1295,86 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, String> getPdvNivelAutorizacao() {
         return pdvNivelAutorizacao;
+    }
+
+
+    public HashMap<String, Integer> getCteFormatoImpressaoDacte() {
+        return cteFormatoImpressaoDacte;
+    }
+
+    public HashMap<String, Integer> getCteTipoPeriodo() {
+        return cteTipoPeriodo;
+    }
+
+    public HashMap<String, String> getCteCodigoUnidadeMedida() {
+        return cteCodigoUnidadeMedida;
+    }
+
+    public HashMap<String, Integer> getCteFormaPagamento() {
+        return cteFormaPagamento;
+    }
+
+    public HashMap<String, Integer> getCteTipo() {
+        return cteTipo;
+    }
+
+    public HashMap<String, Integer> getCteTipoServico() {
+        return cteTipoServico;
+    }
+
+    public HashMap<String, Integer> getCteTomador() {
+        return cteTomador;
+    }
+
+    public HashMap<String, String> getCteModeloNota() {
+        return cteModeloNota;
+    }
+
+    public HashMap<String, String> getVeiculoTipoPropriedade() {
+        return veiculoTipoPropriedade;
+    }
+
+    public HashMap<String, Integer> getVeiculoTipoVeiculo() {
+        return veiculoTipoVeiculo;
+    }
+
+    public HashMap<String, String> getVeiculoTipoRodado() {
+        return veiculoTipoRodado;
+    }
+
+    public HashMap<String, String> getVeiculoTipoCarroceria() {
+        return veiculoTipoCarroceria;
+    }
+
+    public HashMap<String, String> getProprietarioTipo() {
+        return proprietarioTipo;
+    }
+
+    public HashMap<String, String> getCteModal() {
+        return cteModal;
+    }
+
+    public HashMap<String, Integer> getCteTipoEmissao() {
+        return cteTipoEmissao;
+    }
+
+    public HashMap<String, Integer> getMdfeTipoEmitente() {
+        return mdfeTipoEmitente;
+    }
+
+    public HashMap<String, Integer> getMdfeTipoTransportadora() {
+        return mdfeTipoTransportadora;
+    }
+
+    public HashMap<String, String> getMdfeCodigoUnidadeMedida() {
+        return mdfeCodigoUnidadeMedida;
+    }
+
+    public HashMap<String, Integer> getMdfeResponsavelSeguro() {
+        return mdfeResponsavelSeguro;
+    }
+
+    public HashMap<String, Integer> getSimNaoInteiro() {
+        return simNaoInteiro;
     }
 }

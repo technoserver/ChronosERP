@@ -6,6 +6,8 @@
 package com.chronos.util;
 
 import com.chronos.dto.MapDTO;
+import com.chronos.infra.enuns.ModeloDocumento;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,6 +28,101 @@ import java.util.regex.Pattern;
  */
 public class Biblioteca {
 
+
+    public static boolean renavamValido(String renavam) {
+        //Completa com zeros a esquerda caso o renavam seja com 9 digitos
+        if (renavam.matches("^([0-9]{9})$")) {
+            renavam = "00" + renavam;
+        }
+
+        // Valida se possui 11 digitos pos formatacao
+        if (!renavam.matches("[0-9]{11}")) {
+            return false;
+        }
+
+        // Remove o digito (11 posicao)
+        // renavamSemDigito = 0063988496
+        String renavamSemDigito = renavam.substring(0, 10);
+
+        // Inverte os caracteres (reverso)
+        // renavamReversoSemDigito = 69488936
+        String renavamReversoSemDigito = new StringBuffer(renavamSemDigito).reverse().toString();
+
+        int soma = 0;
+
+        // Multiplica as strings reversas do renavam pelos numeros multiplicadores
+        // para apenas os primeiros 8 digitos de um total de 10
+        // Exemplo: renavam reverso sem digito = 69488936
+        // 6, 9, 4, 8, 8, 9, 3, 6
+        // * * * * * * * *
+        // 2, 3, 4, 5, 6, 7, 8, 9 (numeros multiplicadores - sempre os mesmos [fixo])
+        // 12 + 27 + 16 + 40 + 48 + 63 + 24 + 54
+        // soma = 284
+        for (int i = 0; i < 8; i++) {
+            Integer algarismo = Integer.parseInt(renavamReversoSemDigito.substring(i, i + 1));
+            Integer multiplicador = i + 2;
+            soma += algarismo * multiplicador;
+        }
+
+        // Multiplica os dois ultimos digitos e soma
+        soma += Character.getNumericValue(renavamReversoSemDigito.charAt(8)) * 2;
+        soma += Character.getNumericValue(renavamReversoSemDigito.charAt(9)) * 3;
+
+        // mod11 = 284 % 11 = 9 (resto da divisao por 11)
+        int mod11 = soma % 11;
+
+        // Faz-se a conta 11 (valor fixo) - mod11 = 11 - 9 = 2
+        int ultimoDigitoCalculado = 11 - mod11;
+
+        // ultimoDigito = Caso o valor calculado anteriormente seja 10 ou 11, transformo ele em 0
+        // caso contrario, eh o proprio numero
+        ultimoDigitoCalculado = (ultimoDigitoCalculado >= 10 ? 0 : ultimoDigitoCalculado);
+
+        // Pego o ultimo digito do renavam original (para confrontar com o calculado)
+        int digitoRealInformado = Integer.valueOf(renavam.substring(renavam.length() - 1, renavam.length()));
+
+        // Comparo os digitos calculado e informado
+        if (ultimoDigitoCalculado == digitoRealInformado) {
+            return true;
+        }
+
+        return true;
+    }
+
+    public static boolean isChaveAcesso(String chave, String modelo) {
+
+        if (StringUtils.isEmpty(chave)) {
+            return false;
+        }
+
+        if (chave.length() != 44) {
+            return false;
+        }
+
+        int uf = Integer.valueOf(chave.substring(0, 2));
+        if (!((uf >= 11 && uf <= 17) || (uf >= 21 && uf <= 35) || (uf >= 41 && uf <= 43) || (uf >= 50 && uf <= 53))) {
+            return false;
+        }
+
+        int mes = Integer.valueOf(chave.substring(4, 6));
+        if (mes < 1 || mes > 12) {
+            return false;
+        }
+        int ano = Integer.valueOf(chave.substring(2, 4));
+        String cnpj = chave.substring(6, 20);
+        if (!cnpjValido(cnpj)) {
+            return false;
+        }
+        int mod = Integer.valueOf(chave.substring(20, 22));
+        ModeloDocumento modeloDoc = ModeloDocumento.getByCodigo(Integer.valueOf(modelo));
+        if (!modelo.equals(modeloDoc.getCodigo().toString())) {
+            return false;
+        }
+        String chaveSemDigito = chave.substring(0, 43);
+        String digito = modulo11(chaveSemDigito).toString();
+        chaveSemDigito += digito;
+        return chave.equals(chaveSemDigito);
+    }
 
     public static Map getMap(List<MapDTO> list) {
         Map<String, BigDecimal> mapa = new LinkedHashMap<>();
@@ -58,21 +155,9 @@ public class Biblioteca {
         return mapa;
     }
 
-    public String retiraAcentos(String string) {
-        String aux = new String(string);
-        aux = aux.replaceAll("[èëÈéêÉÊË]", "e");
-        aux = aux.replaceAll("[ûùüúÛÚÙÜ]", "u");
-        aux = aux.replaceAll("[ïîíìÏÎÍÌ]", "i");
-        aux = aux.replaceAll("[àâáäãÁÀÂÄ]", "a");
-        aux = aux.replaceAll("[óòôöõÓÒÔÖ]", "o");
-        aux = aux.replaceAll("[çÇ]", "c");
-        return aux;
-    }
-
     public static String repete(String string, int quantidade) {
         return String.join("", Collections.nCopies(quantidade, string));
     }
-
 
     /**
      * Busca os bytes de um determinado arquivo
@@ -427,7 +512,6 @@ public class Biblioteca {
         return calendar.getTime();
     }
 
-
     /**
      * Retorna o mes e ano no formato MM/AAAA
      *
@@ -451,7 +535,6 @@ public class Biblioteca {
 
         return false;
     }
-
 
     public static BigDecimal calcTaxa(BigDecimal total, BigDecimal taxa) {
         BigDecimal valor = total.multiply(taxa.divide(new BigDecimal(100)));
@@ -478,6 +561,17 @@ public class Biblioteca {
         Pattern pattern = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    public String retiraAcentos(String string) {
+        String aux = new String(string);
+        aux = aux.replaceAll("[èëÈéêÉÊË]", "e");
+        aux = aux.replaceAll("[ûùüúÛÚÙÜ]", "u");
+        aux = aux.replaceAll("[ïîíìÏÎÍÌ]", "i");
+        aux = aux.replaceAll("[àâáäãÁÀÂÄ]", "a");
+        aux = aux.replaceAll("[óòôöõÓÒÔÖ]", "o");
+        aux = aux.replaceAll("[çÇ]", "c");
+        return aux;
     }
 
 }

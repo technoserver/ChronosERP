@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:panelGroup layout="block" id="panelDadosModal">
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="row">
+                    <div class="col-xs-8 col-sm-10 col-md-10">
+                        <p:outputLabel value="Condutores"/>
+                    </div>
+                    <div class="col-xs-4 col-sm-2 col-md-2">
+                        <h:commandLink title="Novo"
+                                       class="btn btn-default margem-bottom-10"
+                                       action="#{mdfeControll.incluirCondutor}" type="button">
+                            <i class="glyphicon glyphicon-plus"/>
+                            <p:ajax update="formOutrasTelas4:panelCondutor,dataTableCondutor"
+                                    process="@this" oncomplete="PF('dialogCondutor').show()"/>
+                        </h:commandLink>
+                    </div>
+                </div>
+                <p:dataTable id="dataTableCondutor" var="obj"
+                             value="#{mdfeControll.objeto.mdfeRodoviario.listaMdfeRodoviarioMotorista}"
+                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                             reflow="true" resizableColumns="true" paginatorPosition="bottom">
+                    <p:column headerText="Nome" style="width:50%">
+                        <h:outputLabel value="#{obj.nome}"/>
+                    </p:column>
+                    <p:column headerText="CPF" style="width:25%">
+                        <h:outputLabel value="#{obj.cpf}">
+                        </h:outputLabel>
+                    </p:column>
+                    <p:column headerText="Ações" style="width:25%" styleClass="text-center">
+                        <p:commandLink process="dataTableCondutor" title="Editar"
+                                       oncomplete="PF('dialogCondutor').show()"
+                                       styleClass="btn btn-default"
+                                       action="#{mdfeControll.alterarCondutor}"
+                                       update=":formOutrasTelas4:panelCondutor,dataTableCondutor">
+                            <i class="fa fa-search"/>
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{mdfeControll.mdfeRodoviarioMotoristaSelecionado}"/>
+                        </p:commandLink>
+                        &nbsp;
+                        <p:commandLink process="dataTableCondutor" title="Excluir"
+                                       styleClass="btn btn-default"
+                                       action="#{mdfeControll.excluirCondutor}"
+                                       update="dataTableCondutor">
+                            <i class="fa fa-close"/>
+                            <p:confirm header="Confirmação" message="Confirma Remoção"
+                                       icon="ui-icon-alert"/>
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{mdfeControll.mdfeRodoviarioMotoristaSelecionado}"/>
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="row">
+                    <div class="col-xs-8 col-sm-10 col-md-10">
+                        <p:outputLabel value="Veículos"/>
+                    </div>
+                    <div class="col-xs-4 col-sm-2 col-md-2">
+                        <h:commandLink title="Novo"
+                                       class="btn btn-default margem-bottom-10"
+                                       action="#{mdfeControll.incluirVeiculo}" type="button">
+                            <i class="glyphicon glyphicon-plus"/>
+                            <p:ajax update="formOutrasTelas5:panelVeiculo,dataTableVeiculo"
+                                    process="@this" oncomplete="PF('dialogVeiculo').show()"/>
+                        </h:commandLink>
+                    </div>
+                </div>
+
+
+                <p:dataTable id="dataTableVeiculo" var="obj"
+                             value="#{mdfeControll.objeto.mdfeRodoviario.listaMdfeRodoviarioVeiculo}"
+                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                             reflow="true" resizableColumns="true" paginatorPosition="bottom">
+                    <p:column headerText="Placa" style="width:30%">
+                        <h:outputLabel value="#{obj.placa}"/>
+                    </p:column>
+                    <p:column headerText="Tipo" style="width:40%">
+                        <h:outputLabel
+                                value="#{mdfeControll.keyFromValue(mdfeControll.veiculoTipoRodado, obj.tipoRodado)}"/>
+                    </p:column>
+                    <p:column headerText="Ações" style="width:30%" styleClass="text-center">
+
+                        <p:commandLink process="dataTableVeiculo" title="Excluir"
+                                       styleClass="btn btn-default"
+
+                                       action="#{mdfeControll.excluirVeiculo}"
+                                       update="dataTableVeiculo,formCentro:growl">
+                            <i class="fa fa-close"/>
+                            <p:confirm header="Confirmação" message="Confirma Remoção"
+                                       icon="ui-icon-alert"/>
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{mdfeControll.mdfeRodoviarioVeiculoSelecionado}"/>
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+
+            </div>
+        </div>
+    </h:panelGroup>
+
+</ui:composition>

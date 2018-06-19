@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Proprietário Veiculo
+    </ui:define>
+
+    <ui:define name="tela">
+        #{proprietarioVeiculoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Proprietário Veiculo
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{proprietarioVeiculoControll}"
+                       idDataTable="dataTableProprietario"
+                       nomeFuncao="proprietario"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+            <p:column headerText="CPF/CNPJ">
+                <h:outputLabel value="#{row.cpfCnpj}"/>
+            </p:column>
+            <p:column headerText="UF">
+                <h:outputLabel value="#{row.uf}"/>
+            </p:column>
+
+            <p:column headerText="RNTRC">
+                <h:outputLabel value="#{row.rntrc}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{proprietarioVeiculoControll}"
+                                   nomeFuncao="Proprietario"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="nome" label="Nome"
+                                nomeAtributo="#{proprietarioVeiculoControll.objeto.nome}"
+                                requerido="true"
+                                tamanhoMaximo="60"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="cpf" label="CPF/CNPJ"
+                                nomeAtributo="#{proprietarioVeiculoControll.objeto.cpfCnpj}"
+                                requerido="true"
+                                tamanhoMaximo="14"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="ie" label="IE"
+                                nomeAtributo="#{proprietarioVeiculoControll.objeto.ie}"
+                                tamanhoMaximo="30"/>
+
+
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="rntrc" label="RNTRC"
+                                nomeAtributo="#{proprietarioVeiculoControll.objeto.rntrc}"
+                                requerido="true"
+                                tamanhoMaximo="8"/>
+
+                <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                                 idComponente="tipo" label="Tipo"
+                                 nomeAtributo="#{proprietarioVeiculoControll.objeto.tipo}"
+                                 itens="#{proprietarioVeiculoControll.proprietarioTipo}"/>
+
+                <erp:campoUf styleClass="col-xs-12 col-sm-2 col-md-2"
+                             controller="#{proprietarioVeiculoControll}"
+                             nomeAtributo="#{proprietarioVeiculoControll.objeto.uf}"
+                             idComponente="uf"
+                />
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

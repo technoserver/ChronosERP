@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:panelGroup layout="block" id="panelDadosDocumento">
+        <h:panelGroup layout="block" id="panelDadosNfe" rendered="#{mdfeControll.objeto.tipoEmitente == 2}">
+            <erp:separador label="informar NFe"/>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <h:commandLink title="Novo"
+                                   id="btnAddNfe"
+                                   class="btn btn-default margem-bottom-10"
+                                   action="#{mdfeControll.incluirDoc(55)}" type="button">
+                        <i class="glyphicon glyphicon-plus"/>
+                        <p:ajax update="formOutrasTelas3:panelDocFiscal"
+                                process="@this" oncomplete="PF('dialogDocFiscal').show()"/>
+                    </h:commandLink>
+                </div>
+            </div>
+            <p:dataTable id="dataTableNfe" var="obj"
+                         value="#{mdfeControll.listaMdfeInformacaoNfe}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         reflow="true" resizableColumns="true" paginatorPosition="bottom">
+                <p:column headerText="Chave de Acesso" style="width:60%">
+                    <h:outputLabel value="#{obj.chaveNfe}"/>
+                </p:column>
+                <p:column headerText="Reentrega" sortBy="#{obj.indicadorReentrega}"
+                          style="width:25%">
+                    <h:outputLabel
+                            value="#{mdfeControll.keyFromValue(mdfeControll.simNaoInteiro, obj.indicadorReentrega)}"/>
+                </p:column>
+                <p:column headerText="Ações" style="width:15%" styleClass="text-center">
+                    <p:commandLink process="dataTableNfe" title="Editar"
+                                   oncomplete="PF('dialogDocFiscal').show()" styleClass="btn btn-default"
+                                   action="#{mdfeControll.alterarDoc}"
+                                   update=":formOutrasTelas3:panelDocFiscal,dataTableNfe">
+                        <i class="fa fa-search"/>
+                        <f:setPropertyActionListener value="#{obj.chaveNfe}"
+                                                     target="#{mdfeControll.docFiscal.chave}"/>
+                        <f:setPropertyActionListener value="#{55}"
+                                                     target="#{mdfeControll.docFiscal.modelo}"/>
+                        <f:setPropertyActionListener value="#{obj.indicadorReentrega}"
+                                                     target="#{mdfeControll.docFiscal.indicadorReentrega}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink process="dataTableNfe" title="Excluir"
+                                   styleClass="btn btn-default"
+                                   action="#{mdfeControll.excluirNfe}"
+                                   update="dataTableNfe,:formCentro:telaDetalhe:tabMdfe:panelDadosQuantidade">
+                        <i class="fa fa-close"/>
+                        <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                                   icon="ui-icon-alert"/>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{mdfeControll.mdfeInformacaoNfeSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+
+        </h:panelGroup>
+
+        <h:panelGroup layout="block" id="panelDadosCte" rendered="#{mdfeControll.objeto.tipoEmitente == 1}">
+            <erp:separador label="informar CTe"/>
+            <div class="row">
+                <div class="col-md-3">
+                    <h:commandLink title="Novo"
+                                   id="btnAddCte"
+                                   class="btn btn-default margem-bottom-10"
+                                   action="#{mdfeControll.incluirDoc(57)}" type="button">
+                        <i class="glyphicon glyphicon-plus"/>
+                        <p:ajax update="formOutrasTelas3:panelDocFiscal"
+                                process="@this" oncomplete="PF('dialogDocFiscal').show()"/>
+                    </h:commandLink>
+                </div>
+            </div>
+
+            <p:dataTable id="dataTableCte" var="obj"
+                         value="#{mdfeControll.listaMdfeInformacaoCte}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         reflow="true" resizableColumns="true" paginatorPosition="bottom">
+                <p:column headerText="Chave de Acesso" style="width:60%">
+                    <h:outputLabel value="#{obj.chaveCte}"/>
+                </p:column>
+                <p:column headerText="Reentrega" sortBy="#{obj.indicadorReentrega}"
+                          style="width:25%">
+                    <h:outputLabel
+                            value="#{mdfeControll.keyFromValue(mdfeControll.simNaoInteiro, obj.indicadorReentrega)}"/>
+                </p:column>
+                <p:column headerText="Ações" style="width:15%" styleClass="text-center">
+                    <p:commandLink process="dataTableCte" title="Editar"
+                                   oncomplete="PF('dialogDocFiscal').show()" styleClass="btn btn-default"
+                                   action="#{mdfeControll.alterarDoc}"
+                                   update=":formOutrasTelas3:panelDocFiscal,dataTableCte">
+                        <i class="fa fa-search"/>
+                        <f:setPropertyActionListener value="#{obj.chaveCte}"
+                                                     target="#{mdfeControll.docFiscal.chave}"/>
+                        <f:setPropertyActionListener value="#{57}"
+                                                     target="#{mdfeControll.docFiscal.modelo}"/>
+                        <f:setPropertyActionListener value="#{obj.indicadorReentrega}"
+                                                     target="#{mdfeControll.docFiscal.indicadorReentrega}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink process="dataTableCte" title="Excluir"
+                                   styleClass="btn btn-default"
+                                   action="#{mdfeControll.excluirCte}"
+                                   update="dataTableCte,:formCentro:telaDetalhe:tabMdfe:panelDadosQuantidade">
+                        <i class="fa fa-close"/>
+                        <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                                   icon="ui-icon-alert"/>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{mdfeControll.mdfeInformacaoCteSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+
+        </h:panelGroup>
+
+    </h:panelGroup>
+
+</ui:composition>
