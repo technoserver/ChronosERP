@@ -100,6 +100,10 @@ public class Seguranca implements Serializable {
         return FacesUtil.isUserInRole("NFE");
     }
 
+    public boolean isUserMdfe() {
+        return FacesUtil.isUserInRole("MDFE");
+    }
+
     public boolean isUserNfce() {
         return FacesUtil.isUserInRole("NFCE");
     }

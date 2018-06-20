@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:cc="http://java.sun.com/jsf/composite"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:p="http://primefaces.org/ui">
 
     <!-- INTERFACE -->
     <cc:interface>
@@ -26,16 +26,16 @@
             });
         </script>
         <div class="#{cc.attrs.styleClass}" >
-            <h:outputLabel value="#{cc.attrs.label}"
+            <p:outputLabel value="#{cc.attrs.label}"
                            for="#{cc.attrs.idComponente}" />
 
-            <h:inputText id        = "#{cc.attrs.idComponente}"
-                         value     = "#{cc.attrs.nomeAtributo}" 
+            <p:inputText id="#{cc.attrs.idComponente}"
+                         value     = "#{cc.attrs.nomeAtributo}"
                          required  = "#{cc.attrs.requerido}"
                          maxlength = "#{cc.attrs.tamanhoMaximo}"
                          disabled  = "#{cc.attrs.desabilitado}"
-                         readonly  = "#{cc.attrs.somenteLeitura}" 
-                         class     = "#{cc.attrs.styleClassInput}"                        
+                         readonly  = "#{cc.attrs.somenteLeitura}"
+                         class     = "#{cc.attrs.styleClassInput}"
                          validator="cnpjValidator"
 
                          />

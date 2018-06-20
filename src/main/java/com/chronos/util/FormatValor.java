@@ -20,6 +20,7 @@ public class FormatValor {
     private SimpleDateFormat formatoHora;
     private SimpleDateFormat formatoAno;
     private SimpleDateFormat formatoMes;
+    private SimpleDateFormat formatoDataHoraEvento;
     private DecimalFormatSymbols simboloDecimal;
 
     private DecimalFormat formatoQuantidade;
@@ -43,6 +44,7 @@ public class FormatValor {
         this.formatoAno = new SimpleDateFormat("yy");
         this.formatoMes = new SimpleDateFormat("MM");
         this.formatoHora = new SimpleDateFormat("HH:mm:ss");
+        this.formatoDataHoraEvento = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     }
 
@@ -84,6 +86,10 @@ public class FormatValor {
 
     public String formatarDataNota(Date data) throws ParseException {
         return formatoDataNota.format(data);
+    }
+
+    public String formatarDataEvento(Date data) throws ParseException {
+        return formatoDataHoraEvento.format(data);
     }
 
     public String formatarAno(Date date) {

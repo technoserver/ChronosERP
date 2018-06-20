@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:panelGroup layout="block" id="panelDadosPrincial">
+        <div class="row">
+
+            <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                            somenteLeitura="true" idComponente="mdfeCabecalhoChaveAcesso"
+                            label="Chave de Acesso"
+                            nomeAtributo="#{mdfeControll.objeto.chaveAcessoCompleta}"
+                            tamanhoMaximo="44"/>
+
+            <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                            somenteLeitura="true"
+                            idComponente="mdfeCabecalhoSerie"
+                            label="Série"
+                            nomeAtributo="#{mdfeControll.objeto.serie}"
+                            tamanhoMaximo="3"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                            somenteLeitura="true" idComponente="mdfeCabecalhoNumero"
+                            label="Número"
+                            nomeAtributo="#{mdfeControll.objeto.numeroMdfe}"
+                            tamanhoMaximo="9"/>
+        </div>
+
+        <div class="row">
+
+
+            <erp:campoSelect styleClass="col-xs-6 col-sm-3 col-md-3"
+                             idComponente="tipoEmitente"
+                             label="Tipo do Emitente"
+                             nomeAtributo="#{mdfeControll.objeto.tipoEmitente}"
+                             itens="#{mdfeControll.mdfeTipoEmitente}">
+                <p:ajax event="change"
+                        update=":formCentro:telaDetalhe:tabMdfe:panelDadosCarga,:formCentro:telaDetalhe:tabMdfe:panelDadosDocumento"
+                        process="@this"/>
+            </erp:campoSelect>
+
+            <erp:campoSelect styleClass="col-xs-6 col-sm-3 col-md-3"
+                             idComponente="tipoTransportadora"
+                             label="Tipo da Transportador"
+                             nomeAtributo="#{mdfeControll.objeto.tipoTransportadora}"
+                             itens="#{mdfeControll.mdfeTipoTransportadora}"/>
+
+
+            <erp:campoData styleClass="col-xs-6 col-sm-3 col-md-2"
+                           idComponente="mdfeCabecalhoDataHoraPrevisaoViagem"
+                           label="Data Início Viagem"
+                           somenteLeitura="true"
+                           nomeAtributo="#{mdfeControll.objeto.dataHoraPrevisaoViagem}"/>
+            <erp:campoData styleClass="col-xs-6 col-sm-3 col-md-2"
+                           idComponente="mdfeCabecalhoDataHoraEmissao"
+                           label="Data Hora Emissão"
+                           somenteLeitura="true"
+                           nomeAtributo="#{mdfeControll.objeto.dataHoraEmissao}"/>
+
+            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                            idComponente="mdfeCabecalhoNumero"
+                            label="RNTRC"
+                            requerido="true"
+                            nomeAtributo="#{mdfeControll.objeto.mdfeRodoviario.rntrc}"
+                            tamanhoMaximo="8"/>
+        </div>
+
+        <div class="row">
+            <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                             idComponente="ufInicio"
+                             label="UF Início"
+                             nomeAtributo="#{mdfeControll.objeto.ufInicio}"
+                             itens="#{mdfeControll.estado}">
+                <p:ajax event="change" update="@this,formCentro:telaDetalhe:tabMdfe:compMunicipioInicio:municipioInicio"
+                        listener="#{mdfeControll.definirUfInicio}"/>
+            </erp:campoSelect>
+
+            <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                              id="compMunicipioInicio"
+                              label="Município Início"
+                              itemLabel="#{objeto.nome}"
+                              controller="#{mdfeControll}"
+                              completeMethod="getListaMunicipio"
+                              nomeAtributo="#{mdfeControll.municipioInicio}"
+                              idComponente="municipioInicio"
+                              requerido="true"
+            >
+                <p:ajax process="@this" event="itemSelecionado" listener="#{mdfeControll.selecionarMunicipio}"/>
+            </erp:autoComplete>
+
+            <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                             idComponente="ufFim"
+                             label="UF Fim"
+                             nomeAtributo="#{mdfeControll.objeto.ufFim}"
+                             itens="#{mdfeControll.estado}">
+                <p:ajax event="change" update="@this,:formCentro:telaDetalhe:tabMdfe:compMunicipioFim:municipioFim"
+                        listener="#{mdfeControll.definirUfFim}"/>
+            </erp:campoSelect>
+
+            <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                              id="compMunicipioFim"
+                              label="Município Fim"
+                              itemLabel="#{objeto.nome}"
+                              controller="#{mdfeControll}"
+                              completeMethod="getListaMunicipio"
+                              nomeAtributo="#{mdfeControll.municipioFim}"
+                              idComponente="municipioFim"
+                              requerido="true"
+            >
+                <p:ajax process="@this" event="itemSelecionado" listener="#{mdfeControll.selecionarMunicipio}"/>
+            </erp:autoComplete>
+
+
+        </div>
+
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                            idComponente="mdfeCabecalhoAdicionalFisco"
+                            label="Informações Adicionais do Fisco"
+                            nomeAtributo="#{mdfeControll.objeto.informacoesAddFisco}"
+                            tamanhoMaximo="50"/>
+            <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                            idComponente="mdfeCabecalhoAdicionalServico"
+                            label="Informações de Interesse do Contribuinte"
+                            nomeAtributo="#{mdfeControll.objeto.informacoesAddContribuinte}"
+                            tamanhoMaximo="50"/>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-lg-2">
+                <h:outputLabel value="UF Percurso" for="ufPercurso"/>
+                <div class="field-action">
+                    <h:selectOneMenu value="#{mdfeControll.mdfePercurso.ufPercurso}"
+                                     id="ufPercurso"
+                                     class="form-control">
+                        <f:selectItems value="#{mdfeControll.estado}"/>
+                    </h:selectOneMenu>
+                    <div class="field-action__icon">
+                        <h:commandLink title="Add Percurso"
+                                       class="btn btn-default margem-bottom-10"
+                                       action="#{mdfeControll.salvarPercurso}" type="button">
+                            <i class="glyphicon glyphicon-floppy-disk"/>
+                            <p:ajax update=":formCentro:telaDetalhe:tabMdfe:dataTablePercurso,:formCentro:growl"
+                                    process="@this,:formCentro:telaDetalhe:tabMdfe:ufPercurso"/>
+                        </h:commandLink>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="row">
+            <div class="col-xs-12 col-lg-6">
+
+                <p:dataTable id="dataTablePercurso" value="#{mdfeControll.objeto.listaMdfePercurso}" var="row"
+                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                             reflow="true" resizableColumns="true" paginatorPosition="bottom">
+                    <p:column headerText="Percuso">
+                        <h:outputLabel value="#{row.ufPercurso}"/>
+                    </p:column>
+                    <p:column headerText="Açoes">
+                        <p:commandLink process="dataTablePercurso" title="Excluir"
+                                       styleClass="btn btn-default"
+                                       action="#{mdfeControll.excluirPercurso}"
+                                       update="dataTablePercurso,:formCentro:growl">
+                            <i class="fa fa-close"/>
+                            <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                                       icon="ui-icon-alert"/>
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{mdfeControll.mdfePercursoSelecionado}"/>
+                        </p:commandLink>
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </div>
+
+    </h:panelGroup>
+
+
+</ui:composition>

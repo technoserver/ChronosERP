@@ -1,10 +1,17 @@
-/.idea/*
+/.idea/
 /.settings/
 /target/
 /src/main/resources/rebel.xml
 /src/main/temp*
 ChronoERPLight.iml
 /nb-configuration.xml
+src/main/resources/nfe
+/ChronoERPLight.iml
+
+.idea
+ChronoERPLight.iml
+.idea
+ChronoERPLight.iml
 src/main/resources/nfe
 /ChronoERPLight.iml
 

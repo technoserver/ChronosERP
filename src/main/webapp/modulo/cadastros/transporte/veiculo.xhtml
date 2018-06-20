@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Veiculo
+    </ui:define>
+
+    <ui:define name="tela">
+        #{veiculoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Veiculo
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{veiculoControll}"
+                       idDataTable="dataTableVeiculo"
+                       nomeFuncao="veiculo"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Cod. Interno">
+                <h:outputLabel value="#{row.codigoInterno}"/>
+            </p:column>
+
+            <p:column headerText="Placa">
+                <h:outputLabel value="#{row.placa}"/>
+            </p:column>
+            <p:column headerText="Tipo veiculo">
+                <h:outputLabel
+                        value="#{veiculoControll.keyFromValue(veiculoControll.veiculoTipoVeiculo, row.tipoVeiculo)}"/>
+            </p:column>
+            <p:column headerText="Tipo proprietário">
+                <h:outputLabel
+                        value="#{veiculoControll.keyFromValue(veiculoControll.veiculoTipoPropriedade, row.tipoPropriedade)}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{veiculoControll}"
+                                   nomeFuncao="veiculo"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  label="Proprietário"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{veiculoControll}"
+                                  completeMethod="getListaProprietario"
+                                  nomeAtributo="#{veiculoControll.objeto.proprietarioVeiculo}"
+                                  idComponente="proprietarioVeiculo"
+                                  requerido="false"
+                />
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="codigoInterno" label="Cod. Interno"
+                                nomeAtributo="#{veiculoControll.objeto.codigoInterno}"
+                                tamanhoMaximo="10"/>
+                <erp:campoPlaca styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="placa" label="Placa"
+                                nomeAtributo="#{veiculoControll.objeto.placa}"
+                                requerido="true"/>
+
+                <erp:campoRenavam styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="veiculoRenavam"
+                                  label="Renavam"
+                                  nomeAtributo="#{veiculoControll.objeto.renavam}"
+
+
+                />
+                <erp:campoUf styleClass="col-xs-12 col-sm-2 col-md-2"
+                             controller="#{veiculoControll}"
+                             nomeAtributo="#{veiculoControll.objeto.uf}"
+                             idComponente="uf"
+                />
+
+            </div>
+            <div class="row">
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="veiculoCapacidadeKG"
+                                  label="Capacidade KG"
+                                  nomeAtributo="#{veiculoControll.objeto.capacidadeKg}"
+
+                />
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="veiculoCapacidadeM3"
+                                  label="Capacidade M3"
+                                  nomeAtributo="#{veiculoControll.objeto.capacidadeM3}"
+                />
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="veiculoTara"
+                                  label="Tara"
+                                  nomeAtributo="#{veiculoControll.objeto.tara}"
+                                  requerido="true"/>
+
+                <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                                 idComponente="tipoRodado"
+                                 label="Tipo Rodado"
+                                 nomeAtributo="#{veiculoControll.objeto.tipoRodado}"
+                                 itens="#{veiculoControll.veiculoTipoRodado}"/>
+
+                <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                                 idComponente="tipoVeiculo"
+                                 label="Tipo Veiculo"
+                                 nomeAtributo="#{veiculoControll.objeto.tipoVeiculo}"
+                                 itens="#{veiculoControll.veiculoTipoVeiculo}"/>
+
+                <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                                 idComponente="tipoCarroceria"
+                                 label="Tipo Carroceria"
+                                 nomeAtributo="#{veiculoControll.objeto.tipoCarroceria}"
+                                 itens="#{veiculoControll.veiculoTipoPropriedade}"/>
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

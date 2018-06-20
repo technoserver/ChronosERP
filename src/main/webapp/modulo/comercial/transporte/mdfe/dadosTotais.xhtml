@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html"
+>
+
+
+    <h:panelGroup layout="block" id="panelDadosTotais">
+
+
+        <div class="row">
+
+            <erp:campoSelect styleClass="col-xs-6 col-sm-4 col-md-4"
+                             idComponente="codigoUnidadeMedida"
+                             label="Tipo de Unidade"
+                             nomeAtributo="#{mdfeControll.objeto.codigoUnidadeMedida}"
+                             itens="#{mdfeControll.mdfeCodigoUnidadeMedida}"/>
+
+            <erp:campoDecimal styleClass="col-xs-12 ol-sm-4 col-md-4"
+                              idComponente="pesoBrutoCarga" label="Peso Bruto"
+                              nomeAtributo="#{mdfeControll.objeto.pesoBrutoCarga}"/>
+            <erp:campoDecimal styleClass="col-xs-12 ol-sm-4 col-md-4"
+                              idComponente="valorCarga" label="Valor Bruto"
+                              nomeAtributo="#{mdfeControll.objeto.valorCarga}"/>
+
+        </div>
+
+
+        <h:panelGroup layout="block" id="panelDadosQuantidade">
+            <div class="row">
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="mdfeCabecalhoQuantidadeNfe"
+                                  label="Quantidade de NFe"
+                                  nomeAtributo="#{mdfeControll.objeto.quantidadeTotalNfe}"
+                                  somenteLeitura="true"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="mdfeCabecalhoQuantidadeCte"
+                                  label="Quantidade de CTe"
+                                  nomeAtributo="#{mdfeControll.objeto.quantidadeTotalCte}"
+                                  somenteLeitura="true"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="mdfeCabecalhoQuantidadeMdfe"
+                                  label="Quantidade de MDFe"
+                                  nomeAtributo="#{mdfeControll.objeto.quantidadeTotalMdfe}"
+                                  somenteLeitura="true"/>
+            </div>
+
+        </h:panelGroup>
+
+    </h:panelGroup>
+
+</ui:composition>
