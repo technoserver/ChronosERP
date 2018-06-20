@@ -64,6 +64,19 @@
                                    nomeFuncao="MDFE"
                                    id="telaDetalhe"
         >
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <h:commandLink class="btn btn-default"
+                                   title="Transmitir NF-e"
+                                   actionListener="#{mdfeControll.transmitir}"
+                                   rendered="#{not empty mdfeControll.objeto.id and mdfeControll.objeto.podeEnviar}"
+                                   id="btnEnviarMDfe">
+                        <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                    </h:commandLink>
+                </div>
+
+            </div>
             <p:tabView id="tabMdfe">
                 <p:tab title="Dados Principais"
                 >

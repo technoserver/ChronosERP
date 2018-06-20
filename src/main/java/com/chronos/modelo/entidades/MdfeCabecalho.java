@@ -506,6 +506,23 @@ public class MdfeCabecalho implements Serializable {
         return nome;
     }
 
+    public boolean isPodeEnviar() {
+        StatusTransmissao status = StatusTransmissao.valueOfCodigo(this.statusMdfe);
+        return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA) && (status != StatusTransmissao.ENVIADA);
+    }
+
+    public boolean isAutorizado() {
+        return StatusTransmissao.isAutorizado(this.statusMdfe);
+    }
+
+    public boolean isCancelado() {
+        return StatusTransmissao.isAutorizado(this.statusMdfe);
+    }
+
+    public boolean isEncerrado() {
+        return StatusTransmissao.isAutorizado(this.statusMdfe);
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

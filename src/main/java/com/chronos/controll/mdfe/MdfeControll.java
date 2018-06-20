@@ -3,7 +3,9 @@ package com.chronos.controll.mdfe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.DocFiscalDto;
+import com.chronos.exception.EmissorException;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.MdfeService;
@@ -67,6 +69,8 @@ public class MdfeControll extends AbstractControll<MdfeCabecalho> implements Ser
 
 
     private DocFiscalDto docFiscal;
+
+    private boolean duplicidade;
 
     @Inject
     private MdfeService service;
@@ -135,6 +139,43 @@ public class MdfeControll extends AbstractControll<MdfeCabecalho> implements Ser
 
     // </editor-fold>
 
+
+    //<editor-fold defaultstate="collapsed" desc="procedimentos tranmissao">
+
+    public void transmitir() {
+        try {
+            if (dadosSalvos) {
+
+                boolean estoque = isTemAcesso("ESTOQUE");
+                StatusTransmissao status = service.enviarMdfe(getObjeto());
+                if (status == StatusTransmissao.AUTORIZADA) {
+
+                    Mensagem.addInfoMessage("NFe transmitida com sucesso");
+                } else {
+                    duplicidade = status == StatusTransmissao.DUPLICIDADE;
+                }
+
+            } else {
+                Mensagem.addInfoMessage("Antes de enviar a NF-e é necessário salvar as informações!");
+            }
+        } catch (EmissorException ex) {
+            if (ex.getMessage().contains("Read timed out")) {
+                try {
+                    getObjeto().setStatusMdfe(StatusTransmissao.ENVIADA.getCodigo());
+                    dao.atualizar(getObjeto());
+                } catch (Exception ex1) {
+
+                }
+            }
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
+        }
+    }
+
+    // </editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="procedimentos crud veiculo">
 

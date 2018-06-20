@@ -223,10 +223,9 @@ public class MdfeService implements Serializable {
         return mdfe;
     }
 
-    public StatusTransmissao enviarMdfe(MdfeCabecalho mdfe) {
+    public StatusTransmissao enviarMdfe(MdfeCabecalho mdfe) throws EmissorException, Exception {
         StatusTransmissao status = StatusTransmissao.ENVIADA;
 
-        try {
             verificarStatusNota(mdfe);
 
             MdfeTransmissao transmissao = new MdfeTransmissao(empresa, getConfiguracao());
@@ -281,13 +280,7 @@ public class MdfeService implements Serializable {
                 Mensagem.addInfoMessage(retornoMdfe.getXMotivo());
             }
 
-        } catch (EmissorException e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("", e);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("", e);
-        }
+
 
         return status;
     }
@@ -350,4 +343,52 @@ public class MdfeService implements Serializable {
             throw new Exception("Esta MDF-e já foi autorizada. Operação não permitida ");
         }
     }
+
+    private void definirNumero(MdfeCabecalho mdfe) {
+        Integer numero;
+        String serie;
+        NotaFiscalTipo notaFiscalTipo = null;
+        if (nfe.getNumero() == null || nfe.getSerie() == null) {
+            notaFiscalTipo = getNotaFicalTipo(nfe.getCodigoModelo(), empresa);
+            numero = notaFiscalTipo.getUltimoNumero();
+            serie = notaFiscalTipo.getSerie();
+
+        } else {
+            numero = Integer.valueOf(nfe.getNumero());
+            serie = nfe.getSerie();
+        }
+
+        nfe.setNumero(FormatValor.getInstance().formatarNumeroDocFiscalToString(numero));
+        nfe.setCodigoNumerico(FormatValor.getInstance().formatarCodigoNumeroDocFiscalToString(numero));
+        nfe.setSerie(serie);
+        nfe.setChaveAcesso("" + nfe.getEmpresa().getCodigoIbgeUf()
+                + FormatValor.getInstance().formatarAno(nfe.getDataHoraEmissao())
+                + FormatValor.getInstance().formatarMes(nfe.getDataHoraEmissao())
+                + nfe.getEmpresa().getCnpj()
+                + nfe.getCodigoModelo()
+                + nfe.getSerie()
+                + nfe.getNumero()
+                + "1"
+                + nfe.getCodigoNumerico());
+        nfe.setDigitoChaveAcesso(Biblioteca.modulo11(nfe.getChaveAcesso()).toString());
+        return notaFiscalTipo;
+    }
+
+    private NotaFiscalTipo getNotaFicalTipo(String modelo, Empresa empresa) throws Exception {
+
+        List<Filtro> filtros = new LinkedList<>();
+        filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
+        filtros.add(new Filtro(Filtro.AND, "notaFiscalModelo.codigo", Filtro.IGUAL, modelo));
+        Object[] atributos = new String[]{"serie", "ultimoNumero", "notaFiscalModelo.id"};
+        NotaFiscalTipo notaFiscalTipo = tiposNotaFiscal.get(NotaFiscalTipo.class, filtros, atributos);
+        if (notaFiscalTipo == null) {
+            throw new Exception("Configuração de numero fiscal para o modelo :" + modelo + " não definida");
+        }
+
+        notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
+
+        return notaFiscalTipo;
+    }
+
+
 }
