@@ -10,6 +10,7 @@ import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.configuracao.NotaFiscalService;
 import com.chronos.util.*;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -46,6 +47,9 @@ public class MdfeService implements Serializable {
     private Repository<MdfeXml> xmlRepository;
 
     private MdfeConfiguracao configuracao;
+
+    @Inject
+    private NotaFiscalService notaService;
 
 
     @PostConstruct
@@ -345,50 +349,10 @@ public class MdfeService implements Serializable {
     }
 
     private void definirNumero(MdfeCabecalho mdfe) {
-        Integer numero;
-        String serie;
-        NotaFiscalTipo notaFiscalTipo = null;
-        if (nfe.getNumero() == null || nfe.getSerie() == null) {
-            notaFiscalTipo = getNotaFicalTipo(nfe.getCodigoModelo(), empresa);
-            numero = notaFiscalTipo.getUltimoNumero();
-            serie = notaFiscalTipo.getSerie();
 
-        } else {
-            numero = Integer.valueOf(nfe.getNumero());
-            serie = nfe.getSerie();
-        }
-
-        nfe.setNumero(FormatValor.getInstance().formatarNumeroDocFiscalToString(numero));
-        nfe.setCodigoNumerico(FormatValor.getInstance().formatarCodigoNumeroDocFiscalToString(numero));
-        nfe.setSerie(serie);
-        nfe.setChaveAcesso("" + nfe.getEmpresa().getCodigoIbgeUf()
-                + FormatValor.getInstance().formatarAno(nfe.getDataHoraEmissao())
-                + FormatValor.getInstance().formatarMes(nfe.getDataHoraEmissao())
-                + nfe.getEmpresa().getCnpj()
-                + nfe.getCodigoModelo()
-                + nfe.getSerie()
-                + nfe.getNumero()
-                + "1"
-                + nfe.getCodigoNumerico());
-        nfe.setDigitoChaveAcesso(Biblioteca.modulo11(nfe.getChaveAcesso()).toString());
-        return notaFiscalTipo;
     }
 
-    private NotaFiscalTipo getNotaFicalTipo(String modelo, Empresa empresa) throws Exception {
 
-        List<Filtro> filtros = new LinkedList<>();
-        filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
-        filtros.add(new Filtro(Filtro.AND, "notaFiscalModelo.codigo", Filtro.IGUAL, modelo));
-        Object[] atributos = new String[]{"serie", "ultimoNumero", "notaFiscalModelo.id"};
-        NotaFiscalTipo notaFiscalTipo = tiposNotaFiscal.get(NotaFiscalTipo.class, filtros, atributos);
-        if (notaFiscalTipo == null) {
-            throw new Exception("Configuração de numero fiscal para o modelo :" + modelo + " não definida");
-        }
-
-        notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
-
-        return notaFiscalTipo;
-    }
 
 
 }
