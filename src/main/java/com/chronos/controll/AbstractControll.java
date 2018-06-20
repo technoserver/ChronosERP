@@ -1377,4 +1377,8 @@ public abstract class AbstractControll<T> implements Serializable {
     public HashMap<String, Integer> getSimNaoInteiro() {
         return simNaoInteiro;
     }
+
+    public HashMap<String, String> getMetodoTabela() {
+        return metodoTabela;
+    }
 }
