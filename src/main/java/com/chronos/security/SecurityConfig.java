@@ -5,7 +5,6 @@
  */
 package com.chronos.security;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import java.beans.PropertyVetoException;
-
 /**
  *
  * @author john
@@ -29,16 +26,15 @@ import java.beans.PropertyVetoException;
 @ComponentScan(basePackageClasses = AppUserDetailsService.class)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private AppUserDetailsService userDetailsService;
+    @Autowired
+    private FilterUserInadiplente filtro;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Autowired
-    private AppUserDetailsService userDetailsService;
-
-    @Autowired
-    private FilterUserInadiplente filtro;
 
     @Bean
     public ChronosSuccessHandler chronosSuccessHandler() {
@@ -94,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/modulo/agenda/**").authenticated()
                 .antMatchers("/modulo/comercial/nfe/**").hasAnyRole("NFE")
                 .antMatchers("/modulo/comercial/nfce/**").hasAnyRole("NFCE")
-                .antMatchers("/modulo/comercial/mdfe/**").hasAnyRole("MDFE")
+                .antMatchers("/modulo/comercial/transporte/mdfe/**").hasAnyRole("MDFE")
                 .antMatchers("/modulo/comercial/os/**").hasAnyRole("OS")
                 .antMatchers("/modulo/comercial/vendas/**").hasAnyRole("VENDA")
                 .antMatchers("/modulo/comercial/caixa/**").hasAnyRole("VENDA","OS")

@@ -18,6 +18,8 @@ public class MdfeConfiguracao implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "rntrc")
+    private String rntrc;
     @Column(name = "CERTIFICADO_DIGITAL_SERIE")
     private String certificadoDigitalSerie;
     @Column(name = "CERTIFICADO_DIGITAL_CAMINHO")
@@ -59,6 +61,14 @@ public class MdfeConfiguracao implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getRntrc() {
+        return rntrc;
+    }
+
+    public void setRntrc(String rntrc) {
+        this.rntrc = rntrc;
     }
 
     public String getCertificadoDigitalSerie() {

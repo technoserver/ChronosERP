@@ -9,6 +9,8 @@ public interface Constantes {
 
 
     String DIRETORIO_SCHEMA_NFE = "/modulo/comercial/nfe/schemas/";
+    String DIRETORIO_SCHEMA_MDFE = "/modulo/comercial/transporte/mdfe/schemas/";
+    String DIRETORIO_SCHEMA_CTE = "/modulo/comercial/transporte/cte/schemas/";
     String JASPERNFE = "DanfeRetrato";
     String JASPERNFCE = "danfeNfce";
     String CAMINHODANFE = "/com/chronos/erplight/relatorios/comercial/nfe";
