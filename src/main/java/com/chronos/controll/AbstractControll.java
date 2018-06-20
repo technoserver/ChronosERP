@@ -1383,7 +1383,4 @@ public abstract class AbstractControll<T> implements Serializable {
         return metodoTabela;
     }
 
-    public HashMap<String, String> getMetodoTabela() {
-        return metodoTabela;
-    }
 }
