@@ -56,6 +56,7 @@ public class Uf implements Serializable {
     public Uf() {
     }
 
+
     public Integer getId() {
         return id;
     }

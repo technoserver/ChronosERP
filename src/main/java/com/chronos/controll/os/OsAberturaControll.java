@@ -2,13 +2,12 @@ package com.chronos.controll.os;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
-import com.chronos.dto.ConfiguracaoEmissorDTO;
-import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.comercial.OsService;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;

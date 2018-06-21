@@ -302,8 +302,8 @@
 
         <!--        Chronos Emissor-->
         <dependency>
-            <groupId>com.chronos.chronosnfe</groupId>
-            <artifactId>chronosnfe</artifactId>
+            <groupId>com.chronos.transmissor</groupId>
+            <artifactId>transmissor</artifactId>
             <version>${chronosNFe.version}</version>
         </dependency>
 

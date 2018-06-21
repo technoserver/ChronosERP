@@ -523,6 +523,10 @@ public class MdfeCabecalho implements Serializable {
         return StatusTransmissao.isAutorizado(this.statusMdfe);
     }
 
+    public StatusTransmissao getStatusTransmissao() {
+        return StatusTransmissao.valueOfCodigo(this.statusMdfe);
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

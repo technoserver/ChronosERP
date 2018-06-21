@@ -1,9 +1,9 @@
 package com.chronos.controll.nfe;
 
-import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.NotaFiscalTipo;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 

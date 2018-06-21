@@ -6,7 +6,6 @@
 package com.chronos.util.jsf;
 
 import com.chronos.dto.UsuarioDTO;
-import com.chronos.init.Configuracoes;
 import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.PdvMovimento;
@@ -14,6 +13,7 @@ import com.chronos.modelo.tenant.Tenant;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.security.UsuarioSistema;
+import com.chronos.transmissor.init.Configuracoes;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.cdi.CDIServiceLocator;
 import org.springframework.security.core.Authentication;

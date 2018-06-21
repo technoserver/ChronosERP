@@ -114,5 +114,6 @@ public interface Repository<T> {
     List<T> getEntitys(Class<T> clazz,Class classToCast,List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder,Object[] joinfetch,Object[] atributos) throws Exception;
     
     List<T> getEntitys(Class<T> clazz,List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder,Object[] joinfetch,Object[] atributos) throws Exception;
-    
+
+
 }

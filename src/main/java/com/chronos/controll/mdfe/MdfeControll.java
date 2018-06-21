@@ -3,12 +3,12 @@ package com.chronos.controll.mdfe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.DocFiscalDto;
-import com.chronos.exception.EmissorException;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.MdfeService;
+import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by john on 16/06/18.
@@ -107,14 +108,28 @@ public class MdfeControll extends AbstractControll<MdfeCabecalho> implements Ser
 
     @Override
     public void doCreate() {
-        mdfePercurso = new MdfePercurso();
 
-        listaMdfeInformacaoCte = new ArrayList<>();
-        listaMdfeInformacaoNfe = new ArrayList<>();
-        super.doCreate();
-        getObjeto().setEmpresa(empresa);
-        getObjeto().setMdfeRodoviario(new MdfeRodoviario());
-        getObjeto().getMdfeRodoviario().setMdfeCabecalho(getObjeto());
+
+        try {
+            mdfePercurso = new MdfePercurso();
+
+            listaMdfeInformacaoCte = new ArrayList<>();
+            listaMdfeInformacaoNfe = new ArrayList<>();
+            super.doCreate();
+            service.definirDadosPadrao(getObjeto());
+
+            Optional<MdfeMunicipioCarregamento> municipioCarregamento = getObjeto().getListaMdfeMunicipioCarregamento().stream().findFirst();
+
+            if (municipioCarregamento.isPresent()) {
+                MdfeMunicipioCarregamento carregamento = municipioCarregamento.get();
+                municipioInicio = new Municipio();
+                municipioInicio.setNome(carregamento.getNomeMunicipio());
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("Ocorreu um erro ao definir dados iniciais do MDF-e", ex);
+        }
     }
 
     @Override
@@ -122,6 +137,7 @@ public class MdfeControll extends AbstractControll<MdfeCabecalho> implements Ser
         MdfeCabecalho mdfe = dao.getJoinFetch(getObjetoSelecionado().getId(), MdfeCabecalho.class);
         setObjeto(mdfe);
         setTelaGrid(false);
+        dadosSalvos = true;
     }
 
     @Override
@@ -130,6 +146,8 @@ public class MdfeControll extends AbstractControll<MdfeCabecalho> implements Ser
         try {
             MdfeCabecalho mdfeCabecalho = service.salvar(getObjeto(), listaMdfeInformacaoCte, listaMdfeInformacaoNfe);
             setObjeto(mdfeCabecalho);
+            dadosSalvos = true;
+            Mensagem.addInfoMessage("Registro salvo com sucesso");
         } catch (Exception ex) {
             dadosSalvos = false;
             ex.printStackTrace();

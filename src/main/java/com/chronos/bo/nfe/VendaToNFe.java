@@ -1,13 +1,13 @@
 package com.chronos.bo.nfe;
 
 import com.chronos.dto.ConfiguracaoEmissorDTO;
-import com.chronos.infra.enuns.ConsumidorOperacao;
-import com.chronos.infra.enuns.IndicadorIe;
-import com.chronos.infra.enuns.LocalDestino;
-import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.TipoVenda;
 import com.chronos.repository.Repository;
+import com.chronos.transmissor.infra.enuns.ConsumidorOperacao;
+import com.chronos.transmissor.infra.enuns.IndicadorIe;
+import com.chronos.transmissor.infra.enuns.LocalDestino;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.cdi.ManualCDILookup;
 import com.chronos.util.jsf.FacesUtil;
 import org.springframework.util.StringUtils;

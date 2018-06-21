@@ -4,14 +4,18 @@ import br.inf.portalfiscal.mdfe.schema_300.enviMDFe.TEnviMDFe;
 import br.inf.portalfiscal.mdfe.schema_300.retConsReciMDFe.TRetConsReciMDFe;
 import com.chronos.bo.mdfe.MdfeTransmissao;
 import com.chronos.dto.DocFiscalDto;
-import com.chronos.exception.EmissorException;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.configuracao.NotaFiscalService;
-import com.chronos.util.*;
+import com.chronos.transmissor.exception.EmissorException;
+import com.chronos.transmissor.util.ConstantesMDFe;
+import com.chronos.transmissor.util.ValidarMDFe;
+import com.chronos.transmissor.util.XmlUtil;
+import com.chronos.util.ArquivoUtil;
+import com.chronos.util.FormatValor;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
@@ -58,50 +62,31 @@ public class MdfeService implements Serializable {
 
     }
 
-    private void validar(MdfeCabecalho mdfe) throws Exception {
+    public void definirDadosPadrao(MdfeCabecalho mdfe) throws Exception {
+        EmpresaEndereco endereco = empresa.buscarEnderecoPrincipal();
+        mdfe.setUf(empresa.getCodigoIbgeUf());
+        mdfe.setEmpresa(empresa);
+        mdfe.setMdfeRodoviario(new MdfeRodoviario());
+        mdfe.getMdfeRodoviario().setMdfeCabecalho(mdfe);
 
-        if (StatusTransmissao.isAutorizado(mdfe.getStatusMdfe())) {
-            throw new Exception("MDF-e já autorizado !");
+        configuracao = getConfiguracao();
+
+        if (configuracao != null) {
+            mdfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
+            mdfe.getMdfeRodoviario().setRntrc(configuracao.getRntrc());
         }
-
-        if (StatusTransmissao.isCancelada(mdfe.getStatusMdfe())) {
-            throw new Exception("MDF-e já cancelado !");
+        if (endereco != null) {
+            mdfe.setUfInicio(endereco.getUf());
+            MdfeMunicipioCarregamento carregamento = new MdfeMunicipioCarregamento();
+            carregamento.setCodigoMunicipio(endereco.getMunicipioIbge().toString());
+            carregamento.setNomeMunicipio(endereco.getCidade());
+            carregamento.setMdfeCabecalho(mdfe);
+            mdfe.setListaMdfeMunicipioCarregamento(new HashSet<>());
+            mdfe.getListaMdfeMunicipioCarregamento().add(carregamento);
         }
-
-        if (mdfe.getListaMdfeMunicipioCarregamento().isEmpty()) {
-            throw new Exception("Informe o Municípo de carregamento!");
-        }
-        if (mdfe.getListaMdfeMunicipioDescarregamento().isEmpty()) {
-
-            throw new Exception("Informe o Municípo de descarregamento!");
-        }
-
-        if (mdfe.getTipoEmitente() == 1 && (mdfe.getListaMdfeInformacaoSeguro() == null || mdfe.getListaMdfeInformacaoSeguro().isEmpty())) {
-            throw new Exception("Informe as informações do seguro da carga!");
-
-        }
-
-        if (mdfe.getMdfeRodoviario().getListaMdfeRodoviarioMotorista().isEmpty()) {
-            throw new Exception("Informe os dados dos condutores!");
-
-        }
-        if (mdfe.getMdfeRodoviario().getListaMdfeRodoviarioVeiculo().isEmpty()) {
-            throw new Exception("Informe os dados das veiculos!");
-
-        }
-
-
-        if (mdfe.getPesoBrutoCarga() == null || mdfe.getPesoBrutoCarga().equals(BigDecimal.ZERO)) {
-            throw new Exception("Informe o peso Bruto da Carga!");
-
-        }
-        if (mdfe.getValorCarga() == null || mdfe.getValorCarga().equals(BigDecimal.ZERO)) {
-            throw new Exception("Informe o valor Bruto da Carga!");
-
-        }
-
-
     }
+
+
 
     public void definirMunicipio(MdfeCabecalho mdfe, Municipio mun, String id) {
 
@@ -222,10 +207,13 @@ public class MdfeService implements Serializable {
         }
 
         validar(mdfe);
-
+        if (mdfe.getMdfeEmitente() == null) {
+            definirEmitente(mdfe);
+        }
         mdfe = repository.atualizar(mdfe);
         return mdfe;
     }
+
 
     public StatusTransmissao enviarMdfe(MdfeCabecalho mdfe) throws EmissorException, Exception {
         StatusTransmissao status = StatusTransmissao.ENVIADA;
@@ -233,6 +221,7 @@ public class MdfeService implements Serializable {
             verificarStatusNota(mdfe);
 
             MdfeTransmissao transmissao = new MdfeTransmissao(empresa, getConfiguracao());
+        definirNumero(mdfe);
             TEnviMDFe enviMDFe = transmissao.gerarMdfeEnv(mdfe);
 
             TRetConsReciMDFe retornoMdfe = transmissao.transmitirMdfe(enviMDFe);
@@ -348,9 +337,77 @@ public class MdfeService implements Serializable {
         }
     }
 
-    private void definirNumero(MdfeCabecalho mdfe) {
+    private void definirNumero(MdfeCabecalho mdfe) throws Exception {
+        notaService.definirChaveAcessoMdfe(mdfe);
+    }
+
+    private void definirEmitente(MdfeCabecalho mdfe) {
+
+        EmpresaEndereco enderecoPrincipal = empresa.buscarEnderecoPrincipal();
+        MdfeEmitente mdfeEmitente = new MdfeEmitente();
+        mdfeEmitente.setMdfeCabecalho(mdfe);
+        mdfeEmitente.setBairro(enderecoPrincipal.getBairro());
+        mdfeEmitente.setCep(enderecoPrincipal.getCep());
+        mdfeEmitente.setCodigoMunicipio(String.valueOf(enderecoPrincipal.getMunicipioIbge()));
+        mdfeEmitente.setComplemento(enderecoPrincipal.getComplemento());
+        mdfeEmitente.setLogradouro(enderecoPrincipal.getLogradouro());
+        mdfeEmitente.setNomeMunicipio(enderecoPrincipal.getCidade());
+        mdfeEmitente.setNumero(enderecoPrincipal.getNumero());
+        mdfeEmitente.setTelefone(enderecoPrincipal.getFone());
+        mdfeEmitente.setUf(enderecoPrincipal.getUf());
+        mdfeEmitente.setCnpj(empresa.getCnpj());
+        mdfeEmitente.setIe(empresa.getInscricaoEstadual());
+        mdfeEmitente.setFantasia(empresa.getNomeFantasia());
+        mdfeEmitente.setNome(empresa.getRazaoSocial());
+        mdfe.setMdfeEmitente(mdfeEmitente);
 
     }
+
+    private void validar(MdfeCabecalho mdfe) throws Exception {
+
+        if (StatusTransmissao.isAutorizado(mdfe.getStatusMdfe())) {
+            throw new Exception("MDF-e já autorizado !");
+        }
+
+        if (StatusTransmissao.isCancelada(mdfe.getStatusMdfe())) {
+            throw new Exception("MDF-e já cancelado !");
+        }
+
+        if (mdfe.getListaMdfeMunicipioCarregamento().isEmpty()) {
+            throw new Exception("Informe o Municípo de carregamento!");
+        }
+        if (mdfe.getListaMdfeMunicipioDescarregamento().isEmpty()) {
+
+            throw new Exception("Informe o Municípo de descarregamento!");
+        }
+
+        if (mdfe.getTipoEmitente() == 1 && (mdfe.getListaMdfeInformacaoSeguro() == null || mdfe.getListaMdfeInformacaoSeguro().isEmpty())) {
+            throw new Exception("Informe as informações do seguro da carga!");
+
+        }
+
+        if (mdfe.getMdfeRodoviario().getListaMdfeRodoviarioMotorista().isEmpty()) {
+            throw new Exception("Informe os dados dos condutores!");
+
+        }
+        if (mdfe.getMdfeRodoviario().getListaMdfeRodoviarioVeiculo().isEmpty()) {
+            throw new Exception("Informe os dados das veiculos!");
+
+        }
+
+
+        if (mdfe.getPesoBrutoCarga() == null || mdfe.getPesoBrutoCarga().equals(BigDecimal.ZERO)) {
+            throw new Exception("Informe o peso Bruto da Carga!");
+
+        }
+        if (mdfe.getValorCarga() == null || mdfe.getValorCarga().equals(BigDecimal.ZERO)) {
+            throw new Exception("Informe o valor Bruto da Carga!");
+
+        }
+
+
+    }
+
 
 
 

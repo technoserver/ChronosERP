@@ -6,7 +6,7 @@
 package com.chronos.util;
 
 import com.chronos.dto.MapDTO;
-import com.chronos.infra.enuns.ModeloDocumento;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import org.springframework.util.StringUtils;
 
 import java.io.File;

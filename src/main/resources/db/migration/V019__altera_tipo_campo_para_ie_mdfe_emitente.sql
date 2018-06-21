@@ -1,0 +1,2 @@
+ALTER TABLE mdfe_emitente
+  ALTER COLUMN ie TYPE VARCHAR(30);

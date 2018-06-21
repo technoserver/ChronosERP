@@ -1,8 +1,8 @@
 package com.chronos.controll.nfe;
 
-import com.chronos.infra.enuns.ModeloDocumento;
 import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.annotation.PostConstruct;
