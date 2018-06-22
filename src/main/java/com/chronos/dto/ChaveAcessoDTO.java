@@ -22,6 +22,7 @@ public class ChaveAcessoDTO {
         this.cnpj = mdfe.getMdfeEmitente().getCnpj();
         this.numero = mdfe.getNumeroMdfe();
         this.codigoUF = mdfe.getUf().toString();
+        this.serie = mdfe.getSerie();
     }
 
     public ChaveAcessoDTO(NfeCabecalho nfe) {
@@ -30,6 +31,7 @@ public class ChaveAcessoDTO {
         this.cnpj = nfe.getEmitente().getCpfCnpj();
         this.numero = nfe.getNumero();
         this.codigoUF = nfe.getUfEmitente().toString();
+        this.serie = nfe.getSerie();
     }
 
 

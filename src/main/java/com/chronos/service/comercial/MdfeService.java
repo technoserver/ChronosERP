@@ -16,6 +16,7 @@ import com.chronos.transmissor.util.ValidarMDFe;
 import com.chronos.transmissor.util.XmlUtil;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.FormatValor;
+import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
@@ -74,6 +75,7 @@ public class MdfeService implements Serializable {
         if (configuracao != null) {
             mdfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
             mdfe.getMdfeRodoviario().setRntrc(configuracao.getRntrc());
+            mdfe.setTipoAmbiente(configuracao.getWebserviceAmbiente());
         }
         if (endereco != null) {
             mdfe.setUfInicio(endereco.getUf());
@@ -85,7 +87,6 @@ public class MdfeService implements Serializable {
             mdfe.getListaMdfeMunicipioCarregamento().add(carregamento);
         }
     }
-
 
 
     public void definirMunicipio(MdfeCabecalho mdfe, Municipio mun, String id) {
@@ -214,65 +215,66 @@ public class MdfeService implements Serializable {
         return mdfe;
     }
 
-
+    @Transactional
     public StatusTransmissao enviarMdfe(MdfeCabecalho mdfe) throws EmissorException, Exception {
         StatusTransmissao status = StatusTransmissao.ENVIADA;
 
-            verificarStatusNota(mdfe);
+        verificarStatusNota(mdfe);
 
-            MdfeTransmissao transmissao = new MdfeTransmissao(empresa, getConfiguracao());
+        MdfeTransmissao transmissao = new MdfeTransmissao(empresa, getConfiguracao());
         definirNumero(mdfe);
-            TEnviMDFe enviMDFe = transmissao.gerarMdfeEnv(mdfe);
+        TEnviMDFe enviMDFe = transmissao.gerarMdfeEnv(mdfe);
 
-            TRetConsReciMDFe retornoMdfe = transmissao.transmitirMdfe(enviMDFe);
+        TRetConsReciMDFe retornoMdfe = transmissao.transmitirMdfe(enviMDFe);
 
-            if (retornoMdfe.getCStat().equals("104")) {
+        if (retornoMdfe.getCStat().equals("104")) {
 
-                switch (retornoMdfe.getProtMDFe().getInfProt().getCStat()) {
-                    case "100":
-                        mdfe.setNumeroProtocolo(retornoMdfe.getProtMDFe().getInfProt().getNProt());
-                        String xmlProc = XmlUtil.criaMdfeProc(enviMDFe, retornoMdfe.getProtMDFe());
-                        status = StatusTransmissao.AUTORIZADA;
-                        mdfe.setStatusMdfe(status.getCodigo());
-                        mdfe.setDataHoraEmissao(FormatValor.getInstance().formatarDataNota(enviMDFe.getMDFe().getInfMDFe().getIde().getDhEmi()));
-                        mdfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retornoMdfe.getProtMDFe().getInfProt().getDhRecbto()));
-                        mdfe.setCodigoStatusTransmissao(Integer.valueOf(retornoMdfe.getCStat()));
-                        mdfe.setDescricaoMotivoResposta(retornoMdfe.getXMotivo());
-                        mdfe = repository.atualizar(mdfe);
-                        salvaMdfeXml(xmlProc, mdfe);
-                        salvarXmlProcessado(xmlProc, mdfe.getNomeXml());
-                        Mensagem.addInfoMessage("MDF-e enviada com sucesso!");
+            switch (retornoMdfe.getProtMDFe().getInfProt().getCStat()) {
+                case "100":
+                    mdfe.setNumeroProtocolo(retornoMdfe.getProtMDFe().getInfProt().getNProt());
+                    String xmlProc = XmlUtil.criaMdfeProc(enviMDFe, retornoMdfe.getProtMDFe());
+                    status = StatusTransmissao.AUTORIZADA;
+                    mdfe.setStatusMdfe(status.getCodigo());
+                    mdfe.setDataHoraEmissao(FormatValor.getInstance().formatarDataNota(enviMDFe.getMDFe().getInfMDFe().getIde().getDhEmi()));
+                    mdfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retornoMdfe.getProtMDFe().getInfProt().getDhRecbto()));
+                    mdfe.setCodigoStatusTransmissao(Integer.valueOf(retornoMdfe.getCStat()));
+                    mdfe.setDescricaoMotivoResposta(retornoMdfe.getXMotivo());
+                    mdfe = repository.atualizar(mdfe);
+                    salvaMdfeXml(xmlProc, mdfe);
+                    salvarXmlProcessado(xmlProc, mdfe.getNomeXml());
+                    Mensagem.addInfoMessage("MDF-e enviada com sucesso!");
 
-                        break;
-                    case "204":
-                    case "539":
-                        status = StatusTransmissao.EDICAO;
-                        mdfe.setStatusMdfe(status.getCodigo());
-                        repository.atualizar(mdfe);
-                        Mensagem.addInfoMessage(retornoMdfe.getProtMDFe().getInfProt().getXMotivo());
-                        break;
-                    default:
-                        gerarXml(mdfe, enviMDFe, TipoArquivo.MDFePreProcessado);
-                        Mensagem.addInfoMessage(retornoMdfe.getProtMDFe().getInfProt().getXMotivo());
-                        break;
-                }
-
-            } else if (retornoMdfe.getCStat().equals("215") || retornoMdfe.getCStat().equals("225")) {
-                if (org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas())) {
-                    Mensagem.addErrorMessage("Preenchimento do xml invalido para mais detalhes informes o cmainho dos schemas para validação");
-                } else {
-                    String xml = gerarXml(mdfe, enviMDFe, TipoArquivo.CTePreProcessado);
-                    ;
-                    String erroValidacao = ValidarMDFe.validaXml(xml, ConstantesMDFe.SERVICOS.ENVIO);
-                    Mensagem.addInfoMessage(StringUtils.isEmpty(erroValidacao) ? retornoMdfe.getXMotivo() : erroValidacao);
-                }
-                status = StatusTransmissao.EDICAO;
-                mdfe.setStatusMdfe(status.EDICAO.getCodigo());
-                repository.atualizar(mdfe);
-            } else {
-                Mensagem.addInfoMessage(retornoMdfe.getXMotivo());
+                    break;
+                case "204":
+                case "539":
+                    status = StatusTransmissao.DUPLICIDADE;
+                    mdfe.setStatusMdfe(status.getCodigo());
+                    repository.atualizar(mdfe);
+                    Mensagem.addInfoMessage(retornoMdfe.getProtMDFe().getInfProt().getXMotivo());
+                    break;
+                default:
+                    gerarXml(mdfe, enviMDFe, TipoArquivo.MDFePreProcessado);
+                    Mensagem.addInfoMessage(retornoMdfe.getProtMDFe().getInfProt().getXMotivo());
+                    break;
             }
 
+        } else if (retornoMdfe.getCStat().equals("215") || retornoMdfe.getCStat().equals("225")) {
+            if (org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas())) {
+                Mensagem.addErrorMessage("Preenchimento do xml invalido para mais detalhes informes o cmainho dos schemas para validação");
+            } else {
+                String xml = gerarXml(mdfe, enviMDFe, TipoArquivo.MDFePreProcessado);
+
+                String erroValidacao = ValidarMDFe.validaXml(xml, ConstantesMDFe.SERVICOS.ENVIO);
+                Mensagem.addInfoMessage(StringUtils.isEmpty(erroValidacao) ? retornoMdfe.getXMotivo() : erroValidacao);
+            }
+            mdfe.setNumeroMdfe(null);
+            mdfe.setSerie(null);
+            status = StatusTransmissao.EDICAO;
+            mdfe.setStatusMdfe(status.EDICAO.getCodigo());
+            repository.atualizar(mdfe);
+        } else {
+            Mensagem.addInfoMessage(retornoMdfe.getXMotivo());
+        }
 
 
         return status;
@@ -407,9 +409,6 @@ public class MdfeService implements Serializable {
 
 
     }
-
-
-
 
 
 }

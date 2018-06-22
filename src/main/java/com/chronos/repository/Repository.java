@@ -27,9 +27,12 @@ public interface Repository<T> {
 
     T atualizar(T bean) throws PersistenceException;
 
+
     <S extends T> S saveAndFlush(S var1);
 
-    void atualizar(T bean, List<Filtro> filtros, Map<String, Object> atributos) throws PersistenceException;
+    void atualizar(Class<T> clazz, List<Filtro> filtros, Map<String, Object> atributos) throws PersistenceException;
+
+    void atualizarNamedQuery(String namedQuery, Object... values);
 
     boolean updateNativo(Class<T> clazz,List<Filtro> filtros,Map<String,Object> atributos);
 

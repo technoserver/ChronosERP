@@ -16,9 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 20/06/18.
@@ -48,19 +46,23 @@ public class NotaFiscalService implements Serializable {
         Integer numero;
         String serie;
         if (mdfe.getStatusTransmissao() == StatusTransmissao.DUPLICIDADE) {
-            atualizarNumero(Integer.valueOf(mdfe.getNumeroMdfe()) + 1, mdfe.getSerie(), mdfe.getEmpresa().getId(), mdfe.getModelo());
-            mdfe.setNumeroMdfe(null);
-            mdfe.setSerie(null);
+            atualizarNumero(Integer.valueOf(mdfe.getNumeroMdfe()), mdfe.getSerie(), mdfe.getEmpresa().getId(), mdfe.getModelo());
+
+            numero = Integer.valueOf(mdfe.getNumeroMdfe()) + 1;
+            serie = mdfe.getSerie();
+        } else {
+            if (mdfe.getNumeroMdfe() == null) {
+                NotaFiscalTipo notaFicalTipo = getNotaFicalTipo(ModeloDocumento.getByCodigo(Integer.valueOf(mdfe.getModelo())));
+                numero = notaFicalTipo.getUltimoNumero() + 1;
+                serie = notaFicalTipo.getSerie();
+            } else {
+                numero = Integer.valueOf(mdfe.getNumeroMdfe());
+                serie = mdfe.getSerie();
+            }
+
         }
 
-        if (mdfe.getNumeroMdfe() == null) {
-            NotaFiscalTipo notaFicalTipo = getNotaFicalTipo(ModeloDocumento.getByCodigo(Integer.valueOf(mdfe.getModelo())));
-            numero = notaFicalTipo.getUltimoNumero();
-            serie = notaFicalTipo.getSerie();
-        } else {
-            numero = Integer.valueOf(mdfe.getNumeroMdfe());
-            serie = mdfe.getSerie();
-        }
+
         mdfe.setSerie(serie);
         mdfe.setNumeroMdfe(FormatValor.getInstance().formatarNumeroDocFiscalToString(numero));
         mdfe.setCodigoNumerico(FormatValor.getInstance().formatarCodigoNumeroDocFiscalToString(numero));
@@ -92,8 +94,15 @@ public class NotaFiscalService implements Serializable {
         return notaFiscalTipo;
     }
 
-    public void atualizarNumero(int i, String serie, Integer id, String modelo) {
-
+    public void atualizarNumero(int numero, String serie, Integer idempresa, String modelo) {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("notaFiscalModelo.codigo", modelo));
+        filtros.add(new Filtro("serie", serie));
+        filtros.add(new Filtro("empresa.id", idempresa));
+        Map<String, Object> atributos = new HashMap<>();
+        atributos.put("ultimoNumero", numero);
+        //repository.atualizar(NotaFiscalTipo.class,filtros,atributos);
+        repository.atualizarNamedQuery("NotaFiscalTipo.UpdateNumeroModelo", numero, modelo, serie, idempresa);
     }
 
     private String gerarChaveAcesso(ChaveAcessoDTO chaveAcesso) {

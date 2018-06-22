@@ -16,6 +16,7 @@ import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.mdfe.Mdfe;
 import com.chronos.transmissor.util.ObjetoUtil;
 import com.chronos.util.FormatValor;
+import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
 import java.util.*;
@@ -266,7 +267,7 @@ public class GerarXmlEnvio {
 
         enderEmit.setXLgr(emitente.getLogradouro());
         enderEmit.setNro(emitente.getNumero());
-        enderEmit.setXCpl(emitente.getComplemento());
+        enderEmit.setXCpl(StringUtils.isEmpty(emitente.getComplemento()) ? null : emitente.getComplemento());
         enderEmit.setXBairro(emitente.getBairro());
         enderEmit.setCMun(String.valueOf(emitente.getCodigoMunicipio()));
         enderEmit.setXMun(emitente.getNomeMunicipio());
@@ -331,12 +332,10 @@ public class GerarXmlEnvio {
     }
 
     private TMDFe.InfMDFe.InfAdic getInfAdic(MdfeCabecalho mdfe) {
-        if (mdfe.getInformacoesAddFisco() == null && mdfe.getInformacoesAddContribuinte() == null) {
-            return null;
-        }
+
         TMDFe.InfMDFe.InfAdic info = new TMDFe.InfMDFe.InfAdic();
-        info.setInfAdFisco(mdfe.getInformacoesAddFisco());
-        info.setInfCpl(mdfe.getInformacoesAddContribuinte());
+        info.setInfAdFisco(StringUtils.isEmpty(mdfe.getInformacoesAddFisco()) ? null : mdfe.getInformacoesAddFisco());
+        info.setInfCpl(StringUtils.isEmpty(mdfe.getInformacoesAddContribuinte()) ? null : mdfe.getInformacoesAddContribuinte());
         return info;
     }
 
@@ -425,9 +424,9 @@ public class GerarXmlEnvio {
 
     private Rodo.VeicTracao getVeicTracao(MdfeRodoviarioVeiculo veiculo, Set<MdfeRodoviarioMotorista> condutores) {
         Rodo.VeicTracao veic = new Rodo.VeicTracao();
-        if (veiculo.getCodigoInterno() != null) {
-            veic.setCInt(veiculo.getCodigoInterno());
-        }
+
+        veic.setCInt(StringUtils.isEmpty(veiculo.getCodigoInterno()) ? null : veiculo.getCodigoInterno());
+
         veic.setPlaca(veiculo.getPlaca());
         if (veiculo.getCapacidadeKg() != null) {
             veic.setCapKG(String.valueOf(veiculo.getCapacidadeKg()));

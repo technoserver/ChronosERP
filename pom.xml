@@ -19,7 +19,7 @@
         <!-- Logging -->
         <log4j.version>2.6</log4j.version>
         <!--        Chronos Emissor-->
-        <chronosNFe.version>4.0.0</chronosNFe.version>
+        <chronosNFe.version>4.0.3</chronosNFe.version>
         <jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
         <!--        FlyWay-->
         <flyway-maven-plugin.version>4.0.2</flyway-maven-plugin.version>
@@ -48,7 +48,7 @@
         <repository>
             <id>chronos</id>
             <name>Chronos Software</name>
-            <url>http://66.70.177.7:8081/repository/chronos/</url>
+            <url>http://66.70.177.7:8081//repository/chronos/</url>
             <layout>default</layout>
         </repository>
         <repository>

@@ -127,6 +127,8 @@ public class MdfeCabecalho implements Serializable {
         this.listaMdfePercurso = new HashSet<>();
         this.listaMdfeInformacaoSeguro = new HashSet<>();
         this.listaMdfeLacre = new HashSet<>();
+        this.listaMdfeMunicipioCarregamento = new HashSet<>();
+        this.listaMdfeMunicipioDescarregamento = new HashSet<>();
 
 
         this.tipoEmitente = 2;
@@ -139,6 +141,7 @@ public class MdfeCabecalho implements Serializable {
         this.quantidadeTotalNfe = 0;
         this.pesoBrutoCarga = BigDecimal.ZERO;
         this.valorCarga = BigDecimal.ZERO;
+        this.processoEmissao = 0;
     }
 
     public MdfeCabecalho(Integer id) {

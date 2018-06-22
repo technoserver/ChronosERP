@@ -78,9 +78,10 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     @Transactional
     @Override
-    public void atualizar(T bean, List<Filtro> filtros, Map<String, Object> atributos) throws PersistenceException {
-        StringBuilder jpql = new StringBuilder("UPDATE " + bean.getClass().getName() + " o SET ");
+    public void atualizar(Class<T> clazz, List<Filtro> filtros, Map<String, Object> atributos) throws PersistenceException {
+        StringBuilder jpql = new StringBuilder("UPDATE " + clazz.getName() + " o SET ");
 
+        int i = 1;
         for (String atributo : atributos.keySet()) {
             Object valor = atributos.get(atributo);
 
@@ -91,11 +92,31 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
         jpql.append(" where 1=1 ");
         for (Filtro f : filtros) {
-            jpql.append(f.getOperadorLogico()).append(" o.").append(f.getAtributo()).append(" ").append(f.getOperadorRelacional()).append((f.getValor().getClass() == String.class) ? "'" + f.getValor() + "'" : f.getValor());
+            jpql.append(f.getOperadorLogico());
+            jpql.append(" o.");
+            jpql.append(f.getAtributo());
+            jpql.append(" ");
+            jpql.append(f.getOperadorRelacional());
+            jpql.append((f.getValor().getClass() == String.class) ? "'" + f.getValor() + "'" : f.getValor());
+            jpql.append(" ");
         }
-        executeCommand(jpql.toString());
+        executeCommand(jpql.toString().trim());
 
 
+    }
+
+
+    @Override
+    public void atualizarNamedQuery(String namedQuery, Object... values) {
+        Query updateQuery = em.createNamedQuery(namedQuery);
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                Object obj = values[i];
+                updateQuery.setParameter(i + 1, obj);
+
+            }
+        }
+        updateQuery.executeUpdate();
     }
 
 

@@ -118,13 +118,7 @@ public class MdfeControll extends AbstractControll<MdfeCabecalho> implements Ser
             super.doCreate();
             service.definirDadosPadrao(getObjeto());
 
-            Optional<MdfeMunicipioCarregamento> municipioCarregamento = getObjeto().getListaMdfeMunicipioCarregamento().stream().findFirst();
-
-            if (municipioCarregamento.isPresent()) {
-                MdfeMunicipioCarregamento carregamento = municipioCarregamento.get();
-                municipioInicio = new Municipio();
-                municipioInicio.setNome(carregamento.getNomeMunicipio());
-            }
+            definirMuniCipio();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -136,6 +130,7 @@ public class MdfeControll extends AbstractControll<MdfeCabecalho> implements Ser
     public void doEdit() {
         MdfeCabecalho mdfe = dao.getJoinFetch(getObjetoSelecionado().getId(), MdfeCabecalho.class);
         setObjeto(mdfe);
+        definirMuniCipio();
         setTelaGrid(false);
         dadosSalvos = true;
     }
@@ -500,6 +495,23 @@ public class MdfeControll extends AbstractControll<MdfeCabecalho> implements Ser
 
     // </editor-fold>
 
+    private void definirMuniCipio() {
+        Optional<MdfeMunicipioCarregamento> municipioCarregamento = getObjeto().getListaMdfeMunicipioCarregamento().stream().findFirst();
+        municipioInicio = new Municipio();
+        if (municipioCarregamento.isPresent()) {
+            MdfeMunicipioCarregamento carregamento = municipioCarregamento.get();
+
+            municipioInicio.setNome(carregamento.getNomeMunicipio());
+        }
+
+        Optional<MdfeMunicipioDescarregamento> munOpt = getObjeto().getListaMdfeMunicipioDescarregamento().stream().findFirst();
+        municipioFim = new Municipio();
+        if (munOpt.isPresent()) {
+            MdfeMunicipioDescarregamento descarregamento = munOpt.get();
+
+            municipioFim.setNome(descarregamento.getNomeMunicipio());
+        }
+    }
 
     @Override
     protected Class<MdfeCabecalho> getClazz() {

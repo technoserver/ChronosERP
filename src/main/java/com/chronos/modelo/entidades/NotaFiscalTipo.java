@@ -9,6 +9,8 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "NOTA_FISCAL_TIPO")
+@NamedQuery(name = "NotaFiscalTipo.UpdateNumeroModelo"
+        , query = "UPDATE NotaFiscalTipo o SET o.ultimoNumero = ?1 where o.notaFiscalModelo.id IN(SELECT m.id FROM NotaFiscalModelo m where m.codigo = ?2)  AND o.serie = ?3 AND o.empresa.id = ?4")
 public class NotaFiscalTipo implements Serializable {
 
     private static final long serialVersionUID = 1L;
