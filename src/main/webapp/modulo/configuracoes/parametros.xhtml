@@ -50,6 +50,16 @@
                                     </h:selectOneMenu>
                                 </div>
 
+                                <div class="col-xs-12 col-sm-3 col-md-3">
+                                    <h:outputLabel value="Usa Frente de Caixa"/>
+                                    <h:selectOneMenu id="frenteCaixa"
+                                                     value="#{admParametrosControll.objeto.frenteCaixa}"
+                                                     styleClass="form-control">
+                                        <f:selectItem itemLabel="SIM" itemValue="#{true}"/>
+                                        <f:selectItem itemLabel="NAO" itemValue="#{false}"/>
+                                    </h:selectOneMenu>
+                                </div>
+
 
                             </div>
 

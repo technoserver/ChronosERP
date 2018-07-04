@@ -9,6 +9,8 @@ import com.chronos.controll.nfe.NfeCalculoControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.view.*;
 import com.chronos.repository.*;
+import com.chronos.transmissor.infra.enuns.FormatoImpressaoDanfe;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.cdi.ManualCDILookup;
 import org.springframework.util.StringUtils;
 
@@ -180,6 +182,33 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
 
 
         return emitente;
+    }
+
+    public NfeCabecalho definirDadosPadrao(ModeloDocumento modelo, Empresa empresa) {
+        NfeCabecalho nfe = new NfeCabecalho();
+
+        nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO.getCodigo() : FormatoImpressaoDanfe.DANFE_NFCE.getCodigo());
+        nfe.setUfEmitente(empresa.getCodigoIbgeUf());
+        nfe.setCodigoMunicipio(empresa.getCodigoIbgeCidade());
+        nfe.setCodigoModelo(String.valueOf(modelo.getCodigo()));
+        nfe.setEmpresa(empresa);
+
+        nfe.getEmitente().setNfeCabecalho(nfe);
+
+        nfe.getDestinatario().setNfeCabecalho(nfe);
+
+
+        nfe.getFatura().setNfeCabecalho(nfe);
+
+        if (modelo == ModeloDocumento.NFE) {
+            nfe.getLocalEntrega().setNfeCabecalho(nfe);
+
+            nfe.getLocalRetirada().setNfeCabecalho(nfe);
+
+            nfe.getTransporte().setNfeCabecalho(nfe);
+        }
+
+        return nfe;
     }
 
     public NfeDetalhe defineTributacao(NfeDetalhe item, Empresa empresa, TributOperacaoFiscal operacaoFiscal, NfeDestinatario destinatario) throws Exception {

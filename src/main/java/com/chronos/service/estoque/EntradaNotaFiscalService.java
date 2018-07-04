@@ -4,9 +4,11 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
+import com.chronos.service.comercial.SyncPendentesService;
 import com.chronos.service.financeiro.FinLancamentoPagarService;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.FacesUtil;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -35,17 +37,26 @@ public class EntradaNotaFiscalService implements Serializable {
     @Inject
     private FinLancamentoPagarService lancamentoPagarService;
 
+    @Inject
+    private SyncPendentesService syncPendentesService;
+
 
     @Transactional
     public void salvar(NfeCabecalho nfe, ContaCaixa contaCaixa, NaturezaFinanceira naturezaFinanceira) throws Exception {
 
 
         boolean inclusao = false;
+
+        Integer idempresa = nfe.getEmpresa().getId();
+        AdmParametro parametro = FacesUtil.getParamentos();
+
         if (nfe.getId() == null) {
             inclusao = true;
             for (NfeDetalhe detalhe : nfe.getListaNfeDetalhe()) {
                 atualizarEstoque(nfe.getTributOperacaoFiscal(), detalhe);
-
+                if (parametro != null && parametro.getFrenteCaixa()) {
+                    syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, detalhe.getProduto().getId());
+                }
             }
 
 
@@ -53,6 +64,9 @@ public class EntradaNotaFiscalService implements Serializable {
             List<NfeDetalhe> listaNfeDetOld = estoqueRepository.getItens(nfe);
             for (NfeDetalhe detalhe : listaNfeDetOld) {
                 atualizarEstoque(nfe.getTributOperacaoFiscal(), detalhe);
+                if (parametro != null && parametro.getFrenteCaixa()) {
+                    syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, detalhe.getProduto().getId());
+                }
             }
             if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
                 estoqueRepository.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), nfe.getListaNfeDetalhe());

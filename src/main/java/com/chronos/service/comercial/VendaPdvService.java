@@ -1,6 +1,7 @@
 package com.chronos.service.comercial;
 
 import com.chronos.dto.ProdutoVendaDTO;
+import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.ContaPessoa;
 import com.chronos.modelo.entidades.PdvFormaPagamento;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
@@ -13,6 +14,7 @@ import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.financeiro.MovimentoService;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.FacesUtil;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -41,15 +43,23 @@ public class VendaPdvService implements Serializable {
     @Inject
     private Repository<ContaPessoa> contaPessoaRepository;
 
+    @Inject
+    private SyncPendentesService syncPendentesService;
+
     @Transactional
     public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda){
         try {
             venda.setStatusVenda("F");
+            Integer idempresa = venda.getEmpresa().getId();
+            AdmParametro parametro = FacesUtil.getParamentos();
             List<PdvFormaPagamento> pagamentos = venda.getListaFormaPagamento();
             venda = repository.atualizar(venda);
             List<ProdutoVendaDTO> produtos = new ArrayList<>();
             venda.getListaPdvVendaDetalhe().forEach(p->{
                 produtos.add(new ProdutoVendaDTO(p.getProduto().getId(),p.getQuantidade()));
+                if (parametro != null && parametro.getFrenteCaixa()) {
+                    syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, p.getProduto().getId());
+                }
             });
             estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
             for (PdvFormaPagamento p:pagamentos) {

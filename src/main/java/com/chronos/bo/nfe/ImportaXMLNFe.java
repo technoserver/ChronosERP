@@ -37,7 +37,7 @@ public class ImportaXMLNFe {
         List<NfeDetalhe> listaNfeDetalhe = new ArrayList();
         Set<NfeDuplicata> listaDuplicatas = new HashSet<>();
 
-        JAXBContext jc = JAXBContext.newInstance("br.inf.portalfiscal.nfe.schema.procnfe");
+        JAXBContext jc = JAXBContext.newInstance("br.inf.portalfiscal.nfe.schema_4.procNFe");
         Unmarshaller unmarshaller = jc.createUnmarshaller();
 
 

@@ -3,10 +3,7 @@ package com.chronos.service.comercial;
 import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoVendaDTO;
-import com.chronos.modelo.entidades.NfeCabecalho;
-import com.chronos.modelo.entidades.PdvVendaCabecalho;
-import com.chronos.modelo.entidades.VendaCabecalho;
-import com.chronos.modelo.entidades.VendaComissao;
+import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.enuns.SituacaoVenda;
 import com.chronos.modelo.enuns.StatusTransmissao;
@@ -18,6 +15,7 @@ import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.inject.Inject;
@@ -45,6 +43,9 @@ public class VendaService implements Serializable {
     private NfeService nfeService;
     @Inject
     private Repository<PdvVendaCabecalho> pdvRepository;
+    @Inject
+    private SyncPendentesService syncPendentesService;
+
 
 
     @Transactional
@@ -52,10 +53,14 @@ public class VendaService implements Serializable {
         try {
 
             venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
-
+            Integer idempresa = venda.getEmpresa().getId();
+            AdmParametro parametro = FacesUtil.getParamentos();
             List<ProdutoVendaDTO> produtos = new ArrayList<>();
             venda.getListaVendaDetalhe().forEach(p->{
-                produtos.add(new ProdutoVendaDTO(p.getId(),p.getQuantidade()));
+                produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
+                if (parametro != null && parametro.getFrenteCaixa()) {
+                    syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, p.getId());
+                }
             });
             estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
             finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
