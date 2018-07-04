@@ -25,6 +25,7 @@ public class PdvCaixa implements Serializable {
     @Column(name = "DATA_CADASTRO")
     private Date dataCadastro;
 
+
     public PdvCaixa() {
         this.dataCadastro = new Date();
     }

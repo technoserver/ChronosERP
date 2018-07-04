@@ -30,16 +30,19 @@ public class SyncPendentes implements Serializable {
     @Column(name = "id_pdv_caixa")
     @NotNull
     private Integer idpdvcaixa;
+    @Column(name = "id_referente")
+    @NotNull
+    private Integer idreferente;
 
 
     public SyncPendentes() {
     }
 
-    public SyncPendentes(Integer id, String codigoAcao, String nomeAcao, Integer idpdvcaixa) {
-        this.id = id;
+    public SyncPendentes(String codigoAcao, String nomeAcao, Integer idpdvcaixa, Integer idreferente) {
         this.codigoAcao = codigoAcao;
         this.nomeAcao = nomeAcao;
         this.idpdvcaixa = idpdvcaixa;
+        this.idreferente = idreferente;
     }
 
     public Integer getId() {
@@ -72,6 +75,14 @@ public class SyncPendentes implements Serializable {
 
     public void setIdpdvcaixa(Integer idpdvcaixa) {
         this.idpdvcaixa = idpdvcaixa;
+    }
+
+    public Integer getIdreferente() {
+        return idreferente;
+    }
+
+    public void setIdreferente(Integer idreferente) {
+        this.idreferente = idreferente;
     }
 
     @Override
