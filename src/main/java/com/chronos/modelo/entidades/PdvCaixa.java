@@ -1,5 +1,6 @@
-
 package com.chronos.modelo.entidades;
+
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "PDV_CAIXA")
+//@NamedQuery(name = "PdvCaixa.existe",query = "SELECT c from PdvCaixa c where c.codigo = ?1 or c.web = 'S'")
 public class PdvCaixa implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,10 +26,14 @@ public class PdvCaixa implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_CADASTRO")
     private Date dataCadastro;
+    @Column(name = "web")
+    @NotBlank
+    private String web;
 
 
     public PdvCaixa() {
         this.dataCadastro = new Date();
+        this.web = "N";
     }
 
     public PdvCaixa(String codigo) {
@@ -68,6 +74,14 @@ public class PdvCaixa implements Serializable {
 
     public void setCodigo(String codigo) {
         this.codigo = codigo;
+    }
+
+    public String getWeb() {
+        return web;
+    }
+
+    public void setWeb(String web) {
+        this.web = web;
     }
 
     @Override

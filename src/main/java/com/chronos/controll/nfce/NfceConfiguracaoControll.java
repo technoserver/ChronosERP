@@ -5,8 +5,11 @@ import br.com.samuelweb.certificado.CertificadoService;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.PdvCaixa;
 import com.chronos.modelo.entidades.PdvConfiguracao;
+import com.chronos.modelo.entidades.PdvVendaCabecalho;
 import com.chronos.modelo.enuns.TipoArquivo;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;
@@ -33,7 +36,10 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
     private static final long serialVersionUID = 1L;
     @Inject
     private Repository<PdvCaixa> repositoryCaixa;
+    @Inject
+    private Repository<PdvVendaCabecalho> pdvVendaCabecalhoRepository;
 
+    private int idcaixa;
 
     @Override
     public void doCreate() {
@@ -46,8 +52,31 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
         getObjeto().setFormatoImpressaoDanfe(1);
         getObjeto().setProcessoEmissao(0);
         getObjeto().setSalvarXml("S");
-        getObjeto().setPdvCaixa(new PdvCaixa(1));
 
+
+    }
+
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        idcaixa = getObjeto().getPdvCaixa().getId();
+    }
+
+    @Override
+    public void salvar() {
+
+
+        try {
+            boolean existeRegisro = pdvVendaCabecalhoRepository.existeRegisro(PdvVendaCabecalho.class, "pdvMovimento.pdvCaixa.id", idcaixa);
+
+            if (existeRegisro && getObjeto().getPdvCaixa().getId() != idcaixa) {
+                throw new ChronosException("Não é possivel altera o caixa, já foram realizadas vendas");
+            }
+
+            super.salvar();
+        } catch (Exception ex) {
+            Mensagem.addErrorMessage("", ex);
+        }
     }
 
     public void uploadCertificado(FileUploadEvent event) {
@@ -92,7 +121,10 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
     public List<PdvCaixa> getListaPdvCaixa(String nome) {
         List<PdvCaixa> caixas = new ArrayList<>();
         try {
-            caixas = repositoryCaixa.getEntitys(PdvCaixa.class, "nome", nome);
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro(Filtro.AND, "web", Filtro.IGUAL, "S"));
+            filtros.add(new Filtro(Filtro.AND, "nome", Filtro.LIKE, nome));
+            caixas = repositoryCaixa.getEntitys(PdvCaixa.class, filtros);
         } catch (Exception ex) {
 
         }
