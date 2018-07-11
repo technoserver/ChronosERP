@@ -390,7 +390,9 @@
                             reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
                             resizableColumns="true" lazy="true" sortBy="#{row.id}" sortOrder="descending"
                     >
-
+                        <p:column headerText="Cliente" width="130">
+                            <h:outputLabel value="#{row.nomeCliente == null ? 'Não identificado': row.nomeCliente}"/>
+                        </p:column>
                         <p:column headerText="Data Venda" width="130">
                             <h:outputLabel value="#{row.dataHoraVenda}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
@@ -428,7 +430,7 @@
                                 </p:menuitem>
                                 <p:menuitem value="Emitir NFCe"
                                             update=":formCentro:growl,tableVenda"
-                                            rendered="#{empty row.idnfe}"
+                                            rendered="#{empty row.idnfe and row.sicronizado eq 'N'}"
                                             action="#{balcaoControll.gerarNfce}"
                                             >
                                     <f:setPropertyActionListener value="#{row}"

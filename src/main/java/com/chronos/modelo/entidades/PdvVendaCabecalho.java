@@ -50,6 +50,8 @@ public class PdvVendaCabecalho implements Serializable {
     private String nomeCliente;
     @Column(name = "cpf_cnpj_cliente")
     private String cpfCnpjCliente;
+    @Column(name = "sicronizado")
+    private String sicronizado;
     @Column(name = "status_venda")
     private String statusVenda;
 
@@ -178,6 +180,14 @@ public class PdvVendaCabecalho implements Serializable {
 
     public void setStatusVenda(String statusVenda) {
         this.statusVenda = statusVenda;
+    }
+
+    public String getSicronizado() {
+        return sicronizado;
+    }
+
+    public void setSicronizado(String sicronizado) {
+        this.sicronizado = sicronizado;
     }
 
     public PdvMovimento getPdvMovimento() {
