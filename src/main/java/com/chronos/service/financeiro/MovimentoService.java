@@ -1,9 +1,9 @@
 package com.chronos.service.financeiro;
 
-import com.chronos.modelo.entidades.PdvMovimento;
-import com.chronos.modelo.entidades.PdvOperador;
-import com.chronos.modelo.entidades.PdvSuprimento;
+import com.chronos.modelo.entidades.*;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.FormatValor;
@@ -25,10 +25,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.nio.file.FileSystems.getDefault;
 
@@ -51,23 +48,48 @@ public class MovimentoService implements Serializable {
 
     @Inject
     private Repository<PdvOperador> pdvOperadorRepository;
+    @Inject
+    private Repository<PdvConfiguracao> repositoryConf;
 
     private PdvMovimento movimento;
     private StringBuilder linhasRelatorio;
     private String nomeImpressaoMovimento;
+    private Empresa empresa;
+    private PdvConfiguracao conf;
 
 
     @PostConstruct
     private void init() {
-        movimento = FacesUtil.getMovimento();
+        empresa = FacesUtil.getEmpresaUsuario();
     }
     @Transactional
-    public void iniciarMovimento(BigDecimal valorSuprimento) throws Exception {
+    public void iniciarMovimento(BigDecimal valorSuprimento, PdvTurno turno, String operador, String senha) throws Exception {
 
         movimento = new PdvMovimento();
-        movimento.setEmpresa(FacesUtil.getEmpresaUsuario());
+        movimento.setEmpresa(empresa);
 
-        movimento.setIdGerenteSupervisor(1);
+
+        PdvConfiguracao conf = repositoryConf.get(PdvConfiguracao.class, "empresa.id", empresa.getId(), new Object[]{"pdvCaixa"});
+
+        if (conf == null) {
+            throw new ChronosException("Configuracoes para o pdv não definidas");
+        } else if (conf.getPdvCaixa() == null) {
+            throw new ChronosException("Caixa não definido");
+        }
+
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("login", operador));
+        filtros.add(new Filtro("senha", senha));
+        PdvOperador pdvOperador = pdvOperadorRepository.get(PdvOperador.class, filtros);
+
+        if (pdvOperador == null) {
+            throw new ChronosException("Operador não localizado");
+        }
+
+        movimento.setPdvCaixa(conf.getPdvCaixa());
+        movimento.setPdvOperador(pdvOperador);
+        movimento.setIdGerenteSupervisor(pdvOperador.getId());
+        movimento.setPdvTurno(turno);
         movimento.setDataAbertura(new Date());
         movimento.setHoraAbertura(FormatValor.getInstance().formatarHora(new Date()));
         movimento.setTotalSuprimento(valorSuprimento);
@@ -83,7 +105,8 @@ public class MovimentoService implements Serializable {
         movimento.setDataFechamento(new Date());
         movimento.setStatusMovimento("F");
         movimento.setHoraFechamento(FormatValor.getInstance().formatarHora(new Date()));
-        repository.atualizar(movimento);
+        repository.atualizarNamedQuery("PdvMovimento.Fechamento", new Date(), FormatValor.getInstance().formatarHora(new Date()), movimento.getId());
+
         FacesUtil.setMovimento(null);
     }
 
@@ -135,6 +158,42 @@ public class MovimentoService implements Serializable {
         this.movimento.calcularTotalFinal();
         this.movimento = repository.atualizar(movimento);
         FacesUtil.setMovimento(movimento);
+    }
+
+    public boolean verificarConfPdv() {
+        conf = repositoryConf.get(PdvConfiguracao.class, "empresa.id", empresa.getId(), new Object[]{"pdvCaixa"});
+        if (conf == null) {
+            return false;
+        } else if (conf.getPdvCaixa() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public PdvMovimento verificarMovimento() throws ChronosException {
+        movimento = FacesUtil.getMovimento();
+
+        if (movimento == null) {
+            //     conf = repositoryConf.get(PdvConfiguracao.class,"empresa.id",empresa.getId(),new Object[]{"pdvCaixa"});
+
+            if (conf == null) {
+                throw new ChronosException("Configuracoes para o pdv não definidas");
+            } else if (conf.getPdvCaixa() == null) {
+                throw new ChronosException("Caixa não definido");
+            }
+
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("statusMovimento", "A"));
+            filtros.add(new Filtro("pdvCaixa.id", conf.getPdvCaixa().getId()));
+            Object[] atributos;
+            atributos = new Object[]{"idGerenteSupervisor", "dataAbertura", "horaAbertura", "dataFechamento", "horaFechamento", "totalSuprimento", "totalSangria", "totalVenda", "totalDesconto", "totalAcrescimo", "totalFinal", "totalRecebido", "totalTroco", "totalCancelado", "statusMovimento", "empresa.id", "pdvCaixa.codigo"};
+            movimento = repository.get(PdvMovimento.class, filtros, atributos);
+
+            FacesUtil.setMovimento(movimento);
+
+        }
+
+        return movimento;
     }
 
 

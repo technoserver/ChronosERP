@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "PDV_MOVIMENTO")
+@NamedQuery(name = "PdvMovimento.Fechamento", query = "UPDATE PdvMovimento m SET m.dataFechamento = ?1, m.statusMovimento = 'F',m.horaFechamento = ?2 where m.id=?3 ")
 public class PdvMovimento implements Serializable {
 
     private static final long serialVersionUID = 2L;
@@ -78,13 +79,11 @@ public class PdvMovimento implements Serializable {
         this.totalTroco = BigDecimal.ZERO;
         this.totalVenda = BigDecimal.ZERO;
         this.statusMovimento = "A";
-        this.pdvTurno = new PdvTurno(1);
-        this.pdvCaixa = new PdvCaixa(1);
-        this.pdvOperador = new PdvOperador(1);
+
 
     }
 
-    public PdvMovimento(Integer id, Integer idGerenteSupervisor, Date dataAbertura, String horaAbertura, Date dataFechamento, String horaFechamento, BigDecimal totalSuprimento, BigDecimal totalSangria, BigDecimal totalVenda, BigDecimal totalDesconto, BigDecimal totalAcrescimo,  BigDecimal totalFinal,BigDecimal totalRecebido, BigDecimal totalTroco, BigDecimal totalCancelado, String statusMovimento,Integer idempresa) {
+    public PdvMovimento(Integer id, Integer idGerenteSupervisor, Date dataAbertura, String horaAbertura, Date dataFechamento, String horaFechamento, BigDecimal totalSuprimento, BigDecimal totalSangria, BigDecimal totalVenda, BigDecimal totalDesconto, BigDecimal totalAcrescimo, BigDecimal totalFinal, BigDecimal totalRecebido, BigDecimal totalTroco, BigDecimal totalCancelado, String statusMovimento, Integer idempresa, String codigoCaixa) {
         this.id = id;
         this.idGerenteSupervisor = idGerenteSupervisor;
         this.dataAbertura = dataAbertura;
@@ -101,10 +100,8 @@ public class PdvMovimento implements Serializable {
         this.totalTroco = totalTroco;
         this.totalCancelado = totalCancelado;
         this.statusMovimento = statusMovimento;
-        this.empresa = new Empresa(1);
-        this.pdvTurno = new PdvTurno(1);
-        this.pdvOperador = new PdvOperador(1);
-        this.pdvCaixa = new PdvCaixa(1);
+        this.empresa = new Empresa(idempresa);
+        this.pdvCaixa = new PdvCaixa(codigoCaixa);
     }
 
     public Integer getId() {

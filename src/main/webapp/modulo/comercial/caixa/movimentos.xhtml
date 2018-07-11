@@ -190,63 +190,66 @@
                                  resizableColumns="true" lazy="true"
                                  class="js-data-table">
 
-                        <p:column headerText="Abertura" width="130">
+                        <p:column headerText="Caixa" width="65">
+                            <h:outputLabel value="#{row.pdvCaixa.codigo}"/>
+                        </p:column>
+
+                        <p:column headerText="Abertura" width="100">
                             <h:outputLabel value="#{row.dataAbertura}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Fechamento" width="130">
+                        <p:column headerText="Fechamento" width="120">
                             <h:outputLabel value="#{row.dataFechamento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
 
 
-                        <p:column headerText="Valor Total" class="coluna-monetaria">
+                        <p:column headerText="Supri." class="coluna-monetaria">
                             <h:outputLabel value="#{row.totalSuprimento}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Total sangria" class="coluna-monetaria">
+                        <p:column headerText="Sangria" class="coluna-monetaria">
                             <h:outputLabel value="#{row.totalSangria}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Total vendas" class="coluna-monetaria">
+                        <p:column headerText="Vendas" class="coluna-monetaria">
                             <h:outputLabel value="#{row.totalVenda}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Total Desc." class="coluna-monetaria">
+                        <p:column headerText="Desc." class="coluna-monetaria">
                             <h:outputLabel value="#{row.totalDesconto}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Total acresc." class="coluna-monetaria">
-                            <h:outputLabel value="#{row.totalAcrescimo}">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                        </p:column>
-                        <p:column headerText="Total recebido" class="coluna-monetaria">
+                        <p:column headerText="Recebido" class="coluna-monetaria">
                             <h:outputLabel value="#{row.totalRecebido}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Total troco" class="coluna-monetaria">
+                        <p:column headerText="Troco" class="coluna-monetaria" width="90">
                             <h:outputLabel value="#{row.totalTroco}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Total final" class="coluna-monetaria">
+                        <p:column headerText="Total" class="coluna-monetaria">
                             <h:outputLabel value="#{row.totalFinal}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Ações" class="text-center">
+                        <p:column headerText="Status" class="coluna-monetaria" width="85">
+                            <h:outputLabel value="Fechado" styleClass="label label-success"
+                                           rendered="#{row.statusMovimento eq 'F'}"/>
+                            <h:outputLabel value="Aberto" styleClass="label label-info"
+                                           rendered="#{row.statusMovimento eq 'A'}"/>
+                        </p:column>
+                        <p:column headerText="Ações" class="text-center" width="70">
                             <p:menuButton>
-                                <p:menuitem value="Movimento"
 
-                                            icon="fa fa-print" ajax="false"/>
                                 <p:menuitem value="Resumo"
                                             target="blank"
                                             outcome="/modulo/comercial/caixa/relatorio/movimentoCaixa"
@@ -255,11 +258,15 @@
                                 </p:menuitem>
 
                             </p:menuButton>
+
+                            <!--<p:menuitem value="Movimento"-->
+
+                            <!--icon="fa fa-print" ajax="false"/>-->
                         </p:column>
                     </p:dataTable>
                 </div>
                 <div class="ibox-footer">
-                    <div class="row">
+                    <h:panelGroup layout="block" styleClass="row" rendered="#{pdvMovimentoControll.temConfiguracao}">
                         <div class="col-xs-12 col-md-12 text-center">
                             <p:commandButton value="Iniciar movimento"
                                              rendered="#{!pdvMovimentoControll.temMovimento}"
@@ -276,7 +283,7 @@
 
                             </p:commandButton>
                         </div>
-                    </div>
+                    </h:panelGroup>
                 </div>
 
             </p:outputPanel>

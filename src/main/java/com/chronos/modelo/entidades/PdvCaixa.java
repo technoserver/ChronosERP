@@ -30,6 +30,10 @@ public class PdvCaixa implements Serializable {
         this.dataCadastro = new Date();
     }
 
+    public PdvCaixa(String codigo) {
+        this.codigo = codigo;
+    }
+
     public PdvCaixa(Integer id) {
         this.id = id;
     }

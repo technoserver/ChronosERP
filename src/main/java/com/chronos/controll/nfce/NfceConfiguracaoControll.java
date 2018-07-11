@@ -6,6 +6,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.PdvCaixa;
 import com.chronos.modelo.entidades.PdvConfiguracao;
 import com.chronos.modelo.enuns.TipoArquivo;
+import com.chronos.repository.Repository;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;
@@ -13,11 +14,14 @@ import org.primefaces.model.UploadedFile;
 import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by john on 04/10/17.
@@ -27,6 +31,8 @@ import java.nio.file.Path;
 public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Inject
+    private Repository<PdvCaixa> repositoryCaixa;
 
 
     @Override
@@ -80,6 +86,17 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
             Mensagem.addErrorMessage("", e);
             e.printStackTrace();
         }
+    }
+
+
+    public List<PdvCaixa> getListaPdvCaixa(String nome) {
+        List<PdvCaixa> caixas = new ArrayList<>();
+        try {
+            caixas = repositoryCaixa.getEntitys(PdvCaixa.class, "nome", nome);
+        } catch (Exception ex) {
+
+        }
+        return caixas;
     }
 
     @Override

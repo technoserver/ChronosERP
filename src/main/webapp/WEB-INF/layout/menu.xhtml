@@ -125,6 +125,11 @@
                                          label="Parametros"
                                          funcao="parametros"/>
 
+                            <erp:subMenu caminho="/modulo/configuracoes/pdvConfiguracao"
+                                         label="Configuração PDV"
+                                         exibir="#{seguranca.isTemAcesso('NFCE_CONFIGURACAO')}"
+                                         funcao="pdvConfiguracao"/>
+
                             <erp:subMenu caminho="/modulo/configuracoes/mdfeConfiguracao"
                                          label="MDF-e"
                                          funcao="mdfeConfiguracao"/>

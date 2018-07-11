@@ -115,6 +115,11 @@ public class PdvConfiguracao implements Serializable {
     public PdvConfiguracao() {
     }
 
+    public PdvConfiguracao(Integer id, PdvCaixa pdvCaixa) {
+        this.id = id;
+        this.pdvCaixa = pdvCaixa;
+    }
+
     public Integer getId() {
         return id;
     }

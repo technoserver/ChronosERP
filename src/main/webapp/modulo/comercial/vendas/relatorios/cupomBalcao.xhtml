@@ -171,23 +171,19 @@
             </table>
             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                    <td>Vencimento</td>
-                    <td>Valor</td>
-                    <td width="40%">Forma de pagamento</td>
+                    <td width="60%">Forma de pagamento</td>
+                    <td class="text-right">Valor</td>
+
                 </tr>
                 <ui:forEach var="row" items="#{vendaRelatorioControll.vendaCupom.listaFormaPagamento}">
                     <tr>
-                        <td>
-                            <h:outputText value="#{vendaRelatorioControll.vendaCupom.dataHoraVenda}">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputText>
-                        </td>
-                        <td>
+                        <td>#{row.pdvTipoPagamento.descricao}</td>
+                        <td class="text-right">
                             <h:outputText value="#{row.valorTotal}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputText>
                         </td>
-                        <td>#{row.pdvTipoPagamento.descricao}</td>
+
                     </tr>
                 </ui:forEach>
 

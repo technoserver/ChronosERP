@@ -55,48 +55,61 @@ public class PdvMovimentoControll implements Serializable {
     private boolean telaGrid;
     private boolean telaAbertura;
     private boolean telaFechamento;
+    private boolean temMovimento;
+    private boolean temConfiguracao;
 
 
     public PdvMovimentoControll() {
     }
 
     @PostConstruct
-    private void init(){
+    private void init() {
         telaGrid = true;
-        movimento = service.getMovimento();
+
+        try {
+            temConfiguracao = service.verificarConfPdv();
+            if (temConfiguracao) {
+                movimento = service.verificarMovimento();
+                turnos = pdvTurnoRepository.getAll(PdvTurno.class);
+            } else {
+                Mensagem.addInfoMessage("É preciso informar as configuracoes do PDV");
+            }
+        } catch (Exception ex) {
+            Mensagem.addErrorMessage("", ex);
+        }
     }
 
     public ERPLazyDataModel<PdvMovimento> getDataModel() {
 
-        if(dataModel == null){
+        if (dataModel == null) {
             dataModel = new ERPLazyDataModel<>();
             dataModel.setClazz(PdvMovimento.class);
             dataModel.setDao(repository);
         }
         Object[] atributos;
-        atributos = new Object[]{"idGerenteSupervisor","dataAbertura","horaAbertura","dataFechamento","horaFechamento","totalSuprimento","totalSangria","totalVenda","totalDesconto","totalAcrescimo","totalFinal","totalRecebido","totalTroco","totalCancelado","statusMovimento","empresa.id"};
+        atributos = new Object[]{"idGerenteSupervisor", "dataAbertura", "horaAbertura", "dataFechamento", "horaFechamento", "totalSuprimento", "totalSangria", "totalVenda", "totalDesconto", "totalAcrescimo", "totalFinal", "totalRecebido", "totalTroco", "totalCancelado", "statusMovimento", "empresa.id", "pdvCaixa.codigo"};
         dataModel.setAtributos(atributos);
         return dataModel;
     }
 
 
-    public void verificarMovimento(){
+    public void verificarMovimento() {
         movimento = FacesUtil.getMovimento();
-        if(movimento==null){
+        if (movimento == null) {
 
-        }else{
+        } else {
 
         }
     }
 
-    public void iniciarMovimento(){
+    public void iniciarMovimento() {
         telaGrid = false;
         movimento = new PdvMovimento();
         telaAbertura = true;
         telaFechamento = false;
     }
 
-    public void iniciarFechamento(){
+    public void iniciarFechamento() {
         telaAbertura = false;
         telaFechamento = true;
         telaGrid = false;
@@ -105,16 +118,15 @@ public class PdvMovimentoControll implements Serializable {
     public void confimarMovimento() {
 
         try {
-            service.iniciarMovimento(suprimentos);
+            service.iniciarMovimento(suprimentos, turno, userOperador, senhaOperador);
             telaGrid = true;
-            Mensagem.addInfoMessage("Caixa aberto com sucesso");
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
         }
     }
 
-    public void confirmarFechamento(){
+    public void confirmarFechamento() {
         try {
             service.realizarFechamento();
             telaGrid = true;
@@ -227,7 +239,11 @@ public class PdvMovimentoControll implements Serializable {
         return telaFechamento;
     }
 
-    public boolean isTemMovimento(){
-        return movimento!=null;
+    public boolean isTemMovimento() {
+        return movimento != null;
+    }
+
+    public boolean isTemConfiguracao() {
+        return temConfiguracao;
     }
 }

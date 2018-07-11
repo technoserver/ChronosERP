@@ -4,6 +4,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html">
 
 
@@ -20,12 +21,38 @@
             </div>
         </div>
         <div class="text-center  row">
-            <div class="col-sm-offset-4 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="col-sm-offset-1 col-md-offset-1 col-lg-offset-1 col-sm-4 col-md-4 col-lg-4">
 
                 <h3 class="margin-top-0">DISPONÍVEL EM CAIXA</h3>
                 <p:focus context="CaixaValor"/>
                 <p:inputNumber id="CaixaValor" value="#{pdvMovimentoControll.suprimentos}"/>
+                <h3 class="margin-top-0">Turno</h3>
+                <h:selectOneMenu class="form-control"
+                                 required="true"
+                                 value="#{pdvMovimentoControll.turno}"
+                                 converter="defaultConverter"
+                                 id="turno">
+                    <f:selectItems value="#{pdvMovimentoControll.turnos}" var="obj" itemValue="#{obj}"
+                                   itemLabel="#{obj.descricao}"/>
+                </h:selectOneMenu>
 
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <h3 class="margin-top-0">OEPRADOR</h3>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <p:inputText placeholder="usuario"
+                                     id="operador"
+                                     required="true"
+                                     value="#{pdvMovimentoControll.userOperador}"/>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <p:password placeholder="senha"
+                                    id="senhaOperador"
+                                    required="true"
+                                    value="#{pdvMovimentoControll.senhaOperador}"/>
+                    </div>
+                </div>
             </div>
 
 
@@ -40,7 +67,7 @@
                                action="#{pdvMovimentoControll.confimarMovimento}"
                                style="width:100%">
                     <h3 class="margin-top-0 margin-bottom-0"><i
-                            class="fa fa-sign-in"></i> CONFIRMAR ABERTURA</h3>
+                            class="fa fa-sign-in"></i> CONFIRMAR</h3>
                     <p:ajax update="formCentro:growl,:formMovimento:dialogMovimento,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                             oncomplete="if (args.movimentoIniciado) {PF('dialogMovimento').show(); };"
                             process="@form"/>

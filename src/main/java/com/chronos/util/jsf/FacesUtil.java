@@ -10,12 +10,9 @@ import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.tenant.Tenant;
-import com.chronos.repository.Filtro;
-import com.chronos.repository.Repository;
 import com.chronos.security.UsuarioSistema;
 import com.chronos.transmissor.init.Configuracoes;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.cdi.CDIServiceLocator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,8 +24,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author john
@@ -198,21 +193,10 @@ public class FacesUtil {
         try{
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
             movimento = (PdvMovimento) session.getAttribute("caixaERP");
-            if(movimento==null){
-                Repository<PdvMovimento> repository = CDIServiceLocator.getBean(Repository.class);
-                List<Filtro> filtros = new ArrayList<>();
-                filtros.add(new Filtro("statusMovimento","A"));
-                filtros.add(new Filtro("pdvTurno.id",1));
-                filtros.add(new Filtro("pdvCaixa.id",1));
-                filtros.add(new Filtro("pdvOperador.id",1));
-                Object[] atributos;
-                atributos = new Object[]{"idGerenteSupervisor","dataAbertura","horaAbertura","dataFechamento","horaFechamento","totalSuprimento","totalSangria","totalVenda","totalDesconto","totalAcrescimo","totalFinal","totalRecebido","totalTroco","totalCancelado","statusMovimento","empresa.id"};
-                movimento = repository.get(PdvMovimento.class,filtros,atributos);
-                session.setAttribute("caixaERP", movimento);
-            }
+
 
         }catch (Exception ex){
-            ex.printStackTrace();
+
         }
         return movimento;
     }

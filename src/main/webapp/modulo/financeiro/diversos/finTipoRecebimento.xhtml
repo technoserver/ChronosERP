@@ -52,17 +52,13 @@
 
             <div class="row">
 
-                <erp:campoSelect label="Conta"
+                <erp:campoSelect label="Tipo"
                                  nomeAtributo="#{finTipoRecebimentoControll.objeto.tipo}"
-                                 idComponente="idconta"
-                                 itens="#{finTipoRecebimentoControll.pdvTipoRecebimento}"
-                                 styleClass="col-lg-12 col-lg-3"/>
+                                 idComponente="tipo"
+                                 itens="#{finTipoRecebimentoControll.pdvCodigoTipoPagamento}"
+                                 styleClass="col-xs-12 col-sm-3 col-md-2"/>
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
-                                idComponente="finTipoRecebimentoTipo" label="Tipo"
-                                nomeAtributo="#{finTipoRecebimentoControll.objeto.tipo}"
-                                tamanhoMaximo="2" requerido="true"
-                                desabilitado="true" />
+
                 <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                                 idComponente="finTipoRecebimentoDescricao" label="Descricao"
                                 nomeAtributo="#{finTipoRecebimentoControll.objeto.descricao}"
