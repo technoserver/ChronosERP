@@ -52,6 +52,12 @@
 
             <div class="row">
 
+                <erp:campoSelect label="Conta"
+                                 nomeAtributo="#{finTipoRecebimentoControll.objeto.tipo}"
+                                 idComponente="idconta"
+                                 itens="#{finTipoRecebimentoControll.pdvTipoRecebimento}"
+                                 styleClass="col-lg-12 col-lg-3"/>
+
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
                                 idComponente="finTipoRecebimentoTipo" label="Tipo"
                                 nomeAtributo="#{finTipoRecebimentoControll.objeto.tipo}"

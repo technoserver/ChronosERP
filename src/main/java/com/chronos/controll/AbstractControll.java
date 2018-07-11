@@ -162,6 +162,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private HashMap<String, String> pdvNivelAutorizacao;
 
 
+
     // CTe
     private HashMap<String, Integer> cteFormatoImpressaoDacte;
     private HashMap<String, Integer> cteTipoPeriodo;
@@ -569,9 +570,16 @@ public abstract class AbstractControll<T> implements Serializable {
         pdvCodigoTipoPagamento.put("02", "CHEQUE");
         pdvCodigoTipoPagamento.put("03", "CARTAO DE CREDITO");
         pdvCodigoTipoPagamento.put("04", "CARTAO DE DEBITO");
-        pdvCodigoTipoPagamento.put("05", "TICKET");
-        pdvCodigoTipoPagamento.put("06", "DUPLICATA");
-        pdvCodigoTipoPagamento.put("07", "CREDITO CLIENTE");
+        pdvCodigoTipoPagamento.put("05", "Credito Loja");
+        pdvCodigoTipoPagamento.put("10", "Vale Alimentacao");
+        pdvCodigoTipoPagamento.put("11", "Vale Refeicao");
+        pdvCodigoTipoPagamento.put("12", "Vale Presente");
+        pdvCodigoTipoPagamento.put("13", "CVale Combustivel");
+        pdvCodigoTipoPagamento.put("14", "Duplicata Mercantil");
+        pdvCodigoTipoPagamento.put("15", "Boleto Bancario");
+        pdvCodigoTipoPagamento.put("90", "Sem pagamento");
+        pdvCodigoTipoPagamento.put("99", "Outros");
+
 
         pdvNivelAutorizacao = new LinkedHashMap<>();
         pdvNivelAutorizacao.put("OPERADOR", "O");
