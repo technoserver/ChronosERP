@@ -30,7 +30,8 @@
         >
 
             <p:column headerText="Bandeira">
-                <h:outputLabel value="#{row.bandeira}"/>
+                <h:outputLabel
+                        value="#{operadoraCartaoControll.keyFromValue(operadoraCartaoControll.bandeiras,row.bandeira)}"/>
             </p:column>
             <p:column headerText="nome">
                 <h:outputLabel value="#{row.nome}"/>
@@ -70,7 +71,7 @@
 
 
                 <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                                 idComponente="naturezaFinanceiraTipo" label="Tipo"
+                                 idComponente="naturezaFinanceiraTipo" label="Bandeira"
                                  nomeAtributo="#{operadoraCartaoControll.objeto.bandeira}"
                                  itens="#{operadoraCartaoControll.bandeiras}"/>
 
