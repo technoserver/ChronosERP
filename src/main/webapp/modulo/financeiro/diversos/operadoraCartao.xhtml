@@ -68,11 +68,12 @@
                                   idComponente="contaCaixa"
                                   requerido="#{empty operadoraCartaoControll.objeto.id}"/>
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
-                                idComponente="bandeira" label="Bandeira"
-                                nomeAtributo="#{operadoraCartaoControll.objeto.bandeira}"
-                                tamanhoMaximo="30" requerido="true"
-                />
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="naturezaFinanceiraTipo" label="Tipo"
+                                 nomeAtributo="#{operadoraCartaoControll.objeto.bandeira}"
+                                 itens="#{operadoraCartaoControll.bandeiras}"/>
+
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                                 idComponente="finTipoPagamentoDescricao" label="Descricao"

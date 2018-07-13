@@ -57,12 +57,14 @@ public class PdvCaixaControll extends AbstractControll<PdvCaixa> implements Seri
                 Mensagem.addErrorMessage("Já foi informado um caixa web");
                 return false;
             }
-
-            PdvConfiguracao conf = pdvConfiguracaoRepository.get(PdvConfiguracao.class, "pdvCaixa", getObjeto(), new Object[]{"pdvCaixa"});
-            if (conf != null && getObjeto().getWeb().equals("N")) {
-                Mensagem.addErrorMessage("já foram definidas configurações com esse caixa WEB. Alteração de tipo não realizada");
-                return false;
+            if (getObjeto().getId() != null) {
+                PdvConfiguracao conf = pdvConfiguracaoRepository.get(PdvConfiguracao.class, "pdvCaixa", getObjeto(), new Object[]{"pdvCaixa"});
+                if (conf != null && getObjeto().getWeb().equals("N")) {
+                    Mensagem.addErrorMessage("já foram definidas configurações com esse caixa WEB. Alteração de tipo não realizada");
+                    return false;
+                }
             }
+
         }
 
         return true;

@@ -3,14 +3,12 @@ package com.chronos.controll.financeiro;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.ContaCaixa;
 import com.chronos.modelo.entidades.OperadoraCartao;
-import com.chronos.repository.Filtro;
-import com.chronos.repository.Repository;
+import com.chronos.service.cadastros.ContaCaixaService;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,16 +23,15 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private Repository<ContaCaixa> contasCaixa;
+    private ContaCaixaService caixaService;
+
+
+
 
     public List<ContaCaixa> getListaContaCaixa(String nome) {
         List<ContaCaixa> contas = new LinkedList<>();
         try {
-            Object[] atributos = new Object[]{"nome"};
-            List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND, "nome", Filtro.LIKE, nome));
-            filtros.add(new Filtro(Filtro.AND, "agenciaBanco", Filtro.NAO_NULO, ""));
-            contas = contasCaixa.getEntitys(ContaCaixa.class, filtros, atributos);
+            contas = caixaService.getListaContaCaixaComAgencia(nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }

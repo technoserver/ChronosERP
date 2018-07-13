@@ -40,6 +40,12 @@ public class PdvCaixa implements Serializable {
         this.codigo = codigo;
     }
 
+    public PdvCaixa(Integer id, String codigo) {
+        this.id = id;
+        this.codigo = codigo;
+    }
+
+
     public PdvCaixa(Integer id) {
         this.id = id;
     }

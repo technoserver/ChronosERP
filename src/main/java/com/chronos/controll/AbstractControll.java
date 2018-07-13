@@ -64,6 +64,8 @@ public abstract class AbstractControll<T> implements Serializable {
     private Usuarios usuarioRepository;
     private String titulo;
     private int activeTabIndex;
+
+    //cadastro base
     private Map<String, String> simNao;
     private Map<String, String> naoSim;
     private HashMap<String, Integer> simNaoInteiro;
@@ -90,6 +92,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, String> tipoContaCaixa;
     private Map<String, String> tipoFeriado;
     private Map<String, String> feriadoAbrangencia;
+    private Map<String, String> bandeiras;
 
     //Financeiro
     private Map<String, String> tipoNaturazaFinanceira;
@@ -346,6 +349,13 @@ public abstract class AbstractControll<T> implements Serializable {
         feriadoAbrangencia.put("Federal", "F");
         feriadoAbrangencia.put("Estadual", "E");
         feriadoAbrangencia.put("Municipal", "M");
+
+        bandeiras = new LinkedHashMap<>();
+        bandeiras.put("Visa", "01");
+        bandeiras.put("Mastercard", "02");
+        bandeiras.put("American Express", "03");
+        bandeiras.put("Sorocred", "04");
+        bandeiras.put("Outros", "99");
 
         //Estoque
         requisicaoInternaSituacao = new LinkedHashMap<>();
@@ -1389,6 +1399,10 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, String> getMetodoTabela() {
         return metodoTabela;
+    }
+
+    public Map<String, String> getBandeiras() {
+        return bandeiras;
     }
 
 }

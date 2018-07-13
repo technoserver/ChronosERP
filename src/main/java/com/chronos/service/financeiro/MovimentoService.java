@@ -61,6 +61,7 @@ public class MovimentoService implements Serializable {
     @PostConstruct
     private void init() {
         empresa = FacesUtil.getEmpresaUsuario();
+        movimento = FacesUtil.getMovimento();
     }
     @Transactional
     public void iniciarMovimento(BigDecimal valorSuprimento, PdvTurno turno, String operador, String senha) throws Exception {
@@ -186,7 +187,10 @@ public class MovimentoService implements Serializable {
             filtros.add(new Filtro("statusMovimento", "A"));
             filtros.add(new Filtro("pdvCaixa.id", conf.getPdvCaixa().getId()));
             Object[] atributos;
-            atributos = new Object[]{"idGerenteSupervisor", "dataAbertura", "horaAbertura", "dataFechamento", "horaFechamento", "totalSuprimento", "totalSangria", "totalVenda", "totalDesconto", "totalAcrescimo", "totalFinal", "totalRecebido", "totalTroco", "totalCancelado", "statusMovimento", "empresa.id", "pdvCaixa.codigo"};
+            atributos = new Object[]{"idGerenteSupervisor", "dataAbertura", "horaAbertura", "dataFechamento",
+                    "horaFechamento", "totalSuprimento", "totalSangria", "totalVenda", "totalDesconto", "totalAcrescimo",
+                    "totalFinal", "totalRecebido", "totalTroco", "totalCancelado", "statusMovimento", "empresa.id",
+                    "pdvCaixa.id", "pdvCaixa.codigo", "pdvOperador.id", "pdvTurno.id"};
             movimento = repository.get(PdvMovimento.class, filtros, atributos);
 
             FacesUtil.setMovimento(movimento);

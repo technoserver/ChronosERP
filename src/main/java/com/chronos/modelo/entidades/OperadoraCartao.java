@@ -147,6 +147,7 @@ public class OperadoraCartao implements Serializable {
         this.classificacaoContabilConta = classificacaoContabilConta;
     }
 
+
     public String getNsu() {
         return nsu;
     }

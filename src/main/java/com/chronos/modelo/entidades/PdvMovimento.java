@@ -104,6 +104,33 @@ public class PdvMovimento implements Serializable {
         this.pdvCaixa = new PdvCaixa(codigoCaixa);
     }
 
+    public PdvMovimento(Integer id, Integer idGerenteSupervisor, Date dataAbertura, String horaAbertura, Date dataFechamento,
+                        String horaFechamento, BigDecimal totalSuprimento, BigDecimal totalSangria, BigDecimal totalVenda,
+                        BigDecimal totalDesconto, BigDecimal totalAcrescimo, BigDecimal totalFinal, BigDecimal totalRecebido,
+                        BigDecimal totalTroco, BigDecimal totalCancelado, String statusMovimento, Integer idempresa, Integer idcaixa, String codigoCaixa,
+                        Integer idoperador, Integer idturno) {
+        this.id = id;
+        this.idGerenteSupervisor = idGerenteSupervisor;
+        this.dataAbertura = dataAbertura;
+        this.horaAbertura = horaAbertura;
+        this.dataFechamento = dataFechamento;
+        this.horaFechamento = horaFechamento;
+        this.totalSuprimento = totalSuprimento;
+        this.totalSangria = totalSangria;
+        this.totalFinal = totalFinal;
+        this.totalVenda = totalVenda;
+        this.totalDesconto = totalDesconto;
+        this.totalAcrescimo = totalAcrescimo;
+        this.totalRecebido = totalRecebido;
+        this.totalTroco = totalTroco;
+        this.totalCancelado = totalCancelado;
+        this.statusMovimento = statusMovimento;
+        this.empresa = new Empresa(idempresa);
+        this.pdvCaixa = new PdvCaixa(idcaixa, codigoCaixa);
+        this.pdvTurno = new PdvTurno(idturno);
+        this.pdvOperador = new PdvOperador(idoperador);
+    }
+
     public Integer getId() {
         return id;
     }
