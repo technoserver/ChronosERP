@@ -1,5 +1,6 @@
 package com.chronos.modelo.entidades;
 
+import com.chronos.modelo.enuns.SituacaoVenda;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -77,6 +78,12 @@ public class PdvVendaCabecalho implements Serializable {
     @OneToMany(mappedBy = "pdvVendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PdvFormaPagamento> listaFormaPagamento;
 
+
+    public PdvVendaCabecalho() {
+        this.dataHoraVenda = new Date();
+        this.sicronizado = "N";
+        this.statusVenda = SituacaoVenda.Digitacao.getCodigo();
+    }
 
     public Integer getId() {
         return id;

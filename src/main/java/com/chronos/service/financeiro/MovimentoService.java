@@ -175,7 +175,7 @@ public class MovimentoService implements Serializable {
         movimento = FacesUtil.getMovimento();
 
         if (movimento == null) {
-            //     conf = repositoryConf.get(PdvConfiguracao.class,"empresa.id",empresa.getId(),new Object[]{"pdvCaixa"});
+            conf = repositoryConf.get(PdvConfiguracao.class, "empresa.id", empresa.getId(), new Object[]{"pdvCaixa"});
 
             if (conf == null) {
                 throw new ChronosException("Configuracoes para o pdv não definidas");

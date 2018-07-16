@@ -17,4 +17,9 @@ public class ChronosException extends Exception {
         super(msg);
     }
 
+    public ChronosException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+
 }

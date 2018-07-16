@@ -74,6 +74,7 @@ public class ConfiguracaoEmissorDTO {
 
     public ConfiguracaoEmissorDTO(NfeConfiguracao configuracao) {
         this.certificadoDigitalSenha = configuracao.getCertificadoDigitalSenha();
+        this.certificadoDigitalCaminho = configuracao.getCertificadoDigitalCaminho();
         this.caminhoLogomarca = configuracao.getCaminhoLogomarca();
         this.caminhoSchemas = configuracao.getCaminhoSchemas();
         this.observacaoPadrao = configuracao.getObservacaoPadrao();
@@ -85,6 +86,7 @@ public class ConfiguracaoEmissorDTO {
 
     public ConfiguracaoEmissorDTO(PdvConfiguracao configuracao) {
         this.certificadoDigitalSenha = configuracao.getCertificadoDigitalSenha();
+        this.certificadoDigitalCaminho = configuracao.getCertificadoDigitalCaminho();
         this.caminhoLogomarca = configuracao.getCaminhoLogomarca();
         this.caminhoSchemas = configuracao.getCaminhoSchemas();
         this.observacaoPadrao = configuracao.getObservacaoPadrao();

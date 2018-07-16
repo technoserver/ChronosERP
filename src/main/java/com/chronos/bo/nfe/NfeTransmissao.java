@@ -11,6 +11,7 @@ import com.chronos.dto.ConfEmissorDTO;
 import com.chronos.dto.EventoDTO;
 import com.chronos.dto.RetornoEventoDTO;
 import com.chronos.modelo.entidades.NfeCabecalho;
+import com.chronos.service.ChronosException;
 import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.Estados;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
@@ -18,6 +19,7 @@ import com.chronos.transmissor.infra.enuns.StatusEnum;
 import com.chronos.transmissor.init.Configuracoes;
 import com.chronos.transmissor.nfe.Nfe;
 import com.chronos.transmissor.util.ConstantesNFe;
+import com.chronos.transmissor.util.XmlUtil;
 import com.chronos.util.Constantes;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jsf.FacesUtil;
@@ -34,6 +36,7 @@ public class NfeTransmissao {
     private static NfeTransmissao instance;
     private Configuracoes configuracoes;
 
+
     public static NfeTransmissao getInstance() {
         if (instance == null) {
             instance = new NfeTransmissao();
@@ -45,9 +48,17 @@ public class NfeTransmissao {
     public TEnviNFe geraNFeEnv(NfeCabecalho nfe) throws Exception {
 
         GeraXMLEnvio geraXmlNfe = new GeraXMLEnvio();
+        iniciarConfiguracoes();
         TEnviNFe nfeEnv = geraXmlNfe.gerarXmlEnvio(nfe);
 
         return nfeEnv;
+    }
+
+    public String gerarXmlNfe(NfeCabecalho nfe) throws Exception {
+
+        TEnviNFe enviNFe = geraNFeEnv(nfe);
+        String xml = XmlUtil.objectToXml(enviNFe);
+        return xml;
     }
 
     public br.inf.portalfiscal.nfe.schema_4.inutNFe.TRetInutNFe.InfInut inutilizarNFe(int serie, int numInicial, int numFinal, ModeloDocumento modelo, String cnpj, String justificativa) throws Exception {
@@ -58,7 +69,7 @@ public class NfeTransmissao {
         if (justificativa.trim().length() > 255) {
             throw new Exception("A justificativa deve ter no máximo 255 caracteres.");
         }
-
+        iniciarConfiguracoes();
         String id = "ID"
                 + configuracoes.getEstado().getCodigoIbge()
                 + FormatValor.getInstance().formatarAno(new Date())
@@ -88,7 +99,10 @@ public class NfeTransmissao {
 
     public String enviarCartaCorrecao(EventoDTO eventoDTO) throws Exception {
         GeraXMLEnvio gerar = new GeraXMLEnvio();
+        iniciarConfiguracoes();
 
+        eventoDTO.setAmbiente(configuracoes.getAmbiente());
+        eventoDTO.setCodigoUF(configuracoes.getEstado().getCodigoIbge());
         br.inf.portalfiscal.nfe.schema.envcce.TEnvEvento envEvento = gerar.cartaCorrecao(eventoDTO);
 
         TRetEnvEvento retorno = Nfe.cce(envEvento, false, ConstantesNFe.NFE);
@@ -109,7 +123,7 @@ public class NfeTransmissao {
     }
 
     public TRetConsSitNFe consultarNfe(String chave) throws Exception {
-
+        iniciarConfiguracoes();
         TRetConsSitNFe retorno = Nfe.consultaXml(chave, ConstantesNFe.NFE);
         System.out.println("Status:" + retorno.getCStat());
         System.out.println("Motivo:" + retorno.getXMotivo());
@@ -136,6 +150,9 @@ public class NfeTransmissao {
         }
 
         GeraXMLEnvio gerar = new GeraXMLEnvio();
+        iniciarConfiguracoes();
+        eventoDTO.setAmbiente(configuracoes.getAmbiente());
+        eventoDTO.setCodigoUF(configuracoes.getEstado().getCodigoIbge());
         TEnvEvento enviEvento = gerar.cancelarNfe(eventoDTO);
         br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TRetEnvEvento retornoSefaz = Nfe.cancelarNfe(enviEvento, false, ConstantesNFe.NFE);
 
@@ -144,7 +161,8 @@ public class NfeTransmissao {
         return retorno;
     }
 
-    public void iniciarConfigurações(ConfEmissorDTO conf) {
+
+    public void iniciarConfigurações(ConfEmissorDTO conf) throws ChronosException {
 
         try {
             // Certificado Arquivo, Parametros: -Caminho Certificado, - Senha
@@ -156,10 +174,11 @@ public class NfeTransmissao {
             configuracoes.setLog(Constantes.DESENVOLVIMENTO);
             FacesUtil.setConfEmissor(configuracoes);
         } catch (Exception ex) {
-            throw new RuntimeException("Erro ao iniciar as configurações de NF-e", ex);
+            throw new ChronosException("Erro ao iniciar as configurações de NF-e", ex.getCause());
         }
 
     }
+
 
     public void iniciarConfiguracoes() {
         try {
@@ -174,6 +193,23 @@ public class NfeTransmissao {
         } catch (Exception ex) {
 
         }
+    }
+
+
+    private void validarConfEmissor(ConfEmissorDTO configuracao) throws ChronosException {
+
+        if (configuracao == null) {
+            throw new ChronosException("Configuração não definida");
+        } else if (configuracao.getWebserviceAmbiente() == null) {
+            throw new ChronosException("Ambiente de transmissão não definido");
+        } else if (configuracao.getCodigoUf() == null) {
+            throw new ChronosException("UF de transmissão nao definido");
+        } else if (configuracao.getCaminhoCertificado() == null || configuracao.getSenhaCertificado() == null) {
+            throw new ChronosException("Certificado não definido");
+        } else if (configuracao.getCaminhoSchemas() == null) {
+            throw new ChronosException("Schemas não definido");
+        }
+
     }
 
 

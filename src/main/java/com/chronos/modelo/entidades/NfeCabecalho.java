@@ -1,6 +1,7 @@
 package com.chronos.modelo.entidades;
 
 import com.chronos.modelo.enuns.StatusTransmissao;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -411,14 +412,6 @@ public class NfeCabecalho implements Serializable {
         this.statusNota = statusNota;
     }
 
-    @PrePersist
-    @PreUpdate
-    private void prePersist() {
-        int i = 0;
-        for (NfeDetalhe item : getListaNfeDetalhe()) {
-            item.setNumeroItem(++i);
-        }
-    }
 
     public Integer getId() {
         return id;
@@ -2042,6 +2035,10 @@ public class NfeCabecalho implements Serializable {
         String nome = getChaveAcessoCompleta();
         nome += StatusTransmissao.isAutorizado(this.statusNota) ? "-nfeProc.pdf" : "-nfeCanc.pdf";
         return nome;
+    }
+
+    public ModeloDocumento getModeloDocumento() {
+        return ModeloDocumento.getByCodigo(Integer.valueOf(this.codigoModelo));
     }
 
 

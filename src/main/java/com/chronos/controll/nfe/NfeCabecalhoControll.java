@@ -104,6 +104,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             setObjeto(nfeCabecalho);
             dadosSalvos = false;
             observacao = getObjeto().getInformacoesAddContribuinte();
+            tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
             this.setActiveTabIndex(0);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -120,6 +121,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
             tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getPdvTipoPagamento();
             setObjeto(nfe);
+            tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
             dadosSalvos = true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -128,21 +130,12 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     @Override
     public void salvar() {
-
-
         try {
-            nfeService.validacaoNfe(getObjeto());
-            if (getObjeto().getId() == null) {
-                NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
-                nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
-                nfeFormaPagamento.setNfeCabecalho(getObjeto());
-                nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
-                nfeFormaPagamento.setValor(getObjeto().getValorTotal());
-                getObjeto().getListaNfeFormaPagamento().add(nfeFormaPagamento);
-            }
             String str = getObjeto().getInformacoesAddContribuinte() + " " + observacao;
             getObjeto().setInformacoesAddContribuinte(str);
-            super.salvar();
+            setObjeto(nfeService.salvar(getObjeto(), tipoPagamento));
+
+            Mensagem.addInfoMessage("NFe salva com sucesso");
             setTelaGrid(false);
             dadosSalvos = true;
         } catch (Exception ex) {
@@ -566,7 +559,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public List<PdvTipoPagamento> getListaNfceTipoPagamento(String nome) {
         List<PdvTipoPagamento> listaPdvTipoPagamento = new ArrayList<>();
         try {
-            listaPdvTipoPagamento = tipoPagamentoRepository.getEntitys(PdvTipoPagamento.class, "descricao", nome);
+            listaPdvTipoPagamento = nfeService.getTipoPagamentos();
         } catch (Exception e) {
             // e.printStackTrace();
         }

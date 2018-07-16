@@ -4,14 +4,13 @@ import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.enuns.SituacaoVenda;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaPdvService;
-import com.chronos.service.comercial.VendaService;
 import com.chronos.service.comercial.VendedorService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.service.financeiro.MovimentoService;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -30,7 +29,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,9 +79,11 @@ public class BalcaoControll implements Serializable {
     @Inject
     private VendaPdvService service;
     @Inject
-    private VendaService vendaService;
+    private VendaPdvService vendaService;
     @Inject
     private VendedorService vendedorService;
+    @Inject
+    private MovimentoService movimentoService;
 
 
     private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
@@ -154,8 +154,6 @@ public class BalcaoControll implements Serializable {
         venda = new PdvVendaCabecalho();
         venda.setEmpresa(empresa);
         venda.setListaPdvVendaDetalhe(new ArrayList<>());
-        venda.setDataHoraVenda(new Date());
-        venda.setStatusVenda(SituacaoVenda.Digitacao.getCodigo());
         vendedor = instanciarVendedor(usuario);
         venda.setVendedor(vendedor);
         venda.setPdvMovimento(movimento);
@@ -185,7 +183,7 @@ public class BalcaoControll implements Serializable {
 
     public String verificarMovimento() {
         try {
-            movimento = FacesUtil.getMovimento();
+            movimento = movimentoService.verificarMovimento();
             if (movimento == null) {
                 return "/modulo/comercial/caixa/movimentos.xhtml";
             } else {
@@ -193,7 +191,8 @@ public class BalcaoControll implements Serializable {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new RuntimeException("Não foi possivel fazer o redirecionamento para o abertura de caixa");
+            Mensagem.addErrorMessage("", ex);
+            return "/modulo/configuracoes/pdvConfiguracao.xhtml";
         }
 
     }

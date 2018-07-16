@@ -3,12 +3,14 @@ package com.chronos.service.comercial;
 import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoVendaDTO;
-import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.AdmParametro;
+import com.chronos.modelo.entidades.NfeCabecalho;
+import com.chronos.modelo.entidades.VendaCabecalho;
+import com.chronos.modelo.entidades.VendaComissao;
 import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.enuns.SituacaoVenda;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.EstoqueRepository;
-import com.chronos.repository.Repository;
 import com.chronos.repository.VendaComissaoRepository;
 import com.chronos.repository.VendaRepository;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
@@ -41,8 +43,6 @@ public class VendaService implements Serializable {
     private VendaRepository repository;
     @Inject
     private NfeService nfeService;
-    @Inject
-    private Repository<PdvVendaCabecalho> pdvRepository;
     @Inject
     private SyncPendentesService syncPendentesService;
 
@@ -77,26 +77,7 @@ public class VendaService implements Serializable {
         return venda;
     }
 
-    @Transactional
-    public void transmitirNFe(PdvVendaCabecalho venda, boolean atualizarEstoque) throws Exception {
 
-        SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getStatusVenda());
-        if (situacao == SituacaoVenda.NotaFiscal) {
-            throw new Exception("Essa venda já possue NFe");
-        }
-        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(ModeloDocumento.NFCE);
-
-        VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, configuracao, venda);
-        NfeCabecalho nfe = vendaNfe.gerarNfe();
-        nfe.setPdv(venda);
-        StatusTransmissao status = transmitirNFe(nfe, configuracao, atualizarEstoque);
-
-        if (status == StatusTransmissao.AUTORIZADA) {
-            venda.setStatusVenda(SituacaoVenda.NotaFiscal.getCodigo());
-            pdvRepository.atualizar(venda);
-            Mensagem.addInfoMessage("NFCe transmitida com sucesso");
-        }
-    }
 
     @Transactional
     public void transmitirNFe(VendaCabecalho venda, ModeloDocumento modelo, boolean atualizarEstoque) {

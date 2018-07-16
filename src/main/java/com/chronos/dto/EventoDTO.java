@@ -10,6 +10,8 @@ public class EventoDTO {
     private int sequencia;
     private String motivo;
     private String protocolo;
+    private String codigoUF;
+    private String ambiente;
 
     public EventoDTO() {
         this.sequencia = 1;
@@ -54,5 +56,21 @@ public class EventoDTO {
 
     public void setProtocolo(String protocolo) {
         this.protocolo = protocolo;
+    }
+
+    public String getCodigoUF() {
+        return codigoUF;
+    }
+
+    public void setCodigoUF(String codigoUF) {
+        this.codigoUF = codigoUF;
+    }
+
+    public String getAmbiente() {
+        return ambiente;
+    }
+
+    public void setAmbiente(String ambiente) {
+        this.ambiente = ambiente;
     }
 }

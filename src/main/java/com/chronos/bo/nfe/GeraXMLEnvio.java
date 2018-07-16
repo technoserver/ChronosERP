@@ -174,8 +174,8 @@ public class GeraXMLEnvio {
         br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento infoEvento = new br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEvento.InfEvento();
         infoEvento.setId(id);
         infoEvento.setChNFe(eventoDTO.getChave());
-        infoEvento.setCOrgao(NfeTransmissao.getInstance().getConfiguracoes().getEstado().getCodigoIbge());
-        infoEvento.setTpAmb(NfeTransmissao.getInstance().getConfiguracoes().getAmbiente());
+        infoEvento.setCOrgao(eventoDTO.getCodigoUF());
+        infoEvento.setTpAmb(eventoDTO.getAmbiente());
         infoEvento.setCNPJ(eventoDTO.getCnpj());
 
         infoEvento.setDhEvento(XmlUtil.dataNfe());
@@ -210,8 +210,8 @@ public class GeraXMLEnvio {
 
         br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento infEvento = new br.inf.portalfiscal.nfe.schema.envcce.TEvento.InfEvento();
         infEvento.setId(id);
-        infEvento.setCOrgao(NfeTransmissao.getInstance().getConfiguracoes().getEstado().getCodigoIbge());
-        infEvento.setTpAmb(NfeTransmissao.getInstance().getConfiguracoes().getAmbiente());
+        infEvento.setCOrgao(evento.getCodigoUF());
+        infEvento.setTpAmb(evento.getAmbiente());
         infEvento.setCNPJ(evento.getCnpj());
         infEvento.setChNFe(evento.getChave());
 

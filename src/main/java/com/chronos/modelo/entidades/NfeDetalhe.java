@@ -128,6 +128,7 @@ public class NfeDetalhe implements Serializable {
         this.quantidadeComercial = quantidadeComercial;
     }
 
+
     public Integer getId() {
         return id;
     }

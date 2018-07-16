@@ -34,6 +34,19 @@ public class PdvTipoPagamento implements Serializable {
         this.id = id;
     }
 
+    public PdvTipoPagamento(Integer id, String codigo) {
+        this.id = id;
+        this.codigo = codigo;
+    }
+
+    public PdvTipoPagamento(Integer id, String codigo, String descricao, String permiteTroco, String geraParcelas) {
+        this.id = id;
+        this.codigo = codigo;
+        this.descricao = descricao;
+        this.permiteTroco = permiteTroco;
+        this.geraParcelas = geraParcelas;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -87,19 +100,50 @@ public class PdvTipoPagamento implements Serializable {
         PdvTipoPagamento tipo;
         switch (codigo) {
             case "01":
-                tipo = new PdvTipoPagamento(1);
+                tipo = new PdvTipoPagamento(1, "01");
                 break;
             case "02":
-                tipo = new PdvTipoPagamento(2);
+                tipo = new PdvTipoPagamento(2, "02");
                 break;
             case "03":
-                tipo = new PdvTipoPagamento(3);
+                tipo = new PdvTipoPagamento(3, "03");
                 break;
             case "04":
-                tipo = new PdvTipoPagamento(4);
+                tipo = new PdvTipoPagamento(4, "04");
                 break;
+
+            case "05":
+                tipo = new PdvTipoPagamento(5, "05");
+                break;
+
+            case "14":
+                tipo = new PdvTipoPagamento(6, "14");
+                break;
+            case "10":
+                tipo = new PdvTipoPagamento(7, "10");
+                break;
+            case "11":
+                tipo = new PdvTipoPagamento(8, "11");
+                break;
+            case "12":
+                tipo = new PdvTipoPagamento(9, "12");
+                break;
+            case "13":
+                tipo = new PdvTipoPagamento(10, "13");
+                break;
+            case "15":
+                tipo = new PdvTipoPagamento(11, "15");
+                break;
+            case "90":
+                tipo = new PdvTipoPagamento(12, "90");
+                break;
+
+            case "99":
+                tipo = new PdvTipoPagamento(13, "99");
+                break;
+
             default:
-                tipo = new PdvTipoPagamento(1);
+                tipo = new PdvTipoPagamento(1, "01");
 
         }
 

@@ -1,20 +1,23 @@
 package com.chronos.service.comercial;
 
+import com.chronos.bo.nfe.VendaToNFe;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoVendaDTO;
-import com.chronos.modelo.entidades.AdmParametro;
-import com.chronos.modelo.entidades.ContaPessoa;
-import com.chronos.modelo.entidades.PdvFormaPagamento;
-import com.chronos.modelo.entidades.PdvVendaCabecalho;
+import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.Modulo;
+import com.chronos.modelo.enuns.SituacaoVenda;
+import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.enuns.TipoLancamento;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.financeiro.ContaPessoaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.financeiro.MovimentoService;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -45,6 +48,11 @@ public class VendaPdvService implements Serializable {
 
     @Inject
     private SyncPendentesService syncPendentesService;
+
+    @Inject
+    private NfeService nfeService;
+
+
 
     @Transactional
     public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda){
@@ -89,5 +97,30 @@ public class VendaPdvService implements Serializable {
         }
 
 
+    }
+
+
+    @Transactional
+    public void transmitirNFe(PdvVendaCabecalho venda, boolean atualizarEstoque) throws Exception {
+
+        SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getStatusVenda());
+        if (situacao == SituacaoVenda.NotaFiscal) {
+            throw new Exception("Essa venda já possue NFe");
+        }
+        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(ModeloDocumento.NFCE);
+
+        VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, configuracao, venda);
+        NfeCabecalho nfe = vendaNfe.gerarNfe();
+        nfe.setAmbiente(configuracao.getWebserviceAmbiente());
+        nfe.setPdv(venda);
+        nfe.setCsc(configuracao.getCsc());
+        StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
+
+
+        if (status == StatusTransmissao.AUTORIZADA) {
+            venda.setStatusVenda(SituacaoVenda.NotaFiscal.getCodigo());
+            repository.atualizar(venda);
+            Mensagem.addInfoMessage("NFCe transmitida com sucesso");
+        }
     }
 }
