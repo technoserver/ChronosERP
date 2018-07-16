@@ -1,6 +1,5 @@
 package com.chronos.bo.nfe;
 
-import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.TipoVenda;
 import com.chronos.repository.Repository;
@@ -32,37 +31,34 @@ public class VendaToNFe extends ManualCDILookup {
     private TipoVenda tipoVenda;
     private TributOperacaoFiscal operacaoFiscal;
     private NfeUtil nfeUtil;
-    private ConfiguracaoEmissorDTO configuracao;
 
-    public VendaToNFe(ModeloDocumento modelo, ConfiguracaoEmissorDTO configuracao, VendaCabecalho venda) {
+
+    public VendaToNFe(ModeloDocumento modelo, VendaCabecalho venda) {
         this.modelo = modelo;
         this.venda = venda;
         cliente = venda.getCliente();
         empresa = venda.getEmpresa();
         tipoVenda = TipoVenda.VENDA;
-        this.configuracao = configuracao;
         nfeUtil = new NfeUtil();
 
     }
 
-    public VendaToNFe(ModeloDocumento modelo, ConfiguracaoEmissorDTO configuracao, OsAbertura os) {
+    public VendaToNFe(ModeloDocumento modelo, OsAbertura os) {
         this.modelo = modelo;
         this.os = os;
         cliente = os.getCliente();
         empresa = os.getEmpresa();
         tipoVenda = TipoVenda.OS;
-        this.configuracao = configuracao;
         nfeUtil = new NfeUtil();
 
     }
 
-    public VendaToNFe(ModeloDocumento modelo, ConfiguracaoEmissorDTO configuracao, PdvVendaCabecalho pdvVenda) {
+    public VendaToNFe(ModeloDocumento modelo, PdvVendaCabecalho pdvVenda) {
         this.modelo = modelo;
         this.pdvVenda = pdvVenda;
         cliente = instanciaCliente(pdvVenda);
         empresa = pdvVenda.getEmpresa();
         tipoVenda = TipoVenda.PDV;
-        this.configuracao = configuracao;
         nfeUtil = new NfeUtil();
 
     }
@@ -124,6 +120,7 @@ public class VendaToNFe extends ManualCDILookup {
 
     private void definirEmitente() {
         NfeEmitente emitente = nfeUtil.getEmitente(empresa);
+        emitente.setNfeCabecalho(nfe);
         nfe.setEmitente(emitente);
     }
 

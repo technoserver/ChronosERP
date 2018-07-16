@@ -5,7 +5,7 @@
 <!-- *** ICP-Brasil - Projeto Nota Fiscal Eletrônica ***-->
 <!-- ***************************************************-->
 <!-- Schema for XML Signatures-->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+<schema xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns="http://www.w3.org/2001/XMLSchema"
         targetNamespace="http://www.w3.org/2000/09/xmldsig#" elementFormDefault="qualified"
         attributeFormDefault="unqualified" version="0.1">
     <element name="Signature" type="ds:SignatureType"/>

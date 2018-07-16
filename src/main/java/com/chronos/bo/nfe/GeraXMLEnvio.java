@@ -98,6 +98,10 @@ public class GeraXMLEnvio {
         TNFe.InfNFe.Cobr cobr = getCobr(nfeCabecalho.getFatura(), nfeCabecalho.getListaDuplicata());
         infNfe.setCobr(cobr);
 
+        // Pagamentos
+        TNFe.InfNFe.Pag pag = getPag(nfeCabecalho.getListaNfeFormaPagamento());
+        infNfe.setPag(pag);
+
 
         // detalhes
         for (NfeDetalhe nfeDetalhe : nfeCabecalho.getListaNfeDetalhe()) {
@@ -125,7 +129,7 @@ public class GeraXMLEnvio {
 
         // Monta EnviNfe
         TEnviNFe enviNFe = new TEnviNFe();
-        enviNFe.setVersao("3.10");
+        enviNFe.setVersao("4.00");
         enviNFe.setIdLote("1");
         enviNFe.setIndSinc("1");
         enviNFe.getNFe().add(nfe);
@@ -149,6 +153,7 @@ public class GeraXMLEnvio {
                     "000001", nfeCabecalho.getCsc(), url);
             InfNFeSupl infNFeSupl = new InfNFeSupl();
             infNFeSupl.setQrCode(qrCode);
+            infNFeSupl.setUrlChave(url);
             enviNFe.getNFe().get(0).setInfNFeSupl(infNFeSupl);
 
 
@@ -243,7 +248,7 @@ public class GeraXMLEnvio {
     private InfNFe getInfNFe() {
         InfNFe infNfe = new InfNFe();
         infNfe.setId("NFe" + nfeCabecalho.getChaveAcessoCompleta());
-        infNfe.setVersao("3.10");
+        infNfe.setVersao("4.00");
 
         return infNfe;
     }
@@ -264,10 +269,10 @@ public class GeraXMLEnvio {
         ide.setCMunFG(nfeCabecalho.getCodigoMunicipio().toString());
         ide.setTpImp(String.valueOf(nfeCabecalho.getFormatoImpressaoDanfe()));
         ide.setTpEmis(String.valueOf(nfeCabecalho.getTipoEmissao()));
-        ide.setVerProc(nfeCabecalho.getVersaoProcessoEmissao());
+        ide.setVerProc("4.0.0.3");
         ide.setTpAmb(String.valueOf(nfeCabecalho.getAmbiente()));
         ide.setFinNFe(String.valueOf(nfeCabecalho.getFinalidadeEmissao()));
-        ide.setProcEmi(String.valueOf(nfeCabecalho.getProcessoEmissao()));
+        ide.setProcEmi("0");
         ide.setCDV(nfeCabecalho.getDigitoChaveAcesso());
         ide.setIdDest(String.valueOf(nfeCabecalho.getLocalDestino()));
         ide.setIndFinal(String.valueOf(nfeCabecalho.getConsumidorOperacao()));
@@ -502,7 +507,7 @@ public class GeraXMLEnvio {
     private Prod getProd(NfeDetalhe nfeDetalhe) {
         Prod prod = new Prod();
 
-        String ean = (nfeDetalhe.getGtin() == null) ? "" : nfeDetalhe.getGtin();
+        String ean = StringUtils.isEmpty(nfeDetalhe.getGtin()) ? "SEM GTIN" : nfeDetalhe.getGtin();
         prod.setCProd(nfeDetalhe.getCodigoProduto());
         prod.setCEAN(ean);
         prod.setXProd(nfeDetalhe.getNomeProduto());

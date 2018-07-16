@@ -54,6 +54,8 @@ public interface Repository<T> {
 
     T get(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
 
+    <T> T getNamedQuery(Class<T> clazz, String namedQuery, Object... atributos) throws PersistenceException;
+
     Optional<T> getOptional(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
 
     T get(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException;

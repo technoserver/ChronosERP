@@ -84,13 +84,14 @@ public class OsService implements Serializable {
     @Transactional
     public void transmitirNFe(OsAbertura os, ModeloDocumento modelo, boolean atualizarEstoque) throws Exception {
 
-        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(modelo);
-        NfeCabecalho nfe;
-        VendaToNFe vendaNfe = new VendaToNFe(modelo, configuracao, os);
-        nfe = vendaNfe.gerarNfe();
-        nfe.setCsc(configuracao.getCsc());
-        nfe.setOs(os);
 
+        NfeCabecalho nfe;
+        VendaToNFe vendaNfe = new VendaToNFe(modelo, os);
+        nfe = vendaNfe.gerarNfe();
+        nfe.setOs(os);
+        ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getModeloDocumento(), true);
+        nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
+        nfe.setCsc(configuracaoEmissorDTO.getCsc());
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
         if (status == StatusTransmissao.AUTORIZADA) {
             String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";

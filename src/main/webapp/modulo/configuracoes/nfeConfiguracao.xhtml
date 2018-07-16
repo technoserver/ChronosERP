@@ -10,22 +10,22 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        NFCe configuracao
+        NFe Configuração
     </ui:define>
 
     <ui:define name="tela">
-        #{nfceConfiguracaoControll.titulo}
+        #{nfeConfiguracaoControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        NFCe configuracao
+        NFe Configuração
     </ui:define>
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{nfceConfiguracaoControll}"
-                       idDataTable="dataTableNfceConfiguracao"
-                       nomeFuncao="NFCe configuracao"
+        <erp:gridDados controller="#{nfeConfiguracaoControll}"
+                       idDataTable="dataTableCfop"
+                       nomeFuncao=" NFe Configuração"
                        id="telaGrid"
         >
 
@@ -35,44 +35,35 @@
 
             <p:column headerText="Processo Emissão">
                 <h:outputLabel
-                        value="#{nfceConfiguracaoControll.keyFromValue(nfceConfiguracaoControll.webserviceAmbiente,row.webserviceAmbiente)}"/>
+                        value="#{nfeConfiguracaoControll.keyFromValue(nfeConfiguracaoControll.webserviceAmbiente,row.webserviceAmbiente)}"/>
             </p:column>
+
+
         </erp:gridDados>
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{nfceConfiguracaoControll}"
-                                   nomeFuncao="NFCe configuracao"
+        <erp:telaInclusaoAlteracao controller="#{nfeConfiguracaoControll}"
+                                   nomeFuncao=" NFe Configuração"
                                    id="telaDetalhe"
         >
 
             <div class="row">
                 <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
                                  idComponente="emissorAmbiente" label="Ambiente"
-                                 nomeAtributo="#{nfceConfiguracaoControll.objeto.webserviceAmbiente}"
-                                 itens="#{nfceConfiguracaoControll.webserviceAmbiente}"/>
+                                 nomeAtributo="#{nfeConfiguracaoControll.objeto.webserviceAmbiente}"
+                                 itens="#{nfeConfiguracaoControll.webserviceAmbiente}"/>
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
-                                idComponente="csc" label="Csc" requerido="true"
-                                nomeAtributo="#{nfceConfiguracaoControll.objeto.codigoCsc}"
-                                tamanhoMaximo="32" tamanhoMinimo="32"/>
-
-                <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
-                                  label="Caixa"
-                                  itemLabel="#{objeto.nome}"
-                                  controller="#{nfceConfiguracaoControll}"
-                                  completeMethod="getListaPdvCaixa"
-                                  nomeAtributo="#{nfceConfiguracaoControll.objeto.pdvCaixa}"
-                                  idComponente="pdvCaixa"/>
 
             </div>
+
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <div class="input-group">
                         <h:outputLabel value="Caminho Logo :" for="caminhoLogo"/>
                         <h:inputText
-                                value="#{nfceConfiguracaoControll.objeto.caminhoLogomarca}"
+                                value="#{nfeConfiguracaoControll.objeto.caminhoLogomarca}"
                                 id="caminhoLogo" class="form-control input-sm" maxlength="255"
                                 readonly="true"/>
                         <span class="input-group-btn">
@@ -94,15 +85,17 @@
                                 exibirInfo="true"
                                 somenteLeitura="true"
                                 mensangemInfo="o caminho para o schema será definido ao salvar as configuracoes"
-                                nomeAtributo="#{nfceConfiguracaoControll.objeto.caminhoSchemas}"
+                                nomeAtributo="#{nfeConfiguracaoControll.objeto.caminhoSchemas}"
                                 tamanhoMaximo="255"/>
             </div>
+
 
             <div class="row">
                 <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
                                     idComponente="obsPadrao" label="Observacão Padrão"
-                                    nomeAtributo="#{nfceConfiguracaoControll.objeto.observacaoPadrao}"/>
+                                    nomeAtributo="#{nfeConfiguracaoControll.objeto.observacaoPadrao}"/>
             </div>
+
 
         </erp:telaInclusaoAlteracao>
     </ui:define>
@@ -117,7 +110,7 @@
                     <div class="row">
 
                         <p:fileUpload id="uploadLogo"
-                                      fileUploadListener="#{nfceConfiguracaoControll.uploadLogomarca}"
+                                      fileUploadListener="#{nfeConfiguracaoControll.uploadLogomarca}"
                                       mode="advanced" fileLimit="1" allowTypes="/(\.|\/)(png)$/"
                                       update=":formCentro:growl,:formCentro:telaDetalhe:caminhoLogo"
                                       oncomplete="PF('dialogLogo').hide();"

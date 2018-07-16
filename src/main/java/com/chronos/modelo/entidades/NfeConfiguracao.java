@@ -17,12 +17,6 @@ public class NfeConfiguracao implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "CERTIFICADO_DIGITAL_SERIE")
-    private String certificadoDigitalSerie;
-    @Column(name = "CERTIFICADO_DIGITAL_CAMINHO")
-    private String certificadoDigitalCaminho;
-    @Column(name = "CERTIFICADO_DIGITAL_SENHA")
-    private String certificadoDigitalSenha;
     @Column(name = "TIPO_EMISSAO")
     private Integer tipoEmissao;
     @Column(name = "FORMATO_IMPRESSAO_DANFE")
@@ -57,20 +51,6 @@ public class NfeConfiguracao implements Serializable {
     private String webserviceProxySenha;
     @Column(name = "WEBSERVICE_VISUALIZAR")
     private String webserviceVisualizar;
-    @Column(name = "EMAIL_SERVIDOR_SMTP")
-    private String emailServidorSmtp;
-    @Column(name = "EMAIL_PORTA")
-    private Integer emailPorta;
-    @Column(name = "EMAIL_USUARIO")
-    private String emailUsuario;
-    @Column(name = "EMAIL_SENHA")
-    private String emailSenha;
-    @Column(name = "EMAIL_ASSUNTO")
-    private String emailAssunto;
-    @Column(name = "EMAIL_AUTENTICA_SSL")
-    private String emailAutenticaSsl;
-    @Column(name = "EMAIL_TEXTO")
-    private String emailTexto;
     @Column(name = "observacao_padrao")
     private String observacaoPadrao;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
@@ -80,9 +60,8 @@ public class NfeConfiguracao implements Serializable {
     public NfeConfiguracao() {
     }
 
-    public NfeConfiguracao(Integer id, String certificadoDigitalSenha, Integer webserviceAmbiente) {
+    public NfeConfiguracao(Integer id, Integer webserviceAmbiente) {
         this.id = id;
-        this.certificadoDigitalSenha = certificadoDigitalSenha;
         this.webserviceAmbiente = webserviceAmbiente;
     }
 
@@ -94,29 +73,6 @@ public class NfeConfiguracao implements Serializable {
         this.id = id;
     }
 
-    public String getCertificadoDigitalSerie() {
-        return certificadoDigitalSerie;
-    }
-
-    public void setCertificadoDigitalSerie(String certificadoDigitalSerie) {
-        this.certificadoDigitalSerie = certificadoDigitalSerie;
-    }
-
-    public String getCertificadoDigitalCaminho() {
-        return certificadoDigitalCaminho;
-    }
-
-    public void setCertificadoDigitalCaminho(String certificadoDigitalCaminho) {
-        this.certificadoDigitalCaminho = certificadoDigitalCaminho;
-    }
-
-    public String getCertificadoDigitalSenha() {
-        return certificadoDigitalSenha;
-    }
-
-    public void setCertificadoDigitalSenha(String certificadoDigitalSenha) {
-        this.certificadoDigitalSenha = certificadoDigitalSenha;
-    }
 
     public Integer getTipoEmissao() {
         return tipoEmissao;
@@ -252,62 +208,6 @@ public class NfeConfiguracao implements Serializable {
 
     public void setWebserviceVisualizar(String webserviceVisualizar) {
         this.webserviceVisualizar = webserviceVisualizar;
-    }
-
-    public String getEmailServidorSmtp() {
-        return emailServidorSmtp;
-    }
-
-    public void setEmailServidorSmtp(String emailServidorSmtp) {
-        this.emailServidorSmtp = emailServidorSmtp;
-    }
-
-    public Integer getEmailPorta() {
-        return emailPorta;
-    }
-
-    public void setEmailPorta(Integer emailPorta) {
-        this.emailPorta = emailPorta;
-    }
-
-    public String getEmailUsuario() {
-        return emailUsuario;
-    }
-
-    public void setEmailUsuario(String emailUsuario) {
-        this.emailUsuario = emailUsuario;
-    }
-
-    public String getEmailSenha() {
-        return emailSenha;
-    }
-
-    public void setEmailSenha(String emailSenha) {
-        this.emailSenha = emailSenha;
-    }
-
-    public String getEmailAssunto() {
-        return emailAssunto;
-    }
-
-    public void setEmailAssunto(String emailAssunto) {
-        this.emailAssunto = emailAssunto;
-    }
-
-    public String getEmailAutenticaSsl() {
-        return emailAutenticaSsl;
-    }
-
-    public void setEmailAutenticaSsl(String emailAutenticaSsl) {
-        this.emailAutenticaSsl = emailAutenticaSsl;
-    }
-
-    public String getEmailTexto() {
-        return emailTexto;
-    }
-
-    public void setEmailTexto(String emailTexto) {
-        this.emailTexto = emailTexto;
     }
 
     public Empresa getEmpresa() {

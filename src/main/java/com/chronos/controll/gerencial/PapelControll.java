@@ -6,7 +6,12 @@ import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.entidades.PapelFuncao;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TransferEvent;
+import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.DualListModel;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,9 +33,22 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
     private Repository<Funcao> funcaoRepository;
 
     private List<PapelFuncao> listaPapelFuncao;
+    private List<Funcao> funcoes;
+    private List<Funcao> funcoestarget;
+    private DualListModel<Funcao> listModel;
     private PapelFuncao papelFuncao;
     private PapelFuncao papelFuncaoSelecionado;
 
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        funcoes = funcaoRepository.getEntitys(Funcao.class, new Object[]{"nome"});
+        funcoestarget = new ArrayList<>();
+        listModel = new DualListModel<Funcao>();
+        ;
+    }
 
     @Override
     public void doCreate() {
@@ -47,6 +65,9 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
         } else {
             listaPapelFuncao = new ArrayList<>();
         }
+        listModel = new DualListModel<Funcao>(funcoes, funcoestarget);
+        ;
+
     }
 
     @Override
@@ -103,6 +124,27 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
         return funcoes;
     }
 
+    public void onTransfer(TransferEvent event) {
+        StringBuilder builder = new StringBuilder();
+
+        for (PapelFuncao papel : listaPapelFuncao) {
+            builder.append(papel.getFuncao()).append("<br />");
+        }
+
+    }
+
+    public void onSelect(SelectEvent event) {
+
+    }
+
+    public void onUnselect(UnselectEvent event) {
+
+    }
+
+    public void onReorder() {
+
+    }
+
     @Override
     protected Class<Papel> getClazz() {
         return Papel.class;
@@ -140,5 +182,13 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
 
     public void setPapelFuncaoSelecionado(PapelFuncao papelFuncaoSelecionado) {
         this.papelFuncaoSelecionado = papelFuncaoSelecionado;
+    }
+
+    public DualListModel<Funcao> getListModel() {
+        return listModel;
+    }
+
+    public void setListModel(DualListModel<Funcao> listModel) {
+        this.listModel = listModel;
     }
 }

@@ -262,12 +262,8 @@ public class NfeCabecalho implements Serializable {
         this.emitente.setNfeCabecalho(this);
         this.destinatario = new NfeDestinatario();
         this.destinatario.setNfeCabecalho(this);
-        this.localEntrega = new NfeLocalEntrega();
-        this.localEntrega.setNfeCabecalho(this);
-        this.localRetirada = new NfeLocalRetirada();
-        this.localRetirada.setNfeCabecalho(this);
-        this.transporte = new NfeTransporte();
-        this.transporte.setNfeCabecalho(this);
+
+
         this.fatura = new NfeFatura();
         this.fatura.setNfeCabecalho(this);
 
@@ -276,8 +272,6 @@ public class NfeCabecalho implements Serializable {
         this.listaCteReferenciado = new HashSet<>();
         this.listaProdRuralReferenciada = new HashSet<>();
         this.listaCupomFiscalReferenciado = new HashSet<>();
-        this.transporte.setListaTransporteReboque(new HashSet<>());
-        this.transporte.setListaTransporteVolume(new HashSet<>());
         this.listaDuplicata = new LinkedHashSet<>();
         this.listaNfeDetalhe = new ArrayList<>();
         this.listaNfeFormaPagamento = new HashSet<>();

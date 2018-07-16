@@ -72,21 +72,9 @@ public class ConfiguracaoEmissorDTO {
     public ConfiguracaoEmissorDTO() {
     }
 
-    public ConfiguracaoEmissorDTO(NfeConfiguracao configuracao) {
-        this.certificadoDigitalSenha = configuracao.getCertificadoDigitalSenha();
-        this.certificadoDigitalCaminho = configuracao.getCertificadoDigitalCaminho();
-        this.caminhoLogomarca = configuracao.getCaminhoLogomarca();
-        this.caminhoSchemas = configuracao.getCaminhoSchemas();
-        this.observacaoPadrao = configuracao.getObservacaoPadrao();
-        this.webserviceAmbiente = configuracao.getWebserviceAmbiente();
-        this.processoEmissao = configuracao.getProcessoEmissao();
-        this.modelo = 65;
-
-    }
 
     public ConfiguracaoEmissorDTO(PdvConfiguracao configuracao) {
-        this.certificadoDigitalSenha = configuracao.getCertificadoDigitalSenha();
-        this.certificadoDigitalCaminho = configuracao.getCertificadoDigitalCaminho();
+
         this.caminhoLogomarca = configuracao.getCaminhoLogomarca();
         this.caminhoSchemas = configuracao.getCaminhoSchemas();
         this.observacaoPadrao = configuracao.getObservacaoPadrao();
@@ -94,7 +82,42 @@ public class ConfiguracaoEmissorDTO {
         this.processoEmissao = configuracao.getProcessoEmissao();
         this.csc = configuracao.getCodigoCsc();
 
+        this.modelo = 65;
+    }
+
+    public ConfiguracaoEmissorDTO(ConfiguracaoNfeDTO configuracao) {
+        this.certificadoDigitalCaminho = configuracao.getCertificadoDigitalCaminho();
+        this.certificadoDigitalSenha = configuracao.getCertificadoDigitalSenha();
+        this.caminhoLogomarca = configuracao.getCaminhoLogomarca();
+        this.caminhoSchemas = configuracao.getCaminhoSchemas();
+        this.observacaoPadrao = configuracao.getObservacaoPadrao();
+        this.webserviceAmbiente = configuracao.getWebserviceAmbiente();
+        this.webserviceUf = configuracao.getWebserviceUf();
         this.modelo = 55;
+    }
+
+    public ConfiguracaoEmissorDTO(NfeConfiguracao configuracao) {
+        this.caminhoLogomarca = configuracao.getCaminhoLogomarca();
+        this.caminhoSchemas = configuracao.getCaminhoSchemas();
+        this.observacaoPadrao = configuracao.getObservacaoPadrao();
+        this.webserviceAmbiente = configuracao.getWebserviceAmbiente();
+        this.processoEmissao = configuracao.getProcessoEmissao();
+
+
+        this.modelo = 55;
+    }
+
+    public ConfiguracaoEmissorDTO(ConfiguracaoPdvDTO configuracao) {
+
+        this.certificadoDigitalCaminho = configuracao.getCertificadoDigitalCaminho();
+        this.certificadoDigitalSenha = configuracao.getCertificadoDigitalSenha();
+        this.caminhoLogomarca = configuracao.getCaminhoLogomarca();
+        this.caminhoSchemas = configuracao.getCaminhoSchemas();
+        this.observacaoPadrao = configuracao.getObservacaoPadrao();
+        this.webserviceAmbiente = configuracao.getWebserviceAmbiente();
+        this.webserviceUf = configuracao.getWebserviceUf();
+        this.csc = configuracao.getCsc();
+        this.modelo = 65;
     }
 
 

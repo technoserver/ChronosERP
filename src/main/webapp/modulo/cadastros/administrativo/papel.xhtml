@@ -19,7 +19,14 @@
     <ui:define name="controle">
         papel
     </ui:define>
+    <ui:define name="css">
+        <style type="text/css">
+            .ui-picklist.ui-picklist-responsive .ui-picklist-list-wrapper {
+                width: 44% !important;
+            }
+        </style>
 
+    </ui:define>
 
     <ui:define name="gridDados">
 
@@ -141,6 +148,7 @@
                     </div>
                 </div>
 
+
                 <div class="row">
                     <div class="col-md-12">
                         <p:dataTable value="#{papelControll.listaPapelFuncao}"
@@ -219,15 +227,11 @@
 
                 <p:outputPanel id="panelPermissao">
                     <div class="row">
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
-                                          label="Função"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{papelControll}"
-                                          completeMethod="getListFuncao"
-                                          nomeAtributo="#{papelControll.papelFuncao.funcao}"
-                                          idComponente="papelFuncao"/>
-
-
+                        <div class="col-md-12 m-b m-t">
+                            <p:pickList id="pickList" value="#{papelControll.listModel}"
+                                        var="row" itemLabel="#{row.nome}" itemValue="#{row}"
+                                        showCheckbox="true" responsive="true"/>
+                        </div>
                     </div>
                     <div class="row">
                         <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"

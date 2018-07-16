@@ -200,13 +200,6 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
 
         nfe.getFatura().setNfeCabecalho(nfe);
 
-        if (modelo == ModeloDocumento.NFE) {
-            nfe.getLocalEntrega().setNfeCabecalho(nfe);
-
-            nfe.getLocalRetirada().setNfeCabecalho(nfe);
-
-            nfe.getTransporte().setNfeCabecalho(nfe);
-        }
 
         return nfe;
     }

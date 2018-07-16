@@ -178,10 +178,6 @@
                                  exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
                                  funcao="statusNfe"/>
 
-                    <erp:subMenu caminho="/modulo/comercial/nfe/nfeConfiguracao"
-                                 label="Configuração"
-                                 exibir="#{seguranca.isTemAcesso('STATUS_NFE')}"
-                                 funcao="/nfe/nfeConfiguracao"/>
 
                     <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/relatorios/')?'active':''}">
                         <a href="#">Relatorios <span class="fa arrow"></span></a>

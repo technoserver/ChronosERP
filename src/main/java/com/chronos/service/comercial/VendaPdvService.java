@@ -107,13 +107,14 @@ public class VendaPdvService implements Serializable {
         if (situacao == SituacaoVenda.NotaFiscal) {
             throw new Exception("Essa venda já possue NFe");
         }
-        ConfiguracaoEmissorDTO configuracao = nfeService.getConfEmisor(ModeloDocumento.NFCE);
 
-        VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, configuracao, venda);
+
+        VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, venda);
         NfeCabecalho nfe = vendaNfe.gerarNfe();
-        nfe.setAmbiente(configuracao.getWebserviceAmbiente());
         nfe.setPdv(venda);
-        nfe.setCsc(configuracao.getCsc());
+        ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getModeloDocumento(), true);
+        nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
+        nfe.setCsc(configuracaoEmissorDTO.getCsc());
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
 

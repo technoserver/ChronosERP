@@ -125,6 +125,17 @@
                                          label="Parametros"
                                          funcao="parametros"/>
 
+
+                            <erp:subMenu caminho="/modulo/configuracoes/certificado"
+                                         label="Certificado"
+                                         funcao="certificado"/>
+
+                            <erp:subMenu caminho="/modulo/configuracoes/nfeConfiguracao"
+                                         label="NF-e"
+                                         exibir="#{seguranca.isTemAcesso('STATUS_NFE')}"
+                                         funcao="/nfeConfiguracao"/>
+
+
                             <erp:subMenu caminho="/modulo/configuracoes/pdvConfiguracao"
                                          label="Configuração PDV"
                                          exibir="#{seguranca.isTemAcesso('NFCE_CONFIGURACAO')}"

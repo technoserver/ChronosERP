@@ -11,10 +11,7 @@ import com.itextpdf.text.log.LoggerFactory;
 import org.primefaces.model.SortOrder;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-import javax.persistence.Query;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -211,6 +208,21 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
 
     @Override
+    public <T> T getNamedQuery(Class<T> clazz, String namedQuery, Object... atributos) throws PersistenceException {
+
+        TypedQuery<T> query = em.createNamedQuery(namedQuery, clazz);
+        if (atributos != null) {
+            for (int i = 0; i < atributos.length; i++) {
+                Object obj = atributos[i];
+                query.setParameter(i + 1, obj);
+
+            }
+        }
+
+        return query.getResultList().stream().findFirst().orElse(null);
+    }
+
+    @Override
     public T get(Integer id, Class<T> clazz) throws PersistenceException {
         return em.find(clazz, id);
     }
@@ -219,6 +231,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     public T get(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
         return get(clazz, atributo, valor, null);
     }
+
 
     @Override
     public Optional<T> getOptional(Class<T> clazz, String atributo, Object valor) throws PersistenceException {

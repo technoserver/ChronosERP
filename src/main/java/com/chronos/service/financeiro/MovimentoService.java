@@ -60,8 +60,13 @@ public class MovimentoService implements Serializable {
 
     @PostConstruct
     private void init() {
-        empresa = FacesUtil.getEmpresaUsuario();
-        movimento = FacesUtil.getMovimento();
+
+        try {
+            empresa = FacesUtil.getEmpresaUsuario();
+            movimento = verificarMovimento();
+        } catch (Exception ex) {
+            Mensagem.addErrorMessage("", ex);
+        }
     }
     @Transactional
     public void iniciarMovimento(BigDecimal valorSuprimento, PdvTurno turno, String operador, String senha) throws Exception {

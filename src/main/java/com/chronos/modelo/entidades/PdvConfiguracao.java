@@ -45,12 +45,6 @@ public class PdvConfiguracao implements Serializable {
     private String codigoCsc;
     @Column(name = "ID_TOKEN_CSC")
     private String idTokenCsc;
-    @Column(name = "CERTIFICADO_DIGITAL_SERIE")
-    private String certificadoDigitalSerie;
-    @Column(name = "CERTIFICADO_DIGITAL_CAMINHO")
-    private String certificadoDigitalCaminho;
-    @Column(name = "CERTIFICADO_DIGITAL_SENHA")
-    private String certificadoDigitalSenha;
     @Column(name = "TIPO_EMISSAO")
     private Integer tipoEmissao;
     @Column(name = "FORMATO_IMPRESSAO_DANFE")
@@ -85,22 +79,7 @@ public class PdvConfiguracao implements Serializable {
     private String webserviceProxySenha;
     @Column(name = "WEBSERVICE_VISUALIZAR")
     private String webserviceVisualizar;
-    @Column(name = "EMAIL_SERVIDOR_SMTP")
-    private String emailServidorSmtp;
-    @Column(name = "EMAIL_PORTA")
-    private Integer emailPorta;
-    @Column(name = "EMAIL_USUARIO")
-    private String emailUsuario;
-    @Column(name = "EMAIL_SENHA")
-    private String emailSenha;
-    @Column(name = "EMAIL_ASSUNTO")
-    private String emailAssunto;
-    @Column(name = "EMAIL_AUTENTICA_SSL")
-    private String emailAutenticaSsl;
-    @Column(name = "EMAIL_TEXTO")
-    private String emailTexto;
-    //@Column(name = "observacao_padrao")
-    @Transient
+    @Column(name = "observacao_padrao")
     private String observacaoPadrao;
     @JoinColumn(name = "ID_PDV_RESOLUCAO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
@@ -113,6 +92,12 @@ public class PdvConfiguracao implements Serializable {
     private Empresa empresa;
 
     public PdvConfiguracao() {
+        setCaminhoArquivoDanfe("");
+        setCaminhoSalvarPdf("S");
+        setCaminhoSchemas("");
+        setFormatoImpressaoDanfe(1);
+        setProcessoEmissao(0);
+        setSalvarXml("S");
     }
 
     public PdvConfiguracao(Integer id, PdvCaixa pdvCaixa) {
@@ -240,29 +225,6 @@ public class PdvConfiguracao implements Serializable {
         this.idTokenCsc = idTokenCsc;
     }
 
-    public String getCertificadoDigitalSerie() {
-        return certificadoDigitalSerie;
-    }
-
-    public void setCertificadoDigitalSerie(String certificadoDigitalSerie) {
-        this.certificadoDigitalSerie = certificadoDigitalSerie;
-    }
-
-    public String getCertificadoDigitalCaminho() {
-        return certificadoDigitalCaminho;
-    }
-
-    public void setCertificadoDigitalCaminho(String certificadoDigitalCaminho) {
-        this.certificadoDigitalCaminho = certificadoDigitalCaminho;
-    }
-
-    public String getCertificadoDigitalSenha() {
-        return certificadoDigitalSenha;
-    }
-
-    public void setCertificadoDigitalSenha(String certificadoDigitalSenha) {
-        this.certificadoDigitalSenha = certificadoDigitalSenha;
-    }
 
     public Integer getTipoEmissao() {
         return tipoEmissao;
@@ -400,61 +362,7 @@ public class PdvConfiguracao implements Serializable {
         this.webserviceVisualizar = webserviceVisualizar;
     }
 
-    public String getEmailServidorSmtp() {
-        return emailServidorSmtp;
-    }
 
-    public void setEmailServidorSmtp(String emailServidorSmtp) {
-        this.emailServidorSmtp = emailServidorSmtp;
-    }
-
-    public Integer getEmailPorta() {
-        return emailPorta;
-    }
-
-    public void setEmailPorta(Integer emailPorta) {
-        this.emailPorta = emailPorta;
-    }
-
-    public String getEmailUsuario() {
-        return emailUsuario;
-    }
-
-    public void setEmailUsuario(String emailUsuario) {
-        this.emailUsuario = emailUsuario;
-    }
-
-    public String getEmailSenha() {
-        return emailSenha;
-    }
-
-    public void setEmailSenha(String emailSenha) {
-        this.emailSenha = emailSenha;
-    }
-
-    public String getEmailAssunto() {
-        return emailAssunto;
-    }
-
-    public void setEmailAssunto(String emailAssunto) {
-        this.emailAssunto = emailAssunto;
-    }
-
-    public String getEmailAutenticaSsl() {
-        return emailAutenticaSsl;
-    }
-
-    public void setEmailAutenticaSsl(String emailAutenticaSsl) {
-        this.emailAutenticaSsl = emailAutenticaSsl;
-    }
-
-    public String getEmailTexto() {
-        return emailTexto;
-    }
-
-    public void setEmailTexto(String emailTexto) {
-        this.emailTexto = emailTexto;
-    }
 
     public PdvResolucao getPdvResolucao() {
         return pdvResolucao;

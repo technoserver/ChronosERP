@@ -21,6 +21,7 @@ import com.chronos.service.ChronosException;
 import com.chronos.transmissor.infra.enuns.FormatoImpressaoDanfe;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import com.chronos.transmissor.init.Configuracoes;
 import com.chronos.transmissor.nfe.Nfe;
 import com.chronos.transmissor.util.ConstantesNFe;
 import com.chronos.transmissor.util.ValidarNFe;
@@ -100,13 +101,51 @@ public class NfeService implements Serializable {
     private boolean salvarXml;
 
     private ConfiguracaoEmissorDTO configuracao;
-
+    private Configuracoes configuracoes;
 
     @PostConstruct
     private void init() {
         empresa = FacesUtil.getEmpresaUsuario();
         context = FacesContext.getCurrentInstance().getExternalContext();
-        NfeTransmissao.getInstance().iniciarConfiguracoes();
+        configuracoes = FacesUtil.getConfEmissor();
+    }
+
+    public ConfiguracaoEmissorDTO instanciarConfNfe(ModeloDocumento modelo, boolean buscar) throws ChronosException {
+
+        if (buscar) {
+            configuracoes = null;
+        }
+        return instanciarConfNfe(modelo);
+    }
+
+    public ConfiguracaoEmissorDTO instanciarConfNfe(ModeloDocumento modelo) throws ChronosException {
+
+        if (configuracoes == null) {
+            if (modelo == ModeloDocumento.NFE) {
+                ConfiguracaoNfeDTO configuracaoNfeDTO = configuracoesNfe.getNamedQuery(ConfiguracaoNfeDTO.class, "Nfe.configuracao", empresa.getId());
+
+                if (configuracaoNfeDTO == null) {
+                    throw new ChronosException("É preciso definir as configuracoes para NF-e");
+                }
+                configuracao = new ConfiguracaoEmissorDTO(configuracaoNfeDTO);
+
+            } else {
+                ConfiguracaoPdvDTO configuracaoPdvDTO = configuracoesNfe.getNamedQuery(ConfiguracaoPdvDTO.class, "Pdv.configuracao", empresa.getId());
+
+                if (configuracaoPdvDTO == null) {
+                    throw new ChronosException("É preciso definir as configuracoes para NF-e");
+                }
+                configuracao = new ConfiguracaoEmissorDTO(configuracaoPdvDTO);
+            }
+            validarConfEmissor(configuracao);
+            configuracoes = NfeTransmissao.getInstance().iniciarConfiguracoes(new ConfEmissorDTO(Integer.valueOf(configuracao.getWebserviceUf()), configuracao.getCaminhoSchemas(),
+                    configuracao.getCertificadoDigitalCaminho(), configuracao.getCertificadoDigitalSenha(), configuracao.getWebserviceAmbiente(), "4.00"));
+        }
+
+
+        return configuracao;
+
+
     }
 
     public NfeCabecalho dadosPadroes(ModeloDocumento modelo) throws Exception {
@@ -121,11 +160,6 @@ public class NfeService implements Serializable {
         nfe.getDestinatario().setNfeCabecalho(nfe);
 
         if (modelo == ModeloDocumento.NFE) {
-            nfe.getLocalEntrega().setNfeCabecalho(nfe);
-
-            nfe.getLocalRetirada().setNfeCabecalho(nfe);
-
-            nfe.getTransporte().setNfeCabecalho(nfe);
 
             nfe.getFatura().setNfeCabecalho(nfe);
 
@@ -137,9 +171,7 @@ public class NfeService implements Serializable {
         definirFormaPagamento(nfe, new PdvTipoPagamento().buscarPorCodigo("01"));
 
 
-        if (configuracao == null || configuracao.getModelo() != modelo.getCodigo()) {
-            configuracao = getConfEmisor(modelo);
-        }
+
 
         if (configuracao != null) {
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
@@ -172,37 +204,11 @@ public class NfeService implements Serializable {
     }
 
 
-
-
-    public ConfiguracaoEmissorDTO getConfEmisor(ModeloDocumento modelo) throws Exception {
-        List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro("empresa.id", empresa.getId()));
-
-        ConfiguracaoEmissorDTO configuracaoDTO;
-
-        if (modelo == ModeloDocumento.NFE) {
-            NfeConfiguracao configuracao = configuracoesNfe.get(NfeConfiguracao.class, filtros);
-            if (configuracao == null) {
-                throw new ChronosException("Configurações da NF-e  não definidas");
-            }
-            configuracaoDTO = new ConfiguracaoEmissorDTO(configuracao);
-        } else {
-            PdvConfiguracao configuracao = configuracoesNfce.get(PdvConfiguracao.class, filtros);
-            if (configuracao == null) {
-                throw new ChronosException("Configurações da NFC-e  não definidas");
-            }
-            configuracaoDTO = new ConfiguracaoEmissorDTO(configuracao);
-        }
-
-
-        return configuracaoDTO;
-    }
-
-    public void setarConfiguracoesNFe(NfeCabecalho nfe, ModeloDocumento modelo) throws Exception {
+    public ConfiguracaoEmissorDTO setarConfiguracoesNFe(NfeCabecalho nfe, ModeloDocumento modelo) throws Exception {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
 
-
+        ConfiguracaoEmissorDTO configuracaoEmissorDTO = null;
         if (modelo == ModeloDocumento.NFE) {
             NfeConfiguracao configuracao = configuracoesNfe.get(NfeConfiguracao.class, filtros);
 
@@ -214,7 +220,7 @@ public class NfeService implements Serializable {
             nfe.setVersaoProcessoEmissao(configuracao.getVersaoProcessoEmissao());
 
             nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
-
+            configuracaoEmissorDTO = new ConfiguracaoEmissorDTO(configuracao);
 
         } else {
             PdvConfiguracao configuracao = configuracoesNfce.get(PdvConfiguracao.class, filtros);
@@ -225,8 +231,10 @@ public class NfeService implements Serializable {
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
             nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
 
-
+            configuracaoEmissorDTO = new ConfiguracaoEmissorDTO(configuracao);
         }
+
+        return configuracaoEmissorDTO;
 
     }
 
@@ -494,9 +502,6 @@ public class NfeService implements Serializable {
 
     public String consultarStatusNfe(ModeloDocumento modelo) throws Exception {
 
-        if (configuracao == null) {
-            configuracao = getConfEmisor(modelo);
-        }
 
         return NfeTransmissao.getInstance().statusServico();
     }
@@ -523,9 +528,7 @@ public class NfeService implements Serializable {
     @Transactional
     public StatusTransmissao transmitirNFe(NfeCabecalho nfe, boolean atualizarEstoque) throws Exception {
         validacaoNfe(nfe);
-        if (configuracao == null) {
-            configuracao = getConfEmisor(nfe.getModeloDocumento());
-        }
+
         VendaCabecalho venda = nfe.getVendaCabecalho();
         OsAbertura os = nfe.getOs();
         PdvVendaCabecalho pdv = nfe.getPdv();
@@ -576,7 +579,7 @@ public class NfeService implements Serializable {
             }
         } else if (retorno.getCStat().equals("215") || retorno.getCStat().equals("225")) {
             status = StatusTransmissao.SCHEMA_INVALIDO;
-            if (org.springframework.util.StringUtils.isEmpty(configuracao.getCaminhoSchemas())) {
+            if (configuracoes == null || org.springframework.util.StringUtils.isEmpty(configuracoes.getPastaSchemas())) {
                 Mensagem.addErrorMessage("Preenchimento do xml invalido para mais detalhes informes o camminho dos schemas para validação");
             } else {
                 String xml = XmlUtil.objectToXml(nfeEnv);
@@ -584,6 +587,8 @@ public class NfeService implements Serializable {
                 Mensagem.addErrorMessage(erroValidacao);
             }
 
+        } else {
+            Mensagem.addErrorMessage(retorno.getXMotivo());
         }
 
         if (salvarXml) {
@@ -782,9 +787,6 @@ public class NfeService implements Serializable {
     public TRetConsSitNFe consultarNfe(String chave, ModeloDocumento modelo) throws Exception {
 
 
-        if (configuracao == null) {
-            configuracao = getConfEmisor(modelo);
-        }
 
         TRetConsSitNFe result = NfeTransmissao.getInstance().consultarNfe(chave);
 
@@ -893,6 +895,10 @@ public class NfeService implements Serializable {
         return tipoPagamento;
     }
 
+    public void cleanConf() {
+        FacesUtil.setConfEmissor(null);
+    }
+
     private void atualizarNumeroNfe(NotaFiscalTipo notaFiscalTipo, int numero) {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro("id", notaFiscalTipo.getId()));
@@ -951,31 +957,29 @@ public class NfeService implements Serializable {
 
     private void iniciarConfEmissor(ModeloDocumento modelo) throws Exception {
 
-        if (configuracao == null) {
-            configuracao = getConfEmisor(modelo);
-        }
+
         validarConfEmissor(configuracao);
 
         if (NfeTransmissao.getInstance().getConfiguracoes() == null) {
             ConfEmissorDTO conf = new ConfEmissorDTO(Integer.valueOf(configuracao.getWebserviceUf()), configuracao.getCaminhoSchemas(),
                     configuracao.getCertificadoDigitalCaminho(), configuracao.getCertificadoDigitalSenha(), configuracao.getWebserviceAmbiente(), "4.00");
-            NfeTransmissao.getInstance().iniciarConfigurações(conf);
+            NfeTransmissao.getInstance().iniciarConfiguracoes(conf);
         }
 
     }
 
-    private void validarConfEmissor(ConfiguracaoEmissorDTO configuracao) throws Exception {
+    private void validarConfEmissor(ConfiguracaoEmissorDTO configuracao) throws ChronosException {
 
         if (configuracao == null) {
-            throw new Exception("Configuração não definida");
+            throw new ChronosException("Configuração não definida");
         } else if (configuracao.getWebserviceAmbiente() == null) {
-            throw new Exception("Ambiente de transmissão não definido");
+            throw new ChronosException("Ambiente de transmissão não definido");
         } else if (configuracao.getWebserviceUf() == null) {
-            throw new Exception("UF de transmissão nao definido");
+            throw new ChronosException("UF de transmissão nao definido");
         } else if (configuracao.getCertificadoDigitalCaminho() == null || configuracao.getCertificadoDigitalSenha() == null) {
-            throw new Exception("Certificado não definido");
+            throw new ChronosException("Certificado não definido");
         } else if (configuracao.getCaminhoSchemas() == null) {
-            throw new Exception("Schemas não definido");
+            throw new ChronosException("Schemas não definido");
         }
 
     }

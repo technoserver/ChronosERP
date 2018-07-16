@@ -77,7 +77,7 @@ public class MdfeTransmissao {
             if (configuracao == null) {
                 throw new Exception("Configurações de transmissão não definidas !");
             }
-            certificado = getCertificaodServidor(configuracao.getCertificadoDigitalSenha());
+
             iniciarConfiguracoes(certificado, configuracao.getWebserviceAmbiente(), configuracao.getCaminhoSchemas());
             if (certificado == null) {
                 throw new Exception("É Necessário informar os dados do certificado antes do envio !");

@@ -162,10 +162,10 @@ public class NfeTransmissao {
     }
 
 
-    public void iniciarConfigurações(ConfEmissorDTO conf) throws ChronosException {
+    public Configuracoes iniciarConfiguracoes(ConfEmissorDTO conf) throws ChronosException {
 
         try {
-            // Certificado Arquivo, Parametros: -Caminho Certificado, - Senha
+
             Certificado certificado = CertificadoService.certificadoPfx(conf.getCaminhoCertificado(), conf.getSenhaCertificado());
 
             configuracoes = Configuracoes.iniciaConfiguracoes(Estados.getUFbyIbge(conf.getCodigoUf().toString()), conf.getWebserviceAmbiente().toString(),
@@ -177,6 +177,7 @@ public class NfeTransmissao {
             throw new ChronosException("Erro ao iniciar as configurações de NF-e", ex.getCause());
         }
 
+        return configuracoes;
     }
 
 

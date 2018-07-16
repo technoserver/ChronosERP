@@ -97,6 +97,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void doCreate() {
         try {
             super.doCreate();
+            nfeService.instanciarConfNfe(ModeloDocumento.NFE);
             getObjeto().setDestinatario(new NfeDestinatario());
             getObjeto().getDestinatario().setNfeCabecalho(getObjeto());
 
@@ -121,10 +122,13 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
             tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getPdvTipoPagamento();
             setObjeto(nfe);
+            nfeService.instanciarConfNfe(ModeloDocumento.NFE);
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
             dadosSalvos = true;
         } catch (Exception ex) {
             ex.printStackTrace();
+            this.setTelaGrid(true);
+            Mensagem.addFatalMessage("Erro ao editar NFE. ", ex);
         }
     }
 
