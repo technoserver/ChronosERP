@@ -21,7 +21,7 @@ import java.util.Optional;
 @DynamicUpdate
 public class PdvVendaCabecalho implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,12 +77,24 @@ public class PdvVendaCabecalho implements Serializable {
     private List<PdvVendaDetalhe> listaPdvVendaDetalhe;
     @OneToMany(mappedBy = "pdvVendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<PdvFormaPagamento> listaFormaPagamento;
-
+    @Transient
+    private String caixa;
 
     public PdvVendaCabecalho() {
         this.dataHoraVenda = new Date();
         this.sicronizado = "N";
         this.statusVenda = SituacaoVenda.Digitacao.getCodigo();
+    }
+
+    public PdvVendaCabecalho(Integer id, Date dataHoraVenda, BigDecimal valorSubtotal, BigDecimal valorDesconto, BigDecimal valorTotal, String nomeCliente, String statusVenda, String caixa) {
+        this.id = id;
+        this.dataHoraVenda = dataHoraVenda;
+        this.valorSubtotal = valorSubtotal;
+        this.valorDesconto = valorDesconto;
+        this.valorTotal = valorTotal;
+        this.nomeCliente = nomeCliente;
+        this.statusVenda = statusVenda;
+        this.caixa = caixa;
     }
 
     public Integer getId() {
@@ -243,6 +255,14 @@ public class PdvVendaCabecalho implements Serializable {
 
     public void setListaFormaPagamento(List<PdvFormaPagamento> listaFormaPagamento) {
         this.listaFormaPagamento = listaFormaPagamento;
+    }
+
+    public String getCaixa() {
+        return caixa;
+    }
+
+    public void setCaixa(String caixa) {
+        this.caixa = caixa;
     }
 
     public BigDecimal calcularTotalDesconto() {

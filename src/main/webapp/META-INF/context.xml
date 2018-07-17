@@ -15,9 +15,9 @@
               maxStatements="50"
               minPoolSize="5"
               name="jdbc/chronosAdminDB"
-              password="p@ssw0rd"
+              password="aplicacao"
               type="com.mchange.v2.c3p0.ComboPooledDataSource"
-              user="postgres"/>
+              user="aplicacao"/>
 
     <Resource acquireIncrement="1"
               auth="Container"
@@ -29,8 +29,8 @@
               maxStatements="50"
               minPoolSize="5"
               name="jdbc/chronosLightDB"
-              password="p@ssw0rd"
+              password="aplicacao"
               type="com.mchange.v2.c3p0.ComboPooledDataSource"
-              user="postgres"/>
+              user="aplicacao"/>
 
 </Context>

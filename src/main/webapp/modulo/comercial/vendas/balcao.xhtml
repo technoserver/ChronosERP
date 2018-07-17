@@ -382,7 +382,7 @@
             <p:outputPanel rendered="#{balcaoControll.telaGrid}" id="telaGrid">
                 <div class="ibox-content">
 
-                    <erp:msgPermissao permissao="#{vendaCabecalhoControll.podeConsultar()}"/>
+
                     <p:dataTable
                             value="#{balcaoControll.dataModel}"
                             var="row" id="tableVenda" paginator="true"
@@ -390,6 +390,11 @@
                             reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
                             resizableColumns="true" lazy="true" sortBy="#{row.id}" sortOrder="descending"
                     >
+
+                        <p:column headerText="Caixa" width="120">
+                            <h:outputLabel value="#{row.caixa}"/>
+                        </p:column>
+
                         <p:column headerText="Cliente" width="130">
                             <h:outputLabel value="#{row.nomeCliente == null ? 'Não identificado': row.nomeCliente}"/>
                         </p:column>

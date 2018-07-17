@@ -144,6 +144,9 @@ public class BalcaoControll implements Serializable {
             dataModel.setDao(vendas);
             dataModel.setClazz(PdvVendaCabecalho.class);
         }
+        Object[] atributos = new Object[]{"dataHoraVenda","valorSubtotal", "valorDesconto", "valorTotal", "nomeCliente",
+                "statusVenda","pdvMovimento.pdvCaixa.nome"};
+        dataModel.setAtributos(atributos);
         return dataModel;
     }
 

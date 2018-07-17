@@ -98,6 +98,12 @@
             <artifactId>hibernate-core</artifactId>
             <version>5.2.4.Final</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jboss-logging</artifactId>
+                    <groupId>org.jboss.logging</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Implementação de EntityManager da JPA -->
@@ -114,6 +120,12 @@
             <artifactId>hibernate-c3p0</artifactId>
             <version>5.2.4.Final</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <artifactId>jboss-logging</artifactId>
+            <groupId>org.jboss.logging</groupId>
+            <version>3.2.0.Final</version>
         </dependency>
 
         <!-- Weld (implementação do CDI) -->
@@ -259,6 +271,12 @@
             <artifactId>jasperreports</artifactId>
             <version>6.0.3</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
