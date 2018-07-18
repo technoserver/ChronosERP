@@ -86,7 +86,8 @@ public interface Repository<T> {
     List<T> getEntitys(Class<T> clazz) throws PersistenceException;    
     
     List<T> getEntitys(Class<T> clazz,Object[] atributos) throws PersistenceException;
-    
+
+    <T> List<T> getEntitysNamedQuery(Class<T> clazz, String namedQuery, Object... atributos) throws PersistenceException;
     
     List<T> getEntitys(Class<T> clazz, List<Filtro> filters) throws PersistenceException;
     

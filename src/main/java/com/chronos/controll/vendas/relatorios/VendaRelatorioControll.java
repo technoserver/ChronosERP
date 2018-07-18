@@ -1,6 +1,7 @@
 package com.chronos.controll.vendas.relatorios;
 
 import com.chronos.controll.AbstractRelatorioControll;
+import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
 import com.chronos.modelo.entidades.Vendedor;
 import com.chronos.repository.Repository;
@@ -25,6 +26,8 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     private Repository<Vendedor> vendedorRepository;
     @Inject
     private Repository<PdvVendaCabecalho> pdvRepository;
+    @Inject
+    private Repository<PdvMovimento> movimentoRepository;
 
     private Date dataInicial;
     private Date dataFinal;

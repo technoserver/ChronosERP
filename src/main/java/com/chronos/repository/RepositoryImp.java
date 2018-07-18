@@ -375,6 +375,21 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
+    public <T> List<T> getEntitysNamedQuery(Class<T> clazz, String namedQuery, Object... atributos) throws PersistenceException {
+
+        TypedQuery<T> query = em.createNamedQuery(namedQuery, clazz);
+        if (atributos != null) {
+            for (int i = 0; i < atributos.length; i++) {
+                Object obj = atributos[i];
+                query.setParameter(i + 1, obj);
+
+            }
+        }
+
+        return query.getResultList();
+    }
+
+    @Override
     public List<T> getEntitys(Class<T> clazz, List<Filtro> filtros) throws PersistenceException {
         Object atributos[] = null;
         return getEntitys(clazz, filtros, atributos);

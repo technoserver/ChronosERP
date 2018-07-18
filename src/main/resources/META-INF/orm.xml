@@ -40,6 +40,74 @@
     </named-native-query>
 
 
+    <named-native-query name="Pdv.movimento" result-set-mapping="movimentoPdvMapping">
+        <query>
+            SELECT
+            concat(m.id , s.id , 1) AS id,
+            o.login as operador,
+            m.id AS idmovimento,
+            s.id AS idorigem,
+            s.data_sangria AS data_hora,
+            'Saída - Sangria' AS descricao,
+            s.valor,
+            '01' AS codigo_forma_pagamento,
+            'Dinheiro' AS forma_pagamento,
+            'S' AS tipo,
+            'Sangria' AS origem,
+            s.observacao
+            FROM pdv_movimento m
+            JOIN pdv_sangria s ON s.id_pdv_movimento = m.id
+            JOIN pdv_operador o ON o.id = m.id_pdv_operador
+            WHERE (m.id = ?1)
+            and data_abertura BETWEEN ?2 and ?3
+            UNION
+            SELECT
+            concat(m.id , s.id , 2) AS id,
+            o.login as operador,
+            m.id AS idmovimento,
+            s.id AS idorigem,
+            s.data_suprimento AS data_hora,
+            'Entrada - Acrécimo' AS descricao,
+            s.valor,
+            '01' AS codigo_forma_pagamento,
+            'Dinheiro' AS forma_pagamento,
+            'E' AS tipo,
+            'Suprimentos' AS origem,
+            s.observacao
+            FROM
+            pdv_movimento m
+            JOIN pdv_suprimento s ON s.id_pdv_movimento = m.id
+            JOIN pdv_operador o ON o.id = m.id_pdv_operador
+            WHERE (m.id = ?1)
+            and data_abertura BETWEEN ?2 and ?3
+            UNION
+            SELECT
+            concat(m.id , f.id , 3) AS id,
+            o.login as operador,
+            m.id AS idmovimento,
+            v.id AS idorigem,
+            v.data_hora_venda AS data_hora,
+            ('Venda n°' || v.id) || '(PDV)' AS descricao,
+            f.valor-f.troco,
+            t.codigo AS codigo_forma_pagamento,
+            t.descricao AS forma_pagamento,
+            'E' AS tipo,
+            'VENDA' AS origem,
+            '' AS observacao
+            FROM pdv_movimento m
+            JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
+            JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
+            JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
+            JOIN pdv_operador o ON o.id = m.id_pdv_operador
+            WHERE (m.id = ?1)
+            and data_abertura BETWEEN ?2 and ?3
+            and (v.status_venda = 'E' or v.status_venda = 'F')
+            ORDER BY 5,8;
+        </query>
+
+    </named-native-query>
+
+
     <sql-result-set-mapping name="configuracaoNfeMapping">
         <constructor-result target-class="com.chronos.dto.ConfiguracaoNfeDTO">
             <column name="caminho" class="java.lang.String"/>
@@ -64,6 +132,23 @@
             <column name="id_token_csc" class="java.lang.String"/>
             <column name="mensagem_cupom" class="java.lang.String"/>
             <column name="observacao_padrao"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="movimentoPdvMapping">
+        <constructor-result target-class="com.chronos.dto.PdvMovimentoDTO">
+            <column name="id" class="java.lang.Integer"/>
+            <column name="operador" class="java.lang.String"/>
+            <column name="idmovimento" class="java.lang.Integer"/>
+            <column name="idorigem" class="java.lang.Integer"/>
+            <column name="data_hora" class="java.util.Date"/>
+            <column name="descricao" class="java.lang.String"/>
+            <column name="valor" class="java.math.BigDecimal"/>
+            <column name="codigo_forma_pagamento" class="java.lang.String"/>
+            <column name="forma_pagamento" class="java.lang.String"/>
+            <column name="tipo" class="java.lang.String"/>
+            <column name="origem" class="java.lang.String"/>
+            <column name="observacao" class="java.lang.String"/>
         </constructor-result>
     </sql-result-set-mapping>
 

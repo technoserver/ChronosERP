@@ -256,10 +256,14 @@
                                             icon="fa fa-print" ajax="false">
                                     <f:param name="idmovimento" value="#{row.id}"/>
                                 </p:menuitem>
-
+                                <p:menuitem value="Movimento"
+                                            target="blank"
+                                            outcome="/modulo/comercial/caixa/relatorio/movimentoCaixaAnalitico"
+                                            icon="fa fa-print" ajax="false">
+                                    <f:param name="idmovimento" value="#{row.id}"/>
+                                </p:menuitem>
                             </p:menuButton>
 
-                            <!--<p:menuitem value="Movimento"-->
 
                             <!--icon="fa fa-print" ajax="false"/>-->
                         </p:column>
