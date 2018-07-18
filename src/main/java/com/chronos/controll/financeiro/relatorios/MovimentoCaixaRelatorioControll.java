@@ -6,6 +6,7 @@ import com.chronos.dto.PdvMovimentoDTO;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.view.ViewMovimentoCaixa;
 import com.chronos.repository.Repository;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 @Named
@@ -112,6 +114,24 @@ public class MovimentoCaixaRelatorioControll extends AbstractRelatorioControll i
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public void imprimirMovimento(int id) {
+
+
+        try {
+            Date dataInicial = new SimpleDateFormat("yyyy-MM-dd").parse("0001-01-01");
+            Date dataFinal = new Date();
+            parametros = new HashMap<>();
+            parametros.put("idmovimento", id);
+
+            String caminhoRelatorio = "/relatorios/financeiro";
+            String nomeRelatorio = "movimentoDetalhado.jasper";
+
+            executarRelatorio(caminhoRelatorio, nomeRelatorio, "movimento.pdf");
+        } catch (Exception ex) {
+            Mensagem.addErrorMessage("", ex);
         }
     }
 

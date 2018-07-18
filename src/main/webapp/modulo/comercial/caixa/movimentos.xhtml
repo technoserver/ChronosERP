@@ -262,6 +262,10 @@
                                             icon="fa fa-print" ajax="false">
                                     <f:param name="idmovimento" value="#{row.id}"/>
                                 </p:menuitem>
+                                <p:menuitem value="Movimento PDF"
+                                            action="#{movimentoCaixaRelatorioControll.imprimirMovimento(row.id)}"
+                                            icon="fa fa-print" ajax="false">
+                                </p:menuitem>
                             </p:menuButton>
 
 
