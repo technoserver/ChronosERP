@@ -86,13 +86,14 @@ public class PdvVendaCabecalho implements Serializable {
         this.statusVenda = SituacaoVenda.Digitacao.getCodigo();
     }
 
-    public PdvVendaCabecalho(Integer id, Date dataHoraVenda, BigDecimal valorSubtotal, BigDecimal valorDesconto, BigDecimal valorTotal, String nomeCliente, String statusVenda, String caixa) {
+    public PdvVendaCabecalho(Integer id, Date dataHoraVenda, BigDecimal valorSubtotal, BigDecimal valorDesconto, BigDecimal valorTotal, String nomeCliente, String sicronizado, String statusVenda, String caixa) {
         this.id = id;
         this.dataHoraVenda = dataHoraVenda;
         this.valorSubtotal = valorSubtotal;
         this.valorDesconto = valorDesconto;
         this.valorTotal = valorTotal;
         this.nomeCliente = nomeCliente;
+        this.sicronizado = sicronizado;
         this.statusVenda = statusVenda;
         this.caixa = caixa;
     }
