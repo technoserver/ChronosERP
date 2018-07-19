@@ -230,7 +230,11 @@
                         <div class="col-md-12 m-b m-t">
                             <p:pickList id="pickList" value="#{papelControll.listModel}"
                                         var="row" itemLabel="#{row.nome}" itemValue="#{row}"
-                                        showCheckbox="true" responsive="true"/>
+                                        converter="defaultConverter"
+                                        showCheckbox="true" responsive="true">
+
+                                <p:ajax event="transfer" listener="#{papelControll.onTransfer}"/>
+                            </p:pickList>
                         </div>
                     </div>
                     <div class="row">

@@ -1,6 +1,8 @@
 
 package com.chronos.modelo.entidades;
 
+import com.chronos.bo.cadastro.ItemToledo;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -612,6 +614,12 @@ public class Produto implements Serializable {
 
     public void setControle(BigDecimal controle) {
         this.controle = controle;
+    }
+
+    public String montarItemBalancaToledo() {
+        ItemToledo item = new ItemToledo();
+        item.setProduto(this);
+        return item.montarItem();
     }
 
     @Override

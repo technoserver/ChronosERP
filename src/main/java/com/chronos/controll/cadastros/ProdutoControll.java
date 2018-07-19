@@ -13,7 +13,9 @@ import com.chronos.modelo.view.ViewProdutoEmpresa;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.ArquivoUtil;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
+import org.apache.commons.io.FileUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.UploadedFile;
@@ -23,6 +25,7 @@ import org.springframework.util.StringUtils;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -325,6 +328,31 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             Mensagem.addErrorMessage("Não foi possivel buscar as informações das empresas!", ex);
         }
 
+    }
+
+
+    public void gerarTxtToledo() {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro(Filtro.AND, "codigoBalanca", Filtro.NAO_NULO, ""));
+        filtros.add(new Filtro("unidadeProduto.podeFracionar", "S"));
+        try {
+            List<Produto> produtos = dao.getEntitys(Produto.class, filtros);
+            if (!produtos.isEmpty()) {
+                File file = File.createTempFile("produtos", ".txt");
+
+                List<String> linhas = new ArrayList<>();
+                produtos.forEach(p -> {
+                    linhas.add(p.montarItemBalancaToledo());
+                });
+                FileUtils.writeLines(file, linhas);
+                FacesUtil.downloadArquivo(file, "produtos.txt");
+            } else {
+                Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
+            }
+
+        } catch (Exception ex) {
+            Mensagem.addErrorMessage("", ex);
+        }
     }
 
     @Override

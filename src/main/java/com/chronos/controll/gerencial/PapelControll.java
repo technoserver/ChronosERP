@@ -6,12 +6,12 @@ import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.entidades.PapelFuncao;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TransferEvent;
-import org.primefaces.event.UnselectEvent;
 import org.primefaces.model.DualListModel;
+import org.springframework.beans.BeanUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,7 +46,7 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
         super.init();
         funcoes = funcaoRepository.getEntitys(Funcao.class, new Object[]{"nome"});
         funcoestarget = new ArrayList<>();
-        listModel = new DualListModel<Funcao>();
+        listModel = new DualListModel<Funcao>(funcoes, funcoestarget);
         ;
     }
 
@@ -54,6 +54,7 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
     public void doCreate() {
         super.doCreate();
         listaPapelFuncao = new ArrayList<>();
+        funcoestarget = new ArrayList<>();
     }
 
     @Override
@@ -65,13 +66,15 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
         } else {
             listaPapelFuncao = new ArrayList<>();
         }
-        listModel = new DualListModel<Funcao>(funcoes, funcoestarget);
+
         ;
 
     }
 
     @Override
     public void salvar() {
+
+
         super.salvar();
         if (getObjeto().getAcessoCompleto().equals("S")) {
             listaPapelFuncao.stream().forEach(pf -> {
@@ -107,11 +110,38 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
     }
 
     public void salvarPermissao() {
-        if (!listaPapelFuncao.contains(papelFuncao)) {
-            listaPapelFuncao.add(papelFuncao);
+
+
+        if (funcoestarget.isEmpty()) {
+            Mensagem.addInfoMessage("Não foi definido funcções");
+            FacesContext.getCurrentInstance().validationFailed();
+        } else {
+
+            for (Funcao f : funcoestarget) {
+                PapelFuncao pf = new PapelFuncao();
+                BeanUtils.copyProperties(papelFuncao, pf, "funcao");
+                pf.setFuncao(f);
+                if (!listaPapelFuncao.contains(pf)) {
+                    listaPapelFuncao.add(pf);
+                }
+            }
+
+
+            Mensagem.addInfoMessage("Permissão salva com sucesso");
         }
-        Mensagem.addInfoMessage("Permissão salva com sucesso");
+
+
     }
+
+    public void onTransfer(TransferEvent event) {
+        funcoestarget = new ArrayList<>();
+        for (Object item : event.getItems()) {
+            Funcao funcao = (Funcao) item;
+            funcoestarget.add(funcao);
+        }
+
+    }
+
 
 
     public List<Funcao> getListFuncao(String nome) {
@@ -124,26 +154,8 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
         return funcoes;
     }
 
-    public void onTransfer(TransferEvent event) {
-        StringBuilder builder = new StringBuilder();
 
-        for (PapelFuncao papel : listaPapelFuncao) {
-            builder.append(papel.getFuncao()).append("<br />");
-        }
 
-    }
-
-    public void onSelect(SelectEvent event) {
-
-    }
-
-    public void onUnselect(UnselectEvent event) {
-
-    }
-
-    public void onReorder() {
-
-    }
 
     @Override
     protected Class<Papel> getClazz() {
