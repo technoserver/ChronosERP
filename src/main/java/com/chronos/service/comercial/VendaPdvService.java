@@ -75,7 +75,7 @@ public class VendaPdvService implements Serializable {
                     finLancamentoReceberService.gerarLancamento(venda.getId(), p.getValor(),venda.getCliente(),p.getCondicao(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
                 }
 
-                if (p.getPdvTipoPagamento().getCodigo().equals("07")) {
+                if (p.getPdvTipoPagamento().getCodigo().equals("05")) {
                     ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
 
                     if (conta == null || conta.getSaldo().compareTo(p.getValor()) <= 0) {

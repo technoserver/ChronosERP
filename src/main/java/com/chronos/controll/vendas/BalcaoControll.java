@@ -434,7 +434,7 @@ public class BalcaoControll implements Serializable {
             } else {
                 if (cliente == null && tipoPagamento.getGeraParcelas().equals("S")) {
                     Mensagem.addErrorMessage("Para gera contas a receber é preciso informar um cliente");
-                } else if (cliente == null && tipoPagamento.getCodigo().equals("07")) {
+                } else if (cliente == null && tipoPagamento.getCodigo().equals("05")) {
                     Mensagem.addErrorMessage("Para pagamento com crédito é preciso informa um cliente");
                 } else if (tipoPagamento.getCodigo().equals("03") && operadoraCartao == null) {
                     Mensagem.addErrorMessage("Para pagamento com Cartão de crédito é preciso informa uma operadora");

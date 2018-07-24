@@ -11,7 +11,7 @@
         <meta content="" name="author" />
         <link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet"/>
 
-        <style>
+        <style type="text/css">
             body,
             html {
                 height: 100%
@@ -163,14 +163,17 @@
         <div id="page-container" class="fade">
             <!-- begin error -->
             <div class="error">
-                <div class="error-code m-b-10">Perido de acesso invalido<i class="fa fa-warning"></i></div>
+                <p>
+                    <i class="fa fa-warning" style="font-size: 100px;color: #2d353c;"></i>
+                </p>
+                <div class="error-code m-b-10">Período de acesso inválido</div>
                 <div class="error-content">
                     <div class="error-message">
                         O seu período de acesso acabou! Não se preocupe que os seus dados estão seguros. Para liberar o sistema você precisa escolher um plano e realizar o pagamento.
                     </div>
                     <div class="error-desc m-b-20">
                         Entre em contato com a Softhouse. <br />
-                        Chronosinfo &amp; Tecnoserver.
+
                     </div>
                     <div>
                         <a href="#{facesContext.externalContext.request.contextPath}/logout"  class="btn">Voltar</a>
