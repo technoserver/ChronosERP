@@ -87,8 +87,8 @@
                                              styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
                         </p:confirmDialog>
                         <p:growl id="growl" life="3000" sticky="true"  />
-
-                        <div class="ibox float-e-margins">
+                        <ui:insert name="telaVazia"/>
+                        <div class="ibox float-e-margins" id="box-principal">
 
                             <h:panelGroup layout="block" class="ibox-title" id="mensagem">
                                 <h5><ui:insert name="tela"></ui:insert></h5>
@@ -99,9 +99,10 @@
                             </h:panelGroup>
 
                             <ui:insert name="gridDados"></ui:insert>
-                            <ui:insert name="telaInclusaoAlteracao" id="gridForm" />
+                            <ui:insert name="telaInclusaoAlteracao"/>
 
                         </div>
+
                     </h:form> 
 
 

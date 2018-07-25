@@ -8,6 +8,7 @@
                 xmlns:h="http://java.sun.com/jsf/html">
 
     <ui:define name="css">
+        <h:outputStylesheet library="css" name="vendor/c3.min.css"/>
         <style type="text/css">
             #dock-container {
                 position: fixed;
@@ -67,138 +68,185 @@
     <ui:define name="title">
         Home
     </ui:define>
-
-    <ui:define name="tela">
-        DashBoard
-    </ui:define>
     <ui:define name="controle">
         Dashboard
     </ui:define>
-    <ui:define name="telaInclusaoAlteracao">
-        <h:outputStylesheet library="css" name="vendor/c3.min.css"/>
-        <div class="ibox-content">
 
-            <h:panelGroup layout="block" class="row" id="financeiro">
-                <h:inputHidden id="reusumoContas" value="#{homeControll.jsonResumoContas}"/>
 
-                <div class="col-md-4">
+    <ui:define name="telaVazia">
+        <h:inputHidden id="reusumoContas" value="#{homeControll.jsonResumoContas}"/>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h3 class="text-warning margin-top-0 padding-left-15px padding-right-15px">
+                            <i class="fa fa-cogs margin-right-5px "></i>
+                            Configurações
+                        </h3>
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <a class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>Paramentros
+                                </a>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
 
-                    <h3 style="font-weight: bold;margin-bottom: 20px">Contas a Pagar/Receber pagas no mês</h3>
-                    <div id="chartResumo"></div>
+                                <a class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa icon-certificatethree text-primary"></i>Certificado
+                                </a>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+
+                                <a class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>NF-e
+                                </a>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+
+                                <a class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>PDV
+                                </a>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+
+                                <a class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>MDF-e
+                                </a>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+
+                                <a class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>Documentos Fiscais
+                                </a>
+                            </div>
+
+                        </div>
+                        <h3 class="text-primary margin-top-0 padding-left-15px padding-right-15px"><i
+                                class="fa fa-hand-o-right margin-right-5px "></i>Acesso rápido</h3>
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/comercial/vendas/balcao"
+                                        class="btn btn-app"
+                                        style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-shopping-cart text-primary"></i>PDV
+                                </h:link>
+
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/comercial/os/osAbertura"
+                                        class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>OS
+                                </h:link>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/comercial/nfe/nfe"
+                                        class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>
+                                    NF-e
+                                </h:link>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/cadastros/comercial/cliente"
+                                        class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa icon-groups-friends text-primary"></i>Clientes
+                                </h:link>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/cadastros/comercial/fornecedor"
+                                        class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>Fornecedores
+                                </h:link>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/cadastros/pessoal/colaborador/colaborador"
+                                        class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>Colaborador
+                                </h:link>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/cadastros/pessoal/pessoa" class="btn btn-app"
+                                        style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>Pessoas
+                                </h:link>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/financeiro/pagamento/finPagamento"
+                                        class="btn btn-app" style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>Contas a pagar
+                                </h:link>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/financeiro/recebimento/finRecebimento" class="btn btn-app"
+                                        style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-gear text-primary"></i>Contas a Receber
+                                </h:link>
+                            </div>
+                        </div>
+                    </div>
+
 
                 </div>
-                <div class="col-md-4">
-                    <h3 style="font-weight: bold;margin-bottom: 20px">Contas a Pagar/Receber vencidas no mês</h3>
-
-                    <div id="chartResumo2"></div>
-
-                </div>
-                <div class="col-md-4">
-                    <h3 style="font-weight: bold;margin-bottom: 20px">Contas a Pagar/Receber a vencer com 7 dias</h3>
-
-                    <div id="chartResumo3"></div>
-
-                </div>
-            </h:panelGroup>
-            <h:panelGroup layout="block" class="row" id="vendas">
-
-            </h:panelGroup>
-
-            <h:panelGroup layout="block" class="row" id="pessoal">
-                <div class="col-md-12">
-                    <h3 style="font-weight: bold;margin-bottom: 20px">Compromissos</h3>
-                    <p:dataTable id="dataTableCompromisso" var="obj"
-                                 value="#{homeControll.compromissos}"
-                                 paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
-                                 resizableColumns="true" paginatorPosition="bottom">
-
-
-                        <p:column headerText="Data" width="100">
-                            <h:outputLabel value="#{obj.dataCompromisso}">
-                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
-                        </p:column>
-                        <p:column headerText="Hora" width="80">
-                            <h:outputLabel value="#{obj.hora}"/>
-                        </p:column>
-                        <p:column headerText="Descrição">
-                            <h:outputLabel value="#{obj.descricao}"/>
-                        </p:column>
-                        <p:column headerText="Local">
-                            <h:outputLabel value="#{obj.onde}"/>
-                        </p:column>
-
-                    </p:dataTable>
-                </div>
-            </h:panelGroup>
-
-            <div class="row">
-                <div id="dock-container">
-                    <ul>
-                        <li>
-                            <span>PDV</span>
-                            <h:link outcome="/modulo/comercial/vendas/balcao">
-                                <h:graphicImage library="images" name="pdv.png"/>
-                            </h:link>
-
-                        </li>
-                        <li>
-                            <span>OS</span>
-                            <h:link outcome="/modulo/comercial/os/osAbertura">
-                                <h:graphicImage library="images" name="FerramentaChamado.png"/>
-                            </h:link>
-
-                        </li>
-                        <li>
-                            <span>NFe</span>
-                            <h:link outcome="/modulo/comercial/nfe/nfe">
-                                <h:graphicImage library="images" name="nfe.png"/>
-                            </h:link>
-
-                        </li>
-                        <li>
-                            <span>Clientes</span>
-                            <h:link outcome="/modulo/cadastros/comercial/cliente">
-                                <h:graphicImage library="images" name="cliente.ico"/>
-                            </h:link>
-                        </li>
-                        <li>
-                            <span>Fornecedor</span>
-                            <h:link outcome="/modulo/cadastros/comercial/fornecedor">
-                                <h:graphicImage library="images" name="fornecedor.png"/>
-                            </h:link>
-                        </li>
-                        <li>
-                            <span>Colaborador</span>
-                            <h:link outcome="/modulo/cadastros/pessoal/colaborador/colaborador">
-                                <h:graphicImage library="images" name="colaborador.png"/>
-                            </h:link></li>
-                        <li>
-                            <span>Pessoas</span>
-                            <h:link outcome="/modulo/cadastros/pessoal/pessoa">
-                                <h:graphicImage library="images" name="pessoas.png"/>
-                            </h:link>
-                        </li>
-                        <li>
-                            <span>Pagamentos</span>
-                            <h:link outcome="/modulo/financeiro/pagamento/finPagamento">
-                                <h:graphicImage library="images" name="pagar.png"/>
-                            </h:link>
-                        </li>
-                        <li>
-                            <span>Recebimentos</span>
-                            <h:link outcome="/modulo/financeiro/recebimento/finRecebimento">
-                                <h:graphicImage library="images" name="receber.png"/>
-                            </h:link>
-                        </li>
-                    </ul>
-                </div>
-
             </div>
-            <br/><br/><br/><br/><br/><br/>
         </div>
-        <div class="ibox-footer">
 
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h4 style="font-weight: bold;margin-bottom: 20px">Contas a Pagar/Receber pagas no mês</h4>
+                        <div id="chartResumo"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h4 style="font-weight: bold;margin-bottom: 20px">Contas a Pagar/Receber vencidas no mês</h4>
+
+                        <div id="chartResumo2"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h4 style="font-weight: bold;margin-bottom: 20px">Contas a Pagar/Rec. a vencer com 7 dias</h4>
+
+                        <div id="chartResumo3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </ui:define>
+
+    <ui:define name="telaInclusaoAlteracao">
+        <div class="ibox-content">
+            <h3 style="font-weight: bold;margin-bottom: 20px">Compromissos</h3>
+            <p:dataTable id="dataTableCompromisso" var="obj"
+                         value="#{homeControll.compromissos}"
+                         paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
+                         resizableColumns="true" paginatorPosition="bottom">
+
+
+                <p:column headerText="Data" width="100">
+                    <h:outputLabel value="#{obj.dataCompromisso}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Hora" width="80">
+                    <h:outputLabel value="#{obj.hora}"/>
+                </p:column>
+                <p:column headerText="Descrição">
+                    <h:outputLabel value="#{obj.descricao}"/>
+                </p:column>
+                <p:column headerText="Local">
+                    <h:outputLabel value="#{obj.onde}"/>
+                </p:column>
+
+            </p:dataTable>
         </div>
     </ui:define>
 

@@ -88,8 +88,8 @@
                                      exibir="#{seguranca.isTemAcesso('VENDA')}"
                                      funcao="modulo/comercial/vendas/vendas"/>
                         <erp:subMenu caminho="/modulo/comercial/vendas/balcao"
-                                     label="Balcao"
-                                     exibir="#{seguranca.isTemAcesso('BALCAO')}"
+                                     label="PDV"
+                                     exibir="#{seguranca.isTemAcesso('FRENTE_CAIXA')}"
                                      funcao="modulo/comercial/vendas/balcao"/>
 
 
@@ -208,10 +208,7 @@
                     <!--<erp:subMenu caminho="/modulo/comercial/nfce/movimentoCaixa"-->
                     <!--label="Movimentos Caixas"-->
                     <!--funcao="movimentoCaixa"/>-->
-                    <erp:subMenu caminho="/modulo/comercial/nfce/pdv"
-                                 label="PDV"
-                                 exibir="#{seguranca.isTemAcesso('NFCE')}"
-                                 funcao="pdv"/>
+
                     <erp:subMenu caminho="/modulo/comercial/nfce/listaPdv"
                                  label="Lista NFCe"
                                  exibir="#{seguranca.isTemAcesso('NFCE')}"

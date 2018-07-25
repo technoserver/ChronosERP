@@ -14,10 +14,10 @@
     </ui:define>
 
     <ui:define name="tela">
-        Caixa Movimento
+        Pdv
     </ui:define>
     <ui:define name="controle">
-        Caixa Movimento
+        Movimento
     </ui:define>
     <ui:define name="css">
         <h:outputStylesheet library="css" name="pdv.css"/>
@@ -188,30 +188,32 @@
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{true}"
                                  resizableColumns="true" lazy="true"
+                                 sortBy="#{row.dataAbertura}"
+                                 sortOrder="DESCENDING"
                                  class="js-data-table">
 
-                        <p:column headerText="Caixa" width="65">
+                        <p:column headerText="Caixa" width="80" sortBy="#{row.pdvCaixa.codigo}">
                             <h:outputLabel value="#{row.pdvCaixa.codigo}"/>
                         </p:column>
 
-                        <p:column headerText="Abertura" width="100">
+                        <p:column headerText="Abertura" width="110" sortBy="#{row.dataAbertura}">
                             <h:outputLabel value="#{row.dataAbertura}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Fechamento" width="120">
+                        <p:column headerText="Fechamento" width="135" sortBy="#{row.dataFechamento}">
                             <h:outputLabel value="#{row.dataFechamento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
 
 
-                        <p:column headerText="Supri." class="coluna-monetaria">
+                        <p:column headerText="Supri." class="coluna-monetaria" width="90">
                             <h:outputLabel value="#{row.totalSuprimento}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Sangria" class="coluna-monetaria">
+                        <p:column headerText="Sangria" class="coluna-monetaria" width="80">
                             <h:outputLabel value="#{row.totalSangria}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
@@ -221,33 +223,28 @@
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Desc." class="coluna-monetaria">
+                        <p:column headerText="Desc." class="coluna-monetaria" width="80">
                             <h:outputLabel value="#{row.totalDesconto}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Recebido" class="coluna-monetaria">
+                        <p:column headerText="Recebido" class="coluna-monetaria" width="90">
                             <h:outputLabel value="#{row.totalRecebido}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Troco" class="coluna-monetaria" width="90">
-                            <h:outputLabel value="#{row.totalTroco}">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                        </p:column>
-                        <p:column headerText="Total" class="coluna-monetaria">
+                        <p:column headerText="Total" class="coluna-monetaria" style="text-align: right">
                             <h:outputLabel value="#{row.totalFinal}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Status" class="coluna-monetaria" width="85">
+                        <p:column headerText="Status" class="coluna-monetaria" width="70">
                             <h:outputLabel value="Fechado" styleClass="label label-success"
                                            rendered="#{row.statusMovimento eq 'F'}"/>
                             <h:outputLabel value="Aberto" styleClass="label label-info"
                                            rendered="#{row.statusMovimento eq 'A'}"/>
                         </p:column>
-                        <p:column headerText="Ações" class="text-center" width="70">
+                        <p:column headerText="Ações" class="text-center" width="65">
                             <p:menuButton>
 
                                 <p:menuitem value="Resumo"
