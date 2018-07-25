@@ -49,7 +49,7 @@ public class EntradaNotaFiscalService implements Serializable {
 
         Integer idempresa = nfe.getEmpresa().getId();
         AdmParametro parametro = FacesUtil.getParamentos();
-
+        nfe.setNaturezaOperacao(nfe.getTributOperacaoFiscal().getDescricaoNaNf());
         if (nfe.getId() == null) {
             inclusao = true;
             for (NfeDetalhe detalhe : nfe.getListaNfeDetalhe()) {

@@ -9,6 +9,7 @@ import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
@@ -97,6 +98,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void doCreate() {
         try {
             super.doCreate();
+
             nfeService.instanciarConfNfe(ModeloDocumento.NFE);
             getObjeto().setDestinatario(new NfeDestinatario());
             getObjeto().getDestinatario().setNfeCabecalho(getObjeto());
@@ -108,9 +110,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
             this.setActiveTabIndex(0);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            this.setTelaGrid(true);
-            Mensagem.addFatalMessage("Erro ao criar a NFe. ", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addFatalMessage("Erro ao criar a NFe. ", ex);
+            } else {
+                throw new RuntimeException("Erro ao criar a NFe. ", ex);
+            }
         }
 
     }
@@ -388,6 +392,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
         }
     }
+
     public void cancelaNfe() {
 
         try {
@@ -477,7 +482,6 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Diversos">
 
 
-
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Pesquisas">
@@ -547,7 +551,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         List<Produto> listaProduto = new ArrayList<>();
 
         try {
-            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao,false);
+            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao, false);
             listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();

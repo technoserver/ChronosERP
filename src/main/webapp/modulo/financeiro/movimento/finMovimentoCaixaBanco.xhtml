@@ -92,39 +92,32 @@
                                     </div>
                                     <p:dataTable id="dataTableFinMovimentoCaixaBancoDetalhe" var="obj"
                                                  value="#{finMovimentoCaixaBancoControll.listaMovimentoCaixaBanco}"
-                                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                                 paginator="true" rows="50" rowsPerPageTemplate="50,100,150,200"
                                                  resizableColumns="true" paginatorPosition="bottom">
 
-
-                                        <p:column headerText="Operacao">
-                                            <h:outputLabel
-                                                    value="#{obj.viewFinMovimentoCaixaBanco.operacao eq 'E'?'ENTRADA':'SAIDA'}"/>
-                                        </p:column>
-                                        <p:column headerText="Conta Caixa">
+                                        <p:column headerText="Conta" width="150">
                                             <h:outputLabel
                                                     value="#{obj.viewFinMovimentoCaixaBanco.nomeContaCaixa}"/>
                                         </p:column>
+
+
                                         <p:column headerText="Pessoa">
                                             <h:outputLabel
                                                     value="#{obj.viewFinMovimentoCaixaBanco.nomePessoa}"/>
                                         </p:column>
-                                        <p:column headerText="Data Lancamento">
+                                        <p:column headerText="Lancamento" width="125" styleClass="text-center">
                                             <h:outputLabel
                                                     value="#{obj.viewFinMovimentoCaixaBanco.dataLancamento}">
                                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Data Pago/Recebido">
+                                        <p:column headerText="Pago/Recebido" width="140" styleClass="text-center">
                                             <h:outputLabel
                                                     value="#{obj.viewFinMovimentoCaixaBanco.dataPagoRecebido}">
                                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Histórico">
-                                            <h:outputLabel
-                                                    value="#{obj.viewFinMovimentoCaixaBanco.historico}"/>
-                                        </p:column>
-                                        <p:column headerText="Valor">
+                                        <p:column headerText="Valor" styleClass="text-right" width="110">
                                             <h:outputLabel value="#{obj.viewFinMovimentoCaixaBanco.valor}">
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputLabel>
@@ -132,6 +125,10 @@
                                         <p:column headerText="Doc. Origem">
                                             <h:outputLabel
                                                     value="#{obj.viewFinMovimentoCaixaBanco.descricaoDocumentoOrigem}"/>
+                                        </p:column>
+                                        <p:column headerText="Tipo" width="55" styleClass="text-center">
+                                            <h:outputLabel
+                                                    value="#{obj.viewFinMovimentoCaixaBanco.operacao eq 'E'?'C':'D'}"/>
                                         </p:column>
 
                                     </p:dataTable>

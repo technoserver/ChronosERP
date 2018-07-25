@@ -33,20 +33,21 @@
             <p:column headerText="Fornecedor">
                 <h:outputLabel value="#{row.fornecedor.pessoa.nome}"/>
             </p:column>
-            <p:column headerText="Serie" width="60">
+            <p:column headerText="Serie" width="60" styleClass="text-center">
                 <h:outputLabel value="#{row.serie}"/>
             </p:column>
-            <p:column headerText="Numero" width="100">
+            <p:column headerText="Número" width="100" styleClass="text-center">
                 <h:outputLabel value="#{row.numero}"/>
             </p:column>
-            <p:column headerText="Data Entrada" width="140" sortBy="#{row.dataHoraEntradaSaida}">
+            <p:column headerText="Data Entrada" width="140" sortBy="#{row.dataHoraEntradaSaida}"
+                      styleClass="text-center">
                 <h:outputLabel value="#{row.dataHoraEntradaSaida}">
-                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="Data Emissao" width="140">
+            <p:column headerText="Data Emissao" width="140" styleClass="text-center">
                 <h:outputLabel value="#{row.dataHoraEmissao}">
-                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
                 </h:outputLabel>
             </p:column>
             <p:column headerText="Valor Total" width="100" style="text-align: right">

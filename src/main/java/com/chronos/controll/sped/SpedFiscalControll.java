@@ -2,6 +2,7 @@ package com.chronos.controll.sped;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Contador;
+import com.chronos.service.ChronosException;
 import com.chronos.service.fiscal.SpedIcmsIpiService;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -60,15 +61,15 @@ public class SpedFiscalControll extends AbstractControll<Contador> implements Se
             Calendar d2 = Calendar.getInstance();
             d1.setTime(dataInicial);
             d2.setTime(dataFinal);
-            if (d2.before(d1)) {
-                throw new Exception("Data inicial posterior a data final!");
-            }
             File arquivo = icmsIpiService.geraArquivo(versao, finalidadeArquivo, perfil, inventario, dataInicial, dataFinal, idContador);
             FacesUtil.downloadArquivo(arquivo, "spedfiscal.txt");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro ao gerar o arquivo.", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro ao gerar o arquivo.", ex);
+            } else {
+                throw new RuntimeException(ex);
 
+            }
         }
     }
 

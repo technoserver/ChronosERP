@@ -20,8 +20,10 @@ public class PdvCaixa implements Serializable {
     @Column(name = "ID")
     private Integer id;
     @Column(name = "codigo")
+    @NotBlank
     private String codigo;
     @Column(name = "NOME")
+    @NotBlank
     private String nome;
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_CADASTRO")

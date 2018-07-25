@@ -174,7 +174,7 @@
                         Chronosinfo &amp; Tecnoserver.
                     </div>
                     <div>
-                        <a href="#" onclick="history.back();" class="btn btn-success">Home</a>
+                        <a href="#" onclick="history.back();" class="btn btn-success">Voltar para pagina anterior</a>
                     </div>
                 </div>
             </div>
@@ -184,7 +184,9 @@
         
         <div style="display: none">
             <h:outputText value="Message:#{pfExceptionHandler.message}" />
-          <h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" />
+            <pre>
+                #{pfExceptionHandler.formattedStackTrace}
+            </pre>
         </div>
 
 

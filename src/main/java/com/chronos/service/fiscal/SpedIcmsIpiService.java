@@ -6,6 +6,7 @@ import com.chronos.repository.EcfNotaFiscalCabecalhoRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.repository.ViewSpedC425Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.sped.SpedFiscalIcms;
 import com.chronos.sped.efdicms.bloco0.*;
 import com.chronos.sped.efdicms.bloco1.Registro1010;
@@ -94,6 +95,15 @@ public class SpedIcmsIpiService implements Serializable {
     private List<Filtro> filtros;
 
     public File geraArquivo(String versao, String finalidadeArquivo, String perfil, Integer inventario, Date dataInicial, Date dataFinal, Integer idContador) throws Exception {
+
+        if (dataFinal.before(dataInicial)) {
+            throw new ChronosException("Data inicial posterior a data final!");
+        }
+
+        if (idContador == 0) {
+            throw new ChronosException("Contador não informado !");
+        }
+
         this.dataInicio = dataInicial;
         this.dataFim = dataFinal;
         this.versao = versao;

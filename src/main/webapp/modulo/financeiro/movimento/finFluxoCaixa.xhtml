@@ -258,10 +258,15 @@
                 var despesas = $(PrimeFaces.escapeClientId('formCentro:telaGrid:despesa')).val();
                 var receitas = $(PrimeFaces.escapeClientId('formCentro:telaGrid:receitas')).val();
                 var array = (new Function("return " + despesas + ";")());
-                var jsonDespesas = $.parseJSON(despesas);
-                var jsonReceitas = $.parseJSON(receitas);
-                montarGrafico(jsonDespesas, '#chartDespesas');
-                montarGrafico(jsonReceitas, '#chartReceitas');
+                if (despesas) {
+                    var jsonDespesas = $.parseJSON(despesas);
+                    montarGrafico(jsonDespesas, '#chartDespesas');
+                }
+                if (receitas) {
+                    var jsonReceitas = $.parseJSON(receitas);
+                    montarGrafico(jsonReceitas, '#chartReceitas');
+                }
+
 
             }
 

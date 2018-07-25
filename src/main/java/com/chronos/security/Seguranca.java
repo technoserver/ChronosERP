@@ -216,7 +216,7 @@ public class Seguranca implements Serializable {
     }
 
     public boolean isUserSpedFiscal() {
-        return FacesUtil.isUserInRole("SPED");
+        return FacesUtil.isUserInRole("SPED_FISCAL");
     }
 
     public boolean isUserSpedContribuicoes() {
