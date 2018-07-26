@@ -405,13 +405,13 @@ public class SpedIcmsIpiService implements Serializable {
         filtros.clear();
         filtros.add(new Filtro(Filtro.AND, "dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
         filtros.add(new Filtro(Filtro.AND, "dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
-        List<EcfNotaFiscalCabecalho> listaNf2Cabecalho = nf2Repository.getEntitys(EcfNotaFiscalCabecalho.class, filtros);
+        List<EcfNotaFiscalCabecalho> listaNf2Cabecalho = new ArrayList<>();
 
         filtros.clear();
         filtros.add(new Filtro(Filtro.AND, "cancelada", Filtro.IGUAL, "S"));
         filtros.add(new Filtro(Filtro.AND, "dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
         filtros.add(new Filtro(Filtro.AND, "dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
-        List<EcfNotaFiscalCabecalho> listaNf2Cancelada = nf2Repository.getEntitys(EcfNotaFiscalCabecalho.class, filtros);
+        List<EcfNotaFiscalCabecalho> listaNf2Cancelada = new ArrayList<>();
 
         // PERFIL A
         if (perfil.equals("A")) {
@@ -797,7 +797,8 @@ public class SpedIcmsIpiService implements Serializable {
 
         // Ambos os Perfis
         // REGISTRO C400: EQUIPAMENTO ECF (CÓDIGO 02, 2D e 60).
-        List<EcfImpressora> listaEcf = ecfImpressoraRepository.getEntitys(EcfImpressora.class);
+        List<EcfImpressora> listaEcf = new ArrayList<>();
+        ;
         RegistroC400 registroC400;
         for (EcfImpressora ecf : listaEcf) {
             registroC400 = new RegistroC400();
@@ -813,7 +814,8 @@ public class SpedIcmsIpiService implements Serializable {
             filtros.add(new Filtro(Filtro.AND, "idImpressora", Filtro.IGUAL, ecf.getId()));
             filtros.add(new Filtro(Filtro.AND, "dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
             filtros.add(new Filtro(Filtro.AND, "dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
-            List<EcfR02> listaR02 = ecfR02Repository.getEntitys(EcfR02.class, filtros);
+            List<EcfR02> listaR02 = new ArrayList<>();
+            ;
             RegistroC405 registroC405;
             for (EcfR02 r02 : listaR02) {
                 registroC405 = new RegistroC405();
@@ -830,7 +832,8 @@ public class SpedIcmsIpiService implements Serializable {
                 // Implementado a critério do Participante do T2Ti ERP
                 // REGISTRO C420: REGISTRO DOS TOTALIZADORES PARCIAIS DA REDUÇÃO
                 // Z (COD 02, 2D e 60).
-                List<EcfR03> listaR03 = ecfR03Repository.getEntitys(EcfR03.class, "idR02", r02.getId());
+                List<EcfR03> listaR03 = new ArrayList<>();
+                ;
                 RegistroC420 registroC420;
                 for (EcfR03 r03 : listaR03) {
                     registroC420 = new RegistroC420();
@@ -878,7 +881,8 @@ public class SpedIcmsIpiService implements Serializable {
                     filtros.clear();
                     filtros.add(new Filtro(Filtro.AND, "dataVenda", Filtro.MAIOR_OU_IGUAL, dataInicio));
                     filtros.add(new Filtro(Filtro.AND, "dataVenda", Filtro.MENOR_OU_IGUAL, dataFim));
-                    List<EcfVendaCabecalho> listaR04 = ecfVendaCabecalhoRepository.getEntitys(EcfVendaCabecalho.class, filtros);
+                    List<EcfVendaCabecalho> listaR04 = new ArrayList<>();
+                    ;
                     RegistroC460 registroC460;
                     for (EcfVendaCabecalho r04 : listaR04) {
                         registroC460 = new RegistroC460();
@@ -902,7 +906,8 @@ public class SpedIcmsIpiService implements Serializable {
                             // ERP }
                             // REGISTRO C470: ITENS DO DOCUMENTO FISCAL EMITIDO
                             // POR ECF (CÓDIGO 02 e 2D).
-                            List<EcfVendaDetalhe> listaR05 = ecfVendaDetalheRepository.getEntitys(EcfVendaDetalhe.class, "idEcfVendaCabecalho", r04.getId());
+                            List<EcfVendaDetalhe> listaR05 = new ArrayList<>();
+                            ;
                             RegistroC470 registroC470;
                             for (EcfVendaDetalhe r05 : listaR05) {
                                 registroC470 = new RegistroC470();

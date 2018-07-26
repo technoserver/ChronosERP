@@ -1,0 +1,155 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Contador
+    </ui:define>
+
+    <ui:define name="tela">
+        #{contadorControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Contador
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{contadorControll}"
+                       idDataTable="dataTableContador"
+                       nomeFuncao="Setor"
+                       id="telaGrid">
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+            <p:column headerText="CRC" width="130">
+                <h:outputLabel value="#{row.inscricaoCrc}"/>
+            </p:column>
+            <p:column headerText="Uf Crc" width="65">
+                <h:outputLabel value="#{row.ufCrc}"/>
+            </p:column>
+            <p:column headerText="Fone">
+                <h:outputLabel value="#{row.fone}"/>
+            </p:column>
+            <p:column headerText="Email">
+                <h:outputLabel value="#{row.email}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{contadorControll}"
+                                   nomeFuncao="Contador"
+                                   id="telaDetalhe">
+
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="nome" label="Nome"
+                                nomeAtributo="#{contadorControll.objeto.nome}"
+                                tamanhoMaximo="50"
+                                id="campoTextoNome"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="crc" label="CRC"
+                                nomeAtributo="#{contadorControll.objeto.inscricaoCrc}"
+                                tamanhoMaximo="15"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2" label="UF CRC"
+                                 idComponente="contadorInscricaoCrc"
+                                 nomeAtributo="#{contadorControll.objeto.ufCrc}"
+                                 itens="#{contadorControll.estado}"/>
+                <erp:campoCpf styleClass="col-xs-12 col-sm-2 col-md-2"
+                              idComponente="contadorCpf" label="Cpf"
+                              nomeAtributo="#{contadorControll.objeto.cpf}"/>
+                <erp:campoCnpj styleClass="col-xs-12 col-sm-2 col-md-2"
+                               idComponente="contadorCnpj" label="Cnpj"
+                               nomeAtributo="#{contadorControll.objeto.cnpj}"/>
+            </div>
+
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-9 col-md-10"
+                                idComponente="contadorLogradouro" label="Logradouro"
+                                nomeAtributo="#{contadorControll.objeto.logradouro}"
+                                tamanhoMaximo="100"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="contadorNumero" label="Numero"
+                                nomeAtributo="#{contadorControll.objeto.numero}"
+                                tamanhoMaximo="10"/>
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="contadorComplemento" label="Complemento"
+                                nomeAtributo="#{contadorControll.objeto.complemento}"
+                                tamanhoMaximo="100"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="contadorBairro" label="Bairro"
+                                nomeAtributo="#{contadorControll.objeto.bairro}"
+                                tamanhoMaximo="60"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="contadorCep" label="Cep"
+                                nomeAtributo="#{contadorControll.objeto.cep}"
+                                tamanhoMaximo="8"/>
+            </div>
+            <div class="row">
+
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="UF :" for="uf"/>
+                    <h:selectOneMenu value="#{contadorControll.objeto.uf}"
+                                     class="form-control" id="uf">
+                        <f:selectItem itemValue="selecione" value="#{null}"/>
+                        <f:selectItems var="uf" value="#{contadorControll.estado}"/>
+                        <p:ajax event="valueChange"
+                                process="@this" update="Municipio"
+                                listener="#{contadorControll.instanciarMunicipio()}"
+                                oncomplete="addClass()"/>
+                    </h:selectOneMenu>
+                </div>
+                <div class="col-xs-12 col-sm-10 col-md-10">
+                    <h:outputLabel value="Municipio :"/>
+                    <br/>
+                    <p:autoComplete id="Municipio" value="#{contadorControll.objeto.cidade}"
+                                    completeMethod="#{contadorControll.getMunicipios}"
+                                    var="municipio" itemLabel="#{municipio.getNome()}"
+                                    itemValue="#{municipio}" converter="defaultConverter"
+                                    forceSelection="true" minQueryLength="3" maxResults="10"
+                                    emptyMessage="Nenhum registro encontrado" style="width: 100%"
+                                    required="true">
+                        <p:ajax event="itemSelect" process="@this"
+                                listener="#{contadorControll.atualizarCodIbge()}"/>
+                    </p:autoComplete>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="contadorFone" label="Fone"
+                                nomeAtributo="#{contadorControll.objeto.fone}"
+                                tamanhoMaximo="14"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-lg-4"
+                                idComponente="contadorEmail" label="Email"
+                                nomeAtributo="#{contadorControll.objeto.email}"
+                                tamanhoMaximo="250"/>
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

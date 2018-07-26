@@ -163,10 +163,10 @@
                              label="Setor"
                              exibir="#{seguranca.isTemAcesso('SETOR')}"
                              funcao="setor"/>
-                <erp:subMenu caminho="/modulo/cadastros/diversos/operadoraPlanoSaude"
-                             label="Operadora Plano Saude"
-                             exibir="#{seguranca.isTemAcesso('OPERADORA_PLANO_SAUDE')}"
-                             funcao="operadoraPlanoSaude"/>
+                <erp:subMenu caminho="/modulo/cadastros/diversos/contador"
+                             label="Contador"
+                             exibir="#{seguranca.isTemAcesso('SPED_FISCAL') or seguranca.isTemAcesso('SPED_CONTRIBUICOES')}"
+                             funcao="contador"/>
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/tabelas')?'active':''}">
