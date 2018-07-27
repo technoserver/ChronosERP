@@ -2,8 +2,11 @@
 package com.chronos.modelo.entidades;
 
 import com.chronos.bo.cadastro.ItemToledo;
+import com.chronos.service.ChronosException;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -37,6 +40,8 @@ public class Produto implements Serializable {
     @Column(name = "VALOR_COMPRA")
     private BigDecimal valorCompra;
     @Column(name = "VALOR_VENDA")
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     private BigDecimal valorVenda;
     @Column(name = "PRECO_VENDA_MINIMO")
     private BigDecimal precoVendaMinimo;
@@ -174,6 +179,13 @@ public class Produto implements Serializable {
         this.id = id;
         this.nome = nome;
         this.valorVenda = valorVenda;
+    }
+
+    public Produto(Integer id, String nome, BigDecimal valorVenda, Integer codigoBalanca) {
+        this.id = id;
+        this.nome = nome;
+        this.valorVenda = valorVenda;
+        this.codigoBalanca = codigoBalanca;
     }
 
     public Integer getId() {
@@ -616,7 +628,7 @@ public class Produto implements Serializable {
         this.controle = controle;
     }
 
-    public String montarItemBalancaToledo() {
+    public String montarItemBalancaToledo() throws ChronosException {
         ItemToledo item = new ItemToledo();
         item.setProduto(this);
         return item.montarItem();

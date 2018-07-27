@@ -12,6 +12,7 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.view.ViewProdutoEmpresa;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -335,23 +336,30 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro(Filtro.AND, "codigoBalanca", Filtro.NAO_NULO, ""));
         filtros.add(new Filtro("unidadeProduto.podeFracionar", "S"));
+
+
         try {
-            List<Produto> produtos = dao.getEntitys(Produto.class, filtros);
+            List<Produto> produtos = dao.getEntitys(Produto.class, filtros, new Object[]{"nome", "valorVenda", "codigoBalanca"});
             if (!produtos.isEmpty()) {
-                File file = File.createTempFile("produtos", ".txt");
+                File file = File.createTempFile("ITENSMGV", ".txt");
 
                 List<String> linhas = new ArrayList<>();
-                produtos.forEach(p -> {
+                for (Produto p : produtos) {
                     linhas.add(p.montarItemBalancaToledo());
-                });
+                }
                 FileUtils.writeLines(file, linhas);
-                FacesUtil.downloadArquivo(file, "produtos.txt");
+                FacesUtil.downloadArquivo(file, "ITENSMGV.txt");
             } else {
                 Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
             }
 
         } catch (Exception ex) {
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao gera dados para balança", ex);
+            }
+
         }
     }
 
