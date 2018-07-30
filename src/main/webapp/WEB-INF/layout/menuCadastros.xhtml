@@ -1,4 +1,3 @@
-
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -15,7 +14,10 @@
             <ul class="nav nav-third-level collapse ">
                 <erp:subMenu caminho="/modulo/cadastros/pessoal/pessoa"
                              label="Pessoa"
+                             exibir="#{seguranca.isTemAcesso('PESSOA')}"
                              funcao="pessoal/pessoa"/>
+
+
                 <li class="${fn:contains(view.viewId,'modulo/cadastros/pessoal/colaborador/')?'active':''}">
 
                     <a href="#">
@@ -57,7 +59,9 @@
 
         </li>
         <li class="${fn:contains(view.viewId,'modulo/cadastros/comercial/')?'active':''}">
-            <a href="#">Cliente|Fornecedor <span class="fa arrow"></span></a>
+            <a href="#">Cliente|Fornecedor
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
 
                 <erp:subMenu caminho="/modulo/cadastros/comercial/atividadeForCli"
@@ -87,7 +91,9 @@
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/financeiro')?'active':''}">
-            <a href="#">Finaceiro <span class="fa arrow"></span></a>
+            <a href="#">Finaceiro
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/cadastros/financeiro/bancos"
                              label="Banco"
@@ -118,7 +124,9 @@
 
 
         <li class="${fn:contains(view.viewId,'cadastros/produto')?'active':''}">
-            <a href="#">Produto <span class="fa arrow"></span></a>
+            <a href="#">Produto
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/cadastros/produto/subGrupo"
                              label="SubGrupo"
@@ -151,7 +159,9 @@
 
 
         <li class="${fn:contains(view.viewId,'cadastros/diversos')?'active':''}">
-            <a href="#">Diversos<span class="fa arrow"></span></a>
+            <a href="#">Diversos
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
 
                 <erp:subMenu caminho="/modulo/cadastros/diversos/almoxarifado"
@@ -170,7 +180,9 @@
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/tabelas')?'active':''}">
-            <a href="#">Tabelas<span class="fa arrow"></span></a>
+            <a href="#">Tabelas
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
 
                 <erp:subMenu caminho="/modulo/cadastros/tabelas/cfop"
@@ -196,7 +208,9 @@
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/endereco')?'active':''}">
-            <a href="#">Endereço<span class="fa arrow"></span></a>
+            <a href="#">Endereço
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
 
                 <erp:subMenu caminho="/modulo/cadastros/endereco/pais"
@@ -217,7 +231,9 @@
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/administrativo')?'active':''}">
-            <a href="#">administrativos<span class="fa arrow"></span></a>
+            <a href="#">administrativos
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
 
                 <erp:subMenu caminho="/modulo/cadastros/administrativo/empresa"
@@ -244,7 +260,9 @@
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/transporte')?'active':''}">
-            <a href="#">Transporte<span class="fa arrow"></span></a>
+            <a href="#">Transporte
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/cadastros/transporte/proprietarioVeiculo"
                              label="Proprietário"
@@ -255,7 +273,9 @@
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/relatorios')?'active':''}">
-            <a href="#">Relatórios<span class="fa arrow"></span></a>
+            <a href="#">Relatórios
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/cadastros/relatorios/relacaoClientes"
                              label="Clientes"

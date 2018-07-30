@@ -113,6 +113,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         if (produtoDataModel.getFiltros().isEmpty()) {
             produtoDataModel.addFiltro("inativo", "N", Filtro.IGUAL);
             produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
+            produtoDataModel.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
         }
         return produtoDataModel;
     }
