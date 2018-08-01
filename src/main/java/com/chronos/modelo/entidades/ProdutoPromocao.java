@@ -37,7 +37,25 @@ public class ProdutoPromocao implements Serializable {
     @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     @NotNull
     private BigDecimal valor;
+    @JoinColumn(name = "id_produto", referencedColumnName = "id")
+    @OneToOne
+    private Produto produto;
+    @Transient
+    private String nomeProduto;
 
+
+    public ProdutoPromocao() {
+        this.dataFim = new Date();
+        this.dataInicio = new Date();
+        this.quantidadeMaximaCliente = BigDecimal.ZERO;
+    }
+
+    public ProdutoPromocao(Integer id, BigDecimal quantidadeEmPromocao, BigDecimal valor, String nomeProduto) {
+        this.id = id;
+        this.quantidadeEmPromocao = quantidadeEmPromocao;
+        this.valor = valor;
+        this.nomeProduto = nomeProduto;
+    }
 
     public Integer getId() {
         return id;
@@ -85,6 +103,23 @@ public class ProdutoPromocao implements Serializable {
 
     public void setValor(BigDecimal valor) {
         this.valor = valor;
+    }
+
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
+    }
+
+    public String getNomeProduto() {
+        return nomeProduto;
+    }
+
+    public void setNomeProduto(String nomeProduto) {
+        this.nomeProduto = nomeProduto;
     }
 
     @Override

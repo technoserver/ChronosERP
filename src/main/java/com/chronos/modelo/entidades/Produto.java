@@ -3,6 +3,7 @@ package com.chronos.modelo.entidades;
 
 import com.chronos.bo.cadastro.ItemToledo;
 import com.chronos.service.ChronosException;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
@@ -15,6 +16,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "PRODUTO")
+@DynamicUpdate
 public class Produto implements Serializable {
 
     private static final long serialVersionUID = 2L;
