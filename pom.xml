@@ -5,7 +5,7 @@
 
     <groupId>com.chronos</groupId>
     <artifactId>ChronoERPLight</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.5</version>
     <packaging>war</packaging>
 
     <name>ChronoERPLight</name>
@@ -22,7 +22,7 @@
         <chronosNFe.version>4.0.5</chronosNFe.version>
         <jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
         <!--        FlyWay-->
-        <flyway-maven-plugin.version>4.0.2</flyway-maven-plugin.version>
+        <flyway-maven-plugin.version>5.0.7</flyway-maven-plugin.version>
         <!--        JSTL-->
         <jstl.version>1.2</jstl.version>
         <!--Sped fiscal-->
