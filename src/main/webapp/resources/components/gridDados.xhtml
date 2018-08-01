@@ -29,6 +29,7 @@
                 <erp:msgPermissao permissao="#{cc.attrs.controller.podeConsultar()}"/>
                 <p:dataTable value="#{cc.attrs.dataModel!=null? cc.attrs.dataModel :cc.attrs.controller.dataModel}"
                              var="row" id="#{cc.attrs.idDataTable}" paginator="true"
+                             emptyMessage="Nenhum registro encontrado"
                              rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                              reflow="true" rendered="#{cc.attrs.controller.podeConsultar()}"
                              resizableColumns="true" lazy="true"

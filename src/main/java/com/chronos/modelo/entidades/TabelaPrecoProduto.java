@@ -34,6 +34,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 
 @Entity
@@ -99,14 +100,14 @@ public class TabelaPrecoProduto implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof TabelaPrecoProduto)) return false;
-
         TabelaPrecoProduto that = (TabelaPrecoProduto) o;
-
-        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(produto, that.produto);
     }
 
     @Override
     public int hashCode() {
-        return getId() != null ? getId().hashCode() : 0;
+
+        return Objects.hash(id, produto);
     }
 }

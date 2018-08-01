@@ -2,7 +2,7 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
@@ -20,6 +20,13 @@
         Tabela de Preço
     </ui:define>
 
+    <ui:define name="css">
+        <style type="text/css">
+            .ui-cell-editing {
+                background-color: #fff !important;
+            }
+        </style>
+    </ui:define>
 
     <ui:define name="gridDados">
 
@@ -32,8 +39,8 @@
             <p:column headerText="Nome">
                 <h:outputLabel value="#{row.nome}"/>
             </p:column>
-            <p:column headerText="Principal">
-                <h:outputLabel value="#{row.principal}"/>
+            <p:column headerText="Principal" styleClass="text-center" width="100">
+                <h:outputLabel value="#{row.principal eq 'S'? 'SIM':'NAO'}"/>
             </p:column>
 
 
@@ -48,10 +55,13 @@
         >
 
 
-            <h:panelGroup rendered="#{tabelaPrecosControll.objeto.listaProduto.size() ==0}" layout="block"
-                          styleClass="row">
+            <h:panelGroup layout="block" id="panelBtnIncluir" styleClass="row">
                 <div class="col-md-12">
-                    <p:commandButton id="geraProdutos"
+                    <p:commandButton id="btnGeraProdutos"
+                                     update="formCentro:telaDetalhe:outputPanelDetalhe"
+                                     action="#{tabelaPrecosControll.incluirTodosProduto}"
+                                     process="@this,dataTableItens"
+                                     rendered="#{tabelaPrecosControll.objeto.listaProduto.size() ==0}"
                                      value="Incluir todos os produtos">
 
                     </p:commandButton>
@@ -78,8 +88,10 @@
                                  nomeAtributo="#{tabelaPrecosControll.objeto.baseCusto}"/>
 
                 <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                                 idComponente="metodo" label="Método utilizado"
-                                 itens="#{tabelaPrecosControll.metodoTabela}"
+                                 idComponente="metodo" label="Aplicação"
+                                 exibirInfo="true"
+                                 mensangemInfo="Definir se a tabela de presso é definida para ser usada para vendedores externo junto com o cadastro de região ou para venda interna"
+                                 itens="#{tabelaPrecosControll.aplicado}"
                                  nomeAtributo="#{tabelaPrecosControll.objeto.metodoUtilizacao}"/>
 
                 <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -88,8 +100,129 @@
 
             </div>
 
+            <div class="row m-t">
+                <div class="col-md-12">
+                    <p:commandLink id="btnAddProduto" styleClass="btn btn-default"
+                                   action="#{tabelaPrecosControll.incluirItem}"
+                                   process="@this"
+                                   oncomplete="PF('dialogProduto').show()"
+                                   update=":formOutrasTelas:panelProduto,dataTableItens"
+                    >
+                        <i class="fa fa-plus"> </i>
+
+                    </p:commandLink>
+                </div>
+
+            </div>
+
+            <div class="row m-t">
+
+                <h:panelGroup layout="block" id="Itens">
+                    <p:dataTable id="dataTableItens" var="row" value="#{tabelaPrecosControll.objeto.listaProduto}"
+                                 paginator="true"
+                                 rowsPerPageTemplate="20,40,60,80,100" paginatorPosition="bottom" rows="20"
+                                 editable="true" editMode="cell"
+                                 reflow="true" emptyMessage="Nenhum produto incluso" resizableColumns="true">
+
+
+                        <p:column headerText="Produto">
+                            <h:outputLabel value="#{row.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="Preço" width="100" styleClass="text-right cell-edit">
+
+
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{row.preco}">
+                                        <f:convertNumber pattern="#,##0.000"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input" class="teste">
+                                    <p:inputNumber
+                                            value="#{row.preco}"
+                                            required="true"
+                                            style="width: 100%;"
+                                            decimalPlaces="2"
+                                            minValue="-9999999999.99"
+                                    />
+
+
+                                </f:facet>
+                            </p:cellEditor>
+
+                        </p:column>
+                        <p:column headerText=" - " width="60" styleClass="text-center">
+                            <p:commandLink styleClass="btn btn-default" title="Exluir"
+                                           process="dataTableItens"
+                                           update="dataTableItens,:formCentro:telaDetalhe:panelBtnIncluir"
+                                           action="#{tabelaPrecosControll.excluirItem}">
+                                <i class="fa fa-times"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{tabelaPrecosControll.itemSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGroup>
+
+
+            </div>
+
 
         </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogProduto"
+                      header="Add produto" responsive="true"
+                      widgetVar="dialogProduto" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="600">
+                <p:outputPanel id="panelProduto">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-9 col-md-9"
+                                          label="Produto"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{tabelaPrecosControll}"
+                                          completeMethod="getListaProduto"
+                                          nomeAtributo="#{tabelaPrecosControll.item.produto}"
+                                          idComponente="vproduto"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="preco" label="Preço"
+                                          requerido="true" id="campoPreco"
+                                          nomeAtributo="#{tabelaPrecosControll.item.preco}"/>
+
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             id="addProduto"
+                                             actionListener="#{tabelaPrecosControll.salvarItem}"
+                                             process="@form"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogProduto').hide();}"
+                                             update=":formOutrasTelas:panelProduto,:formCentro:growl,formCentro:telaDetalhe:Itens"
+                            >
+
+                            </p:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogProduto').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 </ui:composition>

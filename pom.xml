@@ -40,12 +40,6 @@
     </properties>
     <repositories>
         <repository>
-            <id>prime-repo</id>
-            <name>PrimeFaces Maven Repository</name>
-            <url>http://repository.primefaces.org</url>
-            <layout>default</layout>
-        </repository>
-        <repository>
             <id>chronos</id>
             <name>Chronos Software</name>
             <url>http://66.70.177.7:8081//repository/chronos/</url>
@@ -60,11 +54,17 @@
     <dependencies>
 
 
+        <!--<dependency>-->
+        <!--<groupId>postgresql</groupId>-->
+        <!--<artifactId>postgresql</artifactId>-->
+        <!--<version>9.1-901-1.jdbc4</version>-->
+        <!--<scope>compile</scope>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>postgresql</groupId>
+            <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.1-901-1.jdbc4</version>
-            <scope>compile</scope>
+            <version>42.2.2</version>
         </dependency>
 
         <!-- Flyway -->
@@ -146,7 +146,7 @@
         <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
-            <version>3.2.0.Final</version>
+            <version>3.3.2.Final</version>
             <!--<scope>provided</scope>-->
         </dependency>
 
@@ -183,7 +183,7 @@
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
-            <version>6.2</version>
+            <version>6.1</version>
             <scope>compile</scope>
         </dependency>
 
@@ -405,7 +405,7 @@
                 <configuration>
                     <url>http://localhost:8080/manager/text</url>
                     <server>TomcatServer</server>
-                    <path>/chronoslight</path>
+                    <path>/chronoserp</path>
                 </configuration>
             </plugin>
 

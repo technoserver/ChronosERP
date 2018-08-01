@@ -5,8 +5,8 @@
  */
 package com.chronos.util.jsf;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.FacesException;
-import javax.faces.bean.RequestScoped;
 import javax.inject.Named;
 
 /**

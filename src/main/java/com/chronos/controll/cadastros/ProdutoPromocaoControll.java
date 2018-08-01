@@ -15,12 +15,12 @@ public class ProdutoPromocaoControll extends AbstractControll<ProdutoPromocao> i
 
     @Override
     protected Class<ProdutoPromocao> getClazz() {
-        return null;
+        return ProdutoPromocao.class;
     }
 
     @Override
     protected String getFuncaoBase() {
-        return null;
+        return "PRODUTO_PROMOCAO";
     }
 
     @Override
