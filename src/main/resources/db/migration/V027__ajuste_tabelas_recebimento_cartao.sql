@@ -1,0 +1,4 @@
+ALTER TABLE fin_recebimento_cartao RENAME TO fin_parcela_recebimento_cartao;
+ALTER TABLE fin_parcela_recebimento_cartao DROP CONSTRAINT fin_recebimento_cartao_id_fin_parcela_recebimento_fkey;
+ALTER TABLE fin_parcela_recebimento_cartao RENAME id_fin_parcela_recebimento TO id_fin_parcela_receber_cartao;
+ALTER TABLE fin_parcela_recebimento_cartao ADD CONSTRAINT fin_recebimento_cartao_id_fin_parcela_recebimento_fkey FOREIGN KEY (id_fin_parcela_receber_cartao)  REFERENCES fin_parcela_receber_cartao (id);
