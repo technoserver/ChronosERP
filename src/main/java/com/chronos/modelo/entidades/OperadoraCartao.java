@@ -33,6 +33,9 @@ public class OperadoraCartao implements Serializable {
     private BigDecimal taxaAdmDebito;
     @Column(name = "VALOR_ALUGUEL_POS_PIN")
     private BigDecimal valorAluguelPosPin;
+    @Column(name = "quantida_maxima_parcela")
+    @NotNull
+    private Integer quantidaMaximaParcela;
     @Column(name = "VENCIMENTO_ALUGUEL")
     private Integer vencimentoAluguel;
     @Column(name = "FONE1")
@@ -147,6 +150,13 @@ public class OperadoraCartao implements Serializable {
         this.classificacaoContabilConta = classificacaoContabilConta;
     }
 
+    public Integer getQuantidaMaximaParcela() {
+        return quantidaMaximaParcela;
+    }
+
+    public void setQuantidaMaximaParcela(Integer quantidaMaximaParcela) {
+        this.quantidaMaximaParcela = quantidaMaximaParcela;
+    }
 
     public String getNsu() {
         return nsu;
