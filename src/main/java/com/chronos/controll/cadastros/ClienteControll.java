@@ -13,6 +13,7 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -52,6 +53,9 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     @Inject
     private PessoaService service;
 
+    private String nome;
+    private String cpfCnpj;
+
 
 
     private PessoaCliente clienteSelecionado;
@@ -66,9 +70,20 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
             clienteDataModel.setClazz(PessoaCliente.class);
         }
 
+
         return clienteDataModel;
     }
 
+
+    public void pesquisar() {
+        clienteDataModel.getFiltros().clear();
+        if (!StringUtils.isEmpty(nome)) {
+            clienteDataModel.getFiltros().add(new Filtro("nome", Filtro.LIKE, nome));
+        }
+        if (!StringUtils.isEmpty(cpfCnpj)) {
+            clienteDataModel.getFiltros().add(new Filtro("cpfCnpj", Filtro.LIKE, cpfCnpj));
+        }
+    }
 
     @Override
     public void doCreate() {
@@ -81,6 +96,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         completo = "N";
 
     }
+
 
     @Override
     public void doEdit() {
@@ -259,5 +275,22 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     @Override
     public String getTela() {
         return TelaPessoa.CLIENTE.getCodigo();
+    }
+
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCpfCnpj() {
+        return cpfCnpj;
+    }
+
+    public void setCpfCnpj(String cpfCnpj) {
+        this.cpfCnpj = cpfCnpj;
     }
 }

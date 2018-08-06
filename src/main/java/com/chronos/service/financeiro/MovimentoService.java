@@ -54,22 +54,16 @@ public class MovimentoService implements Serializable {
     private PdvMovimento movimento;
     private StringBuilder linhasRelatorio;
     private String nomeImpressaoMovimento;
-    private Empresa empresa;
     private PdvConfiguracao conf;
 
 
     @PostConstruct
     private void init() {
-
-        try {
-            empresa = FacesUtil.getEmpresaUsuario();
-            movimento = verificarMovimento();
-        } catch (Exception ex) {
-            Mensagem.addErrorMessage("", ex);
-        }
+        movimento = FacesUtil.getMovimento();
     }
+
     @Transactional
-    public void iniciarMovimento(BigDecimal valorSuprimento, PdvTurno turno, String operador, String senha) throws Exception {
+    public void iniciarMovimento(Empresa empresa, BigDecimal valorSuprimento, PdvTurno turno, String operador, String senha) throws Exception {
 
         movimento = new PdvMovimento();
         movimento.setEmpresa(empresa);
@@ -108,6 +102,7 @@ public class MovimentoService implements Serializable {
 
     @Transactional
     public void realizarFechamento() throws ParseException {
+        movimento = FacesUtil.getMovimento();
         movimento.setDataFechamento(new Date());
         movimento.setStatusMovimento("F");
         movimento.setHoraFechamento(FormatValor.getInstance().formatarHora(new Date()));
@@ -129,10 +124,12 @@ public class MovimentoService implements Serializable {
     }
 
     public void lancaVenda(BigDecimal valor) {
+        movimento = FacesUtil.getMovimento();
         movimento.setTotalVenda(Biblioteca.soma(movimento.getTotalVenda(), valor));
         atualizar();
     }
     public void lancaVenda(BigDecimal valorVenda, BigDecimal desconto, BigDecimal troco) {
+        movimento = FacesUtil.getMovimento();
         movimento.setTotalVenda(Biblioteca.soma(movimento.getTotalVenda(), valorVenda));
         movimento.setTotalDesconto(Biblioteca.soma(movimento.getTotalDesconto(),Optional.ofNullable(desconto).orElse(BigDecimal.ZERO)));
         movimento.setTotalTroco(Biblioteca.soma(movimento.getTotalDesconto(), Optional.ofNullable(troco).orElse(BigDecimal.ZERO)));
@@ -140,21 +137,25 @@ public class MovimentoService implements Serializable {
     }
 
     public void lancaSangria(BigDecimal valor){
+        movimento = FacesUtil.getMovimento();
         movimento.setTotalSangria(Biblioteca.soma(movimento.getTotalSangria(), valor));
         atualizar();
     }
 
     public void lancaAcrescimo(BigDecimal valor){
+        movimento = FacesUtil.getMovimento();
         movimento.setTotalAcrescimo(Biblioteca.soma(movimento.getTotalAcrescimo(), valor));
         atualizar();
     }
 
     public void lancaRecebimento(BigDecimal valor){
+        movimento = FacesUtil.getMovimento();
         movimento.setTotalRecebido(Biblioteca.soma(movimento.getTotalRecebido(), valor));
         atualizar();
     }
 
     public void lancaTroco(BigDecimal valor){
+        movimento = FacesUtil.getMovimento();
         movimento.setTotalTroco(Biblioteca.soma(movimento.getTotalTroco(), valor));
         atualizar();
     }
@@ -166,18 +167,15 @@ public class MovimentoService implements Serializable {
         FacesUtil.setMovimento(movimento);
     }
 
-    public boolean verificarConfPdv() {
+    public boolean verificarConfPdv(Empresa empresa) {
         conf = repositoryConf.get(PdvConfiguracao.class, "empresa.id", empresa.getId(), new Object[]{"pdvCaixa"});
         if (conf == null) {
             return false;
-        } else if (conf.getPdvCaixa() == null) {
-            return false;
-        }
-        return true;
+        } else return conf.getPdvCaixa() != null;
     }
 
-    public PdvMovimento verificarMovimento() throws ChronosException {
-        movimento = FacesUtil.getMovimento();
+    public PdvMovimento verificarMovimento(Empresa empresa) throws ChronosException {
+
 
         if (movimento == null) {
             conf = repositoryConf.get(PdvConfiguracao.class, "empresa.id", empresa.getId(), new Object[]{"pdvCaixa"});

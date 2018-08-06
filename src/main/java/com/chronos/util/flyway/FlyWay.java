@@ -27,7 +27,7 @@ public class FlyWay {
 
     private Context envCtx;
 
-    public void migration() throws Exception {
+    public void migration() throws NamingException, SQLException {
 
         initContext();
 
@@ -48,7 +48,7 @@ public class FlyWay {
     }
 
 
-    public List<String> getTenants() throws Exception {
+    public List<String> getTenants() throws SQLException, NamingException {
 
         List<String> tenants = new ArrayList<>();
         final Connection connection = getConnection();
@@ -73,7 +73,7 @@ public class FlyWay {
         return tenants;
     }
 
-    private Connection getConnection() throws Exception {
+    private Connection getConnection() throws SQLException, NamingException {
         DataSource ds = (DataSource) envCtx.lookup("jdbc/chronosAdminDB");
         return ds.getConnection();
 

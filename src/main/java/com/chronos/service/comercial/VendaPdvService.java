@@ -109,9 +109,12 @@ public class VendaPdvService implements Serializable {
         }
 
 
+        PdvCaixa caixa = FacesUtil.getMovimento().getPdvCaixa();
+
         VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, venda);
         NfeCabecalho nfe = vendaNfe.gerarNfe();
         nfe.setPdv(venda);
+        nfe.setSerie(caixa.getCodigo());
         ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getModeloDocumento(), true);
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
         nfe.setCsc(configuracaoEmissorDTO.getCsc());

@@ -148,7 +148,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) throws Exception {
+    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) {
         NfeCabecalho nfe = new NfeCabecalho();
         nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO.getCodigo() : FormatoImpressaoDanfe.DANFE_NFCE.getCodigo());
         nfe.setUfEmitente(empresa.getCodigoIbgeUf());
@@ -281,7 +281,7 @@ public class NfeService implements Serializable {
     }
 
     public String inutilizarNFe(ModeloDocumento modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
-        NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(modelo);
+        NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(modelo, serie.toString());
         if (notaFiscalTipo == null) {
             throw new ChronosException("Não foi informando numeração para o modelo " + modelo);
         }
@@ -329,12 +329,11 @@ public class NfeService implements Serializable {
         Integer numero;
         String serie;
         NotaFiscalTipo notaFiscalTipo = null;
-        ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
-        if (nfe.getNumero() == null || nfe.getSerie() == null) {
-            notaFiscalTipo = getNotaFicalTipo(modelo);
+        ModeloDocumento modelo = nfe.getModeloDocumento();
+        if (nfe.getNumero() == null) {
+            notaFiscalTipo = modelo == ModeloDocumento.NFE ? getNotaFicalTipo(modelo) : getNotaFicalTipo(modelo, nfe.getSerie());
             numero = notaFiscalTipo.getUltimoNumero();
             serie = notaFiscalTipo.getSerie();
-
         } else {
             numero = Integer.valueOf(nfe.getNumero());
             serie = nfe.getSerie();
@@ -506,7 +505,7 @@ public class NfeService implements Serializable {
         return NfeTransmissao.getInstance().statusServico();
     }
 
-    private NfeXml salvaNfeXml(String xml, NfeCabecalho nfe) throws Exception {
+    private NfeXml salvaNfeXml(String xml, NfeCabecalho nfe) {
         NfeXml nfeXml = new NfeXml();
         if (StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             nfeXml.setNfeCabecalho(nfe);
@@ -841,11 +840,30 @@ public class NfeService implements Serializable {
 
     }
 
+
     public NotaFiscalTipo getNotaFicalTipo(ModeloDocumento modelo) throws ChronosException {
 
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
         filtros.add(new Filtro(Filtro.AND, "notaFiscalModelo.codigo", Filtro.IGUAL, modelo.getCodigo().toString()));
+
+        Object[] atributos = new String[]{"serie", "ultimoNumero", "notaFiscalModelo.id"};
+        NotaFiscalTipo notaFiscalTipo = tiposNotaFiscal.get(NotaFiscalTipo.class, filtros, atributos);
+        if (notaFiscalTipo == null) {
+            throw new ChronosException("Configuração de numero fiscal para o modelo :" + modelo + " não definida");
+        }
+
+        notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
+
+        return notaFiscalTipo;
+    }
+
+    public NotaFiscalTipo getNotaFicalTipo(ModeloDocumento modelo, String serie) throws ChronosException {
+
+        List<Filtro> filtros = new LinkedList<>();
+        filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
+        filtros.add(new Filtro(Filtro.AND, "notaFiscalModelo.codigo", Filtro.IGUAL, modelo.getCodigo().toString()));
+        filtros.add(new Filtro(Filtro.AND, "serie", Filtro.IGUAL, serie));
         Object[] atributos = new String[]{"serie", "ultimoNumero", "notaFiscalModelo.id"};
         NotaFiscalTipo notaFiscalTipo = tiposNotaFiscal.get(NotaFiscalTipo.class, filtros, atributos);
         if (notaFiscalTipo == null) {

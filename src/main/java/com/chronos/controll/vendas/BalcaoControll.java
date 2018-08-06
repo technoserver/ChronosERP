@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -151,22 +152,34 @@ public class BalcaoControll implements Serializable {
     }
 
     public void novaVenda() {
-        telaGrid = false;
-        telaVenda = true;
-        telaPagamentos = false;
-        venda = new PdvVendaCabecalho();
-        venda.setEmpresa(empresa);
-        venda.setListaPdvVendaDetalhe(new ArrayList<>());
-        vendedor = instanciarVendedor(usuario);
-        venda.setVendedor(vendedor);
-        venda.setPdvMovimento(movimento);
-        item = new PdvVendaDetalhe();
-        desconto = BigDecimal.ZERO;
-        telaPagamentos = false;
-        telaVenda = true;
-        telaImpressao = false;
-        exibirCondicoes = false;
-        instanciarParametro();
+        try {
+            if (verificarMovimento() == null) {
+                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+                context.redirect(context.getRequestContextPath() + "/modulo/comercial/caixa/movimentos.xhtml");
+                return;
+            } else {
+                telaGrid = false;
+                telaVenda = true;
+                telaPagamentos = false;
+                venda = new PdvVendaCabecalho();
+                venda.setEmpresa(empresa);
+                venda.setListaPdvVendaDetalhe(new ArrayList<>());
+                vendedor = instanciarVendedor(usuario);
+                venda.setVendedor(vendedor);
+                venda.setPdvMovimento(movimento);
+                item = new PdvVendaDetalhe();
+                desconto = BigDecimal.ZERO;
+                telaPagamentos = false;
+                telaVenda = true;
+                telaImpressao = false;
+                exibirCondicoes = false;
+                instanciarParametro();
+            }
+        } catch (Exception ex) {
+
+        }
+
+
     }
 
     public void instanciarParametro() {
@@ -184,18 +197,14 @@ public class BalcaoControll implements Serializable {
     }
 
 
-    public String verificarMovimento() {
+    public PdvMovimento verificarMovimento() {
         try {
-            movimento = movimentoService.verificarMovimento();
-            if (movimento == null) {
-                return "/modulo/comercial/caixa/movimentos.xhtml";
-            } else {
-                return "";
-            }
+            movimento = movimentoService.verificarMovimento(empresa);
+            return movimento;
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
-            return "/modulo/configuracoes/pdvConfiguracao.xhtml";
+            return null;
         }
 
     }
@@ -450,7 +459,7 @@ public class BalcaoControll implements Serializable {
 
     }
 
-    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) throws Exception {
+    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) {
         Optional<PdvFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
         if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
             Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");

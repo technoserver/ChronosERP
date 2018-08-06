@@ -182,6 +182,49 @@
                 <div class="ibox-content">
                     <erp:msgPermissao permissao="#{true}"/>
 
+                    <div class="row m-b">
+                        <erp:campoData styleClass="col-xs-6 col-sm-2 col-md-2"
+                                       idComponente="dataInicial"
+                                       label="Data Inicial"
+                                       nomeAtributo="#{pdvMovimentoControll.dataInicial}"/>
+                        <erp:campoData styleClass="col-xs-6 col-sm-2 col-md-2"
+                                       idComponente="dataInicial"
+                                       label="Data Final"
+                                       nomeAtributo="#{pdvMovimentoControll.dataFinal}"/>
+
+                        <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                                         label="Status"
+                                         nomeAtributo="#{pdvMovimentoControll.status}"
+                                         idComponente="status"
+                                         itens="#{pdvMovimentoControll.statusDomain}"/>
+
+                        <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                                         label="Caixa"
+                                         nomeAtributo="#{pdvMovimentoControll.idcaixa}"
+                                         idComponente="caixa"
+                                         itens="#{pdvMovimentoControll.caixaDomain}"/>
+
+
+                        <div class="col-xs-6 col-sm-4 col-md-4">
+                            <h:outputLabel value="Operador"
+                                           for="pdvoperador"/>
+                            <div class="field-action">
+                                <h:selectOneMenu id="pdvoperador"
+                                                 class="form-control"
+                                                 value="#{pdvMovimentoControll.idoperador}">
+                                    <f:selectItems value="#{pdvMovimentoControll.operadorDomain}"/>
+
+                                </h:selectOneMenu>
+                                <p:commandButton value="Pesquisar" style="margin-left: 10px"
+                                                 action="#{pdvMovimentoControll.pesquisar}"
+                                                 update="outputPanelGrid"
+                                />
+                            </div>
+
+                        </div>
+
+
+                    </div>
 
                     <p:dataTable value="#{pdvMovimentoControll.dataModel}"
                                  var="row" id="dataTableMovimento" paginator="true"
@@ -196,12 +239,14 @@
                             <h:outputLabel value="#{row.pdvCaixa.codigo}"/>
                         </p:column>
 
-                        <p:column headerText="Abertura" width="110" sortBy="#{row.dataAbertura}">
+                        <p:column headerText="Abertura" width="110" sortBy="#{row.dataAbertura}"
+                                  styleClass="text-center">
                             <h:outputLabel value="#{row.dataAbertura}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Fechamento" width="135" sortBy="#{row.dataFechamento}">
+                        <p:column headerText="Fechamento" width="135" sortBy="#{row.dataFechamento}"
+                                  styleClass="text-center">
                             <h:outputLabel value="#{row.dataFechamento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -238,7 +283,7 @@
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Status" class="coluna-monetaria" width="70">
+                        <p:column headerText="Status" width="75" styleClass="text-center">
                             <h:outputLabel value="Fechado" styleClass="label label-success"
                                            rendered="#{row.statusMovimento eq 'F'}"/>
                             <h:outputLabel value="Aberto" styleClass="label label-info"

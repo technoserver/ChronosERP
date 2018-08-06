@@ -1,0 +1,4 @@
+ALTER TABLE estoque_produto_movimentacao
+  DROP CONSTRAINT estoque_produto_movimentacao_id_empresa_produto_fkey;
+ALTER TABLE estoque_produto_movimentacao
+  ADD CONSTRAINT estoque_produto_movimentacao_id_empresa_produto_fkey FOREIGN KEY (id_empresa_produto) REFERENCES empresa_produto (id);

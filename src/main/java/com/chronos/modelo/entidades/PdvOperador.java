@@ -26,6 +26,11 @@ public class PdvOperador implements Serializable {
     public PdvOperador() {
     }
 
+    public PdvOperador(Integer id, String login) {
+        this.id = id;
+        this.login = login;
+    }
+
     public PdvOperador(Integer id) {
         this.id = id;
     }

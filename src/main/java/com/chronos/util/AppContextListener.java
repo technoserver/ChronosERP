@@ -5,14 +5,18 @@
  */
 package com.chronos.util;
 
+import com.chronos.util.flyway.FlyWay;
 import com.chronos.util.tenant.ConstantsTenant;
 import com.chronos.util.validation.NotBlankClientValidationConstraint;
+import org.flywaydb.core.api.FlywayException;
 import org.hibernate.validator.constraints.NotBlank;
 import org.primefaces.validate.bean.BeanValidationMetadataMapper;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.sql.SQLException;
 
 /**
  * @author john
@@ -30,9 +34,19 @@ public class AppContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-        System.setProperty("org.apache.el.parser.COERCE_TO_ZERO", "false");
+        FlyWay flyWay = new FlyWay();
+        try {
+            flyWay.migration();
+            System.setProperty("org.apache.el.parser.COERCE_TO_ZERO", "false");
 
-        BeanValidationMetadataMapper.registerConstraintMapping(NotBlank.class,
-                new NotBlankClientValidationConstraint());
+            BeanValidationMetadataMapper.registerConstraintMapping(NotBlank.class,
+                    new NotBlankClientValidationConstraint());
+        } catch (FlywayException | NamingException | SQLException ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("Erro ao executa procedimentos de migracao\n" + ex.getCause(), ex);
+        }
+
+
+
     }
 }

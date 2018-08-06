@@ -28,8 +28,8 @@
             <p:dataTable value="#{nfceControll.dataModel}"
                          var="row" id="dataTableNfce" paginator="true"
                          rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
-                         reflow="true" rendered="#{nfceControll.podeConsultar()}"
-                         resizableColumns="true" lazy="true"
+                         reflow="true" rendered="#{nfceControll.podeConsultar()}" sortOrder="DESCENDING"
+                         resizableColumns="true" lazy="true" sortBy="dataHoraEmissao"
             >
 
 
@@ -39,11 +39,11 @@
                     </h:outputLabel>
                 </p:column>
 
-                <p:column headerText="Chave Acesso">
+                <p:column headerText="Chave Acesso" width="380">
                     <h:outputLabel value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
                 </p:column>
                 <p:column headerText="Data Emissão"
-                          sortBy="#{row.dataHoraEmissao}" width="120">
+                          sortBy="#{row.dataHoraEmissao}" width="140" styleClass="text-center">
                     <h:outputLabel value="#{row.dataHoraEmissao}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputLabel>
