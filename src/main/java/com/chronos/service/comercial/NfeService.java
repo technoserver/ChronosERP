@@ -724,7 +724,7 @@ public class NfeService implements Serializable {
             throw new ChronosException("NF-e náo autorizada. Cancelamento náo permitido!");
         }
 
-
+        instanciarConfNfe(nfe.getModeloDocumento());
         EventoDTO evento = new EventoDTO();
         evento.setProtocolo(nfe.getNumeroProtocolo());
         evento.setMotivo(nfe.getJustificativaCancelamento());

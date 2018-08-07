@@ -9,6 +9,7 @@ import com.chronos.modelo.view.ViewNfceCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendedorService;
 import com.chronos.transmissor.exception.EmissorException;
@@ -273,7 +274,7 @@ public class NfceControll implements Serializable {
 
     }
 
-    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) throws Exception {
+    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) {
         Optional<NfeFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
         if (formaPagamentoOpt.isPresent()) {
             Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
@@ -545,22 +546,30 @@ public class NfceControll implements Serializable {
             }
 
         } catch (Exception e) {
-            logger.error("erro ao cancelar NFCe", e.getCause());
-            Mensagem.addErrorMessage("Ocorreu um erro ao cancelar a NFC-e!\n", e);
+            if (e instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao cancelar a NFCe");
+            } else {
+                throw new RuntimeException("Erro ao cancelar a NFCe", e);
+            }
         }
 
     }
 
 
-    private void gerarCupom() throws Exception {
+    private void gerarCupom() {
 
         try {
 
             nfeService.gerarDanfe(venda);
             nomeCupom = "cupom" + venda.getNumero() + ".pdf";
         } catch (Exception ex) {
-            logger.error("erro ao gerar cupom", ex.getCause());
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao gerar o Cupom", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar o Cupom", ex);
+            }
+
+
         }
     }
 
