@@ -8,6 +8,7 @@ import com.chronos.repository.FinLancamentoReceberRepository;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
+import org.primefaces.model.SortOrder;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
@@ -36,6 +37,8 @@ public class FinLancamentoReceberService implements Serializable {
     private Repository<FinParcelaReceber> parcelasRepository;
     @Inject
     private Repository<FinLctoReceberNtFinanceira> parcelaNaturezaRepository;
+    @Inject
+    private Repository<OperadoraCartaoTaxa> operadoraCartaoTaxaRepository;
 
 
     public void gerarLancamento(int id , BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws Exception {
@@ -52,7 +55,7 @@ public class FinLancamentoReceberService implements Serializable {
 
 
     @Transactional
-    public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) throws Exception {
+    public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) {
         VendaCondicoesPagamento condicoesParcelas = lancamento.getCondicoesPagamento();
         if (condicoesParcelas.getVistaPrazo().equals("1")) {
             condicoesParcelas.setParcelas(condicoes.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesParcelas.getId()));
@@ -148,11 +151,21 @@ public class FinLancamentoReceberService implements Serializable {
             numDoc += "NSU" + identificador;
         }
 
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("operadoraCartao.id", operadoraCartao.getId()));
+        filtros.add(new Filtro("intervaloInicial", Filtro.MAIOR_OU_IGUAL, qtdParcelas));
+        List<OperadoraCartaoTaxa> cartaoTaxas = operadoraCartaoTaxaRepository.getEntitys(OperadoraCartaoTaxa.class, filtros, 0, 1, "intervaloFinal", SortOrder.ASCENDING, new Object[]{""});
+
         FinLancamentoReceberCartao lancamento = new FinLancamentoReceberCartao();
+        BigDecimal taxa = cartaoTaxas.
+                stream()
+                .map(OperadoraCartaoTaxa::getTaxaAdm)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
 
         lancamento.setValorBruto(valor);
-        lancamento.setTaxaAplicada(operadoraCartao.getTaxaAdm());
-        BigDecimal valorEcargos = valor.multiply(operadoraCartao.getTaxaAdm()).divide(BigDecimal.valueOf(100), BigDecimal.ROUND_HALF_DOWN);
+        lancamento.setTaxaAplicada(taxa);
+        BigDecimal valorEcargos = valor.multiply(taxa).divide(BigDecimal.valueOf(100), BigDecimal.ROUND_HALF_DOWN);
         lancamento.setValorEncargos(valorEcargos);
         lancamento.setValorLiquido(valor.subtract(valorEcargos));
 
@@ -182,8 +195,8 @@ public class FinLancamentoReceberService implements Serializable {
             parcelaReceber.setDataVencimento(Biblioteca.addDay(lancamento.getDataLancamento(), 30));
 
             parcelaReceber.setValorBruto(valorParcela);
-            parcelaReceber.setTaxaAplicada(operadoraCartao.getTaxaAdm());
-            BigDecimal valorEcargosParcela = Biblioteca.calcTaxa(valorParcela, operadoraCartao.getTaxaAdm());
+            parcelaReceber.setTaxaAplicada(taxa);
+            BigDecimal valorEcargosParcela = Biblioteca.calcTaxa(valorParcela, taxa);
             parcelaReceber.setValorEncargos(valorEcargosParcela);
             parcelaReceber.setValorLiquido(valorParcela.subtract(valorEcargos));
 

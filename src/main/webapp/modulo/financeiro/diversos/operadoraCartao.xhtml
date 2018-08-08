@@ -36,11 +36,6 @@
             <p:column headerText="nome">
                 <h:outputLabel value="#{row.nome}"/>
             </p:column>
-            <p:column headerText="Taxa adm." styleClass="text-right">
-                <h:outputLabel value="#{row.taxaAdm}">
-                    <f:convertNumber pattern="#,##0.00"/>
-                </h:outputLabel>
-            </p:column>
             <p:column headerText="Taxa Debito" styleClass="text-right">
                 <h:outputLabel value="#{row.taxaAdmDebito}">
                     <f:convertNumber pattern="#,##0.00"/>
@@ -82,33 +77,68 @@
                                 tamanhoMaximo="50" requerido="true"
                 />
 
-
-            </div>
-            <div class="row">
-
-                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                  id="taxaAdm"
-                                  idComponente="operadoraCartaoTaxaAdm"
-                                  nomeAtributo="#{operadoraCartaoControll.objeto.taxaAdm}"
-                                  requerido="true"
-                                  label="Taxa Adm."/>
-
                 <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                   id="taxaAdmDebito"
                                   idComponente="operadoraCartaotaxaAdmDebito"
                                   nomeAtributo="#{operadoraCartaoControll.objeto.taxaAdmDebito}"
                                   requerido="true"
                                   label="Taxa Debito"/>
-                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                  id="valorAluguelPosPin"
-                                  idComponente="operadoraCartaovalorAluguelPosPin"
-                                  nomeAtributo="#{operadoraCartaoControll.objeto.valorAluguelPosPin}"
-                                  label="Valor Aluguel"/>
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
-                                  idComponente="quantidaMaximaParcela"
-                                  nomeAtributo="#{operadoraCartaoControll.objeto.quantidaMaximaParcela}"
-                                  requerido="true"
-                                  label="Quant. Max de Parcelas"/>
+
+
+            </div>
+            <div class="row m-t">
+                <div class="col-md-12">
+                    <p:commandButton value="Add novo intervalo"
+                                     styleClass="ui-priority-primary" process="@this"
+                                     actionListener="#{operadoraCartaoControll.onAddNew()}"
+                                     oncomplete="PF('listaOperadoraCartaoTaxas').addRow();"/>
+                </div>
+            </div>
+            <div class="row m-t">
+
+
+                <div class="col-md-12">
+
+                    <p:dataTable id="listaOperadoraCartaoTaxas" widgetVar="listaOperadoraCartaoTaxas" var="row"
+                                 value="#{operadoraCartaoControll.operadoraCartaoTaxas}" editable="true"
+                                 style="margin-bottom:20px">
+
+
+                        <p:ajax event="rowEdit" listener="#{operadoraCartaoControll.onRowEdit}"/>
+
+                        <p:column headerText="Intervalo inicial">
+                            <h:outputText value="#{row.intervaloInicial}"/>
+                        </p:column>
+                        <p:column headerText="Intervalo final">
+                            <h:outputText value="#{row.intervaloFinal}"/>
+                        </p:column>
+                        <p:column headerText="Taxa Adm" styleClass="text-right">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{row.taxaAdm}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber
+                                            value="#{row.taxaAdm}"
+                                            required="true"
+                                            style="width: 100%;"
+                                            decimalPlaces="2"
+                                            maxValue="99.99"
+
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+
+                        </p:column>
+
+                        <p:column styleClass="text-center" width="50">
+                            <p:rowEditor/>
+                        </p:column>
+                    </p:dataTable>
+
+                </div>
+
+
             </div>
 
 

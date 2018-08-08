@@ -3,12 +3,18 @@ package com.chronos.controll.financeiro;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.ContaCaixa;
 import com.chronos.modelo.entidades.OperadoraCartao;
+import com.chronos.modelo.entidades.OperadoraCartaoTaxa;
+import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ContaCaixaService;
+import com.chronos.service.financeiro.OperadoraCartaoService;
+import com.chronos.util.jsf.Mensagem;
+import org.primefaces.event.RowEditEvent;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,11 +28,48 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
 
     private static final long serialVersionUID = 1L;
 
+
     @Inject
     private ContaCaixaService caixaService;
+    @Inject
+    private OperadoraCartaoService service;
+
+    private List<OperadoraCartaoTaxa> operadoraCartaoTaxas;
 
 
+    @Override
+    public void doCreate() {
+        super.doCreate();
+        operadoraCartaoTaxas = new ArrayList<>();
+        operadoraCartaoTaxas.add(new OperadoraCartaoTaxa());
+    }
 
+    @Override
+    public void doEdit() {
+        OperadoraCartao operadoraCartao = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        setObjeto(operadoraCartao);
+        operadoraCartaoTaxas = new ArrayList<>(operadoraCartao.getListaOperadoraCartaoTaxas());
+        setTelaGrid(false);
+    }
+
+    public void onRowEdit(RowEditEvent event) {
+
+        try {
+            OperadoraCartaoTaxa cartaoTaxa = (OperadoraCartaoTaxa) event.getObject();
+            service.validarIntevalo(operadoraCartaoTaxas, cartaoTaxa);
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao alterar o intervalo de taxas", ex);
+            } else {
+                throw new RuntimeException("Erro ao alterar o intervalo de taxas", ex);
+            }
+        }
+    }
+
+    public void onAddNew() {
+        OperadoraCartaoTaxa taxa = service.addTaxa(new ArrayList<>(operadoraCartaoTaxas));
+        operadoraCartaoTaxas.add(taxa);
+    }
 
     public List<ContaCaixa> getListaContaCaixa(String nome) {
         List<ContaCaixa> contas = new LinkedList<>();
@@ -51,5 +94,14 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
     @Override
     protected boolean auditar() {
         return false;
+    }
+
+
+    public List<OperadoraCartaoTaxa> getOperadoraCartaoTaxas() {
+        return operadoraCartaoTaxas;
+    }
+
+    public void setOperadoraCartaoTaxas(List<OperadoraCartaoTaxa> operadoraCartaoTaxas) {
+        this.operadoraCartaoTaxas = operadoraCartaoTaxas;
     }
 }
