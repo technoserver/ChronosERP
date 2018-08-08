@@ -10,6 +10,7 @@ import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
+import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
@@ -51,6 +52,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     @Inject
     private NfeService nfeService;
+    @Inject
+    private ProdutoService produtoService;
 
     private PessoaCliente pessoaCliente;
     private NfeDetalhe nfeDetalhe;
@@ -99,7 +102,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         try {
             super.doCreate();
 
-            nfeService.instanciarConfNfe(ModeloDocumento.NFE);
+            nfeService.instanciarConfNfe(empresa, ModeloDocumento.NFE);
             getObjeto().setDestinatario(new NfeDestinatario());
             getObjeto().getDestinatario().setNfeCabecalho(getObjeto());
 
@@ -126,7 +129,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
             tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getPdvTipoPagamento();
             setObjeto(nfe);
-            nfeService.instanciarConfNfe(ModeloDocumento.NFE);
+            nfeService.instanciarConfNfe(empresa, ModeloDocumento.NFE);
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
             dadosSalvos = true;
         } catch (Exception ex) {
@@ -551,7 +554,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         List<Produto> listaProduto = new ArrayList<>();
 
         try {
-            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao, false);
+            List<ProdutoDTO> list = produtoService.getListaProdutoDTO(empresa, descricao, false);
             listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();

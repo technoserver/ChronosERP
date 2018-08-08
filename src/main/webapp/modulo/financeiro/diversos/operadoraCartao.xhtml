@@ -104,13 +104,37 @@
                                  style="margin-bottom:20px">
 
 
-                        <p:ajax event="rowEdit" listener="#{operadoraCartaoControll.onRowEdit}"/>
-
+                        <p:ajax event="rowEdit" listener="#{operadoraCartaoControll.onRowEdit}"
+                                update=":formCentro:mensagem"/>
+                        <p:ajax event="rowEditCancel" listener="#{operadoraCartaoControll.onRowCancel}"
+                                update=":formCentro:mensagem"/>
                         <p:column headerText="Intervalo inicial">
-                            <h:outputText value="#{row.intervaloInicial}"/>
+
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{row.intervaloInicial}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{row.intervaloInicial}">
+                                        <p:keyFilter regEx="/[\d\-]/"/>
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+
                         </p:column>
                         <p:column headerText="Intervalo final">
-                            <h:outputText value="#{row.intervaloFinal}"/>
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText value="#{row.intervaloFinal}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{row.intervaloFinal}">
+                                        <p:keyFilter regEx="/[\d\-]/"/>
+                                    </p:inputText>
+                                </f:facet>
+                            </p:cellEditor>
+
+
                         </p:column>
                         <p:column headerText="Taxa Adm" styleClass="text-right">
                             <p:cellEditor>

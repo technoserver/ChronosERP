@@ -51,7 +51,7 @@ public class OsService implements Serializable {
 
     }
 
-    public OsAbertura salvar(OsAbertura os) throws Exception {
+    public OsAbertura salvar(OsAbertura os) {
         if (os.isNovo()) {
             repository.salvar(os);
             os.setNumero("OS" + new DecimalFormat("0000000").format(os.getId()));
@@ -89,7 +89,7 @@ public class OsService implements Serializable {
         VendaToNFe vendaNfe = new VendaToNFe(modelo, os);
         nfe = vendaNfe.gerarNfe();
         nfe.setOs(os);
-        ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getModeloDocumento(), true);
+        ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);

@@ -8,7 +8,6 @@ import com.chronos.repository.FinLancamentoReceberRepository;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
-import org.primefaces.model.SortOrder;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
@@ -38,10 +37,10 @@ public class FinLancamentoReceberService implements Serializable {
     @Inject
     private Repository<FinLctoReceberNtFinanceira> parcelaNaturezaRepository;
     @Inject
-    private Repository<OperadoraCartaoTaxa> operadoraCartaoTaxaRepository;
+    private OperadoraCartaoService operadoraCartaoService;
 
 
-    public void gerarLancamento(int id , BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws Exception {
+    public void gerarLancamento(int id, BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) {
         LancamentoReceber lancamento = new LancamentoReceber();
         lancamento.setCliente(cliente);
         lancamento.setCondicoesPagamento(condicoesPagamento);
@@ -154,14 +153,11 @@ public class FinLancamentoReceberService implements Serializable {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro("operadoraCartao.id", operadoraCartao.getId()));
         filtros.add(new Filtro("intervaloInicial", Filtro.MAIOR_OU_IGUAL, qtdParcelas));
-        List<OperadoraCartaoTaxa> cartaoTaxas = operadoraCartaoTaxaRepository.getEntitys(OperadoraCartaoTaxa.class, filtros, 0, 1, "intervaloFinal", SortOrder.ASCENDING, new Object[]{""});
+
 
         FinLancamentoReceberCartao lancamento = new FinLancamentoReceberCartao();
-        BigDecimal taxa = cartaoTaxas.
-                stream()
-                .map(OperadoraCartaoTaxa::getTaxaAdm)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
+        BigDecimal taxa = operadoraCartaoService.getTaxa(new ArrayList<>(operadoraCartao.getListaOperadoraCartaoTaxas()), qtdParcelas);
+
 
         lancamento.setValorBruto(valor);
         lancamento.setTaxaAplicada(taxa);

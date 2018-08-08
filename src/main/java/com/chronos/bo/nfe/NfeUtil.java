@@ -204,10 +204,10 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         return nfe;
     }
 
-    public NfeDetalhe defineTributacao(NfeDetalhe item, Empresa empresa, TributOperacaoFiscal operacaoFiscal, NfeDestinatario destinatario) throws Exception {
+    public NfeDetalhe defineTributacao(NfeDetalhe item, TributOperacaoFiscal operacaoFiscal, NfeDestinatario destinatario) throws Exception {
 
 
-
+        Empresa empresa = item.getNfeCabecalho().getEmpresa();
         issRepository = getFacadeWithJNDI(IssRepository.class);
         icmsCustomRepository = getFacadeWithJNDI(IcmsCustomRepository.class);
         icmsRepository = getFacadeWithJNDI(IcmsRepository.class);

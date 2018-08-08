@@ -30,7 +30,7 @@ public class OperadoraCartaoTaxa implements Serializable {
     private OperadoraCartao operadoraCartao;
 
     public OperadoraCartaoTaxa() {
-        this.taxaAdm = BigDecimal.ZERO;
+        this.taxaAdm = BigDecimal.ONE;
         this.intervaloFinal = 1;
         this.intervaloInicial = 1;
         this.creditoEm = 30;
@@ -101,12 +101,14 @@ public class OperadoraCartaoTaxa implements Serializable {
         if (this == o) return true;
         if (!(o instanceof OperadoraCartaoTaxa)) return false;
         OperadoraCartaoTaxa taxa = (OperadoraCartaoTaxa) o;
-        return Objects.equals(id, taxa.id);
+        return Objects.equals(id, taxa.id) &&
+                Objects.equals(intervaloInicial, taxa.intervaloInicial) &&
+                Objects.equals(intervaloFinal, taxa.intervaloFinal);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id);
+        return Objects.hash(id, intervaloInicial, intervaloFinal);
     }
 }

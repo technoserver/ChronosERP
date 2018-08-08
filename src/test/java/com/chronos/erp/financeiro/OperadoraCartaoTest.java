@@ -5,6 +5,7 @@
  */
 package com.chronos.erp.financeiro;
 
+import com.chronos.modelo.entidades.OperadoraCartao;
 import com.chronos.modelo.entidades.OperadoraCartaoTaxa;
 import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.OperadoraCartaoService;
@@ -12,6 +13,7 @@ import org.junit.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -112,6 +114,56 @@ public class OperadoraCartaoTest {
 
         assertEquals(taxa.getIntervaloInicial(), Integer.valueOf(7));
         assertEquals(taxa.getIntervaloFinal(), Integer.valueOf(8));
+    }
+
+    @Test
+    public void qtdMaximaParcelasListaVazia() {
+
+        OperadoraCartao operadoraCartao = new OperadoraCartao();
+        int qtd = service.quantidadeMaximaParcelas(operadoraCartao);
+
+        assertEquals(qtd, 1);
+
+    }
+
+    @Test
+    public void qtdMaximaParcelas6() {
+
+        OperadoraCartao operadoraCartao = new OperadoraCartao();
+        taxas.add(new OperadoraCartaoTaxa(2, 6, BigDecimal.ZERO));
+        operadoraCartao.setListaOperadoraCartaoTaxas(new HashSet<>(taxas));
+        int qtd = service.quantidadeMaximaParcelas(operadoraCartao);
+
+        assertEquals(qtd, 6);
+
+    }
+
+    @Test
+    public void getTaxaIdeal4Parcelas() {
+
+        OperadoraCartao operadoraCartao = new OperadoraCartao();
+        taxas.add(new OperadoraCartaoTaxa(2, 6, BigDecimal.valueOf(4.0)));
+        taxas.add(new OperadoraCartaoTaxa(7, 10, BigDecimal.valueOf(5.0)));
+        taxas.add(new OperadoraCartaoTaxa(11, 12, BigDecimal.valueOf(5.5)));
+        BigDecimal taxa = service.getTaxa(taxas, 4);
+
+
+        assertEquals(taxa, BigDecimal.valueOf(4.0));
+
+    }
+
+    @Test
+    public void getTaxaIdeal7Parcelas() {
+
+        OperadoraCartao operadoraCartao = new OperadoraCartao();
+        taxas.add(new OperadoraCartaoTaxa(2, 6, BigDecimal.valueOf(4.0)));
+        taxas.add(new OperadoraCartaoTaxa(7, 10, BigDecimal.valueOf(5.0)));
+        taxas.add(new OperadoraCartaoTaxa(11, 12, BigDecimal.valueOf(5.5)));
+        BigDecimal taxa = service.getTaxa(taxas, 8);
+
+
+        assertEquals(taxa, BigDecimal.valueOf(5.0));
+
     }
 
 }

@@ -10,6 +10,7 @@ import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
+import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendedorService;
 import com.chronos.transmissor.exception.EmissorException;
@@ -79,6 +80,8 @@ public class NfceControll implements Serializable {
     private NfeService nfeService;
     @Inject
     private VendedorService vendedorService;
+    @Inject
+    private ProdutoService produtoService;
 
     private PdvMovimento movimento;
     private List<PdvTurno> listTurno;
@@ -655,7 +658,7 @@ public class NfceControll implements Serializable {
         List<Produto> listaProduto = new ArrayList<>();
 
         try {
-            List<ProdutoDTO> list = nfeService.getListaProdutoDTO(descricao, true);
+            List<ProdutoDTO> list = produtoService.getListaProdutoDTO(empresa, descricao, true);
             listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             logger.error("Erro ao lista os produtos", e.getMessage());

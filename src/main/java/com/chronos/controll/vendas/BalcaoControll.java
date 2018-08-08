@@ -4,13 +4,18 @@ import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.repository.OperadoraCartaoRepository;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
+import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaPdvService;
 import com.chronos.service.comercial.VendedorService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.financeiro.MovimentoService;
+import com.chronos.service.financeiro.OperadoraCartaoService;
+import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -29,6 +34,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +64,9 @@ public class BalcaoControll implements Serializable {
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
-    private Repository<OperadoraCartao> operadoraCartaoRepository;
+    private OperadoraCartaoRepository operadoraCartaoRepository;
+    @Inject
+    private OperadoraCartaoService operadoraCartaoService;
 
     @Inject
     private Repository<NfeCabecalho> nfeRepository;
@@ -85,6 +93,8 @@ public class BalcaoControll implements Serializable {
     private VendedorService vendedorService;
     @Inject
     private MovimentoService movimentoService;
+    @Inject
+    private ProdutoService produtoService;
 
 
     private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
@@ -128,6 +138,7 @@ public class BalcaoControll implements Serializable {
     private BigDecimal valorPago;
     private int id;
     private int qtdParcelas = 1;
+    private int qtdMaxParcelas = 1;
 
 
     @PostConstruct
@@ -233,8 +244,17 @@ public class BalcaoControll implements Serializable {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Erro ao gera NFCe \n", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao gera NFCe \n", ex);
+            } else if (ex instanceof UnknownHostException) {
+                Mensagem.addErrorMessage("Erro ao gerar conexao com \n", ex);
+            } else if (ex instanceof EmissorException) {
+                Mensagem.addErrorMessage("Erro ao gerar conexao com \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar NFce", ex);
+            }
+
+
         }
     }
 
@@ -256,7 +276,7 @@ public class BalcaoControll implements Serializable {
 
         try {
 
-            listaProduto = nfeService.getListaProdutoDTO(nome, true);
+            listaProduto = produtoService.getListaProdutoDTO(empresa, nome, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -576,9 +596,19 @@ public class BalcaoControll implements Serializable {
             condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class, new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
         }
         if (exibirQtdParcelas) {
-            operadoras = operadoraCartaoRepository.getEntitys(OperadoraCartao.class, new Object[]{"nome", "taxaAdm", "contaCaixa.id"});
+            operadoras = operadoraCartaoRepository.getOperadoraResumidaComintervalo();
+            if (operadoras.stream().findFirst().isPresent()) {
+                operadoraCartao = operadoras.stream().findFirst().get();
+                qtdMaxParcelas = operadoraCartaoService.quantidadeMaximaParcelas(operadoraCartao);
+            } else {
+                qtdMaxParcelas = 1;
+            }
         }
 
+    }
+
+    public void selecionarOperadora() {
+        qtdMaxParcelas = operadoraCartaoService.quantidadeMaximaParcelas(operadoraCartao);
     }
 
     public void definirQtdParcelas(int qtd) {
@@ -846,4 +876,10 @@ public class BalcaoControll implements Serializable {
     public void setItemSelecionado(PdvVendaDetalhe itemSelecionado) {
         this.itemSelecionado = itemSelecionado;
     }
+
+    public int getQtdMaxParcelas() {
+        return qtdMaxParcelas;
+    }
+
+
 }

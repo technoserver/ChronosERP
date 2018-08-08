@@ -10,11 +10,13 @@ import com.chronos.service.financeiro.OperadoraCartaoService;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.RowEditEvent;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,7 +43,9 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
     public void doCreate() {
         super.doCreate();
         operadoraCartaoTaxas = new ArrayList<>();
-        operadoraCartaoTaxas.add(new OperadoraCartaoTaxa());
+        OperadoraCartaoTaxa taxa = new OperadoraCartaoTaxa();
+        taxa.setOperadoraCartao(getObjeto());
+        operadoraCartaoTaxas.add(taxa);
     }
 
     @Override
@@ -49,7 +53,18 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
         OperadoraCartao operadoraCartao = dataModel.getRowData(getObjetoSelecionado().getId().toString());
         setObjeto(operadoraCartao);
         operadoraCartaoTaxas = new ArrayList<>(operadoraCartao.getListaOperadoraCartaoTaxas());
+        if (operadoraCartaoTaxas.isEmpty()) {
+            OperadoraCartaoTaxa taxa = new OperadoraCartaoTaxa();
+            taxa.setOperadoraCartao(getObjeto());
+            operadoraCartaoTaxas.add(taxa);
+        }
         setTelaGrid(false);
+    }
+
+    @Override
+    public void salvar() {
+        getObjeto().setListaOperadoraCartaoTaxas(new HashSet<>(operadoraCartaoTaxas));
+        super.salvar();
     }
 
     public void onRowEdit(RowEditEvent event) {
@@ -59,6 +74,7 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
             service.validarIntevalo(operadoraCartaoTaxas, cartaoTaxa);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
+                FacesContext.getCurrentInstance().validationFailed();
                 Mensagem.addErrorMessage("Erro ao alterar o intervalo de taxas", ex);
             } else {
                 throw new RuntimeException("Erro ao alterar o intervalo de taxas", ex);
@@ -66,8 +82,18 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
         }
     }
 
+    public void onRowCancel(RowEditEvent event) {
+        OperadoraCartaoTaxa cartaoTaxa = (OperadoraCartaoTaxa) event.getObject();
+        if (operadoraCartaoTaxas.size() > 1) {
+            operadoraCartaoTaxas.remove(cartaoTaxa);
+        } else {
+            Mensagem.addErrorMessage("É preciso ao menos ter 1 intervalo definido");
+        }
+
+    }
     public void onAddNew() {
         OperadoraCartaoTaxa taxa = service.addTaxa(new ArrayList<>(operadoraCartaoTaxas));
+        taxa.setOperadoraCartao(getObjeto());
         operadoraCartaoTaxas.add(taxa);
     }
 

@@ -12,6 +12,7 @@ import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
@@ -67,6 +68,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private EstoqueRepository estoqueRepositoy;
     @Inject
     private VendaService vendaService;
+    @Inject
+    private ProdutoService produtoService;
 
 
     private VendaDetalhe vendaDetalhe;
@@ -383,7 +386,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
         try {
 
-            listaProduto = nfeService.getListaProdutoDTO(nome,true);
+            listaProduto = produtoService.getListaProdutoDTO(empresa, nome, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
