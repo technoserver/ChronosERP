@@ -187,7 +187,11 @@ public class BalcaoControll implements Serializable {
                 instanciarParametro();
             }
         } catch (Exception ex) {
-
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao iniciar uma nova venda", ex);
+            } else {
+                throw new RuntimeException("Erro ao iniciar uma nova venda", ex);
+            }
         }
 
 
@@ -472,8 +476,11 @@ public class BalcaoControll implements Serializable {
                 }
             }
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao lança os pagamentos", ex);
+            } else {
+                throw new RuntimeException("Erro ao lança os pagamentos", ex);
+            }
         }
 
 
@@ -556,8 +563,12 @@ public class BalcaoControll implements Serializable {
                 Mensagem.addInfoMessage("Valores informados não são suficientes para finalizar a venda.");
             }
         } catch (Exception ex) {
-            logger.error(ex.getMessage());
-            Mensagem.addErrorMessage("Erro ao finalziar venda", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao finalziar venda", ex);
+            } else {
+                throw new RuntimeException("Erro ao finalziar venda", ex);
+            }
+
         }
     }
 
