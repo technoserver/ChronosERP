@@ -268,8 +268,11 @@ public class BalcaoControll implements Serializable {
             NfeCabecalho nfe = nfeRepository.get(venda.getIdnfe(), NfeCabecalho.class);
             nfeService.danfe(nfe);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao gera Cupom \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar Cupom", ex);
+            }
         }
     }
 
