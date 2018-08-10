@@ -580,7 +580,8 @@ public class NfeService implements Serializable {
     }
 
     public void danfe(NfeCabecalho nfe) throws Exception {
-        String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj());
+        String cnpj = nfe.getEmpresa().getCnpj();
+        String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(cnpj);
         String arquivoPdf = pastaXml + System.getProperty("file.separator") + nfe.getNomePdf();
         String caminhoXml = pastaXml + System.getProperty("file.separator") + nfe.getNomeXml();
         File fileXml = new File(caminhoXml);
