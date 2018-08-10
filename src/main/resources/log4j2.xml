@@ -19,9 +19,6 @@
     </Appenders>
 
     <Loggers>
-        <Root level="info">
-            <AppenderRef ref="console"/>
-        </Root>
         <Root level="WARN">
             <AppenderRef ref="console"/>
             <AppenderRef ref="arquivo"/>
