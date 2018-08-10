@@ -115,7 +115,7 @@ public class VendaPdvService implements Serializable {
         NfeCabecalho nfe = vendaNfe.gerarNfe();
         nfe.setPdv(venda);
         nfe.setSerie(caixa.getCodigo());
-        ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getModeloDocumento(), true);
+        ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);

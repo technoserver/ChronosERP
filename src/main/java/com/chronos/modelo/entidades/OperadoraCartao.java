@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -27,15 +28,10 @@ public class OperadoraCartao implements Serializable {
     @NotBlank(message = "Nome Obrigatório")
     @Column(name = "NOME")
     private String nome;
-    @Column(name = "TAXA_ADM")
-    private BigDecimal taxaAdm;
     @Column(name = "TAXA_ADM_DEBITO")
     private BigDecimal taxaAdmDebito;
     @Column(name = "VALOR_ALUGUEL_POS_PIN")
     private BigDecimal valorAluguelPosPin;
-    @Column(name = "quantida_maxima_parcela")
-    @NotNull
-    private Integer quantidaMaximaParcela;
     @Column(name = "VENCIMENTO_ALUGUEL")
     private Integer vencimentoAluguel;
     @Column(name = "FONE1")
@@ -49,16 +45,19 @@ public class OperadoraCartao implements Serializable {
     private ContaCaixa contaCaixa;
     @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")
     private String classificacaoContabilConta;
+    @OneToMany(mappedBy = "operadoraCartao", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<OperadoraCartaoTaxa> listaOperadoraCartaoTaxas;
+
     @Transient
     private String nsu;
 
     public OperadoraCartao() {
+        this.valorAluguelPosPin = BigDecimal.ZERO;
     }
 
-    public OperadoraCartao(Integer id, String nome, BigDecimal taxaAdm, Integer idconta) {
+    public OperadoraCartao(Integer id, String nome, Integer idconta) {
         this.id = id;
         this.nome = nome;
-        this.taxaAdm = taxaAdm;
         this.contaCaixa = new ContaCaixa(idconta);
     }
 
@@ -86,13 +85,7 @@ public class OperadoraCartao implements Serializable {
         this.nome = nome;
     }
 
-    public BigDecimal getTaxaAdm() {
-        return taxaAdm;
-    }
 
-    public void setTaxaAdm(BigDecimal taxaAdm) {
-        this.taxaAdm = taxaAdm;
-    }
 
     public BigDecimal getTaxaAdmDebito() {
         return taxaAdmDebito;
@@ -150,12 +143,12 @@ public class OperadoraCartao implements Serializable {
         this.classificacaoContabilConta = classificacaoContabilConta;
     }
 
-    public Integer getQuantidaMaximaParcela() {
-        return quantidaMaximaParcela;
+    public Set<OperadoraCartaoTaxa> getListaOperadoraCartaoTaxas() {
+        return listaOperadoraCartaoTaxas;
     }
 
-    public void setQuantidaMaximaParcela(Integer quantidaMaximaParcela) {
-        this.quantidaMaximaParcela = quantidaMaximaParcela;
+    public void setListaOperadoraCartaoTaxas(Set<OperadoraCartaoTaxa> listaOperadoraCartaoTaxas) {
+        this.listaOperadoraCartaoTaxas = listaOperadoraCartaoTaxas;
     }
 
     public String getNsu() {

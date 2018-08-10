@@ -226,7 +226,7 @@ public class VendaToNFe extends ManualCDILookup {
             itemNfe.setNumeroItem(++numeroItem);
             itemNfe.setEntraTotal(1);
 
-            itemNfe = nfeUtil.defineTributacao(itemNfe, empresa, operacaoFiscal, nfe.getDestinatario());
+            itemNfe = nfeUtil.defineTributacao(itemNfe, operacaoFiscal, nfe.getDestinatario());
             itensNfe.add(itemNfe);
         }
 

@@ -449,7 +449,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
-    public List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int qtdRegistro, String sortField, SortOrder sortOrder, Object[] atributos) throws Exception {
+    public List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int qtdRegistro, String sortField, SortOrder sortOrder, Object[] atributos) {
         return getEntitys(clazz, filters, 0, qtdRegistro, sortField, sortOrder, atributos);
     }
 
@@ -526,7 +526,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         }
         if (joinFetch != null) {
             for (Object jf : joinFetch) {
-                jpql += " JOIN FETCH o." + jf;
+                jpql += " LEFT JOIN FETCH o." + jf;
             }
         }
         jpql += " WHERE 1 = 1";
@@ -575,7 +575,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         return jpql;
     }
 
-    private String addCondicao(List<Filtro> filters, String andOr) throws Exception {
+    private String addCondicao(List<Filtro> filters, String andOr) {
         StringBuilder jpql = new StringBuilder();
         if (!filters.isEmpty()) {
             jpql = new StringBuilder(" AND (");

@@ -69,7 +69,6 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
         try {
             sortField = StringUtils.isEmpty(ordernarPor) ? sortField : ordernarPor;
             objs = repository.getEntitys(getClazz(),filtros, first, pageSize, sortField, sortOrder,joinFetch,atributos );
-
             Long totalRegistros = repository.getTotalRegistros(getClazz(), filtros);
             this.setRowCount(totalRegistros.intValue());
             filtros.clear();

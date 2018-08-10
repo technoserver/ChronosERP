@@ -55,116 +55,133 @@
                                                  converter="defaultConverter">
                                     <f:selectItems value="#{balcaoControll.operadoras}" var="obj" itemValue="#{obj}"
                                                    itemLabel="#{obj.nome}"/>
+                                    <p:ajax update="formCentro:parcelas" process="@this"
+                                            listener="#{balcaoControll.selecionarOperadora}"/>
                                 </h:selectOneMenu>
                             </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="1x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 1? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(1)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="2x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 2? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(2)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="3x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 3? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(3)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="4x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 4? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(4)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="5x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 5? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(5)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="6x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 6? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(6)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="7x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 7? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(7)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="8x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 8? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(8)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="9x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 9? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(9)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="10x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 10? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(10)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="11x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 11? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(11)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
-                            <div class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento">
-                                <h:commandButton value="12x"
-                                                 styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 12? 'btn-warning':'btn-primary'}"
-                                                 type="button"
-                                                 action="#{balcaoControll.definirQtdParcelas(12)}"
-                                                 style="width:100%; margin-bottom:10px">
-                                    <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
-                                </h:commandButton>
-                            </div>
+                            <h:panelGroup layout="block" id="parcelas">
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 1 }">
+                                    <h:commandButton value="1x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 1? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(1)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 2 }">
+                                    <h:commandButton value="2x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 2? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(2)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 3 }">
+                                    <h:commandButton value="3x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 3? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(3)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 4 }">
+                                    <h:commandButton value="4x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 4? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(4)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 5 }">
+                                    <h:commandButton value="5x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 5? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(5)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 6 }">
+                                    <h:commandButton value="6x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 6? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(6)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 7 }">
+                                    <h:commandButton value="7x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 7? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(7)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 8 }">
+                                    <h:commandButton value="8x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 8? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(8)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 9 }">
+                                    <h:commandButton value="9x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 9? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(9)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 10 }">
+                                    <h:commandButton value="10x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 10? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(10)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 11 }">
+                                    <h:commandButton value="11x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 11? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(11)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                                <h:panelGroup layout="block" class="col-sm-2 col-md-2 col-lg-2 parcelas-pagamento"
+                                              rendered="#{balcaoControll.qtdMaxParcelas ge 12 }">
+                                    <h:commandButton value="12x"
+                                                     styleClass="btn  btn-lg #{balcaoControll.qtdParcelas == 12? 'btn-warning':'btn-primary'}"
+                                                     type="button"
+                                                     action="#{balcaoControll.definirQtdParcelas(12)}"
+                                                     style="width:100%; margin-bottom:10px">
+                                        <p:ajax process="@this" update=":formCentro:qtdParcelas"/>
+                                    </h:commandButton>
+                                </h:panelGroup>
+                            </h:panelGroup>
+
                         </h:panelGroup>
 
                     </h:panelGroup>

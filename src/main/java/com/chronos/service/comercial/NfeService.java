@@ -105,21 +105,19 @@ public class NfeService implements Serializable {
 
     @PostConstruct
     private void init() {
-        empresa = FacesUtil.getEmpresaUsuario();
-        context = FacesContext.getCurrentInstance().getExternalContext();
         configuracoes = FacesUtil.getConfEmissor();
     }
 
-    public ConfiguracaoEmissorDTO instanciarConfNfe(ModeloDocumento modelo, boolean buscar) throws ChronosException {
+    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo, boolean buscar) throws ChronosException {
 
         if (buscar) {
             configuracoes = null;
         }
-        return instanciarConfNfe(modelo);
+        return instanciarConfNfe(empresa, modelo);
     }
 
-    public ConfiguracaoEmissorDTO instanciarConfNfe(ModeloDocumento modelo) throws ChronosException {
-
+    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo) throws ChronosException {
+        this.empresa = empresa;
         if (configuracoes == null) {
             if (modelo == ModeloDocumento.NFE) {
                 ConfiguracaoNfeDTO configuracaoNfeDTO = configuracoesNfe.getNamedQuery(ConfiguracaoNfeDTO.class, "Nfe.configuracao", empresa.getId());
@@ -358,7 +356,7 @@ public class NfeService implements Serializable {
 
     public NfeDetalhe definirTributacao(NfeDetalhe item, TributOperacaoFiscal operacaoFiscal, NfeDestinatario destinatario) throws Exception {
         NfeUtil nfeUtil = new NfeUtil();
-        item = nfeUtil.defineTributacao(item, empresa, operacaoFiscal, destinatario);
+        item = nfeUtil.defineTributacao(item, operacaoFiscal, destinatario);
         return item;
     }
 
@@ -382,25 +380,7 @@ public class NfeService implements Serializable {
         return listaProduto;
     }
 
-    public List<ProdutoDTO> getListaProdutoDTO(String descricao, boolean moduloVenda) throws Exception {
-        List<ProdutoDTO> listaProduto;
-        List<Filtro> filtros = new ArrayList<>();
-        if (org.apache.commons.lang3.StringUtils.isNumeric(descricao)) {
-            filtros.add(new Filtro(Filtro.AND, "id", Filtro.IGUAL, descricao));
-            // listaProduto = produtoDao.getEntitys(Produto.class, filtros);
-        } else {
-            filtros.add(new Filtro(Filtro.OR, "nome", Filtro.LIKE, descricao.trim()));
-            filtros.add(new Filtro(Filtro.OR, "gtin", Filtro.LIKE, descricao.trim()));
-            filtros.add(new Filtro(Filtro.OR, "codigoInterno", Filtro.LIKE, descricao.trim()));
-            //  listaProduto = produtoDao.getEntitys(Produto.class, filtros);
-        }
-        if (moduloVenda) {
-            filtros.add(new Filtro(Filtro.AND, "servico", "N"));
-            filtros.add(new Filtro(Filtro.AND, "tipo", "V"));
-        }
-        listaProduto = produtos.getProdutoDTO(descricao, empresa);
-        return listaProduto;
-    }
+
 
     public void gerarDuplicatas(NfeCabecalho nfe, VendaCondicoesPagamento condicoesPagamento, Date primeiroVencimento, int intervaloParcelas, int qtdParcelas) throws Exception {
 
@@ -724,7 +704,7 @@ public class NfeService implements Serializable {
             throw new ChronosException("NF-e náo autorizada. Cancelamento náo permitido!");
         }
 
-        instanciarConfNfe(nfe.getModeloDocumento());
+        instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
         EventoDTO evento = new EventoDTO();
         evento.setProtocolo(nfe.getNumeroProtocolo());
         evento.setMotivo(nfe.getJustificativaCancelamento());

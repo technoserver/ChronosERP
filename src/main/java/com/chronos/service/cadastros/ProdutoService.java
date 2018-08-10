@@ -4,6 +4,7 @@ import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.Produto;
 import com.chronos.repository.EstoqueRepository;
+import com.chronos.repository.Filtro;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -34,5 +35,25 @@ public class ProdutoService implements Serializable {
         }
         return produtos;
 
+    }
+
+    public List<ProdutoDTO> getListaProdutoDTO(Empresa empresa, String descricao, boolean moduloVenda) throws Exception {
+        List<ProdutoDTO> listaProduto;
+        List<Filtro> filtros = new ArrayList<>();
+        if (org.apache.commons.lang3.StringUtils.isNumeric(descricao)) {
+            filtros.add(new Filtro(Filtro.AND, "id", Filtro.IGUAL, descricao));
+            // listaProduto = produtoDao.getEntitys(Produto.class, filtros);
+        } else {
+            filtros.add(new Filtro(Filtro.OR, "nome", Filtro.LIKE, descricao.trim()));
+            filtros.add(new Filtro(Filtro.OR, "gtin", Filtro.LIKE, descricao.trim()));
+            filtros.add(new Filtro(Filtro.OR, "codigoInterno", Filtro.LIKE, descricao.trim()));
+            //  listaProduto = produtoDao.getEntitys(Produto.class, filtros);
+        }
+        if (moduloVenda) {
+            filtros.add(new Filtro(Filtro.AND, "servico", "N"));
+            filtros.add(new Filtro(Filtro.AND, "tipo", "V"));
+        }
+        listaProduto = repository.getProdutoDTO(descricao, empresa);
+        return listaProduto;
     }
 }
