@@ -156,7 +156,7 @@ public class BalcaoControll implements Serializable {
             dataModel.setDao(vendas);
             dataModel.setClazz(PdvVendaCabecalho.class);
         }
-        Object[] atributos = new Object[]{"dataHoraVenda","valorSubtotal", "valorDesconto", "valorTotal", "nomeCliente",
+        Object[] atributos = new Object[]{"idnfe", "dataHoraVenda", "valorSubtotal", "valorDesconto", "valorTotal", "nomeCliente",
                 "sicronizado", "statusVenda", "pdvMovimento.pdvCaixa.nome"};
         dataModel.setAtributos(atributos);
         return dataModel;
@@ -266,6 +266,7 @@ public class BalcaoControll implements Serializable {
         try {
 
             NfeCabecalho nfe = nfeRepository.get(venda.getIdnfe(), NfeCabecalho.class);
+            nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
             nfeService.danfe(nfe);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {

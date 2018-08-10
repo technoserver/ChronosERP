@@ -388,7 +388,7 @@
                         <p:column headerText="Cliente" width="130">
                             <h:outputLabel value="#{row.nomeCliente == null ? 'Não identificado': row.nomeCliente}"/>
                         </p:column>
-                        <p:column headerText="Data Venda" width="130">
+                        <p:column headerText="Data Venda" width="130" sortBy="#{row.dataHoraVenda}">
                             <h:outputLabel value="#{row.dataHoraVenda}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -410,18 +410,27 @@
                         </p:column>
                         <p:column headerText="Situacao" sortBy="#{row.statusVenda}" width="130"
                                   styleClass="text-center">
+
                             <h:outputLabel value="#{row.statusVenda eq 'F'?'Finalizada':'Faturada'}"
-                                           styleClass="label label-success"/>
+                                           styleClass="label  #{row.statusVenda eq 'F'?'label-success':'label-info'}"/>
                         </p:column>
 
                         <p:column headerText="Ações" width="160" class="text-center">
 
                             <p:menuButton>
                                 <p:menuitem value="Cupom"
+                                            rendered="#{empty row.idnfe}"
                                             target="blank"
                                             outcome="/modulo/comercial/vendas/relatorios/cupomBalcao"
                                             icon="fa fa-print" ajax="false">
                                     <f:param name="idcupom" value="#{row.id}"/>
+                                </p:menuitem>
+                                <p:menuitem value="Cupom"
+                                            icon="fa fa-print" ajax="false"
+                                            rendered="#{not empty row.idnfe}"
+                                            action="#{balcaoControll.danfe}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{balcaoControll.venda}"/>
                                 </p:menuitem>
                                 <p:menuitem value="Emitir NFCe"
                                             update=":formCentro:growl,tableVenda"
@@ -431,15 +440,6 @@
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{balcaoControll.venda}"/>
                                 </p:menuitem>
-
-                                <p:menuitem value="Danfe"
-                                            icon="fa fa-print" ajax="false"
-                                            rendered="#{not empty row.idnfe}"
-                                            action="#{balcaoControll.danfe}">
-                                    <f:setPropertyActionListener value="#{row}"
-                                                                 target="#{balcaoControll.venda}"/>
-                                </p:menuitem>
-
 
 
                             </p:menuButton>
