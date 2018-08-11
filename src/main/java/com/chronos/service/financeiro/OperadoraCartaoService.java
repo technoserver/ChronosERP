@@ -64,7 +64,7 @@ public class OperadoraCartaoService implements Serializable {
 
     public int quantidadeMaximaParcelas(OperadoraCartao operadoraCartao) {
         if (operadoraCartao.getListaOperadoraCartaoTaxas() == null || operadoraCartao.getListaOperadoraCartaoTaxas().isEmpty()) {
-            return 1;
+            return 0;
         } else {
             OperadoraCartaoTaxa taxa = operadoraCartao.getListaOperadoraCartaoTaxas().stream().max(Comparator.comparing(OperadoraCartaoTaxa::getIntervaloFinal)).get();
             return taxa.getIntervaloFinal();

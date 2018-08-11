@@ -616,7 +616,7 @@ public class BalcaoControll implements Serializable {
                 operadoraCartao = operadoras.stream().findFirst().get();
                 qtdMaxParcelas = operadoraCartaoService.quantidadeMaximaParcelas(operadoraCartao);
             } else {
-                qtdMaxParcelas = 1;
+                qtdMaxParcelas = 0;
             }
         }
 
@@ -825,7 +825,7 @@ public class BalcaoControll implements Serializable {
     }
 
     public boolean isPodeLancaPagamento() {
-        return valorPago.signum() == 0;
+        return valorPago.signum() == 0 || (exibirQtdParcelas && qtdMaxParcelas == 0);
     }
 
     public boolean isExibirCondicoes() {
