@@ -1,6 +1,8 @@
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,10 +19,15 @@ public class OperadoraCartaoTaxa implements Serializable {
     @Column(name = "id")
     private Integer id;
     @Column(name = "intervalo_inicial")
+    @NotNull
     private Integer intervaloInicial;
     @Column(name = "intervalo_final")
+    @NotNull
     private Integer intervaloFinal;
     @Column(name = "taxa_adm")
+    @NotNull
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que 0,01")
+    @DecimalMax(value = "100.00", message = "O valor  deve ser menor que 100,00")
     private BigDecimal taxaAdm;
     @Column(name = "credito_em")
     private Integer creditoEm;

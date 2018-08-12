@@ -65,17 +65,17 @@ public class OperadoraCartaoTest {
         assertFalse(valido);
     }
 
-//    @Test
-//    public void intervaloInicialExistente() {
-//        boolean valido = true;
-//        try {
-//            taxa.setTaxaAdm(BigDecimal.ONE);
-//            service.validarIntevalo(taxas, taxa);
-//        } catch (ChronosException e) {
-//            valido = false;
-//        }
-//        assertFalse(valido);
-//    }
+    @Test
+    public void intervaloInicialExistente() {
+        boolean valido = true;
+        try {
+            taxa.setTaxaAdm(BigDecimal.ONE);
+            service.validarIntevalo(taxas, taxa);
+        } catch (ChronosException e) {
+            valido = false;
+        }
+        assertFalse(valido);
+    }
 
     @Test
     public void intervaloFinalExistente() {
@@ -123,7 +123,7 @@ public class OperadoraCartaoTest {
         OperadoraCartao operadoraCartao = new OperadoraCartao();
         int qtd = service.quantidadeMaximaParcelas(operadoraCartao);
 
-        assertEquals(qtd, 1);
+        assertEquals(qtd, 0);
 
     }
 
@@ -166,5 +166,6 @@ public class OperadoraCartaoTest {
         assertEquals(taxa, BigDecimal.valueOf(5.0));
 
     }
+
 
 }
