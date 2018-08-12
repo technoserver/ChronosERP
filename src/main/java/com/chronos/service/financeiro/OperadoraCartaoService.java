@@ -24,12 +24,12 @@ public class OperadoraCartaoService implements Serializable {
             taxas.add(taxa);
         } else {
             long count = taxas.stream().filter(t -> t.getIntervaloInicial().equals(taxa.getIntervaloInicial())).count();
-            if (count > 0 && taxaIgual(taxas, taxa)) {
+            if (count > 0 && (taxa.getId() == null || taxaIgual(taxas, taxa))) {
                 throw new ChronosException("Já foram definido taxa com esse intervalo inicial");
             }
             count = taxas.stream().filter(t -> t.getIntervaloFinal().equals(taxa.getIntervaloFinal())).count();
 
-            if (count > 0 && taxaIgual(taxas, taxa)) {
+            if (count > 0 && (taxa.getId() == null || taxaIgual(taxas, taxa))) {
                 throw new ChronosException("Já foram definido taxa com esse intervalo Final");
             }
 
@@ -57,7 +57,11 @@ public class OperadoraCartaoService implements Serializable {
 
     public boolean taxaIgual(List<OperadoraCartaoTaxa> taxas, OperadoraCartaoTaxa taxa) {
 
-        Optional<OperadoraCartaoTaxa> taxaOptional = taxas.stream().filter(t -> t.getIntervaloInicial().equals(taxa.getIntervaloInicial())).findFirst();
+        Optional<OperadoraCartaoTaxa> taxaOptional = taxas.stream()
+                .filter(t -> t.getIntervaloInicial()
+                        .equals(taxa.getIntervaloInicial())
+                        || t.getIntervaloFinal().equals(taxa.getIntervaloFinal()))
+                .findFirst();
 
         return taxaOptional.isPresent() && !taxaOptional.get().equals(taxa);
     }
