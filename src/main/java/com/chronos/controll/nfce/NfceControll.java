@@ -581,11 +581,15 @@ public class NfceControll implements Serializable {
 
         try {
 
+
             nfeService.danfe(vendaSelecionada);
 
         } catch (Exception ex) {
-            logger.error("erro ao gerar danfe", ex.getMessage());
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao gerar o Cupom", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar o Cupom", ex);
+            }
         }
     }
 
