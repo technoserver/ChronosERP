@@ -8,6 +8,7 @@ import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.view.ViewNfceCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
+import com.chronos.repository.NfeCabecalhoRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
@@ -74,6 +75,9 @@ public class NfceControll implements Serializable {
     private EstoqueRepository estoqueRepositoy;
     @Inject
     private Repository<NfeCabecalho> nfeRepositoy;
+    @Inject
+    private NfeCabecalhoRepository repository;
+
     @Inject
     private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
     @Inject
@@ -563,7 +567,8 @@ public class NfceControll implements Serializable {
 
         try {
 
-            nfeService.gerarDanfe(venda);
+            NfeCabecalho nfe = repository.getRemusoCupom(vendaSelecionada.getId());
+            nfeService.gerarDanfe(nfe);
             nomeCupom = "cupom" + venda.getNumero() + ".pdf";
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -582,7 +587,9 @@ public class NfceControll implements Serializable {
         try {
 
 
-            nfeService.danfe(vendaSelecionada);
+            NfeCabecalho nfe = repository.getRemusoCupom(vendaSelecionada.getId());
+            nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
+            nfeService.danfe(nfe);
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {

@@ -260,7 +260,8 @@ public class NfeService implements Serializable {
         if (!nfes.isEmpty()) {
             List<String> arqvuivos = new ArrayList<>();
             for (NfeCabecalho nfe : nfes) {
-                String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj());
+
+                String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(nfe.getEmpresa().getCnpj());
                 String arquivoPdf = pastaXml + System.getProperty("file.separator") + nfe.getNomePdf();
                 String caminhoXml = pastaXml + System.getProperty("file.separator") + nfe.getNomeXml();
                 File fileXml = new File(caminhoXml);
@@ -602,7 +603,7 @@ public class NfeService implements Serializable {
 
     public void gerarDanfe(NfeCabecalho nfe) throws Exception {
 
-
+        empresa = nfe.getEmpresa();
         StatusTransmissao statusTransmissao = StatusTransmissao.valueOfCodigo(nfe.getStatusNota());
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         String caminho = statusTransmissao == StatusTransmissao.AUTORIZADA

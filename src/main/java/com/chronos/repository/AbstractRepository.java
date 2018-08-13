@@ -56,7 +56,7 @@ public abstract class AbstractRepository implements Serializable {
         return get(classToCast, filtros, atributos, null);
     }
 
-    public <T> T get(Class<T> classToCast, List<Filtro> filtros, Object[] atributos, Object[] joinFetch) throws Exception {
+    public <T> T get(Class<T> classToCast, List<Filtro> filtros, Object[] atributos, Object[] joinFetch) {
         String jpql = montaQuery(classToCast, classToCast, atributos, joinFetch);
 
         jpql = montaQuery(jpql, null, null, filtros);
@@ -77,7 +77,7 @@ public abstract class AbstractRepository implements Serializable {
     }
 
 
-    protected int execute(String query, Object... values) throws Exception {
+    protected int execute(String query, Object... values) {
         int result = 0;
 
 
@@ -87,7 +87,7 @@ public abstract class AbstractRepository implements Serializable {
         return result;
     }
 
-    protected <T> int execute(String jpql, Class<T> resultClass, Object... values) throws Exception {
+    protected <T> int execute(String jpql, Class<T> resultClass, Object... values) {
         int result = 0;
 
 
@@ -171,48 +171,5 @@ public abstract class AbstractRepository implements Serializable {
         return query;
     }
 
-//    public boolean isAutoCommit() {
-//        return autoCommit;
-//    }
-//
-//    public void setAutoCommit(boolean autoCommit) {
-//        this.autoCommit = autoCommit;
-//    }
-//
-//
-//    protected EntityManager abrirConexao() throws Exception {
-//        if (em == null || !em.isOpen()) {
-//            em = ChronosEntityManagerFactory.createEntityManager();
-//            em.getTransaction().begin();
-//        }
-//        EntityTransaction trx = em.getTransaction();
-//        if (!trx.isActive()) {
-//            trx.begin();
-//            trx.rollback();
-//            trx.begin();
-//        }
-//        return em;
-//    }
-//
-//    public void fecharConexao() throws Exception {
-//        if (em != null && em.isOpen()) {
-//            try {
-//                if (em.getTransaction() != null && em.getTransaction().isActive()) {
-//                    if (em.getTransaction().getRollbackOnly()) {
-//                        em.getTransaction().rollback();
-//                    } else {
-//                        em.getTransaction().commit();
-//                    }
-//                }
-//            } catch (Exception e) {
-//                if (em.getTransaction() != null && em.getTransaction().isActive()) {
-//                    em.getTransaction().rollback();
-//                }
-//                throw e;
-//            } finally {
-//                em.close();
-//            }
-//        }
-//    }
 
 }
