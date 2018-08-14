@@ -118,7 +118,7 @@ public class NfeService implements Serializable {
 
     public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo) throws ChronosException {
         this.empresa = empresa;
-        if (configuracoes == null) {
+        if (configuracao == null) {
             if (modelo == ModeloDocumento.NFE) {
                 ConfiguracaoNfeDTO configuracaoNfeDTO = configuracoesNfe.getNamedQuery(ConfiguracaoNfeDTO.class, "Nfe.configuracao", empresa.getId());
 
@@ -135,6 +135,9 @@ public class NfeService implements Serializable {
                 }
                 configuracao = new ConfiguracaoEmissorDTO(configuracaoPdvDTO);
             }
+        }
+
+        if (configuracao == null) {
             validarConfEmissor(configuracao);
             configuracoes = NfeTransmissao.getInstance().iniciarConfiguracoes(new ConfEmissorDTO(Integer.valueOf(configuracao.getWebserviceUf()), configuracao.getCaminhoSchemas(),
                     configuracao.getCertificadoDigitalCaminho(), configuracao.getCertificadoDigitalSenha(), configuracao.getWebserviceAmbiente(), "4.00"));
@@ -331,7 +334,7 @@ public class NfeService implements Serializable {
         ModeloDocumento modelo = nfe.getModeloDocumento();
         if (nfe.getNumero() == null) {
             notaFiscalTipo = modelo == ModeloDocumento.NFE ? getNotaFicalTipo(modelo) : getNotaFicalTipo(modelo, nfe.getSerie());
-            numero = notaFiscalTipo.getUltimoNumero();
+            numero = notaFiscalTipo.proximoNumero();
             serie = notaFiscalTipo.getSerie();
         } else {
             numero = Integer.valueOf(nfe.getNumero());

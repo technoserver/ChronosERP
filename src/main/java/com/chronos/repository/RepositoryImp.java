@@ -102,7 +102,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
     }
 
-
+    @Transactional
     @Override
     public void atualizarNamedQuery(String namedQuery, Object... values) {
         Query updateQuery = em.createNamedQuery(namedQuery);

@@ -48,7 +48,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private EstoqueRepository estoqueRepositoy;
     @Inject
     private Repository<PdvTipoPagamento> tipoPagamentoRepository;
-
+    @Inject
+    private Repository<NotaFiscalTipo> notaFiscalTipoRepository;
 
     @Inject
     private NfeService nfeService;
@@ -194,9 +195,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             setObjeto(nfeService.atualizarTotais(getObjeto()));
             Mensagem.addInfoMessage("Registro incluído!");
             dadosSalvos = false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro ao salvar o produto\n", e);
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+
+                Mensagem.addErrorMessage("Ocorreu um erro ao salvar o produto\n");
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao salvar o produto\n", ex);
+            }
+
         }
 
     }
@@ -245,7 +251,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeDetalhe realizaCalculosItem() throws Exception {
 
         if (nfeDetalhe.getProduto().getNcm() == null) {
-            throw new Exception("Não existe NCM para o produto informado. Operação não realizada.");
+            throw new ChronosException("Não existe NCM para o produto informado. Operação não realizada.");
         }
 
         BigDecimal valorVenda = nfeDetalhe.getValorUnitarioComercial();
@@ -483,7 +489,26 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Diversos">
-
+    public void atulizarNumeracao() {
+        try {
+            int ultimoNumero = Integer.valueOf(getObjeto().getNumero());
+            String serie = getObjeto().getSerie();
+            int idempresa = getObjeto().getEmpresa().getId();
+            String modelo = getObjeto().getCodigoModelo();
+            notaFiscalTipoRepository.atualizarNamedQuery("NotaFiscalTipo.UpdateNumeroModelo", numeroNfe, modelo, serie, idempresa);
+            getObjeto().setNumero("");
+            getObjeto().setChaveAcesso("");
+            getObjeto().setDigitoChaveAcesso(null);
+            getObjeto().setCodigoNumerico("");
+            Mensagem.addInfoMessage("Atualizado numeração da NFe para " + ultimoNumero);
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao atualizar o número da NFe");
+            } else {
+                throw new RuntimeException("Erro ao atualizar o número da NFe", ex);
+            }
+        }
+    }
 
     // </editor-fold>
 
