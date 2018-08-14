@@ -253,7 +253,7 @@ public class BalcaoControll implements Serializable {
             } else if (ex instanceof UnknownHostException) {
                 Mensagem.addErrorMessage("Erro ao gerar conexao com \n", ex);
             } else if (ex instanceof EmissorException) {
-                Mensagem.addErrorMessage("Erro ao gerar conexao com \n", ex);
+                Mensagem.addErrorMessage("Erro ao gera NFCe  \n", ex);
             } else {
                 throw new RuntimeException("Erro ao gerar NFce", ex);
             }
@@ -266,7 +266,7 @@ public class BalcaoControll implements Serializable {
         try {
 
             NfeCabecalho nfe = nfeRepository.get(venda.getIdnfe(), NfeCabecalho.class);
-            nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
+            nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), false);
             nfeService.danfe(nfe);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {

@@ -137,7 +137,7 @@ public class NfeService implements Serializable {
             }
         }
 
-        if (configuracao == null) {
+        if (configuracoes == null) {
             validarConfEmissor(configuracao);
             configuracoes = NfeTransmissao.getInstance().iniciarConfiguracoes(new ConfEmissorDTO(Integer.valueOf(configuracao.getWebserviceUf()), configuracao.getCaminhoSchemas(),
                     configuracao.getCertificadoDigitalCaminho(), configuracao.getCertificadoDigitalSenha(), configuracao.getWebserviceAmbiente(), "4.00"));
@@ -644,6 +644,7 @@ public class NfeService implements Serializable {
                 parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
                 parametrosRelatorio.put("danfeRetratoFatura", inFt);
             } else {
+                expressaoDataSource = "/nfeProc/NFe/infNFe";
                 nomeRelatorioJasper = Constantes.JASPERNFCE;
 
                 String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_CONSULTANFCE);

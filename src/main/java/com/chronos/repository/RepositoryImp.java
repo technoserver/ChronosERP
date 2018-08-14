@@ -6,9 +6,9 @@
 package com.chronos.repository;
 
 import com.chronos.util.jpa.Transactional;
-import com.itextpdf.text.log.Logger;
-import com.itextpdf.text.log.LoggerFactory;
 import org.primefaces.model.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.persistence.*;
