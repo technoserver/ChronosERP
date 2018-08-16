@@ -156,8 +156,10 @@ public class FinLancamentoReceberService implements Serializable {
 
 
         FinLancamentoReceberCartao lancamento = new FinLancamentoReceberCartao();
-        BigDecimal taxa = operadoraCartaoService.getTaxa(new ArrayList<>(operadoraCartao.getListaOperadoraCartaoTaxas()), qtdParcelas);
+        OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(new ArrayList<>(operadoraCartao.getListaOperadoraCartaoTaxas()), qtdParcelas);
 
+        BigDecimal taxa = operadoraCartaoTaxa.getTaxaAdm();
+        int intervalo = operadoraCartaoTaxa.getCreditoEm();
 
         lancamento.setValorBruto(valor);
         lancamento.setTaxaAplicada(taxa);
@@ -174,7 +176,7 @@ public class FinLancamentoReceberService implements Serializable {
         // pega o primeiro vencimento
         lancamento.setPrimeiroVencimento(new Date());
         lancamento.setDataLancamento(new Date());
-        lancamento.setIntervaloEntreParcelas(30);
+        lancamento.setIntervaloEntreParcelas(intervalo);
         lancamento.setQuantidadeParcela(qtdParcelas);
         lancamento.setListaFinParcelaReceberCartao(new ArrayList<>());
 

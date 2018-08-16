@@ -85,4 +85,14 @@ public class OperadoraCartaoService implements Serializable {
         return taxa;
     }
 
+    public OperadoraCartaoTaxa getOperadoraCartaoTaxa(List<OperadoraCartaoTaxa> taxas, int qtdParcelas) {
+        OperadoraCartaoTaxa taxa = taxas
+                .stream()
+                .filter(t -> t.getIntervaloInicial() >= qtdParcelas || t.getIntervaloFinal() >= qtdParcelas)
+                .min(Comparator.comparing(OperadoraCartaoTaxa::getIntervaloFinal)).get();
+
+//        List<OperadoraCartaoTaxa> collect = taxas.stream().filter(t -> t.getIntervaloInicial() >= qtdParcelas || t.getIntervaloFinal() >= qtdParcelas ).collect(Collectors.toList());
+        return taxa;
+    }
+
 }

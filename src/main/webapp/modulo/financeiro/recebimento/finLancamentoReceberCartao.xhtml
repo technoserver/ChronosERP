@@ -66,47 +66,108 @@
     <ui:define name="telaInclusaoAlteracao">
         <erp:telaInclusaoAlteracao controller="#{finLancamentoReceberCartaoControll}"
                                    nomeFuncao=" Lancamento de contas Receber"
+                                   somenteConsulta="#{not empty finLancamentoReceberCartaoControll.objeto.id}"
                                    id="telaDetalhe"
         >
-            <p:dataTable id="dataTableFinExtratoContaBanco" var="row"
-                         value="#{finLancamentoReceberCartaoControll.objeto.listaFinParcelaReceberCartao}"
-                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                         paginatorPosition="bottom"
-                         resizableColumns="true">
 
-                <p:column headerText="Num. Parcela" width="100">
-                    <h:outputLabel value="#{row.numeroParcela}"/>
-                </p:column>
+            <p:tabView id="tabViewDetalhes" style="border: 0px;">
+                <p:tab title="Dados Principais">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Operadora de Cartão"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{finLancamentoReceberCartaoControll}"
+                                          completeMethod="getListaOperadoraCartao"
+                                          nomeAtributo="#{finLancamentoReceberCartaoControll.objeto.operadoraCartao}"
+                                          idComponente="operadoraCartao">
 
-                <p:column headerText="Valor bruto" styleClass="text-right" width="140">
-                    <h:outputLabel value="#{row.valorBruto}">
-                        <f:convertNumber pattern="#,##0.00"/>
-                    </h:outputLabel>
-                </p:column>
-                <p:column headerText="Encargos" styleClass="text-right" width="140">
-                    <h:outputLabel value="#{row.valorEncargos}">
-                        <f:convertNumber pattern="#,##0.00"/>
-                    </h:outputLabel>
-                </p:column>
-                <p:column headerText="Valor liquido" styleClass="text-right" width="140">
-                    <h:outputLabel value="#{row.valorLiquido}">
-                        <f:convertNumber pattern="#,##0.00"/>
-                    </h:outputLabel>
-                </p:column>
-                <p:column headerText="Data emissão" styleClass="text-center" width="160">
-                    <h:outputLabel value="#{row.dataEmissao}">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputLabel>
-                </p:column>
-                <p:column headerText="Data Vencimento" styleClass="text-center" width="140">
-                    <h:outputLabel value="#{row.dataVencimento}">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputLabel>
-                </p:column>
-                <p:column headerText="Pago" styleClass="text-center" width="150">
-                    <i class="fa #{row.pago?'fa-check text-success' :'fa-ban text-danger'}" aria-hidden="true"></i>
-                </p:column>
-            </p:dataTable>
+                        </erp:autoComplete>
+
+
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                        idComponente="finLancamentoReceberNumeroDocumento"
+                                        label="Nº Documento"
+                                        nomeAtributo="#{finLancamentoReceberCartaoControll.objeto.numeroDocumento}"
+                                        desabilitado="#{not empty finLancamentoReceberCartaoControll.objeto.id}"
+                                        tamanhoMaximo="50" requerido="true"/>
+
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="finLancamentoReceberQuantidadeParcela"
+                                          label="Qtde Parcela" requerido="true"
+                                          desabilitado="#{not empty finLancamentoReceberCartaoControll.objeto.id}"
+                                          nomeAtributo="#{finLancamentoReceberCartaoControll.objeto.quantidadeParcela}"/>
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="finLancamentoReceberIntervaloEntreParcelas"
+                                          label="Crédito Em" requerido="true"
+                                          desabilitado="#{not empty finLancamentoReceberCartaoControll.objeto.id}"
+                                          nomeAtributo="#{finLancamentoReceberCartaoControll.objeto.intervaloEntreParcelas}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="finLancamentoReceberValorTotal"
+                                          label="Valor Bruto" requerido="true"
+                                          desabilitado="#{not empty finLancamentoReceberCartaoControll.objeto.id}"
+                                          nomeAtributo="#{finLancamentoReceberCartaoControll.objeto.valorBruto}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="valorLiquido"
+                                          desabilitado="true"
+                                          label="Valor Liquido" requerido="true"
+                                          nomeAtributo="#{finLancamentoReceberCartaoControll.objeto.valorLiquido}"/>
+
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="finLancamentoReceberPrimeiroVencimento"
+                                       label="1º Vencimento" requerido="true"
+                                       desabilitado="#{not empty finLancamentoReceberCartaoControll.objeto.id}"
+                                       nomeAtributo="#{finLancamentoReceberCartaoControll.objeto.primeiroVencimento}"/>
+
+                    </div>
+                </p:tab>
+                <p:tab title="Parcelas">
+                    <p:dataTable id="dataTableFinExtratoContaBanco" var="row"
+                                 value="#{finLancamentoReceberCartaoControll.objeto.listaFinParcelaReceberCartao}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 paginatorPosition="bottom"
+                                 resizableColumns="true">
+
+                        <p:column headerText="Num. Parcela" width="100">
+                            <h:outputLabel value="#{row.numeroParcela}"/>
+                        </p:column>
+
+                        <p:column headerText="Valor bruto" styleClass="text-right" width="140">
+                            <h:outputLabel value="#{row.valorBruto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Encargos" styleClass="text-right" width="140">
+                            <h:outputLabel value="#{row.valorEncargos}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor liquido" styleClass="text-right" width="140">
+                            <h:outputLabel value="#{row.valorLiquido}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Data emissão" styleClass="text-center" width="160">
+                            <h:outputLabel value="#{row.dataEmissao}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Data Vencimento" styleClass="text-center" width="140">
+                            <h:outputLabel value="#{row.dataVencimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Pago" styleClass="text-center" width="150">
+                            <i class="fa #{row.pago?'fa-check text-success' :'fa-ban text-danger'}"
+                               aria-hidden="true"></i>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+
+
         </erp:telaInclusaoAlteracao>
     </ui:define>
 

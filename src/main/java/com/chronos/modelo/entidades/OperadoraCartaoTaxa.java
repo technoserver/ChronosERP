@@ -30,6 +30,7 @@ public class OperadoraCartaoTaxa implements Serializable {
     @DecimalMax(value = "100.00", message = "O valor  deve ser menor que 100,00")
     private BigDecimal taxaAdm;
     @Column(name = "credito_em")
+    @NotNull
     private Integer creditoEm;
     @NotNull
     @JoinColumn(name = "ID_OPERADORA_CARTAO", referencedColumnName = "ID")
