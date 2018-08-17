@@ -406,7 +406,7 @@ public class NfeService implements Serializable {
             for (VendaCondicoesParcelas parcelas : condicoesPagamento.getParcelas()) {
                 NfeDuplicata duplicata = new NfeDuplicata();
                 duplicata.setNfeCabecalho(nfe);
-                valorParcela = Biblioteca.calcTaxa(nfe.getValorTotal(), parcelas.getTaxa());
+                valorParcela = Biblioteca.calcularValorPercentual(nfe.getValorTotal(), parcelas.getTaxa());
                 duplicata.setDataVencimento(Biblioteca.addDay(new Date(), parcelas.getDias()));
                 duplicata.setValor(valorParcela);
                 somaParcelas = somaParcelas.add(valorParcela);

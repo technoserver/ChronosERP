@@ -95,7 +95,7 @@ public class FinLancamentoReceberService implements Serializable {
                 parcelaReceber.setContaCaixa(condicoesParcelas.getTipoRecebimento().getContaCaixa());
                 parcelaReceber.setDataEmissao(lancamento.getDataLancamento());
                 parcelaReceber.setDataVencimento(Biblioteca.addDay(lancamento.getDataLancamento(), parcelas.getDias()));
-                parcelaReceber.setValor(Biblioteca.calcTaxa(lancamento.getValorTotal(), parcelas.getTaxa()));
+                parcelaReceber.setValor(Biblioteca.calcularValorPercentual(lancamento.getValorTotal(), parcelas.getTaxa()));
 
                 lancamentoReceber.getListaFinParcelaReceber().add(parcelaReceber);
             }
@@ -194,7 +194,7 @@ public class FinLancamentoReceberService implements Serializable {
 
             parcelaReceber.setValorBruto(valorParcela);
             parcelaReceber.setTaxaAplicada(taxa);
-            BigDecimal valorEcargosParcela = Biblioteca.calcTaxa(valorParcela, taxa);
+            BigDecimal valorEcargosParcela = Biblioteca.calcularValorPercentual(valorParcela, taxa);
             parcelaReceber.setValorEncargos(valorEcargosParcela);
             parcelaReceber.setValorLiquido(valorParcela.subtract(valorEcargos));
 

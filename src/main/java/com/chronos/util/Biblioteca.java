@@ -453,7 +453,7 @@ public class Biblioteca {
      * @param periodo periodo
      * @return String
      */
-    public static String periodoAnterior(String periodo) throws Exception {
+    public static String periodoAnterior(String periodo) {
         String periodoAnterior = "";
         int mesPeriodo = Integer.valueOf(periodo.substring(0, 2));
         int anoPeriodo = Integer.valueOf(periodo.substring(3, 7));
@@ -518,7 +518,7 @@ public class Biblioteca {
      * @param dataA data
      * @return String
      */
-    public static String mesAno(Date dataA) throws Exception {
+    public static String mesAno(Date dataA) {
         return new SimpleDateFormat("MM/yyyy").format(dataA.getTime());
     }
 
@@ -529,15 +529,13 @@ public class Biblioteca {
         Calendar dataCalculo = Calendar.getInstance();
         dataCalculo.add(Calendar.DAY_OF_MONTH, qtdeDias);
 
-        if (dataFinal.after(dataCalculo)) {
-            return true;
-        }
+        return dataFinal.after(dataCalculo);
 
-        return false;
     }
 
-    public static BigDecimal calcTaxa(BigDecimal total, BigDecimal taxa) {
-        BigDecimal valor = total.multiply(taxa.divide(new BigDecimal(100)));
+    public static BigDecimal calcularValorPercentual(BigDecimal total, BigDecimal taxa) {
+        BigDecimal valor = multiplica(total, taxa);
+        valor = divide(valor, BigDecimal.valueOf(100));
         return valor;
     }
 

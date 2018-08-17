@@ -4,12 +4,20 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.FinLancamentoReceberCartao;
 import com.chronos.modelo.entidades.OperadoraCartao;
+import com.chronos.modelo.entidades.OperadoraCartaoTaxa;
+import com.chronos.repository.OperadoraCartaoRepository;
+import com.chronos.service.ChronosException;
+import com.chronos.service.financeiro.FinLancamentoReceberCartaoService;
+import com.chronos.service.financeiro.OperadoraCartaoService;
+import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +29,12 @@ public class FinLancamentoReceberCartaoControll extends AbstractControll<FinLanc
 
     private static final long serialVersionUID = 1L;
 
+    @Inject
+    private OperadoraCartaoRepository operadoraCartaoRepository;
+    @Inject
+    private OperadoraCartaoService operadoraCartaoService;
+    @Inject
+    private FinLancamentoReceberCartaoService service;
 
     @Override
     public ERPLazyDataModel<FinLancamentoReceberCartao> getDataModel() {
@@ -34,6 +48,13 @@ public class FinLancamentoReceberCartaoControll extends AbstractControll<FinLanc
     }
 
     @Override
+    public void doCreate() {
+        super.doCreate();
+        getObjeto().setEmpresa(empresa);
+        getObjeto().setDataLancamento(new Date());
+    }
+
+    @Override
     public void doEdit() {
         FinLancamentoReceberCartao lan = dataModel.getRowData(getObjetoSelecionado().getId().toString());
         setObjeto(lan);
@@ -43,36 +64,17 @@ public class FinLancamentoReceberCartaoControll extends AbstractControll<FinLanc
     @Override
     public void salvar() {
         try {
-
-//            OperadoraCartao operadoraCartao = getObjeto().getOperadoraCartao();
-//            OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(new ArrayList<>(operadoraCartao.getListaOperadoraCartaoTaxas()), qtdParcelas);
-//            BigDecimal taxa = operadoraCartaoTaxa.getTaxaAdm();
-//            FinParcelaReceberCartao parcelaReceber;
-//            int number = 1;
-//            int qtdParcelas = getObjeto().getIntervaloEntreParcelas();
-//            BigDecimal valor = getObjeto().getValorBruto();
-//            BigDecimal valorParcela = valor.divide(BigDecimal.valueOf(qtdParcelas), BigDecimal.ROUND_DOWN);
-//            for (int i = 0; i < qtdParcelas; i++) {
-//                parcelaReceber = new FinParcelaReceberCartao();
-//                parcelaReceber.setFinLancamentoReceberCartao(getObjeto());
-//                parcelaReceber.setNumeroParcela(number++);
-//                parcelaReceber.setPago(false);
-//                parcelaReceber.setContaCaixa( getObjeto().getOperadoraCartao().getContaCaixa());
-//                parcelaReceber.setDataEmissao(getObjeto().getDataLancamento());
-//                parcelaReceber.setDataVencimento(Biblioteca.addDay(getObjeto().getDataLancamento(), 30));
-//
-//                parcelaReceber.setValorBruto(valorParcela);
-//                parcelaReceber.setTaxaAplicada(taxa);
-//                BigDecimal valorEcargosParcela = Biblioteca.calcTaxa(valorParcela, taxa);
-//                parcelaReceber.setValorEncargos(valorEcargosParcela);
-//                parcelaReceber.setValorLiquido(valorParcela.subtract(valorEcargos));
-//
-//                getObjeto().getListaFinParcelaReceberCartao().add(parcelaReceber);
-//            }
-
-            dao.salvar(getObjeto());
+            OperadoraCartao operadoraCartao = getObjeto().getOperadoraCartao();
+            OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(new ArrayList<>(operadoraCartao.getListaOperadoraCartaoTaxas()), getObjeto().getQuantidadeParcela());
+            FinLancamentoReceberCartao lancamento = service.gerarLancamento(getObjeto(), operadoraCartaoTaxa);
+            setObjeto(lancamento);
+            dao.atualizar(getObjeto());
         } catch (Exception ex) {
-
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao gerar o lançamento", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar o lançamento", ex);
+            }
         }
     }
 

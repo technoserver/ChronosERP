@@ -61,7 +61,7 @@ public class FinLancamentoPagarService implements Serializable {
 
 
     @Transactional
-    public void gerarContasReceber(LancamentoPagar lancamento, NaturezaFinanceira naturezaFinanceira) throws Exception {
+    public void gerarContasReceber(LancamentoPagar lancamento, NaturezaFinanceira naturezaFinanceira) {
 
 
         FinLancamentoPagar lancamentoPagar = new FinLancamentoPagar();
@@ -145,7 +145,7 @@ public class FinLancamentoPagarService implements Serializable {
             parcelaPagar.setContaCaixa(condicoesPagamento.getTipoRecebimento().getContaCaixa());
             parcelaPagar.setDataEmissao(lancamentoPagar.getDataLancamento());
             parcelaPagar.setDataVencimento(Biblioteca.addDay(lancamentoPagar.getDataLancamento(), p.getDias()));
-            parcelaPagar.setValor(Biblioteca.calcTaxa(lancamentoPagar.getValorTotal(), p.getTaxa()));
+            parcelaPagar.setValor(Biblioteca.calcularValorPercentual(lancamentoPagar.getValorTotal(), p.getTaxa()));
 
             parcelas.add(parcelaPagar);
         }
