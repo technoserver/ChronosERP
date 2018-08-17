@@ -1,0 +1,278 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Recebimento de cartão
+    </ui:define>
+
+    <ui:define name="tela">
+        Consulta
+    </ui:define>
+    <ui:define name="controle">
+        Recebimento
+    </ui:define>
+    <ui:define name="css">
+        <style type="text/css">
+            .muted {
+                background-color: #F2F2F2 !important;
+            }
+
+            fieldset {
+                border: 1px solid #dddddd;
+                margin-bottom: 1em;
+                padding: 0 10px 10px 10px;
+                background: #FFFFFF;
+            }
+
+            fieldset legend {
+                color: #0C1B25;
+                font-family: arial;
+                width: inherit;
+                border-bottom: initial;
+            }
+
+            h4 {
+                font-size: 20px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .nowrap {
+                white-space: nowrap;
+            }
+
+            .red_color {
+                background-color: #f2dede !important;
+            }
+
+            .red_color.ui-state-highlight {
+                background-color: #00acac !important;
+            }
+        </style>
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <div class="ibox-content">
+            <erp:msgPermissao permissao="#{finRecebimentoCartaoControll.podeConsultar()}"/>
+            <h:panelGroup layout="block" id="panelRecebimento"
+                          rendered="#{finRecebimentoCartaoControll.podeConsultar()}">
+
+                <div class="row m-b">
+                    <erp:campoData idComponente="dataInicial"
+                                   label="Periodo Inicial"
+                                   styleClass="col-xs-12 col-sm-3 col-md-2"
+                                   nomeAtributo="#{finRecebimentoCartaoControll.dataInicial}"/>
+
+                    <div class="col-xs-12 col-sm-3 col-md-3">
+                        <h:outputLabel value="Periodo Final"/>
+                        <div class="field-action">
+                            <p:calendar id="periodoFinal"
+                                        value="#{finRecebimentoCartaoControll.dataFinal}"
+                                        style="width: 100% !important;"
+                                        pattern="dd/MM/yyyy"
+                            />
+                            <div>
+                                <p:commandButton value="Pesquisar"
+                                                 style="margin-left: 10px"
+                                                 process="@form"
+                                                 update=":formCentro:panelRecebimento,:formCentro:dataTableParcelas"
+                                                 action="#{finRecebimentoCartaoControll.pesquisar}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <h:panelGroup layout="block" id="panelValores">
+                    <p:dataTable value="#{finRecebimentoCartaoControll.parcelas}"
+                                 var="row" id="dataTableParcelas"
+                                 reflow="true" rendered="#{finRecebimentoCartaoControll.podeConsultar()}"
+                                 resizableColumns="true" sortBy="#{row.dataVencimento}"
+                                 rowKey="#{row.id}"
+                                 selectionMode="multiple"
+                                 selection="#{finRecebimentoCartaoControll.parcelasSelecionada}"
+                                 rowStyleClass="#{row.vencido?'red_color':''}">
+                        <p:column headerText="Num. Parcela" style="width:12%">
+                            <h:outputLabel value="#{row.numeroParcela}"/>
+                        </p:column>
+                        <p:column headerText="Data Vencimento" style="width:15%"
+                                  sortBy="#{row.dataVencimento}">
+                            <h:outputLabel value="#{row.dataVencimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Bruto" style="width:10%;text-align: right">
+                            <h:outputLabel value="#{row.valorBruto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Encargos" style="width:10%;text-align: right">
+                            <h:outputLabel value="#{row.valorEncargos}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Liquido" style="width:10%;text-align: right">
+                            <h:outputLabel value="#{row.valorLiquido}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+
+
+                    </p:dataTable>
+                    <br/>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <fieldset id="box-pagamentos" class="muted" style="padding:0 !important">
+                                <legend>
+                                    <h3 class="margin-top-0">
+                                        <i class="fa icon-resellerhosting margin-right-10px"></i>TOTAIS
+                                    </h3>
+                                </legend>
+                                <table width="100%" cellpadding="5" cellspacing="0" class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Parcelas</th>
+                                        <th>Qtd</th>
+                                        <th class="coluna-monetaria">Valor Bruto</th>
+                                        <th class="coluna-monetaria">Encargos</th>
+                                        <th class="coluna-monetaria">Valor Liquido</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="border-bottom-1px danger">
+                                        <td><h4>VENCIDAS</h4></td>
+                                        <td class="nowrap" width="1">
+                                            <h4>
+                                                <span>#{finRecebimentoCartaoControll.qtdVencida}</span>
+                                            </h4>
+                                        </td>
+                                        <td class="nowrap coluna-monetaria" width="1">
+                                            <h4>
+                                                <span class="decimal">
+                                                     <h:outputText
+                                                             value="#{finRecebimentoCartaoControll.valorTotalBrutoVencido}">
+                                                         <f:convertNumber pattern="#,##0.00"/>
+                                                     </h:outputText>
+                                                </span>
+                                            </h4>
+                                        </td>
+                                        <td class="nowrap coluna-monetaria" width="1">
+                                            <h4>
+                                                <span>
+                                                        <h:outputText
+                                                                value="#{finRecebimentoCartaoControll.valorTotalEncargosVencido}">
+                                                         <f:convertNumber pattern="#,##0.00"/>
+                                                     </h:outputText>
+                                                </span>
+                                            </h4>
+                                        </td>
+                                        <td class="nowrap coluna-monetaria" width="1">
+                                            <h4>
+                                                <span>
+                                                    <h:outputText
+                                                            value="#{finRecebimentoCartaoControll.valorTotalLiquidoVencido}">
+                                                         <f:convertNumber pattern="#,##0.00"/>
+                                                     </h:outputText>
+                                                </span>
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-bottom-1px success">
+                                        <td><h4>A VENCER</h4></td>
+                                        <td class="nowrap" width="1">
+                                            <h4>
+                                                <span>#{finRecebimentoCartaoControll.qtdAVencer}</span>
+                                            </h4>
+                                        </td>
+                                        <td class="nowrap text-right" width="1">
+                                            <h4>
+                                                <span class="text-right">
+                                                      <h:outputText
+                                                              value="#{finRecebimentoCartaoControll.valorTotalBruto}">
+                                                         <f:convertNumber pattern="#,##0.00"/>
+                                                     </h:outputText>
+                                                </span>
+                                            </h4>
+                                        </td>
+                                        <td class="nowrap text-right" width="1">
+                                            <h4>
+                                                <span class="text-right">
+                                                     <h:outputText
+                                                             value="#{finRecebimentoCartaoControll.valorTotalEncargos}">
+                                                         <f:convertNumber pattern="#,##0.00"/>
+                                                     </h:outputText>
+                                                </span>
+                                            </h4>
+                                        </td>
+                                        <td class="nowrap coluna-monetaria" width="1">
+                                            <h4>
+                                                <span class="text-right">
+                                                     <h:outputText
+                                                             value="#{finRecebimentoCartaoControll.valorTotalLiquido}">
+                                                         <f:convertNumber pattern="#,##0.00"/>
+                                                     </h:outputText>
+                                                </span>
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr class="border-bottom-1px">
+
+                                        <td><h4>SALDO DEVEDOR LIQUIDO</h4></td>
+                                        <td colspan="4" class="nowrap coluna-monetaria">
+                                            <h4>
+                                                <span>
+                                                     <h:outputText
+                                                             value="#{finRecebimentoCartaoControll.valorTotalLiquidoVencido - finRecebimentoCartaoControll.valorTotalLiquido }">
+                                                         <f:convertNumber pattern="#,##0.00"/>
+                                                     </h:outputText>
+                                                </span>
+                                            </h4>
+                                        </td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </fieldset>
+                        </div>
+                    </div>
+                </h:panelGroup>
+
+            </h:panelGroup>
+
+
+        </div>
+        <div class="ibox-footer">
+            <div class="row">
+                <div class="col-xs-12 col-md-12 text-center">
+                    <h:commandButton class="btn btn-primary"
+                                     value="Confimar Recebimento"
+                                     action="#{finRecebimentoCartaoControll.receber}"
+                                     id="btnRecebimento">
+                        <p:ajax update=":formCentro:growl,:formCentro:panelRecebimento,:formCentro:dataTableParcelas"
+                                process="@form"/>
+                    </h:commandButton>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+
+    <ui:define name="javaScript">
+        <script type="application/javascript">
+            $(document).ready(function () {
+
+
+            });
+        </script>
+    </ui:define>
+</ui:composition>

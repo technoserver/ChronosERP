@@ -86,6 +86,13 @@
                              label="Recebimento"
                              exibir="#{seguranca.isTemAcesso('RECEBIMENTO')}"
                              funcao="finRecebimento"/>
+
+
+                <erp:subMenu caminho="/modulo/financeiro/recebimento/finRecebimentoCartao"
+                             label="Recebimento Cartão"
+                             exibir="#{seguranca.isTemAcesso('RECEBIMENTO')}"
+                             funcao="finRecebimentoCartao"/>
+
                 <!--<erp:subMenu caminho="/modulo/financeiro/recebimento/finCobranca"-->
                 <!--label="Cobrança"-->
                 <!--funcao="finCobranca"/>-->

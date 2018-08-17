@@ -74,6 +74,13 @@ public class FinLancamentoReceberCartao implements Serializable {
     private List<FinParcelaReceberCartao> listaFinParcelaReceberCartao;
 
 
+    public FinLancamentoReceberCartao() {
+    }
+
+    public FinLancamentoReceberCartao(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }
