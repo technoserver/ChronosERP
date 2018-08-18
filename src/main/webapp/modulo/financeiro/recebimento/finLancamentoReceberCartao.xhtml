@@ -21,6 +21,7 @@
     </ui:define>
 
     <ui:define name="gridDados">
+
         <erp:gridDados controller="#{finLancamentoReceberCartaoControll}"
                        idDataTable="dataTableFinLancamentoReceber"
                        nomeFuncao=" Lancamento de contas Receber"
@@ -154,7 +155,7 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Data Vencimento" styleClass="text-center" width="140">
+                        <p:column headerText="Vencimento" styleClass="text-center" width="140">
                             <h:outputLabel value="#{row.dataVencimento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>

@@ -11,6 +11,7 @@ import com.chronos.service.financeiro.FinLancamentoReceberCartaoService;
 import com.chronos.service.financeiro.OperadoraCartaoService;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.SortOrder;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -43,7 +44,8 @@ public class FinLancamentoReceberCartaoControll extends AbstractControll<FinLanc
             dataModel.setClazz(FinLancamentoReceberCartao.class);
             dataModel.setDao(dao);
         }
-
+        dataModel.setOrdernarPor("dataLancamento");
+        dataModel.setSortOrder(SortOrder.DESCENDING);
         return dataModel;
     }
 

@@ -10,9 +10,8 @@ import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.enuns.TipoLancamento;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
-import com.chronos.service.financeiro.ContaPessoaService;
-import com.chronos.service.financeiro.FinLancamentoReceberService;
-import com.chronos.service.financeiro.MovimentoService;
+import com.chronos.service.ChronosException;
+import com.chronos.service.financeiro.*;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
@@ -33,9 +32,16 @@ public class VendaPdvService implements Serializable {
 
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
+    @Inject
+    private FinLancamentoReceberCartaoService finLancamentoReceberCartaoService;
+    @Inject
+    private OperadoraCartaoService operadoraCartaoService;
 
     @Inject
     private Repository<PdvVendaCabecalho> repository;
+    @Inject
+    private Repository<FinLancamentoReceberCartao> finLancamentoReceberCartaoRepository;
+
     @Inject
     private EstoqueRepository estoqueRepositoy;
     @Inject
@@ -55,8 +61,8 @@ public class VendaPdvService implements Serializable {
 
 
     @Transactional
-    public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda){
-        try {
+    public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda) throws Exception {
+
             venda.setStatusVenda("F");
             Integer idempresa = venda.getEmpresa().getId();
             AdmParametro parametro = FacesUtil.getParamentos();
@@ -79,22 +85,21 @@ public class VendaPdvService implements Serializable {
                     ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
 
                     if (conta == null || conta.getSaldo().compareTo(p.getValor()) <= 0) {
-                        throw new Exception("Saldo insuficiente para debita na conta do cliente");
+                        throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
                     } else {
                         contaPessoaService.lancaMovimento(conta, p.getValor(), TipoLancamento.DEBITO, Modulo.VENDA.getCodigo(), venda.getId().toString());
                     }
                 }
                 if (p.getPdvTipoPagamento().getCodigo().equals("03")) {
-                    finLancamentoReceberService.gerarLancamentoCartao(venda.getId(), p.getValor(), p.getOperadoraCartao(), p.getQtdParcelas(), Modulo.VENDA.getCodigo(), venda.getEmpresa(), p.getPdvTipoPagamento().getIdentificador());
+
+                    OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(new ArrayList<>(p.getOperadoraCartao().getListaOperadoraCartaoTaxas()), p.getQtdParcelas());
+                    FinLancamentoReceberCartao finLancamentoReceberCartao = finLancamentoReceberCartaoService.gerarLancamento(venda.getId(), p.getValor(), p.getOperadoraCartao(), operadoraCartaoTaxa, p.getQtdParcelas(), Modulo.VENDA.getCodigo(), venda.getEmpresa(), p.getPdvTipoPagamento().getIdentificador());
+                    finLancamentoReceberCartaoRepository.salvar(finLancamentoReceberCartao);
                 }
 
             }
             movimentoService.lancaVenda(venda.getValorTotal(),venda.getValorDesconto(),venda.getTroco());
             return venda;
-        }catch (Exception ex){
-            ex.printStackTrace();
-            throw new RuntimeException("Erro ao finalizar a venda",ex);
-        }
 
 
     }
