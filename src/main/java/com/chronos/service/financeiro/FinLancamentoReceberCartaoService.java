@@ -1,16 +1,16 @@
 package com.chronos.service.financeiro;
 
-import com.chronos.modelo.entidades.FinLancamentoReceberCartao;
-import com.chronos.modelo.entidades.FinParcelaReceberCartao;
-import com.chronos.modelo.entidades.OperadoraCartao;
-import com.chronos.modelo.entidades.OperadoraCartaoTaxa;
+import com.chronos.modelo.entidades.*;
+import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
+import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class FinLancamentoReceberCartaoService implements Serializable {
 
@@ -18,6 +18,11 @@ public class FinLancamentoReceberCartaoService implements Serializable {
 
     @Inject
     private OperadoraCartaoService operadoraCartaoService;
+
+    @Inject
+    private Repository<FinLancamentoReceberCartao> lancamentoReceberCartaoRepository;
+
+
 
     public FinLancamentoReceberCartao gerarLancamento(FinLancamentoReceberCartao lancamento, OperadoraCartaoTaxa operadoraCartaoTaxa) {
 
@@ -88,5 +93,45 @@ public class FinLancamentoReceberCartaoService implements Serializable {
         lancamento.setTaxaAplicada(taxa);
         return lancamento;
     }
+
+    public FinLancamentoReceberCartao gerarLancamento(int id, BigDecimal valor, OperadoraCartao operadoraCartao, OperadoraCartaoTaxa operadoraCartaoTaxa, int qtdParcelas, String codModulo, Empresa empresa, String identificador) {
+
+        String numDoc = "E" + empresa.getId()
+                + "M" + codModulo
+                + "V" + id
+                + "O" + operadoraCartao.getId()
+                + "Q" + qtdParcelas;
+
+        if (!StringUtils.isEmpty(identificador)) {
+            numDoc += "NSU" + identificador;
+        }
+
+
+        FinLancamentoReceberCartao lancamento = new FinLancamentoReceberCartao();
+
+
+        int intervalo = operadoraCartaoTaxa.getCreditoEm();
+
+        lancamento.setValorBruto(valor);
+
+
+        lancamento.setDataLancamento(lancamento.getDataLancamento());
+        lancamento.setNumeroDocumento(numDoc);
+        lancamento.setCodigoModuloLcto(codModulo);
+        lancamento.setEmpresa(empresa);
+        lancamento.setOperadoraCartao(operadoraCartao);
+
+        // pega o primeiro vencimento
+        lancamento.setPrimeiroVencimento(new Date());
+        lancamento.setDataLancamento(new Date());
+        lancamento.setIntervaloEntreParcelas(intervalo);
+        lancamento.setQuantidadeParcela(qtdParcelas);
+
+        lancamento = gerarLancamento(lancamento, operadoraCartaoTaxa);
+
+        return lancamento;
+
+    }
+
 
 }

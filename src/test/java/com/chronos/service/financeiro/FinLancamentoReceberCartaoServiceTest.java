@@ -1,9 +1,7 @@
 package com.chronos.service.financeiro;
 
-import com.chronos.modelo.entidades.ContaCaixa;
-import com.chronos.modelo.entidades.FinLancamentoReceberCartao;
-import com.chronos.modelo.entidades.OperadoraCartao;
-import com.chronos.modelo.entidades.OperadoraCartaoTaxa;
+import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.Modulo;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +20,7 @@ public class FinLancamentoReceberCartaoServiceTest {
     private FinLancamentoReceberCartao lancamento;
     private List<OperadoraCartaoTaxa> taxas;
     private OperadoraCartaoTaxa taxa;
+    private Empresa empresa;
 
 
     private FinLancamentoReceberCartaoService service;
@@ -35,12 +34,13 @@ public class FinLancamentoReceberCartaoServiceTest {
         taxas.add(new OperadoraCartaoTaxa(2, 6, BigDecimal.valueOf(4.5)));
         taxas.add(new OperadoraCartaoTaxa(7, 10, BigDecimal.valueOf(5)));
         taxa = new OperadoraCartaoTaxa();
-        operadoraCartao = new OperadoraCartao();
+        operadoraCartao = new OperadoraCartao(1);
         operadoraCartao.setListaOperadoraCartaoTaxas(new HashSet<>(taxas));
         operadoraCartao.setContaCaixa(new ContaCaixa());
         lancamento = new FinLancamentoReceberCartao();
         service = new FinLancamentoReceberCartaoService();
         operadoraCartaoService = new OperadoraCartaoService();
+        empresa = new Empresa(1);
     }
 
     @Test
@@ -74,6 +74,19 @@ public class FinLancamentoReceberCartaoServiceTest {
         assertEquals(lancamento.getValorEncargos(), BigDecimal.valueOf(4.5).setScale(2));
         assertEquals(lancamento.getTaxaAplicada(), BigDecimal.valueOf(4.50));
         assertEquals(total, lancamento.getValorBruto().setScale(2));
+    }
+
+    @Test
+    public void gerarLancamentoPdv() {
+        OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(taxas, 6);
+        lancamento = service.gerarLancamento(1, BigDecimal.valueOf(100), operadoraCartao, operadoraCartaoTaxa, 6, Modulo.VENDA.getCodigo(), empresa, "1020");
+        BigDecimal total = lancamento.getValorLiquido().add(lancamento.getValorEncargos());
+        String numDoc = "E1M210V1O1Q6NSU1020";
+        assertEquals(lancamento.getValorLiquido(), BigDecimal.valueOf(95.50).setScale(2));
+        assertEquals(lancamento.getValorEncargos(), BigDecimal.valueOf(4.5).setScale(2));
+        assertEquals(lancamento.getTaxaAplicada(), BigDecimal.valueOf(4.50));
+        assertEquals(total, lancamento.getValorBruto().setScale(2));
+        assertEquals(numDoc, lancamento.getNumeroDocumento());
     }
 
 }

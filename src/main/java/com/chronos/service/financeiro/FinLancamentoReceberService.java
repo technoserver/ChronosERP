@@ -8,7 +8,6 @@ import com.chronos.repository.FinLancamentoReceberRepository;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -25,8 +24,6 @@ public class FinLancamentoReceberService implements Serializable {
     @Inject
     private FinLancamentoReceberRepository lancamentos;
 
-    @Inject
-    private Repository<FinLancamentoReceberCartao> lancamentoReceberCartaoRepository;
 
     @Inject
     private Repository<FinParcelaRecebimento> recebimentoRepository;
@@ -36,8 +33,6 @@ public class FinLancamentoReceberService implements Serializable {
     private Repository<FinParcelaReceber> parcelasRepository;
     @Inject
     private Repository<FinLctoReceberNtFinanceira> parcelaNaturezaRepository;
-    @Inject
-    private OperadoraCartaoService operadoraCartaoService;
 
 
     public void gerarLancamento(int id, BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) {
@@ -138,72 +133,7 @@ public class FinLancamentoReceberService implements Serializable {
 
     }
 
-    public void gerarLancamentoCartao(int id, BigDecimal valor, OperadoraCartao operadoraCartao, int qtdParcelas, String codModulo, Empresa empresa, String identificador) {
 
-        String numDoc = "E" + empresa.getId()
-                + "M" + codModulo
-                + "V" + id
-                + "O" + operadoraCartao.getId()
-                + "Q" + qtdParcelas;
-
-        if (!StringUtils.isEmpty(identificador)) {
-            numDoc += "NSU" + identificador;
-        }
-
-        List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro("operadoraCartao.id", operadoraCartao.getId()));
-        filtros.add(new Filtro("intervaloInicial", Filtro.MAIOR_OU_IGUAL, qtdParcelas));
-
-
-        FinLancamentoReceberCartao lancamento = new FinLancamentoReceberCartao();
-        OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(new ArrayList<>(operadoraCartao.getListaOperadoraCartaoTaxas()), qtdParcelas);
-
-        BigDecimal taxa = operadoraCartaoTaxa.getTaxaAdm();
-        int intervalo = operadoraCartaoTaxa.getCreditoEm();
-
-        lancamento.setValorBruto(valor);
-        lancamento.setTaxaAplicada(taxa);
-        BigDecimal valorEcargos = valor.multiply(taxa).divide(BigDecimal.valueOf(100), BigDecimal.ROUND_HALF_DOWN);
-        lancamento.setValorEncargos(valorEcargos);
-        lancamento.setValorLiquido(valor.subtract(valorEcargos));
-
-        lancamento.setDataLancamento(lancamento.getDataLancamento());
-        lancamento.setNumeroDocumento(numDoc);
-        lancamento.setCodigoModuloLcto(codModulo);
-        lancamento.setEmpresa(empresa);
-        lancamento.setOperadoraCartao(operadoraCartao);
-
-        // pega o primeiro vencimento
-        lancamento.setPrimeiroVencimento(new Date());
-        lancamento.setDataLancamento(new Date());
-        lancamento.setIntervaloEntreParcelas(intervalo);
-        lancamento.setQuantidadeParcela(qtdParcelas);
-        lancamento.setListaFinParcelaReceberCartao(new ArrayList<>());
-
-        FinParcelaReceberCartao parcelaReceber;
-        int number = 1;
-        BigDecimal valorParcela = valor.divide(BigDecimal.valueOf(qtdParcelas), BigDecimal.ROUND_DOWN);
-        for (int i = 0; i < qtdParcelas; i++) {
-            parcelaReceber = new FinParcelaReceberCartao();
-            parcelaReceber.setFinLancamentoReceberCartao(lancamento);
-            parcelaReceber.setNumeroParcela(number++);
-            parcelaReceber.setPago(false);
-            parcelaReceber.setContaCaixa(operadoraCartao.getContaCaixa());
-            parcelaReceber.setDataEmissao(lancamento.getDataLancamento());
-            parcelaReceber.setDataVencimento(Biblioteca.addDay(lancamento.getDataLancamento(), 30));
-
-            parcelaReceber.setValorBruto(valorParcela);
-            parcelaReceber.setTaxaAplicada(taxa);
-            BigDecimal valorEcargosParcela = Biblioteca.calcularValorPercentual(valorParcela, taxa);
-            parcelaReceber.setValorEncargos(valorEcargosParcela);
-            parcelaReceber.setValorLiquido(valorParcela.subtract(valorEcargos));
-
-            lancamento.getListaFinParcelaReceberCartao().add(parcelaReceber);
-        }
-
-        lancamentoReceberCartaoRepository.salvar(lancamento);
-
-    }
 
     private void geraNaturezaFinanceira(FinLancamentoReceber lancamentoReceber, NaturezaFinanceira naturezaFinanceira) {
         FinLctoReceberNtFinanceira finLctoReceberNaturezaFinancaeira = new FinLctoReceberNtFinanceira();

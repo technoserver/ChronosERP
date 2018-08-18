@@ -22,6 +22,7 @@ public class FinRecebimentoCartaoService implements Serializable {
     @Inject
     private Repository<FinParcelaRecebimentoCartao> repositoryRecebimento;
 
+
     @Transactional
     public void receber(List<FinParcelaReceberCartao> parcelasSelecionada) throws ChronosException {
         if (parcelasSelecionada == null || parcelasSelecionada.isEmpty()) {
@@ -47,4 +48,6 @@ public class FinRecebimentoCartaoService implements Serializable {
 
         repositoryRecebimento.salvar(recebimentos);
     }
+
+
 }
