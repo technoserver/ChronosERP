@@ -4,6 +4,7 @@ import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.OperadoraCartaoRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
@@ -159,6 +160,8 @@ public class BalcaoControll implements Serializable {
         Object[] atributos = new Object[]{"idnfe", "dataHoraVenda", "valorSubtotal", "valorDesconto", "valorTotal", "nomeCliente",
                 "sicronizado", "statusVenda", "pdvMovimento.pdvCaixa.nome"};
         dataModel.setAtributos(atributos);
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
         return dataModel;
     }
 
