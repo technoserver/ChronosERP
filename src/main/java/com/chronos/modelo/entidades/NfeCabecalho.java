@@ -109,9 +109,7 @@ public class NfeCabecalho implements Serializable {
     private BigDecimal valorTotal;
     @Column(name = "VALOR_SERVICOS")
     private BigDecimal valorServicos;
-    // @Column(name = "VALOR_TOTAL_TRIBUTOS")
-    //TODO colocar valor total dos tributos
-    @Transient
+    @Column(name = "VALOR_TOTAL_TRIBUTOS")
     private BigDecimal valorTotalTributos;
     @Column(name = "BASE_CALCULO_ISSQN")
     private BigDecimal baseCalculoIssqn;

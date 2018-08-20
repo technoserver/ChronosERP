@@ -78,6 +78,8 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         BigDecimal impostoFederal = BigDecimal.ZERO;
         BigDecimal impostoEstadual = BigDecimal.ZERO;
         BigDecimal impostoMunicipal = BigDecimal.ZERO;
+
+
         NfeCalculoControll calculo = new NfeCalculoControll();
         for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
             servico = !StringUtils.isEmpty(item.getProduto().getServico()) && item.getProduto().getServico().equals("S");
@@ -148,7 +150,8 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 + " e R$ " + new DecimalFormat("#,###,##0.00").format(impostoEstadual) + " Estadual "
                 + "e R$ " + new DecimalFormat("#,###,##0.00").format(impostoMunicipal) + " Municipal Fonte IBPT";
 
-
+        valorTotalTributos = valorTotalTributos.add(impostoFederal).add(impostoEstadual).add(impostoMunicipal);
+        nfe.setValorTotalTributos(valorTotalTributos);
         nfe.setInformacoesAddContribuinte(msg);
 
 

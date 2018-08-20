@@ -93,6 +93,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         }
 
         dataModel.setAtributos(new Object[]{"dataVenda","numeroFatura","valorTotal","situacao","cliente.pessoa.nome"});
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
         return dataModel;
     }
 
