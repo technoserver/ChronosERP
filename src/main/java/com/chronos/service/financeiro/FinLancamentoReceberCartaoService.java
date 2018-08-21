@@ -23,7 +23,6 @@ public class FinLancamentoReceberCartaoService implements Serializable {
     private Repository<FinLancamentoReceberCartao> lancamentoReceberCartaoRepository;
 
 
-
     public FinLancamentoReceberCartao gerarLancamento(FinLancamentoReceberCartao lancamento, OperadoraCartaoTaxa operadoraCartaoTaxa) {
 
 

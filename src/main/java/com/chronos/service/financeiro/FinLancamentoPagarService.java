@@ -27,7 +27,7 @@ public class FinLancamentoPagarService implements Serializable {
     private Repository<VendaCondicoesParcelas> condicoesParcelasRepository;
 
 
-    public void gerarLancamento(NfeCabecalho nfe, ContaCaixa contaCaixa, NaturezaFinanceira naturezaFinanceira) throws Exception {
+    public void gerarLancamento(NfeCabecalho nfe, ContaCaixa contaCaixa, NaturezaFinanceira naturezaFinanceira) {
 
         LancamentoPagar lancamento = new LancamentoPagar();
 
@@ -47,7 +47,7 @@ public class FinLancamentoPagarService implements Serializable {
 
     }
 
-    public void gerarLancamento(int id, BigDecimal valor, Fornecedor fornecedor, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws Exception {
+    public void gerarLancamento(int id, BigDecimal valor, Fornecedor fornecedor, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) {
         LancamentoPagar lancamento = new LancamentoPagar();
         lancamento.setFornecedor(fornecedor);
         lancamento.setCondicoesPagamento(condicoesPagamento);
