@@ -89,7 +89,7 @@
                             >
                                 <i class="fa fa-file-text-o"></i>
                                 <f:setPropertyActionListener value="#{row}"
-                                                             target="#{clienteControll.objetoSelecionado}"/>
+                                                             target="#{clienteControll.clienteSelecionado}"/>
                             </p:commandLink>
                             &nbsp;
                             <p:commandLink title="Excluir" action="#{clienteControll.remover()}"
@@ -103,7 +103,7 @@
                                 <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
                                 <f:setPropertyActionListener value="#{row}"
-                                                             target="#{clienteControll.objetoSelecionado}"/>
+                                                             target="#{clienteControll.clienteSelecionado}"/>
                             </p:commandLink>
                         </p:column>
 

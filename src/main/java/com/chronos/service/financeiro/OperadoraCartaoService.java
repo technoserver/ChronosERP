@@ -24,12 +24,12 @@ public class OperadoraCartaoService implements Serializable {
             taxas.add(taxa);
         } else {
             long count = taxas.stream().filter(t -> t.getIntervaloInicial().equals(taxa.getIntervaloInicial())).count();
-            if (count > 0 && taxaIgual(taxas, taxa)) {
+            if (count > 0 && (taxa.getId() == null || taxaIgual(taxas, taxa))) {
                 throw new ChronosException("Já foram definido taxa com esse intervalo inicial");
             }
             count = taxas.stream().filter(t -> t.getIntervaloFinal().equals(taxa.getIntervaloFinal())).count();
 
-            if (count > 0 && taxaFinalIgual(taxas, taxa)) {
+            if (count > 0 && (taxa.getId() == null || taxaIgual(taxas, taxa))) {
                 throw new ChronosException("Já foram definido taxa com esse intervalo Final");
             }
 
@@ -58,16 +58,9 @@ public class OperadoraCartaoService implements Serializable {
     public boolean taxaIgual(List<OperadoraCartaoTaxa> taxas, OperadoraCartaoTaxa taxa) {
 
         Optional<OperadoraCartaoTaxa> taxaOptional = taxas.stream()
-                .filter(t -> t.getIntervaloInicial().equals(taxa.getIntervaloInicial()))
-                .findFirst();
-
-        return taxaOptional.isPresent() && !taxaOptional.get().equals(taxa);
-    }
-
-    public boolean taxaFinalIgual(List<OperadoraCartaoTaxa> taxas, OperadoraCartaoTaxa taxa) {
-
-        Optional<OperadoraCartaoTaxa> taxaOptional = taxas.stream()
-                .filter(t -> t.getIntervaloFinal().equals(taxa.getIntervaloFinal()))
+                .filter(t -> t.getIntervaloInicial()
+                        .equals(taxa.getIntervaloInicial())
+                        || t.getIntervaloFinal().equals(taxa.getIntervaloFinal()))
                 .findFirst();
 
         return taxaOptional.isPresent() && !taxaOptional.get().equals(taxa);
@@ -75,7 +68,7 @@ public class OperadoraCartaoService implements Serializable {
 
     public int quantidadeMaximaParcelas(OperadoraCartao operadoraCartao) {
         if (operadoraCartao.getListaOperadoraCartaoTaxas() == null || operadoraCartao.getListaOperadoraCartaoTaxas().isEmpty()) {
-            return 1;
+            return 0;
         } else {
             OperadoraCartaoTaxa taxa = operadoraCartao.getListaOperadoraCartaoTaxas().stream().max(Comparator.comparing(OperadoraCartaoTaxa::getIntervaloFinal)).get();
             return taxa.getIntervaloFinal();
@@ -91,5 +84,16 @@ public class OperadoraCartaoService implements Serializable {
 //        List<OperadoraCartaoTaxa> collect = taxas.stream().filter(t -> t.getIntervaloInicial() >= qtdParcelas || t.getIntervaloFinal() >= qtdParcelas ).collect(Collectors.toList());
         return taxa;
     }
+
+    public OperadoraCartaoTaxa getOperadoraCartaoTaxa(List<OperadoraCartaoTaxa> taxas, int qtdParcelas) {
+        OperadoraCartaoTaxa taxa = taxas
+                .stream()
+                .filter(t -> t.getIntervaloInicial() >= qtdParcelas || t.getIntervaloFinal() >= qtdParcelas)
+                .min(Comparator.comparing(OperadoraCartaoTaxa::getIntervaloFinal)).get();
+
+//        List<OperadoraCartaoTaxa> collect = taxas.stream().filter(t -> t.getIntervaloInicial() >= qtdParcelas || t.getIntervaloFinal() >= qtdParcelas ).collect(Collectors.toList());
+        return taxa;
+    }
+
 
 }

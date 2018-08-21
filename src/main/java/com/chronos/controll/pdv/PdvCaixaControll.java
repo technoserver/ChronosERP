@@ -32,6 +32,7 @@ public class PdvCaixaControll extends AbstractControll<PdvCaixa> implements Seri
         }
     }
 
+
     private boolean validar() {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro(Filtro.AND, "codigo", Filtro.IGUAL, getObjeto().getCodigo()));

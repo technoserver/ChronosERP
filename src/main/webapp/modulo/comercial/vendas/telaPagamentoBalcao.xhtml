@@ -25,7 +25,7 @@
                             <f:selectItems value="#{balcaoControll.listTipoPagamento}" var="obj" itemValue="#{obj}"
                                            itemLabel="#{obj.descricao}"/>
                             <p:ajax process="@this" event="change"
-                                    update=":formCentro:condicoes,:formCentro:qtdParcelas"
+                                    update=":formCentro:condicoes,:formCentro:qtdParcelas,botao-confirma-pagamento"
                                     listener="#{balcaoControll.definirCondicoess()}"/>
                         </h:selectOneMenu>
                     </div>
@@ -55,7 +55,7 @@
                                                  converter="defaultConverter">
                                     <f:selectItems value="#{balcaoControll.operadoras}" var="obj" itemValue="#{obj}"
                                                    itemLabel="#{obj.nome}"/>
-                                    <p:ajax update="formCentro:parcelas" process="@this"
+                                    <p:ajax update=":formCentro:parcelas,botao-confirma-pagamento" process="@this"
                                             listener="#{balcaoControll.selecionarOperadora}"/>
                                 </h:selectOneMenu>
                             </div>

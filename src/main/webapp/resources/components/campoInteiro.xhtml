@@ -14,6 +14,7 @@
         <cc:attribute name="styleClass" />       
         <cc:attribute name="somenteLeitura" default="false" />      
         <cc:attribute name="thousandSeparator" default="."/>
+        <cc:attribute name="desabilitado" default="false"/>
 
     </cc:interface>
 
@@ -24,9 +25,10 @@
                            for="#{cc.attrs.idComponente}" />
 
             <p:inputNumber id        = "#{cc.attrs.idComponente}"
-                           value     = "#{cc.attrs.nomeAtributo}" 
-                           required  = "#{cc.attrs.requerido}"                                                
+                           value     = "#{cc.attrs.nomeAtributo}"
+                           required  = "#{cc.attrs.requerido}"
                            readonly  = "#{cc.attrs.somenteLeitura}"
+                           disabled="#{cc.attrs.desabilitado}"
                            dir="rtl"
                            decimalPlaces="0"
                            style="width: 100%;"

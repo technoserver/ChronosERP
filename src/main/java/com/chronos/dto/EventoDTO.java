@@ -1,5 +1,7 @@
 package com.chronos.dto;
 
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+
 /**
  * Created by john on 15/06/18.
  */
@@ -12,6 +14,7 @@ public class EventoDTO {
     private String protocolo;
     private String codigoUF;
     private String ambiente;
+    private ModeloDocumento modeloDocumento;
 
     public EventoDTO() {
         this.sequencia = 1;
@@ -72,5 +75,13 @@ public class EventoDTO {
 
     public void setAmbiente(String ambiente) {
         this.ambiente = ambiente;
+    }
+
+    public ModeloDocumento getModeloDocumento() {
+        return modeloDocumento;
+    }
+
+    public void setModeloDocumento(ModeloDocumento modeloDocumento) {
+        this.modeloDocumento = modeloDocumento;
     }
 }

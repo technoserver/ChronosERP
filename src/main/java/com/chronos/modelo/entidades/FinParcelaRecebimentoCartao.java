@@ -42,6 +42,10 @@ public class FinParcelaRecebimentoCartao implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private FinParcelaReceberCartao finParcelaReceberCartao;
+    @JoinColumn(name = "ID_CONTA_CAIXA", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    @NotNull
+    private ContaCaixa contaCaixa;
 
 
     public Integer getId() {
@@ -108,6 +112,13 @@ public class FinParcelaRecebimentoCartao implements Serializable {
         this.finParcelaReceberCartao = finParcelaReceberCartao;
     }
 
+    public ContaCaixa getContaCaixa() {
+        return contaCaixa;
+    }
+
+    public void setContaCaixa(ContaCaixa contaCaixa) {
+        this.contaCaixa = contaCaixa;
+    }
 
     @Override
     public boolean equals(Object o) {

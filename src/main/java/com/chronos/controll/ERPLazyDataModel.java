@@ -35,6 +35,7 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     protected Object[] joinFetch;
     protected Object[] atributos;
     protected String ordernarPor;
+    protected SortOrder sortOrder;
     private boolean cachear;
 
     
@@ -68,6 +69,7 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         try {
             sortField = StringUtils.isEmpty(ordernarPor) ? sortField : ordernarPor;
+            sortOrder = this.sortOrder == null ? sortOrder : this.sortOrder;
             objs = repository.getEntitys(getClazz(),filtros, first, pageSize, sortField, sortOrder,joinFetch,atributos );
             Long totalRegistros = repository.getTotalRegistros(getClazz(), filtros);
             this.setRowCount(totalRegistros.intValue());
@@ -150,5 +152,9 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
 
     public void setCachear(boolean cachear) {
         this.cachear = cachear;
+    }
+
+    public void setSortOrder(SortOrder sortOrder) {
+        this.sortOrder = sortOrder;
     }
 }

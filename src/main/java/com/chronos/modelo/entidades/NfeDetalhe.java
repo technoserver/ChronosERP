@@ -1,5 +1,6 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
@@ -78,6 +79,15 @@ public class NfeDetalhe implements Serializable {
     private String numeroRecopi;
     @Column(name = "VALOR_TOTAL_TRIBUTOS")
     private BigDecimal valorTotalTributos;
+    @Column(name = "VALOR_TOTAL_TRIBUTOS_FEDERAIS")
+    @ColumnDefault(value = "0.00")
+    private BigDecimal valorTotalTributosFederais;
+    @Column(name = "VALOR_TOTAL_TRIBUTOS_ESTADUAIS")
+    @ColumnDefault(value = "0.00")
+    private BigDecimal valorTotalTributosEstaduais;
+    @Column(name = "VALOR_TOTAL_TRIBUTOS_MUNICIPAIS")
+    @ColumnDefault(value = "0.00")
+    private BigDecimal valorTotalTributosMunicipais;
     @Column(name = "PERCENTUAL_DEVOLVIDO")
     private BigDecimal percentualDevolvido;
     @Column(name = "VALOR_IPI_DEVOLVIDO")
@@ -385,6 +395,30 @@ public class NfeDetalhe implements Serializable {
         this.percentualDevolvido = percentualDevolvido;
     }
 
+    public BigDecimal getValorTotalTributosFederais() {
+        return valorTotalTributosFederais;
+    }
+
+    public void setValorTotalTributosFederais(BigDecimal valorTotalTributosFederais) {
+        this.valorTotalTributosFederais = valorTotalTributosFederais;
+    }
+
+    public BigDecimal getValorTotalTributosEstaduais() {
+        return valorTotalTributosEstaduais;
+    }
+
+    public void setValorTotalTributosEstaduais(BigDecimal valorTotalTributosEstaduais) {
+        this.valorTotalTributosEstaduais = valorTotalTributosEstaduais;
+    }
+
+    public BigDecimal getValorTotalTributosMunicipais() {
+        return valorTotalTributosMunicipais;
+    }
+
+    public void setValorTotalTributosMunicipais(BigDecimal valorTotalTributosMunicipais) {
+        this.valorTotalTributosMunicipais = valorTotalTributosMunicipais;
+    }
+
     public BigDecimal getValorIpiDevolvido() {
         return valorIpiDevolvido;
     }
@@ -530,6 +564,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public void pegarInfoProduto() {
+        // removido a informacao do gtin no codigo do produto
         if (produto != null) {
             nomeProduto = produto.getNome();
             ncm = produto.getNcm();
@@ -538,7 +573,7 @@ public class NfeDetalhe implements Serializable {
             gtin = produto.getGtin();
             unidadeComercial = produto.getUnidadeProduto().getSigla();
             unidadeTributavel = unidadeComercial;
-            codigoProduto = StringUtils.isEmpty(gtin) ? produto.getId().toString() : gtin;
+            codigoProduto = produto.getId().toString();
         }
 
     }

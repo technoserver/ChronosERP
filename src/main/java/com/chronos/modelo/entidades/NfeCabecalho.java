@@ -2,9 +2,11 @@ package com.chronos.modelo.entidades;
 
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -61,6 +63,7 @@ public class NfeCabecalho implements Serializable {
     @Column(name = "DIGITO_CHAVE_ACESSO")
     private String digitoChaveAcesso;
     @Column(name = "AMBIENTE")
+    @NotNull
     private Integer ambiente;
     @Column(name = "FINALIDADE_EMISSAO")
     private Integer finalidadeEmissao;
@@ -107,10 +110,18 @@ public class NfeCabecalho implements Serializable {
     private BigDecimal valorTotal;
     @Column(name = "VALOR_SERVICOS")
     private BigDecimal valorServicos;
-    // @Column(name = "VALOR_TOTAL_TRIBUTOS")
-    //TODO colocar valor total dos tributos
-    @Transient
+    @Column(name = "VALOR_TOTAL_TRIBUTOS")
+    @ColumnDefault(value = "0.00")
     private BigDecimal valorTotalTributos;
+    @Column(name = "VALOR_TOTAL_TRIBUTOS_FEDERAIS")
+    @ColumnDefault(value = "0.00")
+    private BigDecimal valorTotalTributosFederais;
+    @Column(name = "VALOR_TOTAL_TRIBUTOS_ESTADUAIS")
+    @ColumnDefault(value = "0.00")
+    private BigDecimal valorTotalTributosEstaduais;
+    @Column(name = "VALOR_TOTAL_TRIBUTOS_MUNICIPAIS")
+    @ColumnDefault(value = "0.00")
+    private BigDecimal valorTotalTributosMunicipais;
     @Column(name = "BASE_CALCULO_ISSQN")
     private BigDecimal baseCalculoIssqn;
     @Column(name = "VALOR_ISSQN")
@@ -364,6 +375,7 @@ public class NfeCabecalho implements Serializable {
         this.chaveAcesso = chaveAcesso;
         this.digitoChaveAcesso = digitoChaveAcesso;
         this.statusNota = statusNota;
+
     }
 
 
@@ -403,6 +415,34 @@ public class NfeCabecalho implements Serializable {
         this.chaveAcesso = chaveAcesso;
         this.digitoChaveAcesso = digitoChaveAcesso;
         this.valorTotal = valorTotal;
+        this.statusNota = statusNota;
+    }
+
+
+    public NfeCabecalho(Integer id, Integer idempresa, String cnpjEmpresa, String digitoChaveAcesso, String chaveAcesso, String qrcode, String codigoModelo, Integer statusNota) {
+        this.id = id;
+        this.qrcode = qrcode;
+        this.digitoChaveAcesso = digitoChaveAcesso;
+        this.chaveAcesso = chaveAcesso;
+        this.empresa = new Empresa(idempresa);
+        this.empresa.setCnpj(cnpjEmpresa);
+        this.codigoModelo = codigoModelo;
+        this.statusNota = statusNota;
+
+    }
+
+    public NfeCabecalho(Integer id, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, String codigoModelo, String numeroProtocolo, String justificativaCancelamento, Integer ambiente, Date dataHoraProcessamento, Integer statusNota) {
+        this.id = id;
+        this.serie = serie;
+        this.numero = numero;
+        this.dataHoraEmissao = dataHoraEmissao;
+        this.chaveAcesso = chaveAcesso;
+        this.digitoChaveAcesso = digitoChaveAcesso;
+        this.codigoModelo = codigoModelo;
+        this.numeroProtocolo = numeroProtocolo;
+        this.justificativaCancelamento = justificativaCancelamento;
+        this.ambiente = ambiente;
+        this.dataHoraProcessamento = dataHoraProcessamento;
         this.statusNota = statusNota;
     }
 
@@ -1915,6 +1955,30 @@ public class NfeCabecalho implements Serializable {
 
     public void setValorTotalTributos(BigDecimal valorTotalTributos) {
         this.valorTotalTributos = valorTotalTributos;
+    }
+
+    public BigDecimal getValorTotalTributosFederais() {
+        return valorTotalTributosFederais;
+    }
+
+    public void setValorTotalTributosFederais(BigDecimal valorTotalTributosFederais) {
+        this.valorTotalTributosFederais = valorTotalTributosFederais;
+    }
+
+    public BigDecimal getValorTotalTributosEstaduais() {
+        return valorTotalTributosEstaduais;
+    }
+
+    public void setValorTotalTributosEstaduais(BigDecimal valorTotalTributosEstaduais) {
+        this.valorTotalTributosEstaduais = valorTotalTributosEstaduais;
+    }
+
+    public BigDecimal getValorTotalTributosMunicipais() {
+        return valorTotalTributosMunicipais;
+    }
+
+    public void setValorTotalTributosMunicipais(BigDecimal valorTotalTributosMunicipais) {
+        this.valorTotalTributosMunicipais = valorTotalTributosMunicipais;
     }
 
     public String getCsc() {

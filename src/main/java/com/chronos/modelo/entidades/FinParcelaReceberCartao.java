@@ -13,6 +13,8 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "fin_parcela_receber_cartao")
+@NamedQuery(name = "FinParcelaReceberCartao.UpdatePagamento"
+        , query = "UPDATE FinParcelaReceberCartao o SET o.pago = true,o.dataRecebimento=?1 where o.id = ?2")
 public class FinParcelaReceberCartao implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -70,6 +72,24 @@ public class FinParcelaReceberCartao implements Serializable {
     @ManyToOne(optional = false)
     private FinLancamentoReceberCartao finLancamentoReceberCartao;
 
+
+    public FinParcelaReceberCartao() {
+    }
+
+    public FinParcelaReceberCartao(Integer id, Integer numeroParcela, Date dataEmissao, Date dataVencimento, Date dataRecebimento, BigDecimal valorBruto, BigDecimal taxaAplicada, BigDecimal valorEncargos, BigDecimal valorLiquido, Boolean pago, Integer idcontaCaixa, Integer idfinLancamentoReceberCartao) {
+        this.id = id;
+        this.numeroParcela = numeroParcela;
+        this.dataEmissao = dataEmissao;
+        this.dataVencimento = dataVencimento;
+        this.dataRecebimento = dataRecebimento;
+        this.valorBruto = valorBruto;
+        this.taxaAplicada = taxaAplicada;
+        this.valorEncargos = valorEncargos;
+        this.valorLiquido = valorLiquido;
+        this.pago = pago;
+        this.contaCaixa = new ContaCaixa(idcontaCaixa);
+        this.finLancamentoReceberCartao = new FinLancamentoReceberCartao(idfinLancamentoReceberCartao);
+    }
 
     public Integer getId() {
         return id;
@@ -165,6 +185,11 @@ public class FinParcelaReceberCartao implements Serializable {
 
     public void setFinLancamentoReceberCartao(FinLancamentoReceberCartao finLancamentoReceberCartao) {
         this.finLancamentoReceberCartao = finLancamentoReceberCartao;
+    }
+
+    public boolean isVencido() {
+        Date hoje = new Date();
+        return dataVencimento.before(hoje);
     }
 
 

@@ -55,6 +55,12 @@ public class OperadoraCartao implements Serializable {
         this.valorAluguelPosPin = BigDecimal.ZERO;
     }
 
+    public OperadoraCartao(Integer id) {
+        this.id = id;
+
+    }
+
+
     public OperadoraCartao(Integer id, String nome, Integer idconta) {
         this.id = id;
         this.nome = nome;

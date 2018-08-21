@@ -5,7 +5,9 @@ import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
 
@@ -73,17 +75,21 @@ public class NfeRelatorioControll extends AbstractRelatorioControll implements S
             filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MENOR_OU_IGUAL,
                     new Date(dataFinal.getTime() + (1000 * 60 * 60 * 24))));
             filtros.add(new Filtro(Filtro.AND, "codigoModelo", Filtro.IGUAL, modelo));
-            filtros.add(new Filtro(Filtro.AND, "statusNota", Filtro.MAIOR_OU_IGUAL, StatusTransmissao.AUTORIZADA.getCodigo()));
-            nfes = repository.getEntitys(NfeCabecalho.class, filtros, 0, new Object[]{"chaveAcesso", "digitoChaveAcesso", "statusNota"});
+            filtros.add(new Filtro("statusNota", StatusTransmissao.AUTORIZADA.getCodigo(), StatusTransmissao.CANCELADA.getCodigo()));
+            nfes = repository.getEntitys(NfeCabecalho.class, filtros, 0, new Object[]{"empresa.id", "empresa.cnpj", "digitoChaveAcesso", "chaveAcesso", "qrcode", "codigoModelo", "statusNota"});
 
             if (nfes.size() > 0) {
+                service.instanciarConfNfe(empresa, ModeloDocumento.getByCodigo(Integer.valueOf(modelo)));
                 service.baixaXml(nfes, nomeArquivo);
             } else {
                 Mensagem.addInfoMessage((modelo.equals("55") ? "NFe " : "NFCe") + " não localizada");
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao baixa os xml", ex);
+            }
         }
     }
 

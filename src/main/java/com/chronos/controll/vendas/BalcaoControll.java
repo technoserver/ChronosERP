@@ -4,6 +4,7 @@ import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.OperadoraCartaoRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
@@ -156,9 +157,11 @@ public class BalcaoControll implements Serializable {
             dataModel.setDao(vendas);
             dataModel.setClazz(PdvVendaCabecalho.class);
         }
-        Object[] atributos = new Object[]{"dataHoraVenda","valorSubtotal", "valorDesconto", "valorTotal", "nomeCliente",
+        Object[] atributos = new Object[]{"idnfe", "dataHoraVenda", "valorSubtotal", "valorDesconto", "valorTotal", "nomeCliente",
                 "sicronizado", "statusVenda", "pdvMovimento.pdvCaixa.nome"};
         dataModel.setAtributos(atributos);
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
         return dataModel;
     }
 
@@ -253,7 +256,7 @@ public class BalcaoControll implements Serializable {
             } else if (ex instanceof UnknownHostException) {
                 Mensagem.addErrorMessage("Erro ao gerar conexao com \n", ex);
             } else if (ex instanceof EmissorException) {
-                Mensagem.addErrorMessage("Erro ao gerar conexao com \n", ex);
+                Mensagem.addErrorMessage("Erro ao gera NFCe  \n", ex);
             } else {
                 throw new RuntimeException("Erro ao gerar NFce", ex);
             }
@@ -266,6 +269,7 @@ public class BalcaoControll implements Serializable {
         try {
 
             NfeCabecalho nfe = nfeRepository.get(venda.getIdnfe(), NfeCabecalho.class);
+            nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), false);
             nfeService.danfe(nfe);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -615,7 +619,7 @@ public class BalcaoControll implements Serializable {
                 operadoraCartao = operadoras.stream().findFirst().get();
                 qtdMaxParcelas = operadoraCartaoService.quantidadeMaximaParcelas(operadoraCartao);
             } else {
-                qtdMaxParcelas = 1;
+                qtdMaxParcelas = 0;
             }
         }
 
@@ -824,7 +828,7 @@ public class BalcaoControll implements Serializable {
     }
 
     public boolean isPodeLancaPagamento() {
-        return valorPago.signum() == 0;
+        return valorPago.signum() == 0 || (exibirQtdParcelas && qtdMaxParcelas == 0);
     }
 
     public boolean isExibirCondicoes() {

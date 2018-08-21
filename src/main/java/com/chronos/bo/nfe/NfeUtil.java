@@ -9,6 +9,7 @@ import com.chronos.controll.nfe.NfeCalculoControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.view.*;
 import com.chronos.repository.*;
+import com.chronos.service.ChronosException;
 import com.chronos.transmissor.infra.enuns.FormatoImpressaoDanfe;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.cdi.ManualCDILookup;
@@ -77,6 +78,13 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         BigDecimal impostoFederal = BigDecimal.ZERO;
         BigDecimal impostoEstadual = BigDecimal.ZERO;
         BigDecimal impostoMunicipal = BigDecimal.ZERO;
+
+
+        BigDecimal impFederal = BigDecimal.ZERO;
+        BigDecimal impEstadual = BigDecimal.ZERO;
+        BigDecimal impMunicipal = BigDecimal.ZERO;
+
+
         NfeCalculoControll calculo = new NfeCalculoControll();
         for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
             servico = !StringUtils.isEmpty(item.getProduto().getServico()) && item.getProduto().getServico().equals("S");
@@ -111,10 +119,23 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
 
             if (tb != null) {
                 item = calculo.calculoIbpt(item, tb);
-                impostoFederal = impostoFederal.add(Optional.ofNullable(item.getImpostoFederal()).orElse(BigDecimal.ZERO));
-                impostoEstadual = impostoEstadual.add(Optional.ofNullable(item.getImpostoEstadual()).orElse(BigDecimal.ZERO));
-                impostoMunicipal = impostoMunicipal.add(Optional.ofNullable(item.getImpostoMunicipal()).orElse(BigDecimal.ZERO));
+
+                impFederal = Optional.ofNullable(item.getImpostoFederal()).orElse(BigDecimal.ZERO);
+                impEstadual = Optional.ofNullable(item.getImpostoEstadual()).orElse(BigDecimal.ZERO);
+                impMunicipal = Optional.ofNullable(item.getImpostoMunicipal()).orElse(BigDecimal.ZERO);
+
+                impostoFederal = impostoFederal.add(impFederal);
+                impostoEstadual = impostoEstadual.add(impEstadual);
+                impostoMunicipal = impostoMunicipal.add(impMunicipal);
+
+
             }
+
+            item.setValorTotalTributosFederais(impFederal);
+            item.setValorTotalTributosEstaduais(impEstadual);
+            item.setValorTotalTributosMunicipais(impostoMunicipal);
+            item.setValorTotalTributos(impFederal.add(impEstadual).add(impMunicipal));
+
 
         }
         valorNotaFiscal = valorNotaFiscal.add(valorIpi).add(valorIcmsSt).add(totalProdutos);
@@ -147,7 +168,11 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 + " e R$ " + new DecimalFormat("#,###,##0.00").format(impostoEstadual) + " Estadual "
                 + "e R$ " + new DecimalFormat("#,###,##0.00").format(impostoMunicipal) + " Municipal Fonte IBPT";
 
-
+        valorTotalTributos = valorTotalTributos.add(impostoFederal).add(impostoEstadual).add(impostoMunicipal);
+        nfe.setValorTotalTributosFederais(impostoFederal);
+        nfe.setValorTotalTributosEstaduais(impostoEstadual);
+        nfe.setValorTotalTributosMunicipais(impostoMunicipal);
+        nfe.setValorTotalTributos(valorTotalTributos);
         nfe.setInformacoesAddContribuinte(msg);
 
 
@@ -238,7 +263,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
             ViewTributacaoIcmsCustom icms = icmsCustomRepository.get(ViewTributacaoIcmsCustom.class, listaFiltro);
             if (icms != null) {
                 if (icms.getCfop() == null) {
-                    throw new Exception("Não existe CFOP definido na tributação de ICMS definida para os parâmetros informados. Operação não realizada.");
+                    throw new ChronosException("Não existe CFOP definido na tributação de ICMS definida para os parâmetros informados. Operação não realizada.");
                 }
                 item.setNfeDetalheImpostoIcms(new NfeDetalheImpostoIcms());
                 item.getNfeDetalheImpostoIcms().setNfeDetalhe(item);
@@ -260,7 +285,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 tributos.setPercentualCredito(BigDecimal.ZERO);
 
             } else {
-                throw new Exception("Não existe tributação de ICMS definida para o produto : " + item.getNomeProduto() + ". Operação não realizada.");
+                throw new ChronosException("Não existe tributação de ICMS definida para o produto : " + item.getNomeProduto() + ". Operação não realizada.");
             }
         } else {
             if (servico) {
@@ -283,10 +308,10 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 // TributIss iss = operacaoFiscal.getListaIss().get(0);
                 TributIss iss = issRepository.get(TributIss.class, listaFiltro);
                 if (iss == null) {
-                    throw new Exception("Não existe tributação de ISS definida para o " + item.getProduto().getNome() + " informados. Operação não realizada.");
+                    throw new ChronosException("Não existe tributação de ISS definida para o " + item.getProduto().getNome() + " informados. Operação não realizada.");
                 }
                 if(StringUtils.isEmpty(item.getProduto().getCodigoLst().trim()) || item.getProduto().getCodigoLst().trim().isEmpty()){
-                    throw new Exception("Não existe código de LST para o " + item.getProduto().getNome() + " informados. Operação não realizada.");
+                    throw new ChronosException("Não existe código de LST para o " + item.getProduto().getNome() + " informados. Operação não realizada.");
                 }
                 tributos.setPercentualIssqn(iss.getAliquotaPorcento());
                 item.getNfeDetalheImpostoIssqn().setMunicipioIssqn(Integer.valueOf(empresa.getInscricaoMunicipal()));
@@ -299,7 +324,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
             } else {
 
                 if (operacaoFiscal == null) {
-                    throw new Exception("Operação Fiscal não definida.Operação não realizada.");
+                    throw new ChronosException("Operação Fiscal não definida.Operação não realizada.");
                 }
 
                 listaFiltro.add(new Filtro("idTributOperacaoFiscal", operacaoFiscal.getId()));
@@ -345,7 +370,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                     tributos.setPercentualCredito(BigDecimal.ZERO);
 
                 } else {
-                    throw new Exception("Não existe tributação de ICMS definida para o produto : " + item.getNomeProduto() + ". Operação não realizada.");
+                    throw new ChronosException("Não existe tributação de ICMS definida para o produto : " + item.getNomeProduto() + ". Operação não realizada.");
                 }
                 if (operacaoFiscal.getDestacaIpi()) {
                     // IPI
@@ -362,7 +387,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                         tributos.setPercentualIpi(ipi.getAliquotaPorcento());
                         tributos.setCstIpi(CstIpi.valueOfCodigo(item.getNfeDetalheImpostoIpi().getCstIpi()));
                     } else if (empresa.getCrt().equals("2")) {
-                        throw new Exception("Não existe tributação de IPI definida para os parâmetros informados. Operação não realizada.");
+                        throw new ChronosException("Não existe tributação de IPI definida para os parâmetros informados. Operação não realizada.");
                     }
                 }
 

@@ -315,6 +315,8 @@ public class GeraXMLEnvio {
 
     private Dest getDest(NfeDestinatario destinatario) {
         Dest dest = null;
+
+
         if (destinatario != null && destinatario.getCpfCnpj() != null) {
             dest = new Dest();
             if (destinatario.getCpfCnpj().length() == 14) {
@@ -327,38 +329,15 @@ public class GeraXMLEnvio {
             } else {
                 dest.setXNome(destinatario.getNome());
             }
+
             if (destinatario.getLogradouro() != null) {
                 dest.setEnderDest(getTEndereco(destinatario));
             }
-            // NFC-e não pode ser emitida para contribuinte do ICMS
-            if (modelo == ModeloDocumento.NFCE) {
-                dest.setIndIEDest(IndicadorIe.NAO_CONTRIBUINTE.getCodigo().toString());
-            } else if (destinatario.getCpfCnpj().length() == 14) {
-                if (destinatario.getInscricaoEstadual() == null || destinatario.getInscricaoEstadual().equals("")) {
-                    dest.setIndIEDest(IndicadorIe.NAO_CONTRIBUINTE.getCodigo().toString());
-
-                } else if (destinatario.getInscricaoEstadual().equalsIgnoreCase("ISENTO")) {
-                    dest.setIndIEDest(IndicadorIe.CONTRIBUINTE_ISENTO.getCodigo().toString());
-                } else {
-                    dest.setIndIEDest(IndicadorIe.CONTRIBUINTE_ICMS.getCodigo().toString());
-                    dest.setIE(destinatario.getInscricaoEstadual());
-                }
-
-            } else if (nfeCabecalho.getValorIcmsSt().compareTo(BigDecimal.ZERO) > 0) {
-                dest.setIndIEDest("2");
-            } else if (destinatario.getUf().equals("AM") || destinatario.getUf().equals("BA")
-                    || destinatario.getUf().equals("CE") || destinatario.getUf().equals("GO")
-                    || destinatario.getUf().equals("MG") || destinatario.getUf().equals("MS")
-                    || destinatario.getUf().equals("MT") || destinatario.getUf().equals("PE")
-                    || destinatario.getUf().equals("RN") || destinatario.getUf().equals("SE")
-                    || destinatario.getUf().equals("SP")) {
-                dest.setIndIEDest(IndicadorIe.NAO_CONTRIBUINTE.getCodigo().toString());
-            } else {
-                dest.setIndIEDest(IndicadorIe.CONTRIBUINTE_ISENTO.getCodigo().toString());
-            }
+            dest.setIE(!StringUtils.isEmpty(destinatario.getInscricaoEstadual()) && destinatario.getIndicadorIe() == 1 ? destinatario.getInscricaoEstadual() : null);
+            dest.setIM(StringUtils.isEmpty(destinatario.getInscricaoMunicipal()) ? null : destinatario.getInscricaoMunicipal());
+            dest.setIndIEDest(destinatario.getIndicadorIe().toString());
             dest.setISUF(destinatario.getSuframa() == null ? null : String.valueOf(destinatario.getSuframa()));
-            dest.setEmail(destinatario.getEmail() == null ? null
-                    : destinatario.getEmail().equals("") ? null : destinatario.getEmail());
+            dest.setEmail(StringUtils.isEmpty(destinatario.getEmail()) ? null : destinatario.getEmail());
             tipoContribuinte = IndicadorIe.getByCodigo(Integer.valueOf(dest.getIndIEDest()));
         } else if (destinatario == null && modelo == ModeloDocumento.NFCE) {
             tipoContribuinte = IndicadorIe.NAO_CONTRIBUINTE;
