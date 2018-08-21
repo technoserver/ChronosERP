@@ -570,6 +570,19 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
         getObjeto().setLocalDestino(LocalDestino.getByUf(empresa.buscarEnderecoPrincipal().getUf(), pessoaCliente.getUf()));
 
+        if (getObjeto().getDestinatario().getCpfCnpj().length() == 14) {
+            if (getObjeto().getDestinatario().getInscricaoEstadual() == null || getObjeto().getDestinatario().getInscricaoEstadual().equals("")) {
+                getObjeto().getDestinatario().setIndicadorIe(9);
+
+            } else if (getObjeto().getDestinatario().getInscricaoEstadual().equalsIgnoreCase("ISENTO")) {
+                getObjeto().getDestinatario().setIndicadorIe(2);
+            } else {
+                getObjeto().getDestinatario().setIndicadorIe(1);
+            }
+
+        } else {
+            getObjeto().getDestinatario().setIndicadorIe(2);
+        }
 
         dadosSalvos = false;
 
