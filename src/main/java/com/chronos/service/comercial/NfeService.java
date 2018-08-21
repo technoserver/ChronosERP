@@ -903,6 +903,41 @@ public class NfeService implements Serializable {
         FacesUtil.setConfEmissor(null);
     }
 
+    public void definirIndicadorIe(NfeDestinatario destinatario, ModeloDocumento modelo) {
+        if (modelo == ModeloDocumento.NFE) {
+
+            if (destinatario.getCpfCnpj().length() == 14) {
+                if (destinatario.getInscricaoEstadual() == null || destinatario.getInscricaoEstadual().equals("")) {
+                    destinatario.setIndicadorIe(9);
+
+                } else if (destinatario.getInscricaoEstadual().equalsIgnoreCase("ISENTO")) {
+                    if (destinatario.getUf().equals("AM") || destinatario.getUf().equals("BA")
+                            || destinatario.getUf().equals("CE") || destinatario.getUf().equals("GO")
+                            || destinatario.getUf().equals("MG") || destinatario.getUf().equals("MS")
+                            || destinatario.getUf().equals("MT") || destinatario.getUf().equals("PE")
+                            || destinatario.getUf().equals("RN") || destinatario.getUf().equals("SE")
+                            || destinatario.getUf().equals("SP")) {
+                        destinatario.setIndicadorIe(9);
+                    } else {
+                        destinatario.setIndicadorIe(2);
+                    }
+                } else {
+                    destinatario.setIndicadorIe(1);
+
+                }
+
+            } else {
+                destinatario.setIndicadorIe(9);
+            }
+
+        } else {
+            if (destinatario != null) {
+                destinatario.setIndicadorIe(9);
+            }
+
+        }
+    }
+
     private void atualizarNumeroNfe(NotaFiscalTipo notaFiscalTipo, int numero) {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro("id", notaFiscalTipo.getId()));
