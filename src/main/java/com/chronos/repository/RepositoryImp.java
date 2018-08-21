@@ -539,12 +539,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         StringBuilder jpqlBuilder = new StringBuilder(jpql);
         for (Filtro f : filters) {
             i++;
-//            jpqlBuilder.append(" ")
-//                    .append(f.getOperadorLogico())
-//                    .append((f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ").append(f.getOperadorRelacional());
-//            if(!f.getOperadorRelacional().equals(Filtro.NAO_NULO)) {
-//                jpqlBuilder.append(" :valor").append(i);
-//            }
+
             jpqlBuilder.append(" ");
             jpqlBuilder.append(f.getOperadorLogico());
             if (f.getOperadorRelacional().equals(Filtro.NAO_NULO)) {
@@ -557,7 +552,17 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
                 jpqlBuilder.append(" AND ");
                 jpqlBuilder.append(" :valor" + i + "B");
             } else if (f.getOperadorRelacional().equals(Filtro.IN)) {
+                jpqlBuilder.append(" o." + f.getAtributo() + " ");
+                jpqlBuilder.append(Filtro.IN);
+                jpqlBuilder.append(" (");
 
+                for (int y = 0; y < f.getValores().length; y++) {
+                    jpqlBuilder.append(":valor" + i + y);
+                    if (y < f.getValores().length - 1) {
+                        jpqlBuilder.append(",");
+                    }
+                }
+                jpqlBuilder.append(" )");
             } else if (f.getOperadorRelacional().equals(Filtro.LIKE) && f.getValor().getClass() == String.class) {
                 jpqlBuilder.append(" LOWER(o." + f.getAtributo() + ") ");
                 jpqlBuilder.append(Filtro.LIKE);
@@ -615,6 +620,12 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
             i++;
 
             if (f.getOperadorRelacional().equals(Filtro.NAO_NULO)) {
+
+            } else if (f.getOperadorRelacional().equals(Filtro.IN)) {
+
+                for (int y = 0; y < f.getValores().length; y++) {
+                    query.setParameter("valor" + i + y, f.getValores()[y]);
+                }
 
             } else if (f.getOperadorRelacional().equals(Filtro.BETWEEN)) {
                 query.setParameter("valor" + i + "A", f.getValores()[0]);

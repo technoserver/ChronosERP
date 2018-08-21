@@ -1,9 +1,8 @@
 package com.chronos.service.comercial;
 
-import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento;
-import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TProcEvento;
-import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TRetEnvEvento;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TEnviNFe;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe;
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNfeProc;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TRetEnviNFe;
 import br.inf.portalfiscal.nfe.schema_4.inutNFe.TRetInutNFe;
 import br.inf.portalfiscal.nfe.schema_4.retConsSitNFe.TRetConsSitNFe;
@@ -451,9 +450,7 @@ public class NfeService implements Serializable {
         return salvarXml(xml, TipoArquivo.NFePreProcessada, nfe.getChaveAcesso() + nfe.getDigitoChaveAcesso() + ".xml");
     }
 
-    private String salvarXml(String xml, TipoArquivo tipoArquivo, String nomeArquivo) throws IOException {
-        return ArquivoUtil.getInstance().escrever(tipoArquivo, empresa.getCnpj(), xml.getBytes(), nomeArquivo);
-    }
+
 
 
     public void visualizarXml(String caminho) throws Exception {
@@ -489,24 +486,7 @@ public class NfeService implements Serializable {
         return NfeTransmissao.getInstance().statusServico();
     }
 
-    private NfeXml salvaNfeXml(String xml, NfeCabecalho nfe) {
-        NfeXml nfeXml = new NfeXml();
-        if (StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
-            nfeXml.setNfeCabecalho(nfe);
-            nfeXml.setXml(xml.getBytes());
-            nfeXmlRepository.atualizar(nfeXml);
-        } else {
-            List<Filtro> filtros = new LinkedList<>();
-            filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, nfe.getId()));
-            String atributos[] = null;
-            nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
-            nfeXml.setNfeCabecalho(nfe);
-            nfeXml.setXml(xml.getBytes());
-            nfeXmlRepository.atualizar(nfeXml);
-        }
 
-        return nfeXml;
-    }
 
     @Transactional
     public StatusTransmissao transmitirNFe(NfeCabecalho nfe, boolean atualizarEstoque) throws Exception {
@@ -609,10 +589,9 @@ public class NfeService implements Serializable {
         empresa = nfe.getEmpresa();
         StatusTransmissao statusTransmissao = StatusTransmissao.valueOfCodigo(nfe.getStatusNota());
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
-        String caminho = statusTransmissao == StatusTransmissao.AUTORIZADA
-                ? ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj()) : ArquivoUtil.getInstance().getPastaXmlNfePreProcessada(empresa.getCnpj());
+        String caminho = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj());
 
-        caminho += System.getProperty("file.separator") + (statusTransmissao == StatusTransmissao.AUTORIZADA ? nfe.getNomeXml() : nfe.getChaveAcessoCompleta() + ".xml");
+        caminho += System.getProperty("file.separator") + nfe.getNomeXml();
 
         HashMap parametrosRelatorio = new HashMap<>();
         String camLogo = ArquivoUtil.getInstance().getImagemTransmissao(empresa.getCnpj());
@@ -626,15 +605,7 @@ public class NfeService implements Serializable {
         if (statusTransmissao == StatusTransmissao.AUTORIZADA) {
             expressaoDataSource = "/nfeProc/NFe/infNFe/det";
             if (!new File(caminho).exists()) {
-                List<Filtro> filtros = new LinkedList<>();
-                filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, nfe.getId()));
-                String atributos[] = new String[]{"xml"};
-                NfeXml nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
-                if (nfeXml == null) {
-                    throw new RuntimeException("Xml inexistente!");
-                }
-                String xml = new String(nfeXml.getXml(), "UTF-8");
-                salvarXml(xml, TipoArquivo.NFe, nfe.getNomeXml());
+                gerarXml(nfe.getId(), nfe.getNomeXml());
             }
 
             if (modelo == ModeloDocumento.NFE) {
@@ -659,6 +630,33 @@ public class NfeService implements Serializable {
             }
 
 
+        } else {
+
+            br.inf.portalfiscal.nfe.schema_4.enviNFe.TNfeProc nfeProc = XmlUtil.xmlToObject(XmlUtil.leXml(caminho), TNfeProc.class);
+
+            TNFe.InfNFe infNFe = nfeProc.getNFe().getInfNFe();
+            String data = nfeProc.getProtNFe().getInfProt().getDhRecbto();
+            String[] split = data.split("-");
+            expressaoDataSource = "/";
+            nomeRelatorioJasper = "EventoCancelamento";
+            parametrosRelatorio.put("numNota", infNFe.getIde().getNNF());
+            parametrosRelatorio.put("serie", infNFe.getIde().getSerie());
+            parametrosRelatorio.put("mesAno", split[0] + "/" + split[1]);
+
+            parametrosRelatorio.put("chaveAcesso", infNFe.getId().substring(3));
+            parametrosRelatorio.put("modelo", infNFe.getIde().getMod());
+            parametrosRelatorio.put("protocolo", nfeProc.getProtNFe().getInfProt().getNProt());
+            parametrosRelatorio.put("justificativa", nfe.getJustificativaCancelamento());
+            parametrosRelatorio.put("status", "101 - pedido de cancelamento");
+            parametrosRelatorio.put("ambiente", infNFe.getIde().getTpAmb());
+            parametrosRelatorio.put("orgao", infNFe.getIde().getCUF());
+            parametrosRelatorio.put("tipoEvento", "110111");
+            parametrosRelatorio.put("seqEvento", "1");
+            parametrosRelatorio.put("versaoEvento", "1.00");
+
+            parametrosRelatorio.put("dataHoraEvento", data);
+            parametrosRelatorio.put("dataHoraRegistro", data);
+            parametrosRelatorio.put("descEvento", "Cancelamento");
         }
 
         JasperReportUtil report = new JasperReportUtil();
@@ -729,9 +727,9 @@ public class NfeService implements Serializable {
                 nfe.setNumeroProtocolo(retorno.getRetorno().getRetEvento().get(0).getInfEvento().getNProt());
                 nfe.setVersaoAplicativo(retorno.getRetorno().getRetEvento().get(0).getInfEvento().getVerAplic());
                 nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getRetorno().getRetEvento().get(0).getInfEvento().getDhRegEvento()));
-                String xml = XmlUtil.objectToXml(retorno.getProcEvento());
                 nfe.setStatusNota(StatusTransmissao.CANCELADA.getCodigo());
                 nfe = nfeRepository.procedimentoNfeCancelada(nfe, estoque);
+                salvarXmlCancelado(nfe);
                 cancelado = true;
             } else if (retorno.getRetorno().getRetEvento().get(0).getInfEvento().getCStat().equals("573")) {
                 cancelado = repository.updateNativo(NfeCabecalho.class, filtros, atributos);
@@ -913,15 +911,6 @@ public class NfeService implements Serializable {
         tiposNotaFiscal.updateNativo(NotaFiscalTipo.class, filtros, atributos);
     }
 
-    private String xmlCancelado(TRetEnvEvento retorno, TEnvEvento evento) throws Exception {
-        TProcEvento procEvento = new TProcEvento();
-        procEvento.setVersao("1.00");
-        procEvento.setEvento(evento.getEvento().get(0));
-        procEvento.setRetEvento(retorno.getRetEvento().get(0));
-        String xml = XmlUtil.objectToXml(procEvento);
-        return xml;
-    }
-
 
     private void definirEmitente(NfeCabecalho nfe) {
         NfeEmitente emitente = new NfeEmitente();
@@ -988,6 +977,61 @@ public class NfeService implements Serializable {
             throw new ChronosException("Schemas não definido");
         }
 
+    }
+
+    private String salvarXml(String xml, TipoArquivo tipoArquivo, String nomeArquivo) throws IOException {
+        return ArquivoUtil.getInstance().escrever(tipoArquivo, empresa.getCnpj(), xml.getBytes(), nomeArquivo);
+    }
+
+    private String salvarXmlCancelado(NfeCabecalho nfe) throws Exception {
+        String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(empresa.getCnpj());
+        String caminhoXml = pastaXml + System.getProperty("file.separator") + nfe.getNomeXml();
+        if (!new File(caminhoXml).exists()) {
+            gerarXml(nfe.getId(), nfe.getNomeXml());
+        }
+
+        br.inf.portalfiscal.nfe.schema_4.enviNFe.TNfeProc nfeProc = XmlUtil.xmlToObject(XmlUtil.leXml(caminhoXml), TNfeProc.class);
+        nfeProc.getProtNFe().getInfProt().setNProt(nfe.getNumeroProtocolo());
+        nfeProc.getProtNFe().getInfProt().setCStat("101"); // 101
+        nfeProc.getProtNFe().getInfProt().setDhRecbto(FormatValor.getInstance().formatarDataNota(nfe.getDataHoraProcessamento()));
+        nfeProc.getProtNFe().getInfProt().setXMotivo("NF-e Cancelada"); // NF-e Cancelada
+
+        String xml = XmlUtil.objectToXml(nfeProc);
+
+        salvaNfeXml(xml, nfe);
+
+        return salvarXml(xml, TipoArquivo.NFe, nfe.getNomeXml());
+    }
+
+    private String gerarXml(int idnfe, String nome) throws IOException {
+        List<Filtro> filtros = new LinkedList<>();
+        filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, idnfe));
+        String atributos[] = new String[]{"xml"};
+        NfeXml nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
+        if (nfeXml == null) {
+            throw new RuntimeException("Xml inexistente!");
+        }
+        String xml = new String(nfeXml.getXml(), "UTF-8");
+        return salvarXml(xml, TipoArquivo.NFe, nome);
+    }
+
+    private NfeXml salvaNfeXml(String xml, NfeCabecalho nfe) {
+        NfeXml nfeXml = new NfeXml();
+        if (StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
+            nfeXml.setNfeCabecalho(nfe);
+            nfeXml.setXml(xml.getBytes());
+            nfeXmlRepository.atualizar(nfeXml);
+        } else {
+            List<Filtro> filtros = new LinkedList<>();
+            filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, nfe.getId()));
+            String atributos[] = null;
+            nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
+            nfeXml.setNfeCabecalho(nfe);
+            nfeXml.setXml(xml.getBytes());
+            nfeXmlRepository.atualizar(nfeXml);
+        }
+
+        return nfeXml;
     }
 
 

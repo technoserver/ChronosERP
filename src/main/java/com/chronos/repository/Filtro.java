@@ -91,7 +91,7 @@ public class Filtro implements Serializable {
         this.valores = valores;
     }
 
-    public Filtro(String atributo, Object[] valores) {
+    public Filtro(String atributo, Object... valores) {
         this.operadorLogico = AND;
         this.atributo = atributo;
         this.operadorRelacional = IN;

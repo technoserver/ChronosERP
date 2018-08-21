@@ -154,7 +154,8 @@ public class NfeTransmissao {
         eventoDTO.setAmbiente(configuracoes.getAmbiente());
         eventoDTO.setCodigoUF(configuracoes.getEstado().getCodigoIbge());
         TEnvEvento enviEvento = gerar.cancelarNfe(eventoDTO);
-        br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TRetEnvEvento retornoSefaz = Nfe.cancelarNfe(enviEvento, false, ConstantesNFe.NFE);
+        String modelo = eventoDTO.getModeloDocumento() == ModeloDocumento.NFE ? ConstantesNFe.NFE : ConstantesNFe.NFCE;
+        br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TRetEnvEvento retornoSefaz = Nfe.cancelarNfe(enviEvento, false, modelo);
 
         RetornoEventoDTO retorno = new RetornoEventoDTO(enviEvento, retornoSefaz);
 

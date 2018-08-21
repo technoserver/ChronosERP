@@ -431,6 +431,21 @@ public class NfeCabecalho implements Serializable {
 
     }
 
+    public NfeCabecalho(Integer id, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, String codigoModelo, String numeroProtocolo, String justificativaCancelamento, Integer ambiente, Date dataHoraProcessamento, Integer statusNota) {
+        this.id = id;
+        this.serie = serie;
+        this.numero = numero;
+        this.dataHoraEmissao = dataHoraEmissao;
+        this.chaveAcesso = chaveAcesso;
+        this.digitoChaveAcesso = digitoChaveAcesso;
+        this.codigoModelo = codigoModelo;
+        this.numeroProtocolo = numeroProtocolo;
+        this.justificativaCancelamento = justificativaCancelamento;
+        this.ambiente = ambiente;
+        this.dataHoraProcessamento = dataHoraProcessamento;
+        this.statusNota = statusNota;
+    }
+
 
     public Integer getId() {
         return id;
