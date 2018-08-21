@@ -564,6 +564,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public void pegarInfoProduto() {
+        // removido a informacao do gtin no codigo do produto
         if (produto != null) {
             nomeProduto = produto.getNome();
             ncm = produto.getNcm();
@@ -572,7 +573,7 @@ public class NfeDetalhe implements Serializable {
             gtin = produto.getGtin();
             unidadeComercial = produto.getUnidadeProduto().getSigla();
             unidadeTributavel = unidadeComercial;
-            codigoProduto = StringUtils.isEmpty(gtin) ? produto.getId().toString() : gtin;
+            codigoProduto = produto.getId().toString();
         }
 
     }
