@@ -57,13 +57,14 @@
                         <h:commandLink  class="btn btn-default" title="Calcular"
                                          actionListener="#{estoqueFormacaoPrecoControll.efetuarCalculos}">
                             <i class="fa fa-calculator"></i>
-                            <p:ajax process="@form" update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"/>
+                            <p:ajax update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"/>
                         </h:commandLink>
                     </div>
 
                 </div>
 
                 <div class="row">
+
                     <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                                      idComponente="produtoGrupo" label="Grupo"
                                      nomeAtributo="#{estoqueFormacaoPrecoControll.objeto.produtoGrupo.nome}"
