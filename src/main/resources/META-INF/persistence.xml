@@ -10,7 +10,7 @@
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
 
         <properties>
-            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
     <persistence-unit name="ChronosLightUP" transaction-type="RESOURCE_LOCAL">
@@ -32,7 +32,7 @@
                       value="com.chronos.util.tenant.MultiTenantConnectionProviderImpl"/>
 
 
-            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
 
 
