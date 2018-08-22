@@ -1,6 +1,7 @@
-package com.chronos.controll.nfce;
+package com.chronos.controll.configuracao;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.PdvCaixa;
 import com.chronos.modelo.entidades.PdvConfiguracao;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
@@ -42,6 +43,20 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
     private NfeService nfeService;
 
     private int idcaixa;
+
+    @Override
+    public ERPLazyDataModel<PdvConfiguracao> getDataModel() {
+
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(PdvConfiguracao.class);
+            dataModel.setDao(dao);
+        }
+
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {
