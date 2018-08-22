@@ -61,23 +61,38 @@
 
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12">
-                    <h:commandButton styleClass="btn btn-primary"
+                    <p:commandButton styleClass="btn btn-primary"
                                      action="#{estoqueReajusteCabecalhoControll.buscaGrupoProdutos}"
                                      rendered="#{empty estoqueReajusteCabecalhoControll.objeto.id}"
-                                     value="Pesquisar">
+                                     update=":formCentro:telaDetalhe:outputPanelDetalhe"
+                                     value="Pesquisar"/>
 
-                        <p:ajax process="@this" update="@form,:formCentro:telaDetalhe:dataTableEstoqueReajusteDetalhe"/>
-                    </h:commandButton>
+
                     &nbsp;
-                    <h:commandButton styleClass="btn btn-primary"
+                    <p:commandButton styleClass="btn btn-primary"
                                      action="#{estoqueReajusteCabecalhoControll.efetuarCalculos}"
                                      rendered="#{ empty estoqueReajusteCabecalhoControll.objeto.id}"
-                                     value="Calcular">
+                                     update="@form,formCentro:telaDetalhe:dataTableEstoqueReajusteDetalhe,:formCentro:growl"
+                                     value="Calcular"/>
 
-                        <p:ajax process="@all"
-                                update="@form,formCentro:telaDetalhe:dataTableEstoqueReajusteDetalhe,:formCentro:growl"/>
-                    </h:commandButton>
+
                 </div>
+            </div>
+
+
+            <div class="row">
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  label="Código"
+                                  idComponente="nome"
+                                  nomeAtributo="#{estoqueReajusteCabecalhoControll.codigo}"
+                />
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="nome"
+                                label="Produto"
+                                id="campoNome"
+                                nomeAtributo="#{estoqueReajusteCabecalhoControll.nome}"
+                                tamanhoMaximo="100"/>
             </div>
 
             <div class="row">
@@ -114,7 +129,7 @@
                                nomeAtributo="#{estoqueReajusteCabecalhoControll.objeto.dataReajuste}"/>
                 <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                   idComponente="estoqueReajusteCabecalhoPorcentagem"
-                                  label="Porcentagem" requerido="true"
+                                  label="Porcentagem"
                                   nomeAtributo="#{estoqueReajusteCabecalhoControll.objeto.porcentagem}"/>
                 <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                  idComponente="estoqueReajusteCabecalhoTipoReajuste"
