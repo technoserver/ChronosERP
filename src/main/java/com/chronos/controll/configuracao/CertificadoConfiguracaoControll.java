@@ -3,8 +3,10 @@ package com.chronos.controll.configuracao;
 import br.com.samuelweb.certificado.Certificado;
 import br.com.samuelweb.certificado.CertificadoService;
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.CertificadoConfiguracao;
 import com.chronos.modelo.enuns.TipoArquivo;
+import com.chronos.repository.Filtro;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;
@@ -27,6 +29,20 @@ public class CertificadoConfiguracaoControll extends AbstractControll<Certificad
 
     private static final long serialVersionUID = 1L;
 
+
+    @Override
+    public ERPLazyDataModel<CertificadoConfiguracao> getDataModel() {
+
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(CertificadoConfiguracao.class);
+            dataModel.setDao(dao);
+        }
+
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {

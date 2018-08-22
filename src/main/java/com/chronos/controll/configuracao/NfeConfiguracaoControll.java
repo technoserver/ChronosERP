@@ -1,8 +1,10 @@
-package com.chronos.controll.nfe;
+package com.chronos.controll.configuracao;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.NfeConfiguracao;
 import com.chronos.modelo.enuns.TipoArquivo;
+import com.chronos.repository.Filtro;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.Constantes;
@@ -27,6 +29,20 @@ public class NfeConfiguracaoControll extends AbstractControll<NfeConfiguracao> i
     private ExternalContext context;
     @Inject
     private NfeService nfeService;
+
+    @Override
+    public ERPLazyDataModel<NfeConfiguracao> getDataModel() {
+
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(NfeConfiguracao.class);
+            dataModel.setDao(dao);
+        }
+
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {

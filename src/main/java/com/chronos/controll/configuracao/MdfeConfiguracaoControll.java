@@ -1,8 +1,10 @@
-package com.chronos.controll.mdfe;
+package com.chronos.controll.configuracao;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.MdfeConfiguracao;
 import com.chronos.modelo.enuns.TipoArquivo;
+import com.chronos.repository.Filtro;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
@@ -26,6 +28,21 @@ public class MdfeConfiguracaoControll extends AbstractControll<MdfeConfiguracao>
 
     @Inject
     private ExternalContext context;
+
+
+    @Override
+    public ERPLazyDataModel<MdfeConfiguracao> getDataModel() {
+
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(MdfeConfiguracao.class);
+            dataModel.setDao(dao);
+        }
+
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {

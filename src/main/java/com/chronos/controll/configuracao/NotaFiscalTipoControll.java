@@ -1,8 +1,10 @@
-package com.chronos.controll.nfe;
+package com.chronos.controll.configuracao;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.NotaFiscalModelo;
 import com.chronos.modelo.entidades.NotaFiscalTipo;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 
 import javax.faces.view.ViewScoped;
@@ -23,6 +25,21 @@ public class NotaFiscalTipoControll extends AbstractControll<NotaFiscalTipo> imp
 
     @Inject
     private Repository<NotaFiscalModelo> modelos;
+
+
+    @Override
+    public ERPLazyDataModel<NotaFiscalTipo> getDataModel() {
+
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(NotaFiscalTipo.class);
+            dataModel.setDao(dao);
+        }
+
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {
