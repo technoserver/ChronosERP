@@ -27,6 +27,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -342,11 +343,21 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             if (!produtos.isEmpty()) {
                 File file = File.createTempFile("ITENSMGV", ".txt");
 
-                List<String> linhas = new ArrayList<>();
+                FileWriter writer = new FileWriter(file);
+
+                int i = 0;
                 for (Produto p : produtos) {
-                    linhas.add(p.montarItemBalancaToledo());
+
+                    String item = p.montarItemBalancaToledo();
+                    if ((produtos.size() - 1) > i) {
+                        item += "\r\n";
+                    }
+                    writer.write(item);
+                    i++;
                 }
-                FileUtils.writeLines(file, linhas);
+                writer.close();
+                //FileUtils.writeLines(file, linhas);
+
                 FacesUtil.downloadArquivo(file, "ITENSMGV.txt");
             } else {
                 Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
