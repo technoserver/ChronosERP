@@ -542,6 +542,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
 
             jpqlBuilder.append(" ");
             jpqlBuilder.append(f.getOperadorLogico());
+            jpqlBuilder.append(f.isAbriExpresao() ? " (" : "");
             if (f.getOperadorRelacional().equals(Filtro.NAO_NULO)) {
                 jpqlBuilder.append(" o." + f.getAtributo() + " ");
                 jpqlBuilder.append(Filtro.NAO_NULO);
@@ -572,6 +573,8 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
                 jpqlBuilder.append(f.getOperadorRelacional());
                 jpqlBuilder.append(" :valor").append(i);
             }
+
+            jpqlBuilder.append(f.isFecharExpresao() ? " )" : "");
 
         }
         jpql = jpqlBuilder.toString();

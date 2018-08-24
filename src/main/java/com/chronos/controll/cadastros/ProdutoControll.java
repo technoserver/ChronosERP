@@ -82,6 +82,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         produtoDataModel.addFiltro("subgrupo", strSubGrupo);
         produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
         produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
+        produtoDataModel.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
     }
 
     @Override

@@ -92,9 +92,10 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
             getObjeto().getListaEstoqueReajusteDetalhe().clear();
             atributos = new Object[]{"quantidadeEstoque", "produto.id", "produto.nome", "produto.valorVenda"};
             List<Filtro> filtros = new LinkedList<>();
-
+            filtros.add(new Filtro("empresa.id", empresa.getId()));
             if (codigo > 0) {
-                filtros.add(new Filtro("produto.id", codigo));
+                filtros.add(new Filtro(true, Filtro.AND, "produto.id", Filtro.IGUAL, codigo));
+                filtros.add(new Filtro(Filtro.OR, "produto.gtin", Filtro.IGUAL, String.valueOf(codigo), true));
             } else {
                 if (produtoSubgrupo.getId() != null) {
                     filtros.add(new Filtro("produto.produtoSubGrupo.id", produtoSubgrupo.getId()));
@@ -106,7 +107,6 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
             }
 
 
-            filtros.add(new Filtro("empresa.id", empresa.getId()));
             List<EmpresaProduto> listaProduto = produtos.getEntitys(EmpresaProduto.class, filtros, atributos);
 
             if (listaProduto.isEmpty()) {
