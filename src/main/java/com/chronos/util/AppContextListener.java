@@ -44,6 +44,9 @@ public class AppContextListener implements ServletContextListener {
         } catch (FlywayException | NamingException | SQLException ex) {
             ex.printStackTrace();
             throw new RuntimeException("Erro ao executa procedimentos de migracao\n" + ex.getCause(), ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException("Erro ao executa procedimentos de migracao\n" + ex.getCause(), ex);
         }
 
 

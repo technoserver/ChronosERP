@@ -6,6 +6,7 @@
 package com.chronos.util.flyway;
 
 import org.flywaydb.core.Flyway;
+import org.flywaydb.core.api.FlywayException;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -27,23 +28,36 @@ public class FlyWay {
 
     private Context envCtx;
 
-    public void migration() throws NamingException, SQLException {
+    public void migration() throws Exception {
 
-        initContext();
 
-        ds = (DataSource) envCtx.lookup("jdbc/chronosLightDB");
-        // Inicialição do FlyWay
-        Flyway flyway = new Flyway();
+        String schema = "";
+        try {
+            initContext();
 
-        flyway.setBaselineOnMigrate(true);
-        flyway.setTable("version");
-        flyway.setDataSource(ds);
+            ds = (DataSource) envCtx.lookup("jdbc/chronosLightDB");
+            // Inicialição do FlyWay
+            Flyway flyway = new Flyway();
 
-        flyway.setValidateOnMigrate(true);
-        getTenants().forEach(t -> {
-            flyway.setSchemas(t);
-            flyway.migrate();
-        });
+            flyway.setBaselineOnMigrate(true);
+            flyway.setTable("version");
+            flyway.setDataSource(ds);
+
+            flyway.setValidateOnMigrate(true);
+
+            getTenants().forEach(t -> {
+
+            });
+
+            for (String t : getTenants()) {
+                schema = t;
+                flyway.setSchemas(t);
+                flyway.migrate();
+            }
+
+        } catch (FlywayException | NamingException | SQLException ex) {
+            throw new Exception("erro a executa a migração para o schema :" + schema, ex);
+        }
 
     }
 

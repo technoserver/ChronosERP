@@ -2,11 +2,11 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.AgendaCompromisso;
+import com.chronos.modelo.entidades.AvisoSistema;
 import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.modelo.view.ViewResumoContas;
 import com.chronos.modelo.view.ViewResumoContasID;
 import com.chronos.repository.Filtro;
-import com.chronos.repository.NfeRepository;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.google.gson.Gson;
@@ -35,8 +35,9 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
 
     @Inject
     private Repository<AgendaCompromisso> compromissoRepository;
+
     @Inject
-    private NfeRepository nfeRepository;
+    private Repository<AvisoSistema> avisoSistemaRepository;
 
     private List<AgendaCompromisso> compromissos;
 
@@ -44,10 +45,15 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
     private ViewResumoContas resumoPagar;
     private ViewResumoContas resumoReceber;
 
+    private AvisoSistema avisoConfirmado;
+
     private String jsonDespesas;
     private String jsonReceitas;
     private String jsonResumoContas;
 
+    private List<AvisoSistema> avisos;
+
+    private boolean possueAviso;
 
     @PostConstruct
     @Override
@@ -60,6 +66,18 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
         compromissos = compromissoRepository.getEntitys(AgendaCompromisso.class, filtros, new Object[]{"descricao", "dataCompromisso", "hora", "onde"});
         jsonResumoContas = new Gson().toJson(listContas);
 
+        avisos = avisoSistemaRepository.getEntitys(AvisoSistema.class, "confirmado", "N");
+
+        possueAviso = !avisos.isEmpty();
+    }
+
+    public void confirmarAviso() {
+        avisoConfirmado.setDataConfirmacao(new Date());
+        avisoConfirmado.setConfirmadoPor(usuario.getNome());
+        avisoConfirmado.setConfirmado("S");
+        avisoSistemaRepository.atualizar(avisoConfirmado);
+        avisos = avisoSistemaRepository.getEntitys(AvisoSistema.class, "confirmado", "N");
+        possueAviso = !avisos.isEmpty();
     }
 
     @Override
@@ -108,6 +126,22 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
 
     public void setCompromissos(List<AgendaCompromisso> compromissos) {
         this.compromissos = compromissos;
+    }
+
+    public List<AvisoSistema> getAvisos() {
+        return avisos;
+    }
+
+    public boolean isPossueAviso() {
+        return possueAviso;
+    }
+
+    public AvisoSistema getAvisoConfirmado() {
+        return avisoConfirmado;
+    }
+
+    public void setAvisoConfirmado(AvisoSistema avisoConfirmado) {
+        this.avisoConfirmado = avisoConfirmado;
     }
 }
 
