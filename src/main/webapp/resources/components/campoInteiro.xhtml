@@ -3,7 +3,7 @@
 <html
         xmlns="http://www.w3.org/1999/xhtml"
         xmlns:cc="http://java.sun.com/jsf/composite"
-        xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+        xmlns:p="http://primefaces.org/ui">
 
     <!-- INTERFACE -->
     <cc:interface>
@@ -15,6 +15,7 @@
         <cc:attribute name="somenteLeitura" default="false" />      
         <cc:attribute name="thousandSeparator" default="."/>
         <cc:attribute name="desabilitado" default="false"/>
+        <cc:attribute name="tamanhoMaximo" default="9"/>
 
     </cc:interface>
 
@@ -27,12 +28,11 @@
             <p:inputText id="#{cc.attrs.idComponente}"
                          value="#{cc.attrs.nomeAtributo}"
                          required="#{cc.attrs.requerido}"
-                         maxlength="9"
+                         maxlength="#{cc.attrs.tamanhoMaximo}"
                          style="text-align: left"
                          disabled="#{cc.attrs.desabilitado}"
                          readonly="#{cc.attrs.somenteLeitura}"
                          class="#{cc.attrs.styleClassInput}">
-                <f:validateLength maximum="9"/>
                 <p:keyFilter regEx="/[\d\-]/"/>
             </p:inputText>
         </div>
