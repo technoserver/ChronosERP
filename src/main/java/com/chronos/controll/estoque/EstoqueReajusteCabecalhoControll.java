@@ -37,7 +37,7 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
     @Inject
     private EstoqueRepository estoqueRepository;
 
-    private long codigo;
+    private String codigo;
     private String nome;
 
 
@@ -93,12 +93,15 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
             atributos = new Object[]{"quantidadeEstoque", "produto.id", "produto.nome", "produto.valorVenda"};
             List<Filtro> filtros = new LinkedList<>();
             filtros.add(new Filtro("empresa.id", empresa.getId()));
-            if (codigo > 0) {
-                String gtin = String.valueOf(codigo);
-                if (gtin.length() > 9) {
-                    filtros.add(new Filtro("produto.gtin", Filtro.IGUAL, gtin));
+
+            if (!StringUtils.isEmpty(codigo)) {
+                if (codigo.length() > 9) {
+                    filtros.add(new Filtro("produto.gtin", Filtro.IGUAL, codigo));
                 } else {
-                    filtros.add(new Filtro("produto.id", (int) codigo));
+                    codigo = "0" + codigo;
+                    String str = codigo.replaceAll("\\D", "");
+                    int cod = Integer.valueOf(str);
+                    filtros.add(new Filtro("produto.id", cod));
                 }
 
 
@@ -209,11 +212,11 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
         this.produtoSubgrupo = produtoSubgrupo;
     }
 
-    public long getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(long codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 
