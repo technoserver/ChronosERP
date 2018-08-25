@@ -7,6 +7,7 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -35,6 +36,9 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
     private ProdutoSubGrupo produtoSubgrupo;
     @Inject
     private EstoqueRepository estoqueRepository;
+
+    private String codigo;
+    private String nome;
 
 
     @Override
@@ -88,11 +92,30 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
             getObjeto().getListaEstoqueReajusteDetalhe().clear();
             atributos = new Object[]{"quantidadeEstoque", "produto.id", "produto.nome", "produto.valorVenda"};
             List<Filtro> filtros = new LinkedList<>();
-            if (produtoSubgrupo.getId() != null) {
-                filtros.add(new Filtro("produto.produtoSubGrupo.id", produtoSubgrupo.getId()));
+            filtros.add(new Filtro("empresa.id", empresa.getId()));
+
+            if (!StringUtils.isEmpty(codigo)) {
+                if (codigo.length() > 9) {
+                    filtros.add(new Filtro("produto.gtin", Filtro.IGUAL, codigo));
+                } else {
+                    codigo = "0" + codigo;
+                    String str = codigo.replaceAll("\\D", "");
+                    int cod = Integer.valueOf(str);
+                    filtros.add(new Filtro("produto.id", cod));
+                }
+
+
+            } else {
+                if (produtoSubgrupo.getId() != null) {
+                    filtros.add(new Filtro("produto.produtoSubGrupo.id", produtoSubgrupo.getId()));
+                }
+
+                if (!StringUtils.isEmpty(nome)) {
+                    filtros.add(new Filtro("produto.nome", Filtro.LIKE, nome));
+                }
             }
 
-            filtros.add(new Filtro("empresa.id", empresa.getId()));
+
             List<EmpresaProduto> listaProduto = produtos.getEntitys(EmpresaProduto.class, filtros, atributos);
 
             if (listaProduto.isEmpty()) {
@@ -187,5 +210,21 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
 
     public void setProdutoSubgrupo(ProdutoSubGrupo produtoSubgrupo) {
         this.produtoSubgrupo = produtoSubgrupo;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 }

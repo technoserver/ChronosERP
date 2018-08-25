@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html 
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:cc="http://java.sun.com/jsf/composite"
-      xmlns:p="http://primefaces.org/ui">
+<html
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:cc="http://java.sun.com/jsf/composite"
+        xmlns:p="http://primefaces.org/ui">
 
     <!-- INTERFACE -->
     <cc:interface>
@@ -15,6 +15,7 @@
         <cc:attribute name="somenteLeitura" default="false" />      
         <cc:attribute name="thousandSeparator" default="."/>
         <cc:attribute name="desabilitado" default="false"/>
+        <cc:attribute name="tamanhoMaximo" default="9"/>
 
     </cc:interface>
 
@@ -24,17 +25,16 @@
             <p:outputLabel value="#{cc.attrs.label}"
                            for="#{cc.attrs.idComponente}" />
 
-            <p:inputNumber id        = "#{cc.attrs.idComponente}"
-                           value="#{cc.attrs.nomeAtributo}"
-                           required="#{cc.attrs.requerido}"
-                           readonly  = "#{cc.attrs.somenteLeitura}"
-                           disabled="#{cc.attrs.desabilitado}"
-                           dir="rtl"
-                           decimalPlaces="0"
-                           style="width: 100%;"
-                           thousandSeparator="#{cc.attrs.thousandSeparator}">
-
-            </p:inputNumber>
+            <p:inputText id="#{cc.attrs.idComponente}"
+                         value="#{cc.attrs.nomeAtributo}"
+                         required="#{cc.attrs.requerido}"
+                         maxlength="#{cc.attrs.tamanhoMaximo}"
+                         style="text-align: left"
+                         disabled="#{cc.attrs.desabilitado}"
+                         readonly="#{cc.attrs.somenteLeitura}"
+                         class="#{cc.attrs.styleClassInput}">
+                <p:keyFilter regEx="/[\d\-]/"/>
+            </p:inputText>
         </div>
     </cc:implementation>
 </html>

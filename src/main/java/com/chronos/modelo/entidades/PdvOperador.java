@@ -2,6 +2,7 @@
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 
@@ -21,6 +22,10 @@ public class PdvOperador implements Serializable {
     private String senha;
     @Column(name = "NIVEL_AUTORIZACAO")
     private String nivelAutorizacao;
+    @JoinColumn(name = "ID_COLABORADOR", referencedColumnName = "ID")
+    @ManyToOne
+    @NotNull
+    private Colaborador colaborador;
 
 
     public PdvOperador() {
@@ -75,6 +80,14 @@ public class PdvOperador implements Serializable {
      */
     public void setNivelAutorizacao(String nivelAutorizacao) {
         this.nivelAutorizacao = nivelAutorizacao;
+    }
+
+    public Colaborador getColaborador() {
+        return colaborador;
+    }
+
+    public void setColaborador(Colaborador colaborador) {
+        this.colaborador = colaborador;
     }
 
     @Override

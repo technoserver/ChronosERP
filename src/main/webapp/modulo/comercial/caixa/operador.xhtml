@@ -51,12 +51,29 @@
 
             <div class="row">
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  label="Colaborador"
+                                  itemLabel="#{objeto.pessoa.nome}"
+                                  controller="#{pdvOperadorControll}"
+                                  completeMethod="getListColaborador"
+                                  nomeAtributo="#{pdvOperadorControll.objeto.colaborador}"
+                                  idComponente="colaborador"
+                                  rendered="#{empty pdvOperadorControll.objeto.colaborador.id or pdvOperadorControll.objeto.colaborador.id eq 1}"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                label="Colaborador"
+                                tamanhoMaximo="100"
+                                idComponente="colaborador"
+                                nomeAtributo="#{pdvOperadorControll.objeto.colaborador.pessoa.nome}"
+                                desabilitado="true"
+                                rendered="#{not empty pdvOperadorControll.objeto.colaborador.id and  pdvOperadorControll.objeto.colaborador.id != 1}"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                 idComponente="login" label="Login"
                                 requerido="true"
                                 nomeAtributo="#{pdvOperadorControll.objeto.login}"
                                 tamanhoMaximo="20"/>
-                <erp:campoSenha styleClass="col-xs-12 col-sm-5 col-md-5"
+                <erp:campoSenha styleClass="col-xs-12 col-sm-3 col-md-3"
                                 nomeAtributo="#{pdvOperadorControll.objeto.senha}"
                                 label="Senha"
                                 tamanhoMaximo="20"

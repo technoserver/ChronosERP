@@ -1,6 +1,7 @@
 
 package com.chronos.modelo.entidades;
 
+import com.chronos.bo.cadastro.ItemFilizola;
 import com.chronos.bo.cadastro.ItemToledo;
 import com.chronos.service.ChronosException;
 import org.hibernate.annotations.DynamicUpdate;
@@ -632,6 +633,12 @@ public class Produto implements Serializable {
 
     public String montarItemBalancaToledo() throws ChronosException {
         ItemToledo item = new ItemToledo();
+        item.setProduto(this);
+        return item.montarItem();
+    }
+
+    public String montarItemBalancaFilizola() throws ChronosException {
+        ItemFilizola item = new ItemFilizola();
         item.setProduto(this);
         return item.montarItem();
     }

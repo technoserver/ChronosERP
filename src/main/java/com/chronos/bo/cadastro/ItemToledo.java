@@ -95,7 +95,13 @@ public class ItemToledo {
     }
 
     public String montarItem() throws ChronosException {
-        String linha = "010" + montarCodigo() + montarPreco() + "000" + montarDescricao(); //+ completarComZeroDireita(88, "") + "\r\n";
+        String linha = "010" + montarCodigo() + montarPreco() + "000" + montarDescricao() + completarComZeroDireita(88, "");
+        return linha;
+
+    }
+
+    public String montarItem2() throws ChronosException {
+        String linha = "010" + montarCodigo() + montarPreco() + "000" + montarDescricao() + completarComZeroDireita(88, "") + "\r\n";
         return linha;
 
     }

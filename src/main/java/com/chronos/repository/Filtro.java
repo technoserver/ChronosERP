@@ -46,12 +46,14 @@ public class Filtro implements Serializable {
     public static final String LIKE = " LIKE";
     public static final String IN = " IN";
     public static final String BETWEEN = " BETWEEN";
+
     private String operadorLogico;
     private String atributo;
     private String operadorRelacional;
     private Object valor;
     private Object[] valores;
-
+    private boolean abriExpresao;
+    private boolean fecharExpresao;
 
     public Filtro() {
     }
@@ -61,6 +63,22 @@ public class Filtro implements Serializable {
         this.atributo = atributo;
         this.operadorRelacional = operadorRelacional;
         this.valor = valor;
+    }
+
+    public Filtro(boolean abriExpresao, String operadorLogico, String atributo, String operadorRelacional, Object valor) {
+        this.operadorLogico = operadorLogico;
+        this.atributo = atributo;
+        this.operadorRelacional = operadorRelacional;
+        this.valor = valor;
+        this.abriExpresao = abriExpresao;
+    }
+
+    public Filtro(String operadorLogico, String atributo, String operadorRelacional, Object valor, boolean fecharExpresao) {
+        this.operadorLogico = operadorLogico;
+        this.atributo = atributo;
+        this.operadorRelacional = operadorRelacional;
+        this.valor = valor;
+        this.fecharExpresao = fecharExpresao;
     }
 
     public Filtro(String atributo, String operadorRelacional, Object valor) {
@@ -137,5 +155,21 @@ public class Filtro implements Serializable {
 
     public void setValores(Object[] valores) {
         this.valores = valores;
+    }
+
+    public boolean isAbriExpresao() {
+        return abriExpresao;
+    }
+
+    public void setAbriExpresao(boolean abriExpresao) {
+        this.abriExpresao = abriExpresao;
+    }
+
+    public boolean isFecharExpresao() {
+        return fecharExpresao;
+    }
+
+    public void setFecharExpresao(boolean fecharExpresao) {
+        this.fecharExpresao = fecharExpresao;
     }
 }

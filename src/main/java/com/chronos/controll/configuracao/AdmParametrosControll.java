@@ -1,8 +1,10 @@
-package com.chronos.controll.gerencial;
+package com.chronos.controll.configuracao;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.TributOperacaoFiscal;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.FacesUtil;
 
@@ -40,6 +42,20 @@ public class AdmParametrosControll extends AbstractControll<AdmParametro> implem
         operacoesFiscais = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
 
         operacaoFiscal = new TributOperacaoFiscal(getObjeto().getTributOperacaoFiscalPadrao());
+    }
+
+    @Override
+    public ERPLazyDataModel<AdmParametro> getDataModel() {
+
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(AdmParametro.class);
+            dataModel.setDao(dao);
+        }
+
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        return dataModel;
     }
 
     @Override

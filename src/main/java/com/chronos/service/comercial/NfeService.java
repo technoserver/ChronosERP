@@ -716,6 +716,7 @@ public class NfeService implements Serializable {
         evento.setMotivo(nfe.getJustificativaCancelamento());
         evento.setChave(nfe.getChaveAcessoCompleta());
         evento.setCnpj(empresa.getCnpj());
+        evento.setModeloDocumento(nfe.getModeloDocumento());
         RetornoEventoDTO retorno = NfeTransmissao.getInstance().cancelarNFe(evento);
 
         List<Filtro> filtros = new LinkedList<>();
@@ -839,7 +840,6 @@ public class NfeService implements Serializable {
             throw new ChronosException("Configuração de numero fiscal para o modelo :" + modelo + " não definida");
         }
 
-        notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
 
         return notaFiscalTipo;
     }

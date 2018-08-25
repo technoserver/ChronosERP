@@ -87,7 +87,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "relacaoVendas.jasper";
 
-        executarRelatorio(caminhoRelatorio, nomeRelatorio, "realcaoVendas.pdf");
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoVendas.pdf");
     }
 
     public void imprimirRanckProdutos() {

@@ -255,6 +255,49 @@
         </div>
     </ui:define>
 
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogOutrasTela" header="Avisos" responsive="true"
+                      widgetVar="dialogOutrasTela" showEffect="slide" hideEffect="slide" width="500"
+                      resizable="true" modal="true" closable="false" visible="#{homeControll.possueAviso}">
+                <p:outputPanel id="panelOutrasTela">
+                    <div class="row">
+                        <div class="col-xs-12">
+
+
+                            <ui:repeat value="#{homeControll.avisos}" var="row" id="laco">
+
+                                <p:panelGrid columns="2" layout="grid" id="gridAviso">
+                                    <p:commandLink style="float:left;margin-right:10px"
+                                                   action="#{homeControll.confirmarAviso}"
+                                                   id="btnConfirmarAviso"
+                                                   update="formOutrasTelas:dialogOutrasTela">
+                                        <i class="fa fa-check"></i>
+                                        <f:setPropertyActionListener value="#{row}"
+                                                                     target="#{homeControll.avisoConfirmado}"/>
+                                    </p:commandLink>
+                                    <h:outputText value=" #{row.aviso}" style="display:inline-block"/>
+
+                                </p:panelGrid>
+                            </ui:repeat>
+
+
+                        </div>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-12 text-center">
+                            <p:commandButton value="Fechar"
+                                             oncomplete="PF('dialogOutrasTela').hide();" process="@this"/>
+                        </div>
+                    </div>
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
     <ui:define name="javaScript">
         <h:outputScript library="js" name="vendor/c3charts/d3.min.js"/>
         <h:outputScript library="js" name="vendor/c3charts/c3.min.js"/>

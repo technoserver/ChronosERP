@@ -27,6 +27,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -81,6 +82,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         produtoDataModel.addFiltro("subgrupo", strSubGrupo);
         produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
         produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
+        produtoDataModel.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
     }
 
     @Override
@@ -334,21 +336,29 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
 
     public void gerarTxtToledo() {
-        List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro(Filtro.AND, "codigoBalanca", Filtro.NAO_NULO, ""));
-        filtros.add(new Filtro("unidadeProduto.podeFracionar", "S"));
+
 
 
         try {
-            List<Produto> produtos = dao.getEntitys(Produto.class, filtros, new Object[]{"nome", "valorVenda", "codigoBalanca"});
+            List<Produto> produtos = buscarProdutosBalanca();
             if (!produtos.isEmpty()) {
                 File file = File.createTempFile("ITENSMGV", ".txt");
 
-                List<String> linhas = new ArrayList<>();
+                FileWriter writer = new FileWriter(file);
+
+                int i = 0;
                 for (Produto p : produtos) {
-                    linhas.add(p.montarItemBalancaToledo());
+
+                    String item = p.montarItemBalancaToledo();
+                    if ((produtos.size() - 1) > i) {
+                        item += "\r\n";
+                    }
+                    writer.write(item);
+                    i++;
                 }
-                FileUtils.writeLines(file, linhas);
+                writer.close();
+                //FileUtils.writeLines(file, linhas);
+
                 FacesUtil.downloadArquivo(file, "ITENSMGV.txt");
             } else {
                 Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
@@ -362,6 +372,41 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             }
 
         }
+    }
+
+    public void gerarTxtFilizola() {
+
+
+        try {
+            List<Produto> produtos = buscarProdutosBalanca();
+            if (!produtos.isEmpty()) {
+                File file = File.createTempFile("CADTXT", ".txt");
+
+                List<String> linhas = new ArrayList<>();
+                for (Produto p : produtos) {
+                    linhas.add(p.montarItemBalancaFilizola());
+                }
+                FileUtils.writeLines(file, linhas);
+                FacesUtil.downloadArquivo(file, "CADTXT.txt");
+            } else {
+                Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
+            }
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao gera dados para balança", ex);
+            }
+
+        }
+    }
+
+    private List<Produto> buscarProdutosBalanca() {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro(Filtro.AND, "codigoBalanca", Filtro.NAO_NULO, ""));
+        filtros.add(new Filtro("unidadeProduto.podeFracionar", "S"));
+        return dao.getEntitys(Produto.class, filtros, new Object[]{"nome", "valorVenda", "codigoBalanca"});
     }
 
     @Override
