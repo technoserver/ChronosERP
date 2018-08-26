@@ -45,6 +45,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         listaVendedor = new LinkedHashMap<>();
         listaVendedor.putAll(list.stream()
                 .collect(Collectors.toMap((Vendedor::getNome), Vendedor::getId)));
+
         if(idcupom > 0){
 
         }
