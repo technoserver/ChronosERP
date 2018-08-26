@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
 import com.chronos.modelo.entidades.Vendedor;
+import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.Repository;
 
 import javax.annotation.PostConstruct;
@@ -29,11 +30,15 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     @Inject
     private Repository<PdvMovimento> movimentoRepository;
 
+    @Inject
+    private Repository<PessoaCliente> pessoaClienteRepository;
+
     private Date dataInicial;
     private Date dataFinal;
     private Integer idvendedor;
     private int idcupom;
     private PdvVendaCabecalho vendaCupom;
+    private PessoaCliente cliente;
     private Map<String, Integer> listaVendedor;
 
     @PostConstruct
@@ -85,6 +90,15 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         parametros.put("dataPedidoInicial", dataInicial);
         parametros.put("dataPedidoFinal", dataFinal);
         parametros.put("idempresa", empresa.getId());
+
+        if (idvendedor > 0) {
+            parametros.put("idvendedor", idvendedor);
+        }
+
+        if (cliente != null) {
+            parametros.put("idcliente", cliente.getId());
+        }
+
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "relacaoVendas.jasper";
 
@@ -110,6 +124,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         if (idvendedor > 0) {
             parametros.put("idvendedor", idvendedor);
         }
+
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "relacaoComissoes.jasper";
 
@@ -137,6 +152,16 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         String nomeRelatorio = "relacaoClientesVenda.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "clientesMaisCompram.pdf");
+    }
+
+    public List<PessoaCliente> getListaCliente(String nome) {
+        List<PessoaCliente> listaCliente = new ArrayList<>();
+        try {
+            listaCliente = pessoaClienteRepository.getEntitys(PessoaCliente.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaCliente;
     }
 
 
@@ -186,5 +211,13 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void setVendaCupom(PdvVendaCabecalho vendaCupom) {
         this.vendaCupom = vendaCupom;
+    }
+
+    public PessoaCliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(PessoaCliente cliente) {
+        this.cliente = cliente;
     }
 }
