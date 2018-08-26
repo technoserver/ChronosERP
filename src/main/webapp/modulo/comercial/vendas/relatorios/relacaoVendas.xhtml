@@ -25,7 +25,7 @@
         <div class="ibox-content">
             <div class="row">
 
-                <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-3"
                                   label="Cliente"
                                   itemLabel="#{objeto.nome}"
                                   controller="#{vendaRelatorioControll}"
@@ -54,6 +54,14 @@
                                label="Data Final"
                                idComponente="vencimentoAte"
                                styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+
+                <erp:campoSelect itens="#{vendaRelatorioControll.status}"
+                                 styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="statusVendas"
+                                 label="Status"
+
+                                 nomeAtributo="#{vendaRelatorioControll.statusVendas}"/>
 
                 <div class="col-xs-12 col-sm-12 col-md-12 text-center m-t">
 
