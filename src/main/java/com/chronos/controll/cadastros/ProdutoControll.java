@@ -338,7 +338,6 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void gerarTxtToledo() {
 
 
-
         try {
             List<Produto> produtos = buscarProdutosBalanca();
             if (!produtos.isEmpty()) {

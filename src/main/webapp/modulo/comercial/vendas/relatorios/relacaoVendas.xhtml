@@ -25,7 +25,25 @@
         <div class="ibox-content">
             <div class="row">
 
+                <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  label="Cliente"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{vendaRelatorioControll}"
+                                  completeMethod="getListaCliente"
+                                  nomeAtributo="#{vendaRelatorioControll.cliente}"
+                                  requerido="false"
+                                  idComponente="vendaCabecalhoCliente">
 
+                    />
+
+                </erp:autoComplete>
+
+                <erp:campoSelect itens="#{vendaRelatorioControll.listaVendedor}"
+                                 styleClass="col-xs-12 col-sm-3 col-md-3"
+                                 idComponente="vendedor"
+                                 label="Vendedor"
+
+                                 nomeAtributo="#{vendaRelatorioControll.idvendedor}"/>
 
                 <erp:campoData nomeAtributo="#{vendaRelatorioControll.dataInicial}"
                                label="Data inicial"
