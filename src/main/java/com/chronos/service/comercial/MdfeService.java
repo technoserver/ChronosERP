@@ -3,6 +3,7 @@ package com.chronos.service.comercial;
 import br.inf.portalfiscal.mdfe.schema_300.enviMDFe.TEnviMDFe;
 import br.inf.portalfiscal.mdfe.schema_300.retConsReciMDFe.TRetConsReciMDFe;
 import com.chronos.bo.mdfe.MdfeTransmissao;
+import com.chronos.dto.ConfiguracaoMdfeDTO;
 import com.chronos.dto.DocFiscalDto;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.StatusTransmissao;
@@ -10,7 +11,6 @@ import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.configuracao.NotaFiscalService;
-import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.util.ConstantesMDFe;
 import com.chronos.transmissor.util.ValidarMDFe;
 import com.chronos.transmissor.util.XmlUtil;
@@ -51,7 +51,7 @@ public class MdfeService implements Serializable {
     @Inject
     private Repository<MdfeXml> xmlRepository;
 
-    private MdfeConfiguracao configuracao;
+    private ConfiguracaoMdfeDTO configuracao;
 
     @Inject
     private NotaFiscalService notaService;
@@ -216,7 +216,7 @@ public class MdfeService implements Serializable {
     }
 
     @Transactional
-    public StatusTransmissao enviarMdfe(MdfeCabecalho mdfe) throws EmissorException, Exception {
+    public StatusTransmissao enviarMdfe(MdfeCabecalho mdfe) throws Exception {
         StatusTransmissao status = StatusTransmissao.ENVIADA;
 
         verificarStatusNota(mdfe);
@@ -270,7 +270,7 @@ public class MdfeService implements Serializable {
             mdfe.setNumeroMdfe(null);
             mdfe.setSerie(null);
             status = StatusTransmissao.EDICAO;
-            mdfe.setStatusMdfe(status.EDICAO.getCodigo());
+            mdfe.setStatusMdfe(StatusTransmissao.EDICAO.getCodigo());
             repository.atualizar(mdfe);
         } else {
             Mensagem.addInfoMessage(retornoMdfe.getXMotivo());
@@ -280,7 +280,7 @@ public class MdfeService implements Serializable {
         return status;
     }
 
-    public void salvaMdfeXml(String xml, MdfeCabecalho mdfe) throws Exception {
+    public void salvaMdfeXml(String xml, MdfeCabecalho mdfe) {
         MdfeXml mdfeXml = new MdfeXml();
         if (StatusTransmissao.isAutorizado(mdfe.getStatusMdfe())) {
             mdfeXml.setMdfeCabecalho(mdfe);
@@ -320,9 +320,15 @@ public class MdfeService implements Serializable {
     }
 
 
-    private MdfeConfiguracao getConfiguracao() throws Exception {
+    public String consultarNaoEncerrados(String cnpj) throws Exception {
+        MdfeTransmissao transmissao = new MdfeTransmissao(empresa, getConfiguracao());
+        return transmissao.consultarNaoEncerrados(cnpj);
+    }
+
+
+    private ConfiguracaoMdfeDTO getConfiguracao() throws Exception {
         if (configuracao == null) {
-            configuracao = configuracaoRepository.get(MdfeConfiguracao.class, "empresa.id", empresa.getId());
+            configuracao = configuracaoRepository.getNamedQuery(ConfiguracaoMdfeDTO.class, "Mdfe.configuracao", empresa.getId());
         }
         if (configuracao == null) {
             throw new Exception("Configurações para o MDFe não definidas");

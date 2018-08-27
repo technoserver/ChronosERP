@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+>
+
+    <ui:define name="title">
+        MDF-e não Encerrados
+    </ui:define>
+
+    <ui:define name="tela">
+        MDF-e não Encerrados
+    </ui:define>
+    <ui:define name="controle">
+        MDF-e não Encerrados
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <p:commandButton icon="fa fa-search"
+                                     title="Consulta MDF-e não encerrados"
+                                     action="#{mdfeEnventosControll.localizarMdfeNaoEncerrados}"
+                                     update=":formCentro:mensagem,:formCentro:retorno"/>
+                </div>
+            </div>
+            <div class="row m-t">
+                <div class="col-md-12">
+                    <h:inputTextarea styleClass="form-control" id="retorno" rows="5"
+                                     value="#{mdfeEnventosControll.retorno}">
+
+                    </h:inputTextarea>
+                </div>
+            </div>
+
+        </div>
+        <div class="ibox-footer">
+
+
+        </div>
+    </ui:define>
+
+
+</ui:composition>
