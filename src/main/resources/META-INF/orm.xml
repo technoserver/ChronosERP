@@ -20,6 +20,24 @@
 
     </named-native-query>
 
+    <named-native-query name="Mdfe.configuracao" result-set-mapping="configuracaoMdfeMapping">
+        <query>
+            select
+            c.caminho,
+            c.senha,
+            m.caminho_logomarca,
+            m.caminho_schemas,
+            m.webservice_uf,
+            m.webservice_ambiente,
+            m.observacao_padrao,
+            m.rntrc
+            from certificado_configuracao c, mdfe_configuracao m
+            where c.id_empresa = ?1 and m.id_empresa = ?1
+        </query>
+
+    </named-native-query>
+
+
     <named-native-query name="Pdv.configuracao" result-set-mapping="configuracaoPdvMapping">
         <query>
             select
@@ -116,7 +134,20 @@
             <column name="caminho_schemas" class="java.lang.String"/>
             <column name="webservice_uf" class="java.lang.String"/>
             <column name="webservice_ambiente" class="java.lang.Integer"/>
-            <column name="observacao_padrao"/>
+            <column name="observacao_padrao" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="configuracaoMdfeMapping">
+        <constructor-result target-class="com.chronos.dto.ConfiguracaoMdfeDTO">
+            <column name="caminho" class="java.lang.String"/>
+            <column name="senha" class="java.lang.String"/>
+            <column name="caminho_logomarca" class="java.lang.String"/>
+            <column name="caminho_schemas" class="java.lang.String"/>
+            <column name="webservice_uf" class="java.lang.String"/>
+            <column name="webservice_ambiente" class="java.lang.Integer"/>
+            <column name="observacao_padrao" class="java.lang.String"/>
+            <column name="rntrc" class="java.lang.String"/>
         </constructor-result>
     </sql-result-set-mapping>
 
