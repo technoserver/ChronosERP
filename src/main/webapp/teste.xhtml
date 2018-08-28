@@ -9,19 +9,27 @@
     </h:head>
     <h:body>
         <h:form prependId="false">
-            <h:inputHidden id="xml" value="#{testeControll.xml}"/>
+
             <h:commandButton action="#{testeControll.enviarMensage}" value="teste"/>
             <p:remoteCommand name="setarValoresCEP" process="@this"
                              action="#{testeControll.setarValoresCEP}"/>
 
+            <p:remoteCommand name="testResultPrint" process="@this"
+                             action="#{testeControll.testResultPrint}"/>
+
             <h:panelGrid columns="2">
                 CEP:
                 <p:inputText value="#{testeControll.teste}" id="cep"/>
+                ID NFe:
+                <p:inputText value="#{testeControll.idnfe}" id="idnfe"/>
             </h:panelGrid>
 
             <p:commandButton value="Consultar" onclick="consultarCEP()" ajax="false"/>
             <p:commandButton value="Print NFCe" action="#{testeControll.imprimir}" oncomplete="imprimirNFCe();"
-                             update="xml"/>
+            />
+
+            <p:commandButton value="Envia NFCe" action="#{testeControll.enviarNFe}"
+                             oncomplete="enviarNFCe(args.nfe);"/>
         </h:form>
 
 

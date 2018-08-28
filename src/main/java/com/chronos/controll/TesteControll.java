@@ -1,11 +1,18 @@
 package com.chronos.controll;
 
+import br.inf.portalfiscal.nfe.schema_4.enviNFe.TEnviNFe;
+import com.chronos.bo.nfe.NfeTransmissao;
+import com.chronos.modelo.entidades.NfeCabecalho;
+import com.chronos.repository.Repository;
+import com.chronos.transmissor.util.XmlUtil;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.primefaces.context.RequestContext;
 
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Map;
@@ -19,6 +26,11 @@ public class TesteControll implements Serializable {
     private String teste;
 
     private String xml;
+
+    private int idnfe;
+
+    @Inject
+    private Repository<NfeCabecalho> nfeCabecalhoRepository;
 
     public void enviarMensage() {
         try {
@@ -62,6 +74,33 @@ public class TesteControll implements Serializable {
         System.out.println("endereco = " + endereco);
 
 
+    }
+
+    public void enviarNFe() throws Exception {
+
+        NfeCabecalho nfeCabecalho = nfeCabecalhoRepository.get(idnfe, NfeCabecalho.class);
+
+        TEnviNFe tEnviNFe = NfeTransmissao.getInstance().geraNFeEnv(nfeCabecalho);
+
+
+        tEnviNFe.getNFe().get(0).setSignature(null);
+
+
+        xml = XmlUtil.objectToXml(tEnviNFe);
+        RequestContext.getCurrentInstance().addCallbackParam("nfe", xml);
+    }
+
+    public void testResultPrint() {
+        Map<String, String> requestParamMap = FacesContext
+                .getCurrentInstance()
+                .getExternalContext()
+                .getRequestParameterMap();
+
+        String cep = requestParamMap.get("sucesso");
+        String estado = requestParamMap.get("mensagem");
+
+        System.out.println("cep = " + cep);
+        System.out.println("estado = " + estado);
     }
 
     public void imprimir() {
@@ -108,5 +147,13 @@ public class TesteControll implements Serializable {
 
     public void setXml(String xml) {
         this.xml = xml;
+    }
+
+    public int getIdnfe() {
+        return idnfe;
+    }
+
+    public void setIdnfe(int idnfe) {
+        this.idnfe = idnfe;
     }
 }

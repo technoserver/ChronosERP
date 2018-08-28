@@ -61,7 +61,21 @@ function imprimirNFCe() {
         method: "POST",
         data: JSON.stringify(obj),
         success: function (result) {
+            testResultPrint([{name: 'sucesso', value: result.Sucesso}, {name: "mensagem", value: result.Mensagem}]);
+        }
+    });
+}
 
+function enviarNFCe(xml) {
+    var obj = {xml: xml};
+    $.ajax({
+        url: "http://localhost:9002/monitor/Enviar",
+        contentType: "application/json",
+        dataType: "json",
+        method: "POST",
+        data: JSON.stringify(obj),
+        success: function (result) {
+            testResultPrint([{name: 'sucesso', value: result.Sucesso}, {name: "mensagem", value: result.Mensagem}]);
         }
     });
 }

@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        CEST
+    </ui:define>
+
+    <ui:define name="tela">
+        #{cestControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        CEST
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <div class="ibox-content">
+            <div class="row">
+                <div class="col-md-12">
+                    <p:commandButton action="#{estoqueAjusteControll.addProduto}"
+                                     update=":formCentro"
+                                     value="Adcionar"/>
+                </div>
+            </div>
+            <div class="row m-t">
+                <erp:campoTexto label="Codigo"
+                                idComponente="codigo"
+                                styleClass="col-xs-12 col-sm-3 col-md-3"
+                                tamanhoMaximo="14"
+                                nomeAtributo="#{estoqueAjusteControll.codigo}"/>
+
+                <erp:campoDecimal label="Quantidade"
+                                  idComponente="quantidade"
+                                  styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  nomeAtributo="#{estoqueAjusteControll.quantidade}"
+                />
+            </div>
+            <div class="row m-t">
+                <div class="col-md-12">
+                    <p:dataTable value="#{estoqueAjusteControll.produtos}" var="row" id="produtos"
+                                 emptyMessage="Nenhum produto adicionado"
+                                 reflow="true"
+                                 resizableColumns="true"
+                    >
+                        <p:column headerText="Produto">
+                            <h:outputLabel value="#{row.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="Quantidade" styleClass="text-center">
+                            <h:outputLabel value="#{row.quantidadeEstoque}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="ibox-footer">
+            <div class="row">
+                <div class="col-md-6 text-center">
+                    <p:commandButton action="#{estoqueAjusteControll.salvar}"
+                                     update=":formCentro:mensagem,:formCentro"
+                                     value="Salvar"/>
+                </div>
+                <div class="col-md-6 text-center">
+                    <h:commandButton value="Cancelar" class="btn btn-default"
+                                     id="btnCancelar"
+                                     action="privado/index?faces-redirect=true" immediate="true"/>
+                </div>
+            </div>
+        </div>
+
+
+    </ui:define>
+
+
+</ui:composition>

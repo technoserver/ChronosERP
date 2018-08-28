@@ -20,6 +20,10 @@
                         <!--<erp:subMenu caminho="/modulo/estoque/requisicaoInternaCabecalho"-->
                         <!--label="Requisição Interna"-->
                         <!--funcao="requisicaoInternaCabecalho"/>-->
+                        <erp:subMenu caminho="/modulo/estoque/ajuste"
+                                     label="Ajuste"
+                                     exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
+                                     funcao="ajuste"/>
                         <erp:subMenu caminho="/modulo/estoque/estoqueReajuste"
                                      label="Reajuste"
                                      exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
