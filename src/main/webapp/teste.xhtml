@@ -1,14 +1,38 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Facelet Title</title>
+
+        <h:outputScript library="js" name="util.js"/>
     </h:head>
     <h:body>
-        <h:form>
-            <h:commandButton action="#{testeControll.enviarMensage}"/>
+        <h:form prependId="false">
+
+            <h:commandButton action="#{testeControll.enviarMensage}" value="teste"/>
+            <p:remoteCommand name="setarValoresCEP" process="@this"
+                             action="#{testeControll.setarValoresCEP}"/>
+
+            <p:remoteCommand name="testResultPrint" process="@this"
+                             action="#{testeControll.testResultPrint}"/>
+
+            <h:panelGrid columns="2">
+                CEP:
+                <p:inputText value="#{testeControll.teste}" id="cep"/>
+                ID NFe:
+                <p:inputText value="#{testeControll.idnfe}" id="idnfe"/>
+            </h:panelGrid>
+
+            <p:commandButton value="Consultar" onclick="consultarCEP()" ajax="false"/>
+            <p:commandButton value="Print NFCe" action="#{testeControll.imprimir}" oncomplete="imprimirNFCe();"
+            />
+
+            <p:commandButton value="Envia NFCe" action="#{testeControll.enviarNFe}"
+                             oncomplete="enviarNFCe(args.nfe);"/>
         </h:form>
+
+
     </h:body>
 </html>
 
