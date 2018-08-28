@@ -407,13 +407,16 @@
             <version>5.3.0</version>
         </dependency>
 
-        <!-- OmniFaces (utilitarios para JSF) -->
         <dependency>
-            <groupId>org.omnifaces</groupId>
-            <artifactId>omnifaces</artifactId>
-            <version>2.5.1</version>
-            <scope>compile</scope>
+
+            <groupId>org.eclipse.persistence</groupId>
+
+            <artifactId>org.eclipse.persistence.moxy</artifactId>
+
+            <version>2.5.2</version>
+
         </dependency>
+
 
     </dependencies>
 

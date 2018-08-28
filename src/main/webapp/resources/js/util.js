@@ -50,3 +50,19 @@ function setarValores(result) {
     }]);
 }
 
+
+function imprimirNFCe() {
+    var xml = $('#xml').val();
+    var obj = {xml: xml};
+    $.ajax({
+        url: "http://localhost:9002/monitor/PrintNFCe",
+        contentType: "application/json",
+        dataType: "json",
+        method: "POST",
+        data: JSON.stringify(obj),
+        success: function (result) {
+
+        }
+    });
+}
+

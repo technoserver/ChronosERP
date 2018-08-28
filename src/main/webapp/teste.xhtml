@@ -9,6 +9,7 @@
     </h:head>
     <h:body>
         <h:form prependId="false">
+            <h:inputHidden id="xml" value="#{testeControll.xml}"/>
             <h:commandButton action="#{testeControll.enviarMensage}" value="teste"/>
             <p:remoteCommand name="setarValoresCEP" process="@this"
                              action="#{testeControll.setarValoresCEP}"/>
@@ -19,6 +20,8 @@
             </h:panelGrid>
 
             <p:commandButton value="Consultar" onclick="consultarCEP()" ajax="false"/>
+            <p:commandButton value="Print NFCe" action="#{testeControll.imprimir}" oncomplete="imprimirNFCe();"
+                             update="xml"/>
         </h:form>
 
 
