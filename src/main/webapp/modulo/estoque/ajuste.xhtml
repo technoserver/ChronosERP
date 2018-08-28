@@ -59,6 +59,17 @@
                                 <f:convertNumber pattern="#,###,##0.00"/>
                             </h:outputLabel>
                         </p:column>
+                        <p:column headerText="Ações" width="70" styleClass="text-center">
+                            <p:commandLink title="Excluir" action="#{estoqueAjusteControll.remover}"
+                                           styleClass="btn btn-default"
+                                           update="produtos"
+                                           process="produtos"
+                            >
+                                <i class="fa fa-times"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{estoqueAjusteControll.produtoSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
                     </p:dataTable>
                 </div>
 

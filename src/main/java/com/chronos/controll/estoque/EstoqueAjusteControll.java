@@ -120,4 +120,12 @@ public class EstoqueAjusteControll implements Serializable {
     public void setProdutos(List<EmpresaProduto> produtos) {
         this.produtos = produtos;
     }
+
+    public EmpresaProduto getProdutoSelecionado() {
+        return produtoSelecionado;
+    }
+
+    public void setProdutoSelecionado(EmpresaProduto produtoSelecionado) {
+        this.produtoSelecionado = produtoSelecionado;
+    }
 }
