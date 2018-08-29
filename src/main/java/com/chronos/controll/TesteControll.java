@@ -130,6 +130,7 @@ public class TesteControll implements Serializable {
 ////        marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
 //        marshaller.marshal(tNfeProc, sw);
 //        xml = sw.toString();
+        RequestContext.getCurrentInstance().addCallbackParam("xml", xml);
     }
 
     public String getTeste() {

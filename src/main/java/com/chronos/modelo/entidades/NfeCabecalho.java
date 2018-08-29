@@ -6,7 +6,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -63,7 +62,6 @@ public class NfeCabecalho implements Serializable {
     @Column(name = "DIGITO_CHAVE_ACESSO")
     private String digitoChaveAcesso;
     @Column(name = "AMBIENTE")
-    @NotNull
     private Integer ambiente;
     @Column(name = "FINALIDADE_EMISSAO")
     private Integer finalidadeEmissao;

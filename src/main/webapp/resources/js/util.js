@@ -51,8 +51,7 @@ function setarValores(result) {
 }
 
 
-function imprimirNFCe() {
-    var xml = $('#xml').val();
+function imprimirNFCe(xml) {
     var obj = {xml: xml};
     $.ajax({
         url: "http://localhost:9002/monitor/PrintNFCe",

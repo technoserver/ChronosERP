@@ -44,24 +44,38 @@
                                    nomeFuncao="Certificado configuracao"
                                    id="telaDetalhe"
         >
-
             <div class="row">
 
-                <erp:campoSenha styleClass="col-xs-12 col-sm-3 col-md-2"
-                                idComponente="senhaCertificado" label="Senha"
-                                nomeAtributo="#{certificadoConfiguracaoControll.objeto.senha}"
-                                requerido="true" tamanhoMaximo="100"/>
+                <div class="col-xs-12 col-sm-3 col-md-2">
+                    <h:outputLabel value="Tipo Certificado" for="tipo"/>
+                    <h:selectOneMenu id="tipo"
+                                     class="form-control"
+                                     value="#{certificadoConfiguracaoControll.objeto.tipo}"
+                    >
+                        <f:selectItems value="#{certificadoConfiguracaoControll.tipos}"/>
+                        <p:ajax process="@this" update="formCentro:telaDetalhe:panelCentroDetalhe" event="change"/>
+                    </h:selectOneMenu>
+                </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-6">
-                    <div class="input-group">
-                        <h:outputLabel value="Caminho Certificado :"
-                                       for="caminhoCertificado"/>
-                        <h:inputText
-                                value="#{certificadoConfiguracaoControll.objeto.caminho}"
-                                id="caminhoCertificado" class="form-control input-sm"
-                                maxlength="255" readonly="true"/>
+            </div>
+            <h:panelGroup id="dados-a1" layout="block"
+                          rendered="#{certificadoConfiguracaoControll.objeto.tipo eq 'A1'}">
+                <div class="row">
+                    <erp:campoSenha styleClass="col-xs-12 col-sm-3 col-md-2"
+                                    idComponente="senhaCertificado" label="Senha"
+                                    nomeAtributo="#{certificadoConfiguracaoControll.objeto.senha}"
+                                    requerido="true" tamanhoMaximo="100"/>
 
-                        <span class="input-group-btn">
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="input-group">
+                            <h:outputLabel value="Caminho Certificado :"
+                                           for="caminhoCertificado"/>
+                            <h:inputText
+                                    value="#{certificadoConfiguracaoControll.objeto.caminho}"
+                                    id="caminhoCertificado" class="form-control input-sm"
+                                    maxlength="255" readonly="true"/>
+
+                            <span class="input-group-btn">
                             <h:commandLink title="Pesquisa"
                                            id="btnPesquisarCertificado"
                                            class="btn btn-default"
@@ -73,11 +87,11 @@
                                     <i class="fa fa-search"></i>
                                 </h:commandLink>
                         </span>
+                        </div>
                     </div>
                 </div>
 
-
-            </div>
+            </h:panelGroup>
 
         </erp:telaInclusaoAlteracao>
     </ui:define>
