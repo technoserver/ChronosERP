@@ -179,6 +179,7 @@
                     <h:commandLink title="Novo"
                                    id="btnNovoProduto"
                                    class="btn btn-default margem-bottom-10"
+                                   rendered="#{not entradaNotaFiscalControll.importado}"
                                    action="#{entradaNotaFiscalControll.incluiProduto()}"
                                    type="button">
                         <i class="glyphicon glyphicon-plus"/>
@@ -220,9 +221,9 @@
                         <f:convertNumber pattern="#,###,##0.00" />
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Ações" width="170" rendered="#{empty entradaNotaFiscalControll.objeto.id}"
+                <p:column headerText="Ações" width="110" rendered="#{empty entradaNotaFiscalControll.objeto.id}"
                           styleClass="text-center">
-                    <p:commandLink process="dataTableNfeDetalhe" title="Alterar"
+                    <p:commandLink process="dataTableNfeDetalhe" title="Alterar" style="margin-right: 5px"
                                    id="btnAlterarProduto"
                                    oncomplete="PF('dialogNfeDetalhe').show()" styleClass="btn btn-default"
                                    action="#{entradaNotaFiscalControll.alteraProduto}"
@@ -231,19 +232,20 @@
                         <i class="fa fa-file-text-o"></i>
                         <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
                     </p:commandLink>
-                    &nbsp;
+
                     <p:commandLink process="dataTableNfeDetalhe" title="Excluir" styleClass="btn btn-default"
-                                   id="btnExcluirProduto"
+                                   id="btnExcluirProduto" style="margin-right: 5px"
                                    action="#{entradaNotaFiscalControll.excluirProduto}"
+                                   rendered="#{not entradaNotaFiscalControll.importado}"
                                    update="dataTableNfeDetalhe,formCentro:tabNfe:outputPanelTotais">
                         <i class="fa fa-close"/>
                         <p:confirm header="Confirmação" message="Confirma Exclusão?"
                                    icon="ui-icon-alert" />
                         <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
                     </p:commandLink>
-                    &nbsp;
+
                     <p:commandLink process="dataTableNfeDetalhe" title="Vincular Produto"
-                                   id="btnVincularProduto"
+                                   id="btnVincularProduto" style="margin-right: 5px"
                                    oncomplete="PF('dialogVincularProduto').show()" styleClass="btn btn-default"
                                    action="#{entradaNotaFiscalControll.exibirVinculoProduto()}"
                                    update=":formOutrasTelas5:panelVincularProduto"
@@ -251,9 +253,9 @@
                         <i class="glyphicon glyphicon-check"></i>
                         <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
                     </p:commandLink>
-                    &nbsp;
+
                     <p:commandLink process="dataTableNfeDetalhe" title="Cadastrar Produto"
-                                   id="btnCadastraProduto"
+                                   id="btnCadastraProduto" style="margin-right: 5px"
                                    oncomplete="PF('dialogCadastrarProduto').show()" styleClass="btn btn-default"
                                    action="#{entradaNotaFiscalControll.cadastrarProduto()}"
                                    update=":formOutrasTelas3:panelCadastrarProduto"
@@ -275,7 +277,7 @@
                                    type="button">
                         <i class="glyphicon glyphicon-plus"/>
                         <p:ajax update=":formCentro:growl,:formOutrasTelas1:panelDuplicatas,:formOutrasTelas1:panelDuplicatas"
-                                process="@this,formCentro:tabNfe:naturezaFinanceira:componenteNaturezaFinanceira,:formCentro:tabNfe:componeteNfeCabecalhoNumero:componeteNfeCabecalhoNumero,:formCentro:tabNfe:componeteNfeCabecalhoValorTotal:nfeCabecalhoValorTotal"/>
+                                process="@this,formCentro:tabNfe:naturezaFinanceira:componenteNaturezaFinanceira,:formCentro:tabNfe:contaCaixa:entradaContaCaixa,:formCentro:tabNfe:componeteNfeCabecalhoNumero:componeteNfeCabecalhoNumero,:formCentro:tabNfe:componeteNfeCabecalhoValorTotal:nfeCabecalhoValorTotal"/>
                     </h:commandLink>
                 </div>
             </div>
@@ -288,6 +290,7 @@
                                   completeMethod="getListaNaturezaFinanceira"
                                   nomeAtributo="#{entradaNotaFiscalControll.naturezaFinanceira}"
                                   idComponente="componenteNaturezaFinanceira"
+                                  requerido="#{entradaNotaFiscalControll.naturezaFinaxeiraRequirida}"
                                   />
                 <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                   label="Conta caixa"
@@ -296,6 +299,7 @@
                                   controller="#{entradaNotaFiscalControll}"
                                   completeMethod="getListaContaCaixa"
                                   nomeAtributo="#{entradaNotaFiscalControll.contaCaixa}"
+                                  requerido="#{entradaNotaFiscalControll.naturezaFinaxeiraRequirida}"
                                   idComponente="entradaContaCaixa"
                 />
             </div>

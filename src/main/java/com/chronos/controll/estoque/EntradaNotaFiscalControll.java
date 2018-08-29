@@ -109,6 +109,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private NaturezaFinanceira naturezaFinanceira;
     private ContaCaixa contaCaixa;
 
+    private boolean importado;
 
     @Override
     public ERPLazyDataModel<NfeCabecalho> getDataModel() {
@@ -290,6 +291,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 }
                 verificaProdutoNaoCadastrado(true);
                 getObjeto().setDataHoraEntradaSaida(new Date());
+                importado = true;
                 Mensagem.addInfoMessage("XML importados com sucesso!");
             }
         } catch (Exception ex) {
@@ -426,6 +428,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
                 Mensagem.addInfoMessage("Produto salvo!");
             }
+            nfeDetalhe.setNomeProduto(nfeDetalhe.getProduto().getNome());
             gerarValores(nfeDetalhe);
             nfeDetalhe.calcularValorTotalProduto();
             calcularTotais();
@@ -478,6 +481,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
             FornecedorProduto forProd = produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
             nfeDetalhe.setProduto(forProd.getProduto());
+            nfeDetalhe.setNomeProduto(forProd.getProduto().getNome());
             nfeDetalhe.setProdutoCadastrado(true);
             Mensagem.addInfoMessage("Produto cadastro e vinculado com sucesso");
         } catch (Exception ex) {
@@ -996,5 +1000,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setContaCaixa(ContaCaixa contaCaixa) {
         this.contaCaixa = contaCaixa;
+    }
+
+    public boolean isNaturezaFinaxeiraRequirida() {
+        return !getObjeto().getListaDuplicata().isEmpty();
+    }
+
+    public boolean isImportado() {
+        return importado;
     }
 }
