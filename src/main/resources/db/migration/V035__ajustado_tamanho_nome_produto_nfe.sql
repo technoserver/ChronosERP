@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS view_sped_c190;
 DROP VIEW IF EXISTS view_sped_nfe_detalhe;
 
 ALTER TABLE nfe_detalhe
@@ -110,3 +111,23 @@ CREATE OR REPLACE VIEW view_sped_nfe_detalhe AS
     LEFT JOIN nfe_detalhe_imposto_pis pis ON pis.id_nfe_detalhe = nfed.id
     LEFT JOIN produto p ON nfed.id_produto = p.id
     LEFT JOIN nfe_cabecalho nfec ON nfed.id_nfe_cabecalho = nfec.id;
+
+
+CREATE OR REPLACE VIEW view_sped_c190 AS
+  SELECT
+    nfec.id,
+    COALESCE(nfed.cst_icms, nfed.csosn)               AS cst_icms,
+    nfed.cfop,
+    COALESCE(nfed.aliquota_icms, 0)                   AS aliquota_icms,
+    nfec.data_hora_emissao                            AS data_emissao,
+    COALESCE(sum(nfed.valor_total), 0)                AS soma_valor_operacao,
+    COALESCE(sum(nfed.base_calculo_icms), 0)          AS soma_base_calculo_icms,
+    COALESCE(sum(nfed.valor_icms), 0)                 AS soma_valor_icms,
+    COALESCE(sum(nfed.valor_base_calculo_icms_st), 0) AS soma_base_calculo_icms_st,
+    COALESCE(sum(nfed.valor_icms_st), 0)              AS soma_valor_icms_st,
+    COALESCE(sum(nfed.valor_outras_despesas), 0)      AS soma_vl_red_bc,
+    COALESCE(sum(nfed.valor_ipi), 0)                  AS soma_valor_ipi
+  FROM view_sped_nfe_detalhe nfed
+    JOIN nfe_cabecalho nfec ON nfed.id_nfe_cabecalho = nfec.id
+  WHERE nfed.servico <> 'S'
+  GROUP BY nfec.id, nfed.cst_icms, nfed.csosn, nfed.cfop, nfed.aliquota_icms, nfec.data_hora_emissao;
