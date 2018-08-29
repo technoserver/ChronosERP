@@ -25,7 +25,7 @@
             </h:panelGrid>
 
             <p:commandButton value="Consultar" onclick="consultarCEP()" ajax="false"/>
-            <p:commandButton value="Print NFCe" action="#{testeControll.imprimir}" oncomplete="imprimirNFCe();"
+            <p:commandButton value="Print NFCe" action="#{testeControll.imprimir}" oncomplete="imprimirNFCe(args.xml);"
             />
 
             <p:commandButton value="Envia NFCe" action="#{testeControll.enviarNFe}"
