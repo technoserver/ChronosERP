@@ -93,6 +93,19 @@
                     <p:password id="pwd2" value="#{usuarioConttroll.senha}" required="true"
                                 rendered="#{empty usuarioConttroll.objeto.id}"/>
                 </div>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <p:outputLabel for="empresas" value="Empresas Permitida"/>
+                    <p:selectManyMenu id="empresas" value="#{usuarioConttroll.empresas}" converter="defaultConverter"
+                                      var="row" showCheckbox="true">
+
+                        <f:selectItems value="#{usuarioConttroll.empresasSelecionada}" var="obj"
+                                       itemLabel="#{obj.razaoSocial}" itemValue="#{obj}"/>
+
+                        <p:column>
+                            <h:outputText value="#{row.razaoSocial}"/>
+                        </p:column>
+                    </p:selectManyMenu>
+                </div>
 
             </div>
 

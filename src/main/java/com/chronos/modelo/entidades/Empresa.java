@@ -103,6 +103,7 @@ public class Empresa implements Serializable {
         this.razaoSocial = razaoSocial;
     }
 
+
     @PrePersist
     @PreUpdate
     private void prePersist() {
