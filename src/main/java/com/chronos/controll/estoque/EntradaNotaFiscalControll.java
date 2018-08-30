@@ -109,6 +109,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private NaturezaFinanceira naturezaFinanceira;
     private ContaCaixa contaCaixa;
 
+    private List<NfeDuplicata> duplicatas;
+
     private boolean importado;
 
     @Override
@@ -143,6 +145,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         valorTotalCofins = BigDecimal.ZERO;
         valorTotalIpi = BigDecimal.ZERO;
         valorTotalNF = BigDecimal.ZERO;
+        duplicatas = new ArrayList<>();
     }
 
     @Override
@@ -150,7 +153,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         super.doEdit();
         NfeCabecalho nfe = dataModel.getRowData(getObjeto().getId().toString());
         setObjeto(nfe);
-
+        duplicatas = getObjeto().getDuplicatas();
     }
 
 
@@ -158,6 +161,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void salvar() {
         try {
 
+            getObjeto().setListaDuplicata(new HashSet<>(duplicatas));
             entradaService.salvar(getObjeto(), contaCaixa, naturezaFinanceira);
 
             setTelaGrid(true);
@@ -292,6 +296,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 verificaProdutoNaoCadastrado(true);
                 getObjeto().setDataHoraEntradaSaida(new Date());
                 importado = true;
+                duplicatas = getObjeto().getDuplicatas();
                 Mensagem.addInfoMessage("XML importados com sucesso!");
             }
         } catch (Exception ex) {
@@ -554,24 +559,24 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void salvarDuplicata() {
         try {
             if (condicao != null) {
-                getObjeto().getListaDuplicata().clear();
+                duplicatas.clear();
                 gerarDuplicatas();
             } else {
                 BigDecimal valorTotalDuplicata = BigDecimal.ZERO;
-                for (NfeDuplicata d : getObjeto().getListaDuplicata()) {
+                for (NfeDuplicata d : duplicatas) {
                     valorTotalDuplicata = Biblioteca.soma(valorTotalDuplicata, d.getValor());
                 }
                 valorTotalDuplicata = Biblioteca.soma(valorTotalDuplicata, duplicata.getValor());
                 if (valorTotalDuplicata.compareTo(getObjeto().getValorTotal()) > 0) {
                     Mensagem.addInfoMessage("Valor acima do valor total da nota");
-                } else if (!getObjeto().getListaDuplicata().contains(duplicata)) {
+                } else if (!duplicatas.contains(duplicata)) {
                     Mensagem.addInfoMessage("Registro alterado!");
-                    getObjeto().getListaDuplicata().add(duplicata);
+                    duplicatas.add(duplicata);
                 } else {
-                    getObjeto().getListaDuplicata().add(duplicata);
+                    duplicatas.add(duplicata);
                     int i = 0;
 
-                    for (NfeDuplicata d : getObjeto().getListaDuplicata()) {
+                    for (NfeDuplicata d : duplicatas) {
                         i++;
                         d.setNumero(getObjeto().getNumero() + "/" + i);
                     }
@@ -610,6 +615,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         }
 
+    }
+
+    public void removerDuplicata() {
+        duplicatas.remove(duplicataSelecionada);
     }
 
     // </editor-fold>
@@ -1008,5 +1017,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public boolean isImportado() {
         return importado;
+    }
+
+    public List<NfeDuplicata> getDuplicatas() {
+        return duplicatas;
+    }
+
+    public void setDuplicatas(List<NfeDuplicata> duplicatas) {
+        this.duplicatas = duplicatas;
     }
 }

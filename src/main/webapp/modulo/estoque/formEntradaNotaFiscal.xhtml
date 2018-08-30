@@ -305,15 +305,16 @@
             </div>
 
             <p:dataTable id="dataTableDuplicata" var="obj"
-                         value="#{entradaNotaFiscalControll.objeto.listaDuplicata}"
+                         value="#{entradaNotaFiscalControll.duplicatas}"
                          paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
-                         paginatorPosition="bottom"  reflow="true" resizableColumns="true"
-                         emptyMessage="Nenhuma produto cadastrado">
+                         paginatorPosition="bottom" reflow="true" resizableColumns="true"
+                         sortBy="#{obj.dataVencimento}" sortOrder="ascending"
+                         emptyMessage="Nenhuma duplicata cadastrada">
 
-                <p:column headerText="Produto">
+                <p:column headerText="Numero">
                     <h:outputLabel value="#{obj.numero}" />
                 </p:column>
-                <p:column headerText="Data Vencimento">
+                <p:column headerText="Data Vencimento" sortBy="#{obj.dataVencimento}">
                     <h:outputLabel value="#{obj.dataVencimento}">
                         <f:convertDateTime pattern="dd/MM/yyyy" />
                     </h:outputLabel>
@@ -326,12 +327,11 @@
                 <p:column headerText="Ações" rendered="#{empty entradaNotaFiscalControll.objeto.id}">
                     <p:commandLink process="dataTableDuplicata" title="Excluir" styleClass="btn btn-default"
                                    id="btnExcluirDuplicata"
-                                   action="#{entradaNotaFiscalControll.excluirProduto}"
+                                   action="#{entradaNotaFiscalControll.removerDuplicata}"
                                    update="dataTableDuplicata,formCentro:tabNfe:outputPanelTotais">
                         <i class="fa fa-close"/>
-                        <p:confirm header="Confirmação" message="Confirma Exclusão?"
-                                   icon="ui-icon-alert" />
-                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{entradaNotaFiscalControll.duplicataSelecionada}"/>
                     </p:commandLink>
                 </p:column>
             </p:dataTable>

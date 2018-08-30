@@ -19,7 +19,7 @@ import java.util.*;
 public class NfeCabecalho implements Serializable {
 
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -2118,6 +2118,10 @@ public class NfeCabecalho implements Serializable {
 
     public boolean isTemProduto() {
         return getListaNfeDetalhe().isEmpty();
+    }
+
+    public List<NfeDuplicata> getDuplicatas() {
+        return new ArrayList<>(Optional.ofNullable(getListaDuplicata()).orElse(new HashSet<>()));
     }
 
     @Override
