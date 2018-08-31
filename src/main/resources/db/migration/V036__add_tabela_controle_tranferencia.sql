@@ -28,5 +28,6 @@ create table estoque_transferencia_detalhe (
   valor_custo                        decimal(18, 6),
   valor_total                        decimal(18, 6),
   PRIMARY KEY (id),
-  foreign key (id_estoque_transferencia_cabecalho) references estoque_transferencia_cabecalho (id)
+  foreign key (id_estoque_transferencia_cabecalho) references estoque_transferencia_cabecalho (id),
+  foreign key (id_produto) references produto (id)
 );
