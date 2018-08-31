@@ -4,18 +4,19 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
+import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.estoque.TransferenciaService;
+import com.chronos.util.Biblioteca;
+import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Named
@@ -28,14 +29,18 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
     private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
     @Inject
     private Repository<TributGrupoTributario> grupoTributarioRepository;
+    @Inject
+    private ProdutoService produtoService;
 
     @Inject
     private TransferenciaService service;
     private List<Empresa> empresas;
     private List<TributOperacaoFiscal> operacoesFiscais;
+
     private Map<String, Integer> listaEmpresas;
     private int idempresaDestino;
 
+    private EstoqueTransferenciaDetalhe itemSelecionado;
     private Produto produto;
     private BigDecimal quantidade;
 
@@ -64,22 +69,62 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
     }
 
 
+    @Transactional
+    @Override
+    public void salvar() {
+        try {
+            getObjeto().setEmpresaDestino(new Empresa(idempresaDestino));
+            service.salvar(getObjeto());
+            Mensagem.addInfoMessage("Transferencia finalizada");
+            setTelaGrid(true);
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao salvar a transferencia", ex);
+            }
+        }
+    }
+
     public void addItem() {
-        produto = new Produto();
-        quantidade = BigDecimal.ZERO;
+
+        if (getObjeto().getTributOperacaoFiscal() == null) {
+            FacesContext.getCurrentInstance().validationFailed();
+
+            Mensagem.addErrorMessage("É preciso informar a Operação fiscal");
+        } else {
+            produto = new Produto();
+            quantidade = BigDecimal.ONE;
+        }
     }
 
     public void salvarItem() {
-        getObjeto().getListEstoqueTransferenciaDetalhe().stream()
+        Optional<EstoqueTransferenciaDetalhe> detalheOptional = getObjeto().getListEstoqueTransferenciaDetalhe().stream()
                 .filter(i -> i.getProduto().equals(produto))
                 .findAny();
+        if (detalheOptional.isPresent()) {
+            Mensagem.addErrorMessage("produto já adicionado");
+        } else {
+            EstoqueTransferenciaDetalhe item = new EstoqueTransferenciaDetalhe();
+            item.setEstoqueTransferenciaCabecalho(getObjeto());
+            item.setProduto(produto);
+            item.setQuantidade(quantidade);
+            item.setValorCusto(produto.getCustoUnitario());
+            item.setValorTotal(Biblioteca.multiplica(quantidade, item.getValorCusto()));
+            item.setUnidade(produto.getUnidadeProduto().getSigla());
+            getObjeto().getListEstoqueTransferenciaDetalhe().add(item);
+        }
+    }
+
+    public void removerItem() {
+        getObjeto().getListEstoqueTransferenciaDetalhe().remove(itemSelecionado);
     }
 
     public List<TributOperacaoFiscal> getListaTributOperacaoFiscal(String descricao) {
         List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
 
         try {
-            listaTributOperacaoFiscal = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
+            listaTributOperacaoFiscal = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao", "descricaoNaNf", "estoque", "estoqueVerificado", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -94,6 +139,18 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
 
         }
         return grupos;
+    }
+
+    public List<Produto> getListaProduto(String filtro) {
+        List<Produto> produtos = new ArrayList<>();
+
+        try {
+            produtos = produtoService.getProdutosTransferencia(empresa.getId(), idempresaDestino, filtro);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return produtos;
     }
 
 
@@ -138,5 +195,13 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
 
     public void setQuantidade(BigDecimal quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public EstoqueTransferenciaDetalhe getItemSelecionado() {
+        return itemSelecionado;
+    }
+
+    public void setItemSelecionado(EstoqueTransferenciaDetalhe itemSelecionado) {
+        this.itemSelecionado = itemSelecionado;
     }
 }

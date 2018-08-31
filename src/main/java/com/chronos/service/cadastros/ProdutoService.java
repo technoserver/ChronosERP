@@ -2,9 +2,12 @@ package com.chronos.service.cadastros;
 
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.Empresa;
+import com.chronos.modelo.entidades.EstoqueTransferenciaCabecalho;
+import com.chronos.modelo.entidades.EstoqueTransferenciaDetalhe;
 import com.chronos.modelo.entidades.Produto;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
+import com.chronos.util.jpa.Transactional;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -55,5 +58,37 @@ public class ProdutoService implements Serializable {
         }
         listaProduto = repository.getProdutoDTO(descricao, empresa);
         return listaProduto;
+    }
+
+    public List<Produto> getProdutosTransferencia(Integer idempresaOrigem, int idempresaDestino, String filtro) {
+        List<Produto> produtos;
+        List<ProdutoDTO> list;
+        String str = "0" + filtro.replaceAll("\\D", "");
+        int codigo = str.length() > 9 ? 0 : Integer.valueOf(str);
+        if (codigo > 0) {
+            list = repository.getProdutosTransferencia(idempresaOrigem, idempresaDestino, codigo);
+
+        } else {
+            filtro = filtro.trim().toLowerCase();
+            filtro = filtro.length() == 13 || filtro.length() == 14 ? filtro : "%" + filtro + "%";
+            list = repository.getProdutosTransferencia(idempresaOrigem, idempresaDestino, filtro);
+        }
+        produtos = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
+        return produtos;
+    }
+
+    @Transactional
+    public void transferenciaEstoque(EstoqueTransferenciaCabecalho transferencia, List<EstoqueTransferenciaDetalhe> itens) throws Exception {
+
+        for (EstoqueTransferenciaDetalhe item : itens) {
+            if (transferencia.getTributOperacaoFiscal().getEstoqueVerificado() && transferencia.getTributOperacaoFiscal().getEstoque()) {
+                repository.atualizaEstoqueEmpresaControleFiscal(transferencia.getEmpresaOrigem().getId(), item.getProduto().getId(), item.getQuantidade().negate());
+            } else if (transferencia.getTributOperacaoFiscal().getEstoque()) {
+                repository.atualizaEstoqueEmpresa(transferencia.getEmpresaOrigem().getId(), item.getProduto().getId(), item.getQuantidade().negate());
+            } else if (transferencia.getTributOperacaoFiscal().getEstoqueVerificado()) {
+                repository.atualizaEstoqueEmpresaControle(transferencia.getEmpresaOrigem().getId(), item.getProduto().getId(), item.getQuantidade().negate());
+            }
+        }
+
     }
 }
