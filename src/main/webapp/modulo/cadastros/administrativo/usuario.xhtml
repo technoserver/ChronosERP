@@ -93,21 +93,20 @@
                     <p:password id="pwd2" value="#{usuarioConttroll.senha}" required="true"
                                 rendered="#{empty usuarioConttroll.objeto.id}"/>
                 </div>
-                <div class="col-xs-12 col-sm-3 col-md-3">
-                    <p:outputLabel for="empresas" value="Empresas Permitida"/>
-                    <p:selectManyMenu id="empresas" value="#{usuarioConttroll.empresas}" converter="defaultConverter"
-                                      var="row" showCheckbox="true">
-
-                        <f:selectItems value="#{usuarioConttroll.empresasSelecionada}" var="obj"
-                                       itemLabel="#{obj.razaoSocial}" itemValue="#{obj}"/>
-
-                        <p:column>
-                            <h:outputText value="#{row.razaoSocial}"/>
-                        </p:column>
-                    </p:selectManyMenu>
-                </div>
 
             </div>
+            <h:panelGroup layout="block" styleClass="m-t">
+                <erp:separador label="Selecione as empresas nos quais o usuário terá acesso"/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p:selectManyCheckbox id="empresas" value="#{usuarioConttroll.empresasSelecionada}"
+                                              layout="responsive" columns="3">
+                            <f:selectItems value="#{usuarioConttroll.empresas}" var="obj"
+                                           itemLabel="#{obj.razaoSocial}" itemValue="#{obj}"/>
+                        </p:selectManyCheckbox>
+                    </div>
+                </div>
+            </h:panelGroup>
 
 
         </erp:telaInclusaoAlteracao>

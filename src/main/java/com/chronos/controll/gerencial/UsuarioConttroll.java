@@ -3,10 +3,7 @@ package com.chronos.controll.gerencial;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.UsuarioDTO;
-import com.chronos.modelo.entidades.Colaborador;
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.Papel;
-import com.chronos.modelo.entidades.Usuario;
+import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.tenant.Tenant;
 import com.chronos.modelo.tenant.UsuarioTenant;
 import com.chronos.repository.Filtro;
@@ -44,7 +41,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     private List<Empresa> empresas;
     private List<Empresa> empresasSelecionada;
 
-
+    private List<EmpresaPessoa> listEmpresaPessoa;
 
     private String senha;
 
@@ -64,10 +61,16 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     public void doCreate() {
         super.doCreate();
         getObjeto().setDataCadastro(new Date());
+        empresas = getListEmpresas();
 
     }
 
+    @Override
+    public void doEdit() {
+        super.doEdit();
 
+        empresas = getListEmpresas();
+    }
 
     @Override
     public void salvar() {
@@ -193,7 +196,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     }
 
     public List<Empresa> getEmpresas() {
-        return empresas == null || empresas.isEmpty() ? getListEmpresas() : empresas;
+        return empresas;
     }
 
 
