@@ -1,14 +1,16 @@
 package com.chronos.service.estoque;
 
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.EstoqueTransferenciaCabecalho;
-import com.chronos.modelo.entidades.EstoqueTransferenciaDetalhe;
-import com.chronos.modelo.entidades.TributOperacaoFiscal;
+import com.chronos.bo.nfe.TransferenciaToNfe;
+import com.chronos.dto.ConfiguracaoEmissorDTO;
+import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.EmpresaService;
 import com.chronos.service.cadastros.ProdutoService;
+import com.chronos.service.comercial.NfeService;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -25,7 +27,11 @@ public class TransferenciaService implements Serializable {
     @Inject
     private Repository<EstoqueTransferenciaCabecalho> repository;
     @Inject
+    private Repository<Empresa> empresaRepository;
+    @Inject
     private EntradaNotaFiscalService entradaService;
+    @Inject
+    private NfeService nfeService;
 
 
     @Inject
@@ -60,6 +66,21 @@ public class TransferenciaService implements Serializable {
                 .orElse(BigDecimal.ZERO);
         objeto.setValorTotal(total);
         if (objeto.getTributOperacaoFiscal().getObrigacaoFiscal()) {
+            Empresa empresaDestino = empresaRepository.get(objeto.getEmpresaDestino().getId(), Empresa.class);
+            objeto.setEmpresaDestino(empresaDestino);
+            TransferenciaToNfe transferenciaToNfe = new TransferenciaToNfe(objeto);
+
+            NfeCabecalho nfe = transferenciaToNfe.gerarNFe();
+            ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
+            nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
+            StatusTransmissao status = nfeService.transmitirNFe(nfe, true);
+
+            if (status == StatusTransmissao.AUTORIZADA) {
+
+                repository.atualizar(objeto);
+
+                Mensagem.addInfoMessage("NFe transmitida com sucesso");
+            }
 
         } else {
             produtoService.transferenciaEstoque(objeto, objeto.getListEstoqueTransferenciaDetalhe());

@@ -6,6 +6,7 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.estoque.TransferenciaService;
+import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
@@ -79,6 +80,8 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
             setTelaGrid(true);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else if (ex instanceof EmissorException) {
                 Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("Erro ao salvar a transferencia", ex);

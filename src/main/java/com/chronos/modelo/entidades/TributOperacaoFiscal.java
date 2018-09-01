@@ -83,6 +83,15 @@ public class TributOperacaoFiscal implements Serializable {
         this.descricao = descricao;
     }
 
+    public TributOperacaoFiscal(Integer id, Integer cfop, String descricao, String descricaoNaNf) {
+        this.id = id;
+        this.cfop = cfop;
+        this.descricao = descricao;
+        this.descricaoNaNf = descricaoNaNf;
+
+    }
+
+
     public TributOperacaoFiscal(String descricao, String descricaoNaNf, Boolean estoque, Boolean estoqueVerificado) {
         this.descricao = descricao;
         this.descricaoNaNf = descricaoNaNf;

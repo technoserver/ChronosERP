@@ -3,6 +3,7 @@ package com.chronos.bo.nfe;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.TipoVenda;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.transmissor.infra.enuns.ConsumidorOperacao;
 import com.chronos.transmissor.infra.enuns.IndicadorIe;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
@@ -210,7 +211,7 @@ public class VendaToNFe extends ManualCDILookup {
         NfeUtil nfeUtil = new NfeUtil();
         for (ItemVendaDTO item : itens) {
             if (item.getProduto().getNcm() == null) {
-                throw new Exception("Não existe NCM para o produto :" + item.getProduto().getDescricaoPdv() + " informado. Operação não realizada.");
+                throw new ChronosException("Não existe NCM para o produto :" + item.getProduto().getDescricaoPdv() + " informado. Operação não realizada.");
             }
             NfeDetalhe itemNfe = new NfeDetalhe();
             itemNfe.setNfeCabecalho(nfe);
