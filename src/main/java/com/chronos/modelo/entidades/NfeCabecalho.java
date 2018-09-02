@@ -264,6 +264,9 @@ public class NfeCabecalho implements Serializable {
     private OsAbertura os;
     @Transient
     private PdvVendaCabecalho pdv;
+    @Transient
+    private EstoqueTransferenciaCabecalho transferencia;
+
 
     public NfeCabecalho() {
 
@@ -377,9 +380,9 @@ public class NfeCabecalho implements Serializable {
     }
 
 
-    public NfeCabecalho(Integer id, String cliente, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo) {
+    public NfeCabecalho(Integer id, String destinatario, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo) {
         this.id = id;
-        this.cliente = new Cliente(0, cliente);
+        this.destinatario = new NfeDestinatario(destinatario);
         this.serie = serie;
         this.numero = numero;
         this.dataHoraEmissao = dataHoraEmissao;
@@ -389,6 +392,7 @@ public class NfeCabecalho implements Serializable {
         this.statusNota = statusNota;
         this.codigoModelo = codigoModelo;
     }
+
 
     public NfeCabecalho(Integer id, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo, String qrcode) {
         this.id = id;
@@ -2001,6 +2005,14 @@ public class NfeCabecalho implements Serializable {
 
     public void setPdv(PdvVendaCabecalho pdv) {
         this.pdv = pdv;
+    }
+
+    public EstoqueTransferenciaCabecalho getTransferencia() {
+        return transferencia;
+    }
+
+    public void setTransferencia(EstoqueTransferenciaCabecalho transferencia) {
+        this.transferencia = transferencia;
     }
 
     /**

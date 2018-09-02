@@ -32,6 +32,9 @@
                                      label="Entrada"
                                      exibir="#{seguranca.isTemAcesso('NFE_ENTRADA')}"
                                      funcao="entradaNotaFiscal"/>
+                        <erp:subMenu caminho="/modulo/estoque/transferencia"
+                                     label="Transferências"
+                                     funcao="transferencia"/>
                     </li>
                     <li class="${fn:contains(view.viewId,'modulo/estoque/relatorios/')?'active':''}">
                         <a href="#">Relatorios <span class="fa arrow"></span></a>

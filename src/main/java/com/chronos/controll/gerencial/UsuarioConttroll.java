@@ -3,9 +3,7 @@ package com.chronos.controll.gerencial;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.UsuarioDTO;
-import com.chronos.modelo.entidades.Colaborador;
-import com.chronos.modelo.entidades.Papel;
-import com.chronos.modelo.entidades.Usuario;
+import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.tenant.Tenant;
 import com.chronos.modelo.tenant.UsuarioTenant;
 import com.chronos.repository.Filtro;
@@ -37,6 +35,13 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     private Repository<Colaborador> colaboradores;
     @Inject
     private TenantRepository tenantRepository;
+    @Inject
+    private Repository<Empresa> empresaRepository;
+
+    private List<Empresa> empresas;
+    private List<Empresa> empresasSelecionada;
+
+    private List<EmpresaPessoa> listEmpresaPessoa;
 
     private String senha;
 
@@ -56,10 +61,16 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     public void doCreate() {
         super.doCreate();
         getObjeto().setDataCadastro(new Date());
+        empresas = getListEmpresas();
 
     }
 
+    @Override
+    public void doEdit() {
+        super.doEdit();
 
+        empresas = getListEmpresas();
+    }
 
     @Override
     public void salvar() {
@@ -137,13 +148,23 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
             filtros.add(new Filtro("pessoa.id", Filtro.DIFERENTE, 1));
-            filtros.add(new Filtro("pessoa.id", Filtro.DIFERENTE, 2));
             filtros.add(new Filtro("pessoa.colaborador", "S"));
             list = colaboradores.getEntitys(Colaborador.class, filtros, new Object[]{"pessoa.id", "pessoa.nome"});
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return list;
+    }
+
+    public List<Empresa> getListEmpresas() {
+        try {
+
+            empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
+
+        } catch (Exception ex) {
+
+        }
+        return empresas;
     }
 
     public boolean getPodeAlterarSenha() {
@@ -172,5 +193,18 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public List<Empresa> getEmpresas() {
+        return empresas;
+    }
+
+
+    public List<Empresa> getEmpresasSelecionada() {
+        return empresasSelecionada;
+    }
+
+    public void setEmpresasSelecionada(List<Empresa> empresasSelecionada) {
+        this.empresasSelecionada = empresasSelecionada;
     }
 }

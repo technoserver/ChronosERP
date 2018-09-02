@@ -58,6 +58,10 @@ public class NfeDestinatario implements Serializable {
     public NfeDestinatario() {
     }
 
+    public NfeDestinatario(String nome) {
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

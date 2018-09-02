@@ -89,11 +89,12 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             dataModel.setDao(dao);
             dataModel.setClazz(NfeCabecalho.class);
         }
-        dataModel.setAtributos(new Object[]{"cliente.pessoa.nome", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
+        dataModel.setAtributos(new Object[]{"destinatario.nome", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
         dataModel.getFiltros().clear();
         dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         dataModel.addFiltro("codigoModelo", "55", Filtro.IGUAL);
+
         return dataModel;
     }
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Crud NFe">

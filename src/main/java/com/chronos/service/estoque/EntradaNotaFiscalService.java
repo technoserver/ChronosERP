@@ -4,11 +4,13 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
+import com.chronos.service.cadastros.FornecedorService;
 import com.chronos.service.comercial.SyncPendentesService;
 import com.chronos.service.financeiro.FinLancamentoPagarService;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -36,9 +38,14 @@ public class EntradaNotaFiscalService implements Serializable {
     private AuditoriaService auditoriaService;
     @Inject
     private FinLancamentoPagarService lancamentoPagarService;
+    @Inject
+    private Repository<Empresa> empresaRepository;
 
     @Inject
     private SyncPendentesService syncPendentesService;
+
+    @Inject
+    private FornecedorService fornecedorService;
 
 
     @Transactional
@@ -53,7 +60,7 @@ public class EntradaNotaFiscalService implements Serializable {
         if (nfe.getId() == null) {
             inclusao = true;
             for (NfeDetalhe detalhe : nfe.getListaNfeDetalhe()) {
-                atualizarEstoque(nfe.getTributOperacaoFiscal(), detalhe);
+                atualizarEstoque(nfe.getEmpresa(), nfe.getTributOperacaoFiscal(), detalhe);
                 if (parametro != null && parametro.getFrenteCaixa()) {
                     syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, detalhe.getProduto().getId());
                 }
@@ -63,7 +70,7 @@ public class EntradaNotaFiscalService implements Serializable {
         } else {
             List<NfeDetalhe> listaNfeDetOld = estoqueRepository.getItens(nfe);
             for (NfeDetalhe detalhe : listaNfeDetOld) {
-                atualizarEstoque(nfe.getTributOperacaoFiscal(), detalhe);
+                atualizarEstoque(nfe.getEmpresa(), nfe.getTributOperacaoFiscal(), detalhe);
                 if (parametro != null && parametro.getFrenteCaixa()) {
                     syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, detalhe.getProduto().getId());
                 }
@@ -84,6 +91,47 @@ public class EntradaNotaFiscalService implements Serializable {
         if (inclusao) {
             auditoriaService.gerarLog(AcaoLog.INSERT, descricao, "Entrada de NF");
         }
+    }
+
+    @Transactional
+    public void gerarEntrada(EstoqueTransferenciaCabecalho objeto) throws Exception {
+        NfeCabecalho nfe = new NfeCabecalho();
+        iniciar(objeto.getEmpresaOrigem());
+
+        nfe.setDataHoraEntradaSaida(new Date());
+        nfe.setNumero(StringUtils.leftPad(objeto.getId().toString(), 9, "0"));
+        nfe.setValorTotal(objeto.getValorTotal());
+        nfe.setValorTotalProdutos(nfe.getValorTotal());
+
+        nfe.setTributOperacaoFiscal(objeto.getTributOperacaoFiscal());
+        nfe.setNaturezaOperacao(objeto.getTributOperacaoFiscal().getDescricaoNaNf());
+
+        definirDestinatario(nfe, objeto);
+        definirEmitente(nfe, objeto);
+
+        if (!fornecedorService.existeFornecedorByCpfCnj(nfe.getEmitente().getCpfCnpj())) {
+            Fornecedor fornecedor = fornecedorService.cadastrarFornecedor(nfe.getEmitente(), objeto.getEmpresaOrigem());
+            nfe.setFornecedor(fornecedor);
+        }
+
+        int i = 0;
+        for (EstoqueTransferenciaDetalhe item : objeto.getListEstoqueTransferenciaDetalhe()) {
+            NfeDetalhe itemNfe = new NfeDetalhe();
+            itemNfe.setNfeCabecalho(nfe);
+            itemNfe.setNomeProduto(item.getProduto().getNome());
+            itemNfe.setValorTotalTributos(BigDecimal.ZERO);
+            itemNfe.setValorTotal(item.getValorTotal());
+            itemNfe.setCfop(0);
+            itemNfe.setValorUnitarioComercial(item.getValorCusto());
+            itemNfe.setQuantidadeComercial(item.getQuantidade());
+            itemNfe.setCodigoProduto(item.getProduto().getId().toString());
+            itemNfe.setNumeroItem(i++);
+            itemNfe.setProduto(item.getProduto());
+            nfe.getListaNfeDetalhe().add(itemNfe);
+        }
+
+
+        salvar(nfe, null, null);
     }
 
     public NfeCabecalho iniciar(Empresa empresa){
@@ -160,7 +208,69 @@ public class EntradaNotaFiscalService implements Serializable {
         nfe.setValorIcmsDesonerado(BigDecimal.ZERO);
     }
 
-    private void atualizarEstoque(TributOperacaoFiscal operacaoFiscal, NfeDetalhe detalhe) throws Exception {
+
+    private void definirDestinatario(NfeCabecalho nfe, EstoqueTransferenciaCabecalho objeto) {
+        Empresa empresa = empresaRepository.get(objeto.getEmpresaDestino().getId(), Empresa.class);
+        nfe.setEmpresa(empresa);
+        NfeDestinatario destinatario = new NfeDestinatario();
+        nfe.setDestinatario(destinatario);
+        destinatario.setNfeCabecalho(nfe);
+
+        EmpresaEndereco endereco = empresa.buscarEnderecoPrincipal();
+
+        destinatario.setCpfCnpj(empresa.getCnpj());
+        destinatario.setInscricaoEstadual(empresa.getInscricaoEstadual());
+        destinatario.setNome(empresa.getRazaoSocial());
+
+        destinatario.setLogradouro(endereco.getLogradouro());
+        destinatario.setNumero(endereco.getNumero());
+        destinatario.setComplemento(endereco.getComplemento());
+        destinatario.setBairro(endereco.getBairro());
+        destinatario.setCodigoMunicipio(endereco.getMunicipioIbge());
+        destinatario.setNomeMunicipio(endereco.getCidade());
+        destinatario.setUf(endereco.getUf());
+        destinatario.setCep(endereco.getCep());
+        destinatario.setCodigoPais(1058);
+        destinatario.setNomePais("BRASIL");
+        destinatario.setTelefone(endereco.getFone());
+
+        destinatario.setInscricaoMunicipal(empresa.getInscricaoMunicipal());
+
+
+    }
+
+    private void definirEmitente(NfeCabecalho nfe, EstoqueTransferenciaCabecalho objeto) {
+        Empresa empresa = objeto.getEmpresaOrigem();
+        NfeEmitente emitente = new NfeEmitente();
+
+        EmpresaEndereco endereco = empresa.buscarEnderecoPrincipal();
+
+        emitente.setCpfCnpj(empresa.getCnpj());
+        emitente.setInscricaoEstadual(empresa.getInscricaoEstadual());
+        emitente.setNome(empresa.getRazaoSocial());
+        emitente.setFantasia(empresa.getNomeFantasia());
+        emitente.setLogradouro(endereco.getLogradouro());
+        emitente.setNumero(endereco.getNumero());
+        emitente.setComplemento(endereco.getComplemento());
+        emitente.setBairro(endereco.getBairro());
+        emitente.setCodigoMunicipio(endereco.getMunicipioIbge());
+        emitente.setNomeMunicipio(endereco.getCidade());
+        emitente.setUf(endereco.getUf());
+        emitente.setCep(endereco.getCep());
+        emitente.setCrt(empresa.getCrt());
+        emitente.setCodigoPais(1058);
+        emitente.setNomePais("BRASIL");
+        emitente.setTelefone(endereco.getFone());
+        emitente.setInscricaoEstadualSt(empresa.getInscricaoEstadualSt());
+        emitente.setInscricaoMunicipal(empresa.getInscricaoMunicipal());
+        emitente.setCnae(empresa.getCodigoCnaePrincipal());
+
+        emitente.setNfeCabecalho(nfe);
+        nfe.setEmitente(emitente);
+
+    }
+
+    private void atualizarEstoque(Empresa empresa, TributOperacaoFiscal operacaoFiscal, NfeDetalhe detalhe) throws Exception {
         if (operacaoFiscal.getEstoqueVerificado() && operacaoFiscal.getEstoque()) {
             estoqueRepository.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
         } else if (operacaoFiscal.getEstoqueVerificado()) {

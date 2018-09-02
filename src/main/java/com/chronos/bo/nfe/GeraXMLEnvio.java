@@ -633,8 +633,8 @@ public class GeraXMLEnvio {
                 TNFe.InfNFe.Det.Imposto.COFINS.COFINSOutr cofinsOutr = new TNFe.InfNFe.Det.Imposto.COFINS.COFINSOutr();
                 cofins.setCOFINSOutr(cofinsOutr);
                 cofinsOutr.setCST(impCofins.getCstCofins());
-                cofinsOutr.setQBCProd(FormatValor.getInstance().formatarValor(impCofins.getQuantidadeVendida()));
-                cofinsOutr.setVAliqProd(FormatValor.getInstance().formatarValor(impCofins.getAliquotaCofinsReais()));
+                cofinsOutr.setVBC(FormatValor.getInstance().formatarValor(impCofins.getBaseCalculoCofins()));
+                cofinsOutr.setPCOFINS(FormatValor.getInstance().formatarValor(impCofins.getAliquotaCofinsPercentual()));
                 cofinsOutr.setVCOFINS(FormatValor.getInstance().formatarValor(impCofins.getValorCofins()));
             }
         }
@@ -680,11 +680,11 @@ public class GeraXMLEnvio {
                 }
                 pisAliq.setVPIS(FormatValor.getInstance().formatarValor(impPis.getValorPis()));
             } else if (impPis.getCstPis().equals("03")) {
-                TNFe.InfNFe.Det.Imposto.COFINS.COFINSQtde cofinsQtd = new COFINS.COFINSQtde();
-                cofinsQtd.setCST("03");
-                cofinsQtd.setQBCProd(FormatValor.getInstance().formatarValor(impPis.getQuantidadeVendida()));
-                cofinsQtd.setVAliqProd(FormatValor.getInstance().formatarValor(impPis.getAliquotaPisReais()));
-                cofinsQtd.setVCOFINS(FormatValor.getInstance().formatarValor(impPis.getValorPis()));
+                TNFe.InfNFe.Det.Imposto.PIS.PISQtde pisQtde = new PIS.PISQtde();
+                pisQtde.setCST("03");
+                pisQtde.setQBCProd(FormatValor.getInstance().formatarValor(impPis.getQuantidadeVendida()));
+                pisQtde.setVAliqProd(FormatValor.getInstance().formatarValor(impPis.getAliquotaPisReais()));
+                pisQtde.setVPIS(FormatValor.getInstance().formatarValor(impPis.getValorPis()));
             } else if (impPis.getCstPis().equals("04")
                     || impPis.getCstPis().equals("05")
                     || impPis.getCstPis().equals("06")
@@ -699,8 +699,8 @@ public class GeraXMLEnvio {
                 TNFe.InfNFe.Det.Imposto.PIS.PISOutr pisOutr = new PIS.PISOutr();
                 pis.setPISOutr(pisOutr);
                 pisOutr.setCST(impPis.getCstPis());
-                pisOutr.setQBCProd(FormatValor.getInstance().formatarValor(impPis.getQuantidadeVendida()));
-                pisOutr.setVAliqProd(FormatValor.getInstance().formatarValor(impPis.getAliquotaPisReais()));
+                pisOutr.setVBC(FormatValor.getInstance().formatarValor(impPis.getValorBaseCalculoPis()));
+                pisOutr.setPPIS(FormatValor.getInstance().formatarValor(impPis.getAliquotaPisPercentual()));
                 pisOutr.setVPIS(FormatValor.getInstance().formatarValor(impPis.getValorPis()));
             }
         }

@@ -368,7 +368,7 @@ public class NfeService implements Serializable {
         return nFeUtil.calcularTotalNFe(nfe);
     }
 
-    public List<Produto> getListaProduto(String descricao) throws Exception {
+    public List<Produto> getListaProduto(String descricao) {
         List<Produto> listaProduto;
         List<Filtro> filtros = new ArrayList<>();
         if (org.apache.commons.lang3.StringUtils.isNumeric(descricao)) {
@@ -494,6 +494,7 @@ public class NfeService implements Serializable {
 
         VendaCabecalho venda = nfe.getVendaCabecalho();
         OsAbertura os = nfe.getOs();
+        EstoqueTransferenciaCabecalho transferencia = nfe.getTransferencia();
         PdvVendaCabecalho pdv = nfe.getPdv();
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
         StatusTransmissao status = StatusTransmissao.ENVIADA;
@@ -530,6 +531,11 @@ public class NfeService implements Serializable {
                     pdv.setIdnfe(nfe.getId());
                     nfe.setPdv(pdv);
                 }
+
+                if (transferencia != null) {
+                    transferencia.setIdnfecabeclaho(nfe.getId());
+                }
+
                 status = StatusTransmissao.AUTORIZADA;
 
             } else if (retorno.getProtNFe().getInfProt().getCStat().equals("204")

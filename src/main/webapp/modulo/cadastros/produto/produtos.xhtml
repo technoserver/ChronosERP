@@ -400,6 +400,7 @@
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="produtoValorVenda" label="Valor Venda"
                                           nomeAtributo="#{produtoControll.objeto.valorVenda}"
+                                          desabilitado="#{not empty produtoControll.objeto.id}"
                                           requerido="true"/>
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
                                           idComponente="produtoMarkup" label="Markup"

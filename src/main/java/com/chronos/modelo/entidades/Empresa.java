@@ -20,6 +20,8 @@ public class Empresa implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "ID_EMPRESA")
+    private Integer idempresa;
     @Column(name = "RAZAO_SOCIAL")
     private String razaoSocial;
     @Column(name = "NOME_FANTASIA")
@@ -83,9 +85,6 @@ public class Empresa implements Serializable {
     @JoinColumn(name = "ID_SINDICATO_PATRONAL", referencedColumnName = "ID")
     @ManyToOne
     private Sindicato sindicato;
-    @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
-    @ManyToOne
-    private Empresa empresa;
     @OneToMany(mappedBy = "empresa", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EmpresaEndereco> listaEndereco;
     @Transient
@@ -103,6 +102,7 @@ public class Empresa implements Serializable {
         this.razaoSocial = razaoSocial;
     }
 
+
     @PrePersist
     @PreUpdate
     private void prePersist() {
@@ -115,6 +115,14 @@ public class Empresa implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdempresa() {
+        return idempresa;
+    }
+
+    public void setIdempresa(Integer idempresa) {
+        this.idempresa = idempresa;
     }
 
     public String getRazaoSocial() {
@@ -424,13 +432,7 @@ public class Empresa implements Serializable {
         this.sindicato = sindicato;
     }
 
-    public Empresa getEmpresa() {
-        return empresa;
-    }
 
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
 
 	public Set<EmpresaEndereco> getListaEndereco() {
         return Optional.ofNullable(listaEndereco).orElse(null);

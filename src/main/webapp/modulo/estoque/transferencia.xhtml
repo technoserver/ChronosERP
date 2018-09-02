@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Transferencia
+    </ui:define>
+
+    <ui:define name="tela">
+        #{transferenciaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Transferencia
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{transferenciaControll}"
+                       idDataTable="dataTableTransferencia"
+                       nomeFuncao="transferencia"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Origem">
+                <h:outputLabel value="#{row.empresaOrigem.razaoSocial}"/>
+            </p:column>
+            <p:column headerText="Destino">
+                <h:outputLabel value="#{row.empresaDestino.razaoSocial}"/>
+            </p:column>
+
+            <p:column headerText="Data" styleClass="text-center" width="110">
+                <h:outputLabel value="#{row.data}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+
+            <p:column headerText="Total" styleClass="text-right" width="110">
+                <h:outputLabel value="#{row.valorTotal}">
+                    <f:convertNumber pattern="#,###,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{transferenciaControll}"
+                                   nomeFuncao="transferencia"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+                <erp:campoTexto label="Origem"
+                                idComponente="codigo"
+                                styleClass="col-xs-12 col-sm-6 col-md-6"
+                                tamanhoMaximo="14"
+                                desabilitado="true"
+                                nomeAtributo="#{transferenciaControll.objeto.empresaOrigem.razaoSocial}"/>
+
+                <erp:campoSelect itens="#{transferenciaControll.listaEmpresas}"
+                                 styleClass="col-xs-12 col-sm-6 col-md-6"
+                                 idComponente="idempresaDestino"
+                                 id="componenteEmpresaDesino"
+                                 label="Destino"
+                                 nomeAtributo="#{transferenciaControll.idempresaDestino}"/>
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  id="operacaoFiscal"
+                                  label="Operação Fiscal"
+                                  itemLabel="#{objeto.descricao}"
+                                  controller="#{transferenciaControll}"
+                                  completeMethod="getListaTributOperacaoFiscal"
+                                  nomeAtributo="#{transferenciaControll.objeto.tributOperacaoFiscal}"
+                                  idComponente="tributOperacaoFiscal"
+                >
+                    <p:ajax process="@this" update="formCentro:telaDetalhe:grupoTributario" event="itemSelecionado"/>
+                </erp:autoComplete>
+
+                <h:panelGroup layout="block" id="grupoTributario">
+                    <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                      label="Grupo tributário"
+                                      itemLabel="#{objeto.descricao}"
+                                      controller="#{transferenciaControll}"
+                                      completeMethod="getListaTributGrupoTributario"
+                                      nomeAtributo="#{transferenciaControll.objeto.tributGrupoTributario}"
+                                      rendered="#{transferenciaControll.objeto.tributOperacaoFiscal.obrigacaoFiscal}"
+                                      idComponente="tributGrupoTributario"/>
+                </h:panelGroup>
+
+
+            </div>
+            <div class="row m-t">
+                <div class="col-md-12 m-b">
+                    <p:commandButton id="btnAddItem" icon="fa fa-plus"
+                                     title="Adicionar item"
+                                     action="#{transferenciaControll.addItem}"
+                                     update=":formCentro:growl,:formOutrasTelas:panelItem"
+                                     oncomplete="if (!args.validationFailed) {PF('dialogItem').show();}"
+                                     process="@this,formCentro:telaDetalhe:componenteEmpresaDesino:componenteEmpresaDesino"
+                    />
+                </div>
+                <div class="col-md-12">
+                    <p:dataTable value="#{transferenciaControll.objeto.listEstoqueTransferenciaDetalhe}" var="row"
+                                 id="produtos"
+                                 emptyMessage="Nenhum produto adicionado"
+                                 reflow="true"
+                                 resizableColumns="true"
+                    >
+                        <p:column headerText="Produto">
+                            <h:outputLabel value="#{row.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="Custo" styleClass="text-right" width="90">
+                            <h:outputLabel value="#{row.valorCusto}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="UN" styleClass="text-center" width="55">
+                            <h:outputLabel value="#{row.unidade}"/>
+                        </p:column>
+                        <p:column headerText="Quantidade" styleClass="text-center" width="117">
+                            <h:outputLabel value="#{row.quantidade}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Total" styleClass="text-right" width="100">
+                            <h:outputLabel value="#{row.valorTotal}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Ações" styleClass="text-center" width="70">
+                            <p:commandLink styleClass="btn btn-default" title="excluir" process="produtos"
+                                           update="produtos" action="#{transferenciaControll.removerItem}">
+
+                                <i class=" fa fa-times"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{transferenciaControll.itemSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogItem"
+                      header="Inclusão/Alteração de Produto/Serviço"
+                      visible="#{entradaNotaFiscalControll.podeIncluirProduto}"
+                      widgetVar="dialogItem" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="600">
+
+                <p:outputPanel id="panelItem">
+
+
+                    <div class="col-xs-12 col-sm-9 col-md-9">
+                        <p:outputLabel value="Produto" for="nfeDetalheProduto"/>
+                        <br/>
+                        <p:autoComplete id="nfeDetalheProduto"
+                                        value="#{transferenciaControll.produto}"
+                                        completeMethod="#{transferenciaControll.getListaProduto}"
+                                        var="produto" itemValue="#{produto}" itemLabel="#{produto.nome}"
+                                        converter="defaultConverter" forceSelection="true"
+                                        minQueryLength="3" maxResults="20" required="true"
+                                        style="width: 100%" emptyMessage="Nenhum registro encontrado">
+                            <p:column headerText="Produto">
+                                <p:outputLabel value="#{produto.nome}"/>
+                            </p:column>
+                            <p:column headerText="UN">
+                                <p:outputLabel value="#{produto.unidadeProduto.sigla}"/>
+                            </p:column>
+                            <p:column headerText="Custo" class="coluna-monetaria">
+                                <p:outputLabel value="#{produto.custoUnitario}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
+
+                        </p:autoComplete>
+                    </div>
+
+                    <erp:campoDecimal idComponente="quantidade"
+                                      styleClass="col-xs-12 col-sm-3 col-md-3"
+                                      label="Quantidade"
+                                      requerido="true"
+                                      nomeAtributo="#{transferenciaControll.quantidade}"/>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarProduto"
+                                             action="#{transferenciaControll.salvarItem}"
+                                             class="btn btn-primary center-block"
+                            >
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogItem').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogItem').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+</ui:composition>
