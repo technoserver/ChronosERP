@@ -18,6 +18,8 @@ public class EstoqueTransferenciaCabecalho implements Serializable {
     @Basic(optional = false)
     @Column(nullable = false)
     private Integer id;
+    @Column(name = "id_nfe_cabecalho")
+    private Integer idnfecabeclaho;
     @Basic(optional = false)
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -37,9 +39,6 @@ public class EstoqueTransferenciaCabecalho implements Serializable {
     @JoinColumn(name = "id_empresa_origem", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     private Empresa empresaOrigem;
-    @JoinColumn(name = "id_nfe_cabecalho", referencedColumnName = "id")
-    @ManyToOne
-    private NfeCabecalho nfeCabecalho;
     @JoinColumn(name = "id_tribut_grupo_tributario", referencedColumnName = "id")
     @ManyToOne
     private TributGrupoTributario tributGrupoTributario;
@@ -51,6 +50,7 @@ public class EstoqueTransferenciaCabecalho implements Serializable {
 
     public EstoqueTransferenciaCabecalho() {
         this.data = new Date();
+        this.status = 'A';
         this.listEstoqueTransferenciaDetalhe = new ArrayList<>();
     }
 
@@ -78,6 +78,14 @@ public class EstoqueTransferenciaCabecalho implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdnfecabeclaho() {
+        return idnfecabeclaho;
+    }
+
+    public void setIdnfecabeclaho(Integer idnfecabeclaho) {
+        this.idnfecabeclaho = idnfecabeclaho;
     }
 
     public Date getData() {
@@ -136,13 +144,7 @@ public class EstoqueTransferenciaCabecalho implements Serializable {
         this.empresaOrigem = empresaOrigem;
     }
 
-    public NfeCabecalho getNfeCabecalho() {
-        return nfeCabecalho;
-    }
 
-    public void setNfeCabecalho(NfeCabecalho nfeCabecalho) {
-        this.nfeCabecalho = nfeCabecalho;
-    }
 
     public TributGrupoTributario getTributGrupoTributario() {
         return tributGrupoTributario;

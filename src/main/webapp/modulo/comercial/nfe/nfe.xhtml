@@ -46,28 +46,28 @@
                                   id="table"
                                   exibirAcoes="false"
                                   controller="#{nfeCabecalhoControll}">
-                <p:column headerText="Cliente" sortBy="#{row.cliente.pessoa.nome}">
-                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                <p:column headerText="Destinatario" sortBy="#{row.destinatario.nome}">
+                    <h:outputLabel value="#{row.destinatario.nome}"/>
                 </p:column>
-                <p:column headerText="Número" sortBy="#{row.numero}" width="95">
+                <p:column headerText="Número" sortBy="#{row.numero}" width="100">
                     <h:outputLabel value="#{row.numero}"/>
                 </p:column>
 
-                <p:column headerText="Chave Acesso" width="400">
+                <p:column headerText="Chave Acesso">
                     <h:outputLabel value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
                 </p:column>
-                <p:column headerText="Data Emissão"
+                <p:column headerText="Emissão"
                           sortBy="#{row.dataHoraEmissao}" width="120">
                     <h:outputLabel value="#{row.dataHoraEmissao}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Valor Total" style="text-align: right;" width="100">
+                <p:column headerText="Total" style="text-align: right;" width="100">
                     <h:outputLabel value="#{row.valorTotal}">
                         <f:convertNumber pattern="#,###,##0.00"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Status" sortBy="#{row.statusNota}" width="100" styleClass="text-center">
+                <p:column headerText="Status" sortBy="#{row.statusNota}" width="110" styleClass="text-center">
 
                     <h:outputLabel
                             value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>

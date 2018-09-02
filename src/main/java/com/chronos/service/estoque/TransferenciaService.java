@@ -71,18 +71,22 @@ public class TransferenciaService implements Serializable {
             TransferenciaToNfe transferenciaToNfe = new TransferenciaToNfe(objeto);
 
             NfeCabecalho nfe = transferenciaToNfe.gerarNFe();
+            nfe.setTransferencia(objeto);
             ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
             nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
             StatusTransmissao status = nfeService.transmitirNFe(nfe, true);
 
             if (status == StatusTransmissao.AUTORIZADA) {
 
+                objeto = nfe.getTransferencia();
+                objeto.setStatus('F');
                 repository.atualizar(objeto);
 
                 Mensagem.addInfoMessage("NFe transmitida com sucesso");
             }
 
         } else {
+            objeto.setStatus('E');
             produtoService.transferenciaEstoque(objeto, objeto.getListEstoqueTransferenciaDetalhe());
 
             objeto = repository.atualizar(objeto);

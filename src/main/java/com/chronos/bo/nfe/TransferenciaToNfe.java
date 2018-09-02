@@ -52,7 +52,7 @@ public class TransferenciaToNfe {
 
 
         nfe.getDestinatario().setCpfCnpj(empresaDestino.getCnpj());
-        nfe.getDestinatario().setNome(empresaDestino.getCnpj());
+        nfe.getDestinatario().setNome(empresaDestino.getRazaoSocial());
         EmpresaEndereco endereco = empresaDestino.buscarEnderecoPrincipal();
 
         nfe.getDestinatario().setLogradouro(endereco.getLogradouro());
@@ -73,7 +73,6 @@ public class TransferenciaToNfe {
         LocalDestino localDestino = getLocalDestino(nfe.getEmitente().getUf(), ufDestino);
 
 
-        // NFC-e não pode ser emitida para contribuinte do ICMS
         IndicadorIe indicador;
 
 
