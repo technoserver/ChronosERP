@@ -3,63 +3,82 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:erp="http://java.sun.com/jsf/composite/components" xmlns:p="http://primefaces.org/ui"
 >
 
 
 
 
     <div class="row">
-        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                          label="Tipo Admissao"
-                          itemLabel="#{objeto.nome}"
-                          controller="#{colaboradorControll}"
-                          completeMethod="getListaTipoAdmissao"
-                          nomeAtributo="#{colaboradorControll.objeto.tipoAdmissao}"
-                          idComponente="colaboradorTipoAdmissao"
-                          requerido="false"/>
 
-        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                          label="Situacao"
-                          itemLabel="#{objeto.nome}"
-                          controller="#{colaboradorControll}"
-                          completeMethod="getListaSituacaoColaborador"
-                          nomeAtributo="#{colaboradorControll.objeto.situacaoColaborador}"
-                          idComponente="colaboradorSituacaoColaborador"/>
+
+        <erp:campoSelect itens="#{colaboradorControll.listaTipoAdmissao}"
+                         styleClass="col-xs-12 col-sm-6 col-md-6"
+                         idComponente="idtipoAdimissao"
+                         label="Tipo Admissão"
+                         nomeAtributo="#{colaboradorControll.idtipoAdimissao}"/>
+
+
+        <erp:campoSelect itens="#{colaboradorControll.listaSituacao}"
+                         styleClass="col-xs-12 col-sm-6 col-md-6"
+                         idComponente="idsituacao"
+                         label="Situação"
+                         nomeAtributo="#{colaboradorControll.idsituacao}"/>
     </div>
     <div class="row">
-        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                          label="Tipo"
-                          itemLabel="#{objeto.nome}"
-                          controller="#{colaboradorControll}"
-                          completeMethod="getListaTipoColaborador"
-                          nomeAtributo="#{colaboradorControll.objeto.tipoColaborador}"
-                          idComponente="colaboradorTipoColaborador"/>
+        <erp:campoSelect itens="#{colaboradorControll.listaTipo}"
+                         styleClass="col-xs-12 col-sm-6 col-md-6"
+                         idComponente="idtipo"
+                         label="Tipo"
+                         nomeAtributo="#{colaboradorControll.idtipo}"/>
 
-        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                          label="Nivel Formacao"
-                          itemLabel="#{objeto.nome}"
-                          controller="#{colaboradorControll}"
-                          completeMethod="getListaNivelFormacao"
-                          nomeAtributo="#{colaboradorControll.objeto.nivelFormacao}"
-                          idComponente="colaboradorNivelFormacao"/>
+
+        <erp:campoSelect itens="#{colaboradorControll.listaNivelFormacao}"
+                         styleClass="col-xs-12 col-sm-6 col-md-6"
+                         idComponente="vendedor"
+                         label="Nível Formação"
+                         nomeAtributo="#{colaboradorControll.idnivelFormacao}"/>
+
     </div>
     <div class="row">
-        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                          label="Cargo"
-                          itemLabel="#{objeto.nome}"
-                          controller="#{colaboradorControll}"
-                          completeMethod="getListaCargo"
-                          nomeAtributo="#{colaboradorControll.objeto.cargo}"
-                          idComponente="colaboradorCargo"/>
 
-        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                          label="Setor"
-                          itemLabel="#{objeto.nome}"
-                          controller="#{colaboradorControll}"
-                          completeMethod="getListaSetor"
-                          nomeAtributo="#{colaboradorControll.objeto.setor}"
-                          idComponente="colaboradorSetor"/>
+
+        <erp:autoCompleteAcao styleClass="col-xs-12 col-sm-6 col-md-6"
+                              label="Cargo"
+                              itemLabel="#{objeto.nome}"
+                              controller="#{colaboradorControll}"
+                              completeMethod="getListaCargo"
+                              nomeAtributo="#{colaboradorControll.objeto.cargo}"
+                              idComponente="colaboradorCargo">
+
+            <p:commandLink title="Add novo cargo" style="font-size: 20px;color: #00acac"
+                           oncomplete="PF('dialogOutrasTelas4').show();"
+                           update=":formOutrasTelas4:panelOutrasTelas4"
+                           process="@this"
+                           action="#{colaboradorControll.addCargo}">
+
+                <i class="fa fa-plus-circle"></i>
+            </p:commandLink>
+        </erp:autoCompleteAcao>
+
+        <erp:autoCompleteAcao styleClass="col-xs-12 col-sm-6 col-md-6"
+                              label="Setor"
+                              itemLabel="#{objeto.nome}"
+                              controller="#{colaboradorControll}"
+                              completeMethod="getListaSetor"
+                              nomeAtributo="#{colaboradorControll.objeto.setor}"
+                              idComponente="colaboradorSetor">
+
+            <p:commandLink title="Add novo setor" style="font-size: 20px;color: #00acac"
+                           oncomplete="PF('dialogOutrasTelas5').show();"
+                           update=":formOutrasTelas5:panelOutrasTelas5"
+                           process="@this"
+                           action="#{colaboradorControll.addSetor}">
+
+                <i class="fa fa-plus-circle"></i>
+            </p:commandLink>
+
+        </erp:autoCompleteAcao>
     </div>
 
 
