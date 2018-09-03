@@ -7,17 +7,17 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
-                xmlns:f="http://java.sun.com/jsf/core">
+>
 
     <ui:define name="title">
-        Cargo
+        Setor
     </ui:define>
 
     <ui:define name="tela">
-        #{cargoControll.titulo}
+        #{setorControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        Cargo
+        Setor
     </ui:define>
 
 
@@ -32,17 +32,6 @@
             <p:column headerText="Nome">
                 <h:outputLabel value="#{row.nome}"/>
             </p:column>
-            <p:column headerText="Salário">
-                <h:outputLabel value="#{row.salario}">
-                    <f:convertNumber pattern="#,##0.00"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="CBO 1994">
-                <h:outputLabel value="#{row.cbo1994}"/>
-            </p:column>
-            <p:column headerText="CBO 2002">
-                <h:outputLabel value="#{row.cbo2002}"/>
-            </p:column>
 
 
         </erp:gridDados>
@@ -50,7 +39,7 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cargoControll}"
+        <erp:telaInclusaoAlteracao controller="#{setorControll}"
                                    nomeFuncao="Cargo"
                                    id="telaDetalhe"
         >
@@ -59,26 +48,16 @@
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                 idComponente="cargoNome" label="Nome"
-                                nomeAtributo="#{cargoControll.objeto.nome}"
+                                nomeAtributo="#{setorControll.objeto.nome}"
                                 tamanhoMaximo="50"
                                 requerido="true"/>
-                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                  idComponente="cargoSalario" label="Salário"
-                                  nomeAtributo="#{cargoControll.objeto.salario}"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                idComponente="cargoCbo1994" label="CBO 1994"
-                                nomeAtributo="#{cargoControll.objeto.cbo1994}"
-                                tamanhoMaximo="10"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                idComponente="cargoCbo2002" label="CBO 2002"
-                                nomeAtributo="#{cargoControll.objeto.cbo2002}"
-                                tamanhoMaximo="10"/>
+
 
             </div>
             <div class="row">
                 <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
                                     idComponente="cargoDescricao" label="Descrição"
-                                    nomeAtributo="#{cargoControll.objeto.descricao}"/>
+                                    nomeAtributo="#{setorControll.objeto.descricao}"/>
             </div>
 
         </erp:telaInclusaoAlteracao>

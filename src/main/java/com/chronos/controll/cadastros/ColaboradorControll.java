@@ -100,9 +100,10 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         setObjeto(colaborador);
 
         idnivelFormacao = colaborador.getNivelFormacao().getId();
-        idtipoAdimissao = colaborador.getTipoAdmissao().getId();
+        idtipoAdimissao = colaborador.getTipoAdmissao() != null ? colaborador.getTipoAdmissao().getId() : 1;
         idsituacao = colaborador.getSituacaoColaborador().getId();
         idtipo = colaborador.getTipoColaborador().getId();
+        iniciarObjetos();
     }
 
     @Override

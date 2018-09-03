@@ -68,6 +68,16 @@ public class Cargo implements Serializable {
     public Cargo() {
     }
 
+    public Cargo(Integer id, String nome, String descricao, BigDecimal salario, String cbo1994, String cbo2002, Integer idempresa) {
+        this.id = id;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.salario = salario;
+        this.cbo1994 = cbo1994;
+        this.cbo2002 = cbo2002;
+        this.empresa = new Empresa(idempresa);
+    }
+
     public Cargo(String nome) {
         this.nome = nome;
     }
