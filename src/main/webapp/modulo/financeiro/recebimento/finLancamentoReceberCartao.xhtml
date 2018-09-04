@@ -27,41 +27,33 @@
                        nomeFuncao=" Lancamento de contas Receber"
                        id="telaGrid">
 
-            <p:column headerText="Documento" width="250">
-                <h:outputLabel value="#{row.numeroDocumento}"/>
-            </p:column>
+
             <p:column headerText="Operadora">
                 <h:outputLabel value="#{row.operadoraCartao.nome}"/>
             </p:column>
-            <p:column headerText="Qtde Parcela" width="120" styleClass="text-center">
+            <p:column headerText="Parcelas" width="90" styleClass="text-center">
                 <h:outputLabel value="#{row.quantidadeParcela}"/>
             </p:column>
-            <p:column headerText="Valor bruto" styleClass="text-right" width="140">
+            <p:column headerText="Valor bruto" styleClass="text-right" width="115">
                 <h:outputLabel value="#{row.valorBruto}">
                     <f:convertNumber pattern="#,##0.00"/>
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="Encargos" styleClass="text-right" width="140">
+            <p:column headerText="Encargos" styleClass="text-right" width="95">
                 <h:outputLabel value="#{row.valorEncargos}">
                     <f:convertNumber pattern="#,##0.00"/>
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="Valor liquido" styleClass="text-right" width="140">
+            <p:column headerText="Valor líquido" styleClass="text-right" width="125">
                 <h:outputLabel value="#{row.valorLiquido}">
                     <f:convertNumber pattern="#,##0.00"/>
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="Data Lancamento" styleClass="text-center" width="160">
+            <p:column headerText="Lancamento" styleClass="text-center" width="120">
                 <h:outputLabel value="#{row.dataLancamento}">
                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="1º Vencimento" styleClass="text-center" width="140">
-                <h:outputLabel value="#{row.primeiroVencimento}">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
-
         </erp:gridDados>
     </ui:define>
     <ui:define name="telaInclusaoAlteracao">

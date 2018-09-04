@@ -33,18 +33,18 @@
                 <h:outputLabel value="#{row.usuario.login}"/>
             </p:column>
 
-            <p:column headerText="Data ocorrencia">
+            <p:column headerText="Data ocorrência" styleClass="text-center" width="155">
                 <h:outputLabel value="#{row.dataRegistro}">
                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="Hora ocorrencia">
+            <p:column headerText="Hora ocorrencia" width="150">
                 <h:outputLabel value="#{row.horaRegistro}"/>
             </p:column>
-            <p:column headerText="janela">
+            <p:column headerText="Janela" width="165">
                 <h:outputLabel value="#{row.janelaController}"/>
             </p:column>
-            <p:column headerText="ação">
+            <p:column headerText="Ação">
                 <h:outputLabel value="#{row.acao}"/>
             </p:column>
 
