@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Conversao CFOP
+    </ui:define>
+
+    <ui:define name="tela">
+        #{cfopConverterControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Conversao CFOP
+    </ui:define>
+
+    <ui:define name="css">
+        <style type="text/css">
+            .text {
+                display: block;
+                width: 430px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{cfopConverterControll}"
+                       idDataTable="dataTableCfop"
+                       nomeFuncao="CEST"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="CFOP Origem">
+                <h:outputLabel value="#{row.cfopOrigem}"/>
+            </p:column>
+            <p:column headerText="CFOP Destino">
+                <h:outputLabel value="#{row.cfopDestino}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{cfopConverterControll}"
+                                   nomeFuncao="CFOP"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:campoSelect itens="#{cfopConverterControll.tipo}"
+                                 styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="tipo"
+                                 label="Tipo"
+                                 nomeAtributo="#{cfopConverterControll.objeto.tipo}"/>
+
+
+                <div class="col-xs-12 col-sm-5 col-md-5">
+                    <p:outputLabel value="CFOP origem"
+                                   for="cfopOrigem"/>
+                    <p:autoComplete id="cfopOrigem"
+                                    value="#{cfopConverterControll.cfopOrigem}"
+                                    completeMethod="#{cfopConverterControll.getListCfop}" var="objeto"
+                                    itemValue="#{objeto}" itemLabel="#{objeto.descricao}"
+                                    queryDelay="500"
+                                    dropdown="true"
+                                    cache="true"
+                                    style="width: 100%"
+                                    converter="defaultConverter" forceSelection="true"
+                                    minQueryLength="4" maxResults="20" required="true"
+                                    emptyMessage="Nenhum registro encontrado">
+
+                        <p:column style="width:10%">
+                            <h:outputText value="#{objeto.id}"/>
+                        </p:column>
+
+                        <p:column>
+                            <h:outputText value="#{objeto.descricao}" styleClass="text"/>
+                        </p:column>
+
+
+                    </p:autoComplete>
+                </div>
+
+                <div class="col-xs-12 col-sm-5 col-md-5">
+                    <p:outputLabel value="CFOP destino"
+                                   for="cfopDestino"/>
+                    <p:autoComplete id="cfopDestino"
+                                    value="#{cfopConverterControll.cfopDestino}"
+                                    completeMethod="#{cfopConverterControll.getListCfop}" var="objeto"
+                                    itemValue="#{objeto}" itemLabel="#{objeto.descricao}"
+                                    queryDelay="500"
+                                    dropdown="true"
+                                    cache="true"
+                                    style="width: 100%"
+                                    converter="defaultConverter" forceSelection="true"
+                                    minQueryLength="4" maxResults="20" required="true"
+                                    emptyMessage="Nenhum registro encontrado">
+
+                        <p:column style="width:10%">
+                            <h:outputText value="#{objeto.id}"/>
+                        </p:column>
+
+                        <p:column>
+                            <h:outputText value="#{objeto.descricao}" styleClass="text"/>
+                        </p:column>
+
+
+                    </p:autoComplete>
+                </div>
+
+
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="javaScript">
+        <script type="text/javascript">
+            function filterCfop(itemLabel, filterValue) {
+                if (filterValue.length === 4) {
+                    console.log(itemLabel);
+                }
+
+                return itemLabel.includes(filterValue);
+            }
+        </script>
+    </ui:define>
+
+</ui:composition>

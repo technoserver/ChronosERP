@@ -100,9 +100,10 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         setObjeto(colaborador);
 
         idnivelFormacao = colaborador.getNivelFormacao().getId();
-        idtipoAdimissao = colaborador.getTipoAdmissao().getId();
+        idtipoAdimissao = colaborador.getTipoAdmissao() != null ? colaborador.getTipoAdmissao().getId() : 1;
         idsituacao = colaborador.getSituacaoColaborador().getId();
         idtipo = colaborador.getTipoColaborador().getId();
+        iniciarObjetos();
     }
 
     @Override
@@ -111,6 +112,11 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         Colaborador colaborador = null;
         try {
             Empresa ep = getObjeto().getId() != null ? empresa : emp;
+
+            getObjeto().setNivelFormacao(new NivelFormacao(idnivelFormacao));
+            getObjeto().setTipoAdmissao(new TipoAdmissao(idtipoAdimissao));
+            getObjeto().setSituacaoColaborador(new SituacaoColaborador(idsituacao));
+            getObjeto().setTipoColaborador(new TipoColaborador(idtipo));
             colaborador = service.salvarColaborador(getObjeto(), ep);
             setObjeto(colaborador);
             Mensagem.addInfoMessage("Colaborador salvo com sucesso");

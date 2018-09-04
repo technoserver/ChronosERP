@@ -440,6 +440,12 @@ public abstract class AbstractControll<T> implements Serializable {
         origemMercadoria.put("Nacional", "0");
         origemMercadoria.put("Estrangeira - Importação direta", "1");
         origemMercadoria.put("Estrangeira - Adquirida no mercado interno", "2");
+        origemMercadoria.put("Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40%", "3");
+        origemMercadoria.put("Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos ", "4");
+        origemMercadoria.put("Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%", "5");
+        origemMercadoria.put("Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX", "6");
+        origemMercadoria.put("Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX", "7");
+        origemMercadoria.put("Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%", "8");
 
         issModalidadeBaseCalculo = new HashMap<>();
         issModalidadeBaseCalculo.put("Valor Operação", "0");

@@ -46,12 +46,9 @@
                 <h:outputLabel value="#{row.logradouro}"/>
             </p:column>
             <p:column headerText="Cidade">
-                <h:outputLabel value="#{row.cidade}"/>
+                <h:outputLabel value="#{row.cidade} - #{row.uf}"/>
             </p:column>
-            <p:column headerText="UF">
-                <h:outputLabel value="#{row.uf}"/>
-            </p:column>
-            <p:column headerText="Fone">
+            <p:column headerText="Fone" width="120">
                 <h:outputLabel value="#{row.fone}"/>
             </p:column>
 

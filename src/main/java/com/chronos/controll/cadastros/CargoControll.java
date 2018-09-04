@@ -6,6 +6,7 @@
 package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.Cargo;
 
 import javax.faces.view.ViewScoped;
@@ -21,6 +22,21 @@ import java.io.Serializable;
 public class CargoControll extends AbstractControll<Cargo> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+
+    @Override
+    public ERPLazyDataModel<Cargo> getDataModel() {
+
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(Cargo.class);
+            dataModel.setDao(dao);
+
+        }
+        Object[] atributos = new Object[]{"nome", "descricao", "salario", "cbo1994", "cbo2002", "empresa.id"};
+        dataModel.setAtributos(atributos);
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {
