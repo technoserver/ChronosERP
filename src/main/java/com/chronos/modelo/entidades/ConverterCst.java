@@ -6,6 +6,8 @@
 package com.chronos.modelo.entidades;
 
 
+import com.chronos.modelo.enuns.TipoCst;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -23,8 +25,10 @@ public class ConverterCst implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "tipo")
+    private String tipo;
     @Column(name = "tipo_cst")
-    private Integer tipoCst;
+    private TipoCst tipoCst;
     @Column(name = "cst_origem")
     private String cstOrigem;
     @Column(name = "cst_destino")
@@ -38,11 +42,11 @@ public class ConverterCst implements Serializable {
         this.id = id;
     }
 
-    public Integer getTipoCst() {
+    public TipoCst getTipoCst() {
         return tipoCst;
     }
 
-    public void setTipoCst(Integer tipoCst) {
+    public void setTipoCst(TipoCst tipoCst) {
         this.tipoCst = tipoCst;
     }
 
@@ -60,6 +64,14 @@ public class ConverterCst implements Serializable {
 
     public void setCstDestino(String cstDestino) {
         this.cstDestino = cstDestino;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     @Override
