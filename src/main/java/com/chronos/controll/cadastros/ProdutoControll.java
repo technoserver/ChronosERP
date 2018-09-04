@@ -75,12 +75,29 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private String nomeProdutoOld;
     private String nomeFoto;
 
+    private ProdutoMarca marca;
+    private Almoxarifado almoxarifado;
+    private ProdutoSubGrupo subGrupo;
+
+
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
-        produtoDataModel.addFiltro("nome", produto);
-        produtoDataModel.addFiltro("grupo", strGrupo);
-        produtoDataModel.addFiltro("subgrupo", strSubGrupo);
-        produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
+        if (!StringUtils.isEmpty(produto)) {
+            produtoDataModel.addFiltro("nome", produto);
+        }
+        if (!StringUtils.isEmpty(strSubGrupo)) {
+            produtoDataModel.addFiltro("subgrupo", strSubGrupo);
+        }
+        if (!StringUtils.isEmpty(strGrupo)) {
+            produtoDataModel.addFiltro("grupo", strGrupo);
+        }
+
+        if (!StringUtils.isEmpty(inativo)) {
+            produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
+        }
+
+
+
         produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
         produtoDataModel.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
     }
@@ -112,11 +129,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             produtoDataModel.setDao(produtos);
         }
 
-        if (produtoDataModel.getFiltros().isEmpty()) {
-            produtoDataModel.addFiltro("inativo", "N", Filtro.IGUAL);
-            produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
-            produtoDataModel.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
-        }
+        pesquisar();
         return produtoDataModel;
     }
 
@@ -401,6 +414,44 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         }
     }
 
+    public void addMarca() {
+        marca = new ProdutoMarca();
+    }
+
+    public void salvarMarca() {
+        marca = marcas.atualizar(marca);
+        getObjeto().setProdutoMarca(marca);
+    }
+
+    public void addAlmoxarifado() {
+        almoxarifado = new Almoxarifado();
+    }
+
+    public void salvarAlmoxarifado() {
+        almoxarifado = almoxarifados.atualizar(almoxarifado);
+        getObjeto().setAlmoxarifado(almoxarifado);
+    }
+
+    public void addGrupo() {
+        grupo = new ProdutoGrupo();
+
+    }
+
+    public void salvarGrupo() {
+        grupo = grupos.atualizar(grupo);
+    }
+
+    public void addSubGrupo() {
+        subGrupo = new ProdutoSubGrupo();
+        subGrupo.setProdutoGrupo(grupo);
+    }
+
+    public void salvarSubgrupo() {
+        subGrupo.setProdutoGrupo(grupo);
+        subGrupo = subGrupos.atualizar(subGrupo);
+        getObjeto().setProdutoSubGrupo(subGrupo);
+    }
+
     private List<Produto> buscarProdutosBalanca() {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro(Filtro.AND, "codigoBalanca", Filtro.NAO_NULO, ""));
@@ -486,5 +537,29 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setNomeFoto(String nomeFoto) {
         this.nomeFoto = nomeFoto;
+    }
+
+    public ProdutoMarca getMarca() {
+        return marca;
+    }
+
+    public void setMarca(ProdutoMarca marca) {
+        this.marca = marca;
+    }
+
+    public Almoxarifado getAlmoxarifado() {
+        return almoxarifado;
+    }
+
+    public void setAlmoxarifado(Almoxarifado almoxarifado) {
+        this.almoxarifado = almoxarifado;
+    }
+
+    public ProdutoSubGrupo getSubGrupo() {
+        return subGrupo;
+    }
+
+    public void setSubGrupo(ProdutoSubGrupo subGrupo) {
+        this.subGrupo = subGrupo;
     }
 }
