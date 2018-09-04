@@ -69,7 +69,6 @@
                                 </h:selectOneMenu>
                                 <div class="field-action__icon">
                                     <p:commandLink title="Pesquisar" styleClass="btn btn-default"
-                                                   action="#{produtoControll.pesquisar()}"
                                                    update="dataTableProduto"
                                     >
 
@@ -213,30 +212,61 @@
                                         tamanhoMaximo="100"
                                         requerido="true"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
-                                        idComponente="produtoDescricaoPdv" label="Descricao PDV"
+                                        idComponente="produtoDescricaoPdv" label="Descrição PDV"
                                         nomeAtributo="#{produtoControll.objeto.descricaoPdv}"
                                         tamanhoMaximo="30"
                         />
                     </div>
                     <div class="row">
 
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                          label="Grupo"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{produtoControll}"
-                                          completeMethod="getListaGrupo"
-                                          nomeAtributo="#{produtoControll.grupo}"
-                                          idComponente="grupo">
-                            <p:ajax process="@this" event="itemSelecionado"/>
-                        </erp:autoComplete>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <p:outputLabel value="Grupo" for="grupo"/>
+                            <div class="field-action">
+                                <p:autoComplete id="grupo"
+                                                value="#{produtoControll.grupo}"
+                                                completeMethod="#{produtoControll.getListaGrupo}" var="objeto"
+                                                itemLabel="#{objeto.nome}" itemValue="#{objeto}"
+                                                queryDelay="500"
+                                                style="width: 100%"
+                                                converter="defaultConverter" forceSelection="true"
+                                                minQueryLength="3" maxResults="10" required="true"
+                                                emptyMessage="Nenhum registro encontrado">
+                                    <p:ajax process="@this" event="itemSelect"/>
 
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                          label="Subgrupo"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{produtoControll}"
-                                          completeMethod="getListaSubgrupo"
-                                          nomeAtributo="#{produtoControll.objeto.produtoSubGrupo}"
-                                          idComponente="produtoSubgrupo"/>
+                                </p:autoComplete>
+
+                                <div class="field-action__icon">
+                                    <p:commandLink title="Add novo grupo" style="font-size: 20px;color: #00acac"
+                                                   oncomplete="PF('dialogOutrasTelas4').show();"
+                                                   update=":formOutrasTelas4:panelOutrasTelas4"
+                                                   process="@this"
+                                                   action="#{produtoControll.addGrupo}">
+
+                                        <i class="fa fa-plus-circle"></i>
+                                    </p:commandLink>
+                                </div>
+                            </div>
+                        </div>
+
+                        <erp:autoCompleteAcao styleClass="col-xs-12 col-sm-6 col-md-6"
+                                              label="Subgrupo"
+                                              itemLabel="#{objeto.nome}"
+                                              controller="#{produtoControll}"
+                                              completeMethod="getListaSubgrupo"
+                                              nomeAtributo="#{produtoControll.objeto.produtoSubGrupo}"
+                                              idComponente="produtoSubgrupo">
+
+
+                            <p:commandLink title="Add novo subGrupo" style="font-size: 20px;color: #00acac"
+                                           oncomplete="PF('dialogOutrasTelas5').show();"
+                                           update=":formOutrasTelas5:panelOutrasTelas5"
+                                           process="@this"
+                                           action="#{produtoControll.addSubGrupo}">
+
+                                <i class="fa fa-plus-circle"></i>
+                            </p:commandLink>
+
+                        </erp:autoCompleteAcao>
                     </div>
                     <div class="row">
 
@@ -261,23 +291,43 @@
 
                         </erp:autoComplete>
 
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                                          label="Marca"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{produtoControll}"
-                                          completeMethod="getListaMarcaProduto"
-                                          nomeAtributo="#{produtoControll.objeto.produtoMarca}"
-                                          idComponente="produtoMarcaProduto"
-                                          requerido="false"/>
+                        <erp:autoCompleteAcao styleClass="col-xs-12 col-sm-4 col-md-4"
+                                              label="Marca"
+                                              itemLabel="#{objeto.nome}"
+                                              controller="#{produtoControll}"
+                                              completeMethod="getListaMarcaProduto"
+                                              nomeAtributo="#{produtoControll.objeto.produtoMarca}"
 
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                          label="Almoxarifado"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{produtoControll}"
-                                          completeMethod="getListaAlmoxarifado"
-                                          nomeAtributo="#{produtoControll.objeto.almoxarifado}"
-                                          idComponente="produtoAlmoxarifado"
-                                          requerido="false"/>
+                                              idComponente="produtoMarcaProduto"
+                                              requerido="false">
+                            <p:commandLink title="Add nova marca" style="font-size: 20px;color: #00acac"
+                                           oncomplete="PF('dialogOutrasTelas2').show();"
+                                           update=":formOutrasTelas2:panelOutrasTelas2"
+                                           process="@this"
+                                           action="#{produtoControll.addMarca}">
+
+                                <i class="fa fa-plus-circle"></i>
+                            </p:commandLink>
+                        </erp:autoCompleteAcao>
+
+                        <erp:autoCompleteAcao styleClass="col-xs-12 col-sm-6 col-md-6"
+                                              label="Almoxarifado"
+                                              itemLabel="#{objeto.nome}"
+                                              controller="#{produtoControll}"
+                                              completeMethod="getListaAlmoxarifado"
+                                              nomeAtributo="#{produtoControll.objeto.almoxarifado}"
+                                              idComponente="produtoAlmoxarifado"
+                                              requerido="false">
+
+                            <p:commandLink title="Add nova almoxarifado" style="font-size: 20px;color: #00acac"
+                                           oncomplete="PF('dialogOutrasTelas3').show();"
+                                           update=":formOutrasTelas3:panelOutrasTelas3"
+                                           process="@this"
+                                           action="#{produtoControll.addAlmoxarifado}">
+
+                                <i class="fa fa-plus-circle"></i>
+                            </p:commandLink>
+                        </erp:autoCompleteAcao>
                     </div>
 
 
@@ -462,20 +512,6 @@
                 <p:tab title="Fiscal">
                     <div class="row">
                         <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                          label="ICMS Customizado"
-                                          itemLabel="#{objeto.descricao}"
-                                          controller="#{produtoControll}"
-                                          completeMethod="getListaTributIcmsCustomCab"
-                                          nomeAtributo="#{produtoControll.objeto.tributIcmsCustomCab}"
-                                          idComponente="produtoTributIcmsCustomCab"
-                                          requerido="false"
-                                          id="campoProdutoTributIcmsCustomCab">
-                            <p:ajax event="itemSelecionado"
-                                    listener="#{produtoControll.alteraTributacao}"
-                                    update="formCentro:telaDetalhe:tabProduto:campoProdutoGrupoTributario:produtoGrupoTributario"/>
-
-                        </erp:autoComplete>
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                           label="Grupo Tributario"
                                           itemLabel="#{objeto.descricao}"
                                           controller="#{produtoControll}"
@@ -485,9 +521,6 @@
                                           requerido="false"
                                           id="campoProdutoGrupoTributario">
 
-                            <p:ajax event="itemSelecionado"
-                                    listener="#{produtoControll.alteraTributacao()}"
-                                    update="formCentro:telaDetalhe:tabProduto:campoProdutoTributIcmsCustomCab:produtoTributIcmsCustomCab"/>
 
                         </erp:autoComplete>
 
@@ -552,6 +585,179 @@
                 <f:facet name="footer">
                     <p:commandButton value="Fechar" update=":formCentro:telaDetalhe:tabProduto:imagemProduto"
                                      oncomplete="PF('dialogUpload').hide();" process="@this"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+            <p:dialog id="dialogOutrasTelas2"
+                      header="Inclusão de Marca"
+                      widgetVar="dialogOutrasTelas2" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="400">
+
+                <p:outputPanel id="panelOutrasTelas2">
+                    <div class="row">
+                        <erp:campoTexto nomeAtributo="#{produtoControll.marca.nome}"
+                                        tamanhoMaximo="50" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        label="Marca" idComponente="marcaNome"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarMarca"
+                                             action="#{produtoControll.salvarMarca}"
+                                             class="btn btn-primary center-block"
+                            >
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas2').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formOutrasTelas3">
+            <p:dialog id="dialogOutrasTelas3"
+                      header="Inclusão de Almoxarifado"
+                      widgetVar="dialogOutrasTelas3" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="400">
+
+                <p:outputPanel id="panelOutrasTelas3">
+                    <div class="row">
+                        <erp:campoTexto nomeAtributo="#{produtoControll.almoxarifado.nome}"
+                                        tamanhoMaximo="50" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        label="Almoxarifado" idComponente="almoxarifadoNome"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarAlmoxarifado"
+                                             action="#{produtoControll.salvarAlmoxarifado}"
+                                             class="btn btn-primary center-block"
+                            >
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas3').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas3').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas4">
+        <h:form id="formOutrasTelas4">
+            <p:dialog id="dialogOutrasTelas4"
+                      header="Inclusão de Grupo"
+                      widgetVar="dialogOutrasTelas4" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="400">
+
+                <p:outputPanel id="panelOutrasTelas4">
+                    <div class="row">
+                        <erp:campoTexto nomeAtributo="#{produtoControll.grupo.nome}"
+                                        tamanhoMaximo="50" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        label="Grupo" idComponente="grupoNome"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarGrupo"
+                                             action="#{produtoControll.salvarGrupo}"
+                                             class="btn btn-primary center-block"
+                            >
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas4').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas4').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas5">
+        <h:form id="formOutrasTelas5">
+            <p:dialog id="dialogOutrasTelas5"
+                      header="Inclusão de SubGrupo"
+                      widgetVar="dialogOutrasTelas5" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="600">
+
+                <p:outputPanel id="panelOutrasTelas5">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Grupo"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaGrupo"
+                                          nomeAtributo="#{produtoControll.grupo}"
+                                          idComponente="grupoProduto"
+                        />
+                        <erp:campoTexto nomeAtributo="#{produtoControll.subGrupo.nome}"
+                                        tamanhoMaximo="50" styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        label="SubGrupo" idComponente="subgrupoNome"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarSubGrupo"
+                                             action="#{produtoControll.salvarSubgrupo}"
+                                             class="btn btn-primary center-block"
+                            >
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas5').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
                 </f:facet>
             </p:dialog>
         </h:form>

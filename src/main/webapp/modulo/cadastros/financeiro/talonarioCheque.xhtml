@@ -28,13 +28,13 @@
                        nomeFuncao="Talonário Cheque"
                        id="telaGrid">
 
-            <p:column headerText="Talao">
+            <p:column headerText="Talão">
                 <h:outputLabel value="#{row.talao}" />
             </p:column>
-            <p:column headerText="Numero">
+            <p:column headerText="Número">
                 <h:outputLabel value="#{row.numero}" />
             </p:column>
-            <p:column headerText="Status Talao">
+            <p:column headerText="Status Talão">
                 <h:outputLabel value="#{talonarioChequeControll.keyFromValue(talonarioChequeControll.talonarioChequeStatus, row.statusTalao)}" />
             </p:column>
             <p:column headerText="Conta Caixa">

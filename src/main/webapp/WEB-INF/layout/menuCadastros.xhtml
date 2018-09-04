@@ -86,7 +86,7 @@
                              funcao="bancos"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/financeiro/agenciaBanco"
-                             label="Agencia Bancaria"
+                             label="Agência Bancária"
                              exibir="#{seguranca.isTemAcesso('AGENCIA_BANCO')}"
                              funcao="agenciaBanco"/>
 
@@ -185,10 +185,6 @@
                              exibir="#{seguranca.isTemAcesso('IBPT')}"
                              funcao="ibpt"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/tabelas/feriados"
-                             label="Feriados"
-                             exibir="#{seguranca.isTemAcesso('FERIADOS')}"
-                             funcao="feriados"/>
 
             </ul>
         </li>
@@ -199,24 +195,21 @@
             <ul class="nav nav-third-level">
 
                 <erp:subMenu caminho="/modulo/cadastros/endereco/pais"
-                             label="Pais"
+                             label="País"
                              funcao="pais"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/endereco/uf"
                              label="UF"
                              funcao="uf"/>
                 <erp:subMenu caminho="/modulo/cadastros/endereco/municipio"
-                             label="Municipio"
+                             label="Município"
                              funcao="municipio"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/endereco/cep"
-                             label="CEP"
-                             funcao="cep"/>
 
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/administrativo')?'active':''}">
-            <a href="#">administrativos
+            <a href="#">Administrativos
                 <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-third-level">
@@ -237,7 +230,7 @@
                              exibir="#{seguranca.isTemAcesso('PAPEL')}"
                              funcao="papel"/>
                 <erp:subMenu caminho="/modulo/cadastros/administrativo/usuario"
-                             label="Usuario"
+                             label="Usuário"
                              exibir="#{seguranca.isTemAcesso('USUARIO')}"
                              funcao="usuario"/>
 
@@ -253,7 +246,7 @@
                              label="Proprietário"
                              funcao="proprietarioVeiculo"/>
                 <erp:subMenu caminho="/modulo/cadastros/transporte/veiculo"
-                             label="Veiculo"
+                             label="Veículo"
                              funcao="veiculo"/>
             </ul>
         </li>
