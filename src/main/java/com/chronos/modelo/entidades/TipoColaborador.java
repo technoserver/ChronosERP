@@ -54,6 +54,10 @@ public class TipoColaborador implements Serializable {
     public TipoColaborador() {
     }
 
+    public TipoColaborador(Integer idtipo) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }
