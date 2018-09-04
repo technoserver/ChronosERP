@@ -11,14 +11,14 @@
 
 
     <ui:define name="title">
-        Conciliacao Bancaria
+        Conciliação Bancária
     </ui:define>
 
     <ui:define name="tela">
         #{finExtratoContaBancoControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        Conciliacao Bancaria
+        Conciliação Bancária
     </ui:define>
 
     <ui:define name="gridDados">
@@ -31,16 +31,16 @@
             <p:column headerText="Agencia">
                 <h:outputLabel value="#{row.agenciaBanco.nome}"/>
             </p:column>
-            <p:column headerText="Codigo">
+            <p:column headerText="Código">
                 <h:outputLabel value="#{row.codigo}"/>
             </p:column>
-            <p:column headerText="Digito">
+            <p:column headerText="Dígito">
                 <h:outputLabel value="#{row.digito}"/>
             </p:column>
             <p:column headerText="Nome" width="20%">
                 <h:outputLabel value="#{row.nome}"/>
             </p:column>
-            <p:column headerText="Descricao" width="30%">
+            <p:column headerText="Descrição" width="30%">
                 <h:outputLabel value="#{row.descricao}"/>
             </p:column>
             <p:column headerText="Tipo">
@@ -62,7 +62,7 @@
 
                     <p:calendar value="#{finExtratoContaBancoControll.periodo}"
                                 id="perido"
-                                placeholder="Informe o Periodo"
+                                placeholder="Informe o Período"
                                 pattern="MM/yyyy"
                                 required="true"/>
 
@@ -108,7 +108,7 @@
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Historico">
+                <p:column headerText="Histórico">
                     <h:outputLabel value="#{obj.historico}"/>
                 </p:column>
                 <p:column headerText="Documento">
@@ -123,7 +123,7 @@
                     <h:outputLabel
                             value="#{finExtratoContaBancoControll.keyFromValue(finExtratoContaBancoControll.simNao, obj.conciliado)}"/>
                 </p:column>
-                <p:column headerText="Observacao">
+                <p:column headerText="Observação">
                     <h:outputLabel value="#{obj.observacao}"/>
                 </p:column>
 
