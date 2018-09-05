@@ -67,9 +67,9 @@ public class CertificadoConfiguracaoControll extends AbstractControll<Certificad
 
     @Override
     public void salvar() {
-        if (getObjeto().getTipo().equals("A1")) {
+        if (getObjeto().getTipo().equals("A3")) {
             getObjeto().setCaminho("");
-            getObjeto().setSenha("01");
+            getObjeto().setSenha("");
             getObjeto().setSerie("");
         }
         super.salvar();

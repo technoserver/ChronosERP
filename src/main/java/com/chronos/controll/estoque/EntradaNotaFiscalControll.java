@@ -4,6 +4,7 @@ import com.chronos.bo.nfe.ImportaXMLNFe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.TipoImportacaoXml;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.FornecedorService;
@@ -273,7 +274,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             iniciarValorsValidacao();
             if (file != null) {
                 ImportaXMLNFe importaXml = new ImportaXMLNFe();
-                Map map = importaXml.importarXmlNFe(file);
+                Map map = importaXml.importarXmlNFe(file, TipoImportacaoXml.ENTRADA);
                 // tipoDoc = "NFE";
                 setObjeto((NfeCabecalho) map.get("cabecalho"));
                 getObjeto().setEmpresa(empresa);

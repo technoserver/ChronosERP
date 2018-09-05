@@ -5,6 +5,8 @@ import br.inf.portalfiscal.nfe.schema_4.procNFe.TNFe;
 import br.inf.portalfiscal.nfe.schema_4.procNFe.TNfeProc;
 import br.inf.portalfiscal.nfe.schema_4.procNFe.TProtNFe;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.TipoImportacaoXml;
+import com.chronos.service.comercial.DefinirCstService;
 import com.chronos.util.FormatValor;
 
 import javax.xml.bind.JAXBContext;
@@ -20,9 +22,28 @@ import java.util.*;
  * Created by john on 02/08/17.
  */
 public class ImportaXMLNFe {
+
     private String imp;
 
-    public Map importarXmlNFe(File arquiXml) throws Exception {
+    private List<ConverterCst> cstList;
+    private List<ConverterCfop> cfopList;
+    private TipoImportacaoXml tipoImportacao;
+    private DefinirCstService definirCstService;
+
+    public ImportaXMLNFe(TipoImportacaoXml tipoImportacao) {
+        this.tipoImportacao = tipoImportacao;
+        this.cstList = new ArrayList<>();
+        this.cfopList = new ArrayList<>();
+        this.definirCstService = new DefinirCstService();
+    }
+
+    public ImportaXMLNFe(TipoImportacaoXml tipoImportacao, List<ConverterCst> cstList, List<ConverterCfop> cfopList) {
+        this.cstList = cstList;
+        this.cfopList = cfopList;
+        this.definirCstService = new DefinirCstService();
+    }
+
+    public Map importarXmlNFe(File arquiXml, TipoImportacaoXml tipo) throws Exception {
 
         Map map = new HashMap();
         NfeCabecalho nfeCabecalho = new NfeCabecalho();
@@ -32,7 +53,9 @@ public class ImportaXMLNFe {
         nfeCabecalho.setListaCteReferenciado(new HashSet<>());
         nfeCabecalho.setListaCupomFiscalReferenciado(new HashSet<>());
         nfeCabecalho.setListaProdRuralReferenciada(new HashSet<>());
-        NfeEmitente emitente = new NfeEmitente();
+        Set<NfeReferenciada> listaNfeReferenciada = new HashSet<>();
+        NfeEmitente emitente;
+        NfeDestinatario destinatario;
 
         List<NfeDetalhe> listaNfeDetalhe = new ArrayList();
         Set<NfeDuplicata> listaDuplicatas = new HashSet<>();
@@ -48,6 +71,7 @@ public class ImportaXMLNFe {
         TNFe.InfNFe infNfe = nfe.getInfNFe();
         TNFe.InfNFe.Ide ide = infNfe.getIde();
         TNFe.InfNFe.Emit emit = infNfe.getEmit();
+        TNFe.InfNFe.Dest dest = infNfe.getDest();
         List<TNFe.InfNFe.Det> listaDet = infNfe.getDet();
         TProtNFe protNfe = nfeProc.getProtNFe();
 
@@ -142,6 +166,12 @@ public class ImportaXMLNFe {
         emitente.setNfeCabecalho(nfeCabecalho);
         nfeCabecalho.setEmitente(emitente);
 
+
+        //destinatario
+        destinatario = tipo == TipoImportacaoXml.ENTRADA ? getDestinatario(dest) : getDestinatario(dest);
+        destinatario.setNfeCabecalho(nfeCabecalho);
+        nfeCabecalho.setDestinatario(destinatario);
+
         //detalhe
         TNFe.InfNFe.Det det;
         NfeDetalhe nfeDetalhe;
@@ -164,14 +194,25 @@ public class ImportaXMLNFe {
             dup.setNfeCabecalho(nfeCabecalho);
             listaDuplicatas.add(dup);
         }
+
+
+        if (tipo == TipoImportacaoXml.DEVOLUCAO) {
+            NfeReferenciada nfeReferenciada = new NfeReferenciada();
+            nfeReferenciada.setChaveAcesso(infNfe.getId().replaceAll("[NFCe]", ""));
+            nfeReferenciada.setNfeCabecalho(nfeCabecalho);
+            listaNfeReferenciada.add(nfeReferenciada);
+        }
+
         map.put("cabecalho", nfeCabecalho);
         map.put("detalhe", listaNfeDetalhe);
         map.put("emitente", emitente);
         map.put("duplicata", listaDuplicatas);
-
+        map.put("destinatario", destinatario);
+        map.put("nfeReferenciada", listaNfeReferenciada);
 
         return map;
     }
+
 
     private NfeEmitente getEmitente(TNFe.InfNFe.Emit emit) {
         NfeEmitente emitente = new NfeEmitente();
@@ -200,6 +241,56 @@ public class ImportaXMLNFe {
         return emitente;
     }
 
+    private NfeDestinatario getDestinatario(TNFe.InfNFe.Emit emit) {
+
+        NfeDestinatario destinatario = new NfeDestinatario();
+
+
+        destinatario.setCpfCnpj(emit.getCNPJ());
+        destinatario.setInscricaoEstadual(emit.getIE());
+        destinatario.setNome(emit.getXNome());
+        destinatario.setLogradouro(emit.getEnderEmit().getXLgr());
+        destinatario.setNumero(emit.getEnderEmit().getNro());
+        destinatario.setComplemento(emit.getEnderEmit().getXCpl());
+        destinatario.setBairro(emit.getEnderEmit().getXBairro());
+        destinatario.setCodigoMunicipio(Integer.valueOf(emit.getEnderEmit().getCMun()));
+        destinatario.setNomeMunicipio(emit.getEnderEmit().getXMun());
+        destinatario.setUf(emit.getEnderEmit().getUF().value());
+        destinatario.setCep(emit.getEnderEmit().getCEP());
+
+        destinatario.setCodigoPais(
+                Integer.valueOf(emit.getEnderEmit().getCPais() == null ? "1058" : emit.getEnderEmit().getCPais()));
+        destinatario.setNomePais(emit.getEnderEmit().getXPais());
+        destinatario.setTelefone(emit.getEnderEmit().getFone());
+        destinatario.setInscricaoMunicipal(emit.getIM());
+
+        return destinatario;
+    }
+
+    private NfeDestinatario getDestinatario(TNFe.InfNFe.Dest dest) {
+
+        NfeDestinatario destinatario = new NfeDestinatario();
+
+        destinatario.setCpfCnpj(dest.getCNPJ());
+        destinatario.setInscricaoEstadual(dest.getIE());
+        destinatario.setNome(dest.getXNome());
+        destinatario.setLogradouro(dest.getEnderDest().getXLgr());
+        destinatario.setNumero(dest.getEnderDest().getNro());
+        destinatario.setComplemento(dest.getEnderDest().getXCpl());
+        destinatario.setBairro(dest.getEnderDest().getXBairro());
+        destinatario.setCodigoMunicipio(Integer.valueOf(dest.getEnderDest().getCMun()));
+        destinatario.setNomeMunicipio(dest.getEnderDest().getXMun());
+        destinatario.setUf(dest.getEnderDest().getUF().value());
+        destinatario.setCep(dest.getEnderDest().getCEP());
+        destinatario.setCodigoPais(1058);
+        destinatario.setNomePais("BRASIL");
+        destinatario.setTelefone(dest.getEnderDest().getFone());
+        destinatario.setInscricaoMunicipal(dest.getIM());
+
+
+        return destinatario;
+    }
+
     private NfeDetalhe getNfeDetalhe(TNFe.InfNFe.Det det) throws ParseException, JAXBException {
         NfeDetalhe item = new NfeDetalhe();
 
@@ -214,7 +305,7 @@ public class ImportaXMLNFe {
         if (prod.getEXTIPI() != null) {
             item.setExTipi(Integer.valueOf(prod.getEXTIPI()));
         }
-        item.setCfop(Integer.valueOf(prod.getCFOP()));
+        item.setCfop(definirCfop(prod.getCFOP()));
         item.setUnidadeComercial(prod.getUCom());
         item.setQuantidadeComercial(FormatValor.getInstance().formatarQuantidadeToBigDecimal(prod.getQCom()));
         item.setValorUnitarioComercial(FormatValor.getInstance().formatarValorToBigDecimal(prod.getVUnCom()));
@@ -265,7 +356,7 @@ public class ImportaXMLNFe {
     }
 
 
-    private <T> T getTipoImposto(Class<T> imposto, List<JAXBElement<?>> classToCast) throws JAXBException {
+    private <T> T getTipoImposto(Class<T> imposto, List<JAXBElement<?>> classToCast) {
 
 
         imp = imposto.getSimpleName();
@@ -556,6 +647,19 @@ public class ImportaXMLNFe {
         }
 
         return impostoCofins;
+    }
+
+
+    private Integer definirCfop(String cfop) {
+        int cfopDetino = Integer.valueOf(cfop);
+        for (ConverterCfop item : cfopList) {
+            if (item.getCfopOrigem() == cfopDetino) {
+                cfopDetino = item.getCfopDestino();
+                break;
+            }
+        }
+
+        return cfopDetino;
     }
 
 
