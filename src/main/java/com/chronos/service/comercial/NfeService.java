@@ -351,7 +351,7 @@ public class NfeService implements Serializable {
         nfe.setChaveAcesso("" + empresa.getCodigoIbgeUf()
                 + FormatValor.getInstance().formatarAno(new Date())
                 + FormatValor.getInstance().formatarMes(new Date())
-                + nfe.getEmpresa().getCnpj()
+                + empresa.getCnpj()
                 + nfe.getCodigoModelo()
                 + nfe.getSerie()
                 + nfe.getNumero()

@@ -90,6 +90,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
     public void doEdit() {
         NfeCabecalho nfe = dataModel.getRowData(getObjetoSelecionado().getId().toString());
         Empresa emp = nfe.getEmpresa();
+        nfe.setEmpresa(emp);
         setObjeto(nfe);
         setTelaGrid(false);
         dadosSalvos = true;
@@ -158,6 +159,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             super.salvar();
 
         } catch (Exception ex) {
+            setTelaGrid(true);
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
             } else {
