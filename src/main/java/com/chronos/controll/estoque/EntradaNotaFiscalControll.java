@@ -273,8 +273,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             FileUtils.copyInputStreamToFile(arquivoUpload.getInputstream(), file);
             iniciarValorsValidacao();
             if (file != null) {
-                ImportaXMLNFe importaXml = new ImportaXMLNFe();
-                Map map = importaXml.importarXmlNFe(file, TipoImportacaoXml.ENTRADA);
+                ImportaXMLNFe importaXml = new ImportaXMLNFe(TipoImportacaoXml.ENTRADA);
+                Map map = importaXml.importarXmlNFe(file);
                 // tipoDoc = "NFE";
                 setObjeto((NfeCabecalho) map.get("cabecalho"));
                 getObjeto().setEmpresa(empresa);

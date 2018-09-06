@@ -226,7 +226,7 @@ public class DefinirCstService implements Serializable {
         return detalheImpostoIcms;
     }
 
-    private NfeDetalheImpostoIcms definirNfeDetalheIcms(String cst, String crt, ImpostoDTO imposto) {
+    public NfeDetalheImpostoIcms definirNfeDetalheIcms(String cst, String crt, ImpostoDTO imposto) {
         NfeDetalheImpostoIcms icms = new NfeDetalheImpostoIcms();
 
         icms.setOrigemMercadoria(Integer.valueOf(imposto.getOrigem()));
@@ -411,7 +411,7 @@ public class DefinirCstService implements Serializable {
 
     }
 
-    private String definirCst(List<ConverterCst> csts, ImpostoDTO imposto, String crt) {
+    public String definirCst(List<ConverterCst> csts, ImpostoDTO imposto, String crt) {
         String cst = imposto.getCst();
         ConverterCst converter = null;
         for (ConverterCst item : csts) {
@@ -483,4 +483,6 @@ public class DefinirCstService implements Serializable {
 
         return cst;
     }
+
+
 }

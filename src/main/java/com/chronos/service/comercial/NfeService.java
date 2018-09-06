@@ -148,7 +148,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) {
+    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) throws ChronosException {
         NfeCabecalho nfe = new NfeCabecalho();
         nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO.getCodigo() : FormatoImpressaoDanfe.DANFE_NFCE.getCodigo());
         nfe.setUfEmitente(empresa.getCodigoIbgeUf());
@@ -171,8 +171,15 @@ public class NfeService implements Serializable {
         definirFormaPagamento(nfe, new PdvTipoPagamento().buscarPorCodigo("01"));
 
 
+        instanciarDadosConfiguracoes(nfe);
 
+        return nfe;
+    }
 
+    public void instanciarDadosConfiguracoes(NfeCabecalho nfe) throws ChronosException {
+        if (configuracao == null) {
+            instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
+        }
         if (configuracao != null) {
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
             if (StringUtils.isEmpty(nfe.getInformacoesAddContribuinte())) {
@@ -181,8 +188,6 @@ public class NfeService implements Serializable {
             nfe.setCsc(configuracao.getCsc());
 
         }
-
-        return nfe;
     }
 
     @Transactional
@@ -331,7 +336,7 @@ public class NfeService implements Serializable {
         String serie;
         NotaFiscalTipo notaFiscalTipo = null;
         ModeloDocumento modelo = nfe.getModeloDocumento();
-        if (nfe.getNumero() == null) {
+        if (nfe.getNumero() == null || StringUtils.isEmpty(nfe.getNumero())) {
             notaFiscalTipo = modelo == ModeloDocumento.NFE ? getNotaFicalTipo(modelo) : getNotaFicalTipo(modelo, nfe.getSerie());
             numero = notaFiscalTipo.proximoNumero();
             serie = notaFiscalTipo.getSerie();
@@ -343,9 +348,9 @@ public class NfeService implements Serializable {
         nfe.setNumero(FormatValor.getInstance().formatarNumeroDocFiscalToString(numero));
         nfe.setCodigoNumerico(FormatValor.getInstance().formatarCodigoNumeroDocFiscalToString(numero));
         nfe.setSerie(serie);
-        nfe.setChaveAcesso("" + nfe.getEmpresa().getCodigoIbgeUf()
-                + FormatValor.getInstance().formatarAno(nfe.getDataHoraEmissao())
-                + FormatValor.getInstance().formatarMes(nfe.getDataHoraEmissao())
+        nfe.setChaveAcesso("" + empresa.getCodigoIbgeUf()
+                + FormatValor.getInstance().formatarAno(new Date())
+                + FormatValor.getInstance().formatarMes(new Date())
                 + nfe.getEmpresa().getCnpj()
                 + nfe.getCodigoModelo()
                 + nfe.getSerie()
@@ -942,6 +947,11 @@ public class NfeService implements Serializable {
             }
 
         }
+    }
+
+
+    public void definirEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     private void atualizarNumeroNfe(NotaFiscalTipo notaFiscalTipo, int numero) {

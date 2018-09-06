@@ -5,6 +5,7 @@ import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.transmissor.exception.EmissorException;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.inject.Inject;
@@ -18,9 +19,12 @@ public class NfeBaseControll extends AbstractControll<NfeCabecalho> implements S
 
     private boolean duplicidade;
 
-    public void transmitirNfe() {
+    public void transmitirNfe(boolean iniciarConfiguracao) {
         try {
 
+            if (iniciarConfiguracao) {
+                service.instanciarConfNfe(empresa, ModeloDocumento.NFE);
+            }
 
             boolean estoque = isTemAcesso("ESTOQUE");
             StatusTransmissao status = service.transmitirNFe(getObjeto(), estoque);

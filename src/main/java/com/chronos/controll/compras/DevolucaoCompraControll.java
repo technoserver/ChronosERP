@@ -4,12 +4,15 @@ import com.chronos.bo.nfe.ImportaXMLNFe;
 import com.chronos.bo.nfe.NfeUtil;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.controll.nfe.NfeBaseControll;
+import com.chronos.dto.ImpostoDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.FinalidadeEmissao;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.enuns.TipoImportacaoXml;
 import com.chronos.repository.Filtro;
+import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
+import com.chronos.service.comercial.DefinirCstService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
@@ -37,6 +40,14 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
 
     @Inject
     private NfeService service;
+    @Inject
+    private DefinirCstService definirCstService;
+    @Inject
+    private Repository<ConverterCfop> converterCfopRepository;
+    @Inject
+    private Repository<ConverterCst> converterCstRepository;
+    @Inject
+    private Repository<FornecedorProduto> fornecedorProdutoRepository;
 
     private NfeDetalhe nfeDetalheSelecionado;
     private NfeDetalheImpostoCofins nfeDetalheImpostoCofins;
@@ -78,8 +89,10 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
     @Override
     public void doEdit() {
         NfeCabecalho nfe = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        Empresa emp = nfe.getEmpresa();
         setObjeto(nfe);
         setTelaGrid(false);
+        dadosSalvos = true;
     }
 
     public void importarXml(FileUploadEvent event) {
@@ -90,12 +103,15 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             FileUtils.copyInputStreamToFile(arquivoUpload.getInputstream(), file);
 
 
-            ImportaXMLNFe importaXml = new ImportaXMLNFe(TipoImportacaoXml.DEVOLUCAO);
-            Map map = importaXml.importarXmlNFe(file, TipoImportacaoXml.DEVOLUCAO);
+            List<ConverterCfop> cfops = converterCfopRepository.getEntitys(ConverterCfop.class, "tipo", "S");
+            List<ConverterCst> csts = converterCstRepository.getEntitys(ConverterCst.class, "tipo", "S");
 
-            Set<NfeReferenciada> listNfeReferenciada = (HashSet) map.get("nfeReferenciada");
+            ImportaXMLNFe importaXml = new ImportaXMLNFe(TipoImportacaoXml.DEVOLUCAO, csts, cfops);
+            Map map = importaXml.importarXmlNFe(file);
 
-            String chave = listNfeReferenciada.iterator().next().getChaveAcesso();
+            List<NfeReferenciada> listNfeReferenciada = (ArrayList) map.get("nfeReferenciada");
+
+            String chave = listNfeReferenciada.get(0).getChaveAcesso();
             verificarEntrada(chave);
             super.doCreate();
             setObjeto((NfeCabecalho) map.get("cabecalho"));
@@ -114,11 +130,18 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             getObjeto().setDestinatario((NfeDestinatario) map.get("destinatario"));
             getObjeto().setFinalidadeEmissao(FinalidadeEmissao.DEVOLUCAO.getCodigo());
             getObjeto().setListaNfeDetalhe((ArrayList) map.get("detalhe"));
-            getObjeto().setListaNfeReferenciada(listNfeReferenciada);
+            getObjeto().setListaNfeReferenciada(new HashSet<>(listNfeReferenciada));
+
 
 
             for (NfeDetalhe item : getObjeto().getListaNfeDetalhe()) {
-
+                ImpostoDTO impostoDTO = new ImpostoDTO(item.getNfeDetalheImpostoIcms());
+                String cst = definirCstService.definirCst(csts, impostoDTO, empresa.getCrt());
+                impostoDTO.setCst(cst);
+                NfeDetalheImpostoIcms icms = definirCstService.definirNfeDetalheIcms(cst, empresa.getCrt(), impostoDTO);
+                icms.setNfeDetalhe(item);
+                item.setNfeDetalheImpostoIcms(icms);
+                verificaProdutoNaoCadastrado(item);
             }
 
             atualizaTotais();
@@ -127,6 +150,10 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             NfeEmitente emitente = nfeUtil.getEmitente(empresa);
             emitente.setNfeCabecalho(getObjeto());
             getObjeto().setEmitente(emitente);
+
+            service.instanciarDadosConfiguracoes(getObjeto());
+
+            service.definirIndicadorIe(getObjeto().getDestinatario(), ModeloDocumento.NFE);
 
             super.salvar();
 
@@ -300,12 +327,23 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         realizarCalculoImposto();
     }
 
-    public void transmitirNfe() {
+    public void transmitir() {
 
-        if (dadosSalvos) {
-            transmitirNfe();
-        } else {
-            Mensagem.addInfoMessage("Antes de enviar a NF-e é necessário salvar as informações!");
+        try {
+            if (dadosSalvos) {
+                getObjeto().setDataHoraEmissao(new Date());
+                getObjeto().setDataHoraEntradaSaida(new Date());
+                transmitirNfe(true);
+            } else {
+                Mensagem.addInfoMessage("Antes de enviar a NF-e é necessário salvar as informações!");
+            }
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("", ex);
+            }
         }
 
     }
@@ -404,6 +442,20 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         getObjeto().setValorCofins(valorCofins);
 
         getObjeto().setValorTotal(valorNotaFiscal);
+    }
+
+    private void verificaProdutoNaoCadastrado(NfeDetalhe item) throws Exception {
+
+
+        FornecedorProduto fornecedorProduto = fornecedorProdutoRepository.get(FornecedorProduto.class, "codigoFornecedorProduto", item.getCodigoProduto(), new Object[]{"produto.id", "produto.nome"});
+
+        if (fornecedorProduto == null) {
+            throw new ChronosException("Produo não vinculado ao fornacedor");
+        } else {
+            item.setProduto(fornecedorProduto.getProduto());
+        }
+
+
     }
 
     @Override

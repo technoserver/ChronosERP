@@ -11,7 +11,6 @@ import com.chronos.util.FormatValor;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.math.BigDecimal;
@@ -38,12 +37,13 @@ public class ImportaXMLNFe {
     }
 
     public ImportaXMLNFe(TipoImportacaoXml tipoImportacao, List<ConverterCst> cstList, List<ConverterCfop> cfopList) {
+        this.tipoImportacao = tipoImportacao;
         this.cstList = cstList;
         this.cfopList = cfopList;
         this.definirCstService = new DefinirCstService();
     }
 
-    public Map importarXmlNFe(File arquiXml, TipoImportacaoXml tipo) throws Exception {
+    public Map importarXmlNFe(File arquiXml) throws Exception {
 
         Map map = new HashMap();
         NfeCabecalho nfeCabecalho = new NfeCabecalho();
@@ -53,7 +53,7 @@ public class ImportaXMLNFe {
         nfeCabecalho.setListaCteReferenciado(new HashSet<>());
         nfeCabecalho.setListaCupomFiscalReferenciado(new HashSet<>());
         nfeCabecalho.setListaProdRuralReferenciada(new HashSet<>());
-        Set<NfeReferenciada> listaNfeReferenciada = new HashSet<>();
+        List<NfeReferenciada> listaNfeReferenciada = new ArrayList<>();
         NfeEmitente emitente;
         NfeDestinatario destinatario;
 
@@ -168,7 +168,7 @@ public class ImportaXMLNFe {
 
 
         //destinatario
-        destinatario = tipo == TipoImportacaoXml.ENTRADA ? getDestinatario(dest) : getDestinatario(dest);
+        destinatario = tipoImportacao == TipoImportacaoXml.ENTRADA ? getDestinatario(dest) : getDestinatario(dest);
         destinatario.setNfeCabecalho(nfeCabecalho);
         nfeCabecalho.setDestinatario(destinatario);
 
@@ -196,7 +196,7 @@ public class ImportaXMLNFe {
         }
 
 
-        if (tipo == TipoImportacaoXml.DEVOLUCAO) {
+        if (tipoImportacao == TipoImportacaoXml.DEVOLUCAO) {
             NfeReferenciada nfeReferenciada = new NfeReferenciada();
             nfeReferenciada.setChaveAcesso(infNfe.getId().replaceAll("[NFCe]", ""));
             nfeReferenciada.setNfeCabecalho(nfeCabecalho);
@@ -291,7 +291,7 @@ public class ImportaXMLNFe {
         return destinatario;
     }
 
-    private NfeDetalhe getNfeDetalhe(TNFe.InfNFe.Det det) throws ParseException, JAXBException {
+    private NfeDetalhe getNfeDetalhe(TNFe.InfNFe.Det det) throws ParseException {
         NfeDetalhe item = new NfeDetalhe();
 
         TNFe.InfNFe.Det.Prod prod = det.getProd();

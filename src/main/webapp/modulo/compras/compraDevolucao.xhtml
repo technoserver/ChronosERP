@@ -115,14 +115,16 @@
                 });
             </script>
             <div class="row m-b">
-                <h:commandLink class="btn btn-default"
-                               title="Transmitir NF-e"
-                               actionListener="#{devolucaoCompraControll.transmitirNfe}"
-                               rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeEnviar}"
-                               id="btnEnviarNfe">
-                    <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:panelCentroDetalhe"/>
-                    <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
-                </h:commandLink>
+                <div class="col-md-12">
+                    <h:commandLink class="btn btn-default"
+                                   title="Transmitir NF-e"
+                                   actionListener="#{devolucaoCompraControll.transmitir}"
+                                   rendered="#{not empty devolucaoCompraControll.objeto.id and devolucaoCompraControll.objeto.podeEnviar}"
+                                   id="btnEnviarNfe">
+                        <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                    </h:commandLink>
+                </div>
             </div>
             <p:tabView id="tabNfe">
                 <p:tab title="Dados Principais" id="tabDadosPrincipais">
