@@ -1,0 +1,751 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Devolução
+    </ui:define>
+
+    <ui:define name="tela">
+        #{devolucaoCompraControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Devolução
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <erp:formularioGrid controller="#{devolucaoCompraControll}" id="telaGrid">
+
+            <div class="row m-b">
+                <div class="col-md-12">
+                    <p:commandButton value="Importar XML para devolução"
+                                     update=":formOutrasTelas:dialogOutrasTelas"
+                                     oncomplete="PF('dialogOutrasTelas').show()">
+
+                    </p:commandButton>
+                </div>
+            </div>
+
+
+            <erp:gridDadosSemForm controller="#{devolucaoCompraControll}"
+                                  idDataTable="dataTableNfe"
+                                  id="table"
+                                  exibirAcoes="false">
+
+                <p:column headerText="Destinatário">
+                    <h:outputLabel value="#{row.destinatario.nome}"/>
+                </p:column>
+                <p:column headerText="Número" styleClass="text-center" width="100">
+                    <h:outputLabel value="#{row.numero}"/>
+                </p:column>
+                <p:column headerText="Série" styleClass="text-center" width="60">
+                    <h:outputLabel value="#{row.serie}"/>
+                </p:column>
+                <p:column headerText="Emissão" styleClass="text-center" width="100">
+                    <h:outputLabel value="#{row.dataHoraEmissao}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+
+                <p:column headerText="Total" styleClass="text-right" width="120">
+                    <h:outputLabel value="#{row.valorTotal}">
+                        <f:convertNumber pattern="#,###,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Status" styleClass="text-center" width="115">
+                    <h:outputLabel
+                            value="#{devolucaoCompraControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
+                </p:column>
+
+                <p:column headerText="Ações" width="110" styleClass="text-center">
+                    <p:commandLink title="Alterar"
+                                   action="#{devolucaoCompraControll.doEdit()}"
+                                   class=" btn btn-default"
+                                   oncomplete="addClass()"
+                                   update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                    >
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{devolucaoCompraControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{devolucaoCompraControll.remover()}"
+                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                   process="formCentro:telaGrid:table:dataTableNfe"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default"
+                                   rendered="#{row.podeExcluir}"
+                    >
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{devolucaoCompraControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+
+
+            </erp:gridDadosSemForm>
+
+        </erp:formularioGrid>
+
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{devolucaoCompraControll}"
+                                   nomeFuncao="NFe"
+                                   id="telaDetalhe"
+                                   somenteConsulta="#{!devolucaoCompraControll.objeto.podeExcluir}">
+            <script type="text/javascript">
+                function teste(event) {
+                    console.log(event);
+                }
+
+                $(function () {
+
+
+                    $.extend(PF("dataTableNfeDetalhe"), {
+                        onKeyDown: function (e) {
+                            var key = e.which,
+                                keyCode = $.ui.keyCode;
+
+                            if ((key === keyCode.ENTER || key === keyCode.NUMPAD_ENTER)) {
+                                e.preventDefault();
+                            }
+                        },
+                        onKeyUp: function (e, rowIndex) {
+                            var key = e.which,
+                                keyCode = $.ui.keyCode;
+
+                            if ((key === keyCode.ENTER || key === keyCode.NUMPAD_ENTER)) {
+                                this.tbody
+                                    .find('.ui-row-editor .ui-icon-check')
+                                    .eq(rowIndex)
+                                    .click();
+                            }
+
+                            if (key === keyCode.ESCAPE) {
+                                this.tbody
+                                    .find('.ui-row-editor .ui-icon-close')
+                                    .eq(rowIndex)
+                                    .click();
+                            }
+                        }
+                    });
+                });
+            </script>
+            <div class="row m-b">
+                <div class="col-md-12">
+                    <h:commandLink class="btn btn-default"
+                                   title="Transmitir NF-e"
+                                   actionListener="#{devolucaoCompraControll.transmitir}"
+                                   rendered="#{not empty devolucaoCompraControll.objeto.id and devolucaoCompraControll.objeto.podeEnviar}"
+                                   id="btnEnviarNfe">
+                        <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Gerar DANFE" style="margin-left: 5px;"
+                                   actionListener="#{devolucaoCompraControll.danfe}"
+                                   rendered="#{not empty devolucaoCompraControll.objeto.id and devolucaoCompraControll.objeto.podeCancelar}"
+                                   id="btnGerardanfe">
+                        <p:ajax disabled="true"/>
+                        <i class="fa fa-print" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Cancelar NF-e" style="margin-left: 5px;"
+                                   rendered="#{not empty devolucaoCompraControll.objeto.id and devolucaoCompraControll.objeto.podeCancelar}"
+                                   action="#{devolucaoCompraControll.limparJustificativa}"
+                                   id="btnCancelarNfe">
+                        <p:ajax update=":formOutrasTelas3:panelOutrasTelas3"
+                                oncomplete="PF('dialogOutrasTelas3').show();"/>
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Carta de correção NF-e" style="margin-left: 5px;"
+                                   rendered="#{not empty devolucaoCompraControll.objeto.id and devolucaoCompraControll.objeto.podeCancelar}"
+                                   action="#{devolucaoCompraControll.limparJustificativa}"
+                                   id="btnCartaCorrecaoNfe">
+                        <p:ajax update=":formOutrasTelas4:panelOutrasTelas4"
+                                oncomplete="PF('dialogOutrasTelas4').show();"/>
+                        <i class="fa fa-text-width" aria-hidden="true"></i>
+                    </h:commandLink>
+
+
+                </div>
+            </div>
+            <p:tabView id="tabNfe">
+                <p:tab title="Dados Principais" id="tabDadosPrincipais">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
+                                          id="operacaoFiscal"
+                                          label="Operação Fiscal"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{devolucaoCompraControll}"
+                                          completeMethod="getListaTributOperacaoFiscal"
+                                          nomeAtributo="#{devolucaoCompraControll.objeto.tributOperacaoFiscal}"
+                                          idComponente="nfeCabecalhoTributOperacaoFiscal"
+                        />
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                        idComponente="nfeCabecalhoChaveAcesso" label="Chave Acesso"
+                                        nomeAtributo="#{devolucaoCompraControll.objeto.chaveAcesso}"
+                                        tamanhoMaximo="44" somenteLeitura="true"/>
+
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="nfeCabecalhoSerie" label="Série"
+                                        nomeAtributo="#{devolucaoCompraControll.objeto.serie}"
+                                        tamanhoMaximo="3" somenteLeitura="true"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="numero" label="Número"
+                                        nomeAtributo="#{devolucaoCompraControll.objeto.numero}"
+                                        tamanhoMaximo="9" somenteLeitura="true"/>
+
+                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                       idComponente="nfeCabecalhoDataHoraEntradaSaida"
+                                       label="Data/Hora Saida"
+                                       nomeAtributo="#{devolucaoCompraControll.objeto.dataHoraEntradaSaida}"
+                                       formato="dd/MM/yyyy HH:mm"/>
+
+                        <div class="col-xs-12 col-sm-12 col-md-12 m-t">
+                            <erp:separador label="Totais"/>
+                        </div>
+
+                    </div>
+                    <h:panelGroup layout="block" id="panelTotais">
+                        <div class="row">
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              idComponente="nfeCabecalhoBaseCalculoIcms"
+                                              label="Base Calculo Icms"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.baseCalculoIcms}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorIcms" label="Valor Icms"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorIcms}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2 "
+                                              idComponente="nfeCabecalhoBaseCalculoIcmsSt"
+                                              label="Base Calculo Icms ST"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.baseCalculoIcmsSt}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2 col-md-offset-1"
+                                              idComponente="nfeCabecalhoValorIcmsSt" label="Valor Icms ST"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorIcmsSt}"/>
+                        </div>
+                        <div class="row">
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                              idComponente="nfeCabecalhoValorImpostoImportacao"
+                                              label="Valor Imposto Importacao"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorImpostoImportacao}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorPis" label="Valor Pis"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorPis}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorCofins" label="Valor Cofins"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorCofins}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2 col-md-offset-1"
+                                              idComponente="nfeCabecalhoValorIpi" label="Valor Ipi"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorIpi}"/>
+
+                        </div>
+                        <div class="row">
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              idComponente="nfeCabecalhoValorDespesasAcessorias"
+                                              label="Valor Despesas Acessorias"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorDespesasAcessorias}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorFrete" label="Valor Frete"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorFrete}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorSeguro" label="Valor Seguro"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorSeguro}"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2 col-md-offset-1"
+                                              idComponente="nfeCabecalhoValorDesconto"
+                                              label="Valor Desconto"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorDesconto}"/>
+                        </div>
+                        <div class="row">
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              idComponente="nfeCabecalhoValorTotalProdutos"
+                                              label="Valor Total Produtos"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorTotalProdutos}"
+                                              somenteLeitura="true"/>
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeCabecalhoValorTotal" label="Valor Total"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.valorTotal}"
+                                              somenteLeitura="true"/>
+
+
+                        </div>
+
+                        <div class="row">
+                            <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-6"
+                                                idComponente="nfeCabecalhoInformacoesAddFisco"
+                                                label="Informações ao Fisco" linhas="5"
+                                                nomeAtributo="#{devolucaoCompraControll.objeto.informacoesAddFisco}"/>
+                            <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-6"
+                                                idComponente="nfeCabecalhoInformacoesAddContribuinte"
+                                                label="Informações Complementares" linhas="5"
+                                                nomeAtributo="#{devolucaoCompraControll.objeto.informacoesAddContribuinte}"/>
+                        </div>
+
+                    </h:panelGroup>
+
+                </p:tab>
+                <p:tab title="Destinatário" id="tabDestinatario">
+                    <h:panelGroup layout="block" id="dadosDestinatario">
+                        <div class="row">
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                            idComponente="nfeDestinatarioNome" label="Nome"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.nome}"
+                                            tamanhoMaximo="60" somenteLeitura="true" requerido="true"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                            idComponente="nfeDestinatarioCpfCnpj" label="CPF/CNPJ"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.cpfCnpj}"
+                                            tamanhoMaximo="14" somenteLeitura="true"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                            idComponente="nfeDestinatarioInscricaoEstadual"
+                                            label="Inscricao Estadual"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.inscricaoEstadual}"
+                                            tamanhoMaximo="14" somenteLeitura="true"/>
+                            <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeDestinatarioSuframa" label="Suframa"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.suframa}"
+                                              somenteLeitura="true"/>
+                        </div>
+                        <div class="row">
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                            idComponente="nfeDestinatarioLogradouro" label="Logradouro"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.logradouro}"
+                                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                            idComponente="nfeDestinatarioNumero" label="Numero"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.numero}"
+                                            tamanhoMaximo="60" somenteLeitura="true"/>
+
+                        </div>
+                        <div class="row">
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                            idComponente="nfeDestinatarioComplemento" label="Complemento"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.complemento}"
+                                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                            idComponente="nfeDestinatarioBairro" label="Bairro"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.bairro}"
+                                            tamanhoMaximo="60" somenteLeitura="true"/>
+
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                            idComponente="nfeDestinatarioCep" label="Cep"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.cep}"
+                                            tamanhoMaximo="8" somenteLeitura="true"/>
+
+
+                        </div>
+                        <div class="row">
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                            idComponente="nfeDestinatarioUf" label="UF"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.uf}"
+                                            tamanhoMaximo="2" somenteLeitura="true"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                            idComponente="nfeDestinatarioNomeMunicipio"
+                                            label="Nome Municipio"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.nomeMunicipio}"
+                                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              idComponente="nfeDestinatarioCodigoMunicipio"
+                                              label="Codigo Municipio"
+                                              nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.codigoMunicipio}"
+                                              somenteLeitura="true"/>
+
+
+                        </div>
+                        <div class="row">
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                            idComponente="nfeDestinatarioEmail" label="Email"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.email}"
+                                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-2"
+                                            idComponente="nfeDestinatarioTelefone" label="Telefone"
+                                            nomeAtributo="#{devolucaoCompraControll.objeto.destinatario.telefone}"
+                                            tamanhoMaximo="14" somenteLeitura="true"/>
+                        </div>
+                    </h:panelGroup>
+                </p:tab>
+                <p:tab title="Produtos" id="tabProdutos">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p:commandLink title="Excluir"
+                                           class="btn btn-default margem-bottom-10"
+                                           action="#{devolucaoCompraControll.excluirProduto()}"
+                                           type="button"
+                                           update=":formCentro:mensagem,dataTableNfeDetalhe"
+                                           process="@this,dataTableNfeDetalhe">
+                                <i class="glyphicon glyphicon-trash"/>
+                            </p:commandLink>
+
+                            &nbsp;
+                            <h:commandLink title="Detalhe Impostos"
+                                           class="btn btn-default margem-bottom-10"
+                                           action="#{devolucaoCompraControll.alterarImpostos()}"
+                                           type="button">
+                                <i class="glyphicon glyphicon-search"/>
+                                <p:ajax
+                                        update=":formCentro:mensagem,:formOutrasTelas2:panelOutrasTelas2"
+                                        process="@this"/>
+                            </h:commandLink>
+                        </div>
+
+                    </div>
+                    <p:dataTable id="dataTableNfeDetalhe" var="obj"
+                                 widgetVar="dataTableNfeDetalhe"
+                                 value="#{devolucaoCompraControll.objeto.listaNfeDetalhe}"
+                                 rowIndexVar="rowIndex"
+                                 selection="#{devolucaoCompraControll.nfeDetalheSelecionado}"
+                                 reflow="true" editable="true" resizableColumns="true"
+                                 sortOrder="numeroitem" selectionMode="single"
+                                 rowKey="#{obj.numeroItem}">
+
+
+                        <p:ajax event="rowEdit" process="dataTableNfeDetalhe"
+                                listener="#{devolucaoCompraControll.alterarProduto}"
+                                update=":formCentro:growl,:formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe,:formCentro:telaDetalhe:tabNfe:panelTotais"/>
+                        <p:ajax event="rowSelect"
+                                listener="#{devolucaoCompraControll.selecionarItem()}"/>
+
+                        <p:column headerText="Código" width="80">
+                            <h:outputLabel value="#{obj.codigoProduto}"/>
+                        </p:column>
+                        <p:column headerText="CFOP" width="55">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.cfop}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{obj.cfop}"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+
+                        </p:column>
+
+                        <p:column headerText="Produto">
+                            <h:outputLabel value="#{obj.nomeProduto}"/>
+                        </p:column>
+                        <p:column headerText="UN" width="40">
+                            <h:outputLabel value="#{obj.unidadeComercial}"/>
+                        </p:column>
+                        <p:column headerText="Qtde" width="55">
+
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.quantidadeComercial}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.quantidadeComercial}"
+                                                   decimalPlaces="2"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Vlr Unit" width="70">
+                            <h:outputLabel value="#{obj.valorUnitarioComercial}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="CSOSN" width="55"
+                                  rendered="#{devolucaoCompraControll.empresa.crt eq '1'}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.nfeDetalheImpostoIcms.csosn}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{obj.nfeDetalheImpostoIcms.csosn}"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+
+                        </p:column>
+                        <p:column headerText="CST" width="55"
+                                  rendered="#{devolucaoCompraControll.empresa.crt != '1'}">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.nfeDetalheImpostoIcms.cstIcms}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{obj.nfeDetalheImpostoIcms.cstIcms}"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+
+                        </p:column>
+                        <p:column headerText="NCM">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.ncm}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputText value="#{obj.ncm}"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+
+                        </p:column>
+                        <p:column headerText="BS Calc. ICSM">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel
+                                            value="#{obj.nfeDetalheImpostoIcms.baseCalculoIcms}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber
+                                            value="#{obj.nfeDetalheImpostoIcms.baseCalculoIcms}"
+                                            decimalPlaces="2"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="VLR ICSM">
+
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.nfeDetalheImpostoIcms.valorIcms}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber
+                                            value="#{obj.nfeDetalheImpostoIcms.valorIcms}"
+                                            decimalPlaces="2"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="BS Calc. ICSM ST">
+
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel
+                                            value="#{obj.nfeDetalheImpostoIcms.valorBaseCalculoIcmsSt}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber
+                                            value="#{obj.nfeDetalheImpostoIcms.valorBaseCalculoIcmsSt}"
+                                            decimalPlaces="2"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="VLR ICSM ST">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel
+                                            value="#{obj.nfeDetalheImpostoIcms.valorIcmsSt}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber
+                                            value="#{obj.nfeDetalheImpostoIcms.valorIcmsSt}"
+                                            decimalPlaces="2"/>
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Vlr Total" width="70">
+                            <h:outputLabel value="#{obj.valorTotal}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText=" - " style="width:55px">
+                            <p:rowEditor/>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:tab>
+                <p:tab title="NF-e referenciada" id="tabNfeReferenciada">
+                    <p:dataTable
+                            value="#{devolucaoCompraControll.objeto.listaNfeReferenciada}"
+                            var="row" id="dataTableNfeReferenciada"
+
+                            paginatorPosition="bottom" reflow="true">
+
+                        <p:column headerText="NFe referenciada">
+                            <h:outputLabel value="#{row.chaveAcesso}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas" enctype="multipart/form-data">
+            <p:dialog id="dialogOutrasTelas" header="Selecionar Arquivo"
+                      widgetVar="dialogOutrasTelas" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="400">
+                <p:outputPanel id="panelOutrasTelas">
+                    <div class="row">
+                        <p:fileUpload
+                                id="btnImportarXml"
+                                fileUploadListener="#{devolucaoCompraControll.importarXml}"
+                                mode="advanced" fileLimit="1" allowTypes="/(\.|\/)(xml)$/"
+                                label="Selecionar XML"
+                                update="formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid"
+                                oncomplete="PF('dialogOutrasTelas').hide()"/>
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Cancelar"
+                                     id="btnCancelarImportacaoXml"
+                                     oncomplete="PF('dialogOutrasTelas').hide();"
+                                     process="@this"/>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2" enctype="multipart/form-data">
+            <p:dialog id="dialogOutrasTelas2" header="Selecionar Arquivo"
+                      widgetVar="dialogOutrasTelas2" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelOutrasTelas2">
+                    <ui:include src="impostoDevolucao.xhtml"/>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             action="#{devolucaoCompraControll.salvarImpostos()}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
+                                             process="@form"
+                            />
+
+
+                        </div>
+                        <div class="col-xs-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas2').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formOutrasTelas3">
+            <p:dialog id="dialogOutrasTelas3"
+                      header="Justificativa Cancelamento" responsive="true"
+                      widgetVar="dialogOutrasTelas3" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelOutrasTelas3">
+                    <div class="row">
+
+                        <erp:campoTexto idComponente="labelJustificativaCancelamento"
+                                        label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        nomeAtributo="#{devolucaoCompraControll.justificativa}"
+                                        tamanhoMaximo="255" requerido="true" tamanhoMinimo="15">
+
+                        </erp:campoTexto>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Enviar"
+                                             actionListener="#{devolucaoCompraControll.cancelaNfe(true)}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas3').hide();}"
+                                             process="@form"
+                                             update="panelOutrasTelas3,:formCentro:growl"/>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default ">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas3').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas4">
+        <h:form id="formOutrasTelas4">
+            <p:dialog id="dialogOutrasTelas4" header="Carta de Correção"
+                      widgetVar="dialogOutrasTelas4" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800" responsive="true">
+                <p:outputPanel id="panelOutrasTelas4">
+                    <div class="row">
+                        <erp:campoAreaTexto idComponente="labelCartaCorrecao"
+                                            label="Texto:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            linhas="3"
+                                            nomeAtributo="#{devolucaoCompraControll.justificativa}"
+                                            requerido="true"/>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Enviar"
+                                             actionListener="#{devolucaoCompraControll.cartaCorrecao(true)}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas4').hide();}"
+                                             process="@form"
+                                             update="panelOutrasTelas4,:formCentro:growl"/>
+
+
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas4').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+    <ui:define name="javaScript">
+        <script type="text/javascript">
+
+
+        </script>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,239 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:erp="http://xmlns.jcp.org/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <p:tabView id="tabViewDetalheImposto" style="border: none">
+        <p:tab title="Dados Principais">
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                tamanhoMaximo="60"
+                                idComponente="nfeDetalheProduto" label="Produto"
+                                nomeAtributo="#{devolucaoCompraControll.nfeDetalheSelecionado.nomeProduto}"
+                                somenteLeitura="true"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeDetalheQuantidadeComercial" label="Quantidade"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheSelecionado.quantidadeComercial}"
+                                  requerido="true"/>
+                <div class="col-xs-12 col-sm-3 col-md-2">
+                    <h:outputLabel value="Valor" for="nfeDetalheValorUnitarioComercial"/>
+
+
+                    <p:inputNumber id="nfeDetalheValorUnitarioComercial"
+                                   value="#{devolucaoCompraControll.nfeDetalheSelecionado.valorUnitarioComercial}"
+                                   style="width: 100%;"
+                                   decimalPlaces="2"
+                                   minValue="-9999999999.99"
+                                   required="true">
+
+                    </p:inputNumber>
+                </div>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="cfop"
+                                  label="CFOP"
+                                  requerido="true"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheSelecionado.cfop}"/>
+
+
+            </div>
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="cest"
+                                label="CEST"
+                                tamanhoMaximo="7"
+                                nomeAtributo="#{devolucaoCompraControll.nfeDetalheSelecionado.cest}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeDetalheValorFrete" label="Frete"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheSelecionado.valorFrete}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeDetalheValorSeguro" label="Seguro"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheSelecionado.valorSeguro}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeDetalheValorDesconto" label="Desconto"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheSelecionado.valorDesconto}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheValorOutrasDespesas"
+                                  label="Outras Despesas"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheSelecionado.valorOutrasDespesas}"/>
+            </div>
+
+            <div class="row">
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="nfeDetalheInformacoesAdcionais" label="Info. Adcionais"
+                                    nomeAtributo="#{devolucaoCompraControll.nfeDetalheSelecionado.informacoesAdicionais}"
+                                    linhas="5"/>
+            </div>
+        </p:tab>
+        <p:tab title="ICMS">
+
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"
+                                 idComponente="tributIcmsUfCsosnB" label="CSOSN"
+                                 rendered="#{devolucaoCompraControll.empresa.crt =='1'}"
+                                 nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.csosn}"
+                                 itens="#{devolucaoCompraControll.listaCsosnB}"/>
+
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"
+                                 idComponente="tributIcmsUfCst" label="CST"
+                                 rendered="#{devolucaoCompraControll.empresa.crt !='1'}"
+                                 nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.cstIcms}"
+                                 itens="#{devolucaoCompraControll.listaCstB}"/>
+            </div>
+
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="nfeDetalheImpostoIcmsBaseCalculoIcms"
+                                  label="Base calculo ICMS"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.baseCalculoIcms}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeDetalheImpostoIcmsAliquotaIcms"
+                                  label="% ICMS"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.aliquotaIcms}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorIcms" label="Valor ICMS"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.valorIcms}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="aliquotaCreditoIcmsSn"
+                                  label="% Crédito SN"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.aliquotaCreditoIcmsSn}"/>
+
+            </div>
+
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  idComponente="nfeDetalheImpostoIcmsValorBaseCalculoIcmsSt"
+                                  label="Base calculo ICMS ST"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.valorBaseCalculoIcmsSt}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsAliquotaIcmsSt"
+                                  label="% ICMS ST"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.aliquotaIcmsSt}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsValorIcmsSt"
+                                  label="Valor ICMS ST"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.valorIcmsSt}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeDetalheImpostoIcmsPercentualMvaIcmsSt"
+                                  label="% MVA ST"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.percentualMvaIcmsSt}"/>
+
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <h:outputLabel value="Modalidade Base Calc. ICMS" for="modalidadeBaseCalcIcms"/>
+                    <h:selectOneMenu id="modalidadeBaseCalcIcms"
+                                     value="#{devolucaoCompraControll.nfeDetalheImpostoIcms.modalidadeBcIcms}"
+                                     class="form-control">
+                        <f:selectItem itemLabel="Selecione"
+                                      noSelectionOption="true"
+                                      itemDisabled="true"/>
+                        <f:selectItems value="#{devolucaoCompraControll.tributIcmsBaseCalculo}"/>
+
+                    </h:selectOneMenu>
+                </div>
+            </div>
+
+
+        </p:tab>
+
+        <p:tab title="IPI">
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"
+                                 idComponente="cstIpi" label="CST"
+                                 nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIpi.cstIpi}"
+                                 itens="#{devolucaoCompraControll.listaCstIpi}"/>
+            </div>
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIpiAliquota"
+                                  label="Aliquota"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIpi.aliquotaIpi}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIpiBaseCaluclo"
+                                  label="Base Calculo"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIpi.valorBaseCalculoIpi}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIpiValor"
+                                  label="Valor"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIpi.valorIpi}"/>
+
+            </div>
+
+
+        </p:tab>
+
+        <p:tab title="COFINS">
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-7 col-md-7"
+                                 idComponente="cstCofins" label="CST"
+                                 nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoCofins.cstCofins}"
+                                 itens="#{devolucaoCompraControll.listaCstPis}"/>
+            </div>
+            <div class="row">
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoCofinsBaseCalculo" label="Base calculo"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoCofins.baseCalculoCofins}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoCofinsAliqPerc" label="Aliquota (%)"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoCofins.aliquotaCofinsPercentual}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoCofinsAliqReal" label="Aliquota (R$)"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoCofins.aliquotaCofinsReais}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoCofinsValor" label="Valor"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoCofins.valorCofins}"
+                                  somenteLeitura="true"/>
+
+            </div>
+
+
+        </p:tab>
+
+        <p:tab title="PIS">
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-12 col-md-12"
+                                 idComponente="cstPis" label="CST"
+                                 nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoPis .cstPis}"
+                                 itens="#{devolucaoCompraControll.listaCstPis}"/>
+            </div>
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoPisBaseCalculo" label="Base calculo"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoPis.valorBaseCalculoPis}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoPisAliqPerc" label="Aliquota (%)"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoPis.aliquotaPisPercentual}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoPisAliqReal" label="Aliquota (R$)"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoPis.aliquotaPisReais}"
+                                  somenteLeitura="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoPisValor" label="Valor"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoPis.valorPis}"
+                                  somenteLeitura="true"/>
+
+            </div>
+
+        </p:tab>
+
+
+    </p:tabView>
+</ui:composition>
+

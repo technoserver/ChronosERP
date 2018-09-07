@@ -4,8 +4,10 @@ import com.chronos.bo.nfe.ImportaXMLNFe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.TipoImportacaoXml;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.FornecedorService;
 import com.chronos.service.cadastros.ProdutoFornecedorService;
 import com.chronos.service.estoque.EntradaNotaFiscalService;
@@ -272,7 +274,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             FileUtils.copyInputStreamToFile(arquivoUpload.getInputstream(), file);
             iniciarValorsValidacao();
             if (file != null) {
-                ImportaXMLNFe importaXml = new ImportaXMLNFe();
+                ImportaXMLNFe importaXml = new ImportaXMLNFe(TipoImportacaoXml.ENTRADA);
                 Map map = importaXml.importarXmlNFe(file);
                 // tipoDoc = "NFE";
                 setObjeto((NfeCabecalho) map.get("cabecalho"));
@@ -463,6 +465,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         produto.setValorCompra(nfeDetalhe.getValorUnitarioComercial());
         produto.setExcluido("N");
         produto.setInativo("N");
+        produto.setServico("N");
 
     }
 
@@ -484,14 +487,25 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void salvarNovoProduto() {
         try {
 
-            FornecedorProduto forProd = produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
-            nfeDetalhe.setProduto(forProd.getProduto());
-            nfeDetalhe.setNomeProduto(forProd.getProduto().getNome());
-            nfeDetalhe.setProdutoCadastrado(true);
-            Mensagem.addInfoMessage("Produto cadastro e vinculado com sucesso");
+            if (produto.getTipo().equals("V") && (produto.getValorVenda() == null || produto.getValorVenda().signum() <= 0)) {
+                FacesContext.getCurrentInstance().validationFailed();
+                throw new ChronosException("Valor de venda orbigatório");
+            } else {
+                FornecedorProduto forProd = produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
+                nfeDetalhe.setProduto(forProd.getProduto());
+                nfeDetalhe.setNomeProduto(forProd.getProduto().getNome());
+                nfeDetalhe.setProdutoCadastrado(true);
+                Mensagem.addInfoMessage("Produto cadastro e vinculado com sucesso");
+            }
+
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Erro ao vincular o produto", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao cadastra o produto", ex);
+            }
+
+
         }
     }
 

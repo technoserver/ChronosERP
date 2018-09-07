@@ -1,5 +1,6 @@
 package com.chronos.service.comercial;
 
+import br.inf.portalfiscal.nfe.schema.envcce.TRetEnvEvento;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNfeProc;
@@ -17,9 +18,11 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.NfeRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
+import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.FormatoImpressaoDanfe;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import com.chronos.transmissor.infra.enuns.StatusEnum;
 import com.chronos.transmissor.init.Configuracoes;
 import com.chronos.transmissor.nfe.Nfe;
 import com.chronos.transmissor.util.ConstantesNFe;
@@ -148,7 +151,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) {
+    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) throws ChronosException {
         NfeCabecalho nfe = new NfeCabecalho();
         nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO.getCodigo() : FormatoImpressaoDanfe.DANFE_NFCE.getCodigo());
         nfe.setUfEmitente(empresa.getCodigoIbgeUf());
@@ -171,8 +174,15 @@ public class NfeService implements Serializable {
         definirFormaPagamento(nfe, new PdvTipoPagamento().buscarPorCodigo("01"));
 
 
+        instanciarDadosConfiguracoes(nfe);
 
+        return nfe;
+    }
 
+    public void instanciarDadosConfiguracoes(NfeCabecalho nfe) throws ChronosException {
+        if (configuracao == null) {
+            instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
+        }
         if (configuracao != null) {
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
             if (StringUtils.isEmpty(nfe.getInformacoesAddContribuinte())) {
@@ -181,8 +191,6 @@ public class NfeService implements Serializable {
             nfe.setCsc(configuracao.getCsc());
 
         }
-
-        return nfe;
     }
 
     @Transactional
@@ -331,7 +339,7 @@ public class NfeService implements Serializable {
         String serie;
         NotaFiscalTipo notaFiscalTipo = null;
         ModeloDocumento modelo = nfe.getModeloDocumento();
-        if (nfe.getNumero() == null) {
+        if (nfe.getNumero() == null || StringUtils.isEmpty(nfe.getNumero())) {
             notaFiscalTipo = modelo == ModeloDocumento.NFE ? getNotaFicalTipo(modelo) : getNotaFicalTipo(modelo, nfe.getSerie());
             numero = notaFiscalTipo.proximoNumero();
             serie = notaFiscalTipo.getSerie();
@@ -343,10 +351,10 @@ public class NfeService implements Serializable {
         nfe.setNumero(FormatValor.getInstance().formatarNumeroDocFiscalToString(numero));
         nfe.setCodigoNumerico(FormatValor.getInstance().formatarCodigoNumeroDocFiscalToString(numero));
         nfe.setSerie(serie);
-        nfe.setChaveAcesso("" + nfe.getEmpresa().getCodigoIbgeUf()
-                + FormatValor.getInstance().formatarAno(nfe.getDataHoraEmissao())
-                + FormatValor.getInstance().formatarMes(nfe.getDataHoraEmissao())
-                + nfe.getEmpresa().getCnpj()
+        nfe.setChaveAcesso("" + empresa.getCodigoIbgeUf()
+                + FormatValor.getInstance().formatarAno(new Date())
+                + FormatValor.getInstance().formatarMes(new Date())
+                + empresa.getCnpj()
                 + nfe.getCodigoModelo()
                 + nfe.getSerie()
                 + nfe.getNumero()
@@ -684,6 +692,7 @@ public class NfeService implements Serializable {
     }
 
     public String cartaCorrecao(NfeCabecalho nfe, String justificativa) throws Exception {
+
         if (!StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             throw new ChronosException("NF-e náo autorizada. Cancelamento náo permitido!");
         }
@@ -692,16 +701,30 @@ public class NfeService implements Serializable {
 
         EventoDTO evento = new EventoDTO();
         evento.setProtocolo(nfe.getNumeroProtocolo());
-        evento.setMotivo(nfe.getJustificativaCancelamento());
+        evento.setMotivo(justificativa);
         evento.setChave(nfe.getChaveAcessoCompleta());
         evento.setCnpj(empresa.getCnpj());
 
 
-        String enviarCartaCorrecao = NfeTransmissao.getInstance().enviarCartaCorrecao(evento);
+        TRetEnvEvento retorno = NfeTransmissao.getInstance().enviarCartaCorrecao(evento);
 
-        Mensagem.addInfoMessage(enviarCartaCorrecao);
 
-        return enviarCartaCorrecao;
+        if (!StatusEnum.LOTE_EVENTO_PROCESSADO.getCodigo().equals(retorno.getCStat())) {
+            throw new EmissorException("Status:" + retorno.getCStat() + " - Motivo:" + retorno.getXMotivo());
+        }
+
+        if (!StatusEnum.EVENTO_VINCULADO.getCodigo().equals(retorno.getRetEvento().get(0).getInfEvento().getCStat())) {
+            throw new EmissorException("Status:" + retorno.getRetEvento().get(0).getInfEvento().getCStat() + " - Motivo:" + retorno.getRetEvento().get(0).getInfEvento().getXMotivo());
+        }
+        String result = "";
+        result += "Status:" + retorno.getRetEvento().get(0).getInfEvento().getCStat() + " \n";
+        result += "Motivo:" + retorno.getRetEvento().get(0).getInfEvento().getXMotivo() + " \n";
+        result += "Data:" + retorno.getRetEvento().get(0).getInfEvento().getDhRegEvento();
+
+
+        Mensagem.addInfoMessage(result);
+
+        return result;
 
     }
 
@@ -942,6 +965,11 @@ public class NfeService implements Serializable {
             }
 
         }
+    }
+
+
+    public void definirEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     private void atualizarNumeroNfe(NotaFiscalTipo notaFiscalTipo, int numero) {

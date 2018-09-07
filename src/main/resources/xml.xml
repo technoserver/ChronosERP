@@ -1,163 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+<envEvento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00">
     <idLote>1</idLote>
-    <indSinc>1</indSinc>
-    <NFe>
-        <infNFe Id="NFe53180816925371000114550100000000131000000132" versao="4.00">
-            <ide>
-                <cUF>53</cUF>
-                <cNF>00000013</cNF>
-                <natOp>TRANSFERENCIA ENTRE FILIAIS</natOp>
-                <mod>55</mod>
-                <serie>10</serie>
-                <nNF>13</nNF>
-                <dhEmi>2018-08-31T21:26:13-03:00</dhEmi>
-                <dhSaiEnt>2018-08-31T21:26:13-03:00</dhSaiEnt>
-                <tpNF>1</tpNF>
-                <idDest>1</idDest>
-                <cMunFG>5300108</cMunFG>
-                <tpImp>1</tpImp>
-                <tpEmis>1</tpEmis>
-                <cDV>2</cDV>
-                <tpAmb>2</tpAmb>
-                <finNFe>1</finNFe>
-                <indFinal>0</indFinal>
-                <indPres>1</indPres>
-                <procEmi>0</procEmi>
-                <verProc>4.0.0.3</verProc>
-            </ide>
-            <emit>
-                <CNPJ>16925371000114</CNPJ>
-                <xNome>EMPRESA MATRIZ PARA TESTE</xNome>
-                <xFant>EMPRESA MATRIZ PARA TESTE</xFant>
-                <enderEmit>
-                    <xLgr>logradouro</xLgr>
-                    <nro>11020</nro>
-                    <xBairro>centro</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
-                    <CEP>49500970</CEP>
-                    <cPais>1058</cPais>
-                    <xPais>BRASIL</xPais>
-                </enderEmit>
-                <IE>0762315200183</IE>
-                <CRT>1</CRT>
-            </emit>
-            <dest>
-                <CNPJ>40754189000122</CNPJ>
-                <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
-                <enderDest>
-                    <xLgr>TESTE</xLgr>
-                    <nro>1020</nro>
-                    <xBairro>CENTRO</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
-                    <CEP>99999999</CEP>
-                    <cPais>1058</cPais>
-                    <xPais>Brazil</xPais>
-                </enderDest>
-                <indIEDest>1</indIEDest>
-                <IE>0762315200183</IE>
-            </dest>
-            <det nItem="1">
-                <prod>
-                    <cProd>6</cProd>
-                    <cEAN>SEM GTIN</cEAN>
-                    <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
-                    <NCM>22030000</NCM>
-                    <CFOP>5152</CFOP>
-                    <uCom>CX</uCom>
-                    <qCom>1.0000</qCom>
-                    <vUnCom>18.830000</vUnCom>
-                    <vProd>18.83</vProd>
-                    <cEANTrib>SEM GTIN</cEANTrib>
-                    <uTrib>CX</uTrib>
-                    <qTrib>1.0000</qTrib>
-                    <vUnTrib>18.830000</vUnTrib>
-                    <indTot>1</indTot>
-                </prod>
-                <imposto>
-                    <vTotTrib>0.00</vTotTrib>
-                    <ICMS>
-                        <ICMSSN102>
-                            <orig>0</orig>
-                            <CSOSN>400</CSOSN>
-                        </ICMSSN102>
-                    </ICMS>
-                    <PIS>
-                        <PISOutr>
-                            <CST>49</CST>
-                            <vBC>0.00</vBC>
-                            <pPIS>0.00</pPIS>
-                            <vPIS>0.00</vPIS>
-                        </PISOutr>
-                    </PIS>
-                    <COFINS>
-                        <COFINSOutr>
-                            <CST>49</CST>
-                            <vBC>0.00</vBC>
-                            <pCOFINS>0.00</pCOFINS>
-                        </COFINSOutr>
-                    </COFINS>
-                </imposto>
-            </det>
-            <total>
-                <ICMSTot>
-                    <vBC>0.00</vBC>
-                    <vICMS>0.00</vICMS>
-                    <vICMSDeson>0.00</vICMSDeson>
-                    <vFCP>0.00</vFCP>
-                    <vBCST>0.00</vBCST>
-                    <vST>0.00</vST>
-                    <vFCPST>0.00</vFCPST>
-                    <vFCPSTRet>0.00</vFCPSTRet>
-                    <vProd>18.83</vProd>
-                    <vFrete>0.00</vFrete>
-                    <vSeg>0.00</vSeg>
-                    <vDesc>0.00</vDesc>
-                    <vII>0.00</vII>
-                    <vIPI>0.00</vIPI>
-                    <vIPIDevol>0.00</vIPIDevol>
-                    <vPIS>0.00</vPIS>
-                    <vCOFINS>0.00</vCOFINS>
-                    <vOutro>0.00</vOutro>
-                    <vNF>18.83</vNF>
-                    <vTotTrib>0.00</vTotTrib>
-                </ICMSTot>
-            </total>
-            <transp>
-                <modFrete>0</modFrete>
-            </transp>
-            <pag>
-                <detPag>
-                    <tPag>99</tPag>
-                    <vPag>0.00</vPag>
-                </detPag>
-            </pag>
-            <infAdic>
-                <infCpl>Trib. Aprox. Federal R$ 0,00 e R$ 0,00 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
-            </infAdic>
-        </infNFe>
+    <evento versao="1.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+        <infEvento Id="ID1101105318091692537100011455010000000021100000021901">
+            <cOrgao>53</cOrgao>
+            <tpAmb>2</tpAmb>
+            <CNPJ>16925371000114</CNPJ>
+            <chNFe>53180916925371000114550100000000211000000219</chNFe>
+            <dhEvento>2018-09-07T11:54:20-03:00</dhEvento>
+            <tpEvento>110110</tpEvento>
+            <nSeqEvento>1</nSeqEvento>
+            <verEvento>1.00</verEvento>
+            <detEvento versao="1.00">
+                <descEvento>Carta de Correcao</descEvento>
+                <xCondUso>A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de
+                    dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento
+                    fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do
+                    imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou
+                    da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do
+                    destinatario; III - a data de emissao ou de saida.
+                </xCondUso>
+            </detEvento>
+        </infEvento>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53180816925371000114550100000000131000000132">
+                <Reference URI="#ID1101105318091692537100011455010000000021100000021901">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>FC2DJ3CPrR1lKM5E7xh80EPOaoE=</DigestValue>
+                    <DigestValue>1i1yivWO5NzS/AVM4YWVGg1cSeI=</DigestValue>
                 </Reference>
             </SignedInfo>
-            <SignatureValue>B52iYyYxO2aL6UQMuHw1ZnFoA//bQNtKA+/XczTt9RGISG7ntqyZ4dytYyHY2EhpV4fNv87DXuiz
-                g7dyKjkxwwh4QB2ewMvHshBoYHhg2HBB0e0UniCpwPfoNJtzddXUm2tniXKiVZZWNu6xeJj9GDUv
-                shXWM/q/zxE+MVYzsCgqeKRTl9Xirmt/YFzvjgW9z9LAgjcxLEwWnee+kgp3qKM9Pz8H20ypTafd
-                Ne94gOjTufflSNyScX/2B7RGTLmzWQlmzZ3H9sc9v8NXzV8GGtQXswuZZAitMQ3em30lWntzCdpT
-                m0agQzN7pLB4rTryDYlBIF56f7Zx4QnRRyd4rQ==
+            <SignatureValue>f4IX/lkfBcTiz9XgIxwFReSfygyPNBg1my13Ju4nhKgkJtZeFOMIUJ/xqB4lgHthKzzG8OhKU7St
+                zd34gbPImnb8PDx4nwIv2UlbbG4nGyBd+vGxh3ttmhEsCC95UrmuGN7GzqFZm3y2TttCoOHHO9lq
+                JiUix5+OeR+1SM065dCtQrfLd1kNJ2ArNvdbhsokGkfotiKVfPvk4Ggb3o07yFUubi8vXk6+YEYm
+                Jqh9vroKIUSOKZZP4EdbGvwuMo9en29DlEoIg0dMCaOlLoKAn86rWioX7gsarQ+3hxfXB+zIV0TP
+                sASfHOtwqeZvNgXEpst5KUaUilFkVn91R8T0Qg==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>
@@ -201,5 +83,5 @@
                 </X509Data>
             </KeyInfo>
         </Signature>
-    </NFe>
-</enviNFe>
+    </evento>
+</envEvento>

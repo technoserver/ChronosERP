@@ -76,6 +76,12 @@
                         <!--label="Compra Sugerida"-->
                         <!--funcao="compraSugerida"/>-->
 
+
+                        <erp:subMenu caminho="/modulo/compras/compraDevolucao"
+                                     label="Devolução"
+                                     exibir="#{seguranca.isTemAcesso('DEVOLUCAO_COMPRA')}"
+                                     funcao="compraDevolucao"/>
+
                     </li>
                 </ul>
             </li>

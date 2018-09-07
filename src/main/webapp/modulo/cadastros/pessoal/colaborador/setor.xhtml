@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
@@ -10,27 +9,27 @@
 >
 
     <ui:define name="title">
-        Setor
+        Setor 
     </ui:define>
 
     <ui:define name="tela">
         #{setorControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        Setor
+        Setor 
     </ui:define>
+
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cargoControll}"
-                       idDataTable="dataTableCargo"
-                       nomeFuncao="Cargo"
-                       id="telaGrid"
-        >
+        <erp:gridDados controller="#{setorControll}"
+                       idDataTable="dataTableSetor"
+                       nomeFuncao="Setor"
+                       id="telaGrid">
 
             <p:column headerText="Nome">
-                <h:outputLabel value="#{row.nome}"/>
+                <h:outputLabel value="#{row.nome}" />
             </p:column>
 
 
@@ -40,24 +39,15 @@
 
     <ui:define name="telaInclusaoAlteracao">
         <erp:telaInclusaoAlteracao controller="#{setorControll}"
-                                   nomeFuncao="Cargo"
-                                   id="telaDetalhe"
-        >
+                                   nomeFuncao="Setor"
+                                   id="telaDetalhe">
 
             <div class="row">
-
-                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
-                                idComponente="cargoNome" label="Nome"
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6"
+                                idComponente="nome" label="Nome"
                                 nomeAtributo="#{setorControll.objeto.nome}"
-                                tamanhoMaximo="50"
-                                requerido="true"/>
-
-
-            </div>
-            <div class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="cargoDescricao" label="Descrição"
-                                    nomeAtributo="#{setorControll.objeto.descricao}"/>
+                                tamanhoMaximo="50" 
+                                id="campoTextoNome"/>
             </div>
 
         </erp:telaInclusaoAlteracao>
