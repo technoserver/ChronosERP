@@ -33,10 +33,11 @@
                 </div>
             </div>
 
+
             <erp:gridDadosSemForm controller="#{devolucaoCompraControll}"
                                   idDataTable="dataTableNfe"
-                                  id="telaGrid"
-            >
+                                  id="table"
+                                  exibirAcoes="false">
 
                 <p:column headerText="Destinatário">
                     <h:outputLabel value="#{row.destinatario.nome}"/>
@@ -63,6 +64,33 @@
                             value="#{devolucaoCompraControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
 
+                <p:column headerText="Ações" width="110" styleClass="text-center">
+                    <p:commandLink title="Alterar"
+                                   action="#{devolucaoCompraControll.doEdit()}"
+                                   class=" btn btn-default"
+                                   oncomplete="addClass()"
+                                   update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                    >
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{devolucaoCompraControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{devolucaoCompraControll.remover()}"
+                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                   process="formCentro:telaGrid:table:dataTableNfe"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default"
+                                   rendered="#{row.podeExcluir}"
+                    >
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{devolucaoCompraControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+
 
             </erp:gridDadosSemForm>
 
@@ -75,7 +103,7 @@
         <erp:telaInclusaoAlteracao controller="#{devolucaoCompraControll}"
                                    nomeFuncao="NFe"
                                    id="telaDetalhe"
-        >
+                                   somenteConsulta="#{!devolucaoCompraControll.objeto.podeExcluir}">
             <script type="text/javascript">
                 function teste(event) {
                     console.log(event);
@@ -124,6 +152,37 @@
                         <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:panelCentroDetalhe"/>
                         <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
                     </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Gerar DANFE" style="margin-left: 5px;"
+                                   actionListener="#{devolucaoCompraControll.danfe}"
+                                   rendered="#{not empty devolucaoCompraControll.objeto.id and devolucaoCompraControll.objeto.podeCancelar}"
+                                   id="btnGerardanfe">
+                        <p:ajax disabled="true"/>
+                        <i class="fa fa-print" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Cancelar NF-e" style="margin-left: 5px;"
+                                   rendered="#{not empty devolucaoCompraControll.objeto.id and devolucaoCompraControll.objeto.podeCancelar}"
+                                   action="#{devolucaoCompraControll.limparJustificativa}"
+                                   id="btnCancelarNfe">
+                        <p:ajax update=":formOutrasTelas3:panelOutrasTelas3"
+                                oncomplete="PF('dialogOutrasTelas3').show();"/>
+                        <i class="fa fa-ban" aria-hidden="true"></i>
+                    </h:commandLink>
+
+                    <h:commandLink class="btn btn-default"
+                                   title="Carta de correção NF-e" style="margin-left: 5px;"
+                                   rendered="#{not empty devolucaoCompraControll.objeto.id and devolucaoCompraControll.objeto.podeCancelar}"
+                                   action="#{devolucaoCompraControll.limparJustificativa}"
+                                   id="btnCartaCorrecaoNfe">
+                        <p:ajax update=":formOutrasTelas4:panelOutrasTelas4"
+                                oncomplete="PF('dialogOutrasTelas4').show();"/>
+                        <i class="fa fa-text-width" aria-hidden="true"></i>
+                    </h:commandLink>
+
+
                 </div>
             </div>
             <p:tabView id="tabNfe">
@@ -596,6 +655,91 @@
             </p:dialog>
         </h:form>
     </ui:define>
+
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formOutrasTelas3">
+            <p:dialog id="dialogOutrasTelas3"
+                      header="Justificativa Cancelamento" responsive="true"
+                      widgetVar="dialogOutrasTelas3" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelOutrasTelas3">
+                    <div class="row">
+
+                        <erp:campoTexto idComponente="labelJustificativaCancelamento"
+                                        label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        nomeAtributo="#{devolucaoCompraControll.justificativa}"
+                                        tamanhoMaximo="255" requerido="true" tamanhoMinimo="15">
+
+                        </erp:campoTexto>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Enviar"
+                                             actionListener="#{devolucaoCompraControll.cancelaNfe(true)}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas3').hide();}"
+                                             process="@form"
+                                             update="panelOutrasTelas3,:formCentro:growl"/>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default ">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas3').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas4">
+        <h:form id="formOutrasTelas4">
+            <p:dialog id="dialogOutrasTelas4" header="Carta de Correção"
+                      widgetVar="dialogOutrasTelas4" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800" responsive="true">
+                <p:outputPanel id="panelOutrasTelas4">
+                    <div class="row">
+                        <erp:campoAreaTexto idComponente="labelCartaCorrecao"
+                                            label="Texto:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            linhas="3"
+                                            nomeAtributo="#{devolucaoCompraControll.justificativa}"
+                                            requerido="true"/>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Enviar"
+                                             actionListener="#{devolucaoCompraControll.cartaCorrecao(true)}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas4').hide();}"
+                                             process="@form"
+                                             update="panelOutrasTelas4,:formCentro:growl"/>
+
+
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas4').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
 
     <ui:define name="javaScript">
         <script type="text/javascript">

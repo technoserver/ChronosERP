@@ -465,6 +465,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         produto.setValorCompra(nfeDetalhe.getValorUnitarioComercial());
         produto.setExcluido("N");
         produto.setInativo("N");
+        produto.setServico("N");
 
     }
 

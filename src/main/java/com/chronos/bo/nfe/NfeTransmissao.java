@@ -15,7 +15,6 @@ import com.chronos.service.ChronosException;
 import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.Estados;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
-import com.chronos.transmissor.infra.enuns.StatusEnum;
 import com.chronos.transmissor.init.Configuracoes;
 import com.chronos.transmissor.nfe.Nfe;
 import com.chronos.transmissor.util.ConstantesNFe;
@@ -97,7 +96,7 @@ public class NfeTransmissao {
         return status;
     }
 
-    public String enviarCartaCorrecao(EventoDTO eventoDTO) throws Exception {
+    public TRetEnvEvento enviarCartaCorrecao(EventoDTO eventoDTO) throws Exception {
         GeraXMLEnvio gerar = new GeraXMLEnvio();
         iniciarConfiguracoes();
 
@@ -107,19 +106,8 @@ public class NfeTransmissao {
 
         TRetEnvEvento retorno = Nfe.cce(envEvento, false, ConstantesNFe.NFE);
 
-        if (!StatusEnum.LOTE_EVENTO_PROCESSADO.getCodigo().equals(retorno.getCStat())) {
-            throw new EmissorException("Status:" + retorno.getCStat() + " - Motivo:" + retorno.getXMotivo());
-        }
 
-        if (!StatusEnum.EVENTO_VINCULADO.getCodigo().equals(retorno.getRetEvento().get(0).getInfEvento().getCStat())) {
-            throw new EmissorException("Status:" + retorno.getCStat() + " - Motivo:" + retorno.getXMotivo());
-        }
-        String result = "";
-        result += "Status:" + retorno.getRetEvento().get(0).getInfEvento().getCStat() + " \n";
-        result += "Motivo:" + retorno.getRetEvento().get(0).getInfEvento().getXMotivo() + " \n";
-        result += "Data:" + retorno.getRetEvento().get(0).getInfEvento().getDhRegEvento();
-
-        return result;
+        return retorno;
     }
 
     public TRetConsSitNFe consultarNfe(String chave) throws Exception {

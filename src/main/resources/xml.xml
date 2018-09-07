@@ -1,341 +1,87 @@
-<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+<?xml version="1.0" encoding="UTF-8"?>
+<envEvento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00">
     <idLote>1</idLote>
-    <indSinc>1</indSinc>
-    <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe53180916925371000114550100000000191000000199">
-            <ide>
-                <cUF>53</cUF>
-                <cNF>00000019</cNF>
-                <natOp>DEVOLUCAO</natOp>
-                <mod>55</mod>
-                <serie>10</serie>
-                <nNF>19</nNF>
-                <dhEmi>2018-09-07T10:36:27-03:00</dhEmi>
-                <dhSaiEnt>2018-09-07T10:36:27-03:00</dhSaiEnt>
-                <tpNF>1</tpNF>
-                <idDest>1</idDest>
-                <cMunFG>5300108</cMunFG>
-                <tpImp>1</tpImp>
-                <tpEmis>1</tpEmis>
-                <cDV>9</cDV>
-                <tpAmb>2</tpAmb>
-                <finNFe>4</finNFe>
-                <indFinal>1</indFinal>
-                <indPres>1</indPres>
-                <procEmi>0</procEmi>
-                <verProc>4.0.0.3</verProc>
-                <NFref>
-                    <refNFe>13170304301024000131550010002180201459668576</refNFe>
-                </NFref>
-            </ide>
-            <emit>
-                <CNPJ>16925371000114</CNPJ>
-                <xNome>EMPRESA MATRIZ PARA TESTE</xNome>
-                <xFant>EMPRESA MATRIZ PARA TESTE</xFant>
-                <enderEmit>
-                    <xLgr>logradouro</xLgr>
-                    <nro>11020</nro>
-                    <xBairro>centro</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
-                    <CEP>49500970</CEP>
-                    <cPais>1058</cPais>
-                    <xPais>BRASIL</xPais>
-                </enderEmit>
-                <IE>0762315200183</IE>
-                <CRT>1</CRT>
-            </emit>
-            <dest>
-                <CNPJ>08968352000147</CNPJ>
-                <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
-                <enderDest>
-                    <xLgr>SHVP RUA 05 CHACARA 121</xLgr>
-                    <nro>121</nro>
-                    <xCpl>LJ 1 2 3 4</xCpl>
-                    <xBairro>SETOR HABITACIONAL VICENTE PIRES</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
-                    <CEP>72006055</CEP>
-                    <cPais>1058</cPais>
-                    <xPais>BRASIL</xPais>
-                </enderDest>
-                <indIEDest>1</indIEDest>
-                <IE>0753315300170</IE>
-            </dest>
-            <det nItem="1">
-                <prod>
-                    <cProd>006270.19000</cProd>
-                    <cEAN>7891473019940</cEAN>
-                    <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
-                    <NCM>87120010</NCM>
-                    <CFOP>6202</CFOP>
-                    <uCom>PC</uCom>
-                    <qCom>4.0000</qCom>
-                    <vUnCom>2116</vUnCom>
-                    <vProd>8464.00</vProd>
-                    <cEANTrib>7891473019940</cEANTrib>
-                    <uTrib>PC</uTrib>
-                    <qTrib>4.0000</qTrib>
-                    <vUnTrib>2116</vUnTrib>
-                    <indTot>1</indTot>
-                </prod>
-                <imposto>
-                    <ICMS>
-                        <ICMSSN101>
-                            <orig>4</orig>
-                            <CSOSN>101</CSOSN>
-                            <pCredSN>1.00</pCredSN>
-                            <vCredICMSSN>84.64</vCredICMSSN>
-                        </ICMSSN101>
-                    </ICMS>
-                    <IPI>
-                        <cEnq>335</cEnq>
-                        <IPINT>
-                            <CST>52</CST>
-                        </IPINT>
-                    </IPI>
-                    <PIS>
-                        <PISAliq>
-                            <CST>02</CST>
-                            <vBC>8464.00</vBC>
-                            <pPIS>1.30</pPIS>
-                            <vPIS>110.03</vPIS>
-                        </PISAliq>
-                    </PIS>
-                    <COFINS>
-                        <COFINSAliq>
-                            <CST>02</CST>
-                            <vBC>8464.00</vBC>
-                            <pCOFINS>6.00</pCOFINS>
-                            <vCOFINS>507.84</vCOFINS>
-                        </COFINSAliq>
-                    </COFINS>
-                </imposto>
-                <infAdProd>DCR201612062 7</infAdProd>
-            </det>
-            <det nItem="2">
-                <prod>
-                    <cProd>006268.19008</cProd>
-                    <cEAN>7891473019926</cEAN>
-                    <xProd>BGT KARAKORAM COMP TMR29V27 PTO A17</xProd>
-                    <NCM>87120010</NCM>
-                    <CFOP>6202</CFOP>
-                    <uCom>PC</uCom>
-                    <qCom>4.0000</qCom>
-                    <vUnCom>2439.68</vUnCom>
-                    <vProd>9758.72</vProd>
-                    <cEANTrib>7891473019926</cEANTrib>
-                    <uTrib>PC</uTrib>
-                    <qTrib>4.0000</qTrib>
-                    <vUnTrib>2439.68</vUnTrib>
-                    <indTot>1</indTot>
-                </prod>
-                <imposto>
-                    <ICMS>
-                        <ICMSSN101>
-                            <orig>4</orig>
-                            <CSOSN>101</CSOSN>
-                            <pCredSN>1.00</pCredSN>
-                            <vCredICMSSN>97.58</vCredICMSSN>
-                        </ICMSSN101>
-                    </ICMS>
-                    <IPI>
-                        <cEnq>335</cEnq>
-                        <IPINT>
-                            <CST>52</CST>
-                        </IPINT>
-                    </IPI>
-                    <PIS>
-                        <PISAliq>
-                            <CST>02</CST>
-                            <vBC>9758.72</vBC>
-                            <pPIS>1.30</pPIS>
-                            <vPIS>126.86</vPIS>
-                        </PISAliq>
-                    </PIS>
-                    <COFINS>
-                        <COFINSAliq>
-                            <CST>02</CST>
-                            <vBC>9758.72</vBC>
-                            <pCOFINS>6.00</pCOFINS>
-                            <vCOFINS>585.52</vCOFINS>
-                        </COFINSAliq>
-                    </COFINS>
-                </imposto>
-                <infAdProd>DCR201612055 4</infAdProd>
-            </det>
-            <det nItem="3">
-                <prod>
-                    <cProd>006267.19007</cProd>
-                    <cEAN>7891473019919</cEAN>
-                    <xProd>BGT KARAKORAM COMP TLR29V27 PTO A17</xProd>
-                    <NCM>87120010</NCM>
-                    <CFOP>6202</CFOP>
-                    <uCom>PC</uCom>
-                    <qCom>4.0000</qCom>
-                    <vUnCom>2439.68</vUnCom>
-                    <vProd>9758.72</vProd>
-                    <cEANTrib>7891473019919</cEANTrib>
-                    <uTrib>PC</uTrib>
-                    <qTrib>4.0000</qTrib>
-                    <vUnTrib>2439.68</vUnTrib>
-                    <indTot>1</indTot>
-                </prod>
-                <imposto>
-                    <ICMS>
-                        <ICMSSN101>
-                            <orig>4</orig>
-                            <CSOSN>101</CSOSN>
-                            <pCredSN>1.00</pCredSN>
-                            <vCredICMSSN>97.58</vCredICMSSN>
-                        </ICMSSN101>
-                    </ICMS>
-                    <IPI>
-                        <cEnq>335</cEnq>
-                        <IPINT>
-                            <CST>52</CST>
-                        </IPINT>
-                    </IPI>
-                    <PIS>
-                        <PISAliq>
-                            <CST>02</CST>
-                            <vBC>9758.72</vBC>
-                            <pPIS>1.30</pPIS>
-                            <vPIS>126.86</vPIS>
-                        </PISAliq>
-                    </PIS>
-                    <COFINS>
-                        <COFINSAliq>
-                            <CST>02</CST>
-                            <vBC>9758.72</vBC>
-                            <pCOFINS>6.00</pCOFINS>
-                            <vCOFINS>585.52</vCOFINS>
-                        </COFINSAliq>
-                    </COFINS>
-                </imposto>
-                <infAdProd>DCR201612063 5</infAdProd>
-            </det>
-            <det nItem="4">
-                <prod>
-                    <cProd>006271.19001</cProd>
-                    <cEAN>7891473019957</cEAN>
-                    <xProd>BGT KARAKORAM SPORT TMR29V27 PTO A17</xProd>
-                    <NCM>87120010</NCM>
-                    <CFOP>6202</CFOP>
-                    <uCom>PC</uCom>
-                    <qCom>2.0000</qCom>
-                    <vUnCom>2116</vUnCom>
-                    <vProd>4232.00</vProd>
-                    <cEANTrib>7891473019957</cEANTrib>
-                    <uTrib>PC</uTrib>
-                    <qTrib>2.0000</qTrib>
-                    <vUnTrib>2116</vUnTrib>
-                    <indTot>1</indTot>
-                </prod>
-                <imposto>
-                    <ICMS>
-                        <ICMSSN101>
-                            <orig>4</orig>
-                            <CSOSN>101</CSOSN>
-                            <pCredSN>1.00</pCredSN>
-                            <vCredICMSSN>42.32</vCredICMSSN>
-                        </ICMSSN101>
-                    </ICMS>
-                    <IPI>
-                        <cEnq>335</cEnq>
-                        <IPINT>
-                            <CST>52</CST>
-                        </IPINT>
-                    </IPI>
-                    <PIS>
-                        <PISAliq>
-                            <CST>02</CST>
-                            <vBC>4232.00</vBC>
-                            <pPIS>1.30</pPIS>
-                            <vPIS>55.02</vPIS>
-                        </PISAliq>
-                    </PIS>
-                    <COFINS>
-                        <COFINSAliq>
-                            <CST>02</CST>
-                            <vBC>4232.00</vBC>
-                            <pCOFINS>6.00</pCOFINS>
-                            <vCOFINS>253.92</vCOFINS>
-                        </COFINSAliq>
-                    </COFINS>
-                </imposto>
-                <infAdProd>DCR201612064 3</infAdProd>
-            </det>
-            <total>
-                <ICMSTot>
-                    <vBC>0.00</vBC>
-                    <vICMS>0.00</vICMS>
-                    <vICMSDeson>0.00</vICMSDeson>
-                    <vFCP>0.00</vFCP>
-                    <vBCST>0.00</vBCST>
-                    <vST>0.00</vST>
-                    <vFCPST>0.00</vFCPST>
-                    <vFCPSTRet>0.00</vFCPSTRet>
-                    <vProd>32213.44</vProd>
-                    <vFrete>0.00</vFrete>
-                    <vSeg>0.00</vSeg>
-                    <vDesc>0.00</vDesc>
-                    <vII>0.00</vII>
-                    <vIPI>0.00</vIPI>
-                    <vIPIDevol>0.00</vIPIDevol>
-                    <vPIS>418.77</vPIS>
-                    <vCOFINS>1932.80</vCOFINS>
-                    <vOutro>0.00</vOutro>
-                    <vNF>32213.44</vNF>
-                    <vTotTrib>0.00</vTotTrib>
-                </ICMSTot>
-            </total>
-            <transp>
-                <modFrete>0</modFrete>
-            </transp>
-            <pag>
-                <detPag>
-                    <tPag>90</tPag>
-                    <vPag>0.00</vPag>
-                </detPag>
-            </pag>
-            <infAdic>
-                <infCpl>mercadorias nao sujeitas ao regime de substituicao tributaria conforme dispoe convenios icms
-                    confaz 92 2015 e 146 2015 . produzidos na zfm com ppb isento de ipi art. 9, decr. 288 67 e resolucao
-                    suframa nr. 79 92 de 26.02.96, nf conf lei 2826 de 29.09.2003, decr. 23994 de 29.12.2003, resolucao
-                    009 04 gsefaz art 1 inciso i . art. 81 inciso ii dec 7.212 10pedido repres: 0000426729 vendedor: 035
-                    cond. pgto. x601 controle interno pdcl = 001418070317 /dep 52dp"Denuncias relacionadas as questoes
-                    eticas, enviar email para: assuntoseticos@caloi.com "transportador redespacho: webcargo logistica e
-                    transportes cnpj : 07.756.378 0003 20 av professor nilton lins 451 flores manaus amPRACA DE
-                    PAGAMENTO: SHVP RUA 05 CHACARA 121, LJ 1 2 3 4 SETOR HABITACIONAL VICENTE PIRES BRASILIA DF
-                </infCpl>
-            </infAdic>
-        </infNFe>
+    <evento versao="1.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+        <infEvento Id="ID1101105318091692537100011455010000000021100000021901">
+            <cOrgao>53</cOrgao>
+            <tpAmb>2</tpAmb>
+            <CNPJ>16925371000114</CNPJ>
+            <chNFe>53180916925371000114550100000000211000000219</chNFe>
+            <dhEvento>2018-09-07T11:54:20-03:00</dhEvento>
+            <tpEvento>110110</tpEvento>
+            <nSeqEvento>1</nSeqEvento>
+            <verEvento>1.00</verEvento>
+            <detEvento versao="1.00">
+                <descEvento>Carta de Correcao</descEvento>
+                <xCondUso>A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de
+                    dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento
+                    fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do
+                    imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou
+                    da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do
+                    destinatario; III - a data de emissao ou de saida.
+                </xCondUso>
+            </detEvento>
+        </infEvento>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53180916925371000114550100000000191000000199">
+                <Reference URI="#ID1101105318091692537100011455010000000021100000021901">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>pgwRnS6Ov4/jMOegvEQl6VNAvQ0=</DigestValue>
+                    <DigestValue>1i1yivWO5NzS/AVM4YWVGg1cSeI=</DigestValue>
                 </Reference>
             </SignedInfo>
-            <SignatureValue>
-                UegDXKxHOLtF/BB0brmU0JpfX0PX50ixJxmp7DOYzajASG+/VPle2Oey3LTpSla3MS0y375f/AmGMesYEjCwKzjttLaZdYScQHA6nQ17ykcJftNVVAvX61HUlOIXWBqc1abE7vxRX3/4gC6M29SoO3u5L+VexAEQL9BcCiqSZL0nvKoCYxaa+cuIA0zVseJ5DoFUOXzkJvRv0lq+r65+QTN1odOfxP1x4F3s7Xoie6JTKX+b0iDctuEGCS5/KFJ/MaUqKh0bNn4YFQGYoNGM1XF+V4FaXNE0EpHoc40za778907ji9JVHQFPWOJnsMoNX0lC1TC4EQeRbIe21/anfQ==
+            <SignatureValue>f4IX/lkfBcTiz9XgIxwFReSfygyPNBg1my13Ju4nhKgkJtZeFOMIUJ/xqB4lgHthKzzG8OhKU7St
+                zd34gbPImnb8PDx4nwIv2UlbbG4nGyBd+vGxh3ttmhEsCC95UrmuGN7GzqFZm3y2TttCoOHHO9lq
+                JiUix5+OeR+1SM065dCtQrfLd1kNJ2ArNvdbhsokGkfotiKVfPvk4Ggb3o07yFUubi8vXk6+YEYm
+                Jqh9vroKIUSOKZZP4EdbGvwuMo9en29DlEoIg0dMCaOlLoKAn86rWioX7gsarQ+3hxfXB+zIV0TP
+                sASfHOtwqeZvNgXEpst5KUaUilFkVn91R8T0Qg==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>
-                    <X509Certificate>
-                        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
+                    <X509Certificate>MIIHzDCCBbSgAwIBAgIIKOYYAyZY/O4wDQYJKoZIhvcNAQELBQAwgYkxCzAJBgNVBAYTAkJSMRMw
+                        EQYDVQQKEwpJQ1AtQnJhc2lsMTQwMgYDVQQLEytBdXRvcmlkYWRlIENlcnRpZmljYWRvcmEgUmFp
+                        eiBCcmFzaWxlaXJhIHYyMRIwEAYDVQQLEwlBQyBTT0xVVEkxGzAZBgNVBAMTEkFDIFNPTFVUSSBN
+                        dWx0aXBsYTAeFw0xODAzMjcxMTU1NTdaFw0xOTAzMjYxOTI4MDBaMIHwMQswCQYDVQQGEwJCUjET
+                        MBEGA1UEChMKSUNQLUJyYXNpbDE0MDIGA1UECxMrQXV0b3JpZGFkZSBDZXJ0aWZpY2Fkb3JhIFJh
+                        aXogQnJhc2lsZWlyYSB2MjESMBAGA1UECxMJQUMgU09MVVRJMRswGQYDVQQLExJBQyBTT0xVVEkg
+                        TXVsdGlwbGExGjAYBgNVBAsTEUNlcnRpZmljYWRvIFBKIEExMUkwRwYDVQQDE0BURUNITk9TRVJW
+                        RVIgQVVUT01BQ0FPIENPTUVSQ0lBTCBFIERFU0VOVk9MVklNRU5UOjE2OTI1MzcxMDAwMTE0MIIB
+                        IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlNVmw7AN0XeC0SsOyMe1PnIaQFhNDKFGlmEm
+                        zbUHKNQpf4VBf0ClKqJFqNJXZ19fO3Ylzx/yCDIVBlmBoVkYdWjKvs8mGXzaWMM8L2RqILkrYDsM
+                        +0rOQdk+EGGmRAlFjNEbRAzfbF9KstVOwCtzh71omTY0dF4tXL5VzkcNBclT4dYWVaPK4Qh9Bmco
+                        tg+YDGfh529RCMpoJ1ypXnf6ae5YQ6zJeqys8hQZVukP7C6iLJiv+xvloQ1efbjVkrG6uhMSt+r5
+                        M8ckNmFtT60iq2I56mzwSXW/KD8swPbJsctuY/hHYoC2kYLTGzVSvVs0I4+SapUGIxhBRr34B67t
+                        LQIDAQABo4ICzTCCAskwVAYIKwYBBQUHAQEESDBGMEQGCCsGAQUFBzAChjhodHRwOi8vY2NkLmFj
+                        c29sdXRpLmNvbS5ici9sY3IvYWMtc29sdXRpLW11bHRpcGxhLXYxLnA3YjAdBgNVHQ4EFgQURwPo
+                        c3SjxZ1pUdnkydIC8ooa1I4wCQYDVR0TBAIwADAfBgNVHSMEGDAWgBQ1rjEU9l7Sek9Y/jSoGmeX
+                        CsSbBzBeBgNVHSAEVzBVMFMGBmBMAQIBJjBJMEcGCCsGAQUFBwIBFjtodHRwczovL2NjZC5hY3Nv
+                        bHV0aS5jb20uYnIvZG9jcy9kcGMtYWMtc29sdXRpLW11bHRpcGxhLnBkZjCB3gYDVR0fBIHWMIHT
+                        MD6gPKA6hjhodHRwOi8vY2NkLmFjc29sdXRpLmNvbS5ici9sY3IvYWMtc29sdXRpLW11bHRpcGxh
+                        LXYxLmNybDA/oD2gO4Y5aHR0cDovL2NjZDIuYWNzb2x1dGkuY29tLmJyL2xjci9hYy1zb2x1dGkt
+                        bXVsdGlwbGEtdjEuY3JsMFCgTqBMhkpodHRwOi8vcmVwb3NpdG9yaW8uaWNwYnJhc2lsLmdvdi5i
+                        ci9sY3IvQUNTT0xVVEkvYWMtc29sdXRpLW11bHRpcGxhLXYxLmNybDAOBgNVHQ8BAf8EBAMCBeAw
+                        HQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMIG1BgNVHREEga0wgaqBGGl2YW5AdGVjaG5v
+                        c2VydmVyLmNvbS5icqAgBgVgTAEDAqAXExVJVkFOIFBFUkVJUkEgREEgU0lMVkGgGQYFYEwBAwOg
+                        EBMOMTY5MjUzNzEwMDAxMTSgOAYFYEwBAwSgLxMtMDUwMTE5Nzc4MTkxNDg4MTE2ODAwMDAwMDAw
+                        MDAwMDAwMDAwMDAwMDAwMDAwoBcGBWBMAQMHoA4TDDAwMDAwMDAwMDAwMDANBgkqhkiG9w0BAQsF
+                        AAOCAgEACh4NTBZaJnlQHLj28HAdMMStTDGmAMQJndR+1eu6aj9xrjGV1A7DMd8wgYZ0I5CIjzEw
+                        BcMxUuzlToaR6/PN2igh70fgFnsDvm3uLzL40ZiKvGhXacXyzwWfAEkh6RECgZWg9kg6ONii9i/n
+                        f7o5VlnBqEs2yBoupJq3a3kUcxHZy/cgiMxSQU4thM4y2CRoiQ9Hlc0NVRly0RD9h4ug3XqtelIQ
+                        S3WuI7VrFocBzVRHo5mJvyiXOAd98687HmPtz3ELsX0pv1Lo6KrBcDaNC3KhSQVc3CipQ0LAsMSg
+                        cDmrcEP3ujn4R8kyGahaVeMIlNH7uwmNJSZEKE5+odOOEFgLi4uDzw8ctIMX0ecAFTRogJ+dg7sT
+                        RrPTSSI75Se9KB1V/4/tyWwqFcaUbUIiY8fOo+M/+/95ke7Abj6rgEqxq/YBxGfiNu5t4HegqqeB
+                        lzJjybnIO+5W75P23FgJC9OksEqrdRtfcC+SuPyVCJNYiQ+4NLWbaBc10Yyxm4KPIcxVm1XrOxyf
+                        2p7c8beBJhzn4wyJ/JZ2ZQpVAlsXyvEyCRJEiiGAsBO+gPSTVPspKZucD9SaJ0rczpeSX+mz17JE
+                        Cnj/sHfRcUUe3awBHhflDsyyLvTRCW6k1iikZVuPS7z9CQ/7SdT/B7KeG7McHwtMEDpux2cm2N10
+                        JMAt4sU=
                     </X509Certificate>
                 </X509Data>
             </KeyInfo>
         </Signature>
-    </NFe>
-</enviNFe>
+    </evento>
+</envEvento>

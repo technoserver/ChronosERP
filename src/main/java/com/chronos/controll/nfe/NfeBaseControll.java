@@ -3,6 +3,7 @@ package com.chronos.controll.nfe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.enuns.StatusTransmissao;
+import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
@@ -18,6 +19,7 @@ public class NfeBaseControll extends AbstractControll<NfeCabecalho> implements S
     private NfeService service;
 
     private boolean duplicidade;
+    private String justificativa;
 
     public void transmitirNfe(boolean iniciarConfiguracao) {
         try {
@@ -36,23 +38,82 @@ public class NfeBaseControll extends AbstractControll<NfeCabecalho> implements S
             }
 
 
-        } catch (EmissorException ex) {
-            if (ex.getMessage().contains("Read timed out")) {
-                try {
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException || ex instanceof EmissorException) {
+                if (ex.getMessage().contains("Read timed out")) {
                     getObjeto().setStatusNota(StatusTransmissao.ENVIADA.getCodigo());
                     dao.atualizar(getObjeto());
-                } catch (Exception ex1) {
-
+                } else {
+                    Mensagem.addErrorMessage("", ex);
                 }
+            } else {
+                throw new RuntimeException("", ex);
             }
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Erro ao transmitir\n", ex);
+
         }
     }
 
+    public void cancelaNfe(boolean iniciarConfiguracao) {
+        try {
+            if (iniciarConfiguracao) {
+                service.instanciarConfNfe(empresa, ModeloDocumento.NFE);
+            }
+            getObjeto().setJustificativaCancelamento(justificativa);
+
+            boolean estoque = isTemAcesso("ESTOQUE");
+            boolean cancelado = service.cancelarNFe(getObjeto(), estoque);
+            if (cancelado) {
+                Mensagem.addInfoMessage("NFe cancelada com sucesso");
+            }
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException || ex instanceof EmissorException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao cancelar NFe ", ex);
+            }
+
+        }
+
+    }
+
+    public void cartaCorrecao(boolean iniciarConfiguracao) {
+        try {
+            if (iniciarConfiguracao) {
+                service.instanciarConfNfe(empresa, ModeloDocumento.NFE);
+            }
+            service.cartaCorrecao(getObjeto(), justificativa);
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException || ex instanceof EmissorException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar a carta de correção", ex);
+            }
+
+        }
+    }
+
+
+    public void danfe() {
+
+
+        try {
+
+            service.danfe(getObjeto());
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar o danfe", ex);
+            }
+        }
+    }
+
+
+    public void limparJustificativa() {
+        justificativa = "";
+    }
 
     @Override
     protected Class<NfeCabecalho> getClazz() {
@@ -67,5 +128,13 @@ public class NfeBaseControll extends AbstractControll<NfeCabecalho> implements S
     @Override
     protected boolean auditar() {
         return false;
+    }
+
+    public String getJustificativa() {
+        return justificativa;
+    }
+
+    public void setJustificativa(String justificativa) {
+        this.justificativa = justificativa;
     }
 }

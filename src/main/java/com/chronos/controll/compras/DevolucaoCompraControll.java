@@ -86,6 +86,8 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         dataModel.getFiltros().add(new Filtro("finalidadeEmissao", 4));
         dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
 
+        dataModel.setAtributos(new Object[]{"destinatario.nome", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
+
         return dataModel;
     }
 
@@ -509,7 +511,6 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         this.nfeDetalheSelecionado = nfeDetalheSelecionado;
     }
 
-
     public NfeDetalheImpostoCofins getNfeDetalheImpostoCofins() {
         return nfeDetalheImpostoCofins;
     }
@@ -545,4 +546,6 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
     public Empresa getEmpresa() {
         return empresa;
     }
+
+
 }
