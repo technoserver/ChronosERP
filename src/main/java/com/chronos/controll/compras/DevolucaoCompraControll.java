@@ -14,6 +14,7 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.DefinirCstService;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
@@ -48,6 +49,8 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
     private Repository<ConverterCst> converterCstRepository;
     @Inject
     private Repository<FornecedorProduto> fornecedorProdutoRepository;
+    @Inject
+    private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
 
     private NfeDetalhe nfeDetalheSelecionado;
     private NfeDetalheImpostoCofins nfeDetalheImpostoCofins;
@@ -96,6 +99,14 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         dadosSalvos = true;
     }
 
+    @Override
+    public void salvar() {
+
+        super.salvar();
+        setTelaGrid(false);
+        dadosSalvos = true;
+    }
+
     public void importarXml(FileUploadEvent event) {
         try {
             UploadedFile arquivoUpload = event.getFile();
@@ -124,6 +135,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             getObjeto().setDigitoChaveAcesso("");
             getObjeto().setSerie("");
             getObjeto().setCodigoNumerico("");
+            getObjeto().setCodigoMunicipio(empresa.getCodigoIbgeCidade());
             getObjeto().setDataHoraEmissao(null);
             getObjeto().setDataHoraEntradaSaida(null);
             getObjeto().setStatusNota(StatusTransmissao.EDICAO.getCodigo());
@@ -155,6 +167,8 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             service.instanciarDadosConfiguracoes(getObjeto());
 
             service.definirIndicadorIe(getObjeto().getDestinatario(), ModeloDocumento.NFE);
+
+            getObjeto().setLocalDestino(LocalDestino.getByUf(empresa.buscarEnderecoPrincipal().getUf(), getObjeto().getDestinatario().getUf()));
 
             super.salvar();
 
@@ -348,6 +362,18 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             }
         }
 
+    }
+
+
+    public List<TributOperacaoFiscal> getListaTributOperacaoFiscal(String descricao) {
+        List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
+
+        try {
+            listaTributOperacaoFiscal = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaTributOperacaoFiscal;
     }
 
     private void realizarCalculoImposto() {

@@ -168,7 +168,7 @@ public class ImportaXMLNFe {
 
 
         //destinatario
-        destinatario = tipoImportacao == TipoImportacaoXml.ENTRADA ? getDestinatario(dest) : getDestinatario(dest);
+        destinatario = tipoImportacao == TipoImportacaoXml.ENTRADA ? getDestinatario(dest) : getDestinatario(emit);
         destinatario.setNfeCabecalho(nfeCabecalho);
         nfeCabecalho.setDestinatario(destinatario);
 
@@ -201,7 +201,22 @@ public class ImportaXMLNFe {
             nfeReferenciada.setChaveAcesso(infNfe.getId().replaceAll("[NFCe]", ""));
             nfeReferenciada.setNfeCabecalho(nfeCabecalho);
             listaNfeReferenciada.add(nfeReferenciada);
+
+
+            Set<NfeFormaPagamento> pagamentos = new HashSet<>();
+
+
+            PdvTipoPagamento tipo = new PdvTipoPagamento().buscarPorCodigo("90");
+            NfeFormaPagamento forma = new NfeFormaPagamento();
+            forma.setValor(BigDecimal.ZERO);
+            forma.setForma("90");
+            forma.setPdvTipoPagamento(tipo);
+            forma.setNfeCabecalho(nfeCabecalho);
+            pagamentos.add(forma);
+
+            nfeCabecalho.setListaNfeFormaPagamento(pagamentos);
         }
+
 
         map.put("cabecalho", nfeCabecalho);
         map.put("detalhe", listaNfeDetalhe);

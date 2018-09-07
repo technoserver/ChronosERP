@@ -224,7 +224,7 @@ public class NfeCabecalho implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     private VendaCabecalho vendaCabecalho;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private Empresa empresa;
     @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
     @ManyToOne

@@ -17,6 +17,7 @@ import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe.InfNFeSupl;
 import com.chronos.calc.enuns.OrigemMercadoria;
 import com.chronos.dto.EventoDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.service.ChronosException;
 import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.AmbienteEmissao;
 import com.chronos.transmissor.infra.enuns.IndicadorIe;
@@ -607,11 +608,8 @@ public class GeraXMLEnvio {
 
                 cofinsAliq.setCST(impCofins.getCstCofins());
                 cofinsAliq.setVBC(FormatValor.getInstance().formatarValor(impCofins.getBaseCalculoCofins()));
-                if (impCofins.getCstCofins().equals("01")) {
-                    cofinsAliq.setPCOFINS(FormatValor.getInstance().formatarValor(impCofins.getAliquotaCofinsPercentual()));
-                } else {
-                    cofinsAliq.setPCOFINS(FormatValor.getInstance().formatarValor(impCofins.getAliquotaCofinsReais()));
-                }
+                cofinsAliq.setPCOFINS(FormatValor.getInstance().formatarValor(impCofins.getAliquotaCofinsPercentual()));
+
                 cofinsAliq.setVCOFINS(FormatValor.getInstance().formatarValor(impCofins.getValorCofins()));
             } else if (impCofins.getCstCofins().equals("03")) {
                 TNFe.InfNFe.Det.Imposto.COFINS.COFINSQtde cofinsQtd = new COFINS.COFINSQtde();
@@ -645,16 +643,24 @@ public class GeraXMLEnvio {
         TIpi ipi = null;
         // IPI
         if (impIpi != null && impIpi.getValorIpi() != null) {
-
             ipi = new TIpi();
-            TIpi.IPITrib ipiTrib = new TIpi.IPITrib();
-            ipi.setIPITrib(ipiTrib);
-            ipi.setCEnq(impIpi.getEnquadramentoIpi() == null ? "999"
-                    : impIpi.getEnquadramentoIpi());
-            ipiTrib.setCST(impIpi.getCstIpi());
-            ipiTrib.setVBC(FormatValor.getInstance().formatarValor(impIpi.getValorBaseCalculoIpi()));
-            ipiTrib.setPIPI(FormatValor.getInstance().formatarValor(impIpi.getAliquotaIpi()));
-            ipiTrib.setVIPI(FormatValor.getInstance().formatarValor(impIpi.getValorIpi()));
+            ipi.setCEnq(impIpi.getEnquadramentoIpi() == null ? "999" : impIpi.getEnquadramentoIpi());
+            if (impIpi.getCstIpi().equals("00") || impIpi.getCstIpi().equals("49") || impIpi.getCstIpi().equals("50") || impIpi.getCstIpi().equals("99")) {
+                TIpi.IPITrib ipiTrib = new TIpi.IPITrib();
+                ipiTrib.setCST(impIpi.getCstIpi());
+                ipi.setIPITrib(ipiTrib);
+
+                ipiTrib.setVBC(FormatValor.getInstance().formatarValor(impIpi.getValorBaseCalculoIpi()));
+                ipiTrib.setPIPI(FormatValor.getInstance().formatarValor(impIpi.getAliquotaIpi()));
+                ipiTrib.setVIPI(FormatValor.getInstance().formatarValor(impIpi.getValorIpi()));
+            } else {
+                TIpi.IPINT ipint = new TIpi.IPINT();
+                ipint.setCST(impIpi.getCstIpi());
+                ipi.setIPINT(ipint);
+            }
+
+
+
 
         }
         return ipi;
@@ -665,19 +671,14 @@ public class GeraXMLEnvio {
 
         if (impPis != null) {
             pis = new PIS();
-            if (impPis.getCstPis().equals("01")
-                    || impPis.getCstPis().equals("02")) {
+            if (impPis.getCstPis().equals("01") || impPis.getCstPis().equals("02")) {
                 TNFe.InfNFe.Det.Imposto.PIS.PISAliq pisAliq = new TNFe.InfNFe.Det.Imposto.PIS.PISAliq();
                 pis.setPISAliq(pisAliq);
 
                 pisAliq.setCST(impPis.getCstPis());
                 pisAliq.setVBC(FormatValor.getInstance().formatarValor(impPis.getValorBaseCalculoPis()));
-                if (impPis.getCstPis().equals("01")) {
-                    pisAliq.setPPIS(
-                            FormatValor.getInstance().formatarValor(impPis.getAliquotaPisPercentual()));
-                } else {
-                    pisAliq.setPPIS(FormatValor.getInstance().formatarValor(impPis.getAliquotaPisReais()));
-                }
+                pisAliq.setPPIS(FormatValor.getInstance().formatarValor(impPis.getAliquotaPisPercentual()));
+
                 pisAliq.setVPIS(FormatValor.getInstance().formatarValor(impPis.getValorPis()));
             } else if (impPis.getCstPis().equals("03")) {
                 TNFe.InfNFe.Det.Imposto.PIS.PISQtde pisQtde = new PIS.PISQtde();
@@ -721,6 +722,10 @@ public class GeraXMLEnvio {
             }
             if (csosn.equals("101")) {
                 TNFe.InfNFe.Det.Imposto.ICMS.ICMSSN101 icms101 = new TNFe.InfNFe.Det.Imposto.ICMS.ICMSSN101();
+                if (impIcms.getAliquotaCreditoIcmsSn() == null || impIcms.getValorCreditoIcmsSn() == null) {
+                    throw new ChronosException("Valores para crédito do simples nascional não definidos \n"
+                            + impIcms.getNfeDetalhe().getCodigoProduto() + " - " + nomeProduto + "\n não informado !!!");
+                }
                 icms.setICMSSN101(icms101);
                 icms101.setCSOSN(csosn);
                 icms101.setOrig(origemMercadoria);
