@@ -479,8 +479,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             salvarNovoProduto();
             Mensagem.addInfoMessage("Produto vinculado com sucesso");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Erro ao vincular o produto", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao vincular o produto", ex);
+            }
+
+
         }
     }
 

@@ -172,6 +172,20 @@
                                                  label="Regime" nomeAtributo="#{empresaControll.objeto.tipoRegime}"
                                                  itens="#{empresaControll.tipoRegimeEmpresa}"/>
 
+                                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2" idComponente="tipo"
+                                                 label="Tipo" nomeAtributo="#{empresaControll.objeto.tipo}"
+                                                 itens="#{empresaControll.tipo}"/>
+
+                                <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                                  label="Empresa"
+                                                  itemLabel="#{objeto.razaoSocial}"
+                                                  controller="#{empresaControll}"
+                                                  completeMethod="getListaEmpresa"
+                                                  nomeAtributo="#{empresaControll.matriz}"
+                                                  idComponente="colaboradorTipoAdmissao"
+                                                  rendered="#{empresaControll.objeto.tipo eq 'F'}"
+                                />
+
 
                             </div>
                         </div>

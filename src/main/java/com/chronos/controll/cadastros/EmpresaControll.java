@@ -20,10 +20,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 24/09/17.
@@ -47,6 +44,12 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
 
     private String logo;
 
+    private Map<String, String> tipo;
+
+    private Empresa matriz;
+
+
+
 
     @Override
     public void doCreate() {
@@ -60,6 +63,7 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
         endereco.setEmpresa(getObjeto());
         getObjeto().setListaEndereco(new HashSet<>());
         getObjeto().getListaEndereco().add(endereco);
+        instanciarObjetos();
     }
 
     @Override
@@ -69,10 +73,15 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
         endereco = getObjeto().buscarEnderecoPrincipal();
         cidade = new Municipio(0, endereco.getCidade(), endereco.getMunicipioIbge());
         logo = getObjeto().getImagemLogotipo();
+
+        instanciarObjetos();
     }
 
     @Override
     public void salvar() {
+        if (getObjeto().getTipo().equals("F")) {
+            getObjeto().setIdempresa(matriz.getIdempresa());
+        }
         super.salvar();
         if (empresa.equals(getObjeto())) {
             FacesUtil.setEmpresaUsuario(getObjeto());
@@ -113,8 +122,28 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
         }
     }
 
+    public List<Empresa> getListaEmpresa(String nome) {
+        List<Empresa> listaEmpresa = new ArrayList<>();
+        try {
+            listaEmpresa = dao.getEntitys(Empresa.class, "razaoSocial", nome, new Object[]{"razaoSocial"});
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaEmpresa;
+    }
+
     public boolean isPodeCadastrarEmpresa(){
         return FacesUtil.isUserInRole("SOFTHOUSE");
+    }
+
+    private void instanciarObjetos() {
+        tipo = new LinkedHashMap<>();
+        tipo.put("Filial", "F");
+        tipo.put("Matriz", "M");
+
+        if (getObjeto().getIdempresa() != null) {
+            matriz = dao.get(Empresa.class, "id", getObjeto().getIdempresa(), new Object[]{"razaoSocial"});
+        }
     }
 
     @Override
@@ -155,5 +184,21 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
 
     public void setCidade(Municipio cidade) {
         this.cidade = cidade;
+    }
+
+    public Map<String, String> getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Map<String, String> tipo) {
+        this.tipo = tipo;
+    }
+
+    public Empresa getMatriz() {
+        return matriz;
+    }
+
+    public void setMatriz(Empresa matriz) {
+        this.matriz = matriz;
     }
 }
