@@ -61,7 +61,7 @@ public class SituacaoColaborador implements Serializable {
         this.nome = nome;
     }
 
-    public SituacaoColaborador(Integer idsituacao) {
+    public SituacaoColaborador(Integer id) {
         this.id = id;
     }
 

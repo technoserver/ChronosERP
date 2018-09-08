@@ -524,6 +524,7 @@ public abstract class AbstractControll<T> implements Serializable {
         finalidadeEmissaoNfe.put("Normal", 1);
         finalidadeEmissaoNfe.put("Complementar", 2);
         finalidadeEmissaoNfe.put("Ajuste", 3);
+        finalidadeEmissaoNfe.put("Devolução", 4);
 
         formatoImpressaoDanfeNfe = new LinkedHashMap<>();
         formatoImpressaoDanfeNfe.put("Retrato", 1);
