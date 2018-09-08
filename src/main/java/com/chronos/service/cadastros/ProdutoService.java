@@ -40,7 +40,7 @@ public class ProdutoService implements Serializable {
 
     }
 
-    public List<ProdutoDTO> getListaProdutoDTO(Empresa empresa, String descricao, boolean moduloVenda) throws Exception {
+    public List<ProdutoDTO> getListaProdutoDTO(Empresa empresa, String descricao, boolean moduloVenda) {
         List<ProdutoDTO> listaProduto;
         List<Filtro> filtros = new ArrayList<>();
         if (org.apache.commons.lang3.StringUtils.isNumeric(descricao)) {
@@ -66,19 +66,19 @@ public class ProdutoService implements Serializable {
         String str = "0" + filtro.replaceAll("\\D", "");
         int codigo = str.length() > 9 ? 0 : Integer.valueOf(str);
         if (codigo > 0) {
-            list = repository.getProdutosTransferencia(idempresaOrigem, idempresaDestino, codigo);
+            list = repository.getProdutosTransferencia(idempresaOrigem, codigo);
 
         } else {
             filtro = filtro.trim().toLowerCase();
             filtro = filtro.length() == 13 || filtro.length() == 14 ? filtro : "%" + filtro + "%";
-            list = repository.getProdutosTransferencia(idempresaOrigem, idempresaDestino, filtro);
+            list = repository.getProdutosTransferencia(idempresaOrigem, filtro);
         }
         produtos = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         return produtos;
     }
 
     @Transactional
-    public void transferenciaEstoque(EstoqueTransferenciaCabecalho transferencia, List<EstoqueTransferenciaDetalhe> itens) throws Exception {
+    public void transferenciaEstoque(EstoqueTransferenciaCabecalho transferencia, List<EstoqueTransferenciaDetalhe> itens) {
 
         for (EstoqueTransferenciaDetalhe item : itens) {
             if (transferencia.getTributOperacaoFiscal().getEstoqueVerificado() && transferencia.getTributOperacaoFiscal().getEstoque()) {

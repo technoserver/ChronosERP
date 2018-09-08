@@ -6,6 +6,7 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
+import com.chronos.service.cadastros.EmpresaProdutoService;
 import com.chronos.service.cadastros.EmpresaService;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.comercial.NfeService;
@@ -32,6 +33,8 @@ public class TransferenciaService implements Serializable {
     private EntradaNotaFiscalService entradaService;
     @Inject
     private NfeService nfeService;
+    @Inject
+    private EmpresaProdutoService empresaProdutoService;
 
 
     @Inject
@@ -65,9 +68,12 @@ public class TransferenciaService implements Serializable {
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
         objeto.setValorTotal(total);
+        verificarProdutoNaoCadastrado(objeto);
         if (objeto.getTributOperacaoFiscal().getObrigacaoFiscal()) {
             Empresa empresaDestino = empresaRepository.get(objeto.getEmpresaDestino().getId(), Empresa.class);
             objeto.setEmpresaDestino(empresaDestino);
+
+
             TransferenciaToNfe transferenciaToNfe = new TransferenciaToNfe(objeto);
 
             NfeCabecalho nfe = transferenciaToNfe.gerarNFe();
@@ -95,6 +101,12 @@ public class TransferenciaService implements Serializable {
 
     }
 
+    private void verificarProdutoNaoCadastrado(EstoqueTransferenciaCabecalho objeto) {
+
+        for (EstoqueTransferenciaDetalhe item : objeto.getListEstoqueTransferenciaDetalhe()) {
+            empresaProdutoService.novoProdutoQuandoNaoExiste(objeto.getEmpresaDestino(), item.getProduto());
+        }
+    }
 
     private void validar(EstoqueTransferenciaCabecalho obj) throws ChronosException {
 
