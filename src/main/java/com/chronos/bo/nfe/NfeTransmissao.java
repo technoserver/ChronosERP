@@ -2,6 +2,7 @@ package com.chronos.bo.nfe;
 
 import br.com.samuelweb.certificado.Certificado;
 import br.com.samuelweb.certificado.CertificadoService;
+import br.com.samuelweb.certificado.exception.CertificadoException;
 import br.inf.portalfiscal.nfe.schema.envEventoCancNFe.TEnvEvento;
 import br.inf.portalfiscal.nfe.schema.envcce.TRetEnvEvento;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TEnviNFe;
@@ -151,9 +152,9 @@ public class NfeTransmissao {
     }
 
 
-    public Configuracoes iniciarConfiguracoes(ConfEmissorDTO conf) throws ChronosException {
+    public Configuracoes iniciarConfiguracoes(ConfEmissorDTO conf) throws CertificadoException {
 
-        try {
+
 
             Certificado certificado = CertificadoService.certificadoPfx(conf.getCaminhoCertificado(), conf.getSenhaCertificado());
 
@@ -162,9 +163,6 @@ public class NfeTransmissao {
 
             configuracoes.setLog(Constantes.DESENVOLVIMENTO);
             FacesUtil.setConfEmissor(configuracoes);
-        } catch (Exception ex) {
-            throw new ChronosException("Erro ao iniciar as configurações de NF-e", ex.getCause());
-        }
 
         return configuracoes;
     }

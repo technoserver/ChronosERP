@@ -5,7 +5,6 @@ package com.chronos.modelo.entidades;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -136,8 +135,6 @@ public class Colaborador implements Serializable {
     private TipoAdmissao tipoAdmissao;
     @JoinColumn(name = "ID_SINDICATO", referencedColumnName = "ID")
     @ManyToOne
- //   @NotEmpty(message = "Sindicato Obrigatório")
-    @Valid
     private Sindicato sindicato;
     @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")
     private String classificacaoContabilConta;

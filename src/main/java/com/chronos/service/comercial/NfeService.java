@@ -1,5 +1,6 @@
 package com.chronos.service.comercial;
 
+import br.com.samuelweb.certificado.exception.CertificadoException;
 import br.inf.portalfiscal.nfe.schema.envcce.TRetEnvEvento;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TEnviNFe;
 import br.inf.portalfiscal.nfe.schema_4.enviNFe.TNFe;
@@ -110,7 +111,7 @@ public class NfeService implements Serializable {
         configuracoes = FacesUtil.getConfEmissor();
     }
 
-    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo, boolean buscar) throws ChronosException {
+    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo, boolean buscar) throws ChronosException, CertificadoException {
 
         if (buscar) {
             configuracoes = null;
@@ -118,7 +119,7 @@ public class NfeService implements Serializable {
         return instanciarConfNfe(empresa, modelo);
     }
 
-    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo) throws ChronosException {
+    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo) throws ChronosException, CertificadoException {
         this.empresa = empresa;
         if (configuracao == null) {
             if (modelo == ModeloDocumento.NFE) {
@@ -151,7 +152,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) throws ChronosException {
+    public NfeCabecalho dadosPadroes(ModeloDocumento modelo) throws ChronosException, CertificadoException {
         NfeCabecalho nfe = new NfeCabecalho();
         nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO.getCodigo() : FormatoImpressaoDanfe.DANFE_NFCE.getCodigo());
         nfe.setUfEmitente(empresa.getCodigoIbgeUf());
@@ -179,7 +180,7 @@ public class NfeService implements Serializable {
         return nfe;
     }
 
-    public void instanciarDadosConfiguracoes(NfeCabecalho nfe) throws ChronosException {
+    public void instanciarDadosConfiguracoes(NfeCabecalho nfe) throws ChronosException, CertificadoException {
         if (configuracao == null) {
             instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
         }
@@ -1015,6 +1016,7 @@ public class NfeService implements Serializable {
         nfeFormaPagamento.setNfeCabecalho(nfe);
         nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
         nfeFormaPagamento.setValor(nfe.getValorTotal());
+        nfe.getListaNfeFormaPagamento().clear();
         nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
     }
 

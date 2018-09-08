@@ -998,7 +998,10 @@ public class GeraXMLEnvio {
             Pag.DetPag detPag = new Pag.DetPag();
             detPag.setTPag(p.getForma());
             BigDecimal valor = p.getValor().subtract(Optional.ofNullable(p.getTroco()).orElse(BigDecimal.ZERO));
-            detPag.setVPag(FormatValor.getInstance().formatarValor(valor));
+
+            detPag.setVPag(FormatValor.getInstance().formatarValor(p.getForma().equals("90") ? BigDecimal.ZERO : valor));
+
+
             pag.getDetPag().add(detPag);
         });
 

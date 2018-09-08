@@ -19,13 +19,20 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         nfe = atualizar(nfe);
 
         if (atualizarEstoque) {
-            if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
-                atualizaEstoqueEmpresaEstoqueVerificado(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
-            } else if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
-                atualizaEstoqueVerificado(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+
+            if (nfe.getTipoOperacao().equals(1)) {
+                if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
+                    atualizaEstoqueEmpresaEstoqueVerificado(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+                } else if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
+                    atualizaEstoqueVerificado(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+                } else {
+                    atualizaEstoqueEmpresa(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+                }
             } else {
-                atualizaEstoqueEmpresa(nfe.getEmpresa().getId(), nfe.getListaNfeDetalhe());
+                procedimentoNfeCancelada(nfe, true);
             }
+
+
         }
 
 
@@ -90,7 +97,7 @@ public class NfeRepository extends AbstractRepository implements Serializable {
     }
 
 
-    public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+    public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) {
 
         String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + ?1 where p.produto.id = ?2 and p.empresa.id= ?3";
         execute(jpql, quantidade, idProduto, idEmpresa);
@@ -99,14 +106,14 @@ public class NfeRepository extends AbstractRepository implements Serializable {
 
     }
 
-    public void atualizaEstoqueVerificado(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+    public void atualizaEstoqueVerificado(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) {
 
         String jpql = "UPDATE EmpresaProduto p set p.estoqueVerificado= p.estoqueVerificado + ?1 where p.produto.id = ?2 and p.empresa.id= ?3";
         execute(jpql, quantidade, idProduto, idEmpresa);
 
     }
 
-    public void atualizaEstoqueEmpresaEstoqueVerificado(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+    public void atualizaEstoqueEmpresaEstoqueVerificado(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) {
         String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + ?1,p.estoqueVerificado= p.estoqueVerificado + ?1 where p.produto.id = ?2 and p.empresa.id= ?3";
         execute(jpql, quantidade, idProduto, idEmpresa);
 
