@@ -270,7 +270,7 @@ public class EntradaNotaFiscalService implements Serializable {
 
     }
 
-    private void atualizarEstoque(Empresa empresa, TributOperacaoFiscal operacaoFiscal, NfeDetalhe detalhe) throws Exception {
+    private void atualizarEstoque(Empresa empresa, TributOperacaoFiscal operacaoFiscal, NfeDetalhe detalhe) {
         if (operacaoFiscal.getEstoqueVerificado() && operacaoFiscal.getEstoque()) {
             estoqueRepository.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
         } else if (operacaoFiscal.getEstoqueVerificado()) {

@@ -190,6 +190,17 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
+    public boolean existeRegisro(Class<T> clazz, List<Filtro> filtros) throws PersistenceException {
+
+        String jpql = "select count(o.id) from " + clazz.getName() + " o where 1=1 ";
+        jpql = montaQuery(jpql, null, null, filtros);
+
+        Query query = queryPrepared(jpql, filtros);
+
+        return (Long) query.getSingleResult() > 0;
+    }
+
+    @Override
     public Object getObject(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException {
         StringBuilder jpql = new StringBuilder("SELECT o.id ");
 

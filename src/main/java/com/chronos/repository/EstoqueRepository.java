@@ -38,25 +38,25 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
 
-    public void atualizaEstoqueVerificado(Integer idEmpresa, List<ProdutoVendaDTO> itens) throws Exception {
+    public void atualizaEstoqueVerificado(Integer idEmpresa, List<ProdutoVendaDTO> itens) {
         for (ProdutoVendaDTO item : itens) {
             atualizaEstoqueEmpresaControle(idEmpresa, item.getId(), item.getQuantidade().negate());
         }
     }
 
-    public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+    public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
         }
     }
 
-    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             atualizaEstoqueEmpresaControle(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
         }
     }
 
-    public void atualizaEstoqueEmpresaControleFiscal(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+    public void atualizaEstoqueEmpresaControleFiscal(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             atualizaEstoqueEmpresaControleFiscal(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
         }
@@ -166,19 +166,19 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
 
-    public List<ProdutoDTO> getProdutosTransferencia(int idempresaOrigem, int idempresaDestino, Object filtro) {
+    public List<ProdutoDTO> getProdutosTransferencia(int idempresaOrigem, Object filtro) {
         String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.custoUnitario,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,un.sigla) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
-                "where ep.empresa.id IN (?1,?2 ) and p.tipo = 'V' and p.custoUnitario > 0 ";
+                "where ep.empresa.id = ?1 and p.tipo = 'V' and p.custoUnitario > 0 ";
 
         if (filtro instanceof Integer) {
-            jpql += "and p.id = ?3";
+            jpql += "and p.id = ?2";
         } else {
-            jpql += "and (LOWER(p.nome)  like ?3 or p.gtin = ?3 or p.codigoInterno = ?3 )";
+            jpql += "and (LOWER(p.nome)  like ?2 or p.gtin = ?2 or p.codigoInterno = ?2 )";
         }
 
-        List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, idempresaDestino, idempresaDestino, filtro);
+        List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, idempresaOrigem, filtro);
         return produtos;
     }
 

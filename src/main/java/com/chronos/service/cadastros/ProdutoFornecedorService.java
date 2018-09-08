@@ -7,7 +7,6 @@ import com.chronos.util.jpa.Transactional;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -24,6 +23,8 @@ public class ProdutoFornecedorService implements Serializable {
     private Repository<FornecedorProduto> repository;
     @Inject
     private Repository<EmpresaProduto> empresaProdutos;
+    @Inject
+    private EmpresaProdutoService empresaProdutoService;
 
     @Transactional
     public FornecedorProduto salvar(Produto produto, Fornecedor fornecedor, Empresa empresa, BigDecimal valorCompra, String codigoFornecedor) {
@@ -39,14 +40,7 @@ public class ProdutoFornecedorService implements Serializable {
         forProd.setPrecoUltimaCompra(valorCompra);
 
         if (salvarEmpresaProduto) {
-
-            EmpresaProduto empProduto = new EmpresaProduto();
-            produto.setProdutosEmpresa(new ArrayList<>());
-            empProduto.setEmpresa(empresa);
-            empProduto.setProduto(produto);
-            empProduto.setQuantidadeEstoque(BigDecimal.ZERO);
-            empProduto.setEstoqueVerificado(BigDecimal.ZERO);
-            empresaProdutos.salvar(empProduto);
+            empresaProdutoService.novoProduto(empresa, produto);
         }
 
 
