@@ -387,7 +387,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
                     Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 } else {
                     duplicidade = status == StatusTransmissao.DUPLICIDADE;
+                    getObjeto().setNumero("");
+                    getObjeto().setChaveAcesso("");
                 }
+
 
             } else {
                 Mensagem.addInfoMessage("Antes de enviar a NF-e é necessário salvar as informações!");
