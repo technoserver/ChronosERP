@@ -36,7 +36,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         try {
             user = (UsuarioSistema) authentication.getPrincipal();
-            Tenant tenant = new Tenant(user.getUsuario().getId(), user.getUsuario().getNomeTenant());
+            Tenant tenant = new Tenant(user.getUsuario().getIdtenant(), user.getUsuario().getNomeTenant());
             request.getSession().setAttribute("tenantId", tenant);
             UsuarioDTO usuarioDTO = definirPermissoes(user);
             request.getSession().setAttribute("userChronosERP", usuarioDTO);
