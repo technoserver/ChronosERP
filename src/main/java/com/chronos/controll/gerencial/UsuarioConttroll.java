@@ -4,14 +4,12 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.tenant.Tenant;
-import com.chronos.modelo.tenant.UsuarioTenant;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
-import com.chronos.repository.TenantRepository;
+import com.chronos.service.ChronosException;
+import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -33,8 +31,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     private Repository<Papel> papelRepository;
     @Inject
     private Repository<Colaborador> colaboradores;
-    @Inject
-    private TenantRepository tenantRepository;
+
     @Inject
     private Repository<Empresa> empresaRepository;
 
@@ -44,6 +41,9 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     private List<EmpresaPessoa> listEmpresaPessoa;
 
     private String senha;
+
+    @Inject
+    private UsuarioService service;
 
 
     @Override
@@ -75,48 +75,17 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     @Override
     public void salvar() {
 
-        boolean existeColaborador = dao.existeRegisro(Usuario.class, "colaborador.id", getObjeto().getColaborador().getId());
-
-
-        Integer id = getObjeto().getId();
-        if (existeColaborador) {
-            Mensagem.addInfoMessage("já existe usuário definido para esse colaborador");
-            return;
+        try {
+            service.salvar(getObjeto(), senha);
+            setTelaGrid(true);
+            Mensagem.addInfoMessage("Dados salvo com sucesso");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao salvar o usuário", ex);
+            }
         }
-        boolean existeUsuarioTenant = tenantRepository.existeUsuario(getObjeto().getLogin().toLowerCase());
-        if (existeUsuarioTenant) {
-            Mensagem.addInfoMessage("já existe usuário definido com esse login");
-            return;
-        }
-        boolean existeUsuario = dao.existeRegisro(Usuario.class, "login", getObjeto().getLogin().toLowerCase());
-        if (existeUsuario) {
-            Mensagem.addInfoMessage("já existe usuário definido com esse login");
-            return;
-        }
-
-        if (getObjeto().getPapel().getId() == 1) {
-            getObjeto().setAdministrador("S");
-        } else {
-            getObjeto().setAdministrador("N");
-        }
-        if (getObjeto().getId() == null) {
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            getObjeto().setSenha(encoder.encode(senha));
-        }
-        super.salvar();
-
-        if (id == null) {
-            Tenant tenant = FacesUtil.getTenantId();
-
-            UsuarioTenant user = new UsuarioTenant();
-            user.setLogin(getObjeto().getLogin());
-            user.setSenha(getObjeto().getSenha());
-
-            user.setTenant(tenant);
-
-            tenantRepository.salvar(user);
-        }
-
 
     }
 
