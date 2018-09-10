@@ -647,6 +647,11 @@ public class NfeService implements Serializable {
 
         } else {
 
+            if (!new File(caminho).exists()) {
+                gerarXml(nfe.getId(), nfe.getNomeXml());
+            }
+
+
             br.inf.portalfiscal.nfe.schema_4.enviNFe.TNfeProc nfeProc = XmlUtil.xmlToObject(XmlUtil.leXml(caminho), TNfeProc.class);
 
             TNFe.InfNFe infNFe = nfeProc.getNFe().getInfNFe();
