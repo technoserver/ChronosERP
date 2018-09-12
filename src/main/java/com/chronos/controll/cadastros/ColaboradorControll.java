@@ -17,9 +17,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  *
@@ -47,6 +45,19 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     @Inject
     private Repository<Pessoa> pessoas;
 
+
+    private Cargo cargo;
+    private Setor setor;
+
+    private Map<String, Integer> listaTipoAdmissao;
+    private Map<String, Integer> listaSituacao;
+    private Map<String, Integer> listaTipo;
+
+    private Map<String, Integer> listaNivelFormacao;
+    private Integer idnivelFormacao;
+    private Integer idtipoAdimissao;
+    private Integer idsituacao;
+    private Integer idtipo;
 
     private String completo;
 
@@ -77,6 +88,7 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         getObjeto().setDataAdmissao(new Date());
         getObjeto().setDataCadastro(new Date());
         completo = "S";
+        iniciarObjetos();
     }
 
     @Override
@@ -86,6 +98,12 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         Colaborador colaborador = dao.get(getObjeto().getId(), Colaborador.class);
 
         setObjeto(colaborador);
+
+        idnivelFormacao = colaborador.getNivelFormacao().getId();
+        idtipoAdimissao = colaborador.getTipoAdmissao() != null ? colaborador.getTipoAdmissao().getId() : 1;
+        idsituacao = colaborador.getSituacaoColaborador().getId();
+        idtipo = colaborador.getTipoColaborador().getId();
+        iniciarObjetos();
     }
 
     @Override
@@ -94,6 +112,11 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         Colaborador colaborador = null;
         try {
             Empresa ep = getObjeto().getId() != null ? empresa : emp;
+
+            getObjeto().setNivelFormacao(new NivelFormacao(idnivelFormacao));
+            getObjeto().setTipoAdmissao(new TipoAdmissao(idtipoAdimissao));
+            getObjeto().setSituacaoColaborador(new SituacaoColaborador(idsituacao));
+            getObjeto().setTipoColaborador(new TipoColaborador(idtipo));
             colaborador = service.salvarColaborador(getObjeto(), ep);
             setObjeto(colaborador);
             Mensagem.addInfoMessage("Colaborador salvo com sucesso");
@@ -102,6 +125,31 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
             Mensagem.addErrorMessage("", e);
         }
 
+    }
+
+    public void addCargo() {
+        cargo = new Cargo();
+        cargo.setEmpresa(empresa);
+
+    }
+
+    public void salvarCargo() {
+        cargo = cargos.atualizar(cargo);
+        getObjeto().setCargo(cargo);
+        setActiveTabIndex(1);
+        Mensagem.addInfoMessage("Cargo adicionado com sucesso");
+    }
+
+    public void addSetor() {
+        setor = new Setor();
+        setor.setEmpresa(empresa);
+    }
+
+    public void salvarSetor() {
+        setor = setores.atualizar(setor);
+        getObjeto().setSetor(setor);
+        setActiveTabIndex(1);
+        Mensagem.addInfoMessage("Setor adicionado com sucesso");
     }
 
     public List<Pessoa> getListaPessoa(String nome) {
@@ -176,6 +224,43 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     }
 
 
+    private void iniciarObjetos() {
+
+        listaSituacao = new LinkedHashMap<>();
+        listaTipoAdmissao = new LinkedHashMap<>();
+        listaNivelFormacao = new LinkedHashMap<>();
+        listaTipo = new LinkedHashMap<>();
+
+        listaNivelFormacao.put("Analfabeto", 1);
+        listaNivelFormacao.put("Até 4ª série incompleta do 1º grau (ensino fundamental)", 2);
+        listaNivelFormacao.put("4ª série completa do 1º grau (ensino fundamental)", 3);
+        listaNivelFormacao.put("5ª a 8ª série incompleta do 1º grau (ensino fundamental)", 4);
+        listaNivelFormacao.put("1º grau completo (ensino fundamental)", 5);
+        listaNivelFormacao.put("2º grau incompleto (ensino médio)", 6);
+        listaNivelFormacao.put("2º grau completo (ensino médio)", 7);
+        listaNivelFormacao.put("Superior Incompleto", 8);
+        listaNivelFormacao.put("Superior Completo", 9);
+        listaNivelFormacao.put("Pós-Graduação/Especialização", 10);
+        listaNivelFormacao.put("Mestrado", 11);
+        listaNivelFormacao.put("Doutorado", 12);
+        listaNivelFormacao.put("Pós-Doutorado", 13);
+
+
+        listaTipoAdmissao.put("PRIMEIRO EMPREGO", 1);
+        listaTipoAdmissao.put("REEMPREGO", 2);
+        listaTipoAdmissao.put("CONTRATO POR PRAZO DETERMINADO", 3);
+        listaTipoAdmissao.put("REINTEGRACAO", 4);
+        listaTipoAdmissao.put("TRANSFERENCIA", 5);
+
+
+        listaSituacao.put("ATIVO", 1);
+        listaSituacao.put("INATIVO", 2);
+
+        listaTipo.put("EMPREGADO", 1);
+        listaTipo.put("REPRESENTANTE", 2);
+    }
+
+
     @Override
     public Pessoa getPessoa() {
         return getObjeto().getPessoa();
@@ -215,4 +300,67 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     }
 
 
+    public Setor getSetor() {
+        return setor;
+    }
+
+    public void setSetor(Setor setor) {
+        this.setor = setor;
+    }
+
+    public Cargo getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(Cargo cargo) {
+        this.cargo = cargo;
+    }
+
+    public Integer getIdsituacao() {
+        return idsituacao;
+    }
+
+    public void setIdsituacao(Integer idsituacao) {
+        this.idsituacao = idsituacao;
+    }
+
+    public Integer getIdnivelFormacao() {
+        return idnivelFormacao;
+    }
+
+    public void setIdnivelFormacao(Integer idnivelFormacao) {
+        this.idnivelFormacao = idnivelFormacao;
+    }
+
+    public Integer getIdtipoAdimissao() {
+        return idtipoAdimissao;
+    }
+
+    public void setIdtipoAdimissao(Integer idtipoAdimissao) {
+        this.idtipoAdimissao = idtipoAdimissao;
+    }
+
+    public Integer getIdtipo() {
+        return idtipo;
+    }
+
+    public void setIdtipo(Integer idtipo) {
+        this.idtipo = idtipo;
+    }
+
+    public Map<String, Integer> getListaTipo() {
+        return listaTipo;
+    }
+
+    public Map<String, Integer> getListaNivelFormacao() {
+        return listaNivelFormacao;
+    }
+
+    public Map<String, Integer> getListaTipoAdmissao() {
+        return listaTipoAdmissao;
+    }
+
+    public Map<String, Integer> getListaSituacao() {
+        return listaSituacao;
+    }
 }

@@ -144,6 +144,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         excluir(clazz, new ArrayList<>());
     }
 
+    @Transactional
     @Override
     public void excluir(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
         List<Filtro> filtros = new ArrayList<>();
@@ -187,6 +188,17 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         query.setParameter("valor", valor);
         return (Long) query.getSingleResult() > 0;
 
+    }
+
+    @Override
+    public boolean existeRegisro(Class<T> clazz, List<Filtro> filtros) throws PersistenceException {
+
+        String jpql = "select count(o.id) from " + clazz.getName() + " o where 1=1 ";
+        jpql = montaQuery(jpql, null, null, filtros);
+
+        Query query = queryPrepared(jpql, filtros);
+
+        return (Long) query.getSingleResult() > 0;
     }
 
     @Override

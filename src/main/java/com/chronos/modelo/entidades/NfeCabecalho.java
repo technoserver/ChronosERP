@@ -6,7 +6,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -20,7 +19,7 @@ import java.util.*;
 public class NfeCabecalho implements Serializable {
 
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -63,7 +62,6 @@ public class NfeCabecalho implements Serializable {
     @Column(name = "DIGITO_CHAVE_ACESSO")
     private String digitoChaveAcesso;
     @Column(name = "AMBIENTE")
-    @NotNull
     private Integer ambiente;
     @Column(name = "FINALIDADE_EMISSAO")
     private Integer finalidadeEmissao;
@@ -226,7 +224,7 @@ public class NfeCabecalho implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     private VendaCabecalho vendaCabecalho;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     private Empresa empresa;
     @JoinColumn(name = "ID_TRIBUT_OPERACAO_FISCAL", referencedColumnName = "ID")
     @ManyToOne
@@ -266,6 +264,9 @@ public class NfeCabecalho implements Serializable {
     private OsAbertura os;
     @Transient
     private PdvVendaCabecalho pdv;
+    @Transient
+    private EstoqueTransferenciaCabecalho transferencia;
+
 
     public NfeCabecalho() {
 
@@ -379,9 +380,9 @@ public class NfeCabecalho implements Serializable {
     }
 
 
-    public NfeCabecalho(Integer id, String cliente, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo) {
+    public NfeCabecalho(Integer id, String destinatario, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo) {
         this.id = id;
-        this.cliente = new Cliente(0, cliente);
+        this.destinatario = new NfeDestinatario(destinatario);
         this.serie = serie;
         this.numero = numero;
         this.dataHoraEmissao = dataHoraEmissao;
@@ -391,6 +392,7 @@ public class NfeCabecalho implements Serializable {
         this.statusNota = statusNota;
         this.codigoModelo = codigoModelo;
     }
+
 
     public NfeCabecalho(Integer id, String serie, String numero, Date dataHoraEmissao, String chaveAcesso, String digitoChaveAcesso, BigDecimal valorTotal, Integer statusNota, String codigoModelo, String qrcode) {
         this.id = id;
@@ -2005,6 +2007,14 @@ public class NfeCabecalho implements Serializable {
         this.pdv = pdv;
     }
 
+    public EstoqueTransferenciaCabecalho getTransferencia() {
+        return transferencia;
+    }
+
+    public void setTransferencia(EstoqueTransferenciaCabecalho transferencia) {
+        this.transferencia = transferencia;
+    }
+
     /**
      * vNF - Valor Total da NF-e [(+) vProd (id:W07) (-) vDesc (id:W10) (+) vICMSST (id:W06) (+) vFrete (id:W09) (+)
      * vSeg (id:W10) (+) vOutro (id:W15) (+) vII (id:W11) (+) vIPI (id:W12) (+) vServ (id:W19) (NT 2011/004)]
@@ -2120,6 +2130,10 @@ public class NfeCabecalho implements Serializable {
 
     public boolean isTemProduto() {
         return getListaNfeDetalhe().isEmpty();
+    }
+
+    public List<NfeDuplicata> getDuplicatas() {
+        return new ArrayList<>(Optional.ofNullable(getListaDuplicata()).orElse(new HashSet<>()));
     }
 
     @Override

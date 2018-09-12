@@ -57,6 +57,10 @@ public class TipoAdmissao implements Serializable {
     public TipoAdmissao() {
     }
 
+    public TipoAdmissao(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }

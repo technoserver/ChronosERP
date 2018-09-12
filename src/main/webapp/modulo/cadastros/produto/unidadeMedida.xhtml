@@ -32,7 +32,7 @@
             <p:column headerText="Sigla">
                 <h:outputLabel value="#{row.sigla}" />
             </p:column>
-            <p:column headerText="Descricao">
+            <p:column headerText="Descrição">
                 <h:outputLabel value="#{row.descricao}" />
             </p:column>
             <p:column headerText="Pode Fracionar">
@@ -50,6 +50,7 @@
                                    id="telaDetalhe"
                                    >
 
+
             <div class="row">
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -59,9 +60,9 @@
                                 requerido="true"/>
 
                 <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                                  idComponente="unidadeProdutoPodeFracionar" label="Pode Fracionar"
-                                  nomeAtributo="#{unidadeProdutoControll.objeto.podeFracionar}"
-                                  itens="#{unidadeProdutoControll.simNao}" />
+                                 idComponente="unidadeProdutoPodeFracionar" label="Pode Fracionar"
+                                 nomeAtributo="#{unidadeProdutoControll.objeto.podeFracionar}"
+                                 itens="#{unidadeProdutoControll.simNao}"/>
             </div>
             <div class="row">
 
@@ -69,6 +70,7 @@
                                     idComponente="descricao" label="Descricao"
                                     nomeAtributo="#{unidadeProdutoControll.objeto.descricao}"/>
             </div>
+
 
         </erp:telaInclusaoAlteracao>
     </ui:define>

@@ -198,7 +198,7 @@
                                     <tfoot>
                                     <tr class="border-bottom-1px">
 
-                                        <td><h4>SALDO DEVEDOR LIQUIDO</h4></td>
+                                        <td><h4>SALDO DEVEDOR LÍQUIDO</h4></td>
                                         <td colspan="4" class="nowrap coluna-monetaria">
                                             <h4>
                                                 <span>#{finRecebimentoControll.formatarValor(finRecebimentoControll.saldoDevedor)}</span>
@@ -226,7 +226,7 @@
                                                       controller="#{finRecebimentoControll}"
                                                       completeMethod="getListaFinTipoRecebimento"
                                                       nomeAtributo="#{finRecebimentoControll.tipoRecebimento}"
-                                                      idComponente="tipoRecebimento" requerido="true"/>
+                                                      idComponente="tipoRecebimento"/>
 
                                     <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
                                                       idComponente="valorAPagar"
@@ -238,7 +238,7 @@
 
                                     </div>
                                     <erp:campoTexto styleClass="col-xs-10 col-sm-10 col-md-10"
-                                                    idComponente="finParcelaRecebimentoHistorico" label="Historico"
+                                                    idComponente="finParcelaRecebimentoHistorico" label="Histórico"
                                                     nomeAtributo="#{finRecebimentoControll.observacao}"
                                                     tamanhoMaximo="250"/>
 
@@ -249,7 +249,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                                        <span><h4>Observação aplicada a todas as parcelas selecionadas</h4></span>
+                                        <span><h4>Hitórico aplicado a todas as parcelas selecionadas</h4></span>
                                     </div>
                                 </div>
                             </fieldset>

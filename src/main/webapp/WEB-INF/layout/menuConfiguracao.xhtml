@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+
+    <ul class="nav nav-second-level collapse ">
+        <li class="${fn:contains(view.viewId,'modulo/configuracoes/')?'active':''}">
+
+
+            <erp:subMenu caminho="/modulo/configuracoes/parametros"
+                         label="Parâmetros"
+                         funcao="parametros"/>
+
+
+            <erp:subMenu caminho="/modulo/configuracoes/certificado"
+                         label="Certificado"
+                         funcao="certificado"/>
+
+            <erp:subMenu caminho="/modulo/configuracoes/nfeConfiguracao"
+                         label="NF-e"
+                         exibir="#{seguranca.isTemAcesso('STATUS_NFE')}"
+                         funcao="/nfeConfiguracao"/>
+
+
+            <erp:subMenu caminho="/modulo/configuracoes/pdvConfiguracao"
+                         label="Configuração PDV"
+                         exibir="#{seguranca.isTemAcesso('NFCE_CONFIGURACAO')}"
+                         funcao="pdvConfiguracao"/>
+
+            <erp:subMenu caminho="/modulo/configuracoes/mdfeConfiguracao"
+                         label="MDF-e"
+                         funcao="mdfeConfiguracao"/>
+
+            <erp:subMenu caminho="/modulo/configuracoes/notaFiscalTipo"
+                         label="Modelos Doc Fiscais"
+                         funcao="notaFiscalTipo"/>
+
+            <erp:subMenu caminho="/modulo/configuracoes/conversaoCfop"
+                         label="Conversão CFOP"
+                         funcao="conversaoCfop"/>
+
+            <erp:subMenu caminho="/modulo/configuracoes/conversaoCst"
+                         label="Conversão CST"
+                         funcao="conversaoCst"/>
+
+
+        </li>
+    </ul>
+
+
+</ui:composition>

@@ -56,7 +56,7 @@ public class GerarXmlEnvio {
     }
 
     public br.inf.portalfiscal.mdfe.schema_300.evCancMDFe.TEvento cancelamento(String chave, String cnpj,
-                                                                               String ambiente, String uf, String protocolo, String justificativa) throws EmissorException, Exception {
+                                                                               String ambiente, String uf, String protocolo, String justificativa) throws Exception {
 
         String id = "ID110111" + chave + "01";
 
@@ -107,7 +107,7 @@ public class GerarXmlEnvio {
         return status;
     }
 
-    public String situacaoMdfe(String ambiente, String chave) throws EmissorException, Exception {
+    public String situacaoMdfe(String ambiente, String chave) throws Exception {
         br.inf.portalfiscal.mdfe.schema_300.consSitMDFe.TConsSitMDFe consSitMdfe = new TConsSitMDFe();
 
         consSitMdfe.setVersao("3.00");
@@ -124,7 +124,7 @@ public class GerarXmlEnvio {
         return result;
     }
 
-    public String consultarNaoEcenrrados(String ambiente, String cnpj) throws Exception {
+    public br.inf.portalfiscal.mdfe.schema_300.consMDFeNaoEnc.TConsMDFeNaoEnc consultarNaoEcenrrados(String ambiente, String cnpj) {
         br.inf.portalfiscal.mdfe.schema_300.consMDFeNaoEnc.TConsMDFeNaoEnc consMDFeNaoEnc = new TConsMDFeNaoEnc();
 
         consMDFeNaoEnc.setCNPJ(cnpj);
@@ -132,23 +132,11 @@ public class GerarXmlEnvio {
         consMDFeNaoEnc.setVersao("3.00");
         consMDFeNaoEnc.setXServ("CONSULTAR NÃO ENCERRADOS");
 
-        br.inf.portalfiscal.mdfe.schema_300.consMDFeNaoEnc.TRetConsMDFeNaoEnc retorno = Mdfe
-                .consultarNaoEncerrado(consMDFeNaoEnc, false);
-
-        String result = "";
-        result += "Status:" + retorno.getCStat() + "\n";
-        result += "Motivo:" + retorno.getXMotivo() + "\n";
-        result += "UF:" + retorno.getCUF() + "\n";
-
-        result = retorno.getInfMDFe().stream()
-                .map((inf) -> "Chave :" + inf.getChMDFe() + " Número Protocolo " + inf.getNProt() + "\n")
-                .reduce(result, String::concat);
-
-        return result;
+        return consMDFeNaoEnc;
     }
 
     public br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento encerrar(String chave, String cnpj, String ambiente, String codIbgeUf, String protocolo,
-                                                                          String codIbgeUfEnc, String codIbgeMunEnc) throws EmissorException, Exception {
+                                                                          String codIbgeUfEnc, String codIbgeMunEnc) throws Exception {
         br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento enviEvento = new br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento();
         br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento.InfEvento infoEvento = new br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento.InfEvento();
 
@@ -203,7 +191,7 @@ public class GerarXmlEnvio {
 
 
     public br.inf.portalfiscal.mdfe.schema_300.evIncCondutorMDF.TEvento incluirCondutor(String chave, String ambiente, String cnpj, String codUfIbge, String nome, String cpf, Integer seqEvento)
-            throws EmissorException, Exception {
+            throws Exception {
         String id;
         if (seqEvento < 10) {
             id = "ID110114" + chave + "0" + String.valueOf(seqEvento);

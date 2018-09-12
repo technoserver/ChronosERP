@@ -95,6 +95,18 @@
                 </div>
 
             </div>
+            <h:panelGroup layout="block" styleClass="m-t">
+                <erp:separador label="Selecione as empresas nos quais o usuário terá acesso"/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p:selectManyCheckbox id="empresas" value="#{usuarioConttroll.empresasSelecionada}"
+                                              layout="responsive" columns="3">
+                            <f:selectItems value="#{usuarioConttroll.empresas}" var="obj"
+                                           itemLabel="#{obj.razaoSocial}" itemValue="#{obj}"/>
+                        </p:selectManyCheckbox>
+                    </div>
+                </div>
+            </h:panelGroup>
 
 
         </erp:telaInclusaoAlteracao>

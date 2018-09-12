@@ -28,7 +28,7 @@
 
     <div class="row">
         <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
-                          label="Tabela Preco"
+                          label="Tabela Preço"
                           itemLabel="#{objeto.nome}"
                           controller="#{clienteControll}"
                           completeMethod="getListaTabelaPreco"
@@ -36,7 +36,7 @@
                           idComponente="clienteTabelaPreco"
                           requerido="false"/>
         <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
-                          label="Convenio"
+                          label="Convênio"
                           itemLabel="#{objeto.nome}"
                           controller="#{clienteControll}"
                           completeMethod="getListaConvenio"
@@ -60,7 +60,7 @@
                           nomeAtributo="#{clienteControll.objeto.atividadeForCli}"
                           idComponente="clienteAtividadeForCli"/>
         <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                          label="Situacao"
+                          label="Situação"
                           itemLabel="#{objeto.nome}"
                           controller="#{clienteControll}"
                           completeMethod="getListaSituacaoForCli"
@@ -68,7 +68,7 @@
                           idComponente="clienteSituacaoForCli"/>
 
         <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                          label="Operacao Fiscal"
+                          label="Operação Fiscal"
                           itemLabel="#{objeto.descricao}"
                           controller="#{clienteControll}"
                           completeMethod="getListaOperacaoFiscal"
@@ -89,7 +89,7 @@
                          nomeAtributo="#{clienteControll.objeto.geraFinanceiro}"
                          itens="#{clienteControll.simNao}"/>
         <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
-                         idComponente="clienteIndicadorPreco" label="Indicador Preco"
+                         idComponente="clienteIndicadorPreco" label="Indicador Preço"
                          nomeAtributo="#{clienteControll.objeto.indicadorPreco}"
                          itens="#{clienteControll.clienteIndicadorPreco}"/>
         <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
@@ -113,7 +113,7 @@
                         tamanhoMaximo="30"/>
 
         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
-                          idComponente="clienteLimiteCredito" label="Limite Credito"
+                          idComponente="clienteLimiteCredito" label="Limite Crédito R$"
                           nomeAtributo="#{clienteControll.objeto.limiteCredito}"/>
 
         <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
@@ -122,14 +122,14 @@
 
 
         <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
-                        idComponente="clienteClassificacaoContabilConta" label="Classificacao Contabil Conta"
+                        idComponente="clienteClassificacaoContabilConta" label="Classificação Contábil Conta"
                         nomeAtributo="#{clienteControll.objeto.classificacaoContabilConta}"
                         tamanhoMaximo="30"/>
     </div>
 
     <div class="row">
         <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                            idComponente="clienteObservacao" label="Observacao"
+                            idComponente="clienteObservacao" label="Observação"
                             nomeAtributo="#{clienteControll.objeto.observacao}"/>
     </div>
 

@@ -12,12 +12,10 @@ public class DefaultConverter implements Converter {
 
     @Override
     public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
-        String str = "";
+
         if (value == null || value.isEmpty()) {
             return null;
         }
-        Object obj = uiComponent.getAttributes().get(value);
-        str = value;
         return uiComponent.getAttributes().get(value);
     }
 
@@ -25,10 +23,13 @@ public class DefaultConverter implements Converter {
     public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
         try {
             if (value != null) {
+
                 Method method = value.getClass().getDeclaredMethod("getId");
                 Integer id = (Integer) method.invoke(value);
                 uiComponent.getAttributes().put(String.valueOf(id), value);
                 return String.valueOf(id);
+
+
             }
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();

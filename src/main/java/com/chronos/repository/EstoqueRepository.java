@@ -24,13 +24,13 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     private static final long serialVersionUID = 1L;
 
-    public void atualizarPrecoProduto(int idproduto, BigDecimal valor) throws Exception {
+    public void atualizarPrecoProduto(int idproduto, BigDecimal valor) {
         String jpql = "UPDATE Produto p SET p.valorVenda = ?1 where p.id =?2";
         execute(jpql, valor, idproduto);
 
     }
 
-    public void ajustarEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+    public void ajustarEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) {
 
         String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = ?1 where p.produto.id = ?2 and p.empresa.id= ?3";
 
@@ -38,25 +38,25 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
 
-    public void atualizaEstoqueVerificado(Integer idEmpresa, List<ProdutoVendaDTO> itens) throws Exception {
+    public void atualizaEstoqueVerificado(Integer idEmpresa, List<ProdutoVendaDTO> itens) {
         for (ProdutoVendaDTO item : itens) {
             atualizaEstoqueEmpresaControle(idEmpresa, item.getId(), item.getQuantidade().negate());
         }
     }
 
-    public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+    public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
         }
     }
 
-    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             atualizaEstoqueEmpresaControle(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
         }
     }
 
-    public void atualizaEstoqueEmpresaControleFiscal(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
+    public void atualizaEstoqueEmpresaControleFiscal(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             atualizaEstoqueEmpresaControleFiscal(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
         }
@@ -72,7 +72,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
 
-    public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+    public void atualizaEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) {
 
         String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
 
@@ -80,7 +80,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     }
 
-    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+    public void atualizaEstoqueEmpresaControle(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) {
 
         String jpql = "UPDATE EmpresaProduto p set p.estoqueVerificado = p.estoqueVerificado + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
 
@@ -88,7 +88,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     }
 
-    public void atualizaEstoqueEmpresaControleFiscal(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) throws Exception {
+    public void atualizaEstoqueEmpresaControleFiscal(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) {
 
         String jpql = "UPDATE EmpresaProduto p set p.estoqueVerificado = p.estoqueVerificado + :quantidade,p.quantidadeEstoque = p.quantidadeEstoque + :quantidade where p.produto.id = :idproduto and p.empresa.id= :idempresa";
 
@@ -97,13 +97,13 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
 
-    public List<NfeDetalhe> getItens(NfeCabecalho nfeCabecalho) throws Exception {
+    public List<NfeDetalhe> getItens(NfeCabecalho nfeCabecalho) {
         String jpql = "SELECT NEW NfeDetalhe (o.id, o.produto, o.quantidadeComercial) FROM NfeDetalhe o WHERE o.nfeCabecalho.id = ?1";
         List<NfeDetalhe> itens = getEntity(NfeDetalhe.class, jpql, nfeCabecalho.getId());
         return itens;
     }
 
-    public List<Produto> getProdutoEmpresa(String nome, Empresa empresa) throws Exception {
+    public List<Produto> getProdutoEmpresa(String nome, Empresa empresa) {
 
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Produto> criteria = builder.createQuery(Produto.class);
@@ -123,7 +123,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
 
-    public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) throws Exception {
+    public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) {
 
 //        CriteriaBuilder builder = em.getCriteriaBuilder();
 //        CriteriaQuery<ProdutoDTO> criteria = builder.createQuery(ProdutoDTO.class);
@@ -165,7 +165,24 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         return produtos;
     }
 
-    public List<EstoqueIdealDTO> getItensCompraSugerida(Empresa empresa) throws Exception {
+
+    public List<ProdutoDTO> getProdutosTransferencia(int idempresaOrigem, Object filtro) {
+        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.custoUnitario,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,un.sigla) From Produto p " +
+                "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
+                "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
+                "where ep.empresa.id = ?1 and p.tipo = 'V' and p.custoUnitario > 0 ";
+
+        if (filtro instanceof Integer) {
+            jpql += "and p.id = ?2";
+        } else {
+            jpql += "and (LOWER(p.nome)  like ?2 or p.gtin = ?2 or p.codigoInterno = ?2 )";
+        }
+
+        List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, idempresaOrigem, filtro);
+        return produtos;
+    }
+
+    public List<EstoqueIdealDTO> getItensCompraSugerida(Empresa empresa) {
         String jpql = "select new com.chronos.dto.EstoqueIdealDTO(p.id,p.nome,p.valorCompra,ep.quantidadeEstoque,ep.estoqueVerificado,p.estoqueIdeal) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "WHERE p.controle < p.estoqueMinimo and ep.empresa.id = ?1";

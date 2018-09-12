@@ -19,6 +19,7 @@ public class ProdutoDTO implements Serializable {
     private String nome;
     private String descricaoPdv;
     private BigDecimal valorVenda;
+    private BigDecimal custoUnitario;
     private BigDecimal quantidadeEstoque;
     private BigDecimal estoqueVerificado;
     private String ncm;
@@ -31,8 +32,28 @@ public class ProdutoDTO implements Serializable {
 
     private Produto produto;
 
-    public ProdutoDTO() {
+    public ProdutoDTO(Integer id, String nome, BigDecimal custoUnitario, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String unidade) {
+        this.id = id;
+        this.nome = nome;
+        this.custoUnitario = custoUnitario;
+        this.quantidadeEstoque = quantidadeEstoque;
+        this.estoqueVerificado = estoqueVerificado;
+        this.unidade = unidade;
+        this.ncm = ncm;
+
+        this.produto = new Produto(id, nome);
+        this.produto.setControle(estoqueVerificado);
+        this.produto.setCustoUnitario(custoUnitario);
+        this.produto.setQuantidadeEstoque(quantidadeEstoque);
+        this.produto.setNcm(ncm);
+        this.produto.setUnidadeProduto(new UnidadeProduto(0, unidade));
+
     }
+
+    public ProdutoDTO() {
+
+    }
+
 
     public ProdutoDTO(Integer id, String nome,String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
         this.id = id;
@@ -164,5 +185,13 @@ public class ProdutoDTO implements Serializable {
 
     public void setServico(String servico) {
         this.servico = servico;
+    }
+
+    public BigDecimal getCustoUnitario() {
+        return custoUnitario;
+    }
+
+    public void setCustoUnitario(BigDecimal custoUnitario) {
+        this.custoUnitario = custoUnitario;
     }
 }

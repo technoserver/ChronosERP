@@ -48,6 +48,8 @@ public interface Repository<T> {
 
     boolean existeRegisro(Class<T> clazz, String atributo, Object valor) throws PersistenceException;
 
+    boolean existeRegisro(Class<T> clazz, List<Filtro> filtros) throws PersistenceException;
+
     Object getObject(Class<T> clazz, String atributo, Object valor, Object[] atributos) throws PersistenceException;
 
     T get(Integer id, Class<T> clazz) throws PersistenceException;

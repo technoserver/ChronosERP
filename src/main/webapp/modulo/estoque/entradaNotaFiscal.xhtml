@@ -242,7 +242,7 @@
                         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-12"
                                         idComponente="produtoNome" label="Nome"
                                         nomeAtributo="#{entradaNotaFiscalControll.produto.nome}"
-                                        tamanhoMaximo="100" requerido="true"/>
+                                        tamanhoMaximo="120" requerido="true"/>
 
                     </div>
                     <div class="row">
@@ -281,7 +281,7 @@
                                             var="unidadeProduto" itemLabel="#{unidadeProduto.sigla}"
                                             itemValue="#{unidadeProduto}"
                                             converter="defaultConverter"
-                                            forceSelection="true" minQueryLength="3" maxResults="100"
+                                            forceSelection="true" minQueryLength="2" maxResults="20"
                                             required="true" style="width: 100%"
                                             emptyMessage="Nenhum registro encontrado"/>
                         </div>
@@ -401,7 +401,7 @@
                     <div class="row">
                         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-12"
                                         idComponente="nfeDetalheProduto"
-                                        tamanhoMaximo="100"
+                                        tamanhoMaximo="120"
                                         label="Produto NFe"
                                         nomeAtributo="#{entradaNotaFiscalControll.nfeDetalhe.nomeProduto}"
                                         somenteLeitura="true"

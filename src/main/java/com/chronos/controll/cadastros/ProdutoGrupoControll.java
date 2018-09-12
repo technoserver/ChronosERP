@@ -7,7 +7,6 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.ProdutoGrupo;
-import com.chronos.util.jsf.Mensagem;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -28,7 +27,6 @@ public class ProdutoGrupoControll  extends AbstractControll<ProdutoGrupo> implem
     @Override
     public void init() {
         super.init();
-        Mensagem.addInfoMessage("Durante o cadastramento do Grupo de produto é realizado para informar a que grupo os produtos pertencem, facilitando a organização.");
     }
 
     @Override

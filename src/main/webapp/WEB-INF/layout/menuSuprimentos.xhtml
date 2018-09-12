@@ -20,14 +20,21 @@
                         <!--<erp:subMenu caminho="/modulo/estoque/requisicaoInternaCabecalho"-->
                         <!--label="Requisição Interna"-->
                         <!--funcao="requisicaoInternaCabecalho"/>-->
+                        <erp:subMenu caminho="/modulo/estoque/ajuste"
+                                     label="Ajuste"
+                                     exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
+                                     funcao="ajuste"/>
                         <erp:subMenu caminho="/modulo/estoque/estoqueReajuste"
                                      label="Reajuste"
                                      exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
                                      funcao="estoqueReajuste"/>
                         <erp:subMenu caminho="/modulo/estoque/entradaNotaFiscal"
-                                     label="Entrada NFe"
+                                     label="Entrada"
                                      exibir="#{seguranca.isTemAcesso('NFE_ENTRADA')}"
                                      funcao="entradaNotaFiscal"/>
+                        <erp:subMenu caminho="/modulo/estoque/transferencia"
+                                     label="Transferências"
+                                     funcao="transferencia"/>
                     </li>
                     <li class="${fn:contains(view.viewId,'modulo/estoque/relatorios/')?'active':''}">
                         <a href="#">Relatorios <span class="fa arrow"></span></a>
@@ -68,6 +75,12 @@
                         <!--<erp:subMenu caminho="/modulo/compras/compraSugerida"-->
                         <!--label="Compra Sugerida"-->
                         <!--funcao="compraSugerida"/>-->
+
+
+                        <erp:subMenu caminho="/modulo/compras/compraDevolucao"
+                                     label="Devolução"
+                                     exibir="#{seguranca.isTemAcesso('DEVOLUCAO_COMPRA')}"
+                                     funcao="compraDevolucao"/>
 
                     </li>
                 </ul>

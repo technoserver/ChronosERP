@@ -4,7 +4,9 @@ import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
 import com.chronos.modelo.entidades.Vendedor;
+import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.Repository;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -29,12 +31,19 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     @Inject
     private Repository<PdvMovimento> movimentoRepository;
 
+    @Inject
+    private Repository<PessoaCliente> pessoaClienteRepository;
+
     private Date dataInicial;
     private Date dataFinal;
     private Integer idvendedor;
     private int idcupom;
     private PdvVendaCabecalho vendaCupom;
+    private PessoaCliente cliente;
     private Map<String, Integer> listaVendedor;
+    private String statusVendas;
+
+    private Map<String, String> status;
 
     @PostConstruct
     @Override
@@ -45,6 +54,16 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         listaVendedor = new LinkedHashMap<>();
         listaVendedor.putAll(list.stream()
                 .collect(Collectors.toMap((Vendedor::getNome), Vendedor::getId)));
+
+
+        status = new LinkedHashMap<>();
+        status.put("Todos", "");
+        status.put("Cancelada", "C");
+        status.put("Producao", "P");
+        status.put("Faturada", "F");
+        status.put("Devolvida", "D");
+        status.put("Encerrada", "E");
+
         if(idcupom > 0){
 
         }
@@ -84,6 +103,19 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         parametros.put("dataPedidoInicial", dataInicial);
         parametros.put("dataPedidoFinal", dataFinal);
         parametros.put("idempresa", empresa.getId());
+
+        if (idvendedor > 0) {
+            parametros.put("idvendedor", idvendedor);
+        }
+
+        if (cliente != null) {
+            parametros.put("idcliente", cliente.getId());
+        }
+
+        if (!StringUtils.isEmpty(statusVendas)) {
+            parametros.put("situacao", statusVendas);
+        }
+
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "relacaoVendas.jasper";
 
@@ -109,6 +141,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         if (idvendedor > 0) {
             parametros.put("idvendedor", idvendedor);
         }
+
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "relacaoComissoes.jasper";
 
@@ -136,6 +169,16 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         String nomeRelatorio = "relacaoClientesVenda.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "clientesMaisCompram.pdf");
+    }
+
+    public List<PessoaCliente> getListaCliente(String nome) {
+        List<PessoaCliente> listaCliente = new ArrayList<>();
+        try {
+            listaCliente = pessoaClienteRepository.getEntitys(PessoaCliente.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaCliente;
     }
 
 
@@ -185,5 +228,29 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void setVendaCupom(PdvVendaCabecalho vendaCupom) {
         this.vendaCupom = vendaCupom;
+    }
+
+    public PessoaCliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(PessoaCliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public String getStatusVendas() {
+        return statusVendas;
+    }
+
+    public void setStatusVendas(String statusVendas) {
+        this.statusVendas = statusVendas;
+    }
+
+    public Map<String, String> getStatus() {
+        return status;
+    }
+
+    public void setStatus(Map<String, String> status) {
+        this.status = status;
     }
 }

@@ -4,8 +4,10 @@ import com.chronos.bo.nfe.ImportaXMLNFe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.TipoImportacaoXml;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.FornecedorService;
 import com.chronos.service.cadastros.ProdutoFornecedorService;
 import com.chronos.service.estoque.EntradaNotaFiscalService;
@@ -109,6 +111,9 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private NaturezaFinanceira naturezaFinanceira;
     private ContaCaixa contaCaixa;
 
+    private List<NfeDuplicata> duplicatas;
+
+    private boolean importado;
 
     @Override
     public ERPLazyDataModel<NfeCabecalho> getDataModel() {
@@ -142,6 +147,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         valorTotalCofins = BigDecimal.ZERO;
         valorTotalIpi = BigDecimal.ZERO;
         valorTotalNF = BigDecimal.ZERO;
+        duplicatas = new ArrayList<>();
     }
 
     @Override
@@ -149,7 +155,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         super.doEdit();
         NfeCabecalho nfe = dataModel.getRowData(getObjeto().getId().toString());
         setObjeto(nfe);
-
+        duplicatas = getObjeto().getDuplicatas();
     }
 
 
@@ -157,6 +163,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void salvar() {
         try {
 
+            getObjeto().setListaDuplicata(new HashSet<>(duplicatas));
             entradaService.salvar(getObjeto(), contaCaixa, naturezaFinanceira);
 
             setTelaGrid(true);
@@ -267,7 +274,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             FileUtils.copyInputStreamToFile(arquivoUpload.getInputstream(), file);
             iniciarValorsValidacao();
             if (file != null) {
-                ImportaXMLNFe importaXml = new ImportaXMLNFe();
+                ImportaXMLNFe importaXml = new ImportaXMLNFe(TipoImportacaoXml.ENTRADA);
                 Map map = importaXml.importarXmlNFe(file);
                 // tipoDoc = "NFE";
                 setObjeto((NfeCabecalho) map.get("cabecalho"));
@@ -290,6 +297,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 }
                 verificaProdutoNaoCadastrado(true);
                 getObjeto().setDataHoraEntradaSaida(new Date());
+                importado = true;
+                duplicatas = getObjeto().getDuplicatas();
                 Mensagem.addInfoMessage("XML importados com sucesso!");
             }
         } catch (Exception ex) {
@@ -426,6 +435,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
                 Mensagem.addInfoMessage("Produto salvo!");
             }
+            nfeDetalhe.setNomeProduto(nfeDetalhe.getProduto().getNome());
             gerarValores(nfeDetalhe);
             nfeDetalhe.calcularValorTotalProduto();
             calcularTotais();
@@ -455,6 +465,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         produto.setValorCompra(nfeDetalhe.getValorUnitarioComercial());
         produto.setExcluido("N");
         produto.setInativo("N");
+        produto.setServico("N");
 
     }
 
@@ -468,21 +479,38 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             salvarNovoProduto();
             Mensagem.addInfoMessage("Produto vinculado com sucesso");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Erro ao vincular o produto", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao vincular o produto", ex);
+            }
+
+
         }
     }
 
     public void salvarNovoProduto() {
         try {
 
-            FornecedorProduto forProd = produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
-            nfeDetalhe.setProduto(forProd.getProduto());
-            nfeDetalhe.setProdutoCadastrado(true);
-            Mensagem.addInfoMessage("Produto cadastro e vinculado com sucesso");
+            if (produto.getTipo().equals("V") && (produto.getValorVenda() == null || produto.getValorVenda().signum() <= 0)) {
+                FacesContext.getCurrentInstance().validationFailed();
+                throw new ChronosException("Valor de venda orbigatório");
+            } else {
+                FornecedorProduto forProd = produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
+                nfeDetalhe.setProduto(forProd.getProduto());
+                nfeDetalhe.setNomeProduto(forProd.getProduto().getNome());
+                nfeDetalhe.setProdutoCadastrado(true);
+                Mensagem.addInfoMessage("Produto cadastro e vinculado com sucesso");
+            }
+
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Erro ao vincular o produto", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao cadastra o produto", ex);
+            }
+
+
         }
     }
 
@@ -550,24 +578,24 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void salvarDuplicata() {
         try {
             if (condicao != null) {
-                getObjeto().getListaDuplicata().clear();
+                duplicatas.clear();
                 gerarDuplicatas();
             } else {
                 BigDecimal valorTotalDuplicata = BigDecimal.ZERO;
-                for (NfeDuplicata d : getObjeto().getListaDuplicata()) {
+                for (NfeDuplicata d : duplicatas) {
                     valorTotalDuplicata = Biblioteca.soma(valorTotalDuplicata, d.getValor());
                 }
                 valorTotalDuplicata = Biblioteca.soma(valorTotalDuplicata, duplicata.getValor());
                 if (valorTotalDuplicata.compareTo(getObjeto().getValorTotal()) > 0) {
                     Mensagem.addInfoMessage("Valor acima do valor total da nota");
-                } else if (!getObjeto().getListaDuplicata().contains(duplicata)) {
+                } else if (!duplicatas.contains(duplicata)) {
                     Mensagem.addInfoMessage("Registro alterado!");
-                    getObjeto().getListaDuplicata().add(duplicata);
+                    duplicatas.add(duplicata);
                 } else {
-                    getObjeto().getListaDuplicata().add(duplicata);
+                    duplicatas.add(duplicata);
                     int i = 0;
 
-                    for (NfeDuplicata d : getObjeto().getListaDuplicata()) {
+                    for (NfeDuplicata d : duplicatas) {
                         i++;
                         d.setNumero(getObjeto().getNumero() + "/" + i);
                     }
@@ -606,6 +634,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         }
 
+    }
+
+    public void removerDuplicata() {
+        duplicatas.remove(duplicataSelecionada);
     }
 
     // </editor-fold>
@@ -996,5 +1028,21 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setContaCaixa(ContaCaixa contaCaixa) {
         this.contaCaixa = contaCaixa;
+    }
+
+    public boolean isNaturezaFinaxeiraRequirida() {
+        return !getObjeto().getListaDuplicata().isEmpty();
+    }
+
+    public boolean isImportado() {
+        return importado;
+    }
+
+    public List<NfeDuplicata> getDuplicatas() {
+        return duplicatas;
+    }
+
+    public void setDuplicatas(List<NfeDuplicata> duplicatas) {
+        this.duplicatas = duplicatas;
     }
 }

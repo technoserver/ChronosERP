@@ -54,6 +54,7 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     private String cnpj;
 
 
+
     @Override
     public void doCreate() {
         super.doCreate();
@@ -63,7 +64,8 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         getPessoa().setListaPessoaContato(new HashSet<>());
         getPessoa().setListaPessoaEndereco(new HashSet<>());
         getPessoa().setListaPessoaTelefone(new HashSet<>());
-        cidade = new Municipio();
+
+
 
     }
 
@@ -79,6 +81,8 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
 
         endereco = getPessoa().getListaPessoaEndereco().stream().filter((e) -> e.getPrincipal().equals("S")).findFirst().orElse(new PessoaEndereco());
         cidade = new Municipio(0, endereco.getCidade(), endereco.getMunicipioIbge());
+
+
     }
 
     public void definirTipo() {
@@ -243,7 +247,6 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         EstadoCivil ec = new EstadoCivil();
         ec.setId(1);
         pf.setEstadoCivil(ec);
-
         return pessoa;
     }
 
@@ -264,7 +267,7 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     }
 
     public void instanciaCidade() {
-        cidade = new Municipio();
+        cidade = null;
     }
 
     public List<Municipio> getMunicipios(String nome) {
@@ -360,4 +363,6 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     public void setEmp(Empresa emp) {
         this.emp = emp;
     }
+
+
 }

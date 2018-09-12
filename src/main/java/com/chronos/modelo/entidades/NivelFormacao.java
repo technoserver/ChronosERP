@@ -60,6 +60,10 @@ public class NivelFormacao implements Serializable {
     public NivelFormacao() {
     }
 
+    public NivelFormacao(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }

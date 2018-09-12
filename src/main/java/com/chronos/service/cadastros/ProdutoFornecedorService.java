@@ -7,7 +7,6 @@ import com.chronos.util.jpa.Transactional;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -21,15 +20,18 @@ public class ProdutoFornecedorService implements Serializable {
     @Inject
     private Repository<Produto> produtos;
     @Inject
-    private Repository<Fornecedor> fornecedores;
-    @Inject
     private Repository<FornecedorProduto> repository;
     @Inject
-    Repository<EmpresaProduto> empresaProdutos;
+    private Repository<EmpresaProduto> empresaProdutos;
+    @Inject
+    private EmpresaProdutoService empresaProdutoService;
 
     @Transactional
     public FornecedorProduto salvar(Produto produto, Fornecedor fornecedor, Empresa empresa, BigDecimal valorCompra, String codigoFornecedor) {
+        boolean salvarEmpresaProduto = produto.getId() == null;
+
         produto = produto.getId() != null ? produto : produtos.atualizar(produto);
+
         FornecedorProduto forProd = new FornecedorProduto();
         forProd.setFornecedor(fornecedor);
         forProd.setProduto(produto);
@@ -37,13 +39,10 @@ public class ProdutoFornecedorService implements Serializable {
         forProd.setDataUltimaCompra(new Date());
         forProd.setPrecoUltimaCompra(valorCompra);
 
-        EmpresaProduto empProduto = new EmpresaProduto();
-        produto.setProdutosEmpresa(new ArrayList<>());
-        empProduto.setEmpresa(empresa);
-        empProduto.setProduto(produto);
-        empProduto.setQuantidadeEstoque(BigDecimal.ZERO);
-        empProduto.setEstoqueVerificado(BigDecimal.ZERO);
-        empresaProdutos.salvar(empProduto);
+        if (salvarEmpresaProduto) {
+            empresaProdutoService.novoProduto(empresa, produto);
+        }
+
 
         return repository.atualizar(forProd);
     }

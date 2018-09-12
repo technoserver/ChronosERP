@@ -17,6 +17,7 @@ import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -89,11 +90,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             dataModel.setDao(dao);
             dataModel.setClazz(NfeCabecalho.class);
         }
-        dataModel.setAtributos(new Object[]{"cliente.pessoa.nome", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
+        dataModel.setAtributos(new Object[]{"destinatario.nome", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
         dataModel.getFiltros().clear();
-        dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         dataModel.addFiltro("codigoModelo", "55", Filtro.IGUAL);
+
         return dataModel;
     }
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Crud NFe">
@@ -145,14 +146,20 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         try {
             String str = getObjeto().getInformacoesAddContribuinte() + " " + observacao;
             getObjeto().setInformacoesAddContribuinte(str);
+            getObjeto().setNaturezaOperacao(getObjeto().getTributOperacaoFiscal().getDescricao());
             setObjeto(nfeService.salvar(getObjeto(), tipoPagamento));
 
             Mensagem.addInfoMessage("NFe salva com sucesso");
             setTelaGrid(false);
             dadosSalvos = true;
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao salvar a nfe", ex);
+            }
+
+
         }
     }
 
@@ -380,7 +387,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
                     Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 } else {
                     duplicidade = status == StatusTransmissao.DUPLICIDADE;
+                    getObjeto().setNumero("");
+                    getObjeto().setChaveAcesso("");
                 }
+
 
             } else {
                 Mensagem.addInfoMessage("Antes de enviar a NF-e é necessário salvar as informações!");
@@ -596,7 +606,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public List<PdvTipoPagamento> getListaNfceTipoPagamento(String nome) {
         List<PdvTipoPagamento> listaPdvTipoPagamento = new ArrayList<>();
         try {
-            listaPdvTipoPagamento = nfeService.getTipoPagamentos();
+
+            listaPdvTipoPagamento = StringUtils.isEmpty(nome) ? nfeService.getTipoPagamentos() : nfeService.getTipoPagamentos()
+                    .stream().filter(p -> p.getDescricao().toLowerCase().contains(nome)).collect(Collectors.toList());
         } catch (Exception e) {
             // e.printStackTrace();
         }

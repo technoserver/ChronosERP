@@ -29,26 +29,11 @@
                                      label="Cargo"
                                      exibir="#{seguranca.isTemAcesso('CARGO')}"
                                      funcao="cargo"/>
-                        <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/nivelFormacao"
-                                     label="Nivel Formação"
-                                     exibir="#{seguranca.isTemAcesso('NIVEl_FORMACAO')}"
-                                     funcao="nivelFormacao"/>
-                        <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/tipoAdmissao"
-                                     label="Tipo Admissao"
-                                     exibir="#{seguranca.isTemAcesso('TIPO_ADIMISSAO')}"
-                                     funcao="tipoAdmissao"/>
-                        <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/tipoRelacionamento"
-                                     label="Tipo Relacionamento"
-                                     exibir="#{seguranca.isTemAcesso('TIPO_RELCIONAMENTO')}"
-                                     funcao="tipoRelacionamento"/>
-                        <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/tipoColaborador"
-                                     label="Tipo Colaborador"
-                                     exibir="#{seguranca.isTemAcesso('TIPO_COLABORADOR')}"
-                                     funcao="tipoColaborador"/>
-                        <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/situacaoColaborador"
-                                     label="Situacao Colaborador"
-                                     exibir="#{seguranca.isTemAcesso('SITUACAO_COLBORADOR')}"
-                                     funcao="situacaoColaborador"/>
+                        <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/setor"
+                                     label="Setor"
+                                     exibir="#{seguranca.isTemAcesso('SETOR')}"
+                                     funcao="setor"/>
+
                         <erp:subMenu caminho="/modulo/cadastros/pessoal/colaborador/colaborador"
                                      label="Colaborador"
                                      exibir="#{seguranca.isTemAcesso('COLABORADOR')}"
@@ -91,7 +76,7 @@
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/financeiro')?'active':''}">
-            <a href="#">Finaceiro
+            <a href="#">Financeiro
                 <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-third-level">
@@ -101,7 +86,7 @@
                              funcao="bancos"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/financeiro/agenciaBanco"
-                             label="Agencia Bancaria"
+                             label="Agência Bancária"
                              exibir="#{seguranca.isTemAcesso('AGENCIA_BANCO')}"
                              funcao="agenciaBanco"/>
 
@@ -169,10 +154,6 @@
                              exibir="#{seguranca.isTemAcesso('ALMOXARIFADO')}"
                              funcao="almoxarifado"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/diversos/setor"
-                             label="Setor"
-                             exibir="#{seguranca.isTemAcesso('SETOR')}"
-                             funcao="setor"/>
                 <erp:subMenu caminho="/modulo/cadastros/diversos/contador"
                              label="Contador"
                              exibir="#{seguranca.isTemAcesso('SPED_FISCAL') or seguranca.isTemAcesso('SPED_CONTRIBUICOES')}"
@@ -200,10 +181,6 @@
                              exibir="#{seguranca.isTemAcesso('IBPT')}"
                              funcao="ibpt"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/tabelas/feriados"
-                             label="Feriados"
-                             exibir="#{seguranca.isTemAcesso('FERIADOS')}"
-                             funcao="feriados"/>
 
             </ul>
         </li>
@@ -214,24 +191,21 @@
             <ul class="nav nav-third-level">
 
                 <erp:subMenu caminho="/modulo/cadastros/endereco/pais"
-                             label="Pais"
+                             label="País"
                              funcao="pais"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/endereco/uf"
                              label="UF"
                              funcao="uf"/>
                 <erp:subMenu caminho="/modulo/cadastros/endereco/municipio"
-                             label="Municipio"
+                             label="Município"
                              funcao="municipio"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/endereco/cep"
-                             label="CEP"
-                             funcao="cep"/>
 
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'cadastros/administrativo')?'active':''}">
-            <a href="#">administrativos
+            <a href="#">Administrativos
                 <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-third-level">
@@ -252,7 +226,7 @@
                              exibir="#{seguranca.isTemAcesso('PAPEL')}"
                              funcao="papel"/>
                 <erp:subMenu caminho="/modulo/cadastros/administrativo/usuario"
-                             label="Usuario"
+                             label="Usuário"
                              exibir="#{seguranca.isTemAcesso('USUARIO')}"
                              funcao="usuario"/>
 
@@ -268,7 +242,7 @@
                              label="Proprietário"
                              funcao="proprietarioVeiculo"/>
                 <erp:subMenu caminho="/modulo/cadastros/transporte/veiculo"
-                             label="Veiculo"
+                             label="Veículo"
                              funcao="veiculo"/>
             </ul>
         </li>

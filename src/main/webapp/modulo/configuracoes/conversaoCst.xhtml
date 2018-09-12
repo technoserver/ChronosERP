@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        CST
+    </ui:define>
+
+    <ui:define name="tela">
+        #{cstConverterControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        CST
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{cstConverterControll}"
+                       idDataTable="dataTableCst"
+                       nomeFuncao="CST"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Tipo">
+                <h:outputLabel value="#{row.tipoCst}"/>
+            </p:column>
+            <p:column headerText="CST Origem">
+                <h:outputLabel value="#{row.cstOrigem}"/>
+            </p:column>
+            <p:column headerText="Cst Destino">
+                <h:outputLabel value="#{row.cstDestino}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{cstConverterControll}"
+                                   nomeFuncao="CST"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:campoSelect itens="#{cstConverterControll.tipo}"
+                                 styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="tipo"
+                                 label="Tipo"
+                                 nomeAtributo="#{cstConverterControll.objeto.tipo}"/>
+
+
+                <div class="col-xs-12 col-sm-3 col-md-2">
+                    <h:outputLabel value="Tipo CST" for="tipoCst"/>
+                    <h:selectOneMenu value="#{cstConverterControll.objeto.tipoCst}"
+                                     class="form-control"
+                                     required="true"
+                                     id="tipoCst">
+                        <f:selectItem itemLabel="Selecione..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{cstConverterControll.tiposCst}"/>
+                        <p:ajax event="change" listener="#{cstConverterControll.definiCst()}" process="@this"
+                                update=":formCentro:telaDetalhe:panelCentroDetalhe"/>
+                    </h:selectOneMenu>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <h:outputLabel value="CST origem" for="cstOrigem"/>
+                    <h:selectOneMenu value="#{cstConverterControll.objeto.cstOrigem}"
+                                     class="form-control"
+                                     required="true"
+                                     id="cstOrigem">
+                        <f:selectItem itemLabel="Selecione..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{cstConverterControll.cstOrigem}"/>
+                    </h:selectOneMenu>
+                </div>
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <h:outputLabel value="CST destino" for="cstDestino"/>
+                    <h:selectOneMenu value="#{cstConverterControll.objeto.cstDestino}"
+                                     class="form-control"
+                                     required="true"
+                                     id="cstDestino">
+                        <f:selectItem itemLabel="Selecione..." itemValue="#{null}" noSelectionOption="true"/>
+                        <f:selectItems value="#{cstConverterControll.cstDestino}"/>
+                    </h:selectOneMenu>
+                </div>
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

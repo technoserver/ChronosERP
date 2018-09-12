@@ -22,6 +22,7 @@ public class UnidadeProdutoControll extends AbstractControll<UnidadeProduto> imp
 
     private static final long serialVersionUID = 1L;
 
+
     @Override
     protected Class<UnidadeProduto> getClazz() {
         return UnidadeProduto.class;

@@ -4,10 +4,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "NFE_DUPLICATA")
-public class NfeDuplicata implements Serializable {
+public class NfeDuplicata implements Serializable, Comparable<NfeDuplicata> {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -84,14 +85,26 @@ public class NfeDuplicata implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof NfeDuplicata)) return false;
-
         NfeDuplicata that = (NfeDuplicata) o;
-
-        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(numero, that.numero);
     }
 
     @Override
     public int hashCode() {
-        return getId() != null ? getId().hashCode() : 0;
+
+        return Objects.hash(id, numero);
+    }
+
+    @Override
+    public int compareTo(NfeDuplicata o) {
+        if (this.getNumero().equals(o.getNumero())) {
+            return -1;
+        }
+        if (!this.getNumero().equals(o.getNumero())) {
+            return 1;
+        }
+
+        return 0;
     }
 }

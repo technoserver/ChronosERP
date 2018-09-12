@@ -1,6 +1,7 @@
 package com.chronos.controll.tributacao;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
 import com.chronos.util.jpa.Transactional;
@@ -51,6 +52,18 @@ public class TributOperacaoFiscalControll extends AbstractControll<TributOperaca
         controla = new LinkedHashMap();
         controla.put("Não", false);
         controla.put("Sim", true);
+    }
+
+    @Override
+    public ERPLazyDataModel<TributOperacaoFiscal> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setDao(dao);
+            dataModel.setClazz(TributOperacaoFiscal.class);
+        }
+        Object[] atributos = new Object[]{"cfop", "descricao", "descricaoNaNf"};
+        dataModel.setAtributos(atributos);
+        return dataModel;
     }
 
     @Override
