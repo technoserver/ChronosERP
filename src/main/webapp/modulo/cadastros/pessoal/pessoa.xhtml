@@ -153,7 +153,7 @@
                                         tamanhoMaximo="60"
                                         requerido="true"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="pessoaEnderecoNumero" label="Numero"
+                                        idComponente="pessoaEnderecoNumero" label="Número"
                                         nomeAtributo="#{pessoasControll.pessoaEndereco.numero}"
                                         tamanhoMaximo="10"
                                         requerido="true"/>
@@ -174,7 +174,7 @@
                     <div class="row">
 
                         <erp:campoMascara styleClass="col-xs-12 col-sm-3 col-md-3"
-                                          idComponente="pessoaEnderecoCep" label="Cep"
+                                          idComponente="pessoaEnderecoCep" label="CEP"
                                           nomeAtributo="#{pessoasControll.pessoaEndereco.cep}"
                                           mascara="99.999-999"/>
 
@@ -187,18 +187,18 @@
                                          nomeAtributo="#{pessoasControll.pessoaEndereco.entrega}"
                                          itens="#{pessoasControll.simNao}"/>
                         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                                         idComponente="pessoaEnderecoCobranca" label="Cobranca"
+                                         idComponente="pessoaEnderecoCobranca" label="Cobrança"
                                          nomeAtributo="#{pessoasControll.pessoaEndereco.cobranca}"
                                          itens="#{pessoasControll.simNao}"/>
                         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                          idComponente="pessoaEnderecoCorrespondencia"
-                                         label="Correspondencia"
+                                         label="Correspondência"
                                          nomeAtributo="#{pessoasControll.pessoaEndereco.correspondencia}"
                                          itens="#{pessoasControll.simNao}"/>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-2 col-md-2">
-                            <h:outputLabel value="UF :" for="pessoaEnderecoUf"/>
+                            <h:outputLabel value="UF " for="pessoaEnderecoUf"/>
                             <h:selectOneMenu value="#{pessoasControll.pessoaEndereco.uf}"
                                              class="form-control" id="pessoaEnderecoUf">
                                 <f:selectItems var="uf" value="#{pessoasControll.estado}"/>
@@ -261,14 +261,14 @@
                                          itens="#{pessoasControll.tipoTelefone}"/>
 
                         <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
-                                        idComponente="pessoaTelefoneNumero" label="Numero"
+                                        idComponente="pessoaTelefoneNumero" label="Número"
                                         nomeAtributo="#{pessoasControll.pessoaTelefone.numero}"
                                         tamanhoMaximo="14"/>
                     </div>
 
                     <div class="row">
                         <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                            idComponente="clienteObservacao" label="Observacao"
+                                            idComponente="clienteObservacao" label="Observacão"
                                             nomeAtributo="#{pessoasControll.pessoaTelefone.observacao}"/>
                     </div>
                 </p:outputPanel>

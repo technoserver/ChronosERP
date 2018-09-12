@@ -26,7 +26,10 @@
     <ui:define name="gridDados">
         <p:outputPanel id="outputPanelGrid">
             <p:outputPanel rendered="#{produtoControll.telaGrid}">
+                <!--<p:contextMenu for="formCentro:dataTableProduto">-->
+                <!--<p:menuitem value="View"  icon="ui-icon-search"/>-->
 
+                <!--</p:contextMenu>-->
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-xs-12">
@@ -81,10 +84,12 @@
                     <br/>
                     <p:dataTable value="#{produtoControll.produtoDataModel}"
                                  var="row" id="dataTableProduto" paginator="true"
+                                 rowKey="#{row.id}"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{produtoControll.podeConsultar()}"
                                  resizableColumns="true" lazy="true"
                                  class="js-data-table">
+
                         <p:ajax event="rowToggle" listener="#{produtoControll.buscarProdutoEmpresas}"
                                 update=":formCentro:growl"/>
                         <p:column style="width:32px">
@@ -450,7 +455,6 @@
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="produtoValorVenda" label="Valor Venda"
                                           nomeAtributo="#{produtoControll.objeto.valorVenda}"
-                                          desabilitado="#{not empty produtoControll.objeto.id}"
                                           requerido="true"/>
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
                                           idComponente="produtoMarkup" label="Markup"
@@ -560,6 +564,79 @@
                                         exibirInfo="true"
                                         mensangemInfo="Ex: 04T0700 (alíquota de ICMS na quarta posição dos totalizadores do ECF com taxa de 7%) | I1 (isento) | F1 (substituição tributária) | N1 (não tributado)"/>
                     </div>
+                </p:tab>
+                <p:tab title="Conversões de UM" id="conversoes" rendered="#{not empty produtoControll.objeto.id}">
+                    <h:form id="formConversao">
+                        <div class="row">
+                            <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-2"
+                                              label="UN Conversão"
+                                              itemLabel="#{objeto.sigla}"
+                                              controller="#{produtoControll}"
+                                              completeMethod="getListaUnidadeProduto"
+                                              nomeAtributo="#{produtoControll.unidadeProduto}"
+                                              tamanhoMinimo="2"
+                                              idComponente="unidadeProduto"/>
+
+
+                            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                              idComponente="fator"
+                                              nomeAtributo="#{produtoControll.fator}"
+                                              requerido="true"
+                                              label="Fator Conversão"/>
+
+                            <div class="col-xs-12 col-sm-4 col-md-3">
+                                <h:outputLabel value="Tipo" for="tipo"/>
+                                <div class="field-action">
+                                    <h:selectOneMenu styleClass="form-control" id="tipo"
+                                                     value="#{produtoControll.acao}">
+                                        <f:selectItem itemValue="M" itemLabel="MULTIPLICAÇÂO"/>
+                                        <f:selectItem itemValue="D" itemLabel="DIVISÃO"/>
+                                    </h:selectOneMenu>
+
+                                    <div class="field-action__icon">
+                                        <p:commandButton title="Add nova conversão"
+                                                         icon="fa fa-plus"
+                                                         update="formCentro:telaDetalhe:tabProduto:formConversao,:formCentro:telaDetalhe:tabProduto:tableConversoes,:formCentro:growl"
+                                                         process="@form"
+                                                         action="#{produtoControll.addConversao}"/>
+
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+                    </h:form>
+
+
+                    <p:dataTable id="tableConversoes" widgetVar="tableConversoes" var="row"
+                                 value="#{produtoControll.conversoes}"
+                    >
+
+                        <p:column headerText="UM">
+                            <h:outputText value="#{row.sigla}"/>
+                        </p:column>
+                        <p:column headerText="Tipo">
+                            <h:outputText value="#{row.acao eq 'D' ? 'DVISÂO':'MULTIPLICAÇÂO'}"/>
+                        </p:column>
+                        <p:column headerText="Fator">
+                            <h:outputText value="#{row.fatorConversao}"/>
+                        </p:column>
+                        <p:column headerText="Ações" styleClass="text-center">
+                            <p:commandLink title="Remover" action="#{produtoControll.removerUndiadeConversao}"
+                                           styleClass=" btn btn-default"
+                                           process="tableConversoes"
+                                           update="tableConversoes">
+                                <i class="fa fa-times"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{produtoControll.unidadeConversaoSelecionada}"/>
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+
                 </p:tab>
 
 
@@ -761,6 +838,46 @@
                 </f:facet>
             </p:dialog>
         </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas6">
+        <h:form id="formOutrasTelas6">
+            <p:dialog id="dialogOutrasTelas6"
+                      header="Inclusão de SubGrupo"
+                      widgetVar="dialogOutrasTelas6" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="600">
+
+                <p:outputPanel id="panelOutrasTelas6">
+                    <div class="row">
+
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Salvar"
+                                             id="btnSalvarConversao"
+                                             action="#{produtoControll.salvarSubgrupo}"
+                                             class="btn btn-primary center-block"
+                            >
+                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
+                                        process="@form"
+                                        update=":formCentro:growl,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas5').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+
     </ui:define>
 
 </ui:composition>

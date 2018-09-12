@@ -22,12 +22,12 @@
                 <p:outputPanel id="panelPessoaEndereco">
                     <div class="row">
                         <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
-                                        idComponente="pessoaEnderecoLogradouro" label="Logradouro"
+                                        idComponente="pessoaEnderecoLogradouro" label="Endereço"
                                         nomeAtributo="#{cc.attrs.controller.pessoaEndereco.logradouro}"
                                         tamanhoMaximo="60"
                                         requerido="true"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="pessoaEnderecoNumero" label="Numero"
+                                        idComponente="pessoaEnderecoNumero" label="Número"
                                         nomeAtributo="#{cc.attrs.controller.pessoaEndereco.numero}"
                                         tamanhoMaximo="10"
                                         requerido="true"/>
@@ -48,7 +48,7 @@
                     <div class="row">
 
                         <erp:campoMascara styleClass="col-xs-12 col-sm-3 col-md-3"
-                                          idComponente="pessoaEnderecoCep" label="Cep"
+                                          idComponente="pessoaEnderecoCep" label="CEP"
                                           nomeAtributo="#{cc.attrs.controller.pessoaEndereco.cep}"
                                           mascara="99.999-999" />
 
@@ -61,18 +61,18 @@
                                          nomeAtributo="#{cc.attrs.controller.pessoaEndereco.entrega}"
                                          itens="#{cc.attrs.controller.simNao}" />
                         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                                         idComponente="pessoaEnderecoCobranca" label="Cobranca"
+                                         idComponente="pessoaEnderecoCobranca" label="Cobrança"
                                          nomeAtributo="#{cc.attrs.controller.pessoaEndereco.cobranca}"
                                          itens="#{cc.attrs.controller.simNao}" />
                         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                          idComponente="pessoaEnderecoCorrespondencia"
-                                         label="Correspondencia"
+                                         label="Correspondência"
                                          nomeAtributo="#{cc.attrs.controller.pessoaEndereco.correspondencia}"
                                          itens="#{cc.attrs.controller.simNao}" />
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-2 col-md-2">
-                            <h:outputLabel value="UF :" for="pessoaEnderecoUf"/>
+                            <h:outputLabel value="UF" for="pessoaEnderecoUf"/>
                             <h:selectOneMenu value="#{cc.attrs.controller.pessoaEndereco.uf}"
                                              class="form-control" id="pessoaEnderecoUf">
                                 <f:selectItems var="uf" value="#{cc.attrs.controller.estado}"/>
