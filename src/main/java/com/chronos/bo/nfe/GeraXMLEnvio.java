@@ -29,6 +29,7 @@ import com.chronos.transmissor.util.NFCeUtil;
 import com.chronos.transmissor.util.WebServiceUtil;
 import com.chronos.transmissor.util.XmlUtil;
 import com.chronos.util.FormatValor;
+import com.chronos.util.TipoRetorno;
 import org.springframework.util.StringUtils;
 
 import javax.swing.text.MaskFormatter;
@@ -798,10 +799,10 @@ public class GeraXMLEnvio {
                     icms900.setPMVAST(FormatValor.getInstance().formatarValor(
                             impIcms.getPercentualMvaIcmsSt() == null ? BigDecimal.ZERO
                                     : impIcms.getPercentualMvaIcmsSt()));
-                    icms900.setPRedBCST(FormatValor.getInstance().formatarValor(impIcms.getPercentualReducaoBcIcmsSt()));
-                    icms900.setVBCST(FormatValor.getInstance().formatarValor(impIcms.getValorBaseCalculoIcmsSt()));
-                    icms900.setPICMSST(FormatValor.getInstance().formatarValor(impIcms.getAliquotaIcmsSt()));
-                    icms900.setVICMSST(FormatValor.getInstance().formatarValor(impIcms.getValorIcmsSt()));
+                    icms900.setPRedBCST(FormatValor.getInstance().formatarValor(impIcms.getPercentualReducaoBcIcmsSt(), TipoRetorno.NULL));
+                    icms900.setVBCST(FormatValor.getInstance().formatarValor(impIcms.getValorBaseCalculoIcmsSt(), TipoRetorno.NULL));
+                    icms900.setPICMSST(FormatValor.getInstance().formatarValor(impIcms.getAliquotaIcmsSt(), TipoRetorno.NULL));
+                    icms900.setVICMSST(FormatValor.getInstance().formatarValor(impIcms.getValorIcmsSt(), TipoRetorno.NULL));
                 }
 
             }

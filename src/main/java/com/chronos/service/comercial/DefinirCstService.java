@@ -458,6 +458,9 @@ public class DefinirCstService implements Serializable {
                 case "101":
                     cst = crt.equals("1") ? "101" : "00";
                     break;
+                case "102":
+                    cst = crt.equals("1") ? "102" : "40";
+                    break;
                 case "201":
                     cst = crt.equals("1") ? "201" : "10";
                     break;

@@ -144,6 +144,7 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         excluir(clazz, new ArrayList<>());
     }
 
+    @Transactional
     @Override
     public void excluir(Class<T> clazz, String atributo, Object valor) throws PersistenceException {
         List<Filtro> filtros = new ArrayList<>();

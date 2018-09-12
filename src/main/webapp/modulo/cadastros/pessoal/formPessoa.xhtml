@@ -109,7 +109,7 @@
                                         tamanhoMaximo="20"
                         />
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="pessoaFisicaOrgaoRg" label="Orgao RG"
+                                        idComponente="pessoaFisicaOrgaoRg" label="Orgão RG"
                                         nomeAtributo="#{pessoasControll.objeto.pessoaFisica.orgaoRg}"
                                         tamanhoMaximo="20"
                         />
@@ -278,7 +278,7 @@
                         </h:selectOneMenu>
                     </div>
                     <div class="col-xs-12 col-sm-10 col-md-10">
-                        <h:outputLabel value="Municipio :"/>
+                        <h:outputLabel value="Municipio"/>
                         <br/>
                         <p:autoComplete id="Municipio" value="#{pessoasControll.cidade}"
                                         completeMethod="#{pessoasControll.getMunicipios}"
@@ -329,35 +329,36 @@
             </div>
             <p:dataTable id="dataTablePessoaEndereco" var="obj"
                          value="#{pessoasControll.objeto.listaPessoaEndereco}"
+                         resizableColumns="true"
                          paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
                          rowKey="#{obj.id}" reflow="true" paginatorPosition="bottom">
 
                 <p:column headerText="Cidade">
                     <h:outputLabel value="#{obj.cidade}"/>
                 </p:column>
-                <p:column headerText="Uf">
+                <p:column headerText="UF" styleClass="text-center" width="60">
                     <h:outputLabel value="#{obj.uf}"/>
                 </p:column>
-                <p:column headerText="Fone">
+                <p:column headerText="Fone" width="115">
                     <h:outputLabel value="#{obj.fone}"/>
                 </p:column>
-                <p:column headerText="Principal">
+                <p:column headerText="Principal" styleClass="text-center" width="95">
                     <h:outputLabel
                             value="#{pessoasControll.keyFromValue(pessoasControll.simNao, obj.principal)}"/>
                 </p:column>
-                <p:column headerText="Entrega">
+                <p:column headerText="Entrega" styleClass="text-center" width="95">
                     <h:outputLabel
                             value="#{pessoasControll.keyFromValue(pessoasControll.simNao, obj.entrega)}"/>
                 </p:column>
-                <p:column headerText="Cobranca">
+                <p:column headerText="Cobrança" styleClass="text-center" width="95">
                     <h:outputLabel
                             value="#{pessoasControll.keyFromValue(pessoasControll.simNao, obj.cobranca)}"/>
                 </p:column>
-                <p:column headerText="Correspondencia">
+                <p:column headerText="Correspondência" styleClass="text-center" width="160">
                     <h:outputLabel
                             value="#{pessoasControll.keyFromValue(pessoasControll.simNao, obj.correspondencia)}"/>
                 </p:column>
-                <p:column headerText="Ações" width="140">
+                <p:column headerText="Ações" width="110" styleClass="text-center">
                     <p:commandLink title="Alterar" action="#{pessoasControll.alterarEndereco}"
                                    class=" btn btn-default"
                                    process="dataTablePessoaEndereco"
