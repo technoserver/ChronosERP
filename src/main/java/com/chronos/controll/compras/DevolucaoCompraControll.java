@@ -148,7 +148,6 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             getObjeto().setListaNfeReferenciada(new HashSet<>(listNfeReferenciada));
 
 
-
             for (NfeDetalhe item : getObjeto().getListaNfeDetalhe()) {
                 ImpostoDTO impostoDTO = new ImpostoDTO(item.getNfeDetalheImpostoIcms());
                 String cst = definirCstService.definirCst(csts, impostoDTO, empresa.getCrt());

@@ -49,7 +49,7 @@ public class EntradaNotaFiscalService implements Serializable {
 
 
     @Transactional
-    public void salvar(NfeCabecalho nfe, ContaCaixa contaCaixa, NaturezaFinanceira naturezaFinanceira) throws Exception {
+    public void salvar(NfeCabecalho nfe, ContaCaixa contaCaixa, NaturezaFinanceira naturezaFinanceira) {
 
 
         boolean inclusao = false;

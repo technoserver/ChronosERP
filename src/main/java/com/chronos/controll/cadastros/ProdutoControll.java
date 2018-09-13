@@ -506,7 +506,6 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     }
 
 
-
     public void salvarSubgrupo() {
         subGrupo.setProdutoGrupo(grupo);
         subGrupo = subGrupos.atualizar(subGrupo);

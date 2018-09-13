@@ -66,7 +66,6 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         getPessoa().setListaPessoaTelefone(new HashSet<>());
 
 
-
     }
 
     @Override

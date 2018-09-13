@@ -255,7 +255,7 @@ public class GeraXMLEnvio {
         return infNfe;
     }
 
-    private Ide getIde() throws ParseException {
+    private Ide getIde() {
         TNFe.InfNFe.Ide ide = new TNFe.InfNFe.Ide();
         ide.setCUF(empresa.getCodigoIbgeUf().toString());
         ide.setCNF(nfeCabecalho.getCodigoNumerico());
@@ -959,7 +959,7 @@ public class GeraXMLEnvio {
     }
 
 
-    private InfNFe.Cobr getCobr(NfeFatura fatura, Set<NfeDuplicata> listaDuplicata) throws ParseException {
+    private InfNFe.Cobr getCobr(NfeFatura fatura, Set<NfeDuplicata> listaDuplicata) {
         TNFe.InfNFe.Cobr cobr = null;
         if (fatura != null && fatura.getNumero() != null) {
             if (!fatura.getNumero().equals("")) {
@@ -1021,7 +1021,7 @@ public class GeraXMLEnvio {
     }
 
 
-    private Total getTotais(NfeCabecalho nfeCabecalho) throws ParseException {
+    private Total getTotais(NfeCabecalho nfeCabecalho) {
 
         TNFe.InfNFe.Total total = new TNFe.InfNFe.Total();
 

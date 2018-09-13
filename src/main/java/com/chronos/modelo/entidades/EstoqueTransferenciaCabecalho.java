@@ -145,7 +145,6 @@ public class EstoqueTransferenciaCabecalho implements Serializable {
     }
 
 
-
     public TributGrupoTributario getTributGrupoTributario() {
         return tributGrupoTributario;
     }

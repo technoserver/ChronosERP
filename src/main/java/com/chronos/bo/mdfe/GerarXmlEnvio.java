@@ -18,7 +18,6 @@ import com.chronos.transmissor.util.ObjetoUtil;
 import com.chronos.util.FormatValor;
 import org.springframework.util.StringUtils;
 
-import java.text.ParseException;
 import java.util.*;
 
 /**
@@ -266,7 +265,7 @@ public class GerarXmlEnvio {
         return enderEmit;
     }
 
-    private TMDFe.InfMDFe.Ide getIde(MdfeCabecalho mdfe) throws ParseException {
+    private TMDFe.InfMDFe.Ide getIde(MdfeCabecalho mdfe) {
         TMDFe.InfMDFe.Ide ide = new TMDFe.InfMDFe.Ide();
 
         ide.setCDV(String.valueOf(mdfe.getDigitoVerificador()));
