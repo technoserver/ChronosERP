@@ -25,6 +25,12 @@
         <div class="ibox-content">
             <div class="row">
 
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 label="Agrupar por grupo ?"
+                                 idComponente="grupo"
+                                 nomeAtributo="#{vendaRelatorioControll.agrupar}"
+                                 itens="#{vendaRelatorioControll.naoSim}"/>
+
                 <erp:campoData nomeAtributo="#{vendaRelatorioControll.dataInicial}"
                                label="Data inicial"
                                idComponente="vencimentoDe"

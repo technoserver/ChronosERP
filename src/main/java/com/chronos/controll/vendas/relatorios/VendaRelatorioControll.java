@@ -45,6 +45,11 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     private Map<String, String> status;
 
+    private Map<String, Boolean> naoSim;
+
+
+    private boolean agrupar;
+
     @PostConstruct
     @Override
     protected void init() {
@@ -63,6 +68,10 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         status.put("Faturada", "F");
         status.put("Devolvida", "D");
         status.put("Encerrada", "E");
+
+        naoSim = new LinkedHashMap<>();
+        naoSim.put("NÂO", false);
+        naoSim.put("SIM ", true);
 
         if(idcupom > 0){
 
@@ -154,7 +163,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         parametros.put("peridoFinal", dataFinal);
         parametros.put("idempresa", empresa.getId());
         String caminhoRelatorio = "/relatorios/vendas";
-        String nomeRelatorio = "relacaoProdutosVendido.jasper";
+        String nomeRelatorio = agrupar ? "relacaoProdutosVendidoGrupo.jasper" : "relacaoProdutosVendido.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "produtosMaisVendido.pdf");
     }
@@ -252,5 +261,17 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void setStatus(Map<String, String> status) {
         this.status = status;
+    }
+
+    public boolean isAgrupar() {
+        return agrupar;
+    }
+
+    public void setAgrupar(boolean agrupar) {
+        this.agrupar = agrupar;
+    }
+
+    public Map<String, Boolean> getNaoSim() {
+        return naoSim;
     }
 }
