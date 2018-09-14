@@ -12,6 +12,7 @@ import com.chronos.bo.nfe.NfeTransmissao;
 import com.chronos.bo.nfe.NfeUtil;
 import com.chronos.dto.*;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.EventoNfe;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.repository.EstoqueRepository;
@@ -90,7 +91,7 @@ public class NfeService implements Serializable {
     @Inject
     private Repository<OsAbertura> osRepository;
     @Inject
-    private EstoqueRepository estoqueRepositoy;
+    private Repository<NfeEvento> eventoRepository;
 
     @Inject
     private EstoqueRepository produtos;
@@ -701,6 +702,13 @@ public class NfeService implements Serializable {
 
         if (!StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             throw new ChronosException("NF-e náo autorizada. Cancelamento náo permitido!");
+        }
+
+        NfeEvento nfeEvento = eventoRepository.get(NfeEvento.class, "idNfeCabeclaho", nfe.getId());
+        if (nfeEvento == null) {
+            nfeEvento = new NfeEvento(nfe.getId(), new Date(), EventoNfe.CARTA_CORRECAO, 1);
+        } else {
+            nfeEvento.atualizarSequencia();
         }
 
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));

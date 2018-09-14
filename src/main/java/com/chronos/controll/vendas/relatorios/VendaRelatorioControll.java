@@ -159,8 +159,8 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void imprimirProdutoVendido() {
         parametros = new HashMap<>();
-        parametros.put("peridoInicial", dataInicial);
-        parametros.put("peridoFinal", dataFinal);
+        parametros.put("dataInicial", dataInicial);
+        parametros.put("dataFinal", dataFinal);
         parametros.put("idempresa", empresa.getId());
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = agrupar ? "relacaoProdutosVendidoGrupo.jasper" : "relacaoProdutosVendido.jasper";
