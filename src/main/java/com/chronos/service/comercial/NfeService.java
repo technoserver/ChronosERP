@@ -208,7 +208,7 @@ public class NfeService implements Serializable {
         }
 
         nfe = repository.atualizar(nfe);
-
+        int count = nfe.getListaNfeFormaPagamento().size();
         return nfe;
     }
 
