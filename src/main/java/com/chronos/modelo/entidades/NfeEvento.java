@@ -34,6 +34,8 @@ public class NfeEvento implements Serializable {
     @NotNull
     @Column(name = "sequencia")
     private Integer sequencia;
+    @Column(name = "protocolo")
+    private String protocolo;
 
     public NfeEvento() {
     }
@@ -96,6 +98,15 @@ public class NfeEvento implements Serializable {
 
     public void setJustificativa(String justificativa) {
         this.justificativa = justificativa;
+    }
+
+
+    public String getProtocolo() {
+        return protocolo;
+    }
+
+    public void setProtocolo(String protocolo) {
+        this.protocolo = protocolo;
     }
 
     @Override

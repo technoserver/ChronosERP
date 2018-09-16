@@ -704,12 +704,10 @@ public class NfeService implements Serializable {
             throw new ChronosException("NF-e náo autorizada. Cancelamento náo permitido!");
         }
 
-        NfeEvento nfeEvento = eventoRepository.get(NfeEvento.class, "idNfeCabeclaho", nfe.getId());
-        if (nfeEvento == null) {
-            nfeEvento = new NfeEvento(nfe.getId(), new Date(), EventoNfe.CARTA_CORRECAO, 1);
-        } else {
-            nfeEvento.atualizarSequencia();
-        }
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("idNfeCabeclaho", nfe.getId()));
+        Integer sequencia = (Integer) eventoRepository.getMaxValor(NfeEvento.class, "sequencia", filtros);
+        sequencia++;
 
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
 
@@ -730,6 +728,17 @@ public class NfeService implements Serializable {
         if (!StatusEnum.EVENTO_VINCULADO.getCodigo().equals(retorno.getRetEvento().get(0).getInfEvento().getCStat())) {
             throw new EmissorException("Status:" + retorno.getRetEvento().get(0).getInfEvento().getCStat() + " - Motivo:" + retorno.getRetEvento().get(0).getInfEvento().getXMotivo());
         }
+
+
+        NfeEvento nfeEvento = new NfeEvento();
+
+        nfeEvento.setDataHora(new Date());
+        nfeEvento.setIdNfeCabeclaho(nfe.getId());
+        nfeEvento.setJustificativa(justificativa);
+        nfeEvento.setTipo(EventoNfe.CARTA_CORRECAO);
+        nfeEvento.setSequencia(sequencia);
+        nfeEvento.setProtocolo(retorno.getRetEvento().get(0).getInfEvento().getNProt());
+
         String result = "";
         result += "Status:" + retorno.getRetEvento().get(0).getInfEvento().getCStat() + " \n";
         result += "Motivo:" + retorno.getRetEvento().get(0).getInfEvento().getXMotivo() + " \n";

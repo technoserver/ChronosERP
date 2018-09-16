@@ -26,6 +26,18 @@
         <div class="ibox-content">
             <h:panelGroup layout="block" id="detalhe">
                 <div class="row">
+
+                    <div class="col-xs-12 col-sm-2 col-md-2">
+                        <h:outputLabel value="Estoque" for="estoque"/>
+                        <h:selectOneMenu id="estoque" class="form-control"
+                                         value="#{produtoRelatorioControll.estoque}">
+                            <f:selectItem itemLabel="Todos" itemValue="#{null}"/>
+                            <f:selectItem itemLabel="Negativo" itemValue="N"/>
+                            <f:selectItem itemLabel="Positivo" itemValue="P"/>
+
+                        </h:selectOneMenu>
+                    </div>
+
                     <div class="col-xs-12 col-sm-2 col-md-2">
                         <h:outputLabel value="Inativo" for="inativo"/>
                         <h:selectOneMenu id="inativo" class="form-control"
