@@ -66,6 +66,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private Repository<VendaCondicoesPagamento> pagamentoRepository;
     @Inject
     private Repository<ContaCaixa> contaCaixaRepository;
+    @Inject
+    private Repository<UnidadeConversao> conversaoRepository;
 
     @Inject
     private EntradaNotaFiscalService entradaService;
@@ -520,14 +522,41 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         try {
             if (importacao) {
                 for (NfeDetalhe d : getObjeto().getListaNfeDetalhe()) {
-                    boolean existe = produtoFornecedorService.existeProduto(d.getCodigoProduto());
-                    if (existe) {
+                    boolean existeProduto = !StringUtils.isEmpty(d.getGtin()) && produtos.existeRegisro(Produto.class, "gtin", d.getGtin());
+                    boolean existeProdutoFornecedor = produtoFornecedorService.existeProduto(d.getCodigoProduto());
+
+                    if (existeProduto) {
+                        Produto produto = produtos.get(Produto.class, "gtin", d.getGtin(), new Object[]{"produto.id,produto.nome"});
+                        d.setProduto(produto);
+                        d.setProdutoCadastrado(true);
+
+                        if (!existeProdutoFornecedor) {
+                            produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
+                        }
+
+                        UnidadeConversao unidadeConversao = conversaoRepository.get(UnidadeConversao.class, "produto.id", produto.getId());
+
+
+                        if (unidadeConversao != null) {
+                            d.setUnidadeComercial(unidadeConversao.getSigla());
+
+                            BigDecimal quantidade = unidadeConversao.getAcao().equals("M")
+                                    ? Biblioteca.multiplica(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao())
+                                    : Biblioteca.divide(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao());
+
+                            d.setQuantidadeComercial(quantidade);
+
+                        }
+
+
+                    } else if (existeProdutoFornecedor) {
                         Produto produto = produtoFornecedorService.getProduto(d.getCodigoProduto());
                         d.setProduto(produto);
                         d.setProdutoCadastrado(true);
                     } else {
                         d.setProdutoCadastrado(false);
                     }
+
 
                     gerarValores(d);
 
@@ -545,6 +574,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         }
         return produtoNaoCadastrado;
     }
+
 
     // </editor-fold>
 
