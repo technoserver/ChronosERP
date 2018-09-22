@@ -191,7 +191,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void salvar() {
         try {
             getObjeto().setImagem(nomeFoto);
-            if (getObjeto().getTributGrupoTributario() == null && getObjeto().getTributIcmsCustomCab() == null) {
+            if (getObjeto().getTributGrupoTributario() == null) {
                 Mensagem.addWarnMessage("É necesário informar o Grupo Tributário OU o ICMS Customizado.");
             } else {
                 List<Filtro> filtros = new ArrayList<>();

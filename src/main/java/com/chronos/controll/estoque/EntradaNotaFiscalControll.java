@@ -26,6 +26,7 @@ import javax.inject.Named;
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.*;
 
@@ -526,7 +527,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                     boolean existeProdutoFornecedor = produtoFornecedorService.existeProduto(d.getCodigoProduto());
 
                     if (existeProduto) {
-                        Produto produto = produtos.get(Produto.class, "gtin", d.getGtin(), new Object[]{"produto.id,produto.nome"});
+                        Produto produto = produtos.get(Produto.class, "gtin", d.getGtin(), new Object[]{"nome"});
                         d.setProduto(produto);
                         d.setProdutoCadastrado(true);
 
@@ -544,8 +545,11 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                                     ? Biblioteca.multiplica(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao())
                                     : Biblioteca.divide(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao());
 
+                            BigDecimal valorTotal = d.getValorSubtotal();
+                            BigDecimal valorUnt = valorTotal.divide(quantidade, MathContext.DECIMAL64).setScale(5, RoundingMode.HALF_DOWN);
+                            valorUnt = valorUnt.setScale(3, RoundingMode.DOWN);
                             d.setQuantidadeComercial(quantidade);
-
+                            d.setValorUnitarioComercial(valorUnt);
                         }
 
 

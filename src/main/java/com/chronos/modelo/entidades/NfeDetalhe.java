@@ -6,6 +6,8 @@ import org.springframework.util.StringUtils;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -579,7 +581,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal calcularSubTotalProduto(){
-        this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial());
+        this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial(), MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
         return valorSubtotal;
     }
 

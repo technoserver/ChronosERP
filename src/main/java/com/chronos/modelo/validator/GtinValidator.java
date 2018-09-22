@@ -6,6 +6,7 @@
 package com.chronos.modelo.validator;
 
 import com.chronos.util.GtinUtil;
+import org.springframework.util.StringUtils;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -23,7 +24,7 @@ public class GtinValidator implements Validator {
     @Override
     public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
         String str = "";
-        if (value != null && !value.equals("")) {
+        if (!StringUtils.isEmpty(value)) {
 
             String gtin = String.valueOf(value);
             boolean valido = GtinUtil.isValid(gtin);
