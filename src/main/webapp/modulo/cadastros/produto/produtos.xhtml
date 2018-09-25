@@ -459,6 +459,16 @@
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
                                           idComponente="produtoMarkup" label="Markup"
                                           nomeAtributo="#{produtoControll.objeto.markup}"/>
+
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="valorVendaAtacado" label="Valor Venda Atacado"
+                                          nomeAtributo="#{produtoControll.objeto.valorVendaAtacado}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="quantidadeVendaAtacado" label="Quant. Min para Venda Atacado"
+                                          nomeAtributo="#{produtoControll.objeto.quantidadeVendaAtacado}"
+                        />
                     </div>
                     <div class="row">
 
@@ -528,8 +538,6 @@
 
                         </erp:autoComplete>
 
-                    </div>
-                    <div class="row">
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                         idComponente="produtoNcm" label="Ncm"
                                         nomeAtributo="#{produtoControll.objeto.ncm}"
@@ -539,31 +547,16 @@
                                         idComponente="produtoCest" label="CEST"
                                         nomeAtributo="#{produtoControll.objeto.cest}"
                                         tamanhoMaximo="7"/>
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="produtoExTipi" label="Ex TIPI"
-                                        nomeAtributo="#{produtoControll.objeto.exTipi}"
-                                        tamanhoMaximo="3"
-                                        exibirInfo="true"
-                                        mensangemInfo="Informar com o Código de Exceção de NCM,de acordo com a Tabela de Incidência do  Imposto de Produtos Industrializados (TIPI), quando existir."/>
+
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                         idComponente="produtoCodigoLst" label="Codigo LST"
                                         nomeAtributo="#{produtoControll.objeto.codigoLst}"
                                         tamanhoMaximo="4"
                                         exibirInfo="true"
                                         mensangemInfo="Código do serviço conforme lista do Anexo I da Lei  Complementar Federal nº 116/03."/>
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-2"
-                                          idComponente="produtoAliquotaIcmsPaf" label="% ICMS PAF"
-                                          nomeAtributo="#{produtoControll.objeto.aliquotaIcmsPaf}"/>
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-2"
-                                          idComponente="produtoAliquotaIssqnPaf" label="% ISSQN PAF"
-                                          nomeAtributo="#{produtoControll.objeto.aliquotaIssqnPaf}"/>
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="produtoTotalizadorParcial" label="Totalizador Parcial"
-                                        nomeAtributo="#{produtoControll.objeto.totalizadorParcial}"
-                                        tamanhoMaximo="10"
-                                        exibirInfo="true"
-                                        mensangemInfo="Ex: 04T0700 (alíquota de ICMS na quarta posição dos totalizadores do ECF com taxa de 7%) | I1 (isento) | F1 (substituição tributária) | N1 (não tributado)"/>
+
                     </div>
+
                 </p:tab>
                 <p:tab title="Conversões de UM" id="conversoes" rendered="#{not empty produtoControll.objeto.id}">
                     <h:form id="formConversao">
