@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.HashSet;
 
 /**
  * Created by john on 11/07/17.
@@ -70,8 +69,12 @@ public class PessoaService implements Serializable {
     @Transactional
     public Colaborador salvarColaborador(Colaborador colaborador, Empresa empresa) throws Exception {
         validarPessoa(colaborador.getPessoa());
+        boolean salvarEmpresaPessoa = colaborador.getId() == null;
         colaborador = colaboradores.atualizar(colaborador);
-        salvarEmpresaPessoa(empresa, colaborador.getPessoa());
+        if (salvarEmpresaPessoa) {
+            salvarEmpresaPessoa(empresa, colaborador.getPessoa());
+        }
+
 
         return colaborador;
     }
@@ -129,9 +132,7 @@ public class PessoaService implements Serializable {
         empresaPessoa.setEmpresa(empresa);
         empresaPessoa.setResponsavelLegal("N");
         empresaPessoa.setEmpresaPrincipal("S");
-        // empresaPessoas.salvar(empresaPessoa);
-        pessoa.setListaEmpresa(new HashSet<>());
-        pessoa.getListaEmpresa().add(empresa);
+        empresaPessoas.salvar(empresaPessoa);
         return empresaPessoa;
     }
 

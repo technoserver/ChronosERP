@@ -49,11 +49,11 @@ public class Pessoa implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PessoaTelefone> listaPessoaTelefone;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "EMPRESA_PESSOA", joinColumns = {
-        @JoinColumn(name = "ID_PESSOA")}, inverseJoinColumns = {
-        @JoinColumn(name = "ID_EMPRESA")})
-    private Set<Empresa> listaEmpresa;
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "EMPRESA_PESSOA", joinColumns = {
+//        @JoinColumn(name = "ID_PESSOA")}, inverseJoinColumns = {
+//        @JoinColumn(name = "ID_EMPRESA")})
+//    private Set<Empresa> listaEmpresa;
 
     public Pessoa() {
     }
@@ -210,13 +210,7 @@ public class Pessoa implements Serializable {
         this.listaPessoaTelefone = listaPessoaTelefone;
     }
 
-    public Set<Empresa> getListaEmpresa() {
-        return listaEmpresa;
-    }
 
-    public void setListaEmpresa(Set<Empresa> listaEmpresa) {
-        this.listaEmpresa = listaEmpresa;
-    }
 
 
     public String getIdentificador(){
