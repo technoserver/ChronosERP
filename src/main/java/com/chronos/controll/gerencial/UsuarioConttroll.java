@@ -33,7 +33,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     private Repository<Colaborador> colaboradores;
 
     @Inject
-    private Repository<Empresa> empresaRepository;
+    private Repository<EmpresaPessoa> empresaRepository;
 
     private List<Empresa> empresas;
     private List<Empresa> empresasSelecionada;
@@ -76,7 +76,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     public void salvar() {
 
         try {
-            service.salvar(getObjeto(), senha);
+            service.salvar(getObjeto(), senha, empresas);
             setTelaGrid(true);
             Mensagem.addInfoMessage("Dados salvo com sucesso");
         } catch (Exception ex) {
@@ -126,13 +126,12 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     }
 
     public List<Empresa> getListEmpresas() {
-        try {
 
-            empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
-
-        } catch (Exception ex) {
-
-        }
+        empresas = new ArrayList<>();
+        List<EmpresaPessoa> empresaList = empresaRepository.getEntitys(EmpresaPessoa.class, "empresaPrincipal", "N", new Object[]{"empresa.id", "empresa.razaoSocial"});
+        empresaList.forEach(ep -> {
+            empresas.add(ep.getEmpresa());
+        });
         return empresas;
     }
 
@@ -175,5 +174,9 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
 
     public void setEmpresasSelecionada(List<Empresa> empresasSelecionada) {
         this.empresasSelecionada = empresasSelecionada;
+    }
+
+    public boolean isExisteEmpresa() {
+        return empresas != null && !empresas.isEmpty();
     }
 }

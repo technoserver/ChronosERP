@@ -77,16 +77,6 @@ public class PessoaService implements Serializable {
     }
 
 
-    public EmpresaPessoa salvarEmpresaPessoa(Empresa empresa, Pessoa pessoa) {
-        EmpresaPessoa empresaPessoa = new EmpresaPessoa();
-        empresaPessoa.setPessoa(pessoa);
-        empresaPessoa.setEmpresa(empresa);
-        empresaPessoa.setResponsavelLegal("N");
-        // empresaPessoas.salvar(empresaPessoa);
-        pessoa.setListaEmpresa(new HashSet<>());
-        pessoa.getListaEmpresa().add(empresa);
-        return empresaPessoa;
-    }
 
 
     public Pessoa salvar(Pessoa pessoa, Empresa empresa) throws Exception {
@@ -132,6 +122,19 @@ public class PessoaService implements Serializable {
         }
 
     }
+
+    public EmpresaPessoa salvarEmpresaPessoa(Empresa empresa, Pessoa pessoa) {
+        EmpresaPessoa empresaPessoa = new EmpresaPessoa();
+        empresaPessoa.setPessoa(pessoa);
+        empresaPessoa.setEmpresa(empresa);
+        empresaPessoa.setResponsavelLegal("N");
+        empresaPessoa.setEmpresaPrincipal("S");
+        // empresaPessoas.salvar(empresaPessoa);
+        pessoa.setListaEmpresa(new HashSet<>());
+        pessoa.getListaEmpresa().add(empresa);
+        return empresaPessoa;
+    }
+
 
 
 }

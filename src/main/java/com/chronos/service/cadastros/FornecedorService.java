@@ -25,6 +25,8 @@ public class FornecedorService implements Serializable {
     private Repository<PessoaJuridica> pessoasJuridica;
     @Inject
     private Repository<EmpresaPessoa> empresaPessoas;
+    @Inject
+    private PessoaService pessoaService;
 
     private String cpfCnpj;
 
@@ -63,8 +65,7 @@ public class FornecedorService implements Serializable {
         pessoa.getListaPessoaEndereco().add(end);
         cpfCnpj = emitente.getCpfCnpj();
 
-        pessoa.setListaEmpresa(new HashSet<>());
-        pessoa.getListaEmpresa().add(empresa);
+
 
 
         if (pessoa.getTipo().equals("F")) {
@@ -83,14 +84,10 @@ public class FornecedorService implements Serializable {
 
         end.setPessoa(pessoa);
 
-        pessoa = pessoas.atualizar(pessoa);
+        pessoa = pessoaService.salvar(pessoa, empresa);
 
 
-        EmpresaPessoa empresaPessoa = new EmpresaPessoa();
-        empresaPessoa.setPessoa(pessoa);
-        empresaPessoa.setEmpresa(empresa);
-        empresaPessoa.setResponsavelLegal("N");
-        empresaPessoas.salvar(empresaPessoa);
+
 
 
         fornecedor.setPessoa(pessoa);
