@@ -2,37 +2,34 @@ package com.chronos.dto;
 
 import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.tenant.Tenant;
-
-import java.time.LocalDate;
 
 public class UsuarioDTO {
 
     private Integer id;
+    private Integer idempresa;
+    private Integer idcolaborador;
+    private Integer idpessoa;
     private String login;
     private String senha;
     private String administrador;
     private String nome;
     private String foto;
-    private Tenant tenant;
-    private LocalDate dataVencimento;
-    private Integer idcolaborador;
     private String cargo;
     private Empresa empresa;
 
 
-    public UsuarioDTO(Integer id, String login, String senha, String administrador, String nome, String foto, Integer idcolaborador, String cargo, Empresa empresa) {
+    public UsuarioDTO(Integer id, Integer idempresa, Integer idcolaborador, Integer idpessoa, String login, String senha, String administrador, String nome, String foto, String cargo) {
         this.id = id;
+        this.idempresa = idempresa;
+        this.idcolaborador = idcolaborador;
+        this.idpessoa = idpessoa;
         this.login = login;
         this.senha = senha;
         this.administrador = administrador;
         this.nome = nome;
         this.foto = foto;
-        this.idcolaborador = idcolaborador;
         this.cargo = cargo;
-        this.empresa = empresa;
     }
-
 
     public Integer getId() {
         return id;
@@ -82,29 +79,6 @@ public class UsuarioDTO {
         this.foto = foto;
     }
 
-    public Tenant getTenant() {
-        return tenant;
-    }
-
-    public void setTenant(Tenant tenant) {
-        this.tenant = tenant;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    public LocalDate getDataVencimento() {
-        return dataVencimento;
-    }
-
-    public void setDataVencimento(LocalDate dataVencimento) {
-        this.dataVencimento = dataVencimento;
-    }
 
 
     public Integer getIdcolaborador() {
@@ -126,5 +100,30 @@ public class UsuarioDTO {
 
     public void setCargo(String cargo) {
         this.cargo = cargo;
+    }
+
+    public Integer getIdempresa() {
+        return idempresa;
+    }
+
+    public void setIdempresa(Integer idempresa) {
+        this.idempresa = idempresa;
+    }
+
+    public Integer getIdpessoa() {
+        return idpessoa;
+    }
+
+    public void setIdpessoa(Integer idpessoa) {
+        this.idpessoa = idpessoa;
+    }
+
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 }
