@@ -46,6 +46,17 @@ public class Produto implements Serializable {
     @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
     @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     private BigDecimal valorVenda;
+
+    @Column(name = "VALOR_VENDA_ATACADO")
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
+    private BigDecimal valorVendaAtacado;
+
+    @Column(name = "QUANTIDADE_VENDA_ATACADO")
+    @DecimalMin(value = "0.01", message = "A quantidade  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "A quantidade  deve ser menor que 9.999.999,99")
+    private BigDecimal quantidadeVendaAtacado;
+
     @Column(name = "PRECO_VENDA_MINIMO")
     private BigDecimal precoVendaMinimo;
     @Column(name = "PRECO_SUGERIDO")
@@ -629,6 +640,23 @@ public class Produto implements Serializable {
 
     public void setControle(BigDecimal controle) {
         this.controle = controle;
+    }
+
+
+    public BigDecimal getValorVendaAtacado() {
+        return valorVendaAtacado;
+    }
+
+    public void setValorVendaAtacado(BigDecimal valorVendaAtacado) {
+        this.valorVendaAtacado = valorVendaAtacado;
+    }
+
+    public BigDecimal getQuantidadeVendaAtacado() {
+        return quantidadeVendaAtacado;
+    }
+
+    public void setQuantidadeVendaAtacado(BigDecimal quantidadeVendaAtacado) {
+        this.quantidadeVendaAtacado = quantidadeVendaAtacado;
     }
 
     public String montarItemBalancaToledo() throws ChronosException {

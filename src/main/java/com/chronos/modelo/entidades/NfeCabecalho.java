@@ -2115,6 +2115,11 @@ public class NfeCabecalho implements Serializable {
         return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA) && (status != StatusTransmissao.ENVIADA);
     }
 
+    public boolean isPodeImprimir() {
+        StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
+        return (status == StatusTransmissao.AUTORIZADA) || (status == StatusTransmissao.CANCELADA);
+    }
+
     public boolean isPodeCancelar() {
         return StatusTransmissao.isAutorizado(statusNota);
     }
@@ -2135,6 +2140,7 @@ public class NfeCabecalho implements Serializable {
     public List<NfeDuplicata> getDuplicatas() {
         return new ArrayList<>(Optional.ofNullable(getListaDuplicata()).orElse(new HashSet<>()));
     }
+
 
     @Override
     public int hashCode() {

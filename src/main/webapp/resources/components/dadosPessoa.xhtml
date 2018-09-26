@@ -80,7 +80,7 @@
                 <h:panelGroup layout="block" id="dadosPessoaFisica"
                               rendered="#{cc.attrs.controller.objeto.pessoa.tipo == 'F'}">
 
-                    <erp:separador label="Dados Pessoa Física"/>
+                    <erp:separador label="Dados Pessoa Física" rendered="#{not cc.attrs.controller.tela eq 'C'}"/>
 
                     <div class="row">
                         <erp:campoCpf styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -98,7 +98,7 @@
                                          nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.sexo}"
                                          itens="#{cc.attrs.controller.sexo}"/>
                         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                                         idComponente="pessoaFisicaRaca" label="Raca"
+                                         idComponente="pessoaFisicaRaca" label="Raça"
                                          nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.raca}"
                                          itens="#{cc.attrs.controller.racaCor}"
                                          exibir="#{cc.attrs.controller.tela eq 'CL'}"/>
@@ -113,7 +113,7 @@
                                         tamanhoMaximo="20"
                                         exibir="#{cc.attrs.controller.tela eq 'C'}"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="orgaoRg" label="Orgao RG"
+                                        idComponente="orgaoRg" label="Orgão RG"
                                         nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.orgaoRg}"
                                         tamanhoMaximo="20"
                                         exibir="#{cc.attrs.controller.tela eq 'C'}"/>
@@ -124,7 +124,7 @@
                                           completeMethod="getListaEstadoCivil"
                                           nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.estadoCivil}"
                                           idComponente="pessoaFisicaEstadoCivil"
-                                          rendered="#{cc.attrs.controller.tela eq 'C'}"/>
+                                          rendered="#{cc.attrs.controller.tela eq 'CL'}"/>
                     </div>
 
 
@@ -143,11 +143,13 @@
                     </div>
                     <div class="row">
                         <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
-                                        idComponente="pessoaFisicaNomeMae" label="Nome Mae"
+                                        idComponente="pessoaFisicaNomeMae" label="Nome Mãe"
                                         nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.nomeMae}"
+                                        rendered="#{cc.attrs.controller.tela eq 'CL'}"
                                         tamanhoMaximo="100"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                         idComponente="pessoaFisicaNomePai" label="Nome Pai"
+                                        rendered="#{cc.attrs.controller.tela eq 'CL'}"
                                         nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.nomePai}"
                                         tamanhoMaximo="100"/>
                     </div>
@@ -170,10 +172,10 @@
                             />
                             <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                                            idComponente="pessoaFisicaDataEmissaoRg"
-                                           label="Data Emissao Rg"
+                                           label="Data Emissão Rg"
                                            nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.dataEmissaoRg}"/>
                             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                            idComponente="pessoaFisicaCnhNumero" label="CNH Numero"
+                                            idComponente="pessoaFisicaCnhNumero" label="CNH Número"
                                             nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.cnhNumero}"
                                             tamanhoMaximo="20"/>
                             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -189,24 +191,24 @@
                         <div class="row">
                             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                             idComponente="pessoaFisicaTituloEleitoralNumero"
-                                            label="Titulo Eleitoral Numero"
+                                            label="Titulo Eleitoral Núm."
                                             nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.tituloEleitoralNumero}"
                                             tamanhoMaximo="20"/>
                             <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                                               idComponente="pessoaFisicaTituloEleitoralZona" label="Zona"
                                               nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.tituloEleitoralZona}"/>
                             <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
-                                              idComponente="pessoaFisicaTituloEleitoralSecao" label="Secao"
+                                              idComponente="pessoaFisicaTituloEleitoralSecao" label="Secão"
                                               nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.tituloEleitoralSecao}"/>
 
                             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                             idComponente="pessoaFisicaReservistaNumero"
-                                            label="Reservista Numero"
+                                            label="Reservista Número"
                                             nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.reservistaNumero}"
                                             tamanhoMaximo="20"/>
                             <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                                               idComponente="pessoaFisicaReservistaCategoria"
-                                              label="Reservista Categoria"
+                                              label="Reservista Categ."
                                               nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.reservistaCategoria}"/>
                         </div>
                     </h:panelGroup>
@@ -217,7 +219,7 @@
                 <h:panelGroup layout="block" id="dadosPessoaJuridica"
                               rendered="#{cc.attrs.controller.objeto.pessoa.tipo == 'J'}">
 
-                    <erp:separador label="Dados Pessoa Jurídica"/>
+                    <erp:separador label="Dados Pessoa Jurídica" rendered="#{not cc.attrs.controller.tela eq 'C'}"/>
 
 
                     <div class="row">
@@ -228,12 +230,12 @@
                         />
                         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                         idComponente="pessoaJuridicaInscricaoMunicipal"
-                                        label="Inscricao Municipal"
+                                        label="Inscrição Municipal"
                                         nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.inscricaoMunicipal}"
                                         tamanhoMaximo="30"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                         idComponente="pessoaJuridicaInscricaoEstadual"
-                                        label="Inscricao Estadual"
+                                        label="Inscrição Estadual"
                                         nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.inscricaoEstadual}"
                                         tamanhoMaximo="30"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -242,7 +244,7 @@
                                         tamanhoMaximo="9"/>
                         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                                        idComponente="pessoaJuridicaDataConstituicao"
-                                       label="Data Constituicao"
+                                       label="Data Constituição"
                                        nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.dataConstituicao}"/>
 
                     </div>
@@ -271,7 +273,7 @@
                                     tamanhoMaximo="60"
                                     requerido="true"/>
                     <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                    idComponente="pessoaEnderecoNumero" label="Numero"
+                                    idComponente="pessoaEnderecoNumero" label="Número"
                                     nomeAtributo="#{cc.attrs.controller.endereco.numero}"
                                     tamanhoMaximo="10"
                                     requerido="true"/>
@@ -310,7 +312,7 @@
                         </h:selectOneMenu>
                     </div>
                     <div class="col-xs-12 col-sm-10 col-md-10">
-                        <p:outputLabel value="Municipio :"/>
+                        <p:outputLabel value="Município"/>
                         <br/>
                         <p:autoComplete id="Municipio" value="#{cc.attrs.controller.cidade}"
                                         completeMethod="#{cc.attrs.controller.getMunicipios}"
@@ -363,35 +365,36 @@
             </div>
             <p:dataTable id="dataTablePessoaEndereco" var="obj"
                          value="#{cc.attrs.controller.objeto.pessoa.listaPessoaEndereco}"
+                         resizableColumns="true"
                          paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
                          rowKey="#{obj.id}" reflow="true" paginatorPosition="bottom">
 
                 <p:column headerText="Cidade">
                     <h:outputLabel value="#{obj.cidade}"/>
                 </p:column>
-                <p:column headerText="Uf">
+                <p:column headerText="UF" styleClass="text-center" width="60">
                     <h:outputLabel value="#{obj.uf}"/>
                 </p:column>
-                <p:column headerText="Fone">
+                <p:column headerText="Fone" styleClass="text-center" width="120">
                     <h:outputLabel value="#{obj.fone}"/>
                 </p:column>
-                <p:column headerText="Principal">
+                <p:column headerText="Principal" styleClass="text-center" width="100">
                     <h:outputLabel
                             value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.simNao, obj.principal)}"/>
                 </p:column>
-                <p:column headerText="Entrega">
+                <p:column headerText="Entrega" styleClass="text-center" width="100">
                     <h:outputLabel
                             value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.simNao, obj.entrega)}"/>
                 </p:column>
-                <p:column headerText="Cobranca">
+                <p:column headerText="Cobrança" styleClass="text-center" width="100">
                     <h:outputLabel
                             value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.simNao, obj.cobranca)}"/>
                 </p:column>
-                <p:column headerText="Correspondencia">
+                <p:column headerText="Correspondência" styleClass="text-center" width="160">
                     <h:outputLabel
                             value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.simNao, obj.correspondencia)}"/>
                 </p:column>
-                <p:column headerText="Ações" width="140">
+                <p:column headerText="Ações" width="110" styleClass="text-center">
                     <p:commandLink title="Alterar" action="#{cc.attrs.controller.alterarEndereco}"
                                    class=" btn btn-default"
                                    process="dataTablePessoaEndereco"
@@ -497,10 +500,10 @@
                     <h:outputLabel
                             value="#{cc.attrs.controller.keyFromValue(cc.attrs.controller.tipoTelefone, obj.tipo)}"/>
                 </p:column>
-                <p:column headerText="Numero">
+                <p:column headerText="Número">
                     <h:outputLabel value="#{obj.numero}"/>
                 </p:column>
-                <p:column headerText="Observacao">
+                <p:column headerText="Observação">
                     <h:outputLabel value="#{obj.observacao}"/>
                 </p:column>
                 <p:column headerText="Ações" width="140">

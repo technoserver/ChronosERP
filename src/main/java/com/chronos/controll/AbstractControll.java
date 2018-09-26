@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.chronos.controll;
 
 import com.chronos.dto.UsuarioDTO;
@@ -66,9 +62,9 @@ public abstract class AbstractControll<T> implements Serializable {
     private int activeTabIndex;
 
     //cadastro base
-    private Map<String, String> simNao;
+    private Map<String, String> SimNao;
     private Map<String, String> naoSim;
-    private HashMap<String, Integer> simNaoInteiro;
+    private HashMap<String, Integer> SimNaoInteiro;
     private Map<String, String> tipoPessoa;
     private Map<String, String> sexo;
     private Map<String, String> tipoSangue;
@@ -208,21 +204,21 @@ public abstract class AbstractControll<T> implements Serializable {
         atributos = new Object[]{"nome"};
 
         //Cadastros
-        simNao = new LinkedHashMap<>();
-        simNao.put("Sim", "S");
-        simNao.put("Não", "N");
+        SimNao = new LinkedHashMap<>();
+        SimNao.put("SIM", "S");
+        SimNao.put("NÂO", "N");
 
         naoSim = new LinkedHashMap<>();
-        naoSim.put("Não", "N");
-        naoSim.put("Sim", "S");
+        naoSim.put("NÂO", "N");
+        naoSim.put("SIM", "S");
 
-        simNaoInteiro = new HashMap<>();
-        simNaoInteiro.put("Não", 0);
-        simNaoInteiro.put("Sim", 1);
+        SimNaoInteiro = new HashMap<>();
+        SimNaoInteiro.put("NÂO", 0);
+        SimNaoInteiro.put("SIM", 1);
 
 
         tipoPessoa = new LinkedHashMap<>();
-        tipoPessoa.put("Fisica", "F");
+        tipoPessoa.put("Física", "F");
         tipoPessoa.put("Jurídica", "J");
 
         sexo = new LinkedHashMap<>();
@@ -298,14 +294,14 @@ public abstract class AbstractControll<T> implements Serializable {
         clienteFormaDesconto.put("Fim do Pedido", "F");
 
         crt = new LinkedHashMap<>();
-        crt.put("1 - Simples Nacional", "1");
-        crt.put("2 - Simples Nac - Excesso", "2");
+        crt.put("1 - SIMples Nacional", "1");
+        crt.put("2 - SIMples Nac - Excesso", "2");
         crt.put("3 - Regime Normal", "3");
 
         tipoRegimeEmpresa = new LinkedHashMap<>();
         tipoRegimeEmpresa.put("Lucro Real", "1");
         tipoRegimeEmpresa.put("Lucro Presumido", "2");
-        tipoRegimeEmpresa.put("Simples Nacional", "3");
+        tipoRegimeEmpresa.put("SIMples Nacional", "3");
 
         tipoTelefone = new LinkedHashMap<>();
         tipoTelefone.put("Residencial", 0);
@@ -443,8 +439,8 @@ public abstract class AbstractControll<T> implements Serializable {
         origemMercadoria.put("Nacional, mercadoria ou bem com Conteúdo de Importação superior a 40%", "3");
         origemMercadoria.put("Nacional, cuja produção tenha sido feita em conformidade com os processos produtivos básicos ", "4");
         origemMercadoria.put("Nacional, mercadoria ou bem com Conteúdo de Importação inferior ou igual a 40%", "5");
-        origemMercadoria.put("Estrangeira - Importação direta, sem similar nacional, constante em lista de Resolução CAMEX", "6");
-        origemMercadoria.put("Estrangeira - Adquirida no mercado interno, sem similar nacional, constante em lista de Resolução CAMEX", "7");
+        origemMercadoria.put("Estrangeira - Importação direta, sem SIMilar nacional, constante em lista de Resolução CAMEX", "6");
+        origemMercadoria.put("Estrangeira - Adquirida no mercado interno, sem SIMilar nacional, constante em lista de Resolução CAMEX", "7");
         origemMercadoria.put("Nacional, mercadoria ou bem com Conteúdo de Importação superior a 70%", "8");
 
         issModalidadeBaseCalculo = new HashMap<>();
@@ -477,7 +473,7 @@ public abstract class AbstractControll<T> implements Serializable {
 
         indicadorExigibilidadeIss = new HashMap<>();
         indicadorExigibilidadeIss.put("Exigível", 1);
-        indicadorExigibilidadeIss.put("Não incidência", 2);
+        indicadorExigibilidadeIss.put("NÂO incidência", 2);
         indicadorExigibilidadeIss.put("Isenção", 3);
         indicadorExigibilidadeIss.put("Exportação", 4);
         indicadorExigibilidadeIss.put("Imunidade", 5);
@@ -485,8 +481,8 @@ public abstract class AbstractControll<T> implements Serializable {
         indicadorExigibilidadeIss.put("Exigibilidade Suspensa por Processo Administrativo", 7);
 
         indicadorIncentivoIss = new HashMap<>();
-        indicadorIncentivoIss.put("Sim", 1);
-        indicadorIncentivoIss.put("Não", 2);
+        indicadorIncentivoIss.put("SIM", 1);
+        indicadorIncentivoIss.put("NÂO", 2);
 
 
         //NFe
@@ -504,10 +500,10 @@ public abstract class AbstractControll<T> implements Serializable {
 
         consumidorPresencaNfe = new LinkedHashMap<>();
         consumidorPresencaNfe.put("Operação Presencial", "1");
-        consumidorPresencaNfe.put("Operação não Presencial - Internet", "2");
-        consumidorPresencaNfe.put("Operação não Presencial - Teleatendimento", "3");
-        consumidorPresencaNfe.put("Operação não Presencial - Outros", "9");
-        consumidorPresencaNfe.put("Não se aplica", "0");
+        consumidorPresencaNfe.put("Operação NÂO Presencial - Internet", "2");
+        consumidorPresencaNfe.put("Operação NÂO Presencial - Teleatendimento", "3");
+        consumidorPresencaNfe.put("Operação NÂO Presencial - Outros", "9");
+        consumidorPresencaNfe.put("NÂO se aplica", "0");
 
         tipoOperacaoNfe = new LinkedHashMap<>();
         tipoOperacaoNfe.put("Entrada", 0);
@@ -574,7 +570,7 @@ public abstract class AbstractControll<T> implements Serializable {
         compromissoTipo.put("Gerencial", 1);
 
         compromissoRecorrente = new HashMap<>();
-        compromissoRecorrente.put("Não", 0);
+        compromissoRecorrente.put("NÂO", 0);
         compromissoRecorrente.put("Diário", 1);
         compromissoRecorrente.put("Semanal", 2);
         compromissoRecorrente.put("Mensal", 3);
@@ -702,7 +698,7 @@ public abstract class AbstractControll<T> implements Serializable {
         veiculoTipoRodado.put("Outros", "06");
 
         veiculoTipoCarroceria = new HashMap<>();
-        veiculoTipoCarroceria.put("Não Aplicável", "00");
+        veiculoTipoCarroceria.put("NÂO Aplicável", "00");
         veiculoTipoCarroceria.put("Aberta", "01");
         veiculoTipoCarroceria.put("Baú Fechado", "02");
         veiculoTipoCarroceria.put("Graneleira", "03");
@@ -858,7 +854,7 @@ public abstract class AbstractControll<T> implements Serializable {
             Usuario usuario = usuarioRepository.getUsuario(usuarioSupervisor);
             PasswordEncoder passwordEnocder = new BCryptPasswordEncoder();
             if (usuario==null || !passwordEnocder.matches(senhaSupervisor, usuario.getSenha())) {
-                Mensagem.addWarnMessage("Login inválido ou usuário não tem privilégio de supervisor.");
+                Mensagem.addWarnMessage("Login inválido ou usuário NÂO tem privilégio de supervisor.");
             } else if (usuario.getAdministrador() != null && usuario.getAdministrador().equals("S")) {
                 restricaoLiberada = true;
                 salvar();
@@ -873,14 +869,14 @@ public abstract class AbstractControll<T> implements Serializable {
     public HashMap getListaCsosnB() {
         HashMap<String, String> csosnb = new LinkedHashMap<>();
 
-        csosnb.put("101 - Tributada pelo Simples Nacional com permissão de crédito", "101");
-        csosnb.put("102 - Tributada pelo Simples Nacional sem permissão de crédito", "102");
-        csosnb.put("103 - Isenção do ICMS no Simples Nacional para faixa de receita bruta", "103");
-        csosnb.put("201 - Tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária", "201");
-        csosnb.put("202 - Tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária", "202");
-        csosnb.put("203 - Isenção do ICMS no Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária", "203");
+        csosnb.put("101 - Tributada pelo SIMples Nacional com permissão de crédito", "101");
+        csosnb.put("102 - Tributada pelo SIMples Nacional sem permissão de crédito", "102");
+        csosnb.put("103 - Isenção do ICMS no SIMples Nacional para faixa de receita bruta", "103");
+        csosnb.put("201 - Tributada pelo SIMples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária", "201");
+        csosnb.put("202 - Tributada pelo SIMples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária", "202");
+        csosnb.put("203 - Isenção do ICMS no SIMples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária", "203");
         csosnb.put("300 - Imune", "300");
-        csosnb.put("400 - Não tributada pelo Simples Nacional", "400");
+        csosnb.put("400 - NÂO tributada pelo SIMples Nacional", "400");
         csosnb.put("500 - ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação", "500");
         csosnb.put("900 - Outros", "900");
         return csosnb;
@@ -892,9 +888,9 @@ public abstract class AbstractControll<T> implements Serializable {
         cst.put("00 - Tributada Integralmente", "00");
         cst.put("10 - Tributada e com Cobrança do ICMS  por Substituicao Tributária", "10");
         cst.put("20 - Com redução de Base de Calculo", "20");
-        cst.put("30 - Isenta ou Não Tributada e com cobrança do ICMS por Substituição tributária", "30");
+        cst.put("30 - Isenta ou NÂO Tributada e com cobrança do ICMS por Substituição tributária", "30");
         cst.put("40 - Isenta", "40");
-        cst.put("41 - Não Tributada", "41");
+        cst.put("41 - NÂO Tributada", "41");
         cst.put("50 - Suspensão", "50");
         cst.put("51 - Direrimento", "51");
         cst.put("60 - ICMS cobrado anteriormente por substituição tributária", "60");
@@ -909,14 +905,14 @@ public abstract class AbstractControll<T> implements Serializable {
         cst.put("00 - Entrada com Recuperação de Crédito", "00");
         cst.put("01 - Entrada Tributável com Aliquota Zero", "01");
         cst.put("02 - Entrada Isenta", "02");
-        cst.put("03 - Entrada Não-Tributada", "03");
+        cst.put("03 - Entrada NÂO-Tributada", "03");
         cst.put("04 - Entrada Imune", "04");
         cst.put("05 - Entrada com Suspensão", "05");
         cst.put("49 - Outras Entradas", "49");
         cst.put("50 - Saída Tributada", "50");
         cst.put("51 - Saída Tributável com aliquota Zero", "51");
         cst.put("52 - Saida Isenta", "52");
-        cst.put("53 - Saida Não-Tributada", "53");
+        cst.put("53 - Saida NÂO-Tributada", "53");
         cst.put("54 - Saida Imune", "54");
         cst.put("55 - Saida com Suspensão", "55");
         cst.put("99 - Outras Saídas", "99");
@@ -1044,7 +1040,7 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public Map<String, String> getSimNao() {
-        return simNao;
+        return SimNao;
     }
 
     public Map<String, String> getTipoSindicato() {
@@ -1401,7 +1397,7 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public HashMap<String, Integer> getSimNaoInteiro() {
-        return simNaoInteiro;
+        return SimNaoInteiro;
     }
 
     public HashMap<String, String> getMetodoTabela() {

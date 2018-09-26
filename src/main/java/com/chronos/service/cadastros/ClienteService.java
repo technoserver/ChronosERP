@@ -69,7 +69,7 @@ public class ClienteService implements Serializable {
         return cliente;
     }
 
-    public Cliente cadastrarCliente(NfeDestinatario destinatario, Empresa empresa) throws Exception {
+    public Cliente cadastrarCliente(NfeDestinatario destinatario, Empresa empresa) {
         Cliente cliente = instanciarCliente(empresa);
 
         PessoaEndereco endereco = cliente.getPessoa().getListaPessoaEndereco().stream().findFirst().orElse(new PessoaEndereco());
@@ -135,8 +135,7 @@ public class ClienteService implements Serializable {
         pessoa.setListaPessoaEndereco(new HashSet<>());
         pessoa.getListaPessoaEndereco().add(endereco);
 
-        pessoa.setListaEmpresa(new HashSet<>());
-        pessoa.getListaEmpresa().add(empresa);
+
         endereco.setPessoa(pessoa);
 
         cliente.setDataCadastro(new Date());

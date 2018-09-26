@@ -1,45 +1,276 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<envEvento xmlns="http://www.portalfiscal.inf.br/nfe" versao="1.00">
+<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
     <idLote>1</idLote>
-    <evento versao="1.00" xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infEvento Id="ID1101105318091692537100011455010000000021100000021901">
-            <cOrgao>53</cOrgao>
-            <tpAmb>2</tpAmb>
-            <CNPJ>16925371000114</CNPJ>
-            <chNFe>53180916925371000114550100000000211000000219</chNFe>
-            <dhEvento>2018-09-07T11:54:20-03:00</dhEvento>
-            <tpEvento>110110</tpEvento>
-            <nSeqEvento>1</nSeqEvento>
-            <verEvento>1.00</verEvento>
-            <detEvento versao="1.00">
-                <descEvento>Carta de Correcao</descEvento>
-                <xCondUso>A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de
-                    dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento
-                    fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do
-                    imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou
-                    da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do
-                    destinatario; III - a data de emissao ou de saida.
-                </xCondUso>
-            </detEvento>
-        </infEvento>
+    <indSinc>1</indSinc>
+    <NFe>
+        <infNFe Id="NFe53180916925371000114550100000000271000000271" versao="4.00">
+            <ide>
+                <cUF>53</cUF>
+                <cNF>00000027</cNF>
+                <natOp>DEVOLUCAO</natOp>
+                <mod>55</mod>
+                <serie>10</serie>
+                <nNF>27</nNF>
+                <dhEmi>2018-09-12T11:58:57-03:00</dhEmi>
+                <dhSaiEnt>2018-09-12T11:58:57-03:00</dhSaiEnt>
+                <tpNF>1</tpNF>
+                <idDest>1</idDest>
+                <cMunFG>5300108</cMunFG>
+                <tpImp>1</tpImp>
+                <tpEmis>1</tpEmis>
+                <cDV>1</cDV>
+                <tpAmb>2</tpAmb>
+                <finNFe>4</finNFe>
+                <indFinal>1</indFinal>
+                <indPres>1</indPres>
+                <procEmi>0</procEmi>
+                <verProc>4.0.0.3</verProc>
+                <NFref>
+                    <refNFe>53180820900400000160550010000013661231201804</refNFe>
+                </NFref>
+            </ide>
+            <emit>
+                <CNPJ>16925371000114</CNPJ>
+                <xNome>EMPRESA MATRIZ PARA TESTE</xNome>
+                <xFant>EMPRESA MATRIZ PARA TESTE</xFant>
+                <enderEmit>
+                    <xLgr>logradouro</xLgr>
+                    <nro>11020</nro>
+                    <xBairro>centro</xBairro>
+                    <cMun>5300108</cMun>
+                    <xMun>BRASILIA</xMun>
+                    <UF>DF</UF>
+                    <CEP>49500970</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>BRASIL</xPais>
+                </enderEmit>
+                <IE>0762315200183</IE>
+                <CRT>1</CRT>
+            </emit>
+            <dest>
+                <CNPJ>20900400000160</CNPJ>
+                <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
+                <enderDest>
+                    <xLgr>QUADRA 3 LOTE 11 LOJA</xLgr>
+                    <nro>03/04</nro>
+                    <xCpl>TERREO COMERCIAL</xCpl>
+                    <xBairro>SETOR SUL (GAMA)</xBairro>
+                    <cMun>5300108</cMun>
+                    <xMun>BRASILIA</xMun>
+                    <UF>DF</UF>
+                    <CEP>72410200</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>BRASIL</xPais>
+                    <fone>6130464834</fone>
+                </enderDest>
+                <indIEDest>1</indIEDest>
+                <IE>0771273400154</IE>
+            </dest>
+            <det nItem="1">
+                <prod>
+                    <cProd>001</cProd>
+                    <cEAN>7899766826213</cEAN>
+                    <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
+                    <NCM>19059090</NCM>
+                    <CFOP>5202</CFOP>
+                    <uCom>UN</uCom>
+                    <qCom>30.0000</qCom>
+                    <vUnCom>1.900000</vUnCom>
+                    <vProd>57.00</vProd>
+                    <cEANTrib>7899766826213</cEANTrib>
+                    <uTrib>UN</uTrib>
+                    <qTrib>30.0000</qTrib>
+                    <vUnTrib>1.900000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <ICMS>
+                        <ICMSSN900>
+                            <orig>0</orig>
+                            <CSOSN>900</CSOSN>
+                            <vBC>0.00</vBC>
+                            <vICMS>0.00</vICMS>
+                            <modBCST>0</modBCST>
+                            <pMVAST>0.00</pMVAST>
+                            <vBCST>0.00</vBCST>
+                            <vICMSST>0.00</vICMSST>
+                        </ICMSSN900>
+                    </ICMS>
+                    <IPI>
+                        <cEnq>999</cEnq>
+                        <IPINT>
+                            <CST>53</CST>
+                        </IPINT>
+                    </IPI>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+                <infAdProd>; Vlr Tributos - Federal R$ 2,28 - Estadual R$ 0,00</infAdProd>
+            </det>
+            <det nItem="2">
+                <prod>
+                    <cProd>003</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>PALHA ITALIANA</xProd>
+                    <NCM>19059090</NCM>
+                    <CFOP>5202</CFOP>
+                    <uCom>UN</uCom>
+                    <qCom>15.0000</qCom>
+                    <vUnCom>1.700000</vUnCom>
+                    <vProd>25.50</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>UN</uTrib>
+                    <qTrib>15.0000</qTrib>
+                    <vUnTrib>1.700000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <ICMS>
+                        <ICMSSN900>
+                            <orig>0</orig>
+                            <CSOSN>900</CSOSN>
+                            <vBC>0.00</vBC>
+                            <vICMS>0.00</vICMS>
+                            <modBCST>0</modBCST>
+                            <pMVAST>0.00</pMVAST>
+                            <vBCST>0.00</vBCST>
+                            <vICMSST>0.00</vICMSST>
+                        </ICMSSN900>
+                    </ICMS>
+                    <IPI>
+                        <cEnq>999</cEnq>
+                        <IPINT>
+                            <CST>53</CST>
+                        </IPINT>
+                    </IPI>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+                <infAdProd>; Vlr Tributos - Federal R$ 1,02 - Estadual R$ 0,00</infAdProd>
+            </det>
+            <det nItem="3">
+                <prod>
+                    <cProd>004</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>BOMBOM DE CHOCOLATE TIPO TRUFA</xProd>
+                    <NCM>18063110</NCM>
+                    <CFOP>5202</CFOP>
+                    <uCom>PCT</uCom>
+                    <qCom>2.0000</qCom>
+                    <vUnCom>25.000000</vUnCom>
+                    <vProd>50.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>PCT</uTrib>
+                    <qTrib>2.0000</qTrib>
+                    <vUnTrib>25.000000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <ICMS>
+                        <ICMSSN900>
+                            <orig>0</orig>
+                            <CSOSN>900</CSOSN>
+                            <vBC>0.00</vBC>
+                            <vICMS>0.00</vICMS>
+                            <modBCST>0</modBCST>
+                            <pMVAST>0.00</pMVAST>
+                            <vBCST>0.00</vBCST>
+                            <vICMSST>0.00</vICMSST>
+                        </ICMSSN900>
+                    </ICMS>
+                    <IPI>
+                        <cEnq>999</cEnq>
+                        <IPINT>
+                            <CST>53</CST>
+                        </IPINT>
+                    </IPI>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+                <infAdProd>; Vlr Tributos - Federal R$ 2,00 - Estadual R$ 0,00</infAdProd>
+            </det>
+            <total>
+                <ICMSTot>
+                    <vBC>0.00</vBC>
+                    <vICMS>0.00</vICMS>
+                    <vICMSDeson>0.00</vICMSDeson>
+                    <vFCP>0.00</vFCP>
+                    <vBCST>0.00</vBCST>
+                    <vST>0.00</vST>
+                    <vFCPST>0.00</vFCPST>
+                    <vFCPSTRet>0.00</vFCPSTRet>
+                    <vProd>132.50</vProd>
+                    <vFrete>0.00</vFrete>
+                    <vSeg>0.00</vSeg>
+                    <vDesc>0.00</vDesc>
+                    <vII>0.00</vII>
+                    <vIPI>0.00</vIPI>
+                    <vIPIDevol>0.00</vIPIDevol>
+                    <vPIS>0.00</vPIS>
+                    <vCOFINS>0.00</vCOFINS>
+                    <vOutro>0.00</vOutro>
+                    <vNF>132.50</vNF>
+                    <vTotTrib>0.00</vTotTrib>
+                </ICMSTot>
+            </total>
+            <transp>
+                <modFrete>0</modFrete>
+            </transp>
+            <pag>
+                <detPag>
+                    <tPag>90</tPag>
+                    <vPag>0.00</vPag>
+                </detPag>
+            </pag>
+            <infAdic>
+                <infAdFisco>- EMPRESA OPTANTE PELO SIMPLES NACIONAL. - PROCON DF 151 SCS QD 08 BLOCO B-60 ED VENACIO
+                    2000 SALA 240 ASA SUL BRASILIA -DF - O REI VEM VINDO (MT 24:30,31); Valor Aproximado dos Tributos
+                    conforme Lei 12.741/2012: Federal R$ 5,30 - Estadual R$ 0,00 Fonte: IBPT
+                </infAdFisco>
+            </infAdic>
+        </infNFe>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#ID1101105318091692537100011455010000000021100000021901">
+                <Reference URI="#NFe53180916925371000114550100000000271000000271">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>1i1yivWO5NzS/AVM4YWVGg1cSeI=</DigestValue>
+                    <DigestValue>RVyVND4rVmkIO8AnE4KBai4lp3A=</DigestValue>
                 </Reference>
             </SignedInfo>
-            <SignatureValue>f4IX/lkfBcTiz9XgIxwFReSfygyPNBg1my13Ju4nhKgkJtZeFOMIUJ/xqB4lgHthKzzG8OhKU7St
-                zd34gbPImnb8PDx4nwIv2UlbbG4nGyBd+vGxh3ttmhEsCC95UrmuGN7GzqFZm3y2TttCoOHHO9lq
-                JiUix5+OeR+1SM065dCtQrfLd1kNJ2ArNvdbhsokGkfotiKVfPvk4Ggb3o07yFUubi8vXk6+YEYm
-                Jqh9vroKIUSOKZZP4EdbGvwuMo9en29DlEoIg0dMCaOlLoKAn86rWioX7gsarQ+3hxfXB+zIV0TP
-                sASfHOtwqeZvNgXEpst5KUaUilFkVn91R8T0Qg==
+            <SignatureValue>bhHZFcQnJfwd97ydiQ/kcnyNy5/KDqxlkdDJ7YbEfJ4CAZInT/v6rS8LNyGMjWVfZk2A2lqTbwVK
+                VYgS60HZass3CqTK0coaTUx63ifeo55iQXmJzgMDSNdHGTDF80oBXzZdZ6WBxOvHOdAQVzJGW+/s
+                SqitPiSdbjmM4uKzmXzzgmd5s9kMizrT399HggnT8E+K6V7pkmWB6FtAXHmQ73vqfiPbhe616Zi2
+                PiYCo6f7TeUKur5Boph0ufL0DvGDmq7RZgs5j7/Xzx8QtDygG0l1Zil4jYEbf6iFB1ZUJ8Z/yBub
+                nynrDkqn+w9zsdf/OV7uPu7dV3ZoqSJdwTxneA==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>
@@ -83,5 +314,5 @@
                 </X509Data>
             </KeyInfo>
         </Signature>
-    </evento>
-</envEvento>
+    </NFe>
+</enviNFe>

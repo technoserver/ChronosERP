@@ -33,6 +33,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
     private Integer subGrupo;
     private String inativo;
     private String tipoProduto;
+    private String estoque;
     private ProdutoGrupo grupo;
 
     private HashMap<String, Integer> listSubGrupos = new LinkedHashMap<>();
@@ -42,13 +43,24 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
     public void executarRelatorio() {
 
 
+        boolean estoqueVerificado = grupo.getId() == 999;
+
         parametros = new HashMap<>();
         parametros.put("produto", retornaValorPadrao(produto));
         parametros.put("idsubgrupo", subGrupo);
         parametros.put("inativo", StringUtils.isEmpty(inativo) ? null : inativo);
         parametros.put("tipoProduto", StringUtils.isEmpty(tipoProduto) ? null : tipoProduto);
         parametros.put("idempresa", empresa.getId());
-        parametros.put("estoqueVerificado", grupo.getId() == 999);
+        parametros.put("estoqueVerificado", estoqueVerificado);
+
+
+        String filtro = estoqueVerificado ? " ep.estoque_verificado" : " ep.quantidade_estoque";
+        if (!StringUtils.isEmpty(estoque) && estoque.equals("P")) {
+            parametros.put("filtro", "AND " + filtro + " >=0");
+        } else if (!StringUtils.isEmpty(estoque) && estoque.equals("N")) {
+            parametros.put("filtro", "AND " + filtro + "< 0");
+        }
+
 
         String caminhoRelatorio = "/relatorios/cadastros";
         String nomeRelatorio = "relacaoProdutos.jasper";
@@ -142,5 +154,13 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     public void setListSubGrupos(HashMap<String, Integer> listSubGrupos) {
         this.listSubGrupos = listSubGrupos;
+    }
+
+    public String getEstoque() {
+        return estoque;
+    }
+
+    public void setEstoque(String estoque) {
+        this.estoque = estoque;
     }
 }

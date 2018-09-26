@@ -61,11 +61,11 @@ public class FormatValor {
         return formatoDataUA.parse(data);
     }
 
-    public String formatarDataEUA(Date data) throws ParseException {
+    public String formatarDataEUA(Date data) {
         return formatoDataUA.format(data);
     }
 
-    public String formatarData(Date data) throws ParseException {
+    public String formatarData(Date data) {
         return formatoDataPTB.format(data);
     }
 
@@ -74,9 +74,8 @@ public class FormatValor {
      *
      * @param data
      * @return retorna a hora no padrão HH::mm:ss
-     * @throws ParseException
      */
-    public String formatarHora(Date data) throws ParseException {
+    public String formatarHora(Date data) {
         return formatoHora.format(data);
     }
 
@@ -84,11 +83,11 @@ public class FormatValor {
         return formatoDataNota.parse(data);
     }
 
-    public String formatarDataNota(Date data) throws ParseException {
+    public String formatarDataNota(Date data) {
         return formatoDataNota.format(data);
     }
 
-    public String formatarDataEvento(Date data) throws ParseException {
+    public String formatarDataEvento(Date data) {
         return formatoDataHoraEvento.format(data);
     }
 
@@ -146,6 +145,11 @@ public class FormatValor {
     public String formatarValor(Object valor) {
 
         return formatoValor.format(valor);
+    }
+
+    public String formatarValor(Object valor, TipoRetorno retorno) {
+
+        return valor != null ? formatoValor.format(valor) : retorno == TipoRetorno.NULL ? null : formatoValor.format(BigDecimal.ZERO);
     }
 
     public String formatarValorToNull(Object valor) {

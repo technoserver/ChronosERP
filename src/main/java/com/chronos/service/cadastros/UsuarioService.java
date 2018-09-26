@@ -1,11 +1,10 @@
 package com.chronos.service.cadastros;
 
 import com.chronos.dto.UsuarioDTO;
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.PdvMovimento;
-import com.chronos.modelo.entidades.Usuario;
+import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.tenant.Tenant;
 import com.chronos.modelo.tenant.UsuarioTenant;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.repository.TenantRepository;
 import com.chronos.service.ChronosException;
@@ -15,6 +14,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by john on 19/09/17.
@@ -29,28 +30,29 @@ public class UsuarioService implements Serializable {
     @Inject
     private Repository<Usuario> repository;
     @Inject
+    private Repository<EmpresaPessoa> empresaPessoaRepository;
+
+
+    @Inject
     private TenantRepository tenantRepository;
 
 
     @Transactional
-    public Usuario salvar(Usuario user, String senha) throws ChronosException {
+    public Usuario salvar(Usuario user, String senha, List<Empresa> empresas) throws ChronosException {
 
 
-        boolean existeColaborador = repository.existeRegisro(Usuario.class, "colaborador.id", user.getColaborador().getId());
+        Usuario usuario = repository.get(Usuario.class, "colaborador.id", user.getColaborador().getId(), new Object[]{"login", "senha"});
 
 
-        Integer id = user.getId();
-        if (existeColaborador) {
+        if (usuario != null && !usuario.equals(user)) {
             throw new ChronosException("já existe usuário definido para esse colaborador");
-
         }
-        boolean existeUsuarioTenant = tenantRepository.existeUsuario(user.getLogin().toLowerCase());
-        if (existeUsuarioTenant) {
-            throw new ChronosException("já existe usuário definido com esse login");
 
-        }
-        boolean existeUsuario = repository.existeRegisro(Usuario.class, "login", user.getLogin().toLowerCase());
-        if (existeUsuario) {
+
+        usuario = repository.get(Usuario.class, "login", user.getLogin(), new Object[]{"login", "senha"});
+
+
+        if (usuario != null && !usuario.equals(user)) {
             throw new ChronosException("já existe usuário definido com esse login");
 
         }
@@ -60,22 +62,15 @@ public class UsuarioService implements Serializable {
         } else {
             user.setAdministrador("N");
         }
+
         if (user.getId() == null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setSenha(encoder.encode(senha));
         }
 
-
-        if (id == null) {
-            Tenant tenant = FacesUtil.getTenantId();
-
-            UsuarioTenant usertenat = new UsuarioTenant();
-            usertenat.setLogin(user.getLogin());
-            usertenat.setSenha(user.getSenha());
-
-            usertenat.setTenant(tenant);
-
-            tenantRepository.salvar(usertenat);
+        definirEmpresa(user.getColaborador().getPessoa(), empresas);
+        if (user.getId() == null) {
+            definirUsuarioTenant(user);
         }
 
         user = repository.atualizar(user);
@@ -95,5 +90,40 @@ public class UsuarioService implements Serializable {
 
         empresa = getUsuarioLogado().getEmpresa();
         return empresa;
+    }
+
+    private void definirUsuarioTenant(Usuario user) {
+        Tenant tenant = FacesUtil.getTenantId();
+
+        UsuarioTenant usertenat = new UsuarioTenant();
+        usertenat.setLogin(user.getLogin());
+        usertenat.setSenha(user.getSenha());
+
+        usertenat.setTenant(tenant);
+
+        tenantRepository.salvar(usertenat);
+    }
+
+    private void definirEmpresa(Pessoa pessoa, List<Empresa> empresas) {
+        List<EmpresaPessoa> empresaPessoas = new ArrayList<>();
+
+        for (Empresa emp : empresas) {
+            EmpresaPessoa empresaPessoa = new EmpresaPessoa();
+            empresaPessoa.setEmpresa(emp);
+            empresaPessoa.setPessoa(pessoa);
+            empresaPessoa.setResponsavelLegal("N");
+            empresaPessoa.setEmpresaPrincipal("N");
+
+            empresaPessoas.add(empresaPessoa);
+
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("empresa.id", emp.getId()));
+            filtros.add(new Filtro("empresaPrincipal", "N"));
+            filtros.add(new Filtro("pessoa.id", pessoa.getId()));
+
+            empresaPessoaRepository.excluir(EmpresaPessoa.class, filtros);
+        }
+
+        empresaPessoaRepository.salvar(empresaPessoas);
     }
 }

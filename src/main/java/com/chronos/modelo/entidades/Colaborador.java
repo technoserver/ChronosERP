@@ -2,6 +2,7 @@
 package com.chronos.modelo.entidades;
 
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "COLABORADOR")
+@DynamicUpdate
 public class Colaborador implements Serializable {
 
     private static final long serialVersionUID = 1L;

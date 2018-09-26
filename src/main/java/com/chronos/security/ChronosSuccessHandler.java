@@ -58,7 +58,6 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
             Usuarios dao = CDIServiceLocator.getBean(Usuarios.class);
             assert dao != null;
             UsuarioDTO user = dao.getUsuarioDTO(usuarioSistema.getUsername());
-            user.setDataVencimento(usuarioSistema.getUsuario().getDataVencimento());
             Papel papel = dao.getPapelFuncao(user.getId());
 
             if (papel.getAcessoCompleto().equals("S") || user.getAdministrador().equals("S")) {
@@ -67,7 +66,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
             }
 
             LocalDate dataPermitida = LocalDate.now();
-            if (dataPermitida.isAfter(user.getDataVencimento().plusDays(5)) && !Constantes.DESENVOLVIMENTO) {
+            if (dataPermitida.isAfter(usuarioSistema.getUsuario().getDataVencimento().plusDays(5)) && !Constantes.DESENVOLVIMENTO) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_INADIPLENTE"));
             } else {
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADIMPLENTE"));

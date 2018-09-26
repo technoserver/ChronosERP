@@ -38,6 +38,8 @@ public class EmpresaProduto implements Serializable {
     private Produto produto;
 
     public EmpresaProduto() {
+        this.estoqueVerificado = BigDecimal.ZERO;
+        this.quantidadeEstoque = BigDecimal.ZERO;
     }
 
     public EmpresaProduto(Integer id, Integer idproduto, String nome) {

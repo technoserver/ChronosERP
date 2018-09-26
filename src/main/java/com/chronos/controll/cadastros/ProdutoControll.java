@@ -13,6 +13,7 @@ import com.chronos.modelo.view.ViewProdutoEmpresa;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
+import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -26,13 +27,13 @@ import org.springframework.util.StringUtils;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author john
@@ -63,9 +64,17 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private Repository<ProdutoMarca> marcas;
     @Inject
     private Repository<ProdutoAlteracaoItem> produtosAlterado;
+    @Inject
+    private Repository<UnidadeConversao> unidadeConversaoRepository;
+    @Inject
+    private ProdutoService service;
+    @Inject
+    private Repository<EmpresaPessoa> empresaPessoaRepository;
+
     private ProdutoGrupo grupo;
     private ProdutoEmpresaDataModel produtoDataModel;
     private List<EmpresaProduto> listProdutoEmpresa;
+    private List<Empresa> empresas;
     private ViewProdutoEmpresa produtoSelecionado;
 
     private String produto;
@@ -79,6 +88,18 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private Almoxarifado almoxarifado;
     private ProdutoSubGrupo subGrupo;
 
+    private UnidadeConversao unidadeConversao;
+    private UnidadeConversao unidadeConversaoSelecionada;
+    private List<UnidadeConversao> conversoes;
+    @NotNull(message = "Unidade de conversão obrigatória")
+    private UnidadeProduto unidadeProduto;
+    private String acao;
+    @NotNull(message = "Fator de conversão obrigatório")
+    @DecimalMin(value = "0.01", message = "valor mínimo de conversão 0.01")
+    private BigDecimal fator;
+
+    private int idempresa;
+    private Map<String, Integer> listaEmpresas;
 
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
@@ -140,8 +161,21 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         getObjeto().setInativo("N");
         getObjeto().setDataCadastro(new Date());
         grupo = new ProdutoGrupo();
+        conversoes = new ArrayList<>();
+
+        listaEmpresas = new LinkedHashMap<>();
+
+        List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
+
+        if (!empresaPessoas.isEmpty() & empresaPessoas.size() > 1) {
+
+            listaEmpresas.put("Todas", 0);
+            for (EmpresaPessoa emp : empresaPessoas) {
+                listaEmpresas.put(emp.getEmpresa().getRazaoSocial(), emp.getEmpresa().getId());
+            }
 
 
+        }
     }
 
     @Override
@@ -152,6 +186,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         grupo = getObjeto().getProdutoSubGrupo().getProdutoGrupo();
         nomeProdutoOld = getObjeto().getNome();
         nomeFoto = getObjeto().getImagem();
+        conversoes = unidadeConversaoRepository.getEntitys(UnidadeConversao.class, "produto.id", getObjeto().getId(), new Object[]{"sigla", "fatorConversao", "acao"});
     }
 
     @Override
@@ -175,50 +210,32 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void salvar() {
         try {
             getObjeto().setImagem(nomeFoto);
-            if (getObjeto().getTributGrupoTributario() == null && getObjeto().getTributIcmsCustomCab() == null) {
-                Mensagem.addWarnMessage("É necesário informar o Grupo Tributário OU o ICMS Customizado.");
-            } else {
-                List<Filtro> filtros = new ArrayList<>();
-                filtros.add(new Filtro(Filtro.AND, "gtin", Filtro.IGUAL, getObjeto().getGtin()));
-                if (getObjeto().getId() != null) {
-                    filtros.add(new Filtro(Filtro.AND, "id", Filtro.DIFERENTE, getObjeto().getId()));
-                }
-                Produto p = StringUtils.isEmpty(getObjeto().getGtin()) ? null : dao.get(Produto.class, filtros);
-                if (p != null) {
-                    Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
-                } else {
-                    if (StringUtils.isEmpty(getObjeto().getDescricaoPdv())) {
-                        String nomePdv = getObjeto().getNome().length() > 30 ? getObjeto().getNome().substring(0, 30) : getObjeto().getNome();
-                        getObjeto().setDescricaoPdv(nomePdv);
-                    }
-                    if (!StringUtils.isEmpty(getObjeto().getImagem())) {
-                        ArquivoUtil.getInstance().salvarFotoProduto(getObjeto().getImagem());
-                    }
-                    if (getObjeto().getId() == null) {
-                        super.salvar(null);
-                        EmpresaProduto produtoEmpresa = new EmpresaProduto();
-                        produtoEmpresa.setEmpresa(empresa);
-                        produtoEmpresa.setProduto(getObjeto());
-                        produtoEmpresa.setQuantidadeEstoque(BigDecimal.ZERO);
-                        produtoEmpresa.setEstoqueVerificado(BigDecimal.ZERO);
-                        produtosEmpresa.salvar(produtoEmpresa);
-                    } else {
-                        getObjeto().setDataAlteracao(new Date());
-                        super.salvar(null);
-                        //TODO verificar o fluxo de salva produt alterado.
-                        if (nomeProdutoOld != null && !nomeProdutoOld.equals(getObjeto().getNome())) {
-                            ProdutoAlteracaoItem produtoAlteracao = new ProdutoAlteracaoItem();
-
+            empresas = new ArrayList<>();
+            if (getObjeto().getId() == null) {
+                if (idempresa == 0) {
+                    for (Integer id : listaEmpresas.values()) {
+                        if (id > 0) {
+                            empresas.add(new Empresa(id));
                         }
+
                     }
-
-
+                } else {
+                    empresas.add(new Empresa(idempresa));
                 }
+            } else {
+                empresas.add(empresa);
             }
+
+            setObjeto(service.salvar(getObjeto(), empresas));
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro ao salvar o registro!", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao salvar o registro!", ex);
+            }
+
         }
 
 
@@ -446,6 +463,51 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         subGrupo.setProdutoGrupo(grupo);
     }
 
+    public void addConversao() {
+
+
+        try {
+
+            if (conversoes.stream().filter(u -> u.getSigla().equals(unidadeProduto.getSigla())).findAny().isPresent()) {
+                Mensagem.addErrorMessage("unidade de conversão já adcionada");
+            } else {
+                unidadeConversao = new UnidadeConversao();
+                unidadeConversao.setProduto(getObjeto());
+                unidadeConversao.setUnidadeProduto(unidadeProduto);
+                unidadeConversao.setSigla(unidadeProduto.getSigla());
+                unidadeConversao.setAcao(acao);
+                unidadeConversao.setDescricao("Converter " + getObjeto().getUnidadeProduto().getSigla() + " para " + unidadeProduto.getSigla());
+                unidadeConversao.setFatorConversao(fator);
+                unidadeConversaoRepository.salvar(unidadeConversao);
+                conversoes.add(unidadeConversao);
+                fator = BigDecimal.ZERO;
+
+
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao savar a unidade de conversão", ex);
+            }
+        }
+
+
+    }
+
+    public void removerUndiadeConversao() {
+        try {
+            unidadeConversaoRepository.excluir(UnidadeConversao.class, "id", unidadeConversaoSelecionada.getId());
+            conversoes.remove(unidadeConversaoSelecionada);
+        } catch (Exception ex) {
+            throw new RuntimeException("Erro ao remover a undiade de conversão", ex);
+        }
+    }
+
+
+
     public void salvarSubgrupo() {
         subGrupo.setProdutoGrupo(grupo);
         subGrupo = subGrupos.atualizar(subGrupo);
@@ -561,5 +623,58 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setSubGrupo(ProdutoSubGrupo subGrupo) {
         this.subGrupo = subGrupo;
+    }
+
+
+    public List<UnidadeConversao> getConversoes() {
+        return conversoes;
+    }
+
+    public void setConversoes(List<UnidadeConversao> conversoes) {
+        this.conversoes = conversoes;
+    }
+
+    public UnidadeProduto getUnidadeProduto() {
+        return unidadeProduto;
+    }
+
+    public void setUnidadeProduto(UnidadeProduto unidadeProduto) {
+        this.unidadeProduto = unidadeProduto;
+    }
+
+    public String getAcao() {
+        return acao;
+    }
+
+    public void setAcao(String acao) {
+        this.acao = acao;
+    }
+
+    public BigDecimal getFator() {
+        return fator;
+    }
+
+    public void setFator(BigDecimal fator) {
+        this.fator = fator;
+    }
+
+    public UnidadeConversao getUnidadeConversaoSelecionada() {
+        return unidadeConversaoSelecionada;
+    }
+
+    public void setUnidadeConversaoSelecionada(UnidadeConversao unidadeConversaoSelecionada) {
+        this.unidadeConversaoSelecionada = unidadeConversaoSelecionada;
+    }
+
+    public int getIdempresa() {
+        return idempresa;
+    }
+
+    public void setIdempresa(int idempresa) {
+        this.idempresa = idempresa;
+    }
+
+    public Map<String, Integer> getListaEmpresas() {
+        return listaEmpresas;
     }
 }

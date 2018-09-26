@@ -4,6 +4,7 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 
 @Entity
@@ -22,6 +23,8 @@ public class UnidadeConversao implements Serializable {
     private String descricao;
     @Column(name = "FATOR_CONVERSAO")
     private BigDecimal fatorConversao;
+    @Column(name = "acao")
+    private String acao;
     @JoinColumn(name = "ID_UNIDADE_PRODUTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private UnidadeProduto unidadeProduto;
@@ -30,6 +33,13 @@ public class UnidadeConversao implements Serializable {
     private Produto produto;
 
     public UnidadeConversao() {
+    }
+
+    public UnidadeConversao(Integer id, String sigla, BigDecimal fatorConversao, String acao) {
+        this.id = id;
+        this.sigla = sigla;
+        this.fatorConversao = fatorConversao;
+        this.acao = acao;
     }
 
     public Integer getId() {
@@ -80,9 +90,25 @@ public class UnidadeConversao implements Serializable {
         this.produto = produto;
     }
 
-    @Override
-    public String toString() {
-        return "com.t2tierp.model.bean.cadastros.UnidadeConversao[id=" + id + "]";
+    public String getAcao() {
+        return acao;
     }
 
+    public void setAcao(String acao) {
+        this.acao = acao;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UnidadeConversao)) return false;
+        UnidadeConversao that = (UnidadeConversao) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
+    }
 }

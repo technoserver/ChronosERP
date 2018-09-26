@@ -17,6 +17,7 @@ import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.SortOrder;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -94,6 +95,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         dataModel.getFiltros().clear();
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         dataModel.addFiltro("codigoModelo", "55", Filtro.IGUAL);
+
+        dataModel.setSortOrder(SortOrder.DESCENDING);
+        dataModel.setOrdernarPor("numero");
 
         return dataModel;
     }

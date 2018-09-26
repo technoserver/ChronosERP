@@ -12,6 +12,7 @@ import com.chronos.bo.nfe.NfeTransmissao;
 import com.chronos.bo.nfe.NfeUtil;
 import com.chronos.dto.*;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.EventoNfe;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.repository.EstoqueRepository;
@@ -90,7 +91,7 @@ public class NfeService implements Serializable {
     @Inject
     private Repository<OsAbertura> osRepository;
     @Inject
-    private EstoqueRepository estoqueRepositoy;
+    private Repository<NfeEvento> eventoRepository;
 
     @Inject
     private EstoqueRepository produtos;
@@ -208,7 +209,7 @@ public class NfeService implements Serializable {
         }
 
         nfe = repository.atualizar(nfe);
-
+        int count = nfe.getListaNfeFormaPagamento().size();
         return nfe;
     }
 
@@ -647,6 +648,11 @@ public class NfeService implements Serializable {
 
         } else {
 
+            if (!new File(caminho).exists()) {
+                gerarXml(nfe.getId(), nfe.getNomeXml());
+            }
+
+
             br.inf.portalfiscal.nfe.schema_4.enviNFe.TNfeProc nfeProc = XmlUtil.xmlToObject(XmlUtil.leXml(caminho), TNfeProc.class);
 
             TNFe.InfNFe infNFe = nfeProc.getNFe().getInfNFe();
@@ -698,6 +704,11 @@ public class NfeService implements Serializable {
             throw new ChronosException("NF-e náo autorizada. Cancelamento náo permitido!");
         }
 
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("idNfeCabeclaho", nfe.getId()));
+        Integer sequencia = (Integer) eventoRepository.getMaxValor(NfeEvento.class, "sequencia", filtros);
+        sequencia++;
+
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
 
         EventoDTO evento = new EventoDTO();
@@ -717,6 +728,17 @@ public class NfeService implements Serializable {
         if (!StatusEnum.EVENTO_VINCULADO.getCodigo().equals(retorno.getRetEvento().get(0).getInfEvento().getCStat())) {
             throw new EmissorException("Status:" + retorno.getRetEvento().get(0).getInfEvento().getCStat() + " - Motivo:" + retorno.getRetEvento().get(0).getInfEvento().getXMotivo());
         }
+
+
+        NfeEvento nfeEvento = new NfeEvento();
+
+        nfeEvento.setDataHora(new Date());
+        nfeEvento.setIdNfeCabeclaho(nfe.getId());
+        nfeEvento.setJustificativa(justificativa);
+        nfeEvento.setTipo(EventoNfe.CARTA_CORRECAO);
+        nfeEvento.setSequencia(sequencia);
+        nfeEvento.setProtocolo(retorno.getRetEvento().get(0).getInfEvento().getNProt());
+
         String result = "";
         result += "Status:" + retorno.getRetEvento().get(0).getInfEvento().getCStat() + " \n";
         result += "Motivo:" + retorno.getRetEvento().get(0).getInfEvento().getXMotivo() + " \n";

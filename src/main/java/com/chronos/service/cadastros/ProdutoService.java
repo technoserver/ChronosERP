@@ -1,17 +1,20 @@
 package com.chronos.service.cadastros;
 
 import com.chronos.dto.ProdutoDTO;
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.EstoqueTransferenciaCabecalho;
-import com.chronos.modelo.entidades.EstoqueTransferenciaDetalhe;
-import com.chronos.modelo.entidades.Produto;
+import com.chronos.modelo.entidades.*;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
+import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
+import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +28,58 @@ public class ProdutoService implements Serializable {
 
     @Inject
     private EstoqueRepository repository;
+    @Inject
+    private Repository<Produto> produtoRepository;
 
+    @Inject
+    private Repository<EmpresaProduto> empresaProdutoRepository;
+
+
+    @Transactional
+    public Produto salvar(Produto produto, List<Empresa> empresas) throws ChronosException {
+
+        if (produto.getValorVendaAtacado() != null && produto.getValorVendaAtacado().signum() > 0
+                && (produto.getQuantidadeVendaAtacado() == null || produto.getQuantidadeVendaAtacado().signum() <= 0)) {
+            throw new ChronosException("Para informar valor de venda no atacado  é preciso informar a quantidade para atacado");
+        }
+
+        if (produto.getTributGrupoTributario() == null) {
+            Mensagem.addWarnMessage("É necesário informar o Grupo Tributário OU o ICMS Customizado.");
+        } else {
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro(Filtro.AND, "gtin", Filtro.IGUAL, produto.getGtin()));
+            if (produto.getId() != null) {
+                filtros.add(new Filtro(Filtro.AND, "id", Filtro.DIFERENTE, produto.getId()));
+            }
+            Produto p = StringUtils.isEmpty(produto.getGtin()) ? null : produtoRepository.get(Produto.class, filtros);
+            if (p != null) {
+                Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
+            } else {
+                if (StringUtils.isEmpty(produto.getDescricaoPdv())) {
+                    String nomePdv = produto.getNome().length() > 30 ? produto.getNome().substring(0, 30) : produto.getNome();
+                    produto.setDescricaoPdv(nomePdv);
+                }
+                if (!StringUtils.isEmpty(produto.getImagem())) {
+                    ArquivoUtil.getInstance().salvarFotoProduto(produto.getImagem());
+                }
+                if (produto.getId() == null) {
+
+                    produto = produtoRepository.atualizar(produto);
+                    gerarEmpresaProduto(produto, empresas);
+
+                } else {
+                    produto.setDataAlteracao(new Date());
+                    produto = produtoRepository.atualizar(produto);
+                    //TODO verificar o fluxo de salva produt alterado.
+
+                }
+
+
+            }
+        }
+
+        return produto;
+    }
 
     public List<Produto> getListProdutoVenda(String nome, Empresa empresa) {
         List<Produto> produtos = new ArrayList<>();
@@ -90,5 +144,17 @@ public class ProdutoService implements Serializable {
             }
         }
 
+    }
+
+    private void gerarEmpresaProduto(Produto produto, List<Empresa> empresas) {
+
+        for (Empresa emp : empresas) {
+            EmpresaProduto produtoEmpresa = new EmpresaProduto();
+            produtoEmpresa.setEmpresa(emp);
+            produtoEmpresa.setProduto(produto);
+
+            empresaProdutoRepository.salvar(produtoEmpresa);
+
+        }
     }
 }
