@@ -5,6 +5,7 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
@@ -35,7 +36,12 @@ public class ProdutoService implements Serializable {
 
 
     @Transactional
-    public Produto salvar(Produto produto, List<Empresa> empresas) {
+    public Produto salvar(Produto produto, List<Empresa> empresas) throws ChronosException {
+
+        if (produto.getValorVendaAtacado() != null && produto.getValorVendaAtacado().signum() > 0
+                && (produto.getQuantidadeVendaAtacado() == null || produto.getQuantidadeVendaAtacado().signum() <= 0)) {
+            throw new ChronosException("Para informar valor de venda no atacado  é preciso informar a quantidade para atacado");
+        }
 
         if (produto.getTributGrupoTributario() == null) {
             Mensagem.addWarnMessage("É necesário informar o Grupo Tributário OU o ICMS Customizado.");

@@ -359,10 +359,13 @@
                                          idComponente="produtoInativo" label="Inativo"
                                          nomeAtributo="#{produtoControll.objeto.inativo}"
                                          itens="#{produtoControll.naoSim}"/>
-                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
-                                       idComponente="produtoDataCadastro" label="Data Cadastro"
-                                       nomeAtributo="#{produtoControll.objeto.dataCadastro}"
-                                       somenteLeitura="true"/>
+
+                        <erp:campoSelect itens="#{produtoControll.listaEmpresas}"
+                                         styleClass="col-xs-12 col-sm-4 col-md-4"
+                                         idComponente="empresas"
+                                         label="Selecione a empresa no qual pretende cadastra o produto"
+                                         rendered="#{produtoControll.listaEmpresas.size() gt 1}"
+                                         nomeAtributo="#{produtoControll.idempresa}"/>
 
 
                     </div>

@@ -33,10 +33,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author john
@@ -71,6 +68,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private Repository<UnidadeConversao> unidadeConversaoRepository;
     @Inject
     private ProdutoService service;
+    @Inject
+    private Repository<EmpresaPessoa> empresaPessoaRepository;
 
     private ProdutoGrupo grupo;
     private ProdutoEmpresaDataModel produtoDataModel;
@@ -164,6 +163,19 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
 
+        listaEmpresas = new LinkedHashMap<>();
+
+        List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
+
+        if (!empresaPessoas.isEmpty() & empresaPessoas.size() > 1) {
+
+            listaEmpresas.put("Todas", 0);
+            for (EmpresaPessoa emp : empresaPessoas) {
+                listaEmpresas.put(emp.getEmpresa().getRazaoSocial(), emp.getEmpresa().getId());
+            }
+
+
+        }
     }
 
     @Override
@@ -198,6 +210,22 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void salvar() {
         try {
             getObjeto().setImagem(nomeFoto);
+            empresas = new ArrayList<>();
+            if (getObjeto().getId() == null) {
+                if (idempresa == 0) {
+                    for (Integer id : listaEmpresas.values()) {
+                        if (id > 0) {
+                            empresas.add(new Empresa(id));
+                        }
+
+                    }
+                } else {
+                    empresas.add(new Empresa(idempresa));
+                }
+            } else {
+                empresas.add(empresa);
+            }
+
             setObjeto(service.salvar(getObjeto(), empresas));
 
         } catch (Exception ex) {
@@ -638,5 +666,15 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         this.unidadeConversaoSelecionada = unidadeConversaoSelecionada;
     }
 
+    public int getIdempresa() {
+        return idempresa;
+    }
 
+    public void setIdempresa(int idempresa) {
+        this.idempresa = idempresa;
+    }
+
+    public Map<String, Integer> getListaEmpresas() {
+        return listaEmpresas;
+    }
 }

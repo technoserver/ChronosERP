@@ -126,5 +126,20 @@ public class Usuario implements Serializable {
     public void setColaborador(Colaborador colaborador) {
         this.colaborador = colaborador;
     }
-   
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Usuario)) return false;
+
+        Usuario usuario = (Usuario) o;
+
+        return getId() != null ? getId().equals(usuario.getId()) : usuario.getId() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }

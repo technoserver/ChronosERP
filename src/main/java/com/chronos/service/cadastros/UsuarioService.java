@@ -41,21 +41,18 @@ public class UsuarioService implements Serializable {
     public Usuario salvar(Usuario user, String senha, List<Empresa> empresas) throws ChronosException {
 
 
-        boolean existeColaborador = repository.existeRegisro(Usuario.class, "colaborador.id", user.getColaborador().getId());
+        Usuario usuario = repository.get(Usuario.class, "colaborador.id", user.getColaborador().getId(), new Object[]{"login", "senha"});
 
 
-        Integer id = user.getId();
-        if (existeColaborador) {
+        if (usuario != null && !usuario.equals(user)) {
             throw new ChronosException("já existe usuário definido para esse colaborador");
-
         }
-        boolean existeUsuarioTenant = tenantRepository.existeUsuario(user.getLogin().toLowerCase());
-        if (existeUsuarioTenant) {
-            throw new ChronosException("já existe usuário definido com esse login");
 
-        }
-        boolean existeUsuario = repository.existeRegisro(Usuario.class, "login", user.getLogin().toLowerCase());
-        if (existeUsuario) {
+
+        usuario = repository.get(Usuario.class, "login", user.getLogin(), new Object[]{"login", "senha"});
+
+
+        if (usuario != null && !usuario.equals(user)) {
             throw new ChronosException("já existe usuário definido com esse login");
 
         }
@@ -65,22 +62,15 @@ public class UsuarioService implements Serializable {
         } else {
             user.setAdministrador("N");
         }
+
         if (user.getId() == null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setSenha(encoder.encode(senha));
         }
 
         definirEmpresa(user.getColaborador().getPessoa(), empresas);
-        if (id == null) {
-            Tenant tenant = FacesUtil.getTenantId();
-
-            UsuarioTenant usertenat = new UsuarioTenant();
-            usertenat.setLogin(user.getLogin());
-            usertenat.setSenha(user.getSenha());
-
-            usertenat.setTenant(tenant);
-
-            tenantRepository.salvar(usertenat);
+        if (user.getId() == null) {
+            definirUsuarioTenant(user);
         }
 
         user = repository.atualizar(user);
@@ -100,6 +90,18 @@ public class UsuarioService implements Serializable {
 
         empresa = getUsuarioLogado().getEmpresa();
         return empresa;
+    }
+
+    private void definirUsuarioTenant(Usuario user) {
+        Tenant tenant = FacesUtil.getTenantId();
+
+        UsuarioTenant usertenat = new UsuarioTenant();
+        usertenat.setLogin(user.getLogin());
+        usertenat.setSenha(user.getSenha());
+
+        usertenat.setTenant(tenant);
+
+        tenantRepository.salvar(usertenat);
     }
 
     private void definirEmpresa(Pessoa pessoa, List<Empresa> empresas) {
