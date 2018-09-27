@@ -59,8 +59,10 @@ public class FornecedorService implements Serializable {
 
         pessoa.setCliente("N");
         pessoa.setFornecedor("S");
-        pessoa.setNome(emitente.getNome());
         pessoa.setTransportadora("N");
+        pessoa.setColaborador("N");
+        pessoa.setNome(emitente.getNome());
+
         pessoa.setTipo(emitente.getCpfCnpj().length() > 11 ? "J" : "F");
         pessoa.getListaPessoaEndereco().add(end);
         cpfCnpj = emitente.getCpfCnpj();

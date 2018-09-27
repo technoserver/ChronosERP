@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -144,6 +145,41 @@ public class ProdutoService implements Serializable {
             }
         }
 
+    }
+
+    public Produto addConversaoUnidade(Produto produto, UnidadeProduto un, BigDecimal fator, String acao) throws ChronosException {
+
+        if (produto.getUnidadeProduto() == null) {
+            throw new ChronosException("Unidade do produto não definida");
+        }
+
+        if (fator == null || fator.signum() <= 0) {
+            throw new ChronosException("Fator de conversão não definido");
+        }
+
+        if (produto.getConversoes() == null || produto.getConversoes().isEmpty()) {
+            produto.setConversoes(new ArrayList<>());
+        } else {
+            if (produto.getConversoes().stream().filter(u -> u.getSigla().equals(un.getSigla())).findAny().isPresent()) {
+                throw new ChronosException("unidade de conversão já adcionada");
+            }
+        }
+
+        UnidadeConversao unidadeConversao = new UnidadeConversao();
+        unidadeConversao.setProduto(produto);
+        unidadeConversao.setUnidadeProduto(un);
+        unidadeConversao.setSigla(un.getSigla());
+        unidadeConversao.setAcao(acao);
+        unidadeConversao.setDescricao("Converter " + produto.getUnidadeProduto().getSigla() + " para " + un.getSigla());
+        unidadeConversao.setFatorConversao(fator);
+
+        if (produto.getConversoes() == null) {
+            produto.setConversoes(new ArrayList<>());
+        }
+
+        produto.getConversoes().add(unidadeConversao);
+
+        return produto;
     }
 
     private void gerarEmpresaProduto(Produto produto, List<Empresa> empresas) {
