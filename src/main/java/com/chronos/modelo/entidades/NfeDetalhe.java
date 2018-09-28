@@ -270,7 +270,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getQuantidadeTributavel() {
-        return quantidadeTributavel = getQuantidadeComercial();
+        return quantidadeTributavel;
     }
 
     public void setQuantidadeTributavel(BigDecimal quantidadeTributavel) {
@@ -278,7 +278,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorUnitarioTributavel() {
-        return valorUnitarioTributavel = getValorUnitarioComercial();
+        return valorUnitarioTributavel;
     }
 
     public void setValorUnitarioTributavel(BigDecimal valorUnitarioTributavel) {
@@ -581,7 +581,13 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal calcularSubTotalProduto(){
-        this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial(), MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
+        this.valorSubtotal = BigDecimal.ZERO;
+        if (this.quantidadeTributavel.equals(this.unidadeComercial)) {
+            this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial(), MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
+        } else {
+            this.valorSubtotal = getQuantidadeTributavel().multiply(getValorUnitarioTributavel(), MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
+        }
+
         return valorSubtotal;
     }
 
