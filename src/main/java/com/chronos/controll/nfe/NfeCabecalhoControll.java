@@ -6,7 +6,6 @@ import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.view.PessoaCliente;
-import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
@@ -45,11 +44,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
-    private Repository<NfeConfiguracao> configuracoes;
-    @Inject
-    private EstoqueRepository estoqueRepositoy;
-    @Inject
-    private Repository<PdvTipoPagamento> tipoPagamentoRepository;
+    private Repository<Transportadora> transportadoraRepository;
+
+
     @Inject
     private Repository<NotaFiscalTipo> notaFiscalTipoRepository;
 
@@ -527,6 +524,23 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Pesquisas">
+
+
+    public List<Transportadora> getListaTransportadora(String nome) {
+        List<Transportadora> listaTransportadora = new ArrayList<>();
+        try {
+            listaTransportadora = transportadoraRepository.getEntitys(Transportadora.class, "pessoa.nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaTransportadora;
+    }
+
+    public void selecionarTransportadora(SelectEvent event) {
+        Transportadora transportadora = (Transportadora) event.getObject();
+
+    }
+
 
     public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
         List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();

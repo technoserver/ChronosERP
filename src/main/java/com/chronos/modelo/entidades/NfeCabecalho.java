@@ -274,6 +274,8 @@ public class NfeCabecalho implements Serializable {
         this.emitente.setNfeCabecalho(this);
         this.destinatario = new NfeDestinatario();
         this.destinatario.setNfeCabecalho(this);
+        this.transporte = new NfeTransporte();
+        this.transporte.setNfeCabecalho(this);
 
 
         this.fatura = new NfeFatura();

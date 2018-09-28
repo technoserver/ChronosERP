@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4">
+            <h:outputLabel value="Modalidade Frete" for="modalidadeFrete"/>
+            <h:selectOneMenu styleClass="form-control"
+                             id="modalidadeFrete"
+                             value="#{nfeCabecalhoControll.objeto.transporte.modalidadeFrete}">
+                <f:selectItems value="#{nfeCabecalhoControll.modalidadeFreteNfe}"/>
+                <p:ajax process="@this" update="formCentro:telaDetalhe:tabNfe:dadosTransportadora"/>
+            </h:selectOneMenu>
+        </div>
+
+        <erp:autoComplete styleClass="col-xs-12 col-sm-8 col-md-8"
+                          label="Selecione a Transportadora"
+                          itemLabel="#{objeto.pessoa.nome}"
+                          controller="#{nfeCabecalhoControll}"
+                          completeMethod="getListaTransportadora"
+                          nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.transportadora}"
+                          idComponente="nfeTransporteTransportadora"
+                          requerido="false">
+
+            <p:ajax event="itemSelecionado"
+                    listener="#{nfeCabecalhoControll.selecionarTransportadora}"
+                    update="formCentro:telaDetalhe:tabNfe:dadosTransportadora"/>
+
+        </erp:autoComplete>
+
+
+    </div>
+
+    <h:panelGroup layout="block" id="dadosTransportadora">
+        <h:panelGroup layout="block" rendered="#{nfeCabecalhoControll.objeto.transporte.modalidadeFrete eq 2}">
+
+            <div class="row">
+
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="nfeTransporteCpfCnpj" label="CPF/CNPJ"
+                                nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.cpfCnpj}"
+                                tamanhoMaximo="14"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="nfeTransporteInscricaoEstadual" label="IE"
+                                nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.inscricaoEstadual}"
+                                tamanhoMaximo="14"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="nfeTransporteEmpresaEndereco"
+                                label="Empresa Endereco"
+                                nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.empresaEndereco}"
+                                tamanhoMaximo="60"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-3"
+                                idComponente="nfeTransporteNomeMunicipio" label="Municipio"
+                                nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.nomeMunicipio}"
+                                tamanhoMaximo="60"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                idComponente="nfeTransporteUf" label="Uf"
+                                nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.uf}"
+                                tamanhoMaximo="2"/>
+
+                <erp:separador label="Veículo"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-3"
+                                idComponente="nfeTransportePlacaVeiculo" label="Placa Veiculo"
+                                nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.placaVeiculo}"
+                                tamanhoMaximo="7"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="nfeTransporteUfVeiculo" label="Uf Veiculo"
+                                nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.ufVeiculo}"
+                                tamanhoMaximo="2"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-3"
+                                idComponente="nfeTransporteRntcVeiculo" label="Rntc Veiculo"
+                                nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.rntcVeiculo}"
+                                tamanhoMaximo="20"/>
+
+                <erp:separador label="Retenção ICMS"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeTransporteValorServico" label="Valor Servico"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.valorServico}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-20"
+                                  idComponente="nfeTransporteValorBcRetencaoIcms"
+                                  label="Valor Bc Retencao Icms"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.valorBcRetencaoIcms}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-30"
+                                  idComponente="nfeTransporteAliquotaRetencaoIcms"
+                                  label="Aliquota Retencao Icms"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.aliquotaRetencaoIcms}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-30"
+                                  idComponente="nfeTransporteValorIcmsRetido"
+                                  label="Valor Icms Retido"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.valorIcmsRetido}"/>
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-4 col-md-3"
+                                  idComponente="nfeTransporteCfop" label="Cfop"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.cfop}"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-4 col-md-3"
+                                  idComponente="nfeTransporteMunicipio" label="Municipio"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.municipio}"/>
+            </div>
+
+        </h:panelGroup>
+    </h:panelGroup>
+
+
+</ui:composition>
