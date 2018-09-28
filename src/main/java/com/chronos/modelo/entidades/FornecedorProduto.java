@@ -118,10 +118,18 @@ public class FornecedorProduto  implements Serializable {
         this.fornecedor = fornecedor;
     }
 
-
     @Override
-    public String toString() {
-        return "com.t2tierp.cadastros.java.FornecedorProdutoVO[id=" + id + "]";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FornecedorProduto)) return false;
+
+        FornecedorProduto that = (FornecedorProduto) o;
+
+        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
     }
 
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }

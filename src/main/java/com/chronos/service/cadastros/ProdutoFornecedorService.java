@@ -26,11 +26,17 @@ public class ProdutoFornecedorService implements Serializable {
     @Inject
     private EmpresaProdutoService empresaProdutoService;
 
+    @Inject
+    private Repository<UnidadeConversao> unidadeConversaoRepository;
+
     @Transactional
     public FornecedorProduto salvar(Produto produto, Fornecedor fornecedor, Empresa empresa, BigDecimal valorCompra, String codigoFornecedor) {
         boolean salvarEmpresaProduto = produto.getId() == null;
 
+        UnidadeConversao unidadeConversao = produto.getConversoes().isEmpty() ? null : produto.getConversoes().get(0);
+
         produto = produto.getId() != null ? produto : produtos.atualizar(produto);
+
 
         FornecedorProduto forProd = new FornecedorProduto();
         forProd.setFornecedor(fornecedor);
@@ -39,12 +45,20 @@ public class ProdutoFornecedorService implements Serializable {
         forProd.setDataUltimaCompra(new Date());
         forProd.setPrecoUltimaCompra(valorCompra);
 
+
         if (salvarEmpresaProduto) {
             empresaProdutoService.novoProduto(empresa, produto);
         }
 
+        FornecedorProduto fornecedorProduto = repository.atualizar(forProd);
 
-        return repository.atualizar(forProd);
+        if (unidadeConversao != null) {
+            unidadeConversao.setProduto(produto);
+            unidadeConversaoRepository.salvar(unidadeConversao);
+            produto.setUnidadeConversao(unidadeConversao);
+        }
+
+        return fornecedorProduto;
     }
 
     public boolean existeProduto(String codigo) {

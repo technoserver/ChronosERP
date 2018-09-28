@@ -11,9 +11,7 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "PRODUTO")
@@ -159,6 +157,8 @@ public class Produto implements Serializable {
     private BigDecimal encargosVenda;
     @Transient
     private BigDecimal controle;
+    @Transient
+    private List<UnidadeConversao> conversoes;
 
     public Produto() {
     }
@@ -657,6 +657,14 @@ public class Produto implements Serializable {
 
     public void setQuantidadeVendaAtacado(BigDecimal quantidadeVendaAtacado) {
         this.quantidadeVendaAtacado = quantidadeVendaAtacado;
+    }
+
+    public List<UnidadeConversao> getConversoes() {
+        return Optional.ofNullable(conversoes).orElse(new ArrayList<>());
+    }
+
+    public void setConversoes(List<UnidadeConversao> conversoes) {
+        this.conversoes = conversoes;
     }
 
     public String montarItemBalancaToledo() throws ChronosException {
