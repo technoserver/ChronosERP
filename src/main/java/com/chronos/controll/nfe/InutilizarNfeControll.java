@@ -2,6 +2,7 @@ package com.chronos.controll.nfe;
 
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.NotaFiscalTipo;
+import com.chronos.repository.Repository;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jsf.FacesUtil;
@@ -25,6 +26,8 @@ public class InutilizarNfeControll implements Serializable {
 
     @Inject
     private NfeService nfeService;
+    @Inject
+    private Repository<NotaFiscalTipo> notaFiscalTipoRepository;
 
     private Empresa empresa;
 
@@ -34,6 +37,7 @@ public class InutilizarNfeControll implements Serializable {
     private String justificativa;
     private Integer numeroInicial;
     private Integer numeroFinal;
+    private Integer serie;
     private String modelo;
 
     @PostConstruct
@@ -51,14 +55,14 @@ public class InutilizarNfeControll implements Serializable {
         try {
 
             ModeloDocumento modeloDocumento = ModeloDocumento.getByCodigo(Integer.valueOf(modelo));
-            NotaFiscalTipo notaFiscalTipo = nfeService.getNotaFicalTipo(modeloDocumento);
-            int serie = (notaFiscalTipo == null || notaFiscalTipo.getSerie() == null || notaFiscalTipo.getSerie() == null) ? 1 : Integer.valueOf(notaFiscalTipo.getSerie());
-            resultado = nfeService.inutilizarNFe(modeloDocumento, serie, numeroInicial, numeroFinal, justificativa);
+
+            resultado = nfeService.inutilizarNFe(empresa, modeloDocumento, serie, numeroInicial, numeroFinal, justificativa);
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
         }
     }
+
 
     public HashMap<String, String> getCodigoModeloNfe() {
         return codigoModeloNfe;
@@ -114,5 +118,13 @@ public class InutilizarNfeControll implements Serializable {
 
     public void setModelo(String modelo) {
         this.modelo = modelo;
+    }
+
+    public Integer getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Integer serie) {
+        this.serie = serie;
     }
 }

@@ -59,6 +59,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
@@ -291,12 +292,13 @@ public class NfeService implements Serializable {
         }
     }
 
-    public String inutilizarNFe(ModeloDocumento modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
-        NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(modelo, serie.toString());
+    public String inutilizarNFe(Empresa empresa, ModeloDocumento modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
+        this.empresa = empresa;
+        NotaFiscalTipo notaFiscalTipo = getNotaFicalTipo(modelo, org.apache.commons.lang3.StringUtils.leftPad(serie.toString(), 3, '0'));
         if (notaFiscalTipo == null) {
             throw new ChronosException("Não foi informando numeração para o modelo " + modelo);
         }
-
+        instanciarConfNfe(empresa, modelo);
         TRetInutNFe.InfInut infRetorno = NfeTransmissao.getInstance().inutilizarNFe(serie, numInicial, numFinal, modelo, empresa.getCnpj(), justificativa);
 
         String resultado = "";
@@ -1104,7 +1106,7 @@ public class NfeService implements Serializable {
         if (nfeXml == null) {
             throw new RuntimeException("Xml inexistente!");
         }
-        String xml = new String(nfeXml.getXml(), "UTF-8");
+        String xml = new String(nfeXml.getXml(), StandardCharsets.UTF_8);
         return salvarXml(xml, TipoArquivo.NFe, nome);
     }
 

@@ -74,7 +74,7 @@ public class NfeTransmissao {
                 + configuracoes.getEstado().getCodigoIbge()
                 + FormatValor.getInstance().formatarAno(new Date())
                 + cnpj
-                + modelo
+                + modelo.getCodigo()
                 + FormatValor.getInstance().formatarSerieToString(serie)
                 + FormatValor.getInstance().formatarNumeroDocFiscalToString(Integer.valueOf(numInicial))
                 + FormatValor.getInstance().formatarNumeroDocFiscalToString(Integer.valueOf(numFinal));
