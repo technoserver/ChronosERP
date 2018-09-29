@@ -582,7 +582,7 @@ public class NfeDetalhe implements Serializable {
 
     public BigDecimal calcularSubTotalProduto(){
         this.valorSubtotal = BigDecimal.ZERO;
-        if (this.quantidadeTributavel.equals(this.unidadeComercial)) {
+        if (this.quantidadeTributavel.equals(this.quantidadeTributavel)) {
             this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial(), MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
         } else {
             this.valorSubtotal = getQuantidadeTributavel().multiply(getValorUnitarioTributavel(), MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);

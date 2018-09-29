@@ -206,7 +206,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
 
-                Mensagem.addErrorMessage("Ocorreu um erro ao salvar o produto\n");
+                Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("Ocorreu um erro ao salvar o produto\n", ex);
             }
@@ -265,6 +265,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         BigDecimal valorVenda = nfeDetalhe.getValorUnitarioComercial();
         valorVenda = valorVenda == null ? nfeDetalhe.getProduto().getValorVenda() : valorVenda;
         nfeDetalhe.setValorUnitarioComercial(valorVenda);
+        nfeDetalhe.setQuantidadeTributavel(nfeDetalhe.getQuantidadeComercial());
+        nfeDetalhe.setValorUnitarioTributavel(valorVenda);
         nfeDetalhe.setEntraTotal(1);
         nfeDetalhe.pegarInfoProduto();
         nfeDetalhe.calcularValorTotalProduto();

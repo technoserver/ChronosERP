@@ -216,13 +216,14 @@ public class VendaToNFe extends ManualCDILookup {
             NfeDetalhe itemNfe = new NfeDetalhe();
             itemNfe.setNfeCabecalho(nfe);
             itemNfe.setQuantidadeComercial(item.getQuantidade());
+            itemNfe.setQuantidadeTributavel(item.getQuantidade());
             itemNfe.setProduto(item.getProduto());
             itemNfe.pegarInfoProduto();
 
             BigDecimal valorVenda = item.getValor();
             valorVenda = valorVenda == null ? itemNfe.getProduto().getValorVenda() : valorVenda;
             itemNfe.setValorUnitarioComercial(valorVenda);
-            itemNfe.setQuantidadeComercial(item.getQuantidade());
+            itemNfe.setValorUnitarioTributavel(valorVenda);
             itemNfe.setValorDesconto(item.getDesconto());
             itemNfe.setNumeroItem(++numeroItem);
             itemNfe.setEntraTotal(1);
