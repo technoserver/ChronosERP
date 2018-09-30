@@ -147,12 +147,12 @@ public class GeraXMLEnvio {
         if (modelo == ModeloDocumento.NFCE) {
             String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_QRCODE);
             // QRCODE
-            String qrCode = NFCeUtil.getCodeQRCode(infNfe.getId().substring(3), "100",
-                    nfeCabecalho.getAmbiente().toString(), nfeCabecalho.getDestinatario() == null ? "" : nfeCabecalho.getDestinatario().getCpfCnpj(),
-                    ide.getDhEmi(), total.getICMSTot().getVNF(), total.getICMSTot().getVICMS(),
-                    Base64.getEncoder().encodeToString(
-                            enviNFe.getNFe().get(0).getSignature().getSignedInfo().getReference().getDigestValue()),
-                    "000001", nfeCabecalho.getCsc(), url);
+            String qrCode = NFCeUtil.getCodeQRCode(
+                    infNfe.getId().substring(3),
+                    nfeCabecalho.getAmbiente().toString(),
+                    "000001",
+                    nfeCabecalho.getCsc(),
+                    url);
             InfNFeSupl infNFeSupl = new InfNFeSupl();
             infNFeSupl.setQrCode(qrCode);
             infNFeSupl.setUrlChave(url);
