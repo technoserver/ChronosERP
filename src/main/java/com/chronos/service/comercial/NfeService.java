@@ -202,6 +202,12 @@ public class NfeService implements Serializable {
 
         validacaoNfe(nfe);
 
+        if (nfe.getTransporte() == null || nfe.getTransporte().getModalidadeFrete() == null || !nfe.getTransporte().getModalidadeFrete().equals("2")) {
+            nfe.setTransporte(null);
+        }
+
+
+
         definirFormaPagamento(nfe, tipoPagamento);
 
         int i = 0;

@@ -18,14 +18,14 @@ import java.util.Optional;
  *
  * @author john
  */
-public class Usuarios implements Serializable {
+public class UsuarioRepository implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
     private EntityManager em;
 
-    public Usuarios() {
+    public UsuarioRepository() {
     }
 
     public Usuario getUsuario(String nomeUsuario, String senhaUsuario) {

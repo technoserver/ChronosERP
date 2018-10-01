@@ -148,6 +148,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             String str = getObjeto().getInformacoesAddContribuinte() + " " + observacao;
             getObjeto().setInformacoesAddContribuinte(str);
             getObjeto().setNaturezaOperacao(getObjeto().getTributOperacaoFiscal().getDescricao());
+
+
             setObjeto(nfeService.salvar(getObjeto(), tipoPagamento));
 
             Mensagem.addInfoMessage("NFe salva com sucesso");

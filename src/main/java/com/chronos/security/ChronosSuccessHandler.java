@@ -6,7 +6,7 @@ import com.chronos.modelo.entidades.AdmModulo;
 import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.tenant.Tenant;
 import com.chronos.repository.Repository;
-import com.chronos.repository.Usuarios;
+import com.chronos.repository.UsuarioRepository;
 import com.chronos.util.Constantes;
 import com.chronos.util.cdi.CDIServiceLocator;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -55,7 +55,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
         try {
             Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
-            Usuarios dao = CDIServiceLocator.getBean(Usuarios.class);
+            UsuarioRepository dao = CDIServiceLocator.getBean(UsuarioRepository.class);
             assert dao != null;
             UsuarioDTO user = dao.getUsuarioDTO(usuarioSistema.getUsername());
             Papel papel = dao.getPapelFuncao(user.getId());
