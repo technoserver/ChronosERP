@@ -503,7 +503,7 @@ public class NfeService implements Serializable {
     @Transactional
     public StatusTransmissao transmitirNFe(NfeCabecalho nfe, boolean atualizarEstoque) throws Exception {
         validacaoNfe(nfe);
-
+        nfe.setDataHoraEmissao(new Date());
         VendaCabecalho venda = nfe.getVendaCabecalho();
         OsAbertura os = nfe.getOs();
         EstoqueTransferenciaCabecalho transferencia = nfe.getTransferencia();

@@ -68,6 +68,8 @@ public class ConfiguracaoEmissorDTO {
 
     private int modelo;
 
+    private String serie;
+
 
     public ConfiguracaoEmissorDTO() {
     }
@@ -118,6 +120,7 @@ public class ConfiguracaoEmissorDTO {
         this.webserviceUf = configuracao.getWebserviceUf();
         this.csc = configuracao.getCsc();
         this.modelo = 65;
+        this.serie = configuracao.getSerie();
     }
 
 
@@ -355,5 +358,13 @@ public class ConfiguracaoEmissorDTO {
 
     public int getModelo() {
         return modelo;
+    }
+
+    public String getSerie() {
+        return serie;
+    }
+
+    public void setSerie(String serie) {
+        this.serie = serie;
     }
 }

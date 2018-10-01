@@ -38,7 +38,6 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.text.ParseException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
@@ -261,8 +260,8 @@ public class GeraXMLEnvio {
         ide.setCNF(nfeCabecalho.getCodigoNumerico());
         ide.setNatOp(nfeCabecalho.getNaturezaOperacao());
         ide.setMod(nfeCabecalho.getCodigoModelo() != null ? nfeCabecalho.getCodigoModelo() : "00");
-        ide.setSerie(nfeCabecalho.getSerie() != null ? Integer.valueOf(nfeCabecalho.getSerie()).toString() : "000");
-        ide.setNNF(nfeCabecalho.getNumero() != null ? Integer.valueOf(nfeCabecalho.getNumero()).toString() : "00000000");
+        ide.setSerie(!StringUtils.isEmpty(nfeCabecalho.getSerie()) ? Integer.valueOf(nfeCabecalho.getSerie()).toString() : "000");
+        ide.setNNF(!StringUtils.isEmpty(nfeCabecalho.getNumero()) ? Integer.valueOf(nfeCabecalho.getNumero()).toString() : "00000000");
         ide.setDhEmi(FormatValor.getInstance().formatarDataNota(nfeCabecalho.getDataHoraEmissao()));
 
         ide.setDhSaiEnt(modelo == ModeloDocumento.NFE
