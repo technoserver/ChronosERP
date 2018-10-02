@@ -51,14 +51,17 @@ public class FinLancamentoReceberService implements Serializable {
     @Transactional
     public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) {
         VendaCondicoesPagamento condicoesParcelas = lancamento.getCondicoesPagamento();
+        int qtdParcelas = 1;
         if (condicoesParcelas.getVistaPrazo().equals("1")) {
             condicoesParcelas.setParcelas(condicoes.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesParcelas.getId()));
+            qtdParcelas = condicoesParcelas.getParcelas().size();
         }
+
         String identificador = "E" + lancamento.getEmrpesa().getId()
                 + "M" + lancamento.getCodigoModulo()
                 + "V" + lancamento.getId()
                 + "C" + lancamento.getCliente().getId()
-                + "Q" + (condicoesParcelas.getParcelas()!=null? condicoesParcelas.getParcelas().size():1);
+                + "Q" + qtdParcelas;
 
         FinLancamentoReceber lancamentoReceber = new FinLancamentoReceber();
         lancamentoReceber.setCliente(lancamento.getCliente());
