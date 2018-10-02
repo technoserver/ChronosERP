@@ -350,9 +350,12 @@ public class ImportaXMLNFe {
 
         //IPI
         TIpi ipi = getTipoImposto(TIpi.class, det.getImposto().getContent());
-        NfeDetalheImpostoIpi impIpi = getIpi(ipi);
-        impIpi.setNfeDetalhe(item);
-        item.setNfeDetalheImpostoIpi(impIpi);
+        if (ipi != null) {
+            NfeDetalheImpostoIpi impIpi = getIpi(ipi);
+            impIpi.setNfeDetalhe(item);
+            item.setNfeDetalheImpostoIpi(impIpi);
+        }
+
 
         //PIS
         TNFe.InfNFe.Det.Imposto.PIS pis = getTipoImposto(TNFe.InfNFe.Det.Imposto.PIS.class, det.getImposto().getContent());

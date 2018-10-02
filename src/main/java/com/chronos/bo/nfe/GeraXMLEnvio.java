@@ -782,7 +782,7 @@ public class GeraXMLEnvio {
                 icms500.setCSOSN(csosn);
                 icms500.setOrig(origemMercadoria);
 
-
+                icms500.setPST(FormatValor.getInstance().formatarValor(BigDecimal.ZERO));
                 icms500.setVBCSTRet(FormatValor.getInstance().formatarValor(BigDecimal.ZERO));
                 icms500.setVICMSSTRet(FormatValor.getInstance().formatarValor(BigDecimal.ZERO));
             }

@@ -13,7 +13,6 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.DefinirCstService;
-import com.chronos.service.comercial.NfeService;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
@@ -39,8 +38,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private NfeService service;
+
     @Inject
     private DefinirCstService definirCstService;
     @Inject
