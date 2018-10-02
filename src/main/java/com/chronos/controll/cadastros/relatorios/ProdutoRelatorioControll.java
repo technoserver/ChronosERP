@@ -4,16 +4,18 @@ import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.modelo.entidades.ProdutoGrupo;
 import com.chronos.modelo.entidades.ProdutoSubGrupo;
 import com.chronos.repository.Repository;
+import net.sf.jasperreports.engine.JRParameter;
+import net.sf.jasperreports.engine.JRSortField;
+import net.sf.jasperreports.engine.design.JRDesignSortField;
+import net.sf.jasperreports.engine.type.SortFieldTypeEnum;
+import net.sf.jasperreports.engine.type.SortOrderEnum;
 import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +40,10 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     private HashMap<String, Integer> listSubGrupos = new LinkedHashMap<>();
 
+    private String ordernarPor;
+
+    private int tipoOrdenacao;
+
 
 
     public void executarRelatorio() {
@@ -61,6 +67,19 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
             parametros.put("filtro", "AND " + filtro + "< 0");
         }
 
+        String campo = "id";
+        SortOrderEnum orderEnum = SortOrderEnum.ASCENDING;
+        if (!ordernarPor.equals("id")) {
+            campo = ordernarPor;
+            if (estoqueVerificado && ordernarPor.equals("I")) {
+                campo = "estoque_verificado";
+            } else if (ordernarPor.equals("I")) {
+                campo = "quantidade_estoque";
+            }
+
+            orderEnum = tipoOrdenacao == 1 ? SortOrderEnum.ASCENDING : SortOrderEnum.DESCENDING;
+        }
+        definirOrdenacao(parametros, campo, orderEnum);
 
         String caminhoRelatorio = "/relatorios/cadastros";
         String nomeRelatorio = "relacaoProdutos.jasper";
@@ -103,6 +122,18 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     }
 
+
+    private void definirOrdenacao(Map paramentros, String campo, SortOrderEnum sort) {
+        List<JRSortField> sortList = new ArrayList<JRSortField>();
+        JRDesignSortField sortField = new JRDesignSortField();
+        sortField.setName(campo);
+        sortField.setOrder(sort);
+        sortField.setType(SortFieldTypeEnum.FIELD);
+        sortList.add(sortField);
+
+        paramentros.put(JRParameter.SORT_FIELDS, sortList);
+
+    }
 
 
     public String getProduto() {
@@ -162,5 +193,21 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     public void setEstoque(String estoque) {
         this.estoque = estoque;
+    }
+
+    public String getOrdernarPor() {
+        return ordernarPor;
+    }
+
+    public void setOrdernarPor(String ordernarPor) {
+        this.ordernarPor = ordernarPor;
+    }
+
+    public int getTipoOrdenacao() {
+        return tipoOrdenacao;
+    }
+
+    public void setTipoOrdenacao(int tipoOrdenacao) {
+        this.tipoOrdenacao = tipoOrdenacao;
     }
 }

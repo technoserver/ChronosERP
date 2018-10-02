@@ -100,6 +100,30 @@
                         </h:selectOneMenu>
                     </div>
 
+                    <div class="col-xs-12 col-sm-2 col-md-2">
+                        <h:outputLabel value="Ordena por" for="ordernarPor"/>
+                        <h:selectOneMenu id="ordernarPor" class="form-control"
+                                         value="#{produtoRelatorioControll.ordernarPor}">
+                            <f:selectItem itemLabel="Código" itemValue="id"/>
+                            <f:selectItem itemLabel="Código Interno" itemValue="codigo_interno"/>
+                            <f:selectItem itemLabel="Nome" itemValue="nome"/>
+                            <f:selectItem itemLabel="Valor de venda" itemValue="valor_venda"/>
+                            <f:selectItem itemLabel="Estoque" itemValue="I"/>
+
+                        </h:selectOneMenu>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-2 col-md-2">
+                        <h:outputLabel value="Tipo Ordenação" for="tipoOrdenacao"/>
+                        <h:selectOneMenu id="tipoOrdenacao" class="form-control"
+                                         value="#{produtoRelatorioControll.tipoOrdenacao}">
+                            <f:selectItem itemLabel="Crescente" itemValue="1"/>
+                            <f:selectItem itemLabel="Decrescente" itemValue="2"/>
+
+
+                        </h:selectOneMenu>
+                    </div>
+
 
                 </div>
             </h:panelGroup>
