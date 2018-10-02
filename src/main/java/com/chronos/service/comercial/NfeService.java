@@ -713,7 +713,7 @@ public class NfeService implements Serializable {
         }
 
         List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro("idNfeCabeclaho", nfe.getId()));
+        filtros.add(new Filtro("idnfecabecalho", nfe.getId()));
         Integer sequencia = (Integer) eventoRepository.getMaxValor(NfeEvento.class, "sequencia", filtros);
         sequencia++;
 
@@ -724,6 +724,7 @@ public class NfeService implements Serializable {
         evento.setMotivo(justificativa);
         evento.setChave(nfe.getChaveAcessoCompleta());
         evento.setCnpj(empresa.getCnpj());
+        evento.setSequencia(sequencia);
 
 
         TRetEnvEvento retorno = NfeTransmissao.getInstance().enviarCartaCorrecao(evento);
@@ -741,11 +742,13 @@ public class NfeService implements Serializable {
         NfeEvento nfeEvento = new NfeEvento();
 
         nfeEvento.setDataHora(new Date());
-        nfeEvento.setIdNfeCabeclaho(nfe.getId());
+        nfeEvento.setIdnfecabecalho(nfe.getId());
         nfeEvento.setJustificativa(justificativa);
         nfeEvento.setTipo(EventoNfe.CARTA_CORRECAO);
         nfeEvento.setSequencia(sequencia);
         nfeEvento.setProtocolo(retorno.getRetEvento().get(0).getInfEvento().getNProt());
+
+        eventoRepository.salvar(nfeEvento);
 
         String result = "";
         result += "Status:" + retorno.getRetEvento().get(0).getInfEvento().getCStat() + " \n";

@@ -21,7 +21,7 @@ public class NfeEvento implements Serializable {
     private Integer id;
     @NotNull
     @Column(name = "id_nfe_cabecalho")
-    private Integer idNfeCabeclaho;
+    private Integer idnfecabecalho;
     @NotNull
     @Column(name = "data_hora")
     @Temporal(TemporalType.TIMESTAMP)
@@ -40,8 +40,8 @@ public class NfeEvento implements Serializable {
     public NfeEvento() {
     }
 
-    public NfeEvento(Integer idNfeCabeclaho, Date dataHora, EventoNfe tipo, Integer sequencia) {
-        this.idNfeCabeclaho = idNfeCabeclaho;
+    public NfeEvento(Integer idnfecabecalho, Date dataHora, EventoNfe tipo, Integer sequencia) {
+        this.idnfecabecalho = idnfecabecalho;
         this.dataHora = dataHora;
         this.tipo = tipo;
         this.sequencia = sequencia;
@@ -55,12 +55,12 @@ public class NfeEvento implements Serializable {
         this.id = id;
     }
 
-    public Integer getIdNfeCabeclaho() {
-        return idNfeCabeclaho;
+    public Integer getIdnfecabecalho() {
+        return idnfecabecalho;
     }
 
-    public void setIdNfeCabeclaho(Integer idNfeCabeclaho) {
-        this.idNfeCabeclaho = idNfeCabeclaho;
+    public void setIdnfecabecalho(Integer idnfecabecalho) {
+        this.idnfecabecalho = idnfecabecalho;
     }
 
     public Date getDataHora() {
