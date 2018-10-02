@@ -307,7 +307,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 NfeCabecalho nfe = dao.get(NfeCabecalho.class, filtro, new Object[]{"numero"});
                 if (nfe != null) {
                     doCreate();
-                    throw new Exception("Essa nota já foi  digitada pra esse fornecedor !");
+                    throw new ChronosException("Essa nota já foi  digitada pra esse fornecedor !");
                 }
                 verificaProdutoNaoCadastrado(true);
                 getObjeto().setDataHoraEntradaSaida(new Date());
@@ -562,7 +562,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                         d.setProdutoCadastrado(true);
 
                         if (!existeProdutoFornecedor) {
-                            produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
+                            produtoFornecedorService.salvar(produto, fornecedor, empresa, d.getValorUnitarioComercial(), d.getCodigoProduto());
                         }
 
                         UnidadeConversao unidadeConversao = conversaoRepository.get(UnidadeConversao.class, "produto.id", produto.getId());

@@ -90,6 +90,7 @@ public class OsService implements Serializable {
         nfe = vendaNfe.gerarNfe();
         nfe.setOs(os);
         ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
+        nfe.setSerie(configuracaoEmissorDTO.getSerie());
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
