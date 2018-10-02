@@ -626,8 +626,10 @@ public class NfeService implements Serializable {
         parametrosRelatorio.put("danfe_logo", logo);
         String expressaoDataSource = "";
         String nomeRelatorioJasper = "";
+
+        expressaoDataSource = "/nfeProc/NFe/infNFe/det";
         if (statusTransmissao == StatusTransmissao.AUTORIZADA) {
-            expressaoDataSource = "/nfeProc/NFe/infNFe/det";
+
             if (!new File(caminho).exists()) {
                 gerarXml(nfe.getId(), nfe.getNomeXml());
             }
@@ -639,7 +641,7 @@ public class NfeService implements Serializable {
                 parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
                 parametrosRelatorio.put("danfeRetratoFatura", inFt);
             } else {
-                expressaoDataSource = "/nfeProc/NFe/infNFe";
+
                 nomeRelatorioJasper = Constantes.JASPERNFCE;
 
                 String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_CONSULTANFCE);
