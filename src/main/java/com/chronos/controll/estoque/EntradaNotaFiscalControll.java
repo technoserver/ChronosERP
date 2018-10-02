@@ -859,7 +859,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     }
 
     private void definirQuantidadeConvertida(NfeDetalhe d, UnidadeConversao unidadeConversao) {
-        d.setUnidadeComercial(unidadeConversao.getSigla());
+        d.setUnidadeComercial(unidadeConversao.getProduto().getUnidadeProduto().getSigla());
 
         BigDecimal quantidade = unidadeConversao.getAcao().equals("M")
                 ? Biblioteca.multiplica(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao())
