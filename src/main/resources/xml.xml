@@ -2,31 +2,28 @@
     <idLote>1</idLote>
     <indSinc>1</indSinc>
     <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe53181016925371000114550100000000291000000292">
+        <infNFe versao="4.00" Id="NFe53181016925371000114550100000002941000002944">
             <ide>
                 <cUF>53</cUF>
-                <cNF>00000029</cNF>
-                <natOp>DEVOLUCAO</natOp>
+                <cNF>00000294</cNF>
+                <natOp>VENDA A CONSUMIDOR FINAL</natOp>
                 <mod>55</mod>
                 <serie>10</serie>
-                <nNF>29</nNF>
-                <dhEmi>2018-10-02T18:42:01-03:00</dhEmi>
-                <dhSaiEnt>2018-10-02T18:42:01-03:00</dhSaiEnt>
+                <nNF>294</nNF>
+                <dhEmi>2018-10-03T09:46:56-03:00</dhEmi>
+                <dhSaiEnt>2018-10-03T09:40:57-03:00</dhSaiEnt>
                 <tpNF>1</tpNF>
-                <idDest>2</idDest>
+                <idDest>1</idDest>
                 <cMunFG>5300108</cMunFG>
                 <tpImp>1</tpImp>
                 <tpEmis>1</tpEmis>
-                <cDV>2</cDV>
+                <cDV>4</cDV>
                 <tpAmb>2</tpAmb>
-                <finNFe>4</finNFe>
+                <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
                 <indPres>1</indPres>
                 <procEmi>0</procEmi>
                 <verProc>4.0.0.3</verProc>
-                <NFref>
-                    <refNFe>28181001025830000136550030000000801000000801</refNFe>
-                </NFref>
             </ide>
             <emit>
                 <CNPJ>16925371000114</CNPJ>
@@ -47,59 +44,61 @@
                 <CRT>1</CRT>
             </emit>
             <dest>
-                <CNPJ>01025830000136</CNPJ>
+                <CPF>23117815880</CPF>
                 <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
                 <enderDest>
-                    <xLgr>AV. JOSE AMANCIO BISPO - SALA 11</xLgr>
-                    <nro>5419</nro>
-                    <xCpl>SHOPPING PEIXOTO</xCpl>
-                    <xBairro>MIGUEL TELES DE MENDONCA</xBairro>
-                    <cMun>2802908</cMun>
-                    <xMun>ITABAIANA</xMun>
-                    <UF>SE</UF>
-                    <CEP>49505330</CEP>
+                    <xLgr>LOGRADOURO</xLgr>
+                    <nro>1020</nro>
+                    <xBairro>CENTRO</xBairro>
+                    <cMun>5300108</cMun>
+                    <xMun>BRASILIA</xMun>
+                    <UF>DF</UF>
+                    <CEP>99999999</CEP>
                     <cPais>1058</cPais>
-                    <xPais>BRASIL</xPais>
-                    <fone>7999994404</fone>
+                    <xPais>Brazil</xPais>
                 </enderDest>
-                <indIEDest>1</indIEDest>
-                <IE>270913432</IE>
+                <indIEDest>9</indIEDest>
             </dest>
             <det nItem="1">
                 <prod>
                     <cProd>1</cProd>
                     <cEAN>SEM GTIN</cEAN>
                     <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
-                    <NCM>19021100</NCM>
-                    <CFOP>6102</CFOP>
+                    <NCM>19053100</NCM>
+                    <CFOP>5102</CFOP>
                     <uCom>UN</uCom>
                     <qCom>1.0000</qCom>
-                    <vUnCom>10.000000</vUnCom>
+                    <vUnCom>10</vUnCom>
                     <vProd>10.00</vProd>
                     <cEANTrib>SEM GTIN</cEANTrib>
                     <uTrib>UN</uTrib>
                     <qTrib>1.0000</qTrib>
-                    <vUnTrib>10.000000</vUnTrib>
+                    <vUnTrib>10</vUnTrib>
                     <indTot>1</indTot>
                 </prod>
                 <imposto>
+                    <vTotTrib>0.00</vTotTrib>
                     <ICMS>
-                        <ICMSSN500>
+                        <ICMSSN102>
                             <orig>0</orig>
-                            <CSOSN>500</CSOSN>
-                            <vBCSTRet>0.00</vBCSTRet>
-                            <vICMSSTRet>0.00</vICMSSTRet>
-                        </ICMSSN500>
+                            <CSOSN>102</CSOSN>
+                        </ICMSSN102>
                     </ICMS>
                     <PIS>
-                        <PISNT>
-                            <CST>07</CST>
-                        </PISNT>
+                        <PISAliq>
+                            <CST>01</CST>
+                            <vBC>10.00</vBC>
+                            <pPIS>1.65</pPIS>
+                            <vPIS>0.16</vPIS>
+                        </PISAliq>
                     </PIS>
                     <COFINS>
-                        <COFINSNT>
-                            <CST>07</CST>
-                        </COFINSNT>
+                        <COFINSAliq>
+                            <CST>01</CST>
+                            <vBC>10.00</vBC>
+                            <pCOFINS>3.00</pCOFINS>
+                            <vCOFINS>0.30</vCOFINS>
+                        </COFINSAliq>
                     </COFINS>
                 </imposto>
             </det>
@@ -120,8 +119,8 @@
                     <vII>0.00</vII>
                     <vIPI>0.00</vIPI>
                     <vIPIDevol>0.00</vIPIDevol>
-                    <vPIS>0.00</vPIS>
-                    <vCOFINS>0.00</vCOFINS>
+                    <vPIS>0.16</vPIS>
+                    <vCOFINS>0.30</vCOFINS>
                     <vOutro>0.00</vOutro>
                     <vNF>10.00</vNF>
                     <vTotTrib>0.00</vTotTrib>
@@ -132,32 +131,29 @@
             </transp>
             <pag>
                 <detPag>
-                    <tPag>90</tPag>
-                    <vPag>0.00</vPag>
+                    <tPag>01</tPag>
+                    <vPag>10.00</vPag>
                 </detPag>
             </pag>
             <infAdic>
-                <infCpl>Empresa Optante pelo Simples Nacional e CSOSN. 101 - Tributada pelo Simples Nacional com
-                    permissao de credito de 1,23% Valor Aprox. Tributos R$ 1,26 Federal R$ 5,40 Estadual Fonte: IBPT
-                    9o13ac
-                </infCpl>
+                <infCpl>Trib. Aprox. Federal R$ 0,00 e R$ 0,00 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
             </infAdic>
         </infNFe>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53181016925371000114550100000000291000000292">
+                <Reference URI="#NFe53181016925371000114550100000002941000002944">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>oBDL1eCJVn916Ml/mD43f5BC1/w=</DigestValue>
+                    <DigestValue>g8qDFSd3jEzhhhpIEG8+RDjKlt4=</DigestValue>
                 </Reference>
             </SignedInfo>
             <SignatureValue>
-                CcVQOwzH1BY1Xx48ikTeWZYFvZc7TTPe5BQgfsv+L996/FZnvhquWNnYgHCi6w/0JCsyqeT4PF8w/uqzGjPJ03n7FjQ6S99NXTkMjGsLglz9F1J3/txFpPZnP7dUGSYcc+McRw6QVykAH9kXnUPpthbrFaWSM3tBzS5Te8VmBZrUDwD72L31QuogLwEcTZGfWlfwD9cF3+XFGgFMwURUwLRXzSIdi9Bz+m10jUL+lAQ6LssBvU8Jf3ijHOb6SuRti2Y+hfdHBBFYePhgmixnI7Hi96Pyx8TUVQqTySiPEbseJl4w8AksBe50vcT2e6H7oKQBsdR0CtcXz3ERiH2OUw==
+                YFw8Kg/6gYrlaPqNp5aUhHX47caAXcMEi/RA2ScwsghthWdqd8u30M3r5qcYQTgyUoW2Iz0jAdOtwwv6UUtINje5BZXNX5auyDNmbD/EKV/cB8KdCkFEL4oBJq803pvPUPFrI2dM6X9LgM+0ZA61/BQvE27JnFMKnWtq2LZWyE45ORBITS54Eu+nhlCWnaV+6tet6wEycPxMtAuZkAT5YzLZ2BxgkQRv2B/yGdexsdDxDQNnDj2p3AGhYN2uRPUUNlKc+V/U4m7sZ4b5Iv52/mw2+DIoaVSYP574yxzmy6vBjiYe+Skm+DvsXxvxFFJcgpad4JLnnrWCdnvdDE5PZQ==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>

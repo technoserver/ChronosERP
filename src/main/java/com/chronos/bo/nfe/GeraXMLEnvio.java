@@ -242,10 +242,6 @@ public class GeraXMLEnvio {
     }
 
 
-
-
-
-
     private InfNFe getInfNFe() {
         InfNFe infNfe = new InfNFe();
         infNfe.setId("NFe" + nfeCabecalho.getChaveAcessoCompleta());
@@ -379,26 +375,33 @@ public class GeraXMLEnvio {
         if (modelo == ModeloDocumento.NFCE) {
             transp.setModFrete(ModalidadeFrete.SEM_FRETE.getCodigo().toString());
         } else {
-            if (transporte == null || transporte.getTransportadora() == null) {
-                transp.setModFrete(ModalidadeFrete.POR_CONTA_EMITENTE.getCodigo().toString());
-            } else {
+
+            String modFrete = transporte == null || transporte.getModalidadeFrete() == null
+                    ? ModalidadeFrete.POR_CONTA_EMITENTE.getCodigo().toString()
+                    : transporte.getModalidadeFrete().toString();
+            transp.setModFrete(modFrete);
+
+            if (transporte != null && transporte.getTransportadora() != null) {
+
                 transp.setVagao(StringUtils.isEmpty(transporte.getVagao()) ? null : transporte.getVagao());
                 transp.setBalsa(StringUtils.isEmpty(transporte.getBalsa()) ? null : transporte.getBalsa());
 
-                if (transporte.getTransportadora() != null && transporte.getTransportadora().getId() != null) {
-                    TNFe.InfNFe.Transp.Transporta transporta = new TNFe.InfNFe.Transp.Transporta();
-                    transp.setTransporta(transporta);
-                    if (transporte.getCpfCnpj().length() == 11) {
-                        transp.getTransporta().setCPF(transporte.getCpfCnpj());
-                    } else {
-                        transp.getTransporta().setCNPJ(transporte.getCpfCnpj());
-                    }
-                    transp.getTransporta().setXNome(transporte.getNome());
-                    transp.getTransporta().setIE(transporte.getInscricaoEstadual());
-                    transp.getTransporta().setXEnder(transporte.getEmpresaEndereco());
-                    transp.getTransporta().setXMun(transporte.getNomeMunicipio());
-                    transp.getTransporta().setUF(TUf.valueOf(transporte.getUf()));
+
+                TNFe.InfNFe.Transp.Transporta transporta = new TNFe.InfNFe.Transp.Transporta();
+                transp.setTransporta(transporta);
+
+                if (transporte.getCpfCnpj().length() == 11) {
+                    transp.getTransporta().setCPF(transporte.getCpfCnpj());
+                } else {
+                    transp.getTransporta().setCNPJ(transporte.getCpfCnpj());
                 }
+
+                transp.getTransporta().setXNome(transporte.getNome());
+                transp.getTransporta().setIE(transporte.getInscricaoEstadual());
+                transp.getTransporta().setXEnder(transporte.getEmpresaEndereco());
+                transp.getTransporta().setXMun(transporte.getNomeMunicipio());
+                transp.getTransporta().setUF(TUf.valueOf(transporte.getUf()));
+
 
                 if (transporte.getValorServico() != null) {
                     TNFe.InfNFe.Transp.RetTransp retTransp = new TNFe.InfNFe.Transp.RetTransp();
@@ -452,11 +455,10 @@ public class GeraXMLEnvio {
                             });
                 }
 
-
-
-
             }
+
         }
+
         return transp;
     }
 
@@ -664,8 +666,6 @@ public class GeraXMLEnvio {
                 ipint.setCST(impIpi.getCstIpi());
                 ipi.setIPINT(ipint);
             }
-
-
 
 
         }

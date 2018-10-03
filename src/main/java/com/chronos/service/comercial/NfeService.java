@@ -202,9 +202,7 @@ public class NfeService implements Serializable {
 
         validacaoNfe(nfe);
 
-        if (nfe.getTransporte() == null || nfe.getTransporte().getModalidadeFrete() == null || !nfe.getTransporte().getModalidadeFrete().equals("2")) {
-            nfe.setTransporte(null);
-        }
+
 
 
 
@@ -510,6 +508,16 @@ public class NfeService implements Serializable {
     public StatusTransmissao transmitirNFe(NfeCabecalho nfe, boolean atualizarEstoque) throws Exception {
         validacaoNfe(nfe);
         nfe.setDataHoraEmissao(new Date());
+
+        if (StatusTransmissao.DUPLICIDADE == nfe.getStatusTransmissao()) {
+            nfe.setNumero("");
+            nfe.setChaveAcesso("");
+        }
+
+        if (nfe.getTransporte() == null || nfe.getTransporte().getModalidadeFrete() == null || nfe.getTransporte().getModalidadeFrete().equals("0")) {
+            nfe.setTransporte(null);
+        }
+
         VendaCabecalho venda = nfe.getVendaCabecalho();
         OsAbertura os = nfe.getOs();
         EstoqueTransferenciaCabecalho transferencia = nfe.getTransferencia();
@@ -559,6 +567,8 @@ public class NfeService implements Serializable {
             } else if (retorno.getProtNFe().getInfProt().getCStat().equals("204")
                     || retorno.getProtNFe().getInfProt().getCStat().equals("539")) {
                 status = StatusTransmissao.DUPLICIDADE;
+                nfe.setStatusNota(StatusTransmissao.DUPLICIDADE.getCodigo());
+                nfe = repository.atualizar(nfe);
                 Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getXMotivo());
             } else {
                 salvarXml = true;

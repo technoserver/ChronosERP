@@ -386,14 +386,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
 
                 boolean estoque = isTemAcesso("ESTOQUE");
+
                 StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), estoque);
                 if (status == StatusTransmissao.AUTORIZADA) {
 
                     Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 } else {
                     duplicidade = status == StatusTransmissao.DUPLICIDADE;
-                    getObjeto().setNumero("");
-                    getObjeto().setChaveAcesso("");
+
                 }
 
 
@@ -510,7 +510,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             String serie = getObjeto().getSerie();
             int idempresa = getObjeto().getEmpresa().getId();
             String modelo = getObjeto().getCodigoModelo();
-            notaFiscalTipoRepository.atualizarNamedQuery("NotaFiscalTipo.UpdateNumeroModelo", numeroNfe, modelo, serie, idempresa);
+            notaFiscalTipoRepository.atualizarNamedQuery("NotaFiscalTipo.UpdateNumeroModelo", ultimoNumero, modelo, serie, idempresa);
             getObjeto().setNumero("");
             getObjeto().setChaveAcesso("");
             getObjeto().setDigitoChaveAcesso(null);
@@ -542,6 +542,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     public void selecionarTransportadora(SelectEvent event) {
         Transportadora transportadora = (Transportadora) event.getObject();
+
+        NfeTransporte nfeTransporte = getObjeto().getTransporte();
+
+        
 
     }
 

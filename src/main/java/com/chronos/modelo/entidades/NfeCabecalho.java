@@ -2113,6 +2113,10 @@ public class NfeCabecalho implements Serializable {
         return ModeloDocumento.getByCodigo(Integer.valueOf(this.codigoModelo));
     }
 
+    public StatusTransmissao getStatusTransmissao() {
+        return StatusTransmissao.valueOfCodigo(this.statusNota);
+    }
+
 
     public boolean isPodeEnviar() {
         StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
