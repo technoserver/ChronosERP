@@ -33,11 +33,6 @@
             <p:column headerText="Nome">
                 <h:outputLabel value="#{row.pessoa.nome}"/>
             </p:column>
-            <p:column headerText="Data Cadastro">
-                <h:outputLabel value="#{row.dataCadastro}">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
             <p:column headerText="CPF/CNPJ">
                 <h:outputLabel value="#{row.pessoa.pessoaFisica.cpf}" rendered="#{not empty obj.pessoa.pessoaFisica}">
                     <f:converter converterId="cpfCnpjConverter"/>
@@ -58,7 +53,28 @@
                                    nomeFuncao="Transportadora"
                                    id="telaDetalhe">
 
-            <erp:dadosPessoa controller="#{transportadoraControll}" id="dadosPessoa"/>
+            <erp:dadosPessoa controller="#{transportadoraControll}" id="dadosPessoa">
+                <p:tab title="Dados Genreciais" id="dadosGerenciais">
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                        idComponente="rntrc" label="RNTRC"
+                                        nomeAtributo="#{transportadoraControll.objeto.rntrc}"
+                                        requerido="true"
+                                        tamanhoMaximo="8"/>
+
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <h:outputLabel value="Tipo" for="tipo"/>
+                            <h:selectOneMenu id="tipo" class="form-control"
+                                             value="#{transportadoraControll.objeto.tipo}">
+                                <f:selectItem itemLabel="TAC – Agregado" itemValue="0"/>
+                                <f:selectItem itemLabel="TAC Independente" itemValue="1"/>
+                                <f:selectItem itemLabel="Outros." itemValue="2"/>
+
+                            </h:selectOneMenu>
+                        </div>
+                    </div>
+                </p:tab>
+            </erp:dadosPessoa>
 
 
         </erp:telaInclusaoAlteracao>

@@ -32,6 +32,7 @@ public class TransportadoraControll extends PessoaControll<Transportadora> imple
 
     private String completo;
 
+
     @Override
     public void doCreate() {
         super.doCreate();

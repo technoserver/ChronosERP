@@ -68,10 +68,7 @@
                              exibir="#{seguranca.isTemAcesso('FORNECEDOR')}"
                              funcao="fornecedor"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/comercial/transportadora"
-                             label="Transportadora"
-                             exibir="#{seguranca.isTemAcesso('TRANSPORTADORA')}"
-                             funcao="transportadora"/>
+
 
             </ul>
         </li>
@@ -238,9 +235,10 @@
                 <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-third-level">
-                <erp:subMenu caminho="/modulo/cadastros/transporte/proprietarioVeiculo"
-                             label="Proprietário"
-                             funcao="proprietarioVeiculo"/>
+                <erp:subMenu caminho="/modulo/cadastros/transporte/transportadora"
+                             label="Transportadora"
+                             exibir="#{seguranca.isTemAcesso('TRANSPORTADORA')}"
+                             funcao="transportadora"/>
                 <erp:subMenu caminho="/modulo/cadastros/transporte/veiculo"
                              label="Veículo"
                              funcao="veiculo"/>

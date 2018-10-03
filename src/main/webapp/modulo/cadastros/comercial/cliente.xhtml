@@ -81,7 +81,7 @@
                         </p:column>
 
 
-                        <p:column headerText="Ações" width="110">
+                        <p:column headerText="Ações" width="110" styleClass="text-center">
                             <p:commandLink title="Alterar" action="#{clienteControll.doEdit()}" class=" btn btn-default"
                                            oncomplete="addClass()"
                                            id="btnAlterar"
@@ -93,7 +93,7 @@
                             </p:commandLink>
                             &nbsp;
                             <p:commandLink title="Excluir" action="#{clienteControll.remover()}"
-                                           style="position: relative; right: 7px"
+
                                            update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                            process="dataTableCliente"
                                            oncomplete="atualizarMsg();"
