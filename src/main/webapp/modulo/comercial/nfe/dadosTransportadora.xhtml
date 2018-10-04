@@ -7,7 +7,7 @@
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui" xmlns:ṕ="http://java.sun.com/jsf/html">
 
 
     <div class="row">
@@ -38,13 +38,24 @@
                                   completeMethod="getListaTransportadora"
                                   nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.transportadora}"
                                   idComponente="nfeTransporteTransportadora"
-                                  requerido="false">
+                >
 
                     <p:ajax event="itemSelecionado"
                             listener="#{nfeCabecalhoControll.selecionarTransportadora}"
                             update="formCentro:telaDetalhe:tabNfe:dadosTransportadora"/>
 
                 </erp:autoComplete>
+
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <ṕ:outputLabel value="Veiculo" for="veiculo"/>
+                    <h:selectOneMenu value="#{nfeCabecalhoControll.veiculo}" id="veiculo" styleClass="form-control"
+                                     required="true">
+                        <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>
+                        <f:selectItems value="#{nfeCabecalhoControll.veiculos}" var="obj" itemValue="#{obj}"/>
+                    </h:selectOneMenu>
+                </div>
+
             </div>
 
             <erp:separador label="Retenção ICMS"/>

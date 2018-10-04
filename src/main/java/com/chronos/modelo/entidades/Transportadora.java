@@ -39,6 +39,14 @@ public class Transportadora implements Serializable {
     public Transportadora() {
     }
 
+    public Transportadora(Integer id, String nome) {
+        this.id = id;
+        this.pessoa = new Pessoa(nome);
+
+    }
+
+
+
     public Integer getId() {
         return id;
     }

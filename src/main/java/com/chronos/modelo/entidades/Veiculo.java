@@ -37,9 +37,9 @@ public class Veiculo implements Serializable {
     private String tipoCarroceria;
     @Column(name = "UF")
     private String uf;
-    @JoinColumn(name = "ID_PROPRIETARIO_VEICULO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_TRANSPORTADORA", referencedColumnName = "ID")
     @OneToOne(optional = true)
-    private ProprietarioVeiculo proprietarioVeiculo;
+    private Transportadora transportadora;
 
     public Veiculo() {
     }
@@ -149,12 +149,12 @@ public class Veiculo implements Serializable {
         this.uf = uf;
     }
 
-    public ProprietarioVeiculo getProprietarioVeiculo() {
-        return proprietarioVeiculo;
+    public Transportadora getTransportadora() {
+        return transportadora;
     }
 
-    public void setProprietarioVeiculo(ProprietarioVeiculo proprietarioVeiculo) {
-        this.proprietarioVeiculo = proprietarioVeiculo;
+    public void setTransportadora(Transportadora transportadora) {
+        this.transportadora = transportadora;
     }
 
     @Override
@@ -176,10 +176,7 @@ public class Veiculo implements Serializable {
             return false;
         }
         final Veiculo other = (Veiculo) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.id, other.id);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
-import com.chronos.modelo.entidades.ProprietarioVeiculo;
+import com.chronos.modelo.entidades.Transportadora;
 import com.chronos.modelo.entidades.Veiculo;
 import com.chronos.repository.Repository;
 
@@ -22,24 +22,26 @@ public class VeiculoControll extends AbstractControll<Veiculo> implements Serial
 
     private static final long serialVersionUID = 1L;
     @Inject
-    private Repository<ProprietarioVeiculo> proprietarioRepository;
+    private Repository<Transportadora> transportadoraRepository;
 
     @Override
     public void salvar() {
 
-        if (getObjeto().getProprietarioVeiculo() != null) {
+        if (getObjeto().getTransportadora() != null) {
             getObjeto().setTipoPropriedade("1");
         } else {
             getObjeto().setTipoPropriedade("0");
         }
 
+
+
         super.salvar();
     }
 
-    public List<ProprietarioVeiculo> getListaProprietario(String nome) {
-        List<ProprietarioVeiculo> list = new ArrayList<>();
+    public List<Transportadora> getListaTransportadora(String nome) {
+        List<Transportadora> list = new ArrayList<>();
         try {
-            list = proprietarioRepository.getEntitys(ProprietarioVeiculo.class, "nome", nome, atributos);
+            list = transportadoraRepository.getEntitys(Transportadora.class, "pessoa.nome", nome, new Object[]{"pessoa.nome"});
         } catch (Exception e) {
             // e.printStackTrace();
         }

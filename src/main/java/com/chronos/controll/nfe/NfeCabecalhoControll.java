@@ -74,6 +74,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private Date dataInicial;
     private Date dataFinal;
 
+    private List<Veiculo> veiculos;
+    private Veiculo veiculo;
+
     @PostConstruct
     @Override
     public void init() {
@@ -545,7 +548,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
         NfeTransporte nfeTransporte = getObjeto().getTransporte();
 
-        
+        nfeTransporte.setTransportadora(transportadora);
+
 
     }
 
@@ -671,6 +675,22 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     // <editor-fold defaultstate="collapsed" desc="GETS SETS">
 
+
+    public List<Veiculo> getVeiculos() {
+        return veiculos;
+    }
+
+    public void setVeiculos(List<Veiculo> veiculos) {
+        this.veiculos = veiculos;
+    }
+
+    public Veiculo getVeiculo() {
+        return veiculo;
+    }
+
+    public void setVeiculo(Veiculo veiculo) {
+        this.veiculo = veiculo;
+    }
 
     public VendaCondicoesPagamento getCondicoesPagamento() {
         return condicoesPagamento;

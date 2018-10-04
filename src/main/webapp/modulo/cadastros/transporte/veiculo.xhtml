@@ -59,13 +59,14 @@
             <div class="row">
 
                 <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                                  label="Proprietário"
-                                  itemLabel="#{objeto.nome}"
+                                  label="Transportadora"
+                                  itemLabel="#{objeto.pessoa.nome}"
                                   controller="#{veiculoControll}"
-                                  completeMethod="getListaProprietario"
-                                  nomeAtributo="#{veiculoControll.objeto.proprietarioVeiculo}"
+                                  completeMethod="getListaTransportadora"
+                                  nomeAtributo="#{veiculoControll.objeto.transportadora}"
                                   idComponente="proprietarioVeiculo"
                                   requerido="false"
+
                 />
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
