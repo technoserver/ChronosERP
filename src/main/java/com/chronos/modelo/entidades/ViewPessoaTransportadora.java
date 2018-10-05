@@ -1,11 +1,13 @@
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "view_pessoa_transportadora")
-public class ViewPessoaTransportadora {
+public class ViewPessoaTransportadora implements Serializable {
 
+    private static final long serialVersionUID = 1L;
 
     @Id
     @Basic
@@ -53,6 +55,10 @@ public class ViewPessoaTransportadora {
     @Basic
     @Column(name = "site")
     private String site;
+    @Basic
+    @Column(name = "rntrc")
+    private String rntrc;
+
 
     public Integer getId() {
         return id;
@@ -172,6 +178,14 @@ public class ViewPessoaTransportadora {
 
     public void setSite(String site) {
         this.site = site;
+    }
+
+    public String getRntrc() {
+        return rntrc;
+    }
+
+    public void setRntrc(String rntrc) {
+        this.rntrc = rntrc;
     }
 
     @Override

@@ -17,7 +17,7 @@
                              id="modalidadeFrete"
                              value="#{nfeCabecalhoControll.objeto.transporte.modalidadeFrete}">
                 <f:selectItems value="#{nfeCabecalhoControll.modalidadeFreteNfe}"/>
-                <p:ajax process="@this" update="formCentro:telaDetalhe:tabNfe:dadosTransportadora"/>
+                <p:ajax process="@this" update=":formCentro:telaDetalhe:tabNfe:dadosTransportadora"/>
             </h:selectOneMenu>
         </div>
 
@@ -33,16 +33,17 @@
             <div class="row">
                 <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                   label="Selecione a Transportadora"
-                                  itemLabel="#{objeto.pessoa.nome}"
+                                  id="transp"
+                                  itemLabel="#{objeto.nome}"
                                   controller="#{nfeCabecalhoControll}"
                                   completeMethod="getListaTransportadora"
-                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.transportadora}"
+                                  nomeAtributo="#{nfeCabecalhoControll.transportadora}"
                                   idComponente="nfeTransporteTransportadora"
                 >
 
                     <p:ajax event="itemSelecionado"
                             listener="#{nfeCabecalhoControll.selecionarTransportadora}"
-                            update="formCentro:telaDetalhe:tabNfe:dadosTransportadora"/>
+                            update=":formCentro:telaDetalhe:tabNfe:transp:nfeTransporteTransportadora,:formCentro:telaDetalhe:tabNfe:veiculo"/>
 
                 </erp:autoComplete>
 
@@ -50,7 +51,7 @@
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <ṕ:outputLabel value="Veiculo" for="veiculo"/>
                     <h:selectOneMenu value="#{nfeCabecalhoControll.veiculo}" id="veiculo" styleClass="form-control"
-                                     required="true">
+                                     required="true" converter="defaultConverter">
                         <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>
                         <f:selectItems value="#{nfeCabecalhoControll.veiculos}" var="obj" itemValue="#{obj}"/>
                     </h:selectOneMenu>

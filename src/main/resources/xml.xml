@@ -2,22 +2,22 @@
     <idLote>1</idLote>
     <indSinc>1</indSinc>
     <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe53181016925371000114550100000002941000002944">
+        <infNFe versao="4.00" Id="NFe53181016925371000114550100000003051000003059">
             <ide>
                 <cUF>53</cUF>
-                <cNF>00000294</cNF>
+                <cNF>00000305</cNF>
                 <natOp>VENDA A CONSUMIDOR FINAL</natOp>
                 <mod>55</mod>
                 <serie>10</serie>
-                <nNF>294</nNF>
-                <dhEmi>2018-10-03T09:46:56-03:00</dhEmi>
-                <dhSaiEnt>2018-10-03T09:40:57-03:00</dhSaiEnt>
+                <nNF>305</nNF>
+                <dhEmi>2018-10-05T15:06:13-03:00</dhEmi>
+                <dhSaiEnt>2018-10-05T15:04:23-03:00</dhSaiEnt>
                 <tpNF>1</tpNF>
                 <idDest>1</idDest>
                 <cMunFG>5300108</cMunFG>
                 <tpImp>1</tpImp>
                 <tpEmis>1</tpEmis>
-                <cDV>4</cDV>
+                <cDV>9</cDV>
                 <tpAmb>2</tpAmb>
                 <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
@@ -127,7 +127,19 @@
                 </ICMSTot>
             </total>
             <transp>
-                <modFrete>0</modFrete>
+                <modFrete>2</modFrete>
+                <transporta>
+                    <CNPJ>84237179000195</CNPJ>
+                    <xNome>TRANSPORTADORA 1</xNome>
+                    <xEnder>BRASILIA</xEnder>
+                    <xMun>BRASILIA</xMun>
+                    <UF>DF</UF>
+                </transporta>
+                <veicTransp>
+                    <placa>AC</placa>
+                    <UF>DF</UF>
+                    <RNTC>12345678</RNTC>
+                </veicTransp>
             </transp>
             <pag>
                 <detPag>
@@ -143,17 +155,17 @@
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53181016925371000114550100000002941000002944">
+                <Reference URI="#NFe53181016925371000114550100000003051000003059">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>g8qDFSd3jEzhhhpIEG8+RDjKlt4=</DigestValue>
+                    <DigestValue>8d+iYbJ0XC+TNQApVrovY9ZL9LU=</DigestValue>
                 </Reference>
             </SignedInfo>
             <SignatureValue>
-                YFw8Kg/6gYrlaPqNp5aUhHX47caAXcMEi/RA2ScwsghthWdqd8u30M3r5qcYQTgyUoW2Iz0jAdOtwwv6UUtINje5BZXNX5auyDNmbD/EKV/cB8KdCkFEL4oBJq803pvPUPFrI2dM6X9LgM+0ZA61/BQvE27JnFMKnWtq2LZWyE45ORBITS54Eu+nhlCWnaV+6tet6wEycPxMtAuZkAT5YzLZ2BxgkQRv2B/yGdexsdDxDQNnDj2p3AGhYN2uRPUUNlKc+V/U4m7sZ4b5Iv52/mw2+DIoaVSYP574yxzmy6vBjiYe+Skm+DvsXxvxFFJcgpad4JLnnrWCdnvdDE5PZQ==
+                a+z0pikhq2E0IZ6W0eyU6dUBtJnJp1gFdWeHTjv5y2DD1C5npuK0twPimxyOwaw1RokEEdP15hVPIf18zT8WYRZ4/lUjA/EmtaGiq8ReD6ZZzE9DaQLq87jpe4qiMH7Okqi+q7VSjXO66gxr1Jfw03yTZkSalxZ41pcOeK4x0EAZ7ZIcX9PHhOiBhBb3F1J/0QikZAqt7Za2ugruJrEI1l57kOG4Yvo49yT/LjHg+xIVUODmFWrclW4QNg7lGXTo/divThPcGl1CVjVtUFqsFtYvA1TZwiVuygXMBASEa1KIsXqd+RaMIVShV0OD01LloF8GKlFLpJuvSzaPkWZUew==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>

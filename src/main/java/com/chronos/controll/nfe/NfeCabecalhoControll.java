@@ -44,7 +44,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
-    private Repository<Transportadora> transportadoraRepository;
+    private Repository<ViewPessoaTransportadora> transportadoraRepository;
+    @Inject
+    private Repository<Veiculo> veiculoRepository;
 
 
     @Inject
@@ -76,6 +78,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     private List<Veiculo> veiculos;
     private Veiculo veiculo;
+    private ViewPessoaTransportadora transportadora;
 
     @PostConstruct
     @Override
@@ -117,6 +120,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             dadosSalvos = false;
             observacao = getObjeto().getInformacoesAddContribuinte();
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
+            veiculo = null;
+            transportadora = null;
             this.setActiveTabIndex(0);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -137,6 +142,20 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             setObjeto(nfe);
             nfeService.instanciarConfNfe(empresa, ModeloDocumento.NFE);
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
+
+            if (getObjeto().getTransporte() != null && getObjeto().getTransporte().getTransportadora() != null) {
+                transportadora = new ViewPessoaTransportadora();
+                transportadora.setId(getObjeto().getTransporte().getTransportadora().getId());
+                transportadora.setNome(getObjeto().getTransporte().getTransportadora().getPessoa().getNome());
+                veiculo = new Veiculo();
+                veiculo.setPlaca(getObjeto().getTransporte().getPlacaVeiculo());
+                veiculos = new ArrayList<>();
+                veiculos.add(veiculo);
+                getObjeto().getTransporte().setPlacaVeiculo(veiculo.getUf());
+                getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
+            }
+
+
             dadosSalvos = true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -152,6 +171,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             getObjeto().setInformacoesAddContribuinte(str);
             getObjeto().setNaturezaOperacao(getObjeto().getTributOperacaoFiscal().getDescricao());
 
+
+            if (getObjeto().getTransporte() != null && getObjeto().getTransporte().getTransportadora() != null && veiculo != null) {
+                getObjeto().getTransporte().setPlacaVeiculo(veiculo.getPlaca());
+                getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
+            }
 
             setObjeto(nfeService.salvar(getObjeto(), tipoPagamento));
 
@@ -533,10 +557,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     // <editor-fold defaultstate="collapsed" desc="Pesquisas">
 
 
-    public List<Transportadora> getListaTransportadora(String nome) {
-        List<Transportadora> listaTransportadora = new ArrayList<>();
+    public List<ViewPessoaTransportadora> getListaTransportadora(String nome) {
+        List<ViewPessoaTransportadora> listaTransportadora = new ArrayList<>();
         try {
-            listaTransportadora = transportadoraRepository.getEntitys(Transportadora.class, "pessoa.nome", nome);
+            listaTransportadora = transportadoraRepository.getEntitys(ViewPessoaTransportadora.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -544,13 +568,30 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     }
 
     public void selecionarTransportadora(SelectEvent event) {
-        Transportadora transportadora = (Transportadora) event.getObject();
+        transportadora = (ViewPessoaTransportadora) event.getObject();
 
         NfeTransporte nfeTransporte = getObjeto().getTransporte();
 
-        nfeTransporte.setTransportadora(transportadora);
+        nfeTransporte.setTransportadora(new Transportadora(transportadora.getId(), transportadora.getNome()));
 
+        nfeTransporte.setCpfCnpj(transportadora.getCpfCnpj());
+        nfeTransporte.setEmpresaEndereco(transportadora.getCidade());
+        nfeTransporte.setNome(transportadora.getNome());
+        nfeTransporte.setMunicipio(transportadora.getMunicipioIbge());
+        nfeTransporte.setNomeMunicipio(transportadora.getCidade());
 
+        nfeTransporte.setRntcVeiculo(transportadora.getRntrc());
+        nfeTransporte.setUf(transportadora.getUf());
+
+        veiculos = veiculoRepository.getEntitys(Veiculo.class, "transportadora.id", transportadora.getId());
+        veiculo = null;
+
+    }
+
+    public void selecionarVeiculo() {
+        NfeTransporte nfeTransporte = getObjeto().getTransporte();
+        nfeTransporte.setPlacaVeiculo(veiculo.getPlaca());
+        nfeTransporte.setUfVeiculo(veiculo.getUf());
     }
 
 
@@ -675,6 +716,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     // <editor-fold defaultstate="collapsed" desc="GETS SETS">
 
+
+    public ViewPessoaTransportadora getTransportadora() {
+        return transportadora;
+    }
+
+    public void setTransportadora(ViewPessoaTransportadora transportadora) {
+        this.transportadora = transportadora;
+    }
 
     public List<Veiculo> getVeiculos() {
         return veiculos;
