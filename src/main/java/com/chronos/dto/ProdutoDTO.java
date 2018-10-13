@@ -25,12 +25,19 @@ public class ProdutoDTO implements Serializable {
     private String ncm;
     private String imagem;
     private Integer idgrupotributario;
-    private Integer idicms;
     private String unidade;
     private String servico;
+    private BigDecimal valorVendaAtacado;
+    private BigDecimal quantidadeVendaAtacado;
+    private BigDecimal precoTabela;
+    private BigDecimal precoPromocao;
 
 
     private Produto produto;
+
+    public ProdutoDTO() {
+
+    }
 
     public ProdutoDTO(Integer id, String nome, BigDecimal custoUnitario, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String unidade) {
         this.id = id;
@@ -50,9 +57,7 @@ public class ProdutoDTO implements Serializable {
 
     }
 
-    public ProdutoDTO() {
 
-    }
 
 
     public ProdutoDTO(Integer id, String nome,String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
@@ -66,7 +71,7 @@ public class ProdutoDTO implements Serializable {
         this.ncm = ncm;
         this.imagem = imagem;
         this.idgrupotributario = idgrupotributario;
-        this.idicms = idicms;
+
         this.servico = servico;
         this.produto = new Produto(id, nome, servico, valorVenda, quantidadeEstoque, ncm, new UnidadeProduto(0, unidade));
         this.produto.setImagem(imagem);
@@ -146,13 +151,7 @@ public class ProdutoDTO implements Serializable {
         this.idgrupotributario = idgrupotributario;
     }
 
-    public Integer getIdicms() {
-        return idicms;
-    }
 
-    public void setIdicms(Integer idicms) {
-        this.idicms = idicms;
-    }
 
     public String getUnidade() {
         return unidade;
@@ -193,5 +192,37 @@ public class ProdutoDTO implements Serializable {
 
     public void setCustoUnitario(BigDecimal custoUnitario) {
         this.custoUnitario = custoUnitario;
+    }
+
+    public BigDecimal getValorVendaAtacado() {
+        return valorVendaAtacado;
+    }
+
+    public void setValorVendaAtacado(BigDecimal valorVendaAtacado) {
+        this.valorVendaAtacado = valorVendaAtacado;
+    }
+
+    public BigDecimal getQuantidadeVendaAtacado() {
+        return quantidadeVendaAtacado;
+    }
+
+    public void setQuantidadeVendaAtacado(BigDecimal quantidadeVendaAtacado) {
+        this.quantidadeVendaAtacado = quantidadeVendaAtacado;
+    }
+
+    public BigDecimal getPrecoTabela() {
+        return precoTabela;
+    }
+
+    public void setPrecoTabela(BigDecimal precoTabela) {
+        this.precoTabela = precoTabela;
+    }
+
+    public BigDecimal getPrecoPromocao() {
+        return precoPromocao;
+    }
+
+    public void setPrecoPromocao(BigDecimal precoPromocao) {
+        this.precoPromocao = precoPromocao;
     }
 }
