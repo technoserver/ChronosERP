@@ -2,8 +2,8 @@ package com.chronos.dto;
 
 import com.chronos.modelo.entidades.Produto;
 import com.chronos.modelo.entidades.TributGrupoTributario;
-import com.chronos.modelo.entidades.TributIcmsCustomCab;
 import com.chronos.modelo.entidades.UnidadeProduto;
+import com.chronos.modelo.enuns.PrecoPrioritario;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -25,12 +25,21 @@ public class ProdutoDTO implements Serializable {
     private String ncm;
     private String imagem;
     private Integer idgrupotributario;
-    private Integer idicms;
     private String unidade;
     private String servico;
+    private BigDecimal valorVendaAtacado;
+    private BigDecimal quantidadeVendaAtacado;
+    private BigDecimal quantidadeVenda;
+    private BigDecimal precoTabela;
+    private BigDecimal precoPromocao;
+    private PrecoPrioritario precoPrioritario;
 
 
     private Produto produto;
+
+    public ProdutoDTO() {
+
+    }
 
     public ProdutoDTO(Integer id, String nome, BigDecimal custoUnitario, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String unidade) {
         this.id = id;
@@ -50,23 +59,28 @@ public class ProdutoDTO implements Serializable {
 
     }
 
-    public ProdutoDTO() {
 
-    }
-
-
-    public ProdutoDTO(Integer id, String nome,String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
+    public ProdutoDTO(Integer id, String nome, String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda,
+                      BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem,
+                      Integer idgrupotributario, String unidade, String podeFracionar, BigDecimal precoPromocao,
+                      BigDecimal precoTabela, PrecoPrioritario precoPrioritario, BigDecimal quantidadeVendaAtacado, BigDecimal valorVendaAtacado) {
         this.id = id;
         this.nome = nome;
         this.descricaoPdv = descricaoPdv;
         this.valorVenda = valorVenda;
+        this.precoPromocao = precoPromocao;
+        this.precoTabela = precoTabela;
+        this.precoPrioritario = precoPrioritario;
+        this.valorVendaAtacado = valorVendaAtacado;
+        this.quantidadeVendaAtacado = quantidadeVendaAtacado;
+
         this.quantidadeEstoque = quantidadeEstoque;
         this.estoqueVerificado = estoqueVerificado;
         this.unidade = unidade;
         this.ncm = ncm;
         this.imagem = imagem;
         this.idgrupotributario = idgrupotributario;
-        this.idicms = idicms;
+
         this.servico = servico;
         this.produto = new Produto(id, nome, servico, valorVenda, quantidadeEstoque, ncm, new UnidadeProduto(0, unidade));
         this.produto.setImagem(imagem);
@@ -74,11 +88,9 @@ public class ProdutoDTO implements Serializable {
         this.produto.setCodigoLst(codigoLst);
         this.produto.setControle(estoqueVerificado);
         this.produto.setDescricaoPdv(this.descricaoPdv);
-        if (idgrupotributario != null) {
-            produto.setTributGrupoTributario(new TributGrupoTributario(idgrupotributario));
-        } else {
-            produto.setTributIcmsCustomCab(new TributIcmsCustomCab(idicms));
-        }
+
+        produto.setTributGrupoTributario(new TributGrupoTributario(idgrupotributario));
+
     }
 
 
@@ -146,13 +158,6 @@ public class ProdutoDTO implements Serializable {
         this.idgrupotributario = idgrupotributario;
     }
 
-    public Integer getIdicms() {
-        return idicms;
-    }
-
-    public void setIdicms(Integer idicms) {
-        this.idicms = idicms;
-    }
 
     public String getUnidade() {
         return unidade;
@@ -193,5 +198,53 @@ public class ProdutoDTO implements Serializable {
 
     public void setCustoUnitario(BigDecimal custoUnitario) {
         this.custoUnitario = custoUnitario;
+    }
+
+    public BigDecimal getValorVendaAtacado() {
+        return valorVendaAtacado;
+    }
+
+    public void setValorVendaAtacado(BigDecimal valorVendaAtacado) {
+        this.valorVendaAtacado = valorVendaAtacado;
+    }
+
+    public BigDecimal getQuantidadeVendaAtacado() {
+        return quantidadeVendaAtacado;
+    }
+
+    public void setQuantidadeVendaAtacado(BigDecimal quantidadeVendaAtacado) {
+        this.quantidadeVendaAtacado = quantidadeVendaAtacado;
+    }
+
+    public BigDecimal getPrecoTabela() {
+        return precoTabela;
+    }
+
+    public void setPrecoTabela(BigDecimal precoTabela) {
+        this.precoTabela = precoTabela;
+    }
+
+    public BigDecimal getPrecoPromocao() {
+        return precoPromocao;
+    }
+
+    public void setPrecoPromocao(BigDecimal precoPromocao) {
+        this.precoPromocao = precoPromocao;
+    }
+
+    public PrecoPrioritario getPrecoPrioritario() {
+        return precoPrioritario;
+    }
+
+    public void setPrecoPrioritario(PrecoPrioritario precoPrioritario) {
+        this.precoPrioritario = precoPrioritario;
+    }
+
+    public BigDecimal getQuantidadeVenda() {
+        return quantidadeVenda;
+    }
+
+    public void setQuantidadeVenda(BigDecimal quantidadeVenda) {
+        this.quantidadeVenda = quantidadeVenda;
     }
 }
