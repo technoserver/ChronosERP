@@ -32,11 +32,6 @@
             <p:column headerText="Produto">
                 <h:outputLabel value="#{row.nomeProduto}"/>
             </p:column>
-            <p:column headerText="Quantidade" width="130" styleClass="text-center">
-                <h:outputLabel value="#{row.quantidadeEmPromocao}">
-                    <f:convertNumber pattern="#,##0.000"/>
-                </h:outputLabel>
-            </p:column>
             <p:column headerText="Valor" width="100" styleClass="text-right">
                 <h:outputLabel value="#{row.valor}">
                     <f:convertNumber pattern="#,##0.00"/>
@@ -56,7 +51,7 @@
 
             <div class="row">
 
-                <erp:autoComplete styleClass="col-xs-12 col-sm-8 col-md-8"
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                   label="Produto"
                                   itemLabel="#{objeto.nome}"
                                   controller="#{produtoPromocaoControll}"
@@ -64,10 +59,15 @@
                                   nomeAtributo="#{produtoPromocaoControll.objeto.produto}"
                                   idComponente="produto"/>
 
-                <erp:campoDecimal styleClass="col-xs-6 col-sm-2 col-md-2"
-                                  idComponente="quantidadeEmPromocao" label="Quantidade"
-                                  requerido="true" id="campoQuantidadeEmPromocao"
-                                  nomeAtributo="#{produtoPromocaoControll.objeto.quantidadeEmPromocao}"/>
+                <erp:campoData styleClass="col-xs-6 col-sm-2 col-md-2"
+                               idComponente="dataInicio" label="Périodo inicial"
+                               requerido="true" id="dataInicio"
+                               nomeAtributo="#{produtoPromocaoControll.objeto.dataInicio}"/>
+
+                <erp:campoData styleClass="col-xs-6 col-sm-2 col-md-2"
+                               idComponente="dataInicio" label="Périodo final"
+                               requerido="true" id="dataFim"
+                               nomeAtributo="#{produtoPromocaoControll.objeto.dataFim}"/>
 
                 <erp:campoDecimal styleClass="col-xs-6 col-sm-2 col-md-2"
                                   idComponente="valor" label="Preço"

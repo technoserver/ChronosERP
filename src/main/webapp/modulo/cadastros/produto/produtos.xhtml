@@ -207,6 +207,10 @@
                                    nomeFuncao="Produto"
                                    id="telaDetalhe"
                                    gridPadrao="false">
+            <p:importEnum type="com.chronos.modelo.enuns.PrecoPrioritario"
+                          var="precoPrioritario" allSuffix="ALL_ENUM_VALUES"/>
+
+
             <p:tabView id="tabProduto" activeIndex="#{produtoControll.activeTabIndex}">
                 <p:tab title="Dados Principais" id="dadosPrincipais">
                     <div class="row">
@@ -359,6 +363,22 @@
                                          idComponente="produtoInativo" label="Inativo"
                                          nomeAtributo="#{produtoControll.objeto.inativo}"
                                          itens="#{produtoControll.naoSim}"/>
+
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <h:outputLabel value="Preço prioritário"
+                                           for="precoPrioritario"/>
+                            <i class="glyphicon glyphicon-info-sign" style="margin-left: 5px"
+                               title="Determina qual valor de venda será aplicado quando existe varios valores(preço promocional, tabela de preços, preço em atacado e etc."></i>
+
+                            <h:selectOneMenu id="precoPrioritario"
+                                             class="form-control"
+                                             value="#{produtoControll.objeto.precoPrioritario}"
+                            >
+                                <f:selectItems value="#{precoPrioritario.ALL_ENUM_VALUES}" var="obj"
+                                               itemValue="#{obj}" itemLabel="#{obj.descricao}"/>
+
+                            </h:selectOneMenu>
+                        </div>
 
                         <erp:campoSelect itens="#{produtoControll.listaEmpresas}"
                                          styleClass="col-xs-12 col-sm-4 col-md-4"

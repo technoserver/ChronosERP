@@ -13,7 +13,7 @@ import java.util.Objects;
 @Table(name = "produto_promocao")
 public class ProdutoPromocao implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -28,7 +28,6 @@ public class ProdutoPromocao implements Serializable {
     @Column(name = "quantidade_em_promocao")
     @DecimalMin(value = "0.01", message = "A quantidade deve ser maior que R0,01")
     @DecimalMax(value = "9999999.99", message = "A quantidade deve ser menor que 9.999.999,99")
-    @NotNull
     private BigDecimal quantidadeEmPromocao;
     @Column(name = "quantidade_maxima_cliente")
     private BigDecimal quantidadeMaximaCliente;
@@ -47,7 +46,7 @@ public class ProdutoPromocao implements Serializable {
     public ProdutoPromocao() {
         this.dataFim = new Date();
         this.dataInicio = new Date();
-        this.quantidadeMaximaCliente = BigDecimal.ZERO;
+
     }
 
     public ProdutoPromocao(Integer id, BigDecimal quantidadeEmPromocao, BigDecimal valor, String nomeProduto) {

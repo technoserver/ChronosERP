@@ -2,6 +2,7 @@ package com.chronos.service.cadastros;
 
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.PrecoPrioritario;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
@@ -14,9 +15,7 @@ import org.springframework.util.StringUtils;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -182,6 +181,47 @@ public class ProdutoService implements Serializable {
         return produto;
     }
 
+    public BigDecimal defnirPrecoVenda(ProdutoDTO produto) {
+
+        BigDecimal valor = BigDecimal.ZERO;
+
+        Map<PrecoPrioritario, BigDecimal> list = new HashMap<>();
+
+        list.put(PrecoPrioritario.VALOR_VENDA, produto.getValorVenda());
+
+        if (produto.getPrecoPromocao() != null && produto.getPrecoPromocao().signum() > 0) {
+            list.put(PrecoPrioritario.PRODUTO_PROMOCIONAL, produto.getPrecoPromocao());
+        }
+
+        if (produto.getPrecoTabela() != null && produto.getPrecoTabela().signum() > 0) {
+            list.put(PrecoPrioritario.TABELA_PRECO, produto.getPrecoTabela());
+        }
+
+
+        if (produto.getQuantidadeVenda() != null && produto.getQuantidadeVendaAtacado() != null
+                && produto.getValorVendaAtacado() != null &&
+                (produto.getQuantidadeVenda().compareTo(produto.getQuantidadeVendaAtacado()) >= 0)) {
+
+            list.put(PrecoPrioritario.PRECO_ATACADO, produto.getValorVendaAtacado());
+
+        }
+
+        if (list.size() > 0 && produto.getPrecoPrioritario() == PrecoPrioritario.MENOR_PRECO) {
+
+
+            valor = list
+                    .entrySet()
+                    .stream()
+                    .min(Comparator.comparing(Map.Entry::getValue))
+                    .map(Map.Entry::getValue).get();
+        } else {
+            BigDecimal precoPrioritario = list.get(produto.getPrecoPrioritario());
+            valor = list.size() == 1 ? valor : precoPrioritario == null ? produto.getValorVenda() : precoPrioritario;
+        }
+
+        return valor;
+    }
+
     private void gerarEmpresaProduto(Produto produto, List<Empresa> empresas) {
 
         for (Empresa emp : empresas) {
@@ -193,4 +233,6 @@ public class ProdutoService implements Serializable {
 
         }
     }
+
+
 }

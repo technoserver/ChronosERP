@@ -125,40 +125,15 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) {
 
-//        CriteriaBuilder builder = em.getCriteriaBuilder();
-//        CriteriaQuery<ProdutoDTO> criteria = builder.createQuery(ProdutoDTO.class);
-//        Root<Produto> root = criteria.from(Produto.class);
-//        Join<Produto, EmpresaProduto> empresaProduto = root.join("produtosEmpresa", JoinType.INNER);
-//        Join<Produto, UnidadeProduto> unidade = root.join("unidadeProduto", JoinType.INNER);
-//        Join<Produto, TributGrupoTributario> grupo = root.join("tributGrupoTributario", JoinType.LEFT);
-//        Join<Produto, TributGrupoTributario> icmsCustm = root.join("tributIcmsCustomCab", JoinType.LEFT);
-//
-//        criteria.select(builder.construct(ProdutoDTO.class
-//                , root.get("id")
-//                , root.get("nome")
-//                , root.get("servico")
-//                , root.get("codigoLst")
-//                , root.get("valorVenda")
-//                , empresaProduto.get("quantidadeEstoque")
-//                , empresaProduto.get("estoqueVerificado")
-//                , root.get("ncm")
-//                , root.get("imagem")
-//                , grupo.get("id")
-//                , icmsCustm.get("id")
-//                , unidade.get("sigla")
-//                , unidade.get("podeFracionar")
-//
-//        ));
-//        criteria.where(builder.equal(root.get("servico"),"N"),builder.equal(root.get("tipo"),"V"));
-//
-//
-//        TypedQuery typedQuery = em.createQuery(criteria);
-//        List<ProdutoDTO> produtos = typedQuery.getResultList();
 
-        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla,un.podeFracionar) From Produto p " +
+        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
+                "ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,un.sigla," +
+                "un.podeFracionar,pp.valor,t.preco,p.precoPrioritario,p.quantidadeVendaAtacado,p.valorVendaAtacado) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
-                "where (LOWER(p.nome)  like ?1 or p.gtin = ?1 or p.codigoInterno = ?1) and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null and p.tipo = 'V' )";
+                "LEFT JOIN ProdutoPromocao pp on pp.produto.id = p.id " +
+                "LEFT JOIN TabelaPrecoProduto t on t.produto = p.id " +
+                "where (LOWER(p.nome)  like ?1 or p.gtin = ?1 or p.codigoInterno = ?1) and ep.empresa.id = ?2 and  p.tributGrupoTributario is not null and p.tipo = 'V' ";
 
         nome = !org.apache.commons.lang3.StringUtils.isNumeric(nome) ? "%" + nome.toLowerCase().trim() + "%" : nome;
         List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, nome, empresa.getId());

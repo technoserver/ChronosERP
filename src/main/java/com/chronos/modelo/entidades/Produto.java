@@ -3,6 +3,7 @@ package com.chronos.modelo.entidades;
 
 import com.chronos.bo.cadastro.ItemFilizola;
 import com.chronos.bo.cadastro.ItemToledo;
+import com.chronos.modelo.enuns.PrecoPrioritario;
 import com.chronos.service.ChronosException;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -127,6 +128,8 @@ public class Produto implements Serializable {
     private String tipo;
     @Column(name = "SERVICO")
     private String servico;
+    @Column(name = "preco_prioritario")
+    private PrecoPrioritario precoPrioritario;
     @JoinColumn(name = "ID_UNIDADE_PRODUTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private UnidadeProduto unidadeProduto;
@@ -642,6 +645,13 @@ public class Produto implements Serializable {
         this.controle = controle;
     }
 
+    public PrecoPrioritario getPrecoPrioritario() {
+        return precoPrioritario;
+    }
+
+    public void setPrecoPrioritario(PrecoPrioritario precoPrioritario) {
+        this.precoPrioritario = precoPrioritario;
+    }
 
     public BigDecimal getValorVendaAtacado() {
         return valorVendaAtacado;

@@ -2,8 +2,8 @@ package com.chronos.dto;
 
 import com.chronos.modelo.entidades.Produto;
 import com.chronos.modelo.entidades.TributGrupoTributario;
-import com.chronos.modelo.entidades.TributIcmsCustomCab;
 import com.chronos.modelo.entidades.UnidadeProduto;
+import com.chronos.modelo.enuns.PrecoPrioritario;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -29,8 +29,10 @@ public class ProdutoDTO implements Serializable {
     private String servico;
     private BigDecimal valorVendaAtacado;
     private BigDecimal quantidadeVendaAtacado;
+    private BigDecimal quantidadeVenda;
     private BigDecimal precoTabela;
     private BigDecimal precoPromocao;
+    private PrecoPrioritario precoPrioritario;
 
 
     private Produto produto;
@@ -58,13 +60,20 @@ public class ProdutoDTO implements Serializable {
     }
 
 
-
-
-    public ProdutoDTO(Integer id, String nome,String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem, Integer idgrupotributario, Integer idicms, String unidade, String podeFracionar) {
+    public ProdutoDTO(Integer id, String nome, String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda,
+                      BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem,
+                      Integer idgrupotributario, String unidade, String podeFracionar, BigDecimal precoPromocao,
+                      BigDecimal precoTabela, PrecoPrioritario precoPrioritario, BigDecimal quantidadeVendaAtacado, BigDecimal valorVendaAtacado) {
         this.id = id;
         this.nome = nome;
         this.descricaoPdv = descricaoPdv;
         this.valorVenda = valorVenda;
+        this.precoPromocao = precoPromocao;
+        this.precoTabela = precoTabela;
+        this.precoPrioritario = precoPrioritario;
+        this.valorVendaAtacado = valorVendaAtacado;
+        this.quantidadeVendaAtacado = quantidadeVendaAtacado;
+
         this.quantidadeEstoque = quantidadeEstoque;
         this.estoqueVerificado = estoqueVerificado;
         this.unidade = unidade;
@@ -79,11 +88,9 @@ public class ProdutoDTO implements Serializable {
         this.produto.setCodigoLst(codigoLst);
         this.produto.setControle(estoqueVerificado);
         this.produto.setDescricaoPdv(this.descricaoPdv);
-        if (idgrupotributario != null) {
-            produto.setTributGrupoTributario(new TributGrupoTributario(idgrupotributario));
-        } else {
-            produto.setTributIcmsCustomCab(new TributIcmsCustomCab(idicms));
-        }
+
+        produto.setTributGrupoTributario(new TributGrupoTributario(idgrupotributario));
+
     }
 
 
@@ -150,7 +157,6 @@ public class ProdutoDTO implements Serializable {
     public void setIdgrupotributario(Integer idgrupotributario) {
         this.idgrupotributario = idgrupotributario;
     }
-
 
 
     public String getUnidade() {
@@ -224,5 +230,21 @@ public class ProdutoDTO implements Serializable {
 
     public void setPrecoPromocao(BigDecimal precoPromocao) {
         this.precoPromocao = precoPromocao;
+    }
+
+    public PrecoPrioritario getPrecoPrioritario() {
+        return precoPrioritario;
+    }
+
+    public void setPrecoPrioritario(PrecoPrioritario precoPrioritario) {
+        this.precoPrioritario = precoPrioritario;
+    }
+
+    public BigDecimal getQuantidadeVenda() {
+        return quantidadeVenda;
+    }
+
+    public void setQuantidadeVenda(BigDecimal quantidadeVenda) {
+        this.quantidadeVenda = quantidadeVenda;
     }
 }
