@@ -183,7 +183,7 @@ public class ProdutoService implements Serializable {
 
     public BigDecimal defnirPrecoVenda(ProdutoDTO produto) {
 
-        BigDecimal valor = BigDecimal.ZERO;
+        BigDecimal valor = produto.getValorVenda();
 
         Map<PrecoPrioritario, BigDecimal> list = new HashMap<>();
 
@@ -206,7 +206,7 @@ public class ProdutoService implements Serializable {
 
         }
 
-        if (list.size() > 0 && produto.getPrecoPrioritario() == PrecoPrioritario.MENOR_PRECO) {
+        if (list.size() > 1 && produto.getPrecoPrioritario() == PrecoPrioritario.MENOR_PRECO) {
 
 
             valor = list
