@@ -11,7 +11,7 @@ import com.chronos.modelo.entidades.Usuario;
 import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.modelo.enuns.Estados;
 import com.chronos.repository.Repository;
-import com.chronos.repository.Usuarios;
+import com.chronos.repository.UsuarioRepository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -57,7 +57,7 @@ public abstract class AbstractControll<T> implements Serializable {
     @Inject
     private Repository<Auditoria> auditoriaRepository;
     @Inject
-    private Usuarios usuarioRepository;
+    private UsuarioRepository usuarioRepository;
     private String titulo;
     private int activeTabIndex;
 

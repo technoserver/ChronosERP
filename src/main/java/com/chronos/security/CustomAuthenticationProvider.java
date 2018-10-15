@@ -7,7 +7,7 @@ package com.chronos.security;
 
 import com.chronos.modelo.entidades.PapelFuncao;
 import com.chronos.modelo.entidades.Usuario;
-import com.chronos.repository.Usuarios;
+import com.chronos.repository.UsuarioRepository;
 import com.chronos.util.cdi.CDIServiceLocator;
 import com.chronos.util.cdi.ManualCDILookup;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -35,7 +35,7 @@ import java.util.Optional;
 public class CustomAuthenticationProvider extends ManualCDILookup implements AuthenticationProvider {
 
     private List<GrantedAuthority> grantedAuths;
-    private Usuarios dao;
+    private UsuarioRepository dao;
     private Usuario usr;
 
     @Override
@@ -45,7 +45,7 @@ public class CustomAuthenticationProvider extends ManualCDILookup implements Aut
             String usuario = a.getName();
             String senha = a.getCredentials().toString();
             senha = getSenha(usuario, senha);
-            dao = CDIServiceLocator.getBean(Usuarios.class);
+            dao = CDIServiceLocator.getBean(UsuarioRepository.class);
 
             Optional<Usuario> userOptional = dao.getUser(usuario);
             usr = userOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos"));

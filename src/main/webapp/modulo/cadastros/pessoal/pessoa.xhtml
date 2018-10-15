@@ -34,7 +34,7 @@
             <p:column headerText="Nome">
                 <h:outputLabel value="#{row.nome}"/>
             </p:column>
-            <p:column headerText="CPF/CNPJ">
+            <p:column headerText="CPF/CNPJ" width="165">
                 <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
                     <f:converter converterId="cpfCnpjConverter"/>
                 </h:outputLabel>

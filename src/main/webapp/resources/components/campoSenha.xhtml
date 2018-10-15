@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:cc="http://java.sun.com/jsf/composite"
-      xmlns:h="http://java.sun.com/jsf/html">
+>
 
     <!-- INTERFACE -->
     <cc:interface>
@@ -20,17 +21,17 @@
     <!-- IMPLEMENTATION -->
     <cc:implementation>
         <div class="#{cc.attrs.styleClass}">
-            <h:outputLabel value="#{cc.attrs.label}"
+            <p:outputLabel value="#{cc.attrs.label}"
                            for="#{cc.attrs.idComponente}" />
 
-            <h:inputSecret id        = "#{cc.attrs.idComponente}"
-                         value     = "#{cc.attrs.nomeAtributo}" 
-                         required  = "#{cc.attrs.requerido}"
-                         maxlength = "#{cc.attrs.tamanhoMaximo}"
-                         disabled  = "#{cc.attrs.desabilitado}"
-                         readonly  = "#{cc.attrs.somenteLeitura}" 
-                         class     = "#{cc.attrs.styleClassInput}"
-                         
+            <p:password id="#{cc.attrs.idComponente}"
+                        value     = "#{cc.attrs.nomeAtributo}"
+                        required  = "#{cc.attrs.requerido}"
+                        maxlength = "#{cc.attrs.tamanhoMaximo}"
+                        disabled  = "#{cc.attrs.desabilitado}"
+                        readonly  = "#{cc.attrs.somenteLeitura}"
+
+
             />
         </div>
     </cc:implementation>

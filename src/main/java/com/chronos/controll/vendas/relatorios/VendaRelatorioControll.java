@@ -3,6 +3,7 @@ package com.chronos.controll.vendas.relatorios;
 import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
+import com.chronos.modelo.entidades.ProdutoGrupo;
 import com.chronos.modelo.entidades.Vendedor;
 import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.Repository;
@@ -32,18 +33,28 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     private Repository<PdvMovimento> movimentoRepository;
 
     @Inject
+    private Repository<ProdutoGrupo> produtoGrupoRepository;
+
+    @Inject
     private Repository<PessoaCliente> pessoaClienteRepository;
 
     private Date dataInicial;
     private Date dataFinal;
     private Integer idvendedor;
     private int idcupom;
+    private int idgrupo;
     private PdvVendaCabecalho vendaCupom;
     private PessoaCliente cliente;
     private Map<String, Integer> listaVendedor;
     private String statusVendas;
+    private Map<String, Integer> listaGrupo;
 
     private Map<String, String> status;
+
+    private Map<String, Boolean> naoSim;
+
+
+    private boolean agrupar;
 
     @PostConstruct
     @Override
@@ -55,6 +66,11 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         listaVendedor.putAll(list.stream()
                 .collect(Collectors.toMap((Vendedor::getNome), Vendedor::getId)));
 
+        listaGrupo = new LinkedHashMap<>();
+        listaGrupo.put("TODOS", 0);
+        listaGrupo.putAll(produtoGrupoRepository.getEntitys(ProdutoGrupo.class, new Object[]{"nome"}).stream()
+                .collect(Collectors.toMap((ProdutoGrupo::getNome), ProdutoGrupo::getId)));
+
 
         status = new LinkedHashMap<>();
         status.put("Todos", "");
@@ -63,6 +79,10 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         status.put("Faturada", "F");
         status.put("Devolvida", "D");
         status.put("Encerrada", "E");
+
+        naoSim = new LinkedHashMap<>();
+        naoSim.put("NÂO", false);
+        naoSim.put("SIM ", true);
 
         if(idcupom > 0){
 
@@ -150,11 +170,16 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void imprimirProdutoVendido() {
         parametros = new HashMap<>();
-        parametros.put("peridoInicial", dataInicial);
-        parametros.put("peridoFinal", dataFinal);
+        parametros.put("dataInicial", dataInicial);
+        parametros.put("dataFinal", dataFinal);
         parametros.put("idempresa", empresa.getId());
+
+        if (idgrupo > 0) {
+            parametros.put("idgrupo", idgrupo);
+        }
+
         String caminhoRelatorio = "/relatorios/vendas";
-        String nomeRelatorio = "relacaoProdutosVendido.jasper";
+        String nomeRelatorio = agrupar ? "relacaoProdutosVendidoGrupo.jasper" : "relacaoProdutosVendido.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "produtosMaisVendido.pdf");
     }
@@ -252,5 +277,29 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void setStatus(Map<String, String> status) {
         this.status = status;
+    }
+
+    public boolean isAgrupar() {
+        return agrupar;
+    }
+
+    public void setAgrupar(boolean agrupar) {
+        this.agrupar = agrupar;
+    }
+
+    public Map<String, Boolean> getNaoSim() {
+        return naoSim;
+    }
+
+    public Map<String, Integer> getListaGrupo() {
+        return listaGrupo;
+    }
+
+    public int getIdgrupo() {
+        return idgrupo;
+    }
+
+    public void setIdgrupo(int idgrupo) {
+        this.idgrupo = idgrupo;
     }
 }

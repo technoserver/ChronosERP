@@ -16,12 +16,13 @@ public class ConfiguracaoPdvDTO {
     private String idTokenCsc;
     private String mensagemCupom;
     private String observacaoPadrao;
+    private String serie;
 
 
     public ConfiguracaoPdvDTO() {
     }
 
-    public ConfiguracaoPdvDTO(String certificadoDigitalCaminho, String certificadoDigitalSenha, String caminhoLogomarca, String caminhoSchemas, String webserviceUf, Integer webserviceAmbiente, String csc, String idTokenCsc, String mensagemCupom, String observacaoPadrao) {
+    public ConfiguracaoPdvDTO(String certificadoDigitalCaminho, String certificadoDigitalSenha, String caminhoLogomarca, String caminhoSchemas, String webserviceUf, Integer webserviceAmbiente, String csc, String idTokenCsc, String serie, String mensagemCupom, String observacaoPadrao) {
         this.certificadoDigitalCaminho = certificadoDigitalCaminho;
         this.certificadoDigitalSenha = certificadoDigitalSenha;
         this.caminhoLogomarca = caminhoLogomarca;
@@ -32,6 +33,7 @@ public class ConfiguracaoPdvDTO {
         this.idTokenCsc = idTokenCsc;
         this.mensagemCupom = mensagemCupom;
         this.observacaoPadrao = observacaoPadrao;
+        this.serie = serie;
     }
 
     public String getCertificadoDigitalCaminho() {
@@ -113,5 +115,13 @@ public class ConfiguracaoPdvDTO {
 
     public void setObservacaoPadrao(String observacaoPadrao) {
         this.observacaoPadrao = observacaoPadrao;
+    }
+
+    public String getSerie() {
+        return serie;
+    }
+
+    public void setSerie(String serie) {
+        this.serie = serie;
     }
 }

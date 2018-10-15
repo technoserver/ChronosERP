@@ -67,6 +67,7 @@ public class ProdutoPromocaoControll extends AbstractControll<ProdutoPromocao> i
             filtros.add(new Filtro("inativo", "N"));
             filtros.add(new Filtro("excluido", "N"));
             filtros.add(new Filtro("tipo", "V"));
+            filtros.add(new Filtro("nome", Filtro.LIKE, nome));
             filtros.add(new Filtro("valorVenda", Filtro.MAIOR, BigDecimal.ZERO));
             produtos = produtoRepository.getEntitys(Produto.class, filtros, new Object[]{"nome",});
         } catch (Exception ex) {

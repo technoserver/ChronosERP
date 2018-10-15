@@ -10,6 +10,7 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.FornecedorService;
 import com.chronos.service.cadastros.ProdutoFornecedorService;
+import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.estoque.EntradaNotaFiscalService;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
@@ -26,6 +27,7 @@ import javax.inject.Named;
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.*;
 
@@ -58,6 +60,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
+    private Repository<TributGrupoTributario> grupoTributarioRepository;
+    @Inject
     private Repository<VendaCondicoesParcelas> parcelasRepository;
 
     @Inject
@@ -66,6 +70,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private Repository<VendaCondicoesPagamento> pagamentoRepository;
     @Inject
     private Repository<ContaCaixa> contaCaixaRepository;
+    @Inject
+    private Repository<UnidadeConversao> conversaoRepository;
 
     @Inject
     private EntradaNotaFiscalService entradaService;
@@ -73,6 +79,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private FornecedorService fornecedorService;
     @Inject
     private ProdutoFornecedorService produtoFornecedorService;
+    @Inject
+    private ProdutoService produtoService;
 
 
     private NfeDetalhe nfeDetalhe;
@@ -85,6 +93,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private NfeDuplicata duplicataSelecionada;
 
     private Produto produto;
+    private UnidadeConversao unidadeConversaoSelecionada;
+    private UnidadeProduto unidadeProduto;
     private Fornecedor fornecedor;
     private VendaCondicoesPagamento condicao;
 
@@ -102,6 +112,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private BigDecimal valorTotalCofins;
     private BigDecimal valorTotalIpi;
     private BigDecimal valorTotalNF;
+    private BigDecimal fator;
+
+
+    private String acao;
 
     private int tipoCstIcms;
     private boolean valoresValido;
@@ -293,7 +307,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 NfeCabecalho nfe = dao.get(NfeCabecalho.class, filtro, new Object[]{"numero"});
                 if (nfe != null) {
                     doCreate();
-                    throw new Exception("Essa nota já foi  digitada pra esse fornecedor !");
+                    throw new ChronosException("Essa nota já foi  digitada pra esse fornecedor !");
                 }
                 verificaProdutoNaoCadastrado(true);
                 getObjeto().setDataHoraEntradaSaida(new Date());
@@ -302,9 +316,11 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 Mensagem.addInfoMessage("XML importados com sucesso!");
             }
         } catch (Exception ex) {
-            Mensagem.addErrorMessage("Erro ao importa XML", ex);
-            ex.printStackTrace();
-
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao importat XML", ex);
+            }
 
         }
     }
@@ -466,7 +482,14 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         produto.setExcluido("N");
         produto.setInativo("N");
         produto.setServico("N");
+        unidadeProduto = null;
+        fator = BigDecimal.ZERO;
 
+        UnidadeProduto sigla = unidades.get(UnidadeProduto.class, "sigla", nfeDetalhe.getUnidadeComercial(), new Object[]{"sigla"});
+
+        if (sigla != null) {
+            produto.setUnidadeProduto(sigla);
+        }
     }
 
     public void exibirVinculoProduto() {
@@ -496,10 +519,20 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 FacesContext.getCurrentInstance().validationFailed();
                 throw new ChronosException("Valor de venda orbigatório");
             } else {
+                if (unidadeProduto != null) {
+                    produto = produtoService.addConversaoUnidade(produto, unidadeProduto, fator, acao);
+                }
                 FornecedorProduto forProd = produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
                 nfeDetalhe.setProduto(forProd.getProduto());
                 nfeDetalhe.setNomeProduto(forProd.getProduto().getNome());
                 nfeDetalhe.setProdutoCadastrado(true);
+
+                if (forProd.getProduto().getUnidadeConversao() != null) {
+                    definirQuantidadeConvertida(nfeDetalhe, forProd.getProduto().getUnidadeConversao());
+                }
+
+                unidadeProduto = null;
+                fator = BigDecimal.ZERO;
                 Mensagem.addInfoMessage("Produto cadastro e vinculado com sucesso");
             }
 
@@ -520,14 +553,34 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         try {
             if (importacao) {
                 for (NfeDetalhe d : getObjeto().getListaNfeDetalhe()) {
-                    boolean existe = produtoFornecedorService.existeProduto(d.getCodigoProduto());
-                    if (existe) {
+                    boolean existeProduto = !StringUtils.isEmpty(d.getGtin()) && produtos.existeRegisro(Produto.class, "gtin", d.getGtin());
+                    boolean existeProdutoFornecedor = produtoFornecedorService.existeProduto(d.getCodigoProduto());
+
+                    if (existeProduto) {
+                        Produto produto = produtos.get(Produto.class, "gtin", d.getGtin(), new Object[]{"nome"});
+                        d.setProduto(produto);
+                        d.setProdutoCadastrado(true);
+
+                        if (!existeProdutoFornecedor) {
+                            produtoFornecedorService.salvar(produto, fornecedor, empresa, d.getValorUnitarioComercial(), d.getCodigoProduto());
+                        }
+
+                        UnidadeConversao unidadeConversao = conversaoRepository.get(UnidadeConversao.class, "produto.id", produto.getId());
+
+
+                        if (unidadeConversao != null) {
+                            definirQuantidadeConvertida(d, unidadeConversao);
+                        }
+
+
+                    } else if (existeProdutoFornecedor) {
                         Produto produto = produtoFornecedorService.getProduto(d.getCodigoProduto());
                         d.setProduto(produto);
                         d.setProdutoCadastrado(true);
                     } else {
                         d.setProdutoCadastrado(false);
                     }
+
 
                     gerarValores(d);
 
@@ -545,6 +598,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         }
         return produtoNaoCadastrado;
     }
+
 
     // </editor-fold>
 
@@ -655,6 +709,19 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Buscas">
+
+
+    public List<TributGrupoTributario> getListaGrupoTributario(String nome) {
+        List<TributGrupoTributario> listaGrupoTributario = new ArrayList<>();
+        try {
+            listaGrupoTributario = grupoTributarioRepository.getEntitys(TributGrupoTributario.class, "descricao", nome, new Object[]{"descricao"});
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaGrupoTributario;
+    }
+
+
     public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
         List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
         try {
@@ -789,6 +856,20 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             }
         }
 
+    }
+
+    private void definirQuantidadeConvertida(NfeDetalhe d, UnidadeConversao unidadeConversao) {
+        d.setUnidadeComercial(unidadeConversao.getProduto().getUnidadeProduto().getSigla());
+
+        BigDecimal quantidade = unidadeConversao.getAcao().equals("M")
+                ? Biblioteca.multiplica(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao())
+                : Biblioteca.divide(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao());
+
+        BigDecimal valorTotal = d.getValorSubtotal();
+        BigDecimal valorUnt = valorTotal.divide(quantidade, MathContext.DECIMAL64).setScale(5, RoundingMode.HALF_DOWN);
+        valorUnt = valorUnt.setScale(3, RoundingMode.DOWN);
+        d.setQuantidadeComercial(quantidade);
+        d.setValorUnitarioComercial(valorUnt);
     }
 
     @Override
@@ -1044,5 +1125,38 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setDuplicatas(List<NfeDuplicata> duplicatas) {
         this.duplicatas = duplicatas;
+    }
+
+
+    public UnidadeConversao getUnidadeConversaoSelecionada() {
+        return unidadeConversaoSelecionada;
+    }
+
+    public void setUnidadeConversaoSelecionada(UnidadeConversao unidadeConversaoSelecionada) {
+        this.unidadeConversaoSelecionada = unidadeConversaoSelecionada;
+    }
+
+    public UnidadeProduto getUnidadeProduto() {
+        return unidadeProduto;
+    }
+
+    public void setUnidadeProduto(UnidadeProduto unidadeProduto) {
+        this.unidadeProduto = unidadeProduto;
+    }
+
+    public BigDecimal getFator() {
+        return fator;
+    }
+
+    public void setFator(BigDecimal fator) {
+        this.fator = fator;
+    }
+
+    public String getAcao() {
+        return acao;
+    }
+
+    public void setAcao(String acao) {
+        this.acao = acao;
     }
 }

@@ -488,10 +488,26 @@
                             <p:ajax event="itemSelecionado" listener="#{vendaCabecalhoControll.definirValorProduto}"
                                     update="formOutrasTelas:campoValor:valorUnitario"/>
                         </erp:autoComplete>
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          idComponente="vendaDetalheQuantidade" label="Quantidade"
-                                          requerido="true"
-                                          nomeAtributo="#{vendaCabecalhoControll.vendaDetalhe.quantidade}"/>
+
+
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <p:outputLabel value="Quantidade"
+                                           for="vendaDetalheQuantidade"/>
+
+                            <p:inputNumber id="vendaDetalheQuantidade"
+                                           value="#{vendaCabecalhoControll.vendaDetalhe.quantidade}"
+                                           required="true"
+                                           style="width: 100%;"
+                                           decimalPlaces="2"
+                                           minValue="-9999999999.99"
+                            >
+                                <p:ajax update="formOutrasTelas:campoValor:valorUnitario"
+                                        process="@this"
+                                        event="blur"
+                                        listener="#{vendaCabecalhoControll.definirValorAtacado}"/>
+                            </p:inputNumber>
+                        </div>
+
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="valorUnitario" label="Valor"
                                           requerido="true" id="campoValor"

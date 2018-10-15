@@ -3,6 +3,7 @@ package com.chronos.modelo.entidades;
 
 import com.chronos.bo.cadastro.ItemFilizola;
 import com.chronos.bo.cadastro.ItemToledo;
+import com.chronos.modelo.enuns.PrecoPrioritario;
 import com.chronos.service.ChronosException;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -11,9 +12,7 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "PRODUTO")
@@ -46,6 +45,17 @@ public class Produto implements Serializable {
     @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
     @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     private BigDecimal valorVenda;
+
+    @Column(name = "VALOR_VENDA_ATACADO")
+    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
+    private BigDecimal valorVendaAtacado;
+
+    @Column(name = "QUANTIDADE_VENDA_ATACADO")
+    @DecimalMin(value = "0.01", message = "A quantidade  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "A quantidade  deve ser menor que 9.999.999,99")
+    private BigDecimal quantidadeVendaAtacado;
+
     @Column(name = "PRECO_VENDA_MINIMO")
     private BigDecimal precoVendaMinimo;
     @Column(name = "PRECO_SUGERIDO")
@@ -118,6 +128,8 @@ public class Produto implements Serializable {
     private String tipo;
     @Column(name = "SERVICO")
     private String servico;
+    @Column(name = "preco_prioritario")
+    private PrecoPrioritario precoPrioritario;
     @JoinColumn(name = "ID_UNIDADE_PRODUTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private UnidadeProduto unidadeProduto;
@@ -148,6 +160,8 @@ public class Produto implements Serializable {
     private BigDecimal encargosVenda;
     @Transient
     private BigDecimal controle;
+    @Transient
+    private List<UnidadeConversao> conversoes;
 
     public Produto() {
     }
@@ -629,6 +643,38 @@ public class Produto implements Serializable {
 
     public void setControle(BigDecimal controle) {
         this.controle = controle;
+    }
+
+    public PrecoPrioritario getPrecoPrioritario() {
+        return precoPrioritario;
+    }
+
+    public void setPrecoPrioritario(PrecoPrioritario precoPrioritario) {
+        this.precoPrioritario = precoPrioritario;
+    }
+
+    public BigDecimal getValorVendaAtacado() {
+        return valorVendaAtacado;
+    }
+
+    public void setValorVendaAtacado(BigDecimal valorVendaAtacado) {
+        this.valorVendaAtacado = valorVendaAtacado;
+    }
+
+    public BigDecimal getQuantidadeVendaAtacado() {
+        return quantidadeVendaAtacado;
+    }
+
+    public void setQuantidadeVendaAtacado(BigDecimal quantidadeVendaAtacado) {
+        this.quantidadeVendaAtacado = quantidadeVendaAtacado;
+    }
+
+    public List<UnidadeConversao> getConversoes() {
+        return Optional.ofNullable(conversoes).orElse(new ArrayList<>());
+    }
+
+    public void setConversoes(List<UnidadeConversao> conversoes) {
+        this.conversoes = conversoes;
     }
 
     public String montarItemBalancaToledo() throws ChronosException {

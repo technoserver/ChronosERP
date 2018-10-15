@@ -70,6 +70,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private VendaService vendaService;
     @Inject
     private ProdutoService produtoService;
+    private ProdutoDTO produto;
 
 
     private VendaDetalhe vendaDetalhe;
@@ -77,7 +78,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     private PessoaCliente pessoaCliente;
 
-    private ProdutoDTO produto;
+
 
     private Produto produto2;
 
@@ -137,7 +138,15 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
     public void definirValorProduto(SelectEvent event) {
-        vendaDetalhe.setValorUnitario(produto.getValorVenda());
+        produto = (ProdutoDTO) event.getObject();
+        BigDecimal precoVenda = produtoService.defnirPrecoVenda(produto);
+        vendaDetalhe.setValorUnitario(precoVenda);
+    }
+
+    public void definirValorAtacado() {
+        produto.setQuantidadeVenda(vendaDetalhe.getQuantidade());
+        BigDecimal precoVenda = produtoService.defnirPrecoVenda(produto);
+        vendaDetalhe.setValorUnitario(precoVenda);
     }
 
     public void alterarVendaDetalhe() {

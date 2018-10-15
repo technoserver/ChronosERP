@@ -114,7 +114,7 @@ public class VendaPdvService implements Serializable {
         }
 
 
-        PdvCaixa caixa = FacesUtil.getMovimento().getPdvCaixa();
+        PdvCaixa caixa = venda.getPdvMovimento().getPdvCaixa();
 
         VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, venda);
         NfeCabecalho nfe = vendaNfe.gerarNfe();

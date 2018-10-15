@@ -207,6 +207,10 @@
                                    nomeFuncao="Produto"
                                    id="telaDetalhe"
                                    gridPadrao="false">
+            <p:importEnum type="com.chronos.modelo.enuns.PrecoPrioritario"
+                          var="precoPrioritario" allSuffix="ALL_ENUM_VALUES"/>
+
+
             <p:tabView id="tabProduto" activeIndex="#{produtoControll.activeTabIndex}">
                 <p:tab title="Dados Principais" id="dadosPrincipais">
                     <div class="row">
@@ -359,10 +363,29 @@
                                          idComponente="produtoInativo" label="Inativo"
                                          nomeAtributo="#{produtoControll.objeto.inativo}"
                                          itens="#{produtoControll.naoSim}"/>
-                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
-                                       idComponente="produtoDataCadastro" label="Data Cadastro"
-                                       nomeAtributo="#{produtoControll.objeto.dataCadastro}"
-                                       somenteLeitura="true"/>
+
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <h:outputLabel value="Preço prioritário"
+                                           for="precoPrioritario"/>
+                            <i class="glyphicon glyphicon-info-sign" style="margin-left: 5px"
+                               title="Determina qual valor de venda será aplicado quando existe varios valores(preço promocional, tabela de preços, preço em atacado e etc."></i>
+
+                            <h:selectOneMenu id="precoPrioritario"
+                                             class="form-control"
+                                             value="#{produtoControll.objeto.precoPrioritario}"
+                            >
+                                <f:selectItems value="#{precoPrioritario.ALL_ENUM_VALUES}" var="obj"
+                                               itemValue="#{obj}" itemLabel="#{obj.descricao}"/>
+
+                            </h:selectOneMenu>
+                        </div>
+
+                        <erp:campoSelect itens="#{produtoControll.listaEmpresas}"
+                                         styleClass="col-xs-12 col-sm-4 col-md-4"
+                                         idComponente="empresas"
+                                         label="Selecione a empresa no qual pretende cadastra o produto"
+                                         rendered="#{produtoControll.listaEmpresas.size() gt 1}"
+                                         nomeAtributo="#{produtoControll.idempresa}"/>
 
 
                     </div>
@@ -459,6 +482,16 @@
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
                                           idComponente="produtoMarkup" label="Markup"
                                           nomeAtributo="#{produtoControll.objeto.markup}"/>
+
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="valorVendaAtacado" label="Valor Venda Atacado"
+                                          nomeAtributo="#{produtoControll.objeto.valorVendaAtacado}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="quantidadeVendaAtacado" label="Quant. Min para Venda Atacado"
+                                          nomeAtributo="#{produtoControll.objeto.quantidadeVendaAtacado}"
+                        />
                     </div>
                     <div class="row">
 
@@ -522,14 +555,12 @@
                                           completeMethod="getListaGrupoTributario"
                                           nomeAtributo="#{produtoControll.objeto.tributGrupoTributario}"
                                           idComponente="produtoGrupoTributario"
-                                          requerido="false"
+
                                           id="campoProdutoGrupoTributario">
 
 
                         </erp:autoComplete>
 
-                    </div>
-                    <div class="row">
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                         idComponente="produtoNcm" label="Ncm"
                                         nomeAtributo="#{produtoControll.objeto.ncm}"
@@ -539,31 +570,16 @@
                                         idComponente="produtoCest" label="CEST"
                                         nomeAtributo="#{produtoControll.objeto.cest}"
                                         tamanhoMaximo="7"/>
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="produtoExTipi" label="Ex TIPI"
-                                        nomeAtributo="#{produtoControll.objeto.exTipi}"
-                                        tamanhoMaximo="3"
-                                        exibirInfo="true"
-                                        mensangemInfo="Informar com o Código de Exceção de NCM,de acordo com a Tabela de Incidência do  Imposto de Produtos Industrializados (TIPI), quando existir."/>
+
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                         idComponente="produtoCodigoLst" label="Codigo LST"
                                         nomeAtributo="#{produtoControll.objeto.codigoLst}"
                                         tamanhoMaximo="4"
                                         exibirInfo="true"
                                         mensangemInfo="Código do serviço conforme lista do Anexo I da Lei  Complementar Federal nº 116/03."/>
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-2"
-                                          idComponente="produtoAliquotaIcmsPaf" label="% ICMS PAF"
-                                          nomeAtributo="#{produtoControll.objeto.aliquotaIcmsPaf}"/>
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-2"
-                                          idComponente="produtoAliquotaIssqnPaf" label="% ISSQN PAF"
-                                          nomeAtributo="#{produtoControll.objeto.aliquotaIssqnPaf}"/>
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="produtoTotalizadorParcial" label="Totalizador Parcial"
-                                        nomeAtributo="#{produtoControll.objeto.totalizadorParcial}"
-                                        tamanhoMaximo="10"
-                                        exibirInfo="true"
-                                        mensangemInfo="Ex: 04T0700 (alíquota de ICMS na quarta posição dos totalizadores do ECF com taxa de 7%) | I1 (isento) | F1 (substituição tributária) | N1 (não tributado)"/>
+
                     </div>
+
                 </p:tab>
                 <p:tab title="Conversões de UM" id="conversoes" rendered="#{not empty produtoControll.objeto.id}">
                     <h:form id="formConversao">

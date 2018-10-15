@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.repository.ColaboradorRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
@@ -30,7 +31,10 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     @Inject
     private Repository<Papel> papelRepository;
     @Inject
-    private Repository<Colaborador> colaboradores;
+    private ColaboradorRepository colaboradorRepository;
+
+    @Inject
+    private Repository<EmpresaPessoa> empresaPessoaRepository;
 
     @Inject
     private Repository<Empresa> empresaRepository;
@@ -41,6 +45,8 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     private List<EmpresaPessoa> listEmpresaPessoa;
 
     private String senha;
+
+    private EmpresaPessoa empresaPessoa;
 
     @Inject
     private UsuarioService service;
@@ -76,7 +82,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     public void salvar() {
 
         try {
-            service.salvar(getObjeto(), senha);
+            service.salvar(getObjeto(), senha, empresas);
             setTelaGrid(true);
             Mensagem.addInfoMessage("Dados salvo com sucesso");
         } catch (Exception ex) {
@@ -114,11 +120,8 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     public List<Colaborador> getListColaborador(String nome) {
         List<Colaborador> list = new ArrayList<>();
         try {
-            List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
-            filtros.add(new Filtro("pessoa.id", Filtro.DIFERENTE, 1));
-            filtros.add(new Filtro("pessoa.colaborador", "S"));
-            list = colaboradores.getEntitys(Colaborador.class, filtros, new Object[]{"pessoa.id", "pessoa.nome"});
+
+            list = colaboradorRepository.getColaboradoresEmpresaByNome(nome);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -126,13 +129,22 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     }
 
     public List<Empresa> getListEmpresas() {
-        try {
+        List<Filtro> filtros = new ArrayList<>();
 
-            empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
+        empresas = new ArrayList<>();
 
-        } catch (Exception ex) {
-
+        if (getObjeto().getId() != null) {
+            filtros.add(new Filtro("empresaPrincipal", "S"));
+            filtros.add(new Filtro("pessoa.id", getObjeto().getColaborador().getPessoa().getId()));
+            empresaPessoa = empresaPessoaRepository.get(EmpresaPessoa.class, filtros, new Object[]{"empresa.id", "empresa.razaoSocial"});
+            filtros.clear();
+            filtros.add(new Filtro("id", Filtro.DIFERENTE, empresaPessoa.getEmpresa().getId()));
+        } else {
+            filtros.add(new Filtro("id", Filtro.DIFERENTE, empresa.getId()));
         }
+
+
+        empresas = empresaRepository.getEntitys(Empresa.class, filtros, new Object[]{"razaoSocial"});
         return empresas;
     }
 
@@ -175,5 +187,9 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
 
     public void setEmpresasSelecionada(List<Empresa> empresasSelecionada) {
         this.empresasSelecionada = empresasSelecionada;
+    }
+
+    public boolean isExisteEmpresa() {
+        return empresas != null && !empresas.isEmpty();
     }
 }

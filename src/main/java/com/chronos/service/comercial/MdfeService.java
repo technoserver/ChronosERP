@@ -162,16 +162,16 @@ public class MdfeService implements Serializable {
 
         mdfeRodoviarioVeiculo.setUfLicenciamento(veiculo.getUf());
 
-        if (veiculo.getProprietarioVeiculo() != null) {
-            ProprietarioVeiculo proprietario = veiculo.getProprietarioVeiculo();
+        if (veiculo.getTransportadora() != null) {
+            Transportadora transportadora = veiculo.getTransportadora();
             MdfeRodoviarioProprietarioVeiculo propVeic = new MdfeRodoviarioProprietarioVeiculo();
             propVeic.setMdfeRodoviarioVeiculo(mdfeRodoviarioVeiculo);
-            propVeic.setCpfCnpj(proprietario.getCpfCnpj());
-            propVeic.setIe(proprietario.getIe());
-            propVeic.setNome(proprietario.getNome());
-            propVeic.setRntrc(proprietario.getRntrc());
-            propVeic.setTipo(proprietario.getTipo());
-            propVeic.setUf(proprietario.getUf());
+            propVeic.setCpfCnpj(transportadora.getPessoa().getIdentificador());
+
+            propVeic.setNome(transportadora.getPessoa().getNome());
+            propVeic.setRntrc(transportadora.getRntrc());
+            propVeic.setTipo(transportadora.getTipo());
+            propVeic.setUf(transportadora.getPessoa().buscarEnderecoPrincipal().getUf());
 
             mdfeRodoviarioVeiculo.setMdfeRodoviarioProprietarioVeiculo(propVeic);
         }

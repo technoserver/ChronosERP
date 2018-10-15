@@ -6,7 +6,6 @@ import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.view.PessoaCliente;
-import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
@@ -17,6 +16,7 @@ import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.SortOrder;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -44,11 +44,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
-    private Repository<NfeConfiguracao> configuracoes;
+    private Repository<ViewPessoaTransportadora> transportadoraRepository;
     @Inject
-    private EstoqueRepository estoqueRepositoy;
-    @Inject
-    private Repository<PdvTipoPagamento> tipoPagamentoRepository;
+    private Repository<Veiculo> veiculoRepository;
+
+
     @Inject
     private Repository<NotaFiscalTipo> notaFiscalTipoRepository;
 
@@ -76,6 +76,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private Date dataInicial;
     private Date dataFinal;
 
+    private List<Veiculo> veiculos;
+    private Veiculo veiculo;
+    private ViewPessoaTransportadora transportadora;
+
     @PostConstruct
     @Override
     public void init() {
@@ -95,6 +99,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         dataModel.addFiltro("codigoModelo", "55", Filtro.IGUAL);
 
+        dataModel.setSortOrder(SortOrder.DESCENDING);
+        dataModel.setOrdernarPor("numero");
+
         return dataModel;
     }
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Crud NFe">
@@ -113,6 +120,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             dadosSalvos = false;
             observacao = getObjeto().getInformacoesAddContribuinte();
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
+            veiculo = null;
+            transportadora = null;
             this.setActiveTabIndex(0);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -133,6 +142,20 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             setObjeto(nfe);
             nfeService.instanciarConfNfe(empresa, ModeloDocumento.NFE);
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
+
+            if (getObjeto().getTransporte() != null && getObjeto().getTransporte().getTransportadora() != null) {
+                transportadora = new ViewPessoaTransportadora();
+                transportadora.setId(getObjeto().getTransporte().getTransportadora().getId());
+                transportadora.setNome(getObjeto().getTransporte().getTransportadora().getPessoa().getNome());
+                veiculo = new Veiculo();
+                veiculo.setPlaca(getObjeto().getTransporte().getPlacaVeiculo());
+                veiculos = new ArrayList<>();
+                veiculos.add(veiculo);
+                getObjeto().getTransporte().setPlacaVeiculo(veiculo.getUf());
+                getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
+            }
+
+
             dadosSalvos = true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -147,6 +170,13 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             String str = getObjeto().getInformacoesAddContribuinte() + " " + observacao;
             getObjeto().setInformacoesAddContribuinte(str);
             getObjeto().setNaturezaOperacao(getObjeto().getTributOperacaoFiscal().getDescricao());
+
+
+            if (getObjeto().getTransporte() != null && getObjeto().getTransporte().getTransportadora() != null && veiculo != null) {
+                getObjeto().getTransporte().setPlacaVeiculo(veiculo.getPlaca());
+                getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
+            }
+
             setObjeto(nfeService.salvar(getObjeto(), tipoPagamento));
 
             Mensagem.addInfoMessage("NFe salva com sucesso");
@@ -205,7 +235,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
 
-                Mensagem.addErrorMessage("Ocorreu um erro ao salvar o produto\n");
+                Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("Ocorreu um erro ao salvar o produto\n", ex);
             }
@@ -264,6 +294,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         BigDecimal valorVenda = nfeDetalhe.getValorUnitarioComercial();
         valorVenda = valorVenda == null ? nfeDetalhe.getProduto().getValorVenda() : valorVenda;
         nfeDetalhe.setValorUnitarioComercial(valorVenda);
+        nfeDetalhe.setQuantidadeTributavel(nfeDetalhe.getQuantidadeComercial());
+        nfeDetalhe.setValorUnitarioTributavel(valorVenda);
         nfeDetalhe.setEntraTotal(1);
         nfeDetalhe.pegarInfoProduto();
         nfeDetalhe.calcularValorTotalProduto();
@@ -381,14 +413,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
 
                 boolean estoque = isTemAcesso("ESTOQUE");
+
                 StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), estoque);
                 if (status == StatusTransmissao.AUTORIZADA) {
 
                     Mensagem.addInfoMessage("NFe transmitida com sucesso");
                 } else {
                     duplicidade = status == StatusTransmissao.DUPLICIDADE;
-                    getObjeto().setNumero("");
-                    getObjeto().setChaveAcesso("");
+
                 }
 
 
@@ -505,7 +537,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             String serie = getObjeto().getSerie();
             int idempresa = getObjeto().getEmpresa().getId();
             String modelo = getObjeto().getCodigoModelo();
-            notaFiscalTipoRepository.atualizarNamedQuery("NotaFiscalTipo.UpdateNumeroModelo", numeroNfe, modelo, serie, idempresa);
+            notaFiscalTipoRepository.atualizarNamedQuery("NotaFiscalTipo.UpdateNumeroModelo", ultimoNumero, modelo, serie, idempresa);
             getObjeto().setNumero("");
             getObjeto().setChaveAcesso("");
             getObjeto().setDigitoChaveAcesso(null);
@@ -523,6 +555,45 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Pesquisas">
+
+
+    public List<ViewPessoaTransportadora> getListaTransportadora(String nome) {
+        List<ViewPessoaTransportadora> listaTransportadora = new ArrayList<>();
+        try {
+            listaTransportadora = transportadoraRepository.getEntitys(ViewPessoaTransportadora.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaTransportadora;
+    }
+
+    public void selecionarTransportadora(SelectEvent event) {
+        transportadora = (ViewPessoaTransportadora) event.getObject();
+
+        NfeTransporte nfeTransporte = getObjeto().getTransporte();
+
+        nfeTransporte.setTransportadora(new Transportadora(transportadora.getId(), transportadora.getNome()));
+
+        nfeTransporte.setCpfCnpj(transportadora.getCpfCnpj());
+        nfeTransporte.setEmpresaEndereco(transportadora.getCidade());
+        nfeTransporte.setNome(transportadora.getNome());
+        nfeTransporte.setMunicipio(transportadora.getMunicipioIbge());
+        nfeTransporte.setNomeMunicipio(transportadora.getCidade());
+
+        nfeTransporte.setRntcVeiculo(transportadora.getRntrc());
+        nfeTransporte.setUf(transportadora.getUf());
+
+        veiculos = veiculoRepository.getEntitys(Veiculo.class, "transportadora.id", transportadora.getId());
+        veiculo = null;
+
+    }
+
+    public void selecionarVeiculo() {
+        NfeTransporte nfeTransporte = getObjeto().getTransporte();
+        nfeTransporte.setPlacaVeiculo(veiculo.getPlaca());
+        nfeTransporte.setUfVeiculo(veiculo.getUf());
+    }
+
 
     public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
         List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
@@ -645,6 +716,30 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     // <editor-fold defaultstate="collapsed" desc="GETS SETS">
 
+
+    public ViewPessoaTransportadora getTransportadora() {
+        return transportadora;
+    }
+
+    public void setTransportadora(ViewPessoaTransportadora transportadora) {
+        this.transportadora = transportadora;
+    }
+
+    public List<Veiculo> getVeiculos() {
+        return veiculos;
+    }
+
+    public void setVeiculos(List<Veiculo> veiculos) {
+        this.veiculos = veiculos;
+    }
+
+    public Veiculo getVeiculo() {
+        return veiculo;
+    }
+
+    public void setVeiculo(Veiculo veiculo) {
+        this.veiculo = veiculo;
+    }
 
     public VendaCondicoesPagamento getCondicoesPagamento() {
         return condicoesPagamento;

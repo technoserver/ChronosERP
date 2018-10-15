@@ -8,7 +8,7 @@ package com.chronos.security;
 import com.chronos.modelo.entidades.AdmModulo;
 import com.chronos.modelo.view.ViewUsuarioTenant;
 import com.chronos.repository.Repository;
-import com.chronos.repository.Usuarios;
+import com.chronos.repository.UsuarioRepository;
 import com.chronos.util.cdi.CDIServiceLocator;
 import com.chronos.util.cdi.ManualCDILookup;
 import com.chronos.util.tenant.TenantRegistry;
@@ -30,7 +30,7 @@ import java.util.Optional;
 @Service
 public class AppUserDetailsService extends ManualCDILookup implements UserDetailsService {
 
-    private Usuarios dao;
+    private UsuarioRepository dao;
     private List<GrantedAuthority> grantedAuths;
     private ViewUsuarioTenant usr;
     private Repository<AdmModulo> admModuloRepository;
@@ -43,7 +43,7 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
         try {
 
             tenantRegistry = CDIServiceLocator.getBean(TenantRegistry.class);
-            dao = CDIServiceLocator.getBean(Usuarios.class);
+            dao = CDIServiceLocator.getBean(UsuarioRepository.class);
 
             Optional<ViewUsuarioTenant> userOptional = tenantRegistry.getTenant(usuario);
             usr = userOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos"));

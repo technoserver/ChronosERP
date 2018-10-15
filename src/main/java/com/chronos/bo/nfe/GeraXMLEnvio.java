@@ -38,7 +38,6 @@ import javax.xml.namespace.QName;
 import java.math.BigDecimal;
 import java.text.Normalizer;
 import java.text.ParseException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
@@ -147,12 +146,12 @@ public class GeraXMLEnvio {
         if (modelo == ModeloDocumento.NFCE) {
             String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_QRCODE);
             // QRCODE
-            String qrCode = NFCeUtil.getCodeQRCode(infNfe.getId().substring(3), "100",
-                    nfeCabecalho.getAmbiente().toString(), nfeCabecalho.getDestinatario() == null ? "" : nfeCabecalho.getDestinatario().getCpfCnpj(),
-                    ide.getDhEmi(), total.getICMSTot().getVNF(), total.getICMSTot().getVICMS(),
-                    Base64.getEncoder().encodeToString(
-                            enviNFe.getNFe().get(0).getSignature().getSignedInfo().getReference().getDigestValue()),
-                    "000001", nfeCabecalho.getCsc(), url);
+            String qrCode = NFCeUtil.getCodeQRCode(
+                    infNfe.getId().substring(3),
+                    nfeCabecalho.getAmbiente().toString(),
+                    "000001",
+                    nfeCabecalho.getCsc(),
+                    url);
             InfNFeSupl infNFeSupl = new InfNFeSupl();
             infNFeSupl.setQrCode(qrCode);
             infNFeSupl.setUrlChave(url);
@@ -243,10 +242,6 @@ public class GeraXMLEnvio {
     }
 
 
-
-
-
-
     private InfNFe getInfNFe() {
         InfNFe infNfe = new InfNFe();
         infNfe.setId("NFe" + nfeCabecalho.getChaveAcessoCompleta());
@@ -261,8 +256,8 @@ public class GeraXMLEnvio {
         ide.setCNF(nfeCabecalho.getCodigoNumerico());
         ide.setNatOp(nfeCabecalho.getNaturezaOperacao());
         ide.setMod(nfeCabecalho.getCodigoModelo() != null ? nfeCabecalho.getCodigoModelo() : "00");
-        ide.setSerie(nfeCabecalho.getSerie() != null ? Integer.valueOf(nfeCabecalho.getSerie()).toString() : "000");
-        ide.setNNF(nfeCabecalho.getNumero() != null ? Integer.valueOf(nfeCabecalho.getNumero()).toString() : "00000000");
+        ide.setSerie(!StringUtils.isEmpty(nfeCabecalho.getSerie()) ? Integer.valueOf(nfeCabecalho.getSerie()).toString() : "000");
+        ide.setNNF(!StringUtils.isEmpty(nfeCabecalho.getNumero()) ? Integer.valueOf(nfeCabecalho.getNumero()).toString() : "00000000");
         ide.setDhEmi(FormatValor.getInstance().formatarDataNota(nfeCabecalho.getDataHoraEmissao()));
 
         ide.setDhSaiEnt(modelo == ModeloDocumento.NFE
@@ -380,26 +375,33 @@ public class GeraXMLEnvio {
         if (modelo == ModeloDocumento.NFCE) {
             transp.setModFrete(ModalidadeFrete.SEM_FRETE.getCodigo().toString());
         } else {
-            if (transporte == null) {
-                transp.setModFrete(ModalidadeFrete.POR_CONTA_EMITENTE.getCodigo().toString());
-            } else {
+
+            String modFrete = transporte == null || transporte.getModalidadeFrete() == null
+                    ? ModalidadeFrete.POR_CONTA_EMITENTE.getCodigo().toString()
+                    : transporte.getModalidadeFrete().toString();
+            transp.setModFrete(modFrete);
+
+            if (transporte != null && transporte.getTransportadora() != null) {
+
                 transp.setVagao(StringUtils.isEmpty(transporte.getVagao()) ? null : transporte.getVagao());
                 transp.setBalsa(StringUtils.isEmpty(transporte.getBalsa()) ? null : transporte.getBalsa());
 
-                if (transporte.getTransportadora() != null && transporte.getTransportadora().getId() != null) {
-                    TNFe.InfNFe.Transp.Transporta transporta = new TNFe.InfNFe.Transp.Transporta();
-                    transp.setTransporta(transporta);
-                    if (transporte.getCpfCnpj().length() == 11) {
-                        transp.getTransporta().setCPF(transporte.getCpfCnpj());
-                    } else {
-                        transp.getTransporta().setCNPJ(transporte.getCpfCnpj());
-                    }
-                    transp.getTransporta().setXNome(transporte.getNome());
-                    transp.getTransporta().setIE(transporte.getInscricaoEstadual());
-                    transp.getTransporta().setXEnder(transporte.getEmpresaEndereco());
-                    transp.getTransporta().setXMun(transporte.getNomeMunicipio());
-                    transp.getTransporta().setUF(TUf.valueOf(transporte.getUf()));
+
+                TNFe.InfNFe.Transp.Transporta transporta = new TNFe.InfNFe.Transp.Transporta();
+                transp.setTransporta(transporta);
+
+                if (transporte.getCpfCnpj().length() == 11) {
+                    transp.getTransporta().setCPF(transporte.getCpfCnpj());
+                } else {
+                    transp.getTransporta().setCNPJ(transporte.getCpfCnpj());
                 }
+
+                transp.getTransporta().setXNome(transporte.getNome());
+                transp.getTransporta().setIE(transporte.getInscricaoEstadual());
+                transp.getTransporta().setXEnder(transporte.getEmpresaEndereco());
+                transp.getTransporta().setXMun(transporte.getNomeMunicipio());
+                transp.getTransporta().setUF(TUf.valueOf(transporte.getUf()));
+
 
                 if (transporte.getValorServico() != null) {
                     TNFe.InfNFe.Transp.RetTransp retTransp = new TNFe.InfNFe.Transp.RetTransp();
@@ -422,36 +424,41 @@ public class GeraXMLEnvio {
                     transp.getVeicTransp().setRNTC(transporte.getRntcVeiculo());
                 }
 
-                transporte.getListaTransporteReboque().stream()
-                        .forEach(r -> {
-                            TVeiculo reboque = new TVeiculo();
-                            reboque.setPlaca(r.getPlaca());
-                            reboque.setUF(TUf.valueOf(r.getUf()));
-                            reboque.setRNTC(r.getRntc());
-                            transp.getReboque().add(reboque);
-                        });
+                if (transporte.getListaTransporteReboque() != null) {
+                    transporte.getListaTransporteReboque().stream()
+                            .forEach(r -> {
+                                TVeiculo reboque = new TVeiculo();
+                                reboque.setPlaca(r.getPlaca());
+                                reboque.setUF(TUf.valueOf(r.getUf()));
+                                reboque.setRNTC(r.getRntc());
+                                transp.getReboque().add(reboque);
+                            });
+                }
 
-                transporte.getListaTransporteVolume().stream()
-                        .forEach(v -> {
-                            TNFe.InfNFe.Transp.Vol volume = new TNFe.InfNFe.Transp.Vol();
-                            volume.setQVol(v.getQuantidade().toString());
-                            volume.setEsp(v.getEspecie());
-                            volume.setMarca(v.getMarca());
-                            volume.setPesoL(FormatValor.getInstance().formatarQuantidade(v.getPesoLiquido()));
-                            volume.setPesoB(FormatValor.getInstance().formatarQuantidade(v.getPesoBruto()));
-                            v.getListaTransporteVolumeLacre().stream()
-                                    .forEach(l -> {
-                                        TNFe.InfNFe.Transp.Vol.Lacres lacre = new TNFe.InfNFe.Transp.Vol.Lacres();
-                                        volume.getLacres().add(lacre);
+                if (transporte.getListaTransporteVolume() != null) {
+                    transporte.getListaTransporteVolume().stream()
+                            .forEach(v -> {
+                                TNFe.InfNFe.Transp.Vol volume = new TNFe.InfNFe.Transp.Vol();
+                                volume.setQVol(v.getQuantidade().toString());
+                                volume.setEsp(v.getEspecie());
+                                volume.setMarca(v.getMarca());
+                                volume.setPesoL(FormatValor.getInstance().formatarQuantidade(v.getPesoLiquido()));
+                                volume.setPesoB(FormatValor.getInstance().formatarQuantidade(v.getPesoBruto()));
+                                v.getListaTransporteVolumeLacre().stream()
+                                        .forEach(l -> {
+                                            TNFe.InfNFe.Transp.Vol.Lacres lacre = new TNFe.InfNFe.Transp.Vol.Lacres();
+                                            volume.getLacres().add(lacre);
 
-                                        lacre.setNLacre(l.getNumero());
-                                    });
-                            transp.getVol().add(volume);
-                        });
-
+                                            lacre.setNLacre(l.getNumero());
+                                        });
+                                transp.getVol().add(volume);
+                            });
+                }
 
             }
+
         }
+
         return transp;
     }
 
@@ -661,8 +668,6 @@ public class GeraXMLEnvio {
             }
 
 
-
-
         }
         return ipi;
     }
@@ -777,7 +782,7 @@ public class GeraXMLEnvio {
                 icms500.setCSOSN(csosn);
                 icms500.setOrig(origemMercadoria);
 
-
+                icms500.setPST(FormatValor.getInstance().formatarValor(BigDecimal.ZERO));
                 icms500.setVBCSTRet(FormatValor.getInstance().formatarValor(BigDecimal.ZERO));
                 icms500.setVICMSSTRet(FormatValor.getInstance().formatarValor(BigDecimal.ZERO));
             }

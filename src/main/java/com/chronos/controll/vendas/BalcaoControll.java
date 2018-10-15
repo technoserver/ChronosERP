@@ -297,14 +297,24 @@ public class BalcaoControll implements Serializable {
     public void selecionarProduto(SelectEvent event) {
         ProdutoDTO produtoSelecionado = (ProdutoDTO) event.getObject();
         desconto = BigDecimal.ZERO;
+
         item = new PdvVendaDetalhe();
         item.setPdvVendaCabecalho(venda);
-        item.setValorUnitario(produtoSelecionado.getProduto().getValorVenda());
+        item.setValorUnitario(produtoService.defnirPrecoVenda(produtoSelecionado));
         item.setQuantidade(BigDecimal.ONE);
         item.setProduto(produtoSelecionado.getProduto());
         item.setTaxaComissao(vendedor.getComissao());
         item.setTaxaDesconto(BigDecimal.ZERO);
         item.setValorDesconto(BigDecimal.ZERO);
+
+        produto = produtoSelecionado;
+    }
+
+    public void calcularPrecoAtacado() {
+        produto.setQuantidadeVenda(item.getQuantidade());
+        BigDecimal valorVenda = produtoService.defnirPrecoVenda(produto);
+        item.setValorUnitario(valorVenda);
+
     }
 
     public void calcularDesconto() {

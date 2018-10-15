@@ -1,18 +1,21 @@
 package com.chronos.service.cadastros;
 
 import com.chronos.dto.ProdutoDTO;
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.EstoqueTransferenciaCabecalho;
-import com.chronos.modelo.entidades.EstoqueTransferenciaDetalhe;
-import com.chronos.modelo.entidades.Produto;
+import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.PrecoPrioritario;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
+import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
+import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -25,7 +28,58 @@ public class ProdutoService implements Serializable {
 
     @Inject
     private EstoqueRepository repository;
+    @Inject
+    private Repository<Produto> produtoRepository;
 
+    @Inject
+    private Repository<EmpresaProduto> empresaProdutoRepository;
+
+
+    @Transactional
+    public Produto salvar(Produto produto, List<Empresa> empresas) throws ChronosException {
+
+        if (produto.getValorVendaAtacado() != null && produto.getValorVendaAtacado().signum() > 0
+                && (produto.getQuantidadeVendaAtacado() == null || produto.getQuantidadeVendaAtacado().signum() <= 0)) {
+            throw new ChronosException("Para informar valor de venda no atacado  é preciso informar a quantidade para atacado");
+        }
+
+        if (produto.getTributGrupoTributario() == null) {
+            Mensagem.addWarnMessage("É necesário informar o Grupo Tributário OU o ICMS Customizado.");
+        } else {
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro(Filtro.AND, "gtin", Filtro.IGUAL, produto.getGtin()));
+            if (produto.getId() != null) {
+                filtros.add(new Filtro(Filtro.AND, "id", Filtro.DIFERENTE, produto.getId()));
+            }
+            Produto p = StringUtils.isEmpty(produto.getGtin()) ? null : produtoRepository.get(Produto.class, filtros);
+            if (p != null) {
+                Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
+            } else {
+                if (StringUtils.isEmpty(produto.getDescricaoPdv())) {
+                    String nomePdv = produto.getNome().length() > 30 ? produto.getNome().substring(0, 30) : produto.getNome();
+                    produto.setDescricaoPdv(nomePdv);
+                }
+                if (!StringUtils.isEmpty(produto.getImagem())) {
+                    ArquivoUtil.getInstance().salvarFotoProduto(produto.getImagem());
+                }
+                if (produto.getId() == null) {
+
+                    produto = produtoRepository.atualizar(produto);
+                    gerarEmpresaProduto(produto, empresas);
+
+                } else {
+                    produto.setDataAlteracao(new Date());
+                    produto = produtoRepository.atualizar(produto);
+                    //TODO verificar o fluxo de salva produt alterado.
+
+                }
+
+
+            }
+        }
+
+        return produto;
+    }
 
     public List<Produto> getListProdutoVenda(String nome, Empresa empresa) {
         List<Produto> produtos = new ArrayList<>();
@@ -91,4 +145,94 @@ public class ProdutoService implements Serializable {
         }
 
     }
+
+    public Produto addConversaoUnidade(Produto produto, UnidadeProduto un, BigDecimal fator, String acao) throws ChronosException {
+
+        if (produto.getUnidadeProduto() == null) {
+            throw new ChronosException("Unidade do produto não definida");
+        }
+
+        if (fator == null || fator.signum() <= 0) {
+            throw new ChronosException("Fator de conversão não definido");
+        }
+
+        if (produto.getConversoes() == null || produto.getConversoes().isEmpty()) {
+            produto.setConversoes(new ArrayList<>());
+        } else {
+            if (produto.getConversoes().stream().filter(u -> u.getSigla().equals(un.getSigla())).findAny().isPresent()) {
+                throw new ChronosException("unidade de conversão já adcionada");
+            }
+        }
+
+        UnidadeConversao unidadeConversao = new UnidadeConversao();
+        unidadeConversao.setProduto(produto);
+        unidadeConversao.setUnidadeProduto(un);
+        unidadeConversao.setSigla(un.getSigla());
+        unidadeConversao.setAcao(acao);
+        unidadeConversao.setDescricao("Converter " + produto.getUnidadeProduto().getSigla() + " para " + un.getSigla());
+        unidadeConversao.setFatorConversao(fator);
+
+        if (produto.getConversoes() == null) {
+            produto.setConversoes(new ArrayList<>());
+        }
+
+        produto.getConversoes().add(unidadeConversao);
+
+        return produto;
+    }
+
+    public BigDecimal defnirPrecoVenda(ProdutoDTO produto) {
+
+        BigDecimal valor = produto.getValorVenda();
+
+        Map<PrecoPrioritario, BigDecimal> list = new HashMap<>();
+
+        list.put(PrecoPrioritario.VALOR_VENDA, produto.getValorVenda());
+
+        if (produto.getPrecoPromocao() != null && produto.getPrecoPromocao().signum() > 0) {
+            list.put(PrecoPrioritario.PRODUTO_PROMOCIONAL, produto.getPrecoPromocao());
+        }
+
+        if (produto.getPrecoTabela() != null && produto.getPrecoTabela().signum() > 0) {
+            list.put(PrecoPrioritario.TABELA_PRECO, produto.getPrecoTabela());
+        }
+
+
+        if (produto.getQuantidadeVenda() != null && produto.getQuantidadeVendaAtacado() != null
+                && produto.getValorVendaAtacado() != null &&
+                (produto.getQuantidadeVenda().compareTo(produto.getQuantidadeVendaAtacado()) >= 0)) {
+
+            list.put(PrecoPrioritario.PRECO_ATACADO, produto.getValorVendaAtacado());
+
+        }
+
+        if (list.size() > 1 && produto.getPrecoPrioritario() == PrecoPrioritario.MENOR_PRECO) {
+
+
+            valor = list
+                    .entrySet()
+                    .stream()
+                    .min(Comparator.comparing(Map.Entry::getValue))
+                    .map(Map.Entry::getValue).get();
+        } else {
+            BigDecimal precoPrioritario = list.get(produto.getPrecoPrioritario());
+            valor = list.size() == 1 ? valor : precoPrioritario == null ? produto.getValorVenda() : precoPrioritario;
+        }
+
+        return valor;
+    }
+
+    private void gerarEmpresaProduto(Produto produto, List<Empresa> empresas) {
+
+        for (Empresa emp : empresas) {
+            EmpresaProduto produtoEmpresa = new EmpresaProduto();
+            produtoEmpresa.setEmpresa(emp);
+            produtoEmpresa.setProduto(produto);
+
+            empresaProdutoRepository.salvar(produtoEmpresa);
+
+        }
+    }
+
+
 }

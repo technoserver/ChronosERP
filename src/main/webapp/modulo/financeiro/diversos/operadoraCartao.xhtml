@@ -86,13 +86,55 @@
 
 
             </div>
-            <div class="row m-t">
-                <div class="col-md-12">
-                    <p:commandButton value="Add novo intervalo"
-                                     styleClass="ui-priority-primary" process="@this"
-                                     actionListener="#{operadoraCartaoControll.onAddNew()}"
-                                     oncomplete="PF('listaOperadoraCartaoTaxas').addRow();"/>
-                </div>
+
+
+            <erp:separador label="Intervalos"/>
+
+            <div class="row">
+
+                <h:panelGroup id="taxa" layout="block">
+                    <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="intervaloInicial"
+                                      nomeAtributo="#{operadoraCartaoControll.taxa.intervaloInicial}"
+                                      label="Intervalo Inicial"/>
+
+                    <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="intervaloFinal"
+                                      nomeAtributo="#{operadoraCartaoControll.taxa.intervaloFinal}"
+                                      label="Intervalo Final"/>
+
+
+                    <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="creditoEm"
+                                      nomeAtributo="#{operadoraCartaoControll.taxa.creditoEm}"
+                                      label="Intervalo de Crédito"/>
+
+                    <div class="col-xs-12 col-sm-3 col-md-2">
+                        <p:outputLabel value="Taxa Adm"
+                                       for="taxaAdm"/>
+                        <div class="field-action">
+                            <p:inputNumber id="taxaAdm"
+                                           value="#{operadoraCartaoControll.taxa.taxaAdm}"
+                                           style="text-align: right;width: 100%"
+                                           decimalPlaces="2"
+                            >
+
+                            </p:inputNumber>
+                            <div style="margin: 1px 0 0 5px">
+                                <p:commandButton icon="fa fa-plus"
+                                                 title="Adcinar novo intervalo"
+                                                 styleClass="ui-priority-primary"
+                                                 process="@this,formCentro:telaDetalhe:taxa"
+                                                 update=":formCentro:telaDetalhe:listaOperadoraCartaoTaxas,:formCentro:mensagem"
+                                                 actionListener="#{operadoraCartaoControll.onAddNew()}"
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </h:panelGroup>
             </div>
             <div class="row m-t">
 
@@ -100,79 +142,38 @@
                 <div class="col-md-12">
 
                     <p:dataTable id="listaOperadoraCartaoTaxas" widgetVar="listaOperadoraCartaoTaxas" var="row"
-                                 value="#{operadoraCartaoControll.operadoraCartaoTaxas}" editable="true"
+                                 value="#{operadoraCartaoControll.operadoraCartaoTaxas}"
                                  style="margin-bottom:20px">
 
-
-                        <p:ajax event="rowEdit" listener="#{operadoraCartaoControll.onRowEdit}"
-                                update=":formCentro:mensagem"/>
-                        <p:ajax event="rowEditCancel" listener="#{operadoraCartaoControll.onRowCancel}"
-                                update=":formCentro:mensagem"/>
                         <p:column headerText="Intervalo inicial">
-
-                            <p:cellEditor>
-                                <f:facet name="output">
-                                    <h:outputText value="#{row.intervaloInicial}"/>
-                                </f:facet>
-                                <f:facet name="input">
-                                    <p:inputText value="#{row.intervaloInicial}" required="true">
-                                        <p:keyFilter regEx="/[\d\-]/"/>
-                                    </p:inputText>
-                                </f:facet>
-                            </p:cellEditor>
-
+                            <h:outputText value="#{row.intervaloInicial}"/>
                         </p:column>
                         <p:column headerText="Intervalo final">
-                            <p:cellEditor>
-                                <f:facet name="output">
-                                    <h:outputText value="#{row.intervaloFinal}"/>
-                                </f:facet>
-                                <f:facet name="input">
-                                    <p:inputText value="#{row.intervaloFinal}" required="true">
-                                        <p:keyFilter regEx="/[\d\-]/"/>
-                                    </p:inputText>
-                                </f:facet>
-                            </p:cellEditor>
 
+                            <h:outputText value="#{row.intervaloFinal}"/>
 
                         </p:column>
                         <p:column headerText="Taxa Adm" styleClass="text-right">
-                            <p:cellEditor>
-                                <f:facet name="output">
-                                    <h:outputText value="#{row.taxaAdm}"/>
-                                </f:facet>
-                                <f:facet name="input">
-                                    <p:inputNumber
-                                            value="#{row.taxaAdm}"
-                                            required="true"
-                                            style="width: 100%;"
-                                            decimalPlaces="2"
-                                            maxValue="99.99"
-
-                                    />
-                                </f:facet>
-                            </p:cellEditor>
-
+                            <h:outputText value="#{row.taxaAdm}"/>
                         </p:column>
 
                         <p:column headerText="intervalo de Crédito">
-                            <p:cellEditor>
-                                <f:facet name="output">
-                                    <h:outputText value="#{row.creditoEm}"/>
-                                </f:facet>
-                                <f:facet name="input">
-                                    <p:inputText value="#{row.creditoEm}" required="true">
-                                        <p:keyFilter regEx="/[\d\-]/"/>
-                                    </p:inputText>
-                                </f:facet>
-                            </p:cellEditor>
-
+                            <h:outputText value="#{row.creditoEm}"/>
 
                         </p:column>
 
-                        <p:column styleClass="text-center" width="50">
-                            <p:rowEditor/>
+                        <p:column headerText="Ações" styleClass="text-center">
+                            <p:commandLink action="#{operadoraCartaoControll.removerIntervalo}"
+                                           styleClass="btn btn-default"
+                                           process="listaOperadoraCartaoTaxas"
+                                           update="listaOperadoraCartaoTaxas">
+
+                                <i class="fa fa-times"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{operadoraCartaoControll.taxaSelecionada}"/>
+                            </p:commandLink>
                         </p:column>
+
                     </p:dataTable>
 
                 </div>

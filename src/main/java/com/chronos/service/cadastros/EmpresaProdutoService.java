@@ -20,6 +20,7 @@ public class EmpresaProdutoService implements Serializable {
     @Inject
     private Repository<EmpresaProduto> repository;
 
+
     @Transactional
     public void novoProduto(Empresa empresa, Produto produto) {
 
@@ -30,6 +31,7 @@ public class EmpresaProdutoService implements Serializable {
         empProduto.setQuantidadeEstoque(BigDecimal.ZERO);
         empProduto.setEstoqueVerificado(BigDecimal.ZERO);
         repository.salvar(empProduto);
+
 
     }
 

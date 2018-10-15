@@ -201,7 +201,7 @@
                     <div class="row">
                         <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
                                         idComponente="nfeCabecalhoChaveAcesso" label="Chave Acesso"
-                                        nomeAtributo="#{devolucaoCompraControll.objeto.chaveAcesso}"
+                                        nomeAtributo="#{devolucaoCompraControll.objeto.chaveAcessoCompleta}"
                                         tamanhoMaximo="44" somenteLeitura="true"/>
 
 
@@ -639,7 +639,7 @@
                                              action="#{devolucaoCompraControll.salvarImpostos()}"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
                                              process="@form"
-                            />
+                                             update=":formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe,:formOutrasTelas2:panelOutrasTelas2,:formCentro:telaDetalhe:tabNfe:panelTotais"/>
 
 
                         </div>

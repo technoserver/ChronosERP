@@ -4,6 +4,29 @@
                  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                  version="2.1">
 
+    <named-native-query name="Usuario.login" result-set-mapping="loginUsuarioDTOMapping">
+        <query>
+            select
+            u.id,
+            ep.id_empresa as idempresa,
+            c.id as idcolaborador,
+            p.id as idpessoa,
+            u.login,
+            u.senha,
+            u.administrador,
+            p.nome,
+            c.foto_34 as foto,
+            cg.nome as cargo
+            from Usuario u
+            inner join colaborador c on c.id = u.id_colaborador
+            inner join cargo cg on cg.id = c.id_cargo
+            inner join pessoa p on p.id = c.id_pessoa
+            inner join empresa_pessoa ep on ep.id_pessoa = p.id
+            where ep.empresa_principal = 'S' and u.login = :login
+        </query>
+
+    </named-native-query>
+
     <named-native-query name="Nfe.configuracao" result-set-mapping="configuracaoNfeMapping">
         <query>
             select
@@ -49,9 +72,11 @@
             n.webservice_ambiente,
             n.codigo_csc,
             n.id_token_csc,
+            cx.codigo as serie,
             n.mensagem_cupom,
             n.observacao_padrao
             from certificado_configuracao c, pdv_configuracao n
+            inner join pdv_caixa cx on cx.id = n.id_pdv_caixa
             where c.id_empresa = ?1
         </query>
 
@@ -126,6 +151,22 @@
     </named-native-query>
 
 
+    <sql-result-set-mapping name="loginUsuarioDTOMapping">
+        <constructor-result target-class="com.chronos.dto.UsuarioDTO">
+            <column name="id" class="java.lang.Integer"/>
+            <column name="idempresa" class="java.lang.Integer"/>
+            <column name="idcolaborador" class="java.lang.Integer"/>
+            <column name="idpessoa" class="java.lang.Integer"/>
+            <column name="login" class="java.lang.String"/>
+            <column name="senha" class="java.lang.String"/>
+            <column name="administrador" class="java.lang.String"/>
+            <column name="nome" class="java.lang.String"/>
+            <column name="foto" class="java.lang.String"/>
+            <column name="cargo" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+
     <sql-result-set-mapping name="configuracaoNfeMapping">
         <constructor-result target-class="com.chronos.dto.ConfiguracaoNfeDTO">
             <column name="caminho" class="java.lang.String"/>
@@ -161,8 +202,9 @@
             <column name="webservice_ambiente" class="java.lang.Integer"/>
             <column name="codigo_csc" class="java.lang.String"/>
             <column name="id_token_csc" class="java.lang.String"/>
+            <column name="serie" class="java.lang.String"/>
             <column name="mensagem_cupom" class="java.lang.String"/>
-            <column name="observacao_padrao"/>
+            <column name="observacao_padrao" class="java.lang.String"/>
         </constructor-result>
     </sql-result-set-mapping>
 

@@ -2,6 +2,7 @@ package com.chronos.service.financeiro;
 
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.Modulo;
+import com.chronos.service.ChronosException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,7 +45,7 @@ public class FinLancamentoReceberCartaoServiceTest {
     }
 
     @Test
-    public void gerarLancamento10x() {
+    public void gerarLancamento10x() throws ChronosException {
         lancamento.setQuantidadeParcela(10);
         lancamento.setIntervaloEntreParcelas(30);
         lancamento.setValorBruto(BigDecimal.valueOf(100));
@@ -60,7 +61,7 @@ public class FinLancamentoReceberCartaoServiceTest {
     }
 
     @Test
-    public void gerarLancamento6x() {
+    public void gerarLancamento6x() throws ChronosException {
         lancamento.setQuantidadeParcela(6);
         lancamento.setIntervaloEntreParcelas(30);
         lancamento.setValorBruto(BigDecimal.valueOf(100));
@@ -77,7 +78,7 @@ public class FinLancamentoReceberCartaoServiceTest {
     }
 
     @Test
-    public void gerarLancamentoPdv() {
+    public void gerarLancamentoPdv() throws ChronosException {
         OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(taxas, 6);
         lancamento = service.gerarLancamento(1, BigDecimal.valueOf(100), operadoraCartao, operadoraCartaoTaxa, 6, Modulo.VENDA.getCodigo(), empresa, "1020");
         BigDecimal total = lancamento.getValorLiquido().add(lancamento.getValorEncargos());

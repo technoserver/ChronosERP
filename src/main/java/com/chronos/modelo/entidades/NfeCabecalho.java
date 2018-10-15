@@ -274,6 +274,10 @@ public class NfeCabecalho implements Serializable {
         this.emitente.setNfeCabecalho(this);
         this.destinatario = new NfeDestinatario();
         this.destinatario.setNfeCabecalho(this);
+        this.transporte = new NfeTransporte();
+        this.transporte.setNfeCabecalho(this);
+        this.transporte.setListaTransporteReboque(new HashSet<>());
+        this.transporte.setListaTransporteVolume(new HashSet<>());
 
 
         this.fatura = new NfeFatura();
@@ -2109,10 +2113,19 @@ public class NfeCabecalho implements Serializable {
         return ModeloDocumento.getByCodigo(Integer.valueOf(this.codigoModelo));
     }
 
+    public StatusTransmissao getStatusTransmissao() {
+        return StatusTransmissao.valueOfCodigo(this.statusNota);
+    }
+
 
     public boolean isPodeEnviar() {
         StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
         return (status != StatusTransmissao.AUTORIZADA) && (status != StatusTransmissao.CANCELADA) && (status != StatusTransmissao.ENVIADA);
+    }
+
+    public boolean isPodeImprimir() {
+        StatusTransmissao status = StatusTransmissao.valueOfCodigo(statusNota);
+        return (status == StatusTransmissao.AUTORIZADA) || (status == StatusTransmissao.CANCELADA);
     }
 
     public boolean isPodeCancelar() {
@@ -2135,6 +2148,7 @@ public class NfeCabecalho implements Serializable {
     public List<NfeDuplicata> getDuplicatas() {
         return new ArrayList<>(Optional.ofNullable(getListaDuplicata()).orElse(new HashSet<>()));
     }
+
 
     @Override
     public int hashCode() {

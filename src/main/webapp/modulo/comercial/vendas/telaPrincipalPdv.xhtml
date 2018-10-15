@@ -75,7 +75,12 @@
                                            class="inputs"
                                            disabled="#{empty balcaoControll.item.produto}"
                                            onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:valorUnitario_input').focus(); return false;}"
-                                           style="width: 100%"/>
+                                           style="width: 100%">
+                                <p:ajax event="blur"
+                                        listener="#{balcaoControll.calcularPrecoAtacado}"
+                                        update="formCentro:valorUnitario"
+                                        process="@this"/>
+                            </p:inputNumber>
                         </td>
                     </tr>
                     <tr>

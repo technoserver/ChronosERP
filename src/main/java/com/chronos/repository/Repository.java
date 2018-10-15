@@ -70,6 +70,8 @@ public interface Repository<T> {
 
     Long getTotalRegistros(Class<T> clazz, List<Filtro> filters) throws PersistenceException;
 
+    Object getMaxValor(Class<T> clazz, String atributo, List<Filtro> filters) throws Exception;
+
     T getEntityJoinFetch(Integer id, Class<T> clazz) throws PersistenceException;
 
 

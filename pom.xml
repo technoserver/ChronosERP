@@ -19,7 +19,7 @@
         <!-- Logging -->
         <log4j.version>2.6</log4j.version>
         <!--        Chronos Emissor-->
-        <chronosNFe.version>4.0.8</chronosNFe.version>
+        <chronosNFe.version>4.0.9</chronosNFe.version>
         <jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
         <!--        FlyWay-->
         <flyway-maven-plugin.version>5.0.7</flyway-maven-plugin.version>
@@ -146,7 +146,7 @@
         <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
-            <version>3.3.2.Final</version>
+            <version>3.3.0.Final</version>
             <!--<scope>provided</scope>-->
         </dependency>
 
