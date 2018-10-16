@@ -150,7 +150,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
 
     public boolean getPodeAlterarSenha() {
         UsuarioDTO user = FacesUtil.getUsuarioSessao();
-        return (getObjeto().getId() != null && user.getId().equals(getObjeto().getId())) || getObjeto().getId() == null;
+        return getObjeto().getId() == null || user.getId().equals(getObjeto().getId());
     }
 
     @Override
