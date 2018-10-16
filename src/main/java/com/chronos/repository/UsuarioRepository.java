@@ -1,6 +1,7 @@
 package com.chronos.repository;
 
 import com.chronos.dto.UsuarioDTO;
+import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.entidades.PapelFuncao;
 import com.chronos.modelo.entidades.Usuario;
@@ -17,14 +18,14 @@ import java.util.Optional;
  *
  * @author john
  */
-public class Usuarios implements Serializable {
+public class UsuarioRepository implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Inject
     private EntityManager em;
 
-    public Usuarios() {
+    public UsuarioRepository() {
     }
 
     public Usuario getUsuario(String nomeUsuario, String senhaUsuario) {
@@ -69,15 +70,20 @@ public class Usuarios implements Serializable {
     }
 
     public UsuarioDTO getUsuarioDTO(String login) {
-        String jpql = "SELECT new com.chronos.dto.UsuarioDTO(u.id,u.login,u.senha,u.administrador,p.nome,c.foto34,c.id,cg.nome ,e) " +
-                "FROM Usuario u ,IN(u.colaborador.pessoa.listaEmpresa) e " +
-                "INNER JOIN u.colaborador c " +
-                "INNER JOIN c.cargo cg " +
-                "INNER JOIN c.pessoa p " +
-                "WHERE u.login = :login";
-        Query q = em.createQuery(jpql);
+        TypedQuery<UsuarioDTO> q = em.createNamedQuery("Usuario.login", UsuarioDTO.class);
         q.setParameter("login", login);
-        return (UsuarioDTO) q.getSingleResult();
+
+        UsuarioDTO user = q.getSingleResult();
+        definirEmpresaUsuario(user);
+        return user;
+    }
+
+    private void definirEmpresaUsuario(UsuarioDTO user) {
+        String jpql = "SELECT e from Empresa e LEFT JOIN FETCH e.listaEndereco where e.id = :id";
+        TypedQuery<Empresa> q = em.createQuery(jpql, Empresa.class);
+        q.setParameter("id", user.getIdempresa());
+        Empresa emp = q.getSingleResult();
+        user.setEmpresa(emp);
     }
 
 }

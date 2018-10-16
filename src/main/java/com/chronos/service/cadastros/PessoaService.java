@@ -9,7 +9,6 @@ import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.HashSet;
 
 /**
  * Created by john on 11/07/17.
@@ -70,32 +69,26 @@ public class PessoaService implements Serializable {
     @Transactional
     public Colaborador salvarColaborador(Colaborador colaborador, Empresa empresa) throws Exception {
         validarPessoa(colaborador.getPessoa());
+        boolean salvarEmpresaPessoa = colaborador.getId() == null;
         colaborador = colaboradores.atualizar(colaborador);
-        salvarEmpresaPessoa(empresa, colaborador.getPessoa());
+        if (salvarEmpresaPessoa) {
+            salvarEmpresaPessoa(empresa, colaborador.getPessoa());
+        }
+
 
         return colaborador;
     }
 
 
-    public EmpresaPessoa salvarEmpresaPessoa(Empresa empresa, Pessoa pessoa) {
-        EmpresaPessoa empresaPessoa = new EmpresaPessoa();
-        empresaPessoa.setPessoa(pessoa);
-        empresaPessoa.setEmpresa(empresa);
-        empresaPessoa.setResponsavelLegal("N");
-        // empresaPessoas.salvar(empresaPessoa);
-        pessoa.setListaEmpresa(new HashSet<>());
-        pessoa.getListaEmpresa().add(empresa);
-        return empresaPessoa;
-    }
 
 
     public Pessoa salvar(Pessoa pessoa, Empresa empresa) throws Exception {
         validarPessoa(pessoa);
         boolean salvarEmpresaPessoa = pessoa.getId() == null;
+        pessoa = pessoas.atualizar(pessoa);
         if (salvarEmpresaPessoa) {
             salvarEmpresaPessoa(empresa, pessoa);
         }
-        pessoa = pessoas.atualizar(pessoa);
         return pessoa;
     }
 
@@ -132,6 +125,17 @@ public class PessoaService implements Serializable {
         }
 
     }
+
+    public EmpresaPessoa salvarEmpresaPessoa(Empresa empresa, Pessoa pessoa) {
+        EmpresaPessoa empresaPessoa = new EmpresaPessoa();
+        empresaPessoa.setPessoa(pessoa);
+        empresaPessoa.setEmpresa(empresa);
+        empresaPessoa.setResponsavelLegal("N");
+        empresaPessoa.setEmpresaPrincipal("S");
+        empresaPessoas.salvar(empresaPessoa);
+        return empresaPessoa;
+    }
+
 
 
 }

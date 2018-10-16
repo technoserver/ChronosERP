@@ -17,6 +17,8 @@ public class EmpresaPessoa implements Serializable {
     private Integer id;
     @Column(name = "RESPONSAVEL_LEGAL")
     private String responsavelLegal;
+    @Column(name = "EMPRESA_PRINCIPAL")
+    private String empresaPrincipal;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -26,6 +28,11 @@ public class EmpresaPessoa implements Serializable {
 
     public EmpresaPessoa() {
     }
+
+    public EmpresaPessoa(Integer id, Integer idempresa, String razaoSocial) {
+        this.empresa = new Empresa(idempresa, razaoSocial);
+    }
+
 
     public Integer getId() {
         return id;
@@ -57,6 +64,14 @@ public class EmpresaPessoa implements Serializable {
 
     public void setPessoa(Pessoa pessoa) {
         this.pessoa = pessoa;
+    }
+
+    public String getEmpresaPrincipal() {
+        return empresaPrincipal;
+    }
+
+    public void setEmpresaPrincipal(String empresaPrincipal) {
+        this.empresaPrincipal = empresaPrincipal;
     }
 
     @Override

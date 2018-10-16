@@ -134,7 +134,7 @@
                     <h:commandLink class="btn btn-default"
                                    title="Gerar DANFE" style="margin-left: 5px;"
                                    actionListener="#{nfeCabecalhoControll.danfe}"
-                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeImprimir}"
                                    id="btnGerardanfe">
                         <p:ajax disabled="true"/>
                         <i class="fa fa-print" aria-hidden="true"></i>
@@ -297,8 +297,8 @@
                 <p:tab title="Duplicatas" id="duplicatas">
                     <ui:include src="duplicatas.xhtml"/>
                 </p:tab>
-                <p:tab title="Transportadora" id="transportadora">
-
+                <p:tab title="Transportadora" id="transportadora" rendered="true">
+                    <ui:include src="dadosTransportadora.xhtml"/>
                 </p:tab>
             </p:tabView>
 

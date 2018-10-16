@@ -5,9 +5,13 @@
  */
 package com.chronos.controll.cadastros;
 
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.Pessoa;
 import com.chronos.modelo.entidades.Transportadora;
+import com.chronos.modelo.entidades.ViewPessoaTransportadora;
 import com.chronos.modelo.enuns.TelaPessoa;
+import com.chronos.modelo.view.ViewPessoaFornecedor;
+import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
 
@@ -30,7 +34,28 @@ public class TransportadoraControll extends PessoaControll<Transportadora> imple
     @Inject
     private PessoaService service;
 
+    @Inject
+    private Repository<ViewPessoaTransportadora> viewPessoaTransportadoraRepository;
+
+
+    private ERPLazyDataModel<ViewPessoaTransportadora> transportadoraDataModel;
+
+    private ViewPessoaFornecedor transportadoraSelecionado;
+
     private String completo;
+
+
+    public ERPLazyDataModel<ViewPessoaTransportadora> getTransportadoraDataModel() {
+
+        if (transportadoraDataModel == null) {
+            transportadoraDataModel = new ERPLazyDataModel<>();
+            transportadoraDataModel.setClazz(ViewPessoaTransportadora.class);
+            transportadoraDataModel.setDao(viewPessoaTransportadoraRepository);
+        }
+        return transportadoraDataModel;
+    }
+
+
 
     @Override
     public void doCreate() {
@@ -40,6 +65,14 @@ public class TransportadoraControll extends PessoaControll<Transportadora> imple
         getObjeto().setDataCadastro(new Date());
         completo = "S";
 
+    }
+
+    @Override
+    public void doEdit() {
+        Transportadora transportadora = dao.getJoinFetch(transportadoraSelecionado.getId(), Transportadora.class);
+        setObjeto(transportadora);
+        super.doEdit();
+        setTelaGrid(false);
     }
 
     @Override
@@ -86,5 +119,12 @@ public class TransportadoraControll extends PessoaControll<Transportadora> imple
     public String getTela() {
         return TelaPessoa.CLIENTE.getCodigo();
     }
-    
+
+    public ViewPessoaFornecedor getTransportadoraSelecionado() {
+        return transportadoraSelecionado;
+    }
+
+    public void setTransportadoraSelecionado(ViewPessoaFornecedor transportadoraSelecionado) {
+        this.transportadoraSelecionado = transportadoraSelecionado;
+    }
 }

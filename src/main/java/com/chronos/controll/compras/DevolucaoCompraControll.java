@@ -13,7 +13,6 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.DefinirCstService;
-import com.chronos.service.comercial.NfeService;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
@@ -39,8 +38,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private NfeService service;
+
     @Inject
     private DefinirCstService definirCstService;
     @Inject
@@ -155,7 +153,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
                 NfeDetalheImpostoIcms icms = definirCstService.definirNfeDetalheIcms(cst, empresa.getCrt(), impostoDTO);
                 icms.setNfeDetalhe(item);
                 item.setNfeDetalheImpostoIcms(icms);
-                verificaProdutoNaoCadastrado(item);
+                verificaProdutoNaoCadastrado(item, getObjeto().getDestinatario().getCpfCnpj());
             }
 
             atualizaTotais();
@@ -473,10 +471,18 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         getObjeto().setValorTotal(valorNotaFiscal);
     }
 
-    private void verificaProdutoNaoCadastrado(NfeDetalhe item) throws Exception {
+    private void verificaProdutoNaoCadastrado(NfeDetalhe item, String cnpjFornecedor) throws Exception {
 
 
-        FornecedorProduto fornecedorProduto = fornecedorProdutoRepository.get(FornecedorProduto.class, "codigoFornecedorProduto", item.getCodigoProduto(), new Object[]{"produto.id", "produto.nome"});
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("codigoFornecedorProduto", item.getCodigoProduto()));
+        if (cnpjFornecedor.length() > 11) {
+            filtros.add(new Filtro("fornecedor.pessoa.pessoaJuridica.cnpj", cnpjFornecedor));
+        } else {
+            filtros.add(new Filtro("fornecedor.pessoa.pessoaFisica.cpf", cnpjFornecedor));
+        }
+
+        FornecedorProduto fornecedorProduto = fornecedorProdutoRepository.get(FornecedorProduto.class, filtros, new Object[]{"produto.id", "produto.nome"});
 
         if (fornecedorProduto == null) {
             throw new ChronosException("Produo não vinculado ao fornacedor");

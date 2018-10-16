@@ -2,6 +2,8 @@
 package com.chronos.modelo.entidades;
 
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -21,6 +23,11 @@ public class Transportadora implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_CADASTRO")
     private Date dataCadastro;
+    @Column(name = "TIPO")
+    private Integer tipo;
+    @NotBlank
+    @Column(name = "RNTRC")
+    private String rntrc;
     @Column(name = "OBSERVACAO")
     private String observacao;
     @JoinColumn(name = "ID_PESSOA", referencedColumnName = "ID")
@@ -31,6 +38,14 @@ public class Transportadora implements Serializable {
 
     public Transportadora() {
     }
+
+    public Transportadora(Integer id, String nome) {
+        this.id = id;
+        this.pessoa = new Pessoa(nome);
+
+    }
+
+
 
     public Integer getId() {
         return id;
@@ -72,7 +87,21 @@ public class Transportadora implements Serializable {
         this.classificacaoContabilConta = classificacaoContabilConta;
     }
 
+    public Integer getTipo() {
+        return tipo;
+    }
 
+    public void setTipo(Integer tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getRntrc() {
+        return rntrc;
+    }
+
+    public void setRntrc(String rntrc) {
+        this.rntrc = rntrc;
+    }
 
     @Override
     public String toString() {

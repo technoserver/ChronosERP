@@ -343,10 +343,19 @@ public class OsAbertura implements Serializable {
         return valor;
     }
 
+    public BigDecimal calcularTotalDesconto() {
+        valorTotalDesconto = getListaOsProdutoServico().stream()
+                .map(OsProdutoServico::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+        return valorTotalDesconto;
+    }
+
+
     public void calcularValores() {
         this.valorTotalProduto = calcularValorProduto();
         this.valorTotalServico = calcularValorServico();
-        this.valorTotal = calcularValorTotal();
+        this.valorTotal = calcularValorTotal().subtract(calcularTotalDesconto());
     }
 
     public boolean isNovo() {

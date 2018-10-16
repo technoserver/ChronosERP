@@ -24,44 +24,104 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{fornecedorControll}"
-                       idDataTable="dataTableFornecedor"
-                       nomeFuncao="Fornecedor"
-                       id="telaGrid"
-        >
 
-            <p:column headerText="Nome">
-                <h:outputLabel value="#{row.pessoa.nome}"/>
-            </p:column>
-            <p:column headerText="CPF/CNPJ">
-                <h:outputLabel value="#{row.pessoa.pessoaFisica.cpf}" rendered="#{not empty row.pessoa.pessoaFisica}">
-                    <f:converter converterId="cpfCnpjConverter"/>
-                </h:outputLabel>
-                <h:outputLabel value="#{row.pessoa.pessoaJuridica.cnpj}"
-                               rendered="#{not empty row.pessoa.pessoaJuridica}">
-                    <f:converter converterId="cpfCnpjConverter"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Desde">
-                <h:outputLabel value="#{row.desde}">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Localização">
-                <h:outputLabel
-                        value="#{fornecedorControll.keyFromValue(fornecedorControll.fornecedorLocalizacao, row.localizacao)}"/>
-            </p:column>
-            <p:column headerText="Atividade">
-                <h:outputLabel value="#{row.atividadeForCli.nome}"/>
-            </p:column>
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{fornecedorControll.telaGrid}">
+                <div class="ibox-content">
+                    <p:dataTable value="#{fornecedorControll.fornecedorDataModel}" var="row" id="dataTableCliente"
+                                 paginator="true"
+                                 rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                                 reflow="true" rendered="#{fornecedorControll.podeConsultar()}"
+                                 resizableColumns="true" lazy="true" sortBy="nome"
+                                 class="js-data-table">
 
-        </erp:gridDados>
+
+                        <p:column headerText="Nome" sortBy="#{row.nome}">
+                            <h:outputLabel value="#{row.nome}"/>
+                        </p:column>
+                        <p:column headerText="CPF/CNPJ" width="140" styleClass="text-center">
+                            <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
+                                <f:converter converterId="cpfCnpjConverter"/>
+                            </h:outputLabel>
+                            <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'J'}">
+                                <f:converter converterId="cpfCnpjConverter"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Endereço">
+                            <h:outputLabel value="#{row.logradouro}"/>
+                        </p:column>
+                        <p:column headerText="Cidade">
+                            <h:outputLabel value="#{row.cidade} - #{row.uf}"/>
+                        </p:column>
+                        <p:column headerText="Fone" width="110">
+                            <h:outputLabel value="#{row.fone}"/>
+                        </p:column>
+
+
+                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                            <p:commandLink title="Alterar" action="#{fornecedorControll.doEdit()}"
+                                           class=" btn btn-default"
+                                           oncomplete="addClass()"
+                                           id="btnAlterar"
+                                           update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                            >
+                                <i class="fa fa-file-text-o"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{fornecedorControll.fornecedorSelecionado}"/>
+                            </p:commandLink>
+                            &nbsp;
+                            <p:commandLink title="Excluir" action="#{fornecedorControll.remover()}"
+                                           update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                           process="dataTableCliente"
+                                           oncomplete="atualizarMsg();"
+                                           class="btn btn-default"
+                                           disabled="#{!fornecedorControll.podeExcluir()}">
+                                <i class="fa fa-times"></i>
+                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{fornecedorControll.fornecedorSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </div>
+
+                <div class="ibox-footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
+                                             actionListener="#{fornecedorControll.doCreate()}"
+                                             disabled="#{!fornecedorControll.podeInserir()}"
+
+                            >
+                                <p:ajax process="@form"
+                                        oncomplete="addClass()"
+                                        update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             action="#{fornecedorControll.doIndex()}" immediate="true"
+                            />
+                        </div>
+
+                    </div>
+                </div>
+
+            </p:outputPanel>
+        </p:outputPanel>;
+
+
+
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
         <erp:telaInclusaoAlteracao controller="#{fornecedorControll}"
                                    nomeFuncao="Fornecedor"
+                                   gridPadrao="false"
                                    id="telaDetalhe">
 
             <div class="row">

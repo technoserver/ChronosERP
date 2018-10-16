@@ -16,7 +16,7 @@ public class NfeBaseControll extends AbstractControll<NfeCabecalho> implements S
 
 
     @Inject
-    private NfeService service;
+    protected NfeService service;
 
     private boolean duplicidade;
     private String justificativa;

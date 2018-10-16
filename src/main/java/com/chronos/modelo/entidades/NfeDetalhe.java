@@ -6,6 +6,8 @@ import org.springframework.util.StringUtils;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -268,7 +270,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getQuantidadeTributavel() {
-        return quantidadeTributavel = getQuantidadeComercial();
+        return quantidadeTributavel;
     }
 
     public void setQuantidadeTributavel(BigDecimal quantidadeTributavel) {
@@ -276,7 +278,7 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal getValorUnitarioTributavel() {
-        return valorUnitarioTributavel = getValorUnitarioComercial();
+        return valorUnitarioTributavel;
     }
 
     public void setValorUnitarioTributavel(BigDecimal valorUnitarioTributavel) {
@@ -579,7 +581,13 @@ public class NfeDetalhe implements Serializable {
     }
 
     public BigDecimal calcularSubTotalProduto(){
-        this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial());
+        this.valorSubtotal = BigDecimal.ZERO;
+        if (this.quantidadeTributavel.equals(this.quantidadeTributavel)) {
+            this.valorSubtotal = getQuantidadeComercial().multiply(getValorUnitarioComercial(), MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
+        } else {
+            this.valorSubtotal = getQuantidadeTributavel().multiply(getValorUnitarioTributavel(), MathContext.DECIMAL64).setScale(2, RoundingMode.HALF_UP);
+        }
+
         return valorSubtotal;
     }
 

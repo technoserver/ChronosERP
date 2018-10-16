@@ -124,7 +124,7 @@
                                           completeMethod="getListaEstadoCivil"
                                           nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.estadoCivil}"
                                           idComponente="pessoaFisicaEstadoCivil"
-                                          rendered="#{cc.attrs.controller.tela eq 'C'}"/>
+                                          rendered="#{cc.attrs.controller.tela eq 'CL'}"/>
                     </div>
 
 
@@ -145,9 +145,11 @@
                         <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                         idComponente="pessoaFisicaNomeMae" label="Nome Mãe"
                                         nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.nomeMae}"
+                                        rendered="#{cc.attrs.controller.tela eq 'CL'}"
                                         tamanhoMaximo="100"/>
                         <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                         idComponente="pessoaFisicaNomePai" label="Nome Pai"
+                                        rendered="#{cc.attrs.controller.tela eq 'CL'}"
                                         nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.nomePai}"
                                         tamanhoMaximo="100"/>
                     </div>

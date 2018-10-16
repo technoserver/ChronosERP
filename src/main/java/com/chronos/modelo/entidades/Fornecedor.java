@@ -96,6 +96,13 @@ public class Fornecedor implements Serializable {
         this.pessoa = new Pessoa(nome) ;
     }
 
+    public Fornecedor(Integer id, String nome, String cpf, String cnpj, String tipo, String cidade, String uf) {
+        this.id = id;
+        this.pessoa = new Pessoa(nome);
+        this.pessoa.setTipo(tipo);
+
+    }
+
     public Integer getId() {
         return id;
     }

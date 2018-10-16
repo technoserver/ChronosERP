@@ -97,6 +97,7 @@ public class VendaService implements Serializable {
             ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
             nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
             nfe.setCsc(configuracaoEmissorDTO.getCsc());
+            nfe.setSerie(configuracaoEmissorDTO.getSerie());
             StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
             if (status == StatusTransmissao.AUTORIZADA) {
                 venda.setSituacao(SituacaoVenda.NotaFiscal.getCodigo());

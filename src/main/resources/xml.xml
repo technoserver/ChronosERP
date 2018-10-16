@@ -1,33 +1,29 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
     <idLote>1</idLote>
     <indSinc>1</indSinc>
-    <NFe>
-        <infNFe Id="NFe53180916925371000114550100000000271000000271" versao="4.00">
+    <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+        <infNFe versao="4.00" Id="NFe53181016925371000114550100000003051000003059">
             <ide>
                 <cUF>53</cUF>
-                <cNF>00000027</cNF>
-                <natOp>DEVOLUCAO</natOp>
+                <cNF>00000305</cNF>
+                <natOp>VENDA A CONSUMIDOR FINAL</natOp>
                 <mod>55</mod>
                 <serie>10</serie>
-                <nNF>27</nNF>
-                <dhEmi>2018-09-12T11:58:57-03:00</dhEmi>
-                <dhSaiEnt>2018-09-12T11:58:57-03:00</dhSaiEnt>
+                <nNF>305</nNF>
+                <dhEmi>2018-10-05T15:06:13-03:00</dhEmi>
+                <dhSaiEnt>2018-10-05T15:04:23-03:00</dhSaiEnt>
                 <tpNF>1</tpNF>
                 <idDest>1</idDest>
                 <cMunFG>5300108</cMunFG>
                 <tpImp>1</tpImp>
                 <tpEmis>1</tpEmis>
-                <cDV>1</cDV>
+                <cDV>9</cDV>
                 <tpAmb>2</tpAmb>
-                <finNFe>4</finNFe>
+                <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
                 <indPres>1</indPres>
                 <procEmi>0</procEmi>
                 <verProc>4.0.0.3</verProc>
-                <NFref>
-                    <refNFe>53180820900400000160550010000013661231201804</refNFe>
-                </NFref>
             </ide>
             <emit>
                 <CNPJ>16925371000114</CNPJ>
@@ -48,170 +44,63 @@
                 <CRT>1</CRT>
             </emit>
             <dest>
-                <CNPJ>20900400000160</CNPJ>
+                <CPF>23117815880</CPF>
                 <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
                 <enderDest>
-                    <xLgr>QUADRA 3 LOTE 11 LOJA</xLgr>
-                    <nro>03/04</nro>
-                    <xCpl>TERREO COMERCIAL</xCpl>
-                    <xBairro>SETOR SUL (GAMA)</xBairro>
+                    <xLgr>LOGRADOURO</xLgr>
+                    <nro>1020</nro>
+                    <xBairro>CENTRO</xBairro>
                     <cMun>5300108</cMun>
                     <xMun>BRASILIA</xMun>
                     <UF>DF</UF>
-                    <CEP>72410200</CEP>
+                    <CEP>99999999</CEP>
                     <cPais>1058</cPais>
-                    <xPais>BRASIL</xPais>
-                    <fone>6130464834</fone>
+                    <xPais>Brazil</xPais>
                 </enderDest>
-                <indIEDest>1</indIEDest>
-                <IE>0771273400154</IE>
+                <indIEDest>9</indIEDest>
             </dest>
             <det nItem="1">
                 <prod>
-                    <cProd>001</cProd>
-                    <cEAN>7899766826213</cEAN>
+                    <cProd>1</cProd>
+                    <cEAN>SEM GTIN</cEAN>
                     <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
-                    <NCM>19059090</NCM>
-                    <CFOP>5202</CFOP>
+                    <NCM>19053100</NCM>
+                    <CFOP>5102</CFOP>
                     <uCom>UN</uCom>
-                    <qCom>30.0000</qCom>
-                    <vUnCom>1.900000</vUnCom>
-                    <vProd>57.00</vProd>
-                    <cEANTrib>7899766826213</cEANTrib>
-                    <uTrib>UN</uTrib>
-                    <qTrib>30.0000</qTrib>
-                    <vUnTrib>1.900000</vUnTrib>
-                    <indTot>1</indTot>
-                </prod>
-                <imposto>
-                    <ICMS>
-                        <ICMSSN900>
-                            <orig>0</orig>
-                            <CSOSN>900</CSOSN>
-                            <vBC>0.00</vBC>
-                            <vICMS>0.00</vICMS>
-                            <modBCST>0</modBCST>
-                            <pMVAST>0.00</pMVAST>
-                            <vBCST>0.00</vBCST>
-                            <vICMSST>0.00</vICMSST>
-                        </ICMSSN900>
-                    </ICMS>
-                    <IPI>
-                        <cEnq>999</cEnq>
-                        <IPINT>
-                            <CST>53</CST>
-                        </IPINT>
-                    </IPI>
-                    <PIS>
-                        <PISNT>
-                            <CST>07</CST>
-                        </PISNT>
-                    </PIS>
-                    <COFINS>
-                        <COFINSNT>
-                            <CST>07</CST>
-                        </COFINSNT>
-                    </COFINS>
-                </imposto>
-                <infAdProd>; Vlr Tributos - Federal R$ 2,28 - Estadual R$ 0,00</infAdProd>
-            </det>
-            <det nItem="2">
-                <prod>
-                    <cProd>003</cProd>
-                    <cEAN>SEM GTIN</cEAN>
-                    <xProd>PALHA ITALIANA</xProd>
-                    <NCM>19059090</NCM>
-                    <CFOP>5202</CFOP>
-                    <uCom>UN</uCom>
-                    <qCom>15.0000</qCom>
-                    <vUnCom>1.700000</vUnCom>
-                    <vProd>25.50</vProd>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>10</vUnCom>
+                    <vProd>10.00</vProd>
                     <cEANTrib>SEM GTIN</cEANTrib>
                     <uTrib>UN</uTrib>
-                    <qTrib>15.0000</qTrib>
-                    <vUnTrib>1.700000</vUnTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>10</vUnTrib>
                     <indTot>1</indTot>
                 </prod>
                 <imposto>
+                    <vTotTrib>0.00</vTotTrib>
                     <ICMS>
-                        <ICMSSN900>
+                        <ICMSSN102>
                             <orig>0</orig>
-                            <CSOSN>900</CSOSN>
-                            <vBC>0.00</vBC>
-                            <vICMS>0.00</vICMS>
-                            <modBCST>0</modBCST>
-                            <pMVAST>0.00</pMVAST>
-                            <vBCST>0.00</vBCST>
-                            <vICMSST>0.00</vICMSST>
-                        </ICMSSN900>
+                            <CSOSN>102</CSOSN>
+                        </ICMSSN102>
                     </ICMS>
-                    <IPI>
-                        <cEnq>999</cEnq>
-                        <IPINT>
-                            <CST>53</CST>
-                        </IPINT>
-                    </IPI>
                     <PIS>
-                        <PISNT>
-                            <CST>07</CST>
-                        </PISNT>
+                        <PISAliq>
+                            <CST>01</CST>
+                            <vBC>10.00</vBC>
+                            <pPIS>1.65</pPIS>
+                            <vPIS>0.16</vPIS>
+                        </PISAliq>
                     </PIS>
                     <COFINS>
-                        <COFINSNT>
-                            <CST>07</CST>
-                        </COFINSNT>
+                        <COFINSAliq>
+                            <CST>01</CST>
+                            <vBC>10.00</vBC>
+                            <pCOFINS>3.00</pCOFINS>
+                            <vCOFINS>0.30</vCOFINS>
+                        </COFINSAliq>
                     </COFINS>
                 </imposto>
-                <infAdProd>; Vlr Tributos - Federal R$ 1,02 - Estadual R$ 0,00</infAdProd>
-            </det>
-            <det nItem="3">
-                <prod>
-                    <cProd>004</cProd>
-                    <cEAN>SEM GTIN</cEAN>
-                    <xProd>BOMBOM DE CHOCOLATE TIPO TRUFA</xProd>
-                    <NCM>18063110</NCM>
-                    <CFOP>5202</CFOP>
-                    <uCom>PCT</uCom>
-                    <qCom>2.0000</qCom>
-                    <vUnCom>25.000000</vUnCom>
-                    <vProd>50.00</vProd>
-                    <cEANTrib>SEM GTIN</cEANTrib>
-                    <uTrib>PCT</uTrib>
-                    <qTrib>2.0000</qTrib>
-                    <vUnTrib>25.000000</vUnTrib>
-                    <indTot>1</indTot>
-                </prod>
-                <imposto>
-                    <ICMS>
-                        <ICMSSN900>
-                            <orig>0</orig>
-                            <CSOSN>900</CSOSN>
-                            <vBC>0.00</vBC>
-                            <vICMS>0.00</vICMS>
-                            <modBCST>0</modBCST>
-                            <pMVAST>0.00</pMVAST>
-                            <vBCST>0.00</vBCST>
-                            <vICMSST>0.00</vICMSST>
-                        </ICMSSN900>
-                    </ICMS>
-                    <IPI>
-                        <cEnq>999</cEnq>
-                        <IPINT>
-                            <CST>53</CST>
-                        </IPINT>
-                    </IPI>
-                    <PIS>
-                        <PISNT>
-                            <CST>07</CST>
-                        </PISNT>
-                    </PIS>
-                    <COFINS>
-                        <COFINSNT>
-                            <CST>07</CST>
-                        </COFINSNT>
-                    </COFINS>
-                </imposto>
-                <infAdProd>; Vlr Tributos - Federal R$ 2,00 - Estadual R$ 0,00</infAdProd>
             </det>
             <total>
                 <ICMSTot>
@@ -223,93 +112,65 @@
                     <vST>0.00</vST>
                     <vFCPST>0.00</vFCPST>
                     <vFCPSTRet>0.00</vFCPSTRet>
-                    <vProd>132.50</vProd>
+                    <vProd>10.00</vProd>
                     <vFrete>0.00</vFrete>
                     <vSeg>0.00</vSeg>
                     <vDesc>0.00</vDesc>
                     <vII>0.00</vII>
                     <vIPI>0.00</vIPI>
                     <vIPIDevol>0.00</vIPIDevol>
-                    <vPIS>0.00</vPIS>
-                    <vCOFINS>0.00</vCOFINS>
+                    <vPIS>0.16</vPIS>
+                    <vCOFINS>0.30</vCOFINS>
                     <vOutro>0.00</vOutro>
-                    <vNF>132.50</vNF>
+                    <vNF>10.00</vNF>
                     <vTotTrib>0.00</vTotTrib>
                 </ICMSTot>
             </total>
             <transp>
-                <modFrete>0</modFrete>
+                <modFrete>2</modFrete>
+                <transporta>
+                    <CNPJ>84237179000195</CNPJ>
+                    <xNome>TRANSPORTADORA 1</xNome>
+                    <xEnder>BRASILIA</xEnder>
+                    <xMun>BRASILIA</xMun>
+                    <UF>DF</UF>
+                </transporta>
+                <veicTransp>
+                    <placa>AC</placa>
+                    <UF>DF</UF>
+                    <RNTC>12345678</RNTC>
+                </veicTransp>
             </transp>
             <pag>
                 <detPag>
-                    <tPag>90</tPag>
-                    <vPag>0.00</vPag>
+                    <tPag>01</tPag>
+                    <vPag>10.00</vPag>
                 </detPag>
             </pag>
             <infAdic>
-                <infAdFisco>- EMPRESA OPTANTE PELO SIMPLES NACIONAL. - PROCON DF 151 SCS QD 08 BLOCO B-60 ED VENACIO
-                    2000 SALA 240 ASA SUL BRASILIA -DF - O REI VEM VINDO (MT 24:30,31); Valor Aproximado dos Tributos
-                    conforme Lei 12.741/2012: Federal R$ 5,30 - Estadual R$ 0,00 Fonte: IBPT
-                </infAdFisco>
+                <infCpl>Trib. Aprox. Federal R$ 0,00 e R$ 0,00 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
             </infAdic>
         </infNFe>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53180916925371000114550100000000271000000271">
+                <Reference URI="#NFe53181016925371000114550100000003051000003059">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>RVyVND4rVmkIO8AnE4KBai4lp3A=</DigestValue>
+                    <DigestValue>8d+iYbJ0XC+TNQApVrovY9ZL9LU=</DigestValue>
                 </Reference>
             </SignedInfo>
-            <SignatureValue>bhHZFcQnJfwd97ydiQ/kcnyNy5/KDqxlkdDJ7YbEfJ4CAZInT/v6rS8LNyGMjWVfZk2A2lqTbwVK
-                VYgS60HZass3CqTK0coaTUx63ifeo55iQXmJzgMDSNdHGTDF80oBXzZdZ6WBxOvHOdAQVzJGW+/s
-                SqitPiSdbjmM4uKzmXzzgmd5s9kMizrT399HggnT8E+K6V7pkmWB6FtAXHmQ73vqfiPbhe616Zi2
-                PiYCo6f7TeUKur5Boph0ufL0DvGDmq7RZgs5j7/Xzx8QtDygG0l1Zil4jYEbf6iFB1ZUJ8Z/yBub
-                nynrDkqn+w9zsdf/OV7uPu7dV3ZoqSJdwTxneA==
+            <SignatureValue>
+                a+z0pikhq2E0IZ6W0eyU6dUBtJnJp1gFdWeHTjv5y2DD1C5npuK0twPimxyOwaw1RokEEdP15hVPIf18zT8WYRZ4/lUjA/EmtaGiq8ReD6ZZzE9DaQLq87jpe4qiMH7Okqi+q7VSjXO66gxr1Jfw03yTZkSalxZ41pcOeK4x0EAZ7ZIcX9PHhOiBhBb3F1J/0QikZAqt7Za2ugruJrEI1l57kOG4Yvo49yT/LjHg+xIVUODmFWrclW4QNg7lGXTo/divThPcGl1CVjVtUFqsFtYvA1TZwiVuygXMBASEa1KIsXqd+RaMIVShV0OD01LloF8GKlFLpJuvSzaPkWZUew==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>
-                    <X509Certificate>MIIHzDCCBbSgAwIBAgIIKOYYAyZY/O4wDQYJKoZIhvcNAQELBQAwgYkxCzAJBgNVBAYTAkJSMRMw
-                        EQYDVQQKEwpJQ1AtQnJhc2lsMTQwMgYDVQQLEytBdXRvcmlkYWRlIENlcnRpZmljYWRvcmEgUmFp
-                        eiBCcmFzaWxlaXJhIHYyMRIwEAYDVQQLEwlBQyBTT0xVVEkxGzAZBgNVBAMTEkFDIFNPTFVUSSBN
-                        dWx0aXBsYTAeFw0xODAzMjcxMTU1NTdaFw0xOTAzMjYxOTI4MDBaMIHwMQswCQYDVQQGEwJCUjET
-                        MBEGA1UEChMKSUNQLUJyYXNpbDE0MDIGA1UECxMrQXV0b3JpZGFkZSBDZXJ0aWZpY2Fkb3JhIFJh
-                        aXogQnJhc2lsZWlyYSB2MjESMBAGA1UECxMJQUMgU09MVVRJMRswGQYDVQQLExJBQyBTT0xVVEkg
-                        TXVsdGlwbGExGjAYBgNVBAsTEUNlcnRpZmljYWRvIFBKIEExMUkwRwYDVQQDE0BURUNITk9TRVJW
-                        RVIgQVVUT01BQ0FPIENPTUVSQ0lBTCBFIERFU0VOVk9MVklNRU5UOjE2OTI1MzcxMDAwMTE0MIIB
-                        IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlNVmw7AN0XeC0SsOyMe1PnIaQFhNDKFGlmEm
-                        zbUHKNQpf4VBf0ClKqJFqNJXZ19fO3Ylzx/yCDIVBlmBoVkYdWjKvs8mGXzaWMM8L2RqILkrYDsM
-                        +0rOQdk+EGGmRAlFjNEbRAzfbF9KstVOwCtzh71omTY0dF4tXL5VzkcNBclT4dYWVaPK4Qh9Bmco
-                        tg+YDGfh529RCMpoJ1ypXnf6ae5YQ6zJeqys8hQZVukP7C6iLJiv+xvloQ1efbjVkrG6uhMSt+r5
-                        M8ckNmFtT60iq2I56mzwSXW/KD8swPbJsctuY/hHYoC2kYLTGzVSvVs0I4+SapUGIxhBRr34B67t
-                        LQIDAQABo4ICzTCCAskwVAYIKwYBBQUHAQEESDBGMEQGCCsGAQUFBzAChjhodHRwOi8vY2NkLmFj
-                        c29sdXRpLmNvbS5ici9sY3IvYWMtc29sdXRpLW11bHRpcGxhLXYxLnA3YjAdBgNVHQ4EFgQURwPo
-                        c3SjxZ1pUdnkydIC8ooa1I4wCQYDVR0TBAIwADAfBgNVHSMEGDAWgBQ1rjEU9l7Sek9Y/jSoGmeX
-                        CsSbBzBeBgNVHSAEVzBVMFMGBmBMAQIBJjBJMEcGCCsGAQUFBwIBFjtodHRwczovL2NjZC5hY3Nv
-                        bHV0aS5jb20uYnIvZG9jcy9kcGMtYWMtc29sdXRpLW11bHRpcGxhLnBkZjCB3gYDVR0fBIHWMIHT
-                        MD6gPKA6hjhodHRwOi8vY2NkLmFjc29sdXRpLmNvbS5ici9sY3IvYWMtc29sdXRpLW11bHRpcGxh
-                        LXYxLmNybDA/oD2gO4Y5aHR0cDovL2NjZDIuYWNzb2x1dGkuY29tLmJyL2xjci9hYy1zb2x1dGkt
-                        bXVsdGlwbGEtdjEuY3JsMFCgTqBMhkpodHRwOi8vcmVwb3NpdG9yaW8uaWNwYnJhc2lsLmdvdi5i
-                        ci9sY3IvQUNTT0xVVEkvYWMtc29sdXRpLW11bHRpcGxhLXYxLmNybDAOBgNVHQ8BAf8EBAMCBeAw
-                        HQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMIG1BgNVHREEga0wgaqBGGl2YW5AdGVjaG5v
-                        c2VydmVyLmNvbS5icqAgBgVgTAEDAqAXExVJVkFOIFBFUkVJUkEgREEgU0lMVkGgGQYFYEwBAwOg
-                        EBMOMTY5MjUzNzEwMDAxMTSgOAYFYEwBAwSgLxMtMDUwMTE5Nzc4MTkxNDg4MTE2ODAwMDAwMDAw
-                        MDAwMDAwMDAwMDAwMDAwMDAwoBcGBWBMAQMHoA4TDDAwMDAwMDAwMDAwMDANBgkqhkiG9w0BAQsF
-                        AAOCAgEACh4NTBZaJnlQHLj28HAdMMStTDGmAMQJndR+1eu6aj9xrjGV1A7DMd8wgYZ0I5CIjzEw
-                        BcMxUuzlToaR6/PN2igh70fgFnsDvm3uLzL40ZiKvGhXacXyzwWfAEkh6RECgZWg9kg6ONii9i/n
-                        f7o5VlnBqEs2yBoupJq3a3kUcxHZy/cgiMxSQU4thM4y2CRoiQ9Hlc0NVRly0RD9h4ug3XqtelIQ
-                        S3WuI7VrFocBzVRHo5mJvyiXOAd98687HmPtz3ELsX0pv1Lo6KrBcDaNC3KhSQVc3CipQ0LAsMSg
-                        cDmrcEP3ujn4R8kyGahaVeMIlNH7uwmNJSZEKE5+odOOEFgLi4uDzw8ctIMX0ecAFTRogJ+dg7sT
-                        RrPTSSI75Se9KB1V/4/tyWwqFcaUbUIiY8fOo+M/+/95ke7Abj6rgEqxq/YBxGfiNu5t4HegqqeB
-                        lzJjybnIO+5W75P23FgJC9OksEqrdRtfcC+SuPyVCJNYiQ+4NLWbaBc10Yyxm4KPIcxVm1XrOxyf
-                        2p7c8beBJhzn4wyJ/JZ2ZQpVAlsXyvEyCRJEiiGAsBO+gPSTVPspKZucD9SaJ0rczpeSX+mz17JE
-                        Cnj/sHfRcUUe3awBHhflDsyyLvTRCW6k1iikZVuPS7z9CQ/7SdT/B7KeG7McHwtMEDpux2cm2N10
-                        JMAt4sU=
+                    <X509Certificate>
+                        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
                     </X509Certificate>
                 </X509Data>
             </KeyInfo>

@@ -5,11 +5,13 @@
  */
 package com.chronos.controll.cadastros;
 
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.AtividadeForCli;
 import com.chronos.modelo.entidades.Fornecedor;
 import com.chronos.modelo.entidades.Pessoa;
 import com.chronos.modelo.entidades.SituacaoForCli;
 import com.chronos.modelo.enuns.TelaPessoa;
+import com.chronos.modelo.view.ViewPessoaFornecedor;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
@@ -39,8 +41,16 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
     private Repository<SituacaoForCli> situacoes;
     @Inject
     private Repository<Pessoa> pessoas;
+
+    @Inject
+    private Repository<ViewPessoaFornecedor> viewPessoaFornecedorRepository;
+
     @Inject
     private PessoaService service;
+
+    private ERPLazyDataModel<ViewPessoaFornecedor> fornecedorDataModel;
+
+    private ViewPessoaFornecedor fornecedorSelecionado;
 
     private String completo;
 
@@ -50,6 +60,18 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
         super.init();
         completo = "N";
     }
+
+
+    public ERPLazyDataModel<ViewPessoaFornecedor> getFornecedorDataModel() {
+
+        if (fornecedorDataModel == null) {
+            fornecedorDataModel = new ERPLazyDataModel<>();
+            fornecedorDataModel.setClazz(ViewPessoaFornecedor.class);
+            fornecedorDataModel.setDao(viewPessoaFornecedorRepository);
+        }
+        return fornecedorDataModel;
+    }
+
 
     @Override
     public void doCreate() {
@@ -61,6 +83,14 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
         completo = "N";
     }
 
+    @Override
+    public void doEdit() {
+        Fornecedor fornecedor = dao.getJoinFetch(fornecedorSelecionado.getId(), Fornecedor.class);
+        setObjeto(fornecedor);
+        super.doEdit();
+        setTelaGrid(false);
+        completo = "N";
+    }
 
     @Override
     public void salvar() {
@@ -154,5 +184,13 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
 
     public void setCompleto(String completo) {
         this.completo = completo;
+    }
+
+    public ViewPessoaFornecedor getFornecedorSelecionado() {
+        return fornecedorSelecionado;
+    }
+
+    public void setFornecedorSelecionado(ViewPessoaFornecedor fornecedorSelecionado) {
+        this.fornecedorSelecionado = fornecedorSelecionado;
     }
 }

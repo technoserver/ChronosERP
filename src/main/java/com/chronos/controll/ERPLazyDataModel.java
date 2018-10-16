@@ -10,7 +10,6 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
-import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -68,8 +67,10 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         try {
-            sortField = StringUtils.isEmpty(ordernarPor) ? sortField : ordernarPor;
-            sortOrder = this.sortOrder == null ? sortOrder : this.sortOrder;
+            sortOrder = sortField != null ? sortOrder : this.sortOrder == null ? sortOrder : this.sortOrder;
+
+            sortField = sortField == null ? this.ordernarPor : sortField;
+
             objs = repository.getEntitys(getClazz(),filtros, first, pageSize, sortField, sortOrder,joinFetch,atributos );
             Long totalRegistros = repository.getTotalRegistros(getClazz(), filtros);
             this.setRowCount(totalRegistros.intValue());

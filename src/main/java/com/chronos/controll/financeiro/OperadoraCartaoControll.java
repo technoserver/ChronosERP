@@ -4,13 +4,10 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.ContaCaixa;
 import com.chronos.modelo.entidades.OperadoraCartao;
 import com.chronos.modelo.entidades.OperadoraCartaoTaxa;
-import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ContaCaixaService;
 import com.chronos.service.financeiro.OperadoraCartaoService;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.event.RowEditEvent;
 
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,14 +35,17 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
 
     private List<OperadoraCartaoTaxa> operadoraCartaoTaxas;
 
+    private OperadoraCartaoTaxa taxa;
+    private OperadoraCartaoTaxa taxaSelecionada;
+
 
     @Override
     public void doCreate() {
         super.doCreate();
         operadoraCartaoTaxas = new ArrayList<>();
-        OperadoraCartaoTaxa taxa = new OperadoraCartaoTaxa();
+        taxa = new OperadoraCartaoTaxa();
         taxa.setOperadoraCartao(getObjeto());
-        operadoraCartaoTaxas.add(taxa);
+
     }
 
     @Override
@@ -67,34 +67,22 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
         super.salvar();
     }
 
-    public void onRowEdit(RowEditEvent event) {
 
-        try {
-            OperadoraCartaoTaxa cartaoTaxa = (OperadoraCartaoTaxa) event.getObject();
-            service.validarIntevalo(operadoraCartaoTaxas, cartaoTaxa);
-        } catch (Exception ex) {
-            if (ex instanceof ChronosException) {
-                FacesContext.getCurrentInstance().validationFailed();
-                Mensagem.addErrorMessage("Erro ao alterar o intervalo de taxas", ex);
-            } else {
-                throw new RuntimeException("Erro ao alterar o intervalo de taxas", ex);
-            }
-        }
-    }
-
-    public void onRowCancel(RowEditEvent event) {
-        OperadoraCartaoTaxa cartaoTaxa = (OperadoraCartaoTaxa) event.getObject();
-        if (operadoraCartaoTaxas.size() > 1) {
-            operadoraCartaoTaxas.remove(cartaoTaxa);
-        } else {
-            Mensagem.addErrorMessage("É preciso ao menos ter 1 intervalo definido");
-        }
-
-    }
     public void onAddNew() {
-        OperadoraCartaoTaxa taxa = service.addTaxa(new ArrayList<>(operadoraCartaoTaxas));
-        taxa.setOperadoraCartao(getObjeto());
-        operadoraCartaoTaxas.add(taxa);
+        try {
+
+
+            operadoraCartaoTaxas = service.validarIntevalo(operadoraCartaoTaxas, taxa);
+            taxa = new OperadoraCartaoTaxa();
+            taxa.setOperadoraCartao(getObjeto());
+
+        } catch (Exception ex) {
+            Mensagem.addErrorMessage("", ex);
+        }
+    }
+
+    public void removerIntervalo() {
+        operadoraCartaoTaxas.remove(taxaSelecionada);
     }
 
     public List<ContaCaixa> getListaContaCaixa(String nome) {
@@ -129,5 +117,21 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
 
     public void setOperadoraCartaoTaxas(List<OperadoraCartaoTaxa> operadoraCartaoTaxas) {
         this.operadoraCartaoTaxas = operadoraCartaoTaxas;
+    }
+
+    public OperadoraCartaoTaxa getTaxa() {
+        return taxa;
+    }
+
+    public void setTaxa(OperadoraCartaoTaxa taxa) {
+        this.taxa = taxa;
+    }
+
+    public OperadoraCartaoTaxa getTaxaSelecionada() {
+        return taxaSelecionada;
+    }
+
+    public void setTaxaSelecionada(OperadoraCartaoTaxa taxaSelecionada) {
+        this.taxaSelecionada = taxaSelecionada;
     }
 }

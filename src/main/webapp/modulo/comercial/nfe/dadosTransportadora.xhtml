@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" xmlns:ṕ="http://java.sun.com/jsf/html">
+
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-md-4">
+            <h:outputLabel value="Modalidade Frete" for="modalidadeFrete"/>
+            <h:selectOneMenu styleClass="form-control"
+                             id="modalidadeFrete"
+                             value="#{nfeCabecalhoControll.objeto.transporte.modalidadeFrete}">
+                <f:selectItems value="#{nfeCabecalhoControll.modalidadeFreteNfe}"/>
+                <p:ajax process="@this" update=":formCentro:telaDetalhe:tabNfe:dadosTransportadora"/>
+            </h:selectOneMenu>
+        </div>
+
+
+
+
+    </div>
+
+    <h:panelGroup layout="block" id="dadosTransportadora">
+
+        <h:panelGroup layout="block" rendered="#{nfeCabecalhoControll.objeto.transporte.modalidadeFrete eq 2}">
+
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Selecione a Transportadora"
+                                  id="transp"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{nfeCabecalhoControll}"
+                                  completeMethod="getListaTransportadora"
+                                  nomeAtributo="#{nfeCabecalhoControll.transportadora}"
+                                  idComponente="nfeTransporteTransportadora"
+                >
+
+                    <p:ajax event="itemSelecionado"
+                            listener="#{nfeCabecalhoControll.selecionarTransportadora}"
+                            update=":formCentro:telaDetalhe:tabNfe:transp:nfeTransporteTransportadora,:formCentro:telaDetalhe:tabNfe:veiculo"/>
+
+                </erp:autoComplete>
+
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <ṕ:outputLabel value="Veiculo" for="veiculo"/>
+                    <h:selectOneMenu value="#{nfeCabecalhoControll.veiculo}" id="veiculo" styleClass="form-control"
+                                     required="true" converter="defaultConverter">
+                        <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>
+                        <f:selectItems value="#{nfeCabecalhoControll.veiculos}" var="obj" itemValue="#{obj}"/>
+                    </h:selectOneMenu>
+                </div>
+
+            </div>
+
+            <erp:separador label="Retenção ICMS"/>
+
+            <div class="row">
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeTransporteCfop" label="CFOP"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.cfop}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeTransporteValorServico" label="Valor Serviço"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.valorServico}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="nfeTransporteValorBcRetencaoIcms"
+                                  label="Valor BC Retenção ICMS"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.valorBcRetencaoIcms}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-3"
+                                  idComponente="nfeTransporteAliquotaRetencaoIcms"
+                                  label="Aliquota Retenção ICMS"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.aliquotaRetencaoIcms}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-3"
+                                  idComponente="nfeTransporteValorIcmsRetido"
+                                  label="Valor ICMS Retido"
+                                  nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.valorIcmsRetido}"/>
+
+
+            </div>
+
+        </h:panelGroup>
+    </h:panelGroup>
+
+
+</ui:composition>

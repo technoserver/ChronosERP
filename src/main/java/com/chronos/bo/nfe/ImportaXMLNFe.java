@@ -314,9 +314,11 @@ public class ImportaXMLNFe {
 
         item.setNumeroItem(Integer.valueOf(det.getNItem()));
         item.setCodigoProduto(prod.getCProd());
+        String gtin = prod.getCEAN() != null && !prod.getCEAN().equals("SEM GTIN") ? prod.getCEAN() : null;
         item.setGtin(prod.getCEAN());
         item.setNomeProduto(prod.getXProd());
         item.setNcm(prod.getNCM());
+        item.setCest(prod.getCEST());
         if (prod.getEXTIPI() != null) {
             item.setExTipi(Integer.valueOf(prod.getEXTIPI()));
         }
@@ -350,9 +352,12 @@ public class ImportaXMLNFe {
 
         //IPI
         TIpi ipi = getTipoImposto(TIpi.class, det.getImposto().getContent());
-        NfeDetalheImpostoIpi impIpi = getIpi(ipi);
-        impIpi.setNfeDetalhe(item);
-        item.setNfeDetalheImpostoIpi(impIpi);
+        if (ipi != null) {
+            NfeDetalheImpostoIpi impIpi = getIpi(ipi);
+            impIpi.setNfeDetalhe(item);
+            item.setNfeDetalheImpostoIpi(impIpi);
+        }
+
 
         //PIS
         TNFe.InfNFe.Det.Imposto.PIS pis = getTipoImposto(TNFe.InfNFe.Det.Imposto.PIS.class, det.getImposto().getContent());

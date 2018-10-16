@@ -85,14 +85,17 @@ public class OperadoraCartaoService implements Serializable {
         return taxa;
     }
 
-    public OperadoraCartaoTaxa getOperadoraCartaoTaxa(List<OperadoraCartaoTaxa> taxas, int qtdParcelas) {
-        OperadoraCartaoTaxa taxa = taxas
+    public OperadoraCartaoTaxa getOperadoraCartaoTaxa(List<OperadoraCartaoTaxa> taxas, int qtdParcelas) throws ChronosException {
+        Optional<OperadoraCartaoTaxa> taxaOptional = taxas
                 .stream()
                 .filter(t -> t.getIntervaloInicial() >= qtdParcelas || t.getIntervaloFinal() >= qtdParcelas)
-                .min(Comparator.comparing(OperadoraCartaoTaxa::getIntervaloFinal)).get();
+                .min(Comparator.comparing(OperadoraCartaoTaxa::getIntervaloFinal));
 
-//        List<OperadoraCartaoTaxa> collect = taxas.stream().filter(t -> t.getIntervaloInicial() >= qtdParcelas || t.getIntervaloFinal() >= qtdParcelas ).collect(Collectors.toList());
-        return taxa;
+        if (!taxaOptional.isPresent()) {
+            throw new ChronosException("Não foi encontrado um intervalo para essa quantidade de parcelas");
+        }
+
+        return taxaOptional.get();
     }
 
 

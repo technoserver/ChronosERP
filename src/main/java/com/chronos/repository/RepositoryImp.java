@@ -326,6 +326,23 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
+    public Object getMaxValor(Class<T> clazz, String atributo, List<Filtro> filters) {
+        String jpql = "SELECT MAX(o." + atributo + ") FROM " + clazz.getName() + " o WHERE 1 = 1";
+
+        int i = 0;
+        for (Filtro f : filters) {
+            i++;
+
+            jpql += " " + f.getOperadorLogico()
+                    + (f.getValor().getClass() == String.class ? " LOWER(o." + f.getAtributo() + ") " : " o." + f.getAtributo() + " ")
+                    + f.getOperadorRelacional() + ":valor" + i;
+
+        }
+        Query query = queryPrepared(jpql, filters);
+        return Optional.ofNullable(query.getSingleResult()).orElse(0);
+    }
+
+    @Override
     public T getEntityJoinFetch(Integer id, Class<T> clazz) throws PersistenceException {
         return null;
     }
