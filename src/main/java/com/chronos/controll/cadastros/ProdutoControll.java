@@ -167,7 +167,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
         List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
 
-        if (!empresaPessoas.isEmpty() & empresaPessoas.size() > 1) {
+        if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 1) {
 
             listaEmpresas.put("Todas", 0);
             for (EmpresaPessoa emp : empresaPessoas) {
@@ -212,7 +212,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             getObjeto().setImagem(nomeFoto);
             empresas = new ArrayList<>();
             if (getObjeto().getId() == null) {
-                if (idempresa == 0) {
+                if (idempresa == 0 && listaEmpresas.size() > 1) {
                     for (Integer id : listaEmpresas.values()) {
                         if (id > 0) {
                             empresas.add(new Empresa(id));
@@ -220,14 +220,14 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
                     }
                 } else {
-                    empresas.add(new Empresa(idempresa));
+                    empresas.add(empresa);
                 }
             } else {
                 empresas.add(empresa);
             }
 
             setObjeto(service.salvar(getObjeto(), empresas));
-
+            Mensagem.addInfoMessage("Registro salvo com sucesso");
         } catch (Exception ex) {
             ex.printStackTrace();
             if (ex instanceof ChronosException) {
