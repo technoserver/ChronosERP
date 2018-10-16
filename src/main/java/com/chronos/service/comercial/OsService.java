@@ -63,7 +63,7 @@ public class OsService implements Serializable {
     }
 
 
-    public OsAbertura salvarItem(OsAbertura os, OsProdutoServico item) throws Exception {
+    public OsAbertura salvarItem(OsAbertura os, OsProdutoServico item) {
         itens = os.getListaOsProdutoServico();
         Optional<OsProdutoServico> itemOptional = buscarItem(item.getProduto());
         BigDecimal quantidade = item.getQuantidade();
@@ -103,7 +103,7 @@ public class OsService implements Serializable {
     }
 
     @Transactional
-    public void faturar(OsAbertura os) throws Exception {
+    public void faturar(OsAbertura os) {
         os.setOsStatus(Constantes.OS.STATUS_FATURADO);
 
         List<ProdutoVendaDTO> produtos = new ArrayList<>();

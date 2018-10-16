@@ -34,7 +34,6 @@ public class VeiculoControll extends AbstractControll<Veiculo> implements Serial
         }
 
 
-
         super.salvar();
     }
 

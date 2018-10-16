@@ -203,9 +203,6 @@ public class NfeService implements Serializable {
         validacaoNfe(nfe);
 
 
-
-
-
         definirFormaPagamento(nfe, tipoPagamento);
 
         int i = 0;
