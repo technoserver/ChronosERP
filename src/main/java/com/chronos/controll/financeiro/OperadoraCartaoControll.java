@@ -50,8 +50,11 @@ public class OperadoraCartaoControll extends AbstractControll<OperadoraCartao> i
 
     @Override
     public void doEdit() {
+
         OperadoraCartao operadoraCartao = dataModel.getRowData(getObjetoSelecionado().getId().toString());
         setObjeto(operadoraCartao);
+        taxa = new OperadoraCartaoTaxa();
+        taxa.setOperadoraCartao(getObjeto());
         operadoraCartaoTaxas = new ArrayList<>(operadoraCartao.getListaOperadoraCartaoTaxas());
         if (operadoraCartaoTaxas.isEmpty()) {
             OperadoraCartaoTaxa taxa = new OperadoraCartaoTaxa();
