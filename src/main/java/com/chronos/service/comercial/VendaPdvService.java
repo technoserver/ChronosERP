@@ -17,6 +17,7 @@ import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -109,19 +110,28 @@ public class VendaPdvService implements Serializable {
     public void transmitirNFe(PdvVendaCabecalho venda, boolean atualizarEstoque) throws Exception {
 
         SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getStatusVenda());
+
         if (situacao == SituacaoVenda.NotaFiscal) {
             throw new Exception("Essa venda já possue NFe");
         }
 
 
-        PdvCaixa caixa = venda.getPdvMovimento().getPdvCaixa();
 
         VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, venda);
         NfeCabecalho nfe = vendaNfe.gerarNfe();
         nfe.setPdv(venda);
-        nfe.setSerie(caixa.getCodigo());
+
         ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
+
+        if (StringUtils.isEmpty(configuracaoEmissorDTO.getSerie())) {
+            throw new Exception("Serie da NFCe não definida");
+        }
+
+        nfe.setSerie(configuracaoEmissorDTO.getSerie());
+
+
+
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
