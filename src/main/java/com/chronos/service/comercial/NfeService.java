@@ -344,7 +344,7 @@ public class NfeService implements Serializable {
         String serie;
         NotaFiscalTipo notaFiscalTipo = null;
         ModeloDocumento modelo = nfe.getModeloDocumento();
-        if (nfe.getNumero() == null || StringUtils.isEmpty(nfe.getNumero())) {
+        if (StringUtils.isEmpty(nfe.getNumero())) {
             notaFiscalTipo = modelo == ModeloDocumento.NFE ? getNotaFicalTipo(modelo) : getNotaFicalTipo(modelo, nfe.getSerie());
             numero = notaFiscalTipo.proximoNumero();
             serie = notaFiscalTipo.getSerie();
@@ -917,6 +917,11 @@ public class NfeService implements Serializable {
     }
 
     public NotaFiscalTipo getNotaFicalTipo(ModeloDocumento modelo, String serie) throws ChronosException {
+
+        if (modelo == null || StringUtils.isEmpty(serie)) {
+            String msg = modelo == null ? "Modelo não definido" : "Serie não definida";
+            throw new ChronosException("Configuração de " + msg);
+        }
 
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
