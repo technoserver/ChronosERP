@@ -67,22 +67,22 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     public void doCreate() {
         super.doCreate();
         getObjeto().setDataCadastro(new Date());
-        empresas = getListEmpresas();
+        empresas = new ArrayList<>();
 
     }
 
     @Override
     public void doEdit() {
         super.doEdit();
+        List<Filtro> filtros = new ArrayList<>();
 
-        empresas = getListEmpresas();
     }
 
     @Override
     public void salvar() {
 
         try {
-            service.salvar(getObjeto(), senha, empresas);
+            service.salvar(getObjeto(), senha, empresasSelecionada);
             setTelaGrid(true);
             Mensagem.addInfoMessage("Dados salvo com sucesso");
         } catch (Exception ex) {
@@ -128,20 +128,21 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
         return list;
     }
 
+    public void definirEmpresas() {
+        empresas = getListEmpresas();
+    }
+
     public List<Empresa> getListEmpresas() {
         List<Filtro> filtros = new ArrayList<>();
 
         empresas = new ArrayList<>();
 
-        if (getObjeto().getId() != null) {
-            filtros.add(new Filtro("empresaPrincipal", "S"));
-            filtros.add(new Filtro("pessoa.id", getObjeto().getColaborador().getPessoa().getId()));
-            empresaPessoa = empresaPessoaRepository.get(EmpresaPessoa.class, filtros, new Object[]{"empresa.id", "empresa.razaoSocial"});
-            filtros.clear();
-            filtros.add(new Filtro("id", Filtro.DIFERENTE, empresaPessoa.getEmpresa().getId()));
-        } else {
-            filtros.add(new Filtro("id", Filtro.DIFERENTE, empresa.getId()));
-        }
+
+        filtros.add(new Filtro("empresaPrincipal", "S"));
+        filtros.add(new Filtro("pessoa.id", getObjeto().getColaborador().getPessoa().getId()));
+        empresaPessoa = empresaPessoaRepository.get(EmpresaPessoa.class, filtros, new Object[]{"empresa.id", "empresa.razaoSocial"});
+        filtros.clear();
+        filtros.add(new Filtro("id", Filtro.DIFERENTE, empresaPessoa.getEmpresa().getId()));
 
 
         empresas = empresaRepository.getEntitys(Empresa.class, filtros, new Object[]{"razaoSocial"});

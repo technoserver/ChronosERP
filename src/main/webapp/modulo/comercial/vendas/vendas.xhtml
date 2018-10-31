@@ -59,6 +59,7 @@
                             </h:outputLabel>
                         </p:column>
                         <p:column headerText="Situacao" sortBy="#{row.situacao}" width="130">
+
                             <h:outputLabel
                                     value="#{vendaCabecalhoControll.keyFromValue(vendaCabecalhoControll.vendaOrcamentoSituacao, row.situacao)}"/>
                         </p:column>
@@ -89,7 +90,7 @@
                                                              target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                             </p:commandLink>
                             &nbsp;
-                            <p:menuButton>
+                            <p:menuButton rendered="#{ row.situacao ne 'D'}">
                                 <p:menuitem value="Imprimir A4"
                                             actionListener="#{vendaRelatorioControll.imprimirPedido(row.id)}"
                                             icon="fa fa-print" ajax="false"/>
