@@ -62,7 +62,10 @@
                                   completeMethod="getListColaborador"
                                   nomeAtributo="#{usuarioConttroll.objeto.colaborador}"
                                   idComponente="colaborador"
-                />
+                >
+                    <p:ajax listener="#{usuarioConttroll.definirEmpresas}" event="itemSelecionado" process="@this"
+                            update="formCentro:telaDetalhe:panelEmpresas"/>
+                </erp:autoComplete>
 
                 <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                   label="Papel"
@@ -95,17 +98,19 @@
                 </div>
 
             </div>
-            <h:panelGroup layout="block" styleClass="m-t" rendered="#{usuarioConttroll.existeEmpresa}">
-                <erp:separador label="Selecione as empresas nos quais o usuário terá acesso"/>
-                <div class="row">
-                    <div class="col-md-12">
-                        <p:selectManyCheckbox id="empresas" value="#{usuarioConttroll.empresasSelecionada}"
-                                              layout="responsive" columns="3">
-                            <f:selectItems value="#{usuarioConttroll.empresas}" var="obj"
-                                           itemLabel="#{obj.razaoSocial}" itemValue="#{obj}"/>
-                        </p:selectManyCheckbox>
+            <h:panelGroup layout="block" id="panelEmpresas">
+                <h:panelGroup layout="block" styleClass="m-t" rendered="#{usuarioConttroll.existeEmpresa}">
+                    <erp:separador label="Selecione as empresas nos quais o usuário terá acesso"/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p:selectManyCheckbox id="empresas" value="#{usuarioConttroll.empresasSelecionada}"
+                                                  layout="responsive" columns="3">
+                                <f:selectItems value="#{usuarioConttroll.empresas}" var="obj"
+                                               itemLabel="#{obj.razaoSocial}" itemValue="#{obj}"/>
+                            </p:selectManyCheckbox>
+                        </div>
                     </div>
-                </div>
+                </h:panelGroup>
             </h:panelGroup>
 
 

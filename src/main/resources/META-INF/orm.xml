@@ -4,6 +4,39 @@
                  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
                  version="2.1">
 
+    <named-native-query name="Produto.venda" result-set-mapping="produtoDTOMapping">
+        <query>
+            select distinct
+            p.id,
+            p.nome,
+            p.descricao_pdv,
+            p.servico,
+            p.codigo_lst,
+            p.valor_venda,
+            e.quantidade_estoque,
+            estoque_verificado,
+            p.ncm,
+            p.imagem,
+            p.id_grupo_tributario,
+            u.sigla,
+            u.pode_fracionar,
+            pm.valor,
+            tp.preco,
+            p.preco_prioritario,
+            p.quantidade_venda_atacado,
+            p.valor_venda_atacado,
+            tp.preco
+            from produto p
+            inner join empresa_produto e on (e.id_produto=p.ID)
+            inner join UNIDADE_PRODUTO u on (p.ID_UNIDADE_PRODUTO=u.ID)
+            left join produto_promocao pm on (pm.id_produto=p.ID)
+            left join TABELA_PRECO_PRODUTO tp on (tp.ID_PRODUTO=p.ID)
+            left join TABELA_PRECO t on (t.id = tp.id_tabela_preco)
+            where (p.nome like '%BISC%' or p.GTIN='bisc' or p.CODIGO_INTERNO='bisc') and p.ID_GRUPO_TRIBUTARIO is not
+            null and p.TIPO='V'
+        </query>
+    </named-native-query>
+
     <named-native-query name="Usuario.login" result-set-mapping="loginUsuarioDTOMapping">
         <query>
             select
@@ -149,6 +182,31 @@
         </query>
 
     </named-native-query>
+
+
+    <sql-result-set-mapping name="produtoDTOMapping">
+        <constructor-result target-class="com.chronos.dto.ProdutoDTO">
+            <column name="id" class="java.lang.Integer"/>
+            <column name="nome" class="java.lang.String"/>
+            <column name="descricao_pdv" class="java.lang.String"/>
+            <column name="servico" class="java.lang.String"/>
+            <column name="codigo_lst" class="java.lang.String"/>
+            <column name="valor_venda" class="java.math.BigDecimal"/>
+            <column name="quantidade_estoque" class="java.lang.Integer"/>
+            <column name="estoque_verificado" class="java.lang.Integer"/>
+            <column name="ncm" class="java.lang.String"/>
+            <column name="imagem" class="java.lang.String"/>
+            <column name="id_grupo_tributario" class="java.lang.Integer"/>
+            <column name="sigla" class="java.lang.String"/>
+            <column name="pode_fracionar" class="java.lang.String"/>
+            <column name="valor" class="java.math.BigDecimal"/>
+            <column name="preco" class="java.math.BigDecimal"/>
+            <column name="preco_prioritario" class="java.math.BigDecimal"/>
+            <column name="quantidade_venda_atacado" class="java.math.BigDecimal"/>
+            <column name="valor_venda_atacado" class="java.math.BigDecimal"/>
+            <column name="preco" class="java.math.BigDecimal"/>
+        </constructor-result>
+    </sql-result-set-mapping>
 
 
     <sql-result-set-mapping name="loginUsuarioDTOMapping">
