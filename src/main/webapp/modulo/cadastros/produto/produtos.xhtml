@@ -95,6 +95,11 @@
                         <p:column style="width:32px">
                             <p:rowToggler/>
                         </p:column>
+
+                        <p:column headerText="Código." width="100">
+                            <h:outputLabel value="#{row.id}"/>
+                        </p:column>
+
                         <p:column headerText="Cód. Barras" width="130">
                             <h:outputLabel value="#{row.gtin}"/>
                         </p:column>
@@ -110,12 +115,12 @@
                         <p:column headerText="UN" width="50" styleClass="text-center">
                             <h:outputLabel value="#{row.sigla}"/>
                         </p:column>
-                        <p:column headerText="Valor Venda" width="100" class="coluna-monetaria">
+                        <p:column headerText="Valor Venda" width="115" class="coluna-monetaria">
                             <h:outputLabel value="#{row.valorVenda}">
                                 <f:convertNumber pattern="#,###,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Estoque" width="100" class="coluna-quantidade">
+                        <p:column headerText="Estoque" width="100" class="text-right">
                             <h:outputLabel value="#{row.quantidade}">
                                 <f:convertNumber pattern="#,##0.000"/>
                             </h:outputLabel>
