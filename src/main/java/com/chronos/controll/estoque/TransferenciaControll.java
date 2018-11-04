@@ -5,6 +5,7 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
+import com.chronos.service.comercial.NfeService;
 import com.chronos.service.estoque.TransferenciaService;
 import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.util.Biblioteca;
@@ -31,7 +32,12 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
     @Inject
     private Repository<TributGrupoTributario> grupoTributarioRepository;
     @Inject
+    private Repository<NfeCabecalho> nfeCabecalhoRepository;
+
+    @Inject
     private ProdutoService produtoService;
+    @Inject
+    private NfeService nfeService;
 
     @Inject
     private TransferenciaService service;
@@ -121,6 +127,22 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
 
     public void removerItem() {
         getObjeto().getListEstoqueTransferenciaDetalhe().remove(itemSelecionado);
+    }
+
+
+    public void danfe() {
+        try {
+
+            NfeCabecalho nfe = nfeCabecalhoRepository.get(getObjetoSelecionado().getIdnfecabeclaho(), NfeCabecalho.class);
+            nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), false);
+            nfeService.danfe(nfe);
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao gera Cupom \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar Cupom", ex);
+            }
+        }
     }
 
     public List<TributOperacaoFiscal> getListaTributOperacaoFiscal(String descricao) {

@@ -594,6 +594,32 @@ public class NfeService implements Serializable {
         return status;
     }
 
+    public void imprimirCartaCorrecao(NfeEvento evento, NfeCabecalho nfe) throws Exception {
+
+
+        String nomeRelatorioJasper = "CartaCorrecao";
+        HashMap parametrosRelatorio = new LinkedHashMap();
+
+
+        parametrosRelatorio.put("chaveAcesso", nfe.getChaveAcessoCompleta());
+
+        parametrosRelatorio.put("protocolo", evento.getProtocolo());
+        parametrosRelatorio.put("justificativa", evento.getJustificativa());
+
+        parametrosRelatorio.put("orgao", empresa.buscarEnderecoPrincipal().getUf());
+        parametrosRelatorio.put("seqEvento", evento.getSequencia().toString());
+        parametrosRelatorio.put("cnpj", empresa.getCnpj());
+        parametrosRelatorio.put("dataHoraEvento", FormatValor.getInstance().formatarDataNota(evento.getDataHora()));
+
+
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        JasperReportUtil report = new JasperReportUtil(response);
+
+        report.gerarRelatorioBaixa(parametrosRelatorio, Constantes.CAMINHODANFE, nomeRelatorioJasper, "CartaCorrecao.pdf");
+
+
+    }
+
     public void danfe(NfeCabecalho nfe) throws Exception {
         empresa = nfe.getEmpresa();
         String cnpj = empresa.getCnpj();
@@ -715,7 +741,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public String cartaCorrecao(NfeCabecalho nfe, String justificativa) throws Exception {
+    public NfeEvento cartaCorrecao(NfeCabecalho nfe, String justificativa) throws Exception {
 
         if (!StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             throw new ChronosException("NF-e náo autorizada. Cancelamento náo permitido!");
@@ -767,7 +793,7 @@ public class NfeService implements Serializable {
 
         Mensagem.addInfoMessage(result);
 
-        return result;
+        return nfeEvento;
 
     }
 

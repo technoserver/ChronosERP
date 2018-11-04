@@ -7,8 +7,8 @@ package com.chronos.controll.cadastros;
 
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.ProdutoGrupo;
+import com.chronos.util.jsf.Mensagem;
 
-import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -23,10 +23,18 @@ public class ProdutoGrupoControll  extends AbstractControll<ProdutoGrupo> implem
 
     private static final long serialVersionUID = 1L;
 
-    @PostConstruct
     @Override
-    public void init() {
-        super.init();
+    public void salvar() {
+
+        boolean existe = dao.existeRegisro(ProdutoGrupo.class, "nome", getObjeto().getNome());
+
+        if (existe) {
+            Mensagem.addErrorMessage("Já existe grupo com esse nome");
+        } else {
+            super.salvar();
+        }
+
+
     }
 
     @Override

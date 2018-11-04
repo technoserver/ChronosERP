@@ -95,6 +95,11 @@
                         <p:column style="width:32px">
                             <p:rowToggler/>
                         </p:column>
+
+                        <p:column headerText="Código." width="100">
+                            <h:outputLabel value="#{row.id}"/>
+                        </p:column>
+
                         <p:column headerText="Cód. Barras" width="130">
                             <h:outputLabel value="#{row.gtin}"/>
                         </p:column>
@@ -110,12 +115,12 @@
                         <p:column headerText="UN" width="50" styleClass="text-center">
                             <h:outputLabel value="#{row.sigla}"/>
                         </p:column>
-                        <p:column headerText="Valor Venda" width="100" class="coluna-monetaria">
+                        <p:column headerText="Valor Venda" width="115" class="coluna-monetaria">
                             <h:outputLabel value="#{row.valorVenda}">
                                 <f:convertNumber pattern="#,###,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Estoque" width="100" class="coluna-quantidade">
+                        <p:column headerText="Estoque" width="100" class="text-right">
                             <h:outputLabel value="#{row.quantidade}">
                                 <f:convertNumber pattern="#,##0.000"/>
                             </h:outputLabel>
@@ -561,11 +566,28 @@
 
                         </erp:autoComplete>
 
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="produtoNcm" label="Ncm"
-                                        nomeAtributo="#{produtoControll.objeto.ncm}"
-                                        tamanhoMaximo="8"
-                                        requerido="true"/>
+
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <p:outputLabel value="NCM" for="ncm"/>
+                            <div class="field-action">
+                                <p:inputText id="ncm"
+                                             value="#{produtoControll.objeto.ncm}"
+                                             required="true"
+                                             maxlength="8"
+                                />
+                                <div class="field-action__icon">
+                                    <p:commandLink title="Pesquisar NCM" style="font-size: 20px;color: #00acac"
+                                                   oncomplete="PF('dialogOutrasTelas6').show();"
+                                                   update=":formOutrasTelas6:panelOutrasTelas6"
+                                                   process="@this"
+                                                   action="#{produtoControll.exibirPesquisaNcm}">
+
+                                        <i class="fa fa-search"></i>
+                                    </p:commandLink>
+                                </div>
+                            </div>
+                        </div>
+
                         <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                         idComponente="produtoCest" label="CEST"
                                         nomeAtributo="#{produtoControll.objeto.cest}"
@@ -859,33 +881,65 @@
     <ui:define name="outrasTelas6">
         <h:form id="formOutrasTelas6">
             <p:dialog id="dialogOutrasTelas6"
-                      header="Inclusão de SubGrupo"
+                      header="Lista de NCM"
                       widgetVar="dialogOutrasTelas6" showEffect="slide" hideEffect="slide"
-                      resizable="true" modal="true" closable="false" width="600">
+                      resizable="true" modal="true" closable="false" width="800">
 
                 <p:outputPanel id="panelOutrasTelas6">
+                    <div class="row m-b">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p:outputLabel value="Descrição ou Código" for="filtro"/>
+                            <div class="field-action">
+                                <p:inputText id="filtro"
+                                             value="#{produtoControll.ncm}"
+
+                                />
+                                <div class="field-action__icon">
+                                    <p:commandLink title="Pesquisar NCM" style="font-size: 20px;color: #00acac"
+                                                   update=":formOutrasTelas6:panelOutrasTelas6"
+                                                   id="btnPesquisarNcm"
+                                                   process="@form"
+                                                   action="#{produtoControll.pesquisarNcm}">
+
+                                        <i class="fa fa-search"></i>
+                                    </p:commandLink>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
+                        <div class="col-sm-12">
+                            <p:dataTable value="#{produtoControll.ncms}" var="row" paginator="true" reflow="true"
+                                         paginatorPosition="bottom" resizableColumns="true">
+                                <p:column headerText="Código" width="100">
+                                    <h:outputLabel value="#{row.codigo}"/>
+                                </p:column>
+                                <p:column headerText="Descrição">
+                                    <h:outputLabel value="#{row.descricao}"/>
+                                </p:column>
+                                <p:column headerText="Ações" width="100" styleClass="text-center">
+                                    <p:commandButton icon="ui-icon-check" title="Selecionar"
+                                                     action="#{produtoControll.selecionarNcm}"
+                                                     update="formCentro:telaDetalhe:tabProduto:ncm"
+                                                     oncomplete="PF('dialogOutrasTelas6').hide();"
+                                                     process="@this">
+                                        <f:setPropertyActionListener value="#{row}"
+                                                                     target="#{produtoControll.ncmSelecionado}"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
 
                     </div>
+
+
                 </p:outputPanel>
                 <f:facet name="footer">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <h:commandButton value="Salvar"
-                                             id="btnSalvarConversao"
-                                             action="#{produtoControll.salvarSubgrupo}"
-                                             class="btn btn-primary center-block"
-                            >
-                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
-                                        process="@form"
-                                        update=":formCentro:growl,:formCentro:telaDetalhe:panelCentroDetalhe"/>
-                            </h:commandButton>
-
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-6">
+                        <div class="col-xs-12">
                             <h:commandButton value="Cancelar"
                                              styleClass="btn btn-default center-block">
-                                <p:ajax oncomplete="PF('dialogOutrasTelas5').hide();" process="@this"/>
+                                <p:ajax oncomplete="PF('dialogOutrasTelas6').hide();" process="@this"/>
                             </h:commandButton>
                         </div>
                     </div>

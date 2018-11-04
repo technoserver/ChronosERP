@@ -169,6 +169,7 @@ public class ImportaXMLNFe {
 
         //destinatario
         destinatario = tipoImportacao == TipoImportacaoXml.ENTRADA ? getDestinatario(dest) : getDestinatario(emit);
+
         destinatario.setNfeCabecalho(nfeCabecalho);
         nfeCabecalho.setDestinatario(destinatario);
 

@@ -25,7 +25,7 @@
         <erp:formularioGrid controller="#{osAberturaControll}" id="telaGrid">
             <p:dataTable value="#{osAberturaControll.dataModel}" var="row" id="dataTableOsAbertura"
                          paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20" lazy="true"
-                         paginatorPosition="bottom" reflow="true" resizableColumns="true"
+                         paginatorPosition="bottom" reflow="true" resizableColumns="true" sortOrder="DESCENDING"
                          rendered="#{osAberturaControll.podeConsultar()}">
 
                 <p:column headerText="Status" width="240">
@@ -34,10 +34,10 @@
                 <p:column headerText="Cliente">
                     <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
                 </p:column>
-                <p:column headerText="Numero" width="100">
+                <p:column headerText="Numero" width="105" sortBy="#{row.numero}">
                     <h:outputLabel value="#{row.numero}"/>
                 </p:column>
-                <p:column headerText="Data Inicio" width="110">
+                <p:column headerText="Data Inicio" width="115" sortBy="#{row.dataInicio}">
                     <h:outputLabel value="#{row.dataInicio}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputLabel>

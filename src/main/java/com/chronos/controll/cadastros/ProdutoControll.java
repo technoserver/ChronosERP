@@ -67,6 +67,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Inject
     private Repository<UnidadeConversao> unidadeConversaoRepository;
     @Inject
+    private Repository<Ncm> ncmRepository;
+
+    @Inject
     private ProdutoService service;
     @Inject
     private Repository<EmpresaPessoa> empresaPessoaRepository;
@@ -83,6 +86,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private String inativo;
     private String nomeProdutoOld;
     private String nomeFoto;
+    private String ncm;
 
     private ProdutoMarca marca;
     private Almoxarifado almoxarifado;
@@ -91,6 +95,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private UnidadeConversao unidadeConversao;
     private UnidadeConversao unidadeConversaoSelecionada;
     private List<UnidadeConversao> conversoes;
+    private List<Ncm> ncms;
+    private Ncm ncmSelecionado;
+
     @NotNull(message = "Unidade de conversão obrigatória")
     private UnidadeProduto unidadeProduto;
     private String acao;
@@ -513,12 +520,32 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         getObjeto().setProdutoSubGrupo(subGrupo);
     }
 
+    public void exibirPesquisaNcm() {
+        ncms = new ArrayList<>();
+        ncm = "";
+    }
+
+    public void pesquisarNcm() {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro(Filtro.AND, "descricao", Filtro.LIKE, ncm));
+        filtros.add(new Filtro(Filtro.OR, "codigo", Filtro.LIKE, ncm));
+
+        ncms = ncmRepository.getEntitys(Ncm.class, filtros);
+
+    }
+
+    public void selecionarNcm() {
+        getObjeto().setNcm(ncmSelecionado.getCodigo());
+        ncm = "";
+    }
+
     private List<Produto> buscarProdutosBalanca() {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro(Filtro.AND, "codigoBalanca", Filtro.NAO_NULO, ""));
         filtros.add(new Filtro("unidadeProduto.podeFracionar", "S"));
         return dao.getEntitys(Produto.class, filtros, new Object[]{"nome", "valorVenda", "codigoBalanca"});
     }
+
 
     @Override
     protected Class<Produto> getClazz() {
@@ -675,5 +702,29 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public Map<String, Integer> getListaEmpresas() {
         return listaEmpresas;
+    }
+
+    public List<Ncm> getNcms() {
+        return ncms;
+    }
+
+    public void setNcms(List<Ncm> ncms) {
+        this.ncms = ncms;
+    }
+
+    public Ncm getNcmSelecionado() {
+        return ncmSelecionado;
+    }
+
+    public void setNcmSelecionado(Ncm ncmSelecionado) {
+        this.ncmSelecionado = ncmSelecionado;
+    }
+
+    public String getNcm() {
+        return ncm;
+    }
+
+    public void setNcm(String ncm) {
+        this.ncm = ncm;
     }
 }
