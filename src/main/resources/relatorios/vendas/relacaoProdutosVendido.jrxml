@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="relacaoProdutosVendidos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20"
+              rightMargin="20" topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
+    <property name="ireport.zoom" value="3.0"/>
+    <property name="ireport.x" value="646"/>
+    <property name="ireport.y" value="48"/>
+    <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
+           isUnderline="false" isStrikeThrough="false"/>
+    <style name="dadosDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isBold="false"
+           isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+    <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression>
+            <![CDATA["/home/john/projetos/java/chronosnfe/src/main/resources/com/chronos/relatorio/comercial/"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="idempresa" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dataInicial" class="java.util.Date">
+        <defaultValueExpression>
+            <![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("1990-01-01")]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dataFinal" class="java.util.Date">
+        <defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[select
+   v.id,
+   v.nome,
+   sum(v.quantidade) as quantidade,
+   v.custo,
+   v.custo * sum(v.quantidade) as custo_total,
+   ROUND(SUM(v.valor_total) / sum(v.quantidade),2)  as valor_medio_venda,
+   ROUND(SUM(v.valor_total),2)  as valor_total_venda,
+   SUM(v.valor_total) - (v.custo * sum(v.quantidade)) as lucro,
+   empresa.razao_social AS empresa_razao_social,
+   empresa.nome_fantasia AS empresa_nome_fantasia,
+   empresa.cnpj AS empresa_cnpj,
+   empresa.inscricao_estadual AS empresa_inscricao_estadual
+
+
+from view_quantidade_produto_vendido v
+INNER JOIN empresa empresa ON v.id_empresa = empresa.id
+INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+where empresa.id = $P{idempresa} and empresa_endereco.principal = 'S'  and v.data_venda::DATE BETWEEN $P{dataInicial} and $P{dataFinal}
+group by v.id,v.nome,v.custo,empresa.id
+order by 7 desc]]>
+    </queryString>
+    <field name="id" class="java.lang.Integer"/>
+    <field name="nome" class="java.lang.String"/>
+    <field name="quantidade" class="java.math.BigDecimal"/>
+    <field name="custo" class="java.math.BigDecimal"/>
+    <field name="custo_total" class="java.math.BigDecimal"/>
+    <field name="valor_medio_venda" class="java.math.BigDecimal"/>
+    <field name="valor_total_venda" class="java.math.BigDecimal"/>
+    <field name="lucro" class="java.math.BigDecimal"/>
+    <field name="empresa_razao_social" class="java.lang.String"/>
+    <field name="empresa_nome_fantasia" class="java.lang.String"/>
+    <field name="empresa_cnpj" class="java.lang.String"/>
+    <field name="empresa_inscricao_estadual" class="java.lang.String"/>
+    <variable name="totalCusto" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{custo_total}]]></variableExpression>
+    </variable>
+    <variable name="totalVenda" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_total_venda}]]></variableExpression>
+    </variable>
+    <variable name="quantidadeTotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{quantidade}]]></variableExpression>
+    </variable>
+    <variable name="lucroTotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{lucro}]]></variableExpression>
+    </variable>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="113" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="112" width="555" height="1" uuid="84907098-40f5-401a-b232-5785f0e8faa0"/>
+            </line>
+            <textField>
+                <reportElement style="tituloDetail" x="1" y="0" width="277" height="14"
+                               uuid="ef82db32-1726-4cac-9ee3-442ef2dd7348"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="2" y="14" width="36" height="14"
+                               uuid="a149d8c6-723f-4357-9d21-645cb4198c1a"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[CNPJ:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="138" y="14" width="36" height="14"
+                               uuid="4317725a-a011-4efa-a747-33d0d6ac5668"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[I.E:]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="dadosDetail" x="38" y="14" width="100" height="14"
+                               uuid="1c93043a-de2c-469a-b30f-97b358a0bef6"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_cnpj}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="174" y="14" width="105" height="14"
+                               uuid="28109b0f-511b-49bc-9be3-71e5f0970c7a"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_inscricao_estadual}==null?"":$F{empresa_inscricao_estadual}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement style="dadosDetail" x="518" y="0" width="37" height="14"
+                               uuid="08715cba-59c2-4071-9808-e2941dfdb4e0"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <textField pattern="HH:mm">
+                <reportElement style="dadosDetail" x="518" y="14" width="37" height="14"
+                               uuid="68f116aa-e1ee-402f-a1fd-1aaa48fe9578"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="485" y="0" width="27" height="14" uuid="0308f1da-c227-4637-9e2d-eee1ab75dc1b"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Data:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="485" y="14" width="27" height="14" uuid="39ef6df0-2e43-4ded-a70a-80d1aa833a79"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Hora:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="45" width="555" height="19" uuid="8f005b14-0cd6-4980-9621-f58de4312734"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Relatório de produtos vendidos]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="100" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
+            </line>
+            <staticText>
+                <reportElement style="tituloDetail" x="51" y="101" width="166" height="12"
+                               uuid="3c2dd349-f275-4219-a25f-964b27cae822"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Produto]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="308" y="101" width="56" height="12"
+                               uuid="9478002a-cc00-40f9-a76b-698e9893244d"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Custo total]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="217" y="101" width="49" height="12"
+                               uuid="79936264-c37c-4960-a9fa-14849cebe4a1"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Quantidade]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="266" y="101" width="42" height="12"
+                               uuid="9589eb9c-fa4c-48b1-a77c-b5e490ead779"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Custo]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="dadosDetail" x="518" y="28" width="37" height="14"
+                               uuid="56ad9f2d-e728-4d51-8002-f3bdfb87d53c"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="485" y="28" width="27" height="14" uuid="496cce1b-9f4b-4aa0-a151-966fcbae9890"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Pagina:]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="tituloDetail" x="0" y="64" width="555" height="14"
+                               uuid="326f4ed8-41c8-4eac-87b2-d99f86c73fa0"/>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Perido: " +
+new SimpleDateFormat("dd/MM/yyyy").format( $P{dataInicial})+
+" até "+
+new SimpleDateFormat("dd/MM/yyyy").format( $P{dataFinal})]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="365" y="101" width="56" height="12"
+                               uuid="a4841c9b-5b27-47e1-8b9f-5cb9103271a5"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Preço médio]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="0" y="101" width="51" height="12"
+                               uuid="c7bd7661-f17f-4ea5-ae6e-f2edef6bacc2"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Cod.]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="422" y="101" width="77" height="12"
+                               uuid="9b2c05fd-c217-4bfa-9abc-a61a03d28551"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor total de venda]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="499" y="101" width="55" height="12"
+                               uuid="fe004573-06ef-426a-aafc-a09cd86bac65"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Lucro]]></text>
+            </staticText>
+        </band>
+    </title>
+    <detail>
+        <band height="12" splitType="Stretch">
+            <textField>
+                <reportElement style="dadosDetail" x="2" y="0" width="49" height="12"
+                               uuid="0071116d-9e4d-4543-9579-0f2da178f265"/>
+                <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="51" y="0" width="166" height="12"
+                               uuid="7acd8980-2e66-451b-b7d8-cffbbedec6ab"/>
+                <textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="217" y="0" width="49" height="12"
+                               uuid="1fb19cf4-4839-4d09-a2fa-7d41852c1574"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{quantidade}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="266" y="0" width="42" height="12"
+                               uuid="84f98819-e245-431d-a236-83122119980a"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{custo}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="308" y="0" width="57" height="12"
+                               uuid="1c062c7d-4180-4a7e-b8ef-814d8249819c"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{custo_total}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="365" y="0" width="56" height="12"
+                               uuid="0dc0d97a-247c-4a4b-bb2f-6ec301f89b72"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{valor_medio_venda}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="422" y="0" width="77" height="12"
+                               uuid="db918d0d-73f9-40eb-9157-deff600991f3"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{valor_total_venda}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="499" y="0" width="55" height="12"
+                               uuid="e73aac0b-b070-4ea4-9172-98bd13f7d447"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{lucro}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <summary>
+        <band height="64">
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="485" y="27" width="69" height="12"
+                               uuid="34718936-2769-46e8-b4d8-74745f54e566"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{totalCusto}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="485" y="39" width="70" height="12"
+                               uuid="1526e17a-8366-4bdb-974c-9fc90b9fb1a3"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{totalVenda}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="485" y="15" width="69" height="12"
+                               uuid="db903082-7f8b-46df-a4fe-c1ef3ef68e33"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{quantidadeTotal}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="485" y="51" width="70" height="12"
+                               uuid="6967531a-cc19-45a1-b89a-e142ffc21d51"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{lucroTotal}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="396" y="15" width="89" height="12"
+                               uuid="0eb2a7e4-57fb-4a4c-aca2-132671c293f0"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Quantidade de produtos:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="443" y="27" width="42" height="12"
+                               uuid="209c0ec1-1101-4139-b01b-9c9b5db80f46"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Custo total:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="396" y="39" width="89" height="12"
+                               uuid="737fb218-87c4-4706-943c-e56c15831f10"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor total de vendas:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="443" y="51" width="42" height="12"
+                               uuid="47af3579-a67a-4979-8da0-c1900571614c"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Lucro total:]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="1" width="555" height="1" uuid="1de7de8c-9996-40cf-b501-38eeca15df34"/>
+            </line>
+        </band>
+    </summary>
+</jasperReport>
