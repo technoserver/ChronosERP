@@ -98,7 +98,11 @@ public class VendaService implements Serializable {
             nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
             nfe.setCsc(configuracaoEmissorDTO.getCsc());
             nfe.setSerie(configuracaoEmissorDTO.getSerie());
+            String infAdd = nfe.getInformacoesAddContribuinte();
+            infAdd += " " + venda.getObservacao();
+            nfe.setInformacoesAddContribuinte(infAdd);
             StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
+
             if (status == StatusTransmissao.AUTORIZADA) {
                 venda.setSituacao(SituacaoVenda.NotaFiscal.getCodigo());
                 venda.setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
