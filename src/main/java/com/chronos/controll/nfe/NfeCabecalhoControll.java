@@ -161,7 +161,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
                 getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
             }
 
-            cartas = eventoRepository.getEntitys(NfeEvento.class, "idNfeCabeclaho", getObjeto().getId());
+            cartas = eventoRepository.getEntitys(NfeEvento.class, "idnfecabecalho", getObjeto().getId());
             dadosSalvos = true;
         } catch (Exception ex) {
             ex.printStackTrace();
