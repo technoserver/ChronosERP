@@ -37,6 +37,13 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         execute(jpql, quantidade, idProduto, idEmpresa);
     }
 
+    public void ajustarEstoqueAndVerificadoEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) {
+
+        String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = ?1, p.estoqueVerificado = ?1 where p.produto.id = ?2 and p.empresa.id= ?3";
+
+        execute(jpql, quantidade, idProduto, idEmpresa);
+    }
+
 
     public void atualizaEstoqueVerificado(Integer idEmpresa, List<ProdutoVendaDTO> itens) {
         for (ProdutoVendaDTO item : itens) {

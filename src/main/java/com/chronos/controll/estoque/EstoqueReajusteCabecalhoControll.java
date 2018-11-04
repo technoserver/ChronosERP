@@ -68,7 +68,7 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
             } else {
                 efetuarCalculos();
                 for (EstoqueReajusteDetalhe e : getObjeto().getListaEstoqueReajusteDetalhe()) {
-                    estoqueRepository.ajustarEstoqueEmpresa(empresa.getId(), e.getProduto().getId(), e.getQuantidadeReajuste());
+                    estoqueRepository.ajustarEstoqueAndVerificadoEmpresa(empresa.getId(), e.getProduto().getId(), e.getQuantidadeReajuste());
                     estoqueRepository.atualizarPrecoProduto(e.getProduto().getId(), e.getValorReajuste());
                 }
                 super.salvar();
