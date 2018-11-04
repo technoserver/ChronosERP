@@ -14,6 +14,7 @@ import com.chronos.service.comercial.NfeService;
 import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.SortOrder;
@@ -47,6 +48,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private Repository<ViewPessoaTransportadora> transportadoraRepository;
     @Inject
     private Repository<Veiculo> veiculoRepository;
+    @Inject
+    private Repository<NfeEvento> eventoRepository;
 
 
     @Inject
@@ -77,6 +80,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private Date dataFinal;
 
     private List<Veiculo> veiculos;
+    private List<NfeEvento> cartas;
+    private NfeEvento nfeEventoSelecionado;
     private Veiculo veiculo;
     private ViewPessoaTransportadora transportadora;
 
@@ -122,6 +127,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
             veiculo = null;
             transportadora = null;
+            cartas = new ArrayList<>();
             this.setActiveTabIndex(0);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -155,7 +161,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
                 getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
             }
 
-
+            cartas = eventoRepository.getEntitys(NfeEvento.class, "idNfeCabeclaho", getObjeto().getId());
             dadosSalvos = true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -392,6 +398,19 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos NFe">
 
+    public void imprimirCartaCorrecao() {
+
+        try {
+            nfeService.imprimirCartaCorrecao(nfeEventoSelecionado, getObjeto());
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao gerar carta de correção", ex);
+            }
+
+        }
+    }
 
     public void danfe() {
 
@@ -464,8 +483,15 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     public void cartaCorrecao() {
         try {
+            justificativa = Biblioteca.removerAcentos(justificativa);
+            NfeEvento nfeEvento = nfeService.cartaCorrecao(getObjeto(), justificativa);
 
-            nfeService.cartaCorrecao(getObjeto(), justificativa);
+            if (cartas == null) {
+                cartas = new ArrayList<>();
+                cartas.add(nfeEvento);
+            } else {
+                cartas.add(nfeEvento);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao enviar a carta de correção!", e);
@@ -716,6 +742,18 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     // <editor-fold defaultstate="collapsed" desc="GETS SETS">
 
+
+    public List<NfeEvento> getCartas() {
+        return cartas;
+    }
+
+    public NfeEvento getNfeEventoSelecionado() {
+        return nfeEventoSelecionado;
+    }
+
+    public void setNfeEventoSelecionado(NfeEvento nfeEventoSelecionado) {
+        this.nfeEventoSelecionado = nfeEventoSelecionado;
+    }
 
     public ViewPessoaTransportadora getTransportadora() {
         return transportadora;

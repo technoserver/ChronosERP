@@ -18,6 +18,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -79,7 +80,7 @@ public class Biblioteca {
         ultimoDigitoCalculado = (ultimoDigitoCalculado >= 10 ? 0 : ultimoDigitoCalculado);
 
         // Pego o ultimo digito do renavam original (para confrontar com o calculado)
-        int digitoRealInformado = Integer.valueOf(renavam.substring(renavam.length() - 1, renavam.length()));
+        int digitoRealInformado = Integer.valueOf(renavam.substring(renavam.length() - 1));
 
         // Comparo os digitos calculado e informado
         if (ultimoDigitoCalculado == digitoRealInformado) {
@@ -559,6 +560,16 @@ public class Biblioteca {
         Pattern pattern = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    public static String removerAcentos(String str) {
+        str = str.replaceAll("\r", "");
+        str = str.replaceAll("\t", "");
+        str = str.replaceAll("\n", "");
+        str = str.replaceAll("&", "E");
+        str = str.replaceAll(">\\s+<", "><");
+        CharSequence cs = new StringBuilder(str == null ? "" : str);
+        return Normalizer.normalize(cs, Normalizer.Form.NFKD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
 
     public String retiraAcentos(String string) {
