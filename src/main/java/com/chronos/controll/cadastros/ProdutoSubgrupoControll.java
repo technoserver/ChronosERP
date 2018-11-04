@@ -10,6 +10,7 @@ import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.ProdutoGrupo;
 import com.chronos.modelo.entidades.ProdutoSubGrupo;
 import com.chronos.repository.Repository;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -43,6 +44,18 @@ public class ProdutoSubgrupoControll extends AbstractControll<ProdutoSubGrupo> i
         dataModel.setJoinFetch(joinFetch);
 
         return dataModel;
+
+    }
+
+    @Override
+    public void salvar() {
+        boolean existe = dao.existeRegisro(ProdutoSubGrupo.class, "nome", getObjeto().getNome());
+
+        if (existe) {
+            Mensagem.addErrorMessage("Já existe subgrupo com esse nome");
+        } else {
+            super.salvar();
+        }
 
     }
 
