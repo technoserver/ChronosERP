@@ -68,7 +68,10 @@ public class UsuarioService implements Serializable {
             user.setSenha(encoder.encode(senha));
         }
 
-        definirEmpresa(user.getColaborador().getPessoa(), empresas);
+        if (empresas != null && !empresas.isEmpty()) {
+            definirEmpresa(user.getColaborador().getPessoa(), empresas);
+        }
+
         if (user.getId() == null) {
             definirUsuarioTenant(user);
         }
