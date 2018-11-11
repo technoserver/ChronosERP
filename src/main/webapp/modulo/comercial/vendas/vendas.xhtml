@@ -90,7 +90,7 @@
                                                              target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                             </p:commandLink>
                             &nbsp;
-                            <p:menuButton rendered="#{ row.situacao ne 'D'}">
+                            <p:menuButton>
                                 <p:menuitem value="Imprimir A4"
                                             actionListener="#{vendaRelatorioControll.imprimirPedido(row.id)}"
                                             icon="fa fa-print" ajax="false"/>
@@ -420,7 +420,8 @@
                                         <c:if test="#{!vendaCabecalhoControll.telaGrid and vendaCabecalhoControll.objeto.temProduto()}">
 
                                             <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar}" icon="ui-icon-disk">
-                                                <p:menuitem value="Salvar e Faturar" actionListener="#{vendaCabecalhoControll.faturarVenda}"
+                                                <p:menuitem value="Salvar e Encerrar"
+                                                            actionListener="#{vendaCabecalhoControll.faturarVenda}"
                                                             update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                                                             rendered="#{!vendaCabecalhoControll.objeto.faturado}"
                                                             icon="ui-icon-arrowrefresh-1-w"/>
