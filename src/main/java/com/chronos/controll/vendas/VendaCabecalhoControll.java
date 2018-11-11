@@ -167,6 +167,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                     .filter(p -> p.getProduto().getId() == vendaDetalhe.getProduto().getId())
                     .findFirst().isPresent();
             if (!encontrou) {
+                vendaDetalhe.calcularValorTotal();
                 getObjeto().getListaVendaDetalhe().add(vendaDetalhe);
             }
 
@@ -187,7 +188,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         try {
             getObjeto().getListaVendaDetalhe().remove(vendaDetalheSelecionado);
             getObjeto().calcularValorTotal();
-            salvar("Registro excluído com sucesso!");
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro!", e);

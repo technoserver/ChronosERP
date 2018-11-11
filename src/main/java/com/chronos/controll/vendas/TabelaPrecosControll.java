@@ -127,6 +127,7 @@ public class TabelaPrecosControll extends AbstractControll<TabelaPreco> implemen
         }
 
         return produtos;
+
     }
 
     @Override
