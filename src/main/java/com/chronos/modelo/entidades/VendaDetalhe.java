@@ -52,6 +52,9 @@ public class VendaDetalhe implements Serializable {
     private Produto produto;
 
     public VendaDetalhe() {
+        this.valorSubtotal = BigDecimal.ZERO;
+        this.valorDesconto = BigDecimal.ZERO;
+
     }
 
     public Integer getId() {
@@ -143,6 +146,11 @@ public class VendaDetalhe implements Serializable {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public void calcularValorTotal() {
+        valorSubtotal = quantidade.multiply(valorUnitario);
+        valorTotal = this.valorSubtotal.subtract(this.valorDesconto);
     }
 
     @Override
