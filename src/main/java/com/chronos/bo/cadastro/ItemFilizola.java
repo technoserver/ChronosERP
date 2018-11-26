@@ -68,7 +68,7 @@ public class ItemFilizola {
 
         int pre = (int) valor.doubleValue();
         double pos = (valor.doubleValue() - pre) * 100;
-        String precoConvertido = "" + pre + (int) pos;
+        String precoConvertido = "" + pre + completarComZeroDireita(2, ((int) pos) + "");
 
         String novoPreco;
         if (precoConvertido.length() > 7) {

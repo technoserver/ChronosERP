@@ -5,7 +5,7 @@
 
     <groupId>com.chronos</groupId>
     <artifactId>ChronoERPLight</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.10</version>
     <packaging>war</packaging>
 
     <name>ChronoERPLight</name>
@@ -33,8 +33,6 @@
         <chronos-calculoTributario.version>1.0.15</chronos-calculoTributario.version>
         <!--thema-->
         <chronos-thema.version>1.0.0</chronos-thema.version>
-
-
         <!-- Java Mail -->
         <javax.mail.version>1.5.6</javax.mail.version>
     </properties>
@@ -146,7 +144,7 @@
         <dependency>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
-            <version>3.3.2.Final</version>
+            <version>3.3.0.Final</version>
             <!--<scope>provided</scope>-->
         </dependency>
 
