@@ -43,8 +43,8 @@ public class ProdutoService implements Serializable {
             throw new ChronosException("Para informar valor de venda no atacado  é preciso informar a quantidade para atacado");
         }
 
-        if (produto.getTributGrupoTributario() == null) {
-            Mensagem.addWarnMessage("É necesário informar o Grupo Tributário OU o ICMS Customizado.");
+        if (produto.getTipo().equals("V") && produto.getTributGrupoTributario() == null) {
+            throw new ChronosException("É necesário informar o Grupo Tributário");
         } else {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro(Filtro.AND, "gtin", Filtro.IGUAL, produto.getGtin()));

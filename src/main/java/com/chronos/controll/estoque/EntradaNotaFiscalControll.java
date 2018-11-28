@@ -524,13 +524,16 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 FacesContext.getCurrentInstance().validationFailed();
                 throw new ChronosException("Valor de venda orbigatório");
             } else {
+
                 if (unidadeProduto != null) {
                     produto = produtoService.addConversaoUnidade(produto, unidadeProduto, fator, acao);
                 }
+
                 FornecedorProduto forProd = produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
                 nfeDetalhe.setProduto(forProd.getProduto());
                 nfeDetalhe.setNomeProduto(forProd.getProduto().getNome());
                 nfeDetalhe.setProdutoCadastrado(true);
+
 
                 if (forProd.getProduto().getUnidadeConversao() != null) {
                     definirQuantidadeConvertida(nfeDetalhe, forProd.getProduto().getUnidadeConversao());
@@ -543,6 +546,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
+                FacesContext.getCurrentInstance().validationFailed();
                 Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("erro ao cadastra o produto", ex);
