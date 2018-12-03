@@ -9,7 +9,6 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jpa.Transactional;
-import com.chronos.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
@@ -53,7 +52,7 @@ public class ProdutoService implements Serializable {
             }
             Produto p = StringUtils.isEmpty(produto.getGtin()) ? null : produtoRepository.get(Produto.class, filtros);
             if (p != null) {
-                Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
+                throw new ChronosException("Este GTIN já está sendo utilizado por outro produto.");
             } else {
                 if (StringUtils.isEmpty(produto.getDescricaoPdv())) {
                     String nomePdv = produto.getNome().length() > 30 ? produto.getNome().substring(0, 30) : produto.getNome();
