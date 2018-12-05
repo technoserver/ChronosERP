@@ -85,6 +85,7 @@
                                                      disabled="#{!entradaNotaFiscalControll.podeInserir() or entradaNotaFiscalControll.objeto.listaNfeDetalhe.size() le 0 }"
                                                      id="btnFechamento">
                                         <p:ajax
+                                                listener="#{entradaNotaFiscalControll.validar}"
                                                 update=":formOutrasTelas6:panelFechamento,formCentro:growl,formCentro:mensagem,navegacao,:formCentro:outputPanelDetalhe"
                                                 oncomplete="if (!args.validationFailed) {PF('dialogFechamento').show();}"
                                                 process="@form"/>
