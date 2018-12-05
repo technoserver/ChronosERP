@@ -258,7 +258,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                 for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
                     estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
                 }
-            } else if (situacao == SituacaoVenda.NotaFiscal) {
+            } else if (situacao == SituacaoVenda.Faturado) {
                 setObjeto(getObjetoSelecionado());
                 NfeCabecalho nfe = nfeRepository.get(getObjeto().getNumeroFatura(), NfeCabecalho.class);
                 nfe.setJustificativaCancelamento(justificativa);
