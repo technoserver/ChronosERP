@@ -193,7 +193,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void validar() {
 
         try {
-            Optional<NfeDetalhe> first = getObjeto().getListaNfeDetalhe().stream().filter(p -> p.isProdutoCadastrado()).findFirst();
+            Optional<NfeDetalhe> first = getObjeto().getListaNfeDetalhe().stream().filter(p -> !p.isProdutoCadastrado()).findFirst();
 
             if (first.isPresent()) {
                 throw new ChronosException("Existem produtos não cadastrados");

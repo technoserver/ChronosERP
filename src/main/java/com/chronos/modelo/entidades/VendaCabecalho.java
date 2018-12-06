@@ -363,7 +363,7 @@ public class VendaCabecalho implements Serializable {
     }
 
 
-    public boolean isFaturado() {
+    public boolean isEncerrado() {
         return situacao != null && situacao.equals("F");
     }
 
