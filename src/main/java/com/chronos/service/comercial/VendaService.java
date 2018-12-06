@@ -7,6 +7,7 @@ import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.entidades.VendaCabecalho;
 import com.chronos.modelo.entidades.VendaComissao;
+import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.enuns.SituacaoVenda;
 import com.chronos.modelo.enuns.StatusTransmissao;
@@ -14,6 +15,7 @@ import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.VendaComissaoRepository;
 import com.chronos.repository.VendaRepository;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
@@ -46,13 +48,15 @@ public class VendaService implements Serializable {
     @Inject
     private SyncPendentesService syncPendentesService;
 
+    @Inject
+    private AuditoriaService auditoriaService;
 
 
     @Transactional
     public VendaCabecalho faturarVenda(VendaCabecalho venda) {
         try {
 
-            venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
+            venda.setSituacao(SituacaoVenda.Encerrado.getCodigo());
             Integer idempresa = venda.getEmpresa().getId();
             AdmParametro parametro = FacesUtil.getParamentos();
             List<ProdutoVendaDTO> produtos = new ArrayList<>();
@@ -68,6 +72,7 @@ public class VendaService implements Serializable {
 
             gerarComissao(venda);
             venda = repository.salvarFlush(venda);
+            auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "VENDA");
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -83,7 +88,7 @@ public class VendaService implements Serializable {
     public void transmitirNFe(VendaCabecalho venda, ModeloDocumento modelo, boolean atualizarEstoque) {
         try {
             SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getSituacao());
-            if (situacao == SituacaoVenda.NotaFiscal) {
+            if (situacao == SituacaoVenda.Faturado) {
                 throw new Exception("Essa venda já possue NFe");
             }
 
@@ -104,12 +109,13 @@ public class VendaService implements Serializable {
             StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
             if (status == StatusTransmissao.AUTORIZADA) {
-                venda.setSituacao(SituacaoVenda.NotaFiscal.getCodigo());
+                venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
                 venda.setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
                 repository.atualizar(venda);
                 String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";
                 Mensagem.addInfoMessage(msg);
             }
+            auditoriaService.gerarLog(AcaoLog.FATURAR_VENDA, "Faturamento do pedido de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

@@ -4,14 +4,12 @@ import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoVendaDTO;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.enuns.Modulo;
-import com.chronos.modelo.enuns.SituacaoVenda;
-import com.chronos.modelo.enuns.StatusTransmissao;
-import com.chronos.modelo.enuns.TipoLancamento;
+import com.chronos.modelo.enuns.*;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.*;
+import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
@@ -59,6 +57,9 @@ public class VendaPdvService implements Serializable {
     @Inject
     private NfeService nfeService;
 
+    @Inject
+    private AuditoriaService auditoriaService;
+
 
 
     @Transactional
@@ -100,6 +101,10 @@ public class VendaPdvService implements Serializable {
 
             }
             movimentoService.lancaVenda(venda.getValorTotal(),venda.getValorDesconto(),venda.getTroco());
+
+
+        auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "PDV");
+
             return venda;
 
 
@@ -111,7 +116,7 @@ public class VendaPdvService implements Serializable {
 
         SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getStatusVenda());
 
-        if (situacao == SituacaoVenda.NotaFiscal) {
+        if (situacao == SituacaoVenda.Faturado) {
             throw new Exception("Essa venda já possue NFe");
         }
 
@@ -137,9 +142,10 @@ public class VendaPdvService implements Serializable {
 
 
         if (status == StatusTransmissao.AUTORIZADA) {
-            venda.setStatusVenda(SituacaoVenda.NotaFiscal.getCodigo());
+            venda.setStatusVenda(SituacaoVenda.Faturado.getCodigo());
             repository.atualizar(venda);
             Mensagem.addInfoMessage("NFCe transmitida com sucesso");
         }
+        auditoriaService.gerarLog(AcaoLog.FATURAR_VENDA, "Faturamento do pedido de venda " + venda.getId() + " numero da NFC-e " + nfe.getNumero(), "PDV");
     }
 }
