@@ -32,6 +32,48 @@
 
                 <div class="ibox-content">
                     <erp:msgPermissao permissao="#{vendaCabecalhoControll.podeConsultar()}"/>
+
+
+                    <div class="row m-b">
+
+                        <erp:campoTexto idComponente="nome"
+                                        nomeAtributo="#{vendaCabecalhoControll.nome}"
+                                        styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        tamanhoMaximo="60" label="Nome"/>
+
+
+                        <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataInicial}"
+                                       label="Data inicial"
+                                       idComponente="vencimentoDe"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                        <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataFinal}"
+                                       label="Data Final"
+                                       idComponente="vencimentoAte"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+
+                        <erp:campoSelect itens="#{vendaCabecalhoControll.status}"
+                                         styleClass="col-xs-12 col-sm-2 col-md-2 m-b"
+                                         idComponente="statusVendas"
+                                         label="Status"
+                                         nomeAtributo="#{vendaCabecalhoControll.situacao}"/>
+
+                        <div class="col-md-2" style="margin-top: 20px">
+
+                            <p:commandLink title="Pesquisar"
+                                           value="Pesquisar"
+                                           styleClass="btn btn-primary"
+                                           actionListener="#{vendaCabecalhoControll.pesquisar}"
+                                           update="formCentro:outputPanelGrid">
+
+                            </p:commandLink>
+
+                        </div>
+
+
+                    </div>
+
                     <p:dataTable
                             value="#{vendaCabecalhoControll.dataModel}"
                             var="row" id="tableVenda" paginator="true"
