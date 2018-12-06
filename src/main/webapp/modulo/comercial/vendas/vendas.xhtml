@@ -98,14 +98,14 @@
                                             actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(row.id)}"
                                             icon="fa fa-print" ajax="false"/>
 
-                                <p:menuitem value="Emitir NFe"
+                                <p:menuitem value="Faturar - NFe"
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.numeroFatura}"
                                             action="#{vendaCabecalhoControll.gerarNFe()}">
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                                 </p:menuitem>
-                                <p:menuitem value="Emitir NFCe"
+                                <p:menuitem value="Faturar - NFCe"
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.numeroFatura}"
                                             action="#{vendaCabecalhoControll.gerarNfce}">
@@ -396,59 +396,43 @@
                             <div class="row">
                                 <div class="col-xs-6 col-lg-6 text-center">
                                     <h:panelGroup layout="block" class="btn-group"
-                                                  rendered="#{!vendaCabecalhoControll.objeto.emitido and !vendaCabecalhoControll.objeto.cancelado}">
-                                        <h:commandButton value="Salvar" class="btn btn-primary"
+                                                  rendered="#{!vendaCabecalhoControll.objeto.faturado and !vendaCabecalhoControll.objeto.cancelado}">
+                                        <p:commandButton value="Salvar"
                                                          id="btnSalvar"
                                                          rendered="#{empty vendaCabecalhoControll.objeto.id}"
                                                          action="#{vendaCabecalhoControll.salvar()}"
                                                          disabled="#{!vendaCabecalhoControll.podeInserir()}"
-                                        >
-                                            <p:ajax process="@form"
-                                                    oncomplete="addClass()"
-                                                    update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
-                                        </h:commandButton>
-                                        <h:commandButton value="Salvar" class="btn btn-primary"
-                                                         id="btnAtualizar"
-                                                         rendered="#{not empty vendaCabecalhoControll.objeto.id and !vendaCabecalhoControll.objeto.temProduto()}"
-                                                         actionListener="#{vendaCabecalhoControll.salvar()}"
-                                                         disabled="#{!vendaCabecalhoControll.podeAlterar()}"
-                                        >
-                                            <p:ajax process="@form"
-                                                    oncomplete="addClass()"
-                                                    update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
-                                        </h:commandButton>
+                                                         process="@form"
+                                                         oncomplete="addClass()"
+                                                         update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
+
+                                        </p:commandButton>
 
 
                                         <p:splitButton value="Salvar"
-                                                       rendered="#{!vendaCabecalhoControll.telaGrid and vendaCabecalhoControll.objeto.temProduto()}"
+                                                       rendered="#{!vendaCabecalhoControll.telaGrid and vendaCabecalhoControll.objeto.temProduto() and !vendaCabecalhoControll.objeto.faturado}"
                                                        actionListener="#{osAberturaControll.salvar}"
                                                        icon="ui-icon-disk">
                                             <p:menuitem value="Encerrar"
-                                                        actionListener="#{vendaCabecalhoControll.faturarVenda}"
+                                                        actionListener="#{vendaCabecalhoControll.encerrarVenda}"
                                                         update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                                                         rendered="#{!vendaCabecalhoControll.objeto.encerrado}"
                                                         icon="ui-icon-arrowrefresh-1-w"/>
 
-                                        </p:splitButton>
-
-
-                                        <p:splitButton value="Salvar"
-                                                       rendered="#{!vendaCabecalhoControll.telaGrid and vendaCabecalhoControll.objeto.temProduto()}"
-                                                       actionListener="#{osAberturaControll.salvar}"
-                                                       icon="ui-icon-disk">
-                                            <p:menuitem value="Encerrar"
-                                                        actionListener="#{vendaCabecalhoControll.faturarVenda}"
+                                            <p:menuitem value="Faturar"
+                                                        actionListener="#{vendaCabecalhoControll.gerarNFe}"
                                                         update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
-                                                        rendered="#{!vendaCabecalhoControll.objeto.encerrado}"
+                                                        rendered="#{!vendaCabecalhoControll.objeto.faturado}"
                                                         icon="ui-icon-arrowrefresh-1-w"/>
 
                                         </p:splitButton>
+
 
 
                                     </h:panelGroup>
 
                                 </div>
-                                <div class="col-xs-6 col-lg-6">
+                                <div class="#{vendaCabecalhoControll.objeto.faturado} ? 'col-xs-12 col-lg-12' : 'col-xs-6 col-lg-6'">
                                     <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
                                                      actionListener="#{vendaCabecalhoControll.voltar()}"
                                     >

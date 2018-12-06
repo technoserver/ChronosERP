@@ -9,9 +9,9 @@ public enum SituacaoVenda {
     Producao("P"),
     Expedicao("X"),
     Faturado("F"),
-    Entregue("E"),
+    Encerrado("E"),
+    Entregue("T"),
     Devolucao("V"),
-    NotaFiscal("N"),
     CANCELADA("C");
 
     private String codigo;

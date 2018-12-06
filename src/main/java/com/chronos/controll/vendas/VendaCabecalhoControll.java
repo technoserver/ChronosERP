@@ -196,7 +196,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
 
-    public void faturarVenda() {
+    public void encerrarVenda() {
         try {
 
             vendaService.faturarVenda(getObjeto());
