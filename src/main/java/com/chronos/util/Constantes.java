@@ -16,7 +16,7 @@ public interface Constantes {
     String CAMINHODANFE = "/com/chronos/erplight/relatorios/comercial/nfe";
     int DECIMAIS_QUANTIDADE = 3;
     int DECIMAIS_VALOR = 2;
-    boolean DESENVOLVIMENTO = false;
+    boolean DESENVOLVIMENTO = true;
 
 
     interface FIN{
