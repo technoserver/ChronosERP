@@ -272,15 +272,15 @@
                             <f:selectItem itemValue="selecione" value="#{null}"/>
                             <f:selectItems var="uf" value="#{pessoasControll.estado}"/>
                             <p:ajax event="valueChange"
-                                    process="@this" update="Municipio"
+                                    process="@this" update="municipio"
                                     listener="#{pessoasControll.instanciaCidade()}"
                                     oncomplete="addClass()"/>
                         </h:selectOneMenu>
                     </div>
                     <div class="col-xs-12 col-sm-10 col-md-10">
-                        <h:outputLabel value="Municipio"/>
+                        <p:outputLabel value="Municipio" for="municipio"/>
                         <br/>
-                        <p:autoComplete id="Municipio" value="#{pessoasControll.cidade}"
+                        <p:autoComplete id="municipio" value="#{pessoasControll.cidade}"
                                         completeMethod="#{pessoasControll.getMunicipios}"
                                         var="municipio" itemLabel="#{municipio.getNome()}"
                                         itemValue="#{municipio}" converter="defaultConverter"

@@ -306,15 +306,15 @@
                             <f:selectItem itemValue="selecione" value="#{null}"/>
                             <f:selectItems var="uf" value="#{cc.attrs.controller.estado}"/>
                             <p:ajax event="valueChange"
-                                    process="@this" update="Municipio"
+                                    process="@this" update="municipio"
                                     listener="#{cc.attrs.controller.instanciaCidade()}"
                                     oncomplete="addClass()"/>
                         </h:selectOneMenu>
                     </div>
                     <div class="col-xs-12 col-sm-10 col-md-10">
-                        <p:outputLabel value="Município"/>
+                        <p:outputLabel value="Município" for="municipio"/>
                         <br/>
-                        <p:autoComplete id="Municipio" value="#{cc.attrs.controller.cidade}"
+                        <p:autoComplete id="municipio" value="#{cc.attrs.controller.cidade}"
                                         completeMethod="#{cc.attrs.controller.getMunicipios}"
                                         var="municipio" itemLabel="#{municipio.getNome()}"
                                         itemValue="#{municipio}" converter="defaultConverter"

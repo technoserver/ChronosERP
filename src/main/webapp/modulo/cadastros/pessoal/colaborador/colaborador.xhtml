@@ -23,35 +23,60 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{colaboradorControll}"
-                       idDataTable="dataTableColaborador"
-                       nomeFuncao="Colaborador"
-                       id="telaGrid"
-        >
 
-            <p:column headerText="Nome">
-                <h:outputLabel value="#{row.pessoa.nome}"/>
-            </p:column>
-            <p:column headerText="Matrícula">
-                <h:outputLabel value="#{row.matricula}"/>
-            </p:column>
-            <p:column headerText="Data Admissão">
-                <h:outputLabel value="#{row.dataAdmissao}">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Situação">
-                <h:outputLabel value="#{row.situacaoColaborador.nome}"/>
-            </p:column>
-            <p:column headerText="Cargo">
-                <h:outputLabel value="#{row.cargo.nome}"/>
-            </p:column>
-            <p:column headerText="Setor">
-                <h:outputLabel value="#{row.setor.nome}"/>
-            </p:column>
+        <erp:formularioGrid controller="#{colaboradorControll}" id="telaGrid">
 
+            <div class="row m-b">
+                <erp:campoTexto idComponente="nome"
+                                tamanhoMaximo="60"
+                                label="Nome"
+                                nomeAtributo="#{colaboradorControll.nome}" styleClass="col-xs-12 col-sm-6 col-md-6"/>
 
-        </erp:gridDados>
+                <erp:campoTexto idComponente="cargo"
+                                tamanhoMaximo="14"
+                                label="Cargo"
+                                nomeAtributo="#{colaboradorControll.nomeCargo}"
+                                styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                <erp:campoTexto idComponente="setor"
+                                tamanhoMaximo="14"
+                                label="Setor"
+                                nomeAtributo="#{colaboradorControll.nomeSetor}"
+                                styleClass="col-xs-12 col-sm-2 col-md-2 m-b"/>
+
+                <div class="col-md-2" style="margin-top: 20px">
+                    <p:commandButton value="Pesquisar"
+                                     action="#{colaboradorControll.pesquisar}"
+                                     update="formCentro:telaGrid:outputPanelGrid"/>
+                </div>
+
+            </div>
+
+            <erp:gridDadosSemForm idDataTable="dataTableColaborador" controller="#{colaboradorControll}">
+                <p:column headerText="Nome">
+                    <h:outputLabel value="#{row.pessoa.nome}"/>
+                </p:column>
+                <p:column headerText="Matrícula">
+                    <h:outputLabel value="#{row.matricula}"/>
+                </p:column>
+                <p:column headerText="Data Admissão">
+                    <h:outputLabel value="#{row.dataAdmissao}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Situação">
+                    <h:outputLabel value="#{row.situacaoColaborador.nome}"/>
+                </p:column>
+                <p:column headerText="Cargo">
+                    <h:outputLabel value="#{row.cargo.nome}"/>
+                </p:column>
+                <p:column headerText="Setor">
+                    <h:outputLabel value="#{row.setor.nome}"/>
+                </p:column>
+            </erp:gridDadosSemForm>
+
+        </erp:formularioGrid>
+
     </ui:define>
 
 

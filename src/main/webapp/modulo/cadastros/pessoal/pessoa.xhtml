@@ -24,36 +24,56 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDadosCustom controller="#{pessoasControll}"
-                             idDataTable="dataTablePessoa"
-                             dataModel="#{pessoasControll.pessoaDataModel}"
-                             nomeFuncao="PESSOA"
-                             id="telaGrid"
-                             objetoSelecionado="#{pessoasControll.pessoaSelecionada}">
 
-            <p:column headerText="Nome">
-                <h:outputLabel value="#{row.nome}"/>
-            </p:column>
-            <p:column headerText="CPF/CNPJ" width="165">
-                <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
-                    <f:converter converterId="cpfCnpjConverter"/>
-                </h:outputLabel>
-                <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'J'}">
-                    <f:converter converterId="cpfCnpjConverter"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Endereço">
-                <h:outputLabel value="#{row.logradouro}"/>
-            </p:column>
-            <p:column headerText="Cidade">
-                <h:outputLabel value="#{row.cidade} - #{row.uf}"/>
-            </p:column>
-            <p:column headerText="Fone" width="120">
-                <h:outputLabel value="#{row.fone}"/>
-            </p:column>
+        <erp:formularioGrid controller="#{pessoasControll}" id="telaGrid">
 
 
-        </erp:gridDadosCustom>
+            <div class="row m-b">
+                <erp:campoTexto idComponente="nome"
+                                tamanhoMaximo="60"
+                                label="Nome"
+                                nomeAtributo="#{pessoasControll.nome}" styleClass="col-xs-12 col-sm-6 col-md-6"/>
+
+                <erp:campoTexto idComponente="cpf"
+                                tamanhoMaximo="14"
+                                label="CPF/CNPJ"
+                                nomeAtributo="#{pessoasControll.cpfCnpj}" styleClass="col-xs-12 col-sm-2 col-md-2 m-b"/>
+
+                <div class="col-md-2" style="margin-top: 20px">
+                    <p:commandButton value="Pesquisar"
+                                     action="#{pessoasControll.pesquisar}"
+                                     update="formCentro:telaGrid:outputPanelGrid"/>
+                </div>
+
+            </div>
+
+            <erp:gridDadosSemForm idDataTable="dataTablePessoa"
+                                  controller="#{pessoasControll}"
+                                  dataModel="#{pessoasControll.pessoaDataModel}">
+                <p:column headerText="Nome">
+                    <h:outputLabel value="#{row.nome}"/>
+                </p:column>
+                <p:column headerText="CPF/CNPJ" width="165">
+                    <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
+                        <f:converter converterId="cpfCnpjConverter"/>
+                    </h:outputLabel>
+                    <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'J'}">
+                        <f:converter converterId="cpfCnpjConverter"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Endereço">
+                    <h:outputLabel value="#{row.logradouro}"/>
+                </p:column>
+                <p:column headerText="Cidade">
+                    <h:outputLabel value="#{row.cidade} - #{row.uf}"/>
+                </p:column>
+                <p:column headerText="Fone" width="120">
+                    <h:outputLabel value="#{row.fone}"/>
+                </p:column>
+
+            </erp:gridDadosSemForm>
+
+        </erp:formularioGrid>
     </ui:define>
 
 

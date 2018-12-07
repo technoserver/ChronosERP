@@ -8,6 +8,7 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -48,6 +49,9 @@ public class PessoasControll extends AbstractControll<Pessoa> implements Seriali
     private Municipio cidade;
     private List<Municipio> cidades;
 
+    private String nome;
+    private String cpfCnpj;
+
 
     public PessoaDataModel getPessoaDataModel() {
 
@@ -57,7 +61,21 @@ public class PessoasControll extends AbstractControll<Pessoa> implements Seriali
             pessoaDataModel.setClazz(ViewPessoa.class);
         }
 
+        pessoaDataModel.getFiltros().clear();
+        pesquisar();
+
         return pessoaDataModel;
+    }
+
+    public void pesquisar() {
+
+        if (!StringUtils.isEmpty(nome)) {
+            pessoaDataModel.getFiltros().add(new Filtro("nome", Filtro.LIKE, nome));
+        }
+
+        if (!StringUtils.isEmpty(cpfCnpj)) {
+            pessoaDataModel.getFiltros().add(new Filtro("cpfCnpj", cpfCnpj));
+        }
     }
 
     @Override
@@ -333,5 +351,21 @@ public class PessoasControll extends AbstractControll<Pessoa> implements Seriali
 
     public void setPessoaSelecionada(ViewPessoa pessoaSelecionada) {
         this.pessoaSelecionada = pessoaSelecionada;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCpfCnpj() {
+        return cpfCnpj;
+    }
+
+    public void setCpfCnpj(String cpfCnpj) {
+        this.cpfCnpj = cpfCnpj;
     }
 }
