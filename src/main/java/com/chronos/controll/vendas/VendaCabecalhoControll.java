@@ -241,6 +241,13 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
 
+    public void faturarVenda() {
+        boolean estoque = isTemAcesso("ESTOQUE");
+        if (!getObjeto().getListaVendaDetalhe().isEmpty()) {
+            vendaService.transmitirNFe(getObjeto(), ModeloDocumento.NFE, estoque);
+        }
+    }
+
     public void gerarNFe() {
         ModeloDocumento modelo = ModeloDocumento.NFE;
         VendaCabecalho venda = dao.getJoinFetch(getObjetoSelecionado().getId(), VendaCabecalho.class);
