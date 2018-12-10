@@ -9,7 +9,6 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jpa.Transactional;
-import com.chronos.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
@@ -43,8 +42,8 @@ public class ProdutoService implements Serializable {
             throw new ChronosException("Para informar valor de venda no atacado  é preciso informar a quantidade para atacado");
         }
 
-        if (produto.getTributGrupoTributario() == null) {
-            Mensagem.addWarnMessage("É necesário informar o Grupo Tributário OU o ICMS Customizado.");
+        if (produto.getTipo().equals("V") && produto.getTributGrupoTributario() == null) {
+            throw new ChronosException("É necesário informar o Grupo Tributário");
         } else {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro(Filtro.AND, "gtin", Filtro.IGUAL, produto.getGtin()));
@@ -53,7 +52,7 @@ public class ProdutoService implements Serializable {
             }
             Produto p = StringUtils.isEmpty(produto.getGtin()) ? null : produtoRepository.get(Produto.class, filtros);
             if (p != null) {
-                Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
+                throw new ChronosException("Este GTIN já está sendo utilizado por outro produto.");
             } else {
                 if (StringUtils.isEmpty(produto.getDescricaoPdv())) {
                     String nomePdv = produto.getNome().length() > 30 ? produto.getNome().substring(0, 30) : produto.getNome();

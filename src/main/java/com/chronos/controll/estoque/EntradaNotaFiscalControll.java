@@ -190,6 +190,25 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     }
 
 
+    public void validar() {
+
+        try {
+            Optional<NfeDetalhe> first = getObjeto().getListaNfeDetalhe().stream().filter(p -> !p.isProdutoCadastrado()).findFirst();
+
+            if (first.isPresent()) {
+                throw new ChronosException("Existem produtos não cadastrados");
+            }
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().validationFailed();
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao validar entrada");
+            }
+        }
+
+    }
+
     public void gerarValores(NfeDetalhe item) {
         item.calcularValorTotalProduto();
         valorTotalFrete = Biblioteca.soma(valorTotalFrete, item.getValorFrete());
@@ -524,13 +543,16 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 FacesContext.getCurrentInstance().validationFailed();
                 throw new ChronosException("Valor de venda orbigatório");
             } else {
+
                 if (unidadeProduto != null) {
                     produto = produtoService.addConversaoUnidade(produto, unidadeProduto, fator, acao);
                 }
+
                 FornecedorProduto forProd = produtoFornecedorService.salvar(produto, fornecedor, empresa, nfeDetalhe.getValorUnitarioComercial(), nfeDetalhe.getCodigoProduto());
                 nfeDetalhe.setProduto(forProd.getProduto());
                 nfeDetalhe.setNomeProduto(forProd.getProduto().getNome());
                 nfeDetalhe.setProdutoCadastrado(true);
+
 
                 if (forProd.getProduto().getUnidadeConversao() != null) {
                     definirQuantidadeConvertida(nfeDetalhe, forProd.getProduto().getUnidadeConversao());
@@ -543,6 +565,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
+                FacesContext.getCurrentInstance().validationFailed();
                 Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("erro ao cadastra o produto", ex);
@@ -550,6 +573,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
 
         }
+
+
     }
 
     private boolean verificaProdutoNaoCadastrado(boolean importacao) {
@@ -612,7 +637,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void incluirDuplicata() {
 
         duplicata = new NfeDuplicata();
-        if ( naturezaFinanceira == null) {
+        if (naturezaFinanceira == null) {
             FacesContext.getCurrentInstance().validationFailed();
             Mensagem.addErrorMessage("É preciso seleciona a natureza financeira !!!");
         } else if (contaCaixa == null) {
@@ -621,10 +646,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         } else if (StringUtils.isEmpty(getObjeto().getNumero())) {
             FacesContext.getCurrentInstance().validationFailed();
             Mensagem.addErrorMessage("Numero da NFe não definido !!!");
-        }else if(getObjeto().getValorTotal() == null || getObjeto().getValorTotal().compareTo(BigDecimal.ZERO)<=0){
+        } else if (getObjeto().getValorTotal() == null || getObjeto().getValorTotal().compareTo(BigDecimal.ZERO) <= 0) {
             FacesContext.getCurrentInstance().validationFailed();
             Mensagem.addErrorMessage("É preciso informar o valor total!!!");
-        }else{
+        } else {
             RequestContext.getCurrentInstance().execute("PF('dialogDuplicata').show()");
         }
 
@@ -673,11 +698,11 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         getObjeto().setIndicadorFormaPagamento(1);
 
         int numero = 0;
-        if(condicao == null || condicao.getId()==null){
+        if (condicao == null || condicao.getId() == null) {
             throw new Exception("Condição de pagamento não definida");
         }
 
-        List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class,"vendaCondicoesPagamento.id",condicao.getId());
+        List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
         condicao.setParcelas(parcelas);
         for (VendaCondicoesParcelas p : condicao.getParcelas()) {
 

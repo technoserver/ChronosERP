@@ -12,6 +12,7 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -64,6 +65,8 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     @Inject
     private PessoaService service;
 
+    private String nome, situacao, nomeCargo, nomeSetor;
+
 
     @Override
     public ERPLazyDataModel<Colaborador> getDataModel() {
@@ -76,8 +79,26 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         dataModel.getFiltros().clear();
         dataModel.addFiltro("pessoa.id", 1, Filtro.DIFERENTE);
         dataModel.addFiltro("pessoa.id", 2, Filtro.DIFERENTE);
+        pesquisar();
         dataModel.setAtributos(new Object[]{"pessoa.id", "pessoa.nome", "matricula", "situacaoColaborador.nome", "cargo.nome", "setor.nome"});
         return dataModel;
+    }
+
+    public void pesquisar() {
+
+        if (!StringUtils.isEmpty(nome)) {
+            dataModel.getFiltros().add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
+        }
+
+        if (!StringUtils.isEmpty(nomeCargo)) {
+            dataModel.getFiltros().add(new Filtro("cargo.nome", Filtro.LIKE, nomeCargo));
+        }
+
+        if (!StringUtils.isEmpty(nomeSetor)) {
+            dataModel.getFiltros().add(new Filtro("setor.nome", Filtro.LIKE, nomeSetor));
+        }
+
+
     }
 
     @Override
@@ -362,5 +383,37 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
 
     public Map<String, Integer> getListaSituacao() {
         return listaSituacao;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(String situacao) {
+        this.situacao = situacao;
+    }
+
+    public String getNomeCargo() {
+        return nomeCargo;
+    }
+
+    public void setNomeCargo(String nomeCargo) {
+        this.nomeCargo = nomeCargo;
+    }
+
+    public String getNomeSetor() {
+        return nomeSetor;
+    }
+
+    public void setNomeSetor(String nomeSetor) {
+        this.nomeSetor = nomeSetor;
     }
 }

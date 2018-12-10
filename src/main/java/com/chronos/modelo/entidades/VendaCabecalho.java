@@ -16,7 +16,7 @@ import java.util.*;
 @DynamicUpdate
 public class VendaCabecalho implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -363,12 +363,12 @@ public class VendaCabecalho implements Serializable {
     }
 
 
-    public boolean isFaturado() {
-        return situacao != null && situacao.equals("F");
+    public boolean isEncerrado() {
+        return situacao != null && situacao.equals("E");
     }
 
-    public boolean isEmitido() {
-        return situacao != null && situacao.equals("N");
+    public boolean isFaturado() {
+        return situacao != null && situacao.equals("F");
     }
 
     public boolean isCancelado() {
@@ -428,13 +428,12 @@ public class VendaCabecalho implements Serializable {
 
     @Transient
     public boolean isPodeExcluir() {
-        boolean podeExcluir = (!situacao.equals("F") && !situacao.equals("N") && !situacao.equals("C"));
-        return podeExcluir;
+        return situacao.equals("D");
     }
 
     @Transient
     public boolean isPodeCancelar() {
-        boolean podeCacelar = (!situacao.equals("F") && !situacao.equals("N"));
+        boolean podeCacelar = (situacao.equals("F") || !situacao.equals("E"));
         return podeCacelar;
     }
 

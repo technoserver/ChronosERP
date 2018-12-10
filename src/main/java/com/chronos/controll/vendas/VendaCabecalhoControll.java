@@ -16,12 +16,13 @@ import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
-import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
+import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,17 +52,10 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Inject
     private Repository<Vendedor> vendedores;
     @Inject
-    private Repository<Produto> produtos;
-    @Inject
-    private Repository<ComissaoObjetivo> objetivos;
-    @Inject
-    private Repository<VendaComissao> comissoes;
-    @Inject
     private Repository<NfeCabecalho> nfeRepository;
     @Inject
     private NfeService nfeService;
-    @Inject
-    private AuditoriaService audService;
+
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
     @Inject
@@ -84,6 +78,23 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     private String justificativa;
 
+    private Date dataInicial, dataFinal;
+    private String nome;
+    private String situacao;
+    private Map<String, String> status;
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+
+        status = new LinkedHashMap<>();
+        status.put("Todos", "");
+        status.put("Faturada", "F");
+        status.put("Encerrada", "E");
+        status.put("Cancelada", "C");
+
+    }
 
     @Override
     public ERPLazyDataModel<VendaCabecalho> getDataModel() {
@@ -95,8 +106,29 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
         dataModel.setAtributos(new Object[]{"dataVenda","numeroFatura","valorTotal","situacao","cliente.pessoa.nome"});
         dataModel.getFiltros().clear();
-        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        pesquisar();
         return dataModel;
+    }
+
+
+    public void pesquisar() {
+
+        if (dataInicial != null) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "dataVenda", Filtro.MAIOR_OU_IGUAL, dataInicial));
+        }
+        if (dataFinal != null) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "dataVenda", Filtro.MENOR_OU_IGUAL, dataFinal));
+        }
+
+        if (!StringUtils.isEmpty(nome)) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "cliente.pessoa.nome", Filtro.LIKE, nome));
+        }
+
+        if (!StringUtils.isEmpty(situacao) && !situacao.equals("T")) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "situacao", Filtro.IGUAL, situacao));
+        }
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+
     }
 
     @Override
@@ -196,7 +228,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
 
-    public void faturarVenda() {
+    public void encerrarVenda() {
         try {
 
             vendaService.faturarVenda(getObjeto());
@@ -258,7 +290,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                 for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
                     estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
                 }
-            } else if (situacao == SituacaoVenda.NotaFiscal) {
+            } else if (situacao == SituacaoVenda.Faturado) {
                 setObjeto(getObjetoSelecionado());
                 NfeCabecalho nfe = nfeRepository.get(getObjeto().getNumeroFatura(), NfeCabecalho.class);
                 nfe.setJustificativaCancelamento(justificativa);
@@ -487,5 +519,41 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void setProduto2(Produto produto2) {
         this.produto2 = produto2;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(String situacao) {
+        this.situacao = situacao;
+    }
+
+    public Map<String, String> getStatus() {
+        return status;
     }
 }

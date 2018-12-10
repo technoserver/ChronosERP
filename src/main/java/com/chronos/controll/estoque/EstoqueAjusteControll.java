@@ -45,7 +45,7 @@ public class EstoqueAjusteControll implements Serializable {
         if (!StringUtils.isEmpty(codigo)) {
             List<Filtro> filtros = new LinkedList<>();
             filtros.add(new Filtro("empresa.id", empresa.getId()));
-            if (codigo.length() > 9) {
+            if (codigo.length() >= 8) {
                 filtros.add(new Filtro("produto.gtin", Filtro.IGUAL, codigo));
             } else {
                 String str = "0" + codigo.replaceAll("\\D", "");

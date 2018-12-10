@@ -2,12 +2,15 @@ package com.chronos.service.cadastros;
 
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.util.jpa.Transactional;
 
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by john on 02/08/17.
@@ -29,13 +32,23 @@ public class ProdutoFornecedorService implements Serializable {
     @Inject
     private Repository<UnidadeConversao> unidadeConversaoRepository;
 
+    @Inject
+    private ProdutoService produtoService;
+
     @Transactional
-    public FornecedorProduto salvar(Produto produto, Fornecedor fornecedor, Empresa empresa, BigDecimal valorCompra, String codigoFornecedor) {
-        boolean salvarEmpresaProduto = produto.getId() == null;
+    public FornecedorProduto salvar(Produto produto, Fornecedor fornecedor, Empresa empresa, BigDecimal valorCompra, String codigoFornecedor) throws ChronosException {
+
 
         UnidadeConversao unidadeConversao = produto.getConversoes().isEmpty() ? null : produto.getConversoes().get(0);
 
-        produto = produto.getId() != null ? produto : produtos.atualizar(produto);
+
+        if (produto.getId() == null) {
+            List<Empresa> empresas = new ArrayList<>();
+            empresas.add(empresa);
+
+            produto = produtoService.salvar(produto, empresas);
+        }
+
 
 
         FornecedorProduto forProd = new FornecedorProduto();
@@ -45,10 +58,6 @@ public class ProdutoFornecedorService implements Serializable {
         forProd.setDataUltimaCompra(new Date());
         forProd.setPrecoUltimaCompra(valorCompra);
 
-
-        if (salvarEmpresaProduto) {
-            empresaProdutoService.novoProduto(empresa, produto);
-        }
 
         FornecedorProduto fornecedorProduto = repository.atualizar(forProd);
 
