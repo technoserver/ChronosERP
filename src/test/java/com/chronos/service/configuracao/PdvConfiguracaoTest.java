@@ -22,6 +22,10 @@ public class PdvConfiguracaoTest {
     public void before() {
         service = new BalancaService();
         conf = new PdvConfiguracaoBalanca();
+        conf.setTamanhoCodigoProduto(5);
+        conf.setTamanhoIdentificador(5);
+        conf.setIdentificador("T");
+
     }
 
     @Test

@@ -121,6 +121,8 @@ public class Produto implements Serializable {
     private String totalizadorParcial;
     @Column(name = "CODIGO_BALANCA")
     private Integer codigoBalanca;
+    @Column(name = "DIAS_VALIDADE")
+    private Integer diasValidade;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_ALTERACAO")
     private Date dataAlteracao;
@@ -148,6 +150,10 @@ public class Produto implements Serializable {
     @JoinColumn(name = "ID_TRIBUT_ICMS_CUSTOM_CAB", referencedColumnName = "ID")
     @ManyToOne
     private TributIcmsCustomCab tributIcmsCustomCab;
+    @JoinColumn(name = "id_tabela_nutricional_cabecalho", referencedColumnName = "ID")
+    @ManyToOne
+    private TabelaNutricionalCabecalho tabelaNutricional;
+
     //@OneToMany(fetch = FetchType.LAZY, mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "EMPRESA_PRODUTO", joinColumns = {
@@ -675,6 +681,23 @@ public class Produto implements Serializable {
 
     public void setConversoes(List<UnidadeConversao> conversoes) {
         this.conversoes = conversoes;
+    }
+
+
+    public Integer getDiasValidade() {
+        return diasValidade;
+    }
+
+    public void setDiasValidade(Integer diasValidade) {
+        this.diasValidade = diasValidade;
+    }
+
+    public TabelaNutricionalCabecalho getTabelaNutricional() {
+        return tabelaNutricional;
+    }
+
+    public void setTabelaNutricional(TabelaNutricionalCabecalho tabelaNutricional) {
+        this.tabelaNutricional = tabelaNutricional;
     }
 
     public String montarItemBalancaToledo() throws ChronosException {
