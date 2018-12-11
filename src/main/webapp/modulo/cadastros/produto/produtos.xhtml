@@ -677,11 +677,35 @@
 
                 </p:tab>
 
+                <p:tab title="Informações Nutricionais">
+
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          label="Tabela nutricional"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaTabelaNutricional"
+                                          nomeAtributo="#{produtoControll.objeto.tabelaNutricional}"
+                                          requerido="false"
+                                          idComponente="tabelaNutricional"/>
+
+
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          nomeAtributo="#{produtoControll.objeto.diasValidade}"
+                                          idComponente="diasValidade"
+                                          tamanhoMaximo="3"
+                                          label="Dias de validade"/>
+                    </div>
+
+                </p:tab>
+
 
             </p:tabView>
 
 
         </erp:telaInclusaoAlteracao>
+
+
     </ui:define>
 
     <ui:define name="outrasTelas">

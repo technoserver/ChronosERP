@@ -68,6 +68,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private Repository<UnidadeConversao> unidadeConversaoRepository;
     @Inject
     private Repository<Ncm> ncmRepository;
+    @Inject
+    private Repository<TabelaNutricionalCabecalho> tabelaNutricionalRepository;
 
     @Inject
     private ProdutoService service;
@@ -349,6 +351,16 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             e.printStackTrace();
         }
         return listaMarcaProduto;
+    }
+
+    public List<TabelaNutricionalCabecalho> getListaTabelaNutricional(String nome) {
+        List<TabelaNutricionalCabecalho> tabelas = new ArrayList<>();
+        try {
+            tabelas = tabelaNutricionalRepository.getEntitys(TabelaNutricionalCabecalho.class, "nome", nome, new Object[]{"nome"});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tabelas;
     }
 
     public void buscarProdutoEmpresas(ToggleEvent event) {

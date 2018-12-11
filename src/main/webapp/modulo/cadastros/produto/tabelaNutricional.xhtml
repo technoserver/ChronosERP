@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Tabela Nutricional
+    </ui:define>
+
+    <ui:define name="tela">
+        #{tabelaNutricionalControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Tabela Nutricional
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{tabelaNutricionalControll}"
+                       idDataTable="dataTableTabelaNutricional"
+                       nomeFuncao="CEST"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+            <p:column headerText="Porçao">
+                <h:outputLabel value="#{row.porcao}"/>
+            </p:column>
+            <p:column headerText="Undiade">
+                <h:outputLabel value="#{row.unidade}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+
+
+        <erp:telaInclusaoAlteracao controller="#{tabelaNutricionalControll}"
+                                   nomeFuncao="CEST"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="nome" label="Nome"
+                                nomeAtributo="#{tabelaNutricionalControll.objeto.nome}"
+                                requerido="true"
+                                tamanhoMaximo="10"/>
+
+                <erp:campoDecimal idComponente="porcao"
+                                  label="Porcao"
+                                  styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  requerido="true"
+                                  nomeAtributo="#{tabelaNutricionalControll.objeto.porcao}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                                 idComponente="unidade"
+                                 label="Unidade"
+                                 itens="#{tabelaNutricionalControll.unidades}"
+                                 nomeAtributo="#{tabelaNutricionalControll.objeto.unidade}"/>
+
+            </div>
+
+            <div class="row m-t">
+                <div class="col-md-12">
+                    <p:commandLink id="btnAddNutriente" styleClass="btn btn-default"
+                                   action="#{tabelaNutricionalControll.incluirItem}"
+                                   process="@this"
+                                   oncomplete="PF('dialogOutrasTelas').show()"
+                                   update=":formOutrasTelas:panelOutrasTelas,dataTableItens"
+                    >
+                        <i class="fa fa-plus"> </i>
+
+                    </p:commandLink>
+                </div>
+
+            </div>
+
+            <div class="row m-t">
+
+                <h:panelGroup layout="block" id="Itens" styleClass="col-md-12">
+                    <p:dataTable id="dataTableItens" var="row" value="#{tabelaNutricionalControll.objeto.nutrientes}"
+                                 paginator="true"
+                                 rowsPerPageTemplate="20,40,60,80,100" paginatorPosition="bottom" rows="20"
+                                 reflow="true" emptyMessage="Nenhum Nutriente incluso">
+
+                        <p:column headerText="Nutriente">
+                            <h:outputLabel value="#{row.nutriente.nome}"/>
+                        </p:column>
+
+                        <p:column headerText="Quantidade" width="150" styleClass="text-right cell-edit">
+                            <h:outputLabel value="#{row.quantidade}">
+                                <f:convertNumber pattern="#,##0.000"/>
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText="VD" width="100" styleClass="text-right cell-edit">
+                            <h:outputLabel value="#{row.vd}">
+                                <f:convertNumber pattern="#,##0.000"/>
+                            </h:outputLabel>
+                        </p:column>
+
+                        <p:column headerText=" - " width="60" styleClass="text-center">
+                            <p:commandLink styleClass="btn btn-default" title="Exluir"
+                                           process="dataTableItens"
+                                           action="#{tabelaPrecosControll.excluirItem}">
+                                <i class="fa fa-times"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{tabelaPrecosControll.itemSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+
+                    </p:dataTable>
+                </h:panelGroup>
+
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+
+    </ui:define>
+
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogOutrasTelas"
+                      header="Add Nutriente" responsive="true"
+                      widgetVar="dialogOutrasTelas" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="600">
+                <p:outputPanel id="panelOutrasTelas">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Nutriente"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{tabelaNutricionalControll}"
+                                          completeMethod="getListaNutrientes"
+                                          nomeAtributo="#{tabelaNutricionalControll.item.nutriente}"
+                                          idComponente="nutriente"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="quantidade" label="Quantidade"
+                                          requerido="true" id="campoPreco"
+                                          nomeAtributo="#{tabelaNutricionalControll.item.quantidade}"/>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="vd" label="VD"
+                                          nomeAtributo="#{tabelaNutricionalControll.item.vd}"/>
+
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             id="addProduto"
+                                             actionListener="#{tabelaNutricionalControll.salvarItem}"
+                                             process="@form"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas').hide();}"
+                                             update=":formOutrasTelas:panelOutrasTelas,:formCentro:growl,formCentro:telaDetalhe:Itens"
+                            >
+
+                            </p:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
+</ui:composition>
