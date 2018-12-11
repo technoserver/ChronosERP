@@ -4,12 +4,15 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.PdvCaixa;
 import com.chronos.modelo.entidades.PdvConfiguracao;
+import com.chronos.modelo.entidades.PdvConfiguracaoBalanca;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
+import com.chronos.modelo.enuns.ModeloBalanca;
 import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.service.configuracao.PdvConfiguracaoService;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
@@ -22,14 +25,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by john on 04/10/17.
  */
 @Named
 @ViewScoped
-public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> implements Serializable {
+public class PdvConfiguracaoControll extends AbstractControll<PdvConfiguracao> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Inject
@@ -42,7 +47,15 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
     @Inject
     private NfeService nfeService;
 
-    private int idcaixa;
+    @Inject
+    private PdvConfiguracaoService service;
+
+    private PdvConfiguracaoBalanca balanca;
+
+
+    private Map<String, String> tipos;
+
+    private int tamanhoCodigoProduto = 4;
 
     @Override
     public ERPLazyDataModel<PdvConfiguracao> getDataModel() {
@@ -61,16 +74,37 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
     @Override
     public void doCreate() {
         super.doCreate();
-
+        balanca = new PdvConfiguracaoBalanca();
+        balanca.setPdvConfiguracao(getObjeto());
         getObjeto().setEmpresa(empresa);
         getObjeto().setWebserviceUf(empresa.getCodigoIbgeUf().toString());
 
+        preencherTipos();
     }
 
     @Override
     public void doEdit() {
         super.doEdit();
-        idcaixa = getObjeto().getPdvCaixa().getId();
+        preencherTipos();
+        if (getObjeto().getPdvConfiguracaoBalanca() == null) {
+            balanca = new PdvConfiguracaoBalanca();
+            balanca.setPdvConfiguracao(getObjeto());
+        } else {
+            balanca = getObjeto().getPdvConfiguracaoBalanca();
+        }
+
+    }
+
+    @Override
+    public void remover() {
+        dao.excluir(getObjetoSelecionado());
+    }
+
+    private void preencherTipos() {
+        tipos = new HashMap<>();
+        tipos.put("Valor Total", "T");
+        tipos.put("Quantidade", "Q");
+        tipos.put("Peso", "P");
     }
 
     @Override
@@ -78,19 +112,20 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
 
 
         try {
-            boolean existeRegisro = pdvVendaCabecalhoRepository.existeRegisro(PdvVendaCabecalho.class, "pdvMovimento.pdvCaixa.id", idcaixa);
-
-            if (existeRegisro && getObjeto().getPdvCaixa().getId() != idcaixa) {
-                throw new ChronosException("Não é possivel altera o caixa, já foram realizadas vendas");
-            }
 
             String schema = context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE);
             getObjeto().setCaminhoSchemas(schema);
             getObjeto().setWebserviceUf(empresa.getCodigoIbgeUf().toString());
+            getObjeto().setPdvConfiguracaoBalanca(balanca);
+            PdvConfiguracao result = service.salvar(getObjeto());
             nfeService.cleanConf();
-            super.salvar();
+            setObjeto(result);
         } catch (Exception ex) {
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro salvar", ex);
+            }
         }
     }
 
@@ -115,7 +150,6 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
         List<PdvCaixa> caixas = new ArrayList<>();
         try {
             List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND, "web", Filtro.IGUAL, "S"));
             filtros.add(new Filtro(Filtro.AND, "nome", Filtro.LIKE, nome));
             caixas = repositoryCaixa.getEntitys(PdvCaixa.class, filtros);
         } catch (Exception ex) {
@@ -124,6 +158,7 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
         return caixas;
     }
 
+
     @Override
     protected Class<PdvConfiguracao> getClazz() {
         return PdvConfiguracao.class;
@@ -131,11 +166,35 @@ public class NfceConfiguracaoControll extends AbstractControll<PdvConfiguracao> 
 
     @Override
     protected String getFuncaoBase() {
-        return "NFCE_CONFIGURACAO";
+        return "PDV_CONFIGURACAO";
     }
 
     @Override
     protected boolean auditar() {
         return false;
+    }
+
+    public ModeloBalanca[] getModelos() {
+        return ModeloBalanca.values();
+    }
+
+    public PdvConfiguracaoBalanca getBalanca() {
+        return balanca;
+    }
+
+    public void setBalanca(PdvConfiguracaoBalanca balanca) {
+        this.balanca = balanca;
+    }
+
+    public Map<String, String> getTipos() {
+        return tipos;
+    }
+
+    public int getTamanhoCodigoProduto() {
+        return tamanhoCodigoProduto;
+    }
+
+    public void setTamanhoCodigoProduto(int tamanhoCodigoProduto) {
+        this.tamanhoCodigoProduto = tamanhoCodigoProduto;
     }
 }

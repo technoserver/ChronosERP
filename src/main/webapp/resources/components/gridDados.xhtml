@@ -26,43 +26,50 @@
         <p:outputPanel rendered="#{cc.attrs.controller.telaGrid}">
 
             <div class="ibox-content">
-                <erp:msgPermissao permissao="#{cc.attrs.controller.podeConsultar()}"/>
-                <p:dataTable value="#{cc.attrs.dataModel!=null? cc.attrs.dataModel :cc.attrs.controller.dataModel}"
-                             var="row" id="#{cc.attrs.idDataTable}" paginator="true"
-                             emptyMessage="Nenhum registro encontrado"
-                             rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
-                             reflow="true" rendered="#{cc.attrs.controller.podeConsultar()}"
-                             resizableColumns="true" lazy="true"
-                             class="js-data-table">
+                <div class="row">
+                    <div class="col-md-12">
+                        <erp:msgPermissao permissao="#{cc.attrs.controller.podeConsultar()}"/>
+                        <p:dataTable
+                                value="#{cc.attrs.dataModel!=null? cc.attrs.dataModel :cc.attrs.controller.dataModel}"
+                                var="row" id="#{cc.attrs.idDataTable}" paginator="true"
+                                emptyMessage="Nenhum registro encontrado"
+                                rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                                reflow="true" rendered="#{cc.attrs.controller.podeConsultar()}"
+                                lazy="true"
+                        >
 
-                    <cc:insertChildren/>
+                            <cc:insertChildren/>
 
-                    <p:column headerText="Ações" width="110" styleClass="text-center">
-                        <p:commandLink title="Alterar" action="#{cc.attrs.controller.doEdit()}" class=" btn btn-default"
-                                       update=":formCentro:telaGrid:outputPanelGrid,#{cc.attrs.telaDetalhePadrao?':formCentro:telaDetalhe:outputPanelDetalhe':':formCentro:outputPanelDetalhe'},navegacao,:formCentro:mensagem"
-                                       id="btnAlterar">
-                            <i class="fa fa-file-text-o"></i>
-                            <f:setPropertyActionListener value="#{row}"
-                                                         target="#{cc.attrs.controller.objetoSelecionado}"/>
-                        </p:commandLink>
-                        &nbsp;
-                        <p:commandLink title="Excluir" action="#{cc.attrs.controller.remover()}"
-                                       update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,#{cc.attrs.telaDetalhePadrao?':formCentro:telaDetalhe:outputPanelDetalhe':':formCentro:outputPanelDetalhe'}"
-                                       process="#{cc.attrs.idDataTable}"
-                                       oncomplete="atualizarMsg();"
-                                       id="btnExcluir"
-                                       class="btn btn-default"
-                                       rendered="#{!cc.attrs.somenteConsulta}"
-                                       disabled="#{!cc.attrs.controller.podeExcluir()}">
-                            <i class="fa fa-times"></i>
-                            <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                            <p:column headerText="Ações" width="115" styleClass="text-center">
+                                <p:commandLink title="Alterar" action="#{cc.attrs.controller.doEdit()}"
+                                               class=" btn btn-default"
+                                               update=":formCentro:telaGrid:outputPanelGrid,#{cc.attrs.telaDetalhePadrao?':formCentro:telaDetalhe:outputPanelDetalhe':':formCentro:outputPanelDetalhe'},navegacao,:formCentro:mensagem"
+                                               id="btnAlterar">
+                                    <i class="fa fa-file-text-o"></i>
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{cc.attrs.controller.objetoSelecionado}"/>
+                                </p:commandLink>
+                                &nbsp;
+                                <p:commandLink title="Excluir" action="#{cc.attrs.controller.remover()}"
+                                               update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,#{cc.attrs.telaDetalhePadrao?':formCentro:telaDetalhe:outputPanelDetalhe':':formCentro:outputPanelDetalhe'}"
+                                               process="#{cc.attrs.idDataTable}"
+                                               oncomplete="atualizarMsg();"
+                                               id="btnExcluir"
+                                               class="btn btn-default"
+                                               rendered="#{!cc.attrs.somenteConsulta}"
+                                               disabled="#{!cc.attrs.controller.podeExcluir()}">
+                                    <i class="fa fa-times"></i>
+                                    <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
-                            <f:setPropertyActionListener value="#{row}"
-                                                         target="#{cc.attrs.controller.objetoSelecionado}"/>
-                        </p:commandLink>
-                    </p:column>
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{cc.attrs.controller.objetoSelecionado}"/>
+                                </p:commandLink>
+                            </p:column>
 
-                </p:dataTable>
+                        </p:dataTable>
+                    </div>
+                </div>
+
             </div><!-- /.box-body -->
             <div class="ibox-footer">
                 <div class="row">

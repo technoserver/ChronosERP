@@ -65,7 +65,7 @@ public class VendaPdvService implements Serializable {
     @Transactional
     public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda) throws Exception {
 
-            venda.setStatusVenda("F");
+        venda.setStatusVenda(SituacaoVenda.Encerrado.getCodigo());
             Integer idempresa = venda.getEmpresa().getId();
             AdmParametro parametro = FacesUtil.getParamentos();
             List<PdvFormaPagamento> pagamentos = venda.getListaFormaPagamento();
@@ -117,7 +117,7 @@ public class VendaPdvService implements Serializable {
         SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getStatusVenda());
 
         if (situacao == SituacaoVenda.Faturado) {
-            throw new Exception("Essa venda já possue NFe");
+            throw new ChronosException("Essa venda já possue NFe");
         }
 
 
@@ -130,7 +130,7 @@ public class VendaPdvService implements Serializable {
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
 
         if (StringUtils.isEmpty(configuracaoEmissorDTO.getSerie())) {
-            throw new Exception("Serie da NFCe não definida");
+            throw new ChronosException("Serie da NFCe não definida");
         }
 
         nfe.setSerie(configuracaoEmissorDTO.getSerie());
