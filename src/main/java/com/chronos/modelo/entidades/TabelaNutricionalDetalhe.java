@@ -27,6 +27,14 @@ public class TabelaNutricionalDetalhe implements Serializable {
     @NotNull
     private TabelaNutricionalCabecalho tabelaNutricional;
 
+    public TabelaNutricionalDetalhe() {
+    }
+
+    public TabelaNutricionalDetalhe(Nutriente nutriente, BigDecimal quantidade, BigDecimal vd) {
+        this.quantidade = quantidade;
+        this.vd = vd;
+        this.nutriente = nutriente;
+    }
 
     public Integer getId() {
         return id;

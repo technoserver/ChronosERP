@@ -23,6 +23,18 @@ public class Nutriente implements Serializable {
     @NotNull
     private String nome;
 
+    public Nutriente() {
+    }
+
+    public Nutriente(String nome) {
+        this.nome = nome;
+    }
+
+    public Nutriente(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

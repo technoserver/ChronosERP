@@ -2,6 +2,7 @@ package com.chronos.service.cadastros;
 
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.ModeloBalanca;
 import com.chronos.modelo.enuns.PrecoPrioritario;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
@@ -9,9 +10,13 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.FacesUtil;
+import com.chronos.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -219,6 +224,42 @@ public class ProdutoService implements Serializable {
         }
 
         return valor;
+    }
+
+    public void gerarIntegracaoBalanca(PdvConfiguracaoBalanca configuracaoBalanca) throws Exception {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro(Filtro.AND, "codigoBalanca", Filtro.NAO_NULO, ""));
+
+
+        List<Produto> produtos = repository.getProdutosBalanca();
+
+        if (!(configuracaoBalanca.getModelo() == ModeloBalanca.FILIZOLA)) {
+            throw new ChronosException("No momento apenas foi feito a integração com a Filizola");
+        }
+
+        if (!produtos.isEmpty()) {
+            File file = File.createTempFile("ITENSMGV", ".txt");
+
+            FileWriter writer = new FileWriter(file);
+
+            int i = 0;
+            for (Produto p : produtos) {
+                p.setBalanca(configuracaoBalanca);
+                String item = p.montarItemBalancaFilizola();
+                if ((produtos.size() - 1) > i) {
+                    item += "\r\n";
+                }
+                writer.write(item);
+                i++;
+            }
+            writer.close();
+            //FileUtils.writeLines(file, linhas);
+
+            FacesUtil.downloadArquivo(file, "ITENSMGV.txt");
+        } else {
+            Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
+        }
+
     }
 
     private void gerarEmpresaProduto(Produto produto, List<Empresa> empresas) {
