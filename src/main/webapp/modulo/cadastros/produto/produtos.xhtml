@@ -46,10 +46,31 @@
                                     ajax="false">
 
                             </p:commandButton>
+
+                            &nbsp;
+                            <p:commandButton
+                                    value="Gerar Integracao com a balança"
+                                    action="#{produtoControll.buscarConfiguracoesBalanca}"
+                                    oncomplete="PF('dialogOutrasTelas7').show();"
+                                    update=":formOutrasTelas7:panelOutrasTelas7"
+                            />
+
+
                         </div>
                     </div>
                     <div class="row">
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                        <erp:campoInteiro idComponente="codigo"
+                                          styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          nomeAtributo="#{produtoControll.codigo}"
+                                          label="Código"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="produto"
+                                        label="GTIN"
+                                        tamanhoMaximo="14"
+                                        nomeAtributo="#{produtoControll.gtin}"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
                                         idComponente="produto"
                                         label="Produto"
                                         tamanhoMaximo="100"
@@ -972,6 +993,54 @@
             </p:dialog>
         </h:form>
 
+    </ui:define>
+
+    <ui:define name="outrasTelas7">
+        <h:form id="formOutrasTelas7" enctype="multipart/form-data">
+            <p:dialog id="dialogOutrasTelas7" header="Gerar integração" responsive="true"
+                      widgetVar="dialogOutrasTelas7" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="600">
+                <p:outputPanel id="panelOutrasTelas7">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:outputLabel value="Configuracao Balança" for="configuracaoBalanca"/>
+                            <h:selectOneMenu id="configuracaoBalanca"
+                                             class="form-control"
+                                             value="#{produtoControll.configuracaoBalanca}"
+                                             required="true"
+                                             converter="defaultConverter">
+                                <f:selectItems value="#{produtoControll.configuracoesBalanca}" var="obj"
+                                               itemValue="#{obj}" itemLabel="#{obj.modelo.descricao}"/>
+                            </h:selectOneMenu>
+                        </div>
+
+
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <f:facet name="footer">
+                        <div class="row">
+                            <div class="col-xs-6 text-center">
+                                <p:commandButton value="Gerar"
+                                                 ajax="false"
+                                                 action="#{produtoControll.gerarIntegracaoBalanca}"
+                                />
+
+
+                            </div>
+                            <div class="col-xs-6">
+                                <h:commandButton value="Cancelar"
+                                                 styleClass="btn btn-default center-block">
+                                    <p:ajax oncomplete="PF('dialogOutrasTelas7').hide();" process="@this"/>
+                                </h:commandButton>
+                            </div>
+                        </div>
+
+                    </f:facet>
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 </ui:composition>

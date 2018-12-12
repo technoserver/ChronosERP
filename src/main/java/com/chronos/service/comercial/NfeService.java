@@ -678,6 +678,11 @@ public class NfeService implements Serializable {
                 nomeRelatorioJasper = Constantes.JASPERNFCE;
 
                 String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_CONSULTANFCE);
+
+                if (nfe.getQrcode() == null) {
+                    throw new ChronosException("Para NFC-e com chave " + nfe.getChaveAcessoCompleta() + " está faltando QRCode");
+                }
+
                 BufferedImage image = MatrixToImageWriter
                         .toBufferedImage(new QRCodeWriter().encode(nfe.getQrcode(), BarcodeFormat.QR_CODE, 300, 300));
                 parametrosRelatorio.put("QR_CODE", image);

@@ -72,6 +72,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private Repository<TabelaNutricionalCabecalho> tabelaNutricionalRepository;
 
     @Inject
+    private Repository<PdvConfiguracaoBalanca> pdvConfiguracaoBalancaRepository;
+
+    @Inject
     private ProdutoService service;
     @Inject
     private Repository<EmpresaPessoa> empresaPessoaRepository;
@@ -82,6 +85,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private List<Empresa> empresas;
     private ViewProdutoEmpresa produtoSelecionado;
 
+    private Integer codigo;
+    private String gtin;
     private String produto;
     private String strGrupo;
     private String strSubGrupo;
@@ -110,6 +115,10 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private int idempresa;
     private Map<String, Integer> listaEmpresas;
 
+    private PdvConfiguracaoBalanca configuracaoBalanca;
+
+    private List<PdvConfiguracaoBalanca> configuracoesBalanca;
+
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
         if (!StringUtils.isEmpty(produto)) {
@@ -126,7 +135,13 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
         }
 
+        if (!StringUtils.isEmpty(codigo)) {
+            produtoDataModel.addFiltro("id", codigo, Filtro.IGUAL);
+        }
 
+        if (!StringUtils.isEmpty(gtin)) {
+            produtoDataModel.addFiltro("gtin", gtin, Filtro.IGUAL);
+        }
 
         produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
         produtoDataModel.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
@@ -450,6 +465,24 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         }
     }
 
+    public void buscarConfiguracoesBalanca() {
+        configuracoesBalanca = pdvConfiguracaoBalancaRepository.getEntitys(PdvConfiguracaoBalanca.class);
+    }
+
+    public void gerarIntegracaoBalanca() {
+        try {
+
+            service.gerarIntegracaoBalanca(configuracaoBalanca);
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao gera dados para balança", ex);
+            }
+        }
+
+    }
+
     public void addMarca() {
         marca = new ProdutoMarca();
     }
@@ -739,5 +772,33 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setNcm(String ncm) {
         this.ncm = ncm;
+    }
+
+    public PdvConfiguracaoBalanca getConfiguracaoBalanca() {
+        return configuracaoBalanca;
+    }
+
+    public void setConfiguracaoBalanca(PdvConfiguracaoBalanca configuracaoBalanca) {
+        this.configuracaoBalanca = configuracaoBalanca;
+    }
+
+    public List<PdvConfiguracaoBalanca> getConfiguracoesBalanca() {
+        return configuracoesBalanca;
+    }
+
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getGtin() {
+        return gtin;
+    }
+
+    public void setGtin(String gtin) {
+        this.gtin = gtin;
     }
 }

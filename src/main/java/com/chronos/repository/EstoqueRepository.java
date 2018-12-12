@@ -175,6 +175,12 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         return produtos;
     }
 
+    public List<Produto> getProdutosBalanca() {
+        String jpql = "select new Produto(p.id,p.nome,p.valorVenda,p.codigoBalanca,p.diasValidade,p.tabelaNutricional) from Produto p  left join p.tabelaNutricional where p.codigoBalanca is not null";
+        List<Produto> produtos = getEntity(Produto.class, jpql);
+        return produtos;
+    }
+
     private void executarQueryEstoque(Integer idEmpresa, Integer idProduto, BigDecimal quantidade, String jpql) {
         TypedQuery query = (TypedQuery) em.createQuery(jpql);
         query.setParameter("quantidade", quantidade);

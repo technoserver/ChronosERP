@@ -168,6 +168,8 @@ public class Produto implements Serializable {
     private BigDecimal controle;
     @Transient
     private List<UnidadeConversao> conversoes;
+    @Transient
+    private PdvConfiguracaoBalanca balanca;
 
     public Produto() {
     }
@@ -209,6 +211,16 @@ public class Produto implements Serializable {
         this.nome = nome;
         this.valorVenda = valorVenda;
         this.codigoBalanca = codigoBalanca;
+
+    }
+
+    public Produto(Integer id, String nome, BigDecimal valorVenda, Integer codigoBalanca, Integer diasValidade, TabelaNutricionalCabecalho tabelaNutricional) {
+        this.id = id;
+        this.nome = nome;
+        this.valorVenda = valorVenda;
+        this.codigoBalanca = codigoBalanca;
+        this.diasValidade = diasValidade;
+        this.tabelaNutricional = tabelaNutricional;
     }
 
     public Integer getId() {
@@ -700,6 +712,14 @@ public class Produto implements Serializable {
         this.tabelaNutricional = tabelaNutricional;
     }
 
+    public PdvConfiguracaoBalanca getBalanca() {
+        return balanca;
+    }
+
+    public void setBalanca(PdvConfiguracaoBalanca balanca) {
+        this.balanca = balanca;
+    }
+
     public String montarItemBalancaToledo() throws ChronosException {
         ItemToledo item = new ItemToledo();
         item.setProduto(this);
@@ -707,8 +727,7 @@ public class Produto implements Serializable {
     }
 
     public String montarItemBalancaFilizola() throws ChronosException {
-        ItemFilizola item = new ItemFilizola();
-        item.setProduto(this);
+        ItemFilizola item = new ItemFilizola(this);
         return item.montarItem();
     }
 
