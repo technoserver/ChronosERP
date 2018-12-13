@@ -273,7 +273,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
             int idnfe = getObjetoSelecionado().getNumeroFatura();
             NfeCabecalho nfe = nfeRepository.get(idnfe, NfeCabecalho.class);
 
-
             nfeService.danfe(nfe);
         } catch (Exception ex) {
             ex.printStackTrace();

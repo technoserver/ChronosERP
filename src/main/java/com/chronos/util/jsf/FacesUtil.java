@@ -45,12 +45,14 @@ public class FacesUtil {
     }
 
 
-    public static void downloadArquivo(File file, String nomeArquivo) throws Exception {
+    public static void downloadArquivo(File file, String nomeArquivo, boolean baixar) throws Exception {
+        String content = baixar ? "attachment" : "inline";
+        String contentType = baixar ? "application/octet-stream" : "application/pdf";
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
-        externalContext.setResponseHeader("Content-Type", "text/plain");
+        externalContext.setResponseHeader("Content-Type", contentType);
         externalContext.setResponseHeader("Content-Length", String.valueOf(file.length()));
-        externalContext.setResponseHeader("Content-Disposition", "attachment;filename=\"" + nomeArquivo + "\"");
+        externalContext.setResponseHeader("Content-Disposition", content + "; filename=\"" + nomeArquivo + "\"");
         externalContext.getResponseOutputStream().write(Biblioteca.getBytesFromFile(file));
         facesContext.responseComplete();
     }
