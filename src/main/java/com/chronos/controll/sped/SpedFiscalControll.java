@@ -62,7 +62,7 @@ public class SpedFiscalControll extends AbstractControll<Contador> implements Se
             d1.setTime(dataInicial);
             d2.setTime(dataFinal);
             File arquivo = icmsIpiService.geraArquivo(versao, finalidadeArquivo, perfil, inventario, dataInicial, dataFinal, idContador);
-            FacesUtil.downloadArquivo(arquivo, "spedfiscal.txt");
+            FacesUtil.downloadArquivo(arquivo, "spedfiscal.txt", true);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("Ocorreu um erro ao gerar o arquivo.", ex);

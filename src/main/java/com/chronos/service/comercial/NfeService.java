@@ -265,7 +265,7 @@ public class NfeService implements Serializable {
             }
             List<String> files = Arrays.asList(caminhoXml, arquivoPdf);
             File arquivoZip = ArquivoUtil.compactarArquivos(files, nfe.getChaveAcessoCompleta());
-            FacesUtil.downloadArquivo(arquivoZip, nfe.getChaveAcessoCompleta() + ".zip");
+            FacesUtil.downloadArquivo(arquivoZip, nfe.getChaveAcessoCompleta() + ".zip", true);
         }
 
     }
@@ -289,7 +289,7 @@ public class NfeService implements Serializable {
                 arqvuivos.add(arquivoPdf);
             }
             File arquivoZip = ArquivoUtil.getInstance().compactarArquivos(arqvuivos, nomeArquivo);
-            FacesUtil.downloadArquivo(arquivoZip, nomeArquivo + ".zip");
+            FacesUtil.downloadArquivo(arquivoZip, nomeArquivo + ".zip", true);
         }
     }
 
@@ -634,10 +634,10 @@ public class NfeService implements Serializable {
         }
 
         if (filePdf.exists()) {
-            FacesUtil.downloadArquivo(filePdf, filePdf.getName());
+            FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         } else {
             gerarDanfe(nfe);
-            FacesUtil.downloadArquivo(filePdf, filePdf.getName());
+            FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         }
     }
 

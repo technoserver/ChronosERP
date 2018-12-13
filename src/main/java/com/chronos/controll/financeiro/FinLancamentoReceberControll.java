@@ -238,7 +238,7 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
             //  GerarArquivoRemessaBB gerarArquivoRemessaBB = new GerarArquivoRemessaBB();
             //  gerarArquivoRemessaBB.gerarArquivoRemessa(listaParcelasReceber, empresa, pessoaEndereco, configuracaoBoleto, file);
 
-            FacesUtil.downloadArquivo(file, "cnab240.txt");
+            FacesUtil.downloadArquivo(file, "cnab240.txt", true);
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao gerar o arquivo remessa!", e);

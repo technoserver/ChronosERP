@@ -422,7 +422,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                 writer.close();
                 //FileUtils.writeLines(file, linhas);
 
-                FacesUtil.downloadArquivo(file, "ITENSMGV.txt");
+                FacesUtil.downloadArquivo(file, "ITENSMGV.txt", true);
             } else {
                 Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
             }
@@ -450,7 +450,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                     linhas.add(p.montarItemBalancaFilizola());
                 }
                 FileUtils.writeLines(file, linhas);
-                FacesUtil.downloadArquivo(file, "CADTXT.txt");
+                FacesUtil.downloadArquivo(file, "CADTXT.txt", true);
             } else {
                 Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
             }
