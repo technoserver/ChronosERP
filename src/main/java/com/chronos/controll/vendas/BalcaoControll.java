@@ -323,13 +323,20 @@ public class BalcaoControll implements Serializable {
             item.setTaxaDesconto(desconto);
         } else {
             BigDecimal subTotal = item.getValorSubtotal();
-            BigDecimal razao = subTotal.subtract(desconto);
-            razao = razao.divide(subTotal, MathContext.DECIMAL64);
-            razao = razao.multiply(BigDecimal.valueOf(100));
-            BigDecimal cem = BigDecimal.valueOf(100);
-            BigDecimal percentual = cem.subtract(razao);
 
-            item.setTaxaDesconto(percentual);
+            if (desconto.compareTo(subTotal) >= 0) {
+                Mensagem.addErrorMessage("Desconto não permitido");
+            } else {
+                BigDecimal razao = subTotal.subtract(desconto);
+                razao = razao.divide(subTotal, MathContext.DECIMAL64);
+                razao = razao.multiply(BigDecimal.valueOf(100));
+                BigDecimal cem = BigDecimal.valueOf(100);
+                BigDecimal percentual = cem.subtract(razao);
+
+                item.setTaxaDesconto(percentual);
+            }
+
+
         }
     }
 

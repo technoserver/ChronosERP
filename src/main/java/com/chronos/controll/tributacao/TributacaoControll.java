@@ -231,7 +231,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
     }
 
     public void alterarTributIcmsUf() {
-        tributIcmsUf = icmsRepository.get(tributIcmsUfSelecionado.getId(), TributIcmsUf.class);
+        tributIcmsUf = tributIcmsUfSelecionado;//icmsRepository.get(tributIcmsUfSelecionado.getId(), TributIcmsUf.class);
     }
 
     public void salvarTributIcmsUf() {
@@ -303,11 +303,14 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
     }
 
     private void validarTributacaoICMS() throws Exception {
-        if (listTributIcmsUf.stream()
+        Optional<TributIcmsUf> icmsUfOptional = listTributIcmsUf.stream()
                 .filter(icms -> icms.getTributGrupoTributario().getId() == tributIcmsUf.getTributGrupoTributario().getId() && icms.getUfDestino().equals(tributIcmsUf.getUfDestino()))
-                .findAny().isPresent()) {
+                .findFirst();
+
+        if (icmsUfOptional.isPresent() && !tributIcmsUf.equals(icmsUfOptional.get())) {
             throw new Exception("Grupo tributário já definido para essa UF ");
         }
+
 
         if (tributIcmsUf.getCsosnB() != null) {
             switch (tributIcmsUf.getCsosnB()) {
