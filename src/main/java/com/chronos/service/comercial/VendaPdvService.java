@@ -61,51 +61,50 @@ public class VendaPdvService implements Serializable {
     private AuditoriaService auditoriaService;
 
 
-
     @Transactional
     public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda) throws Exception {
 
         venda.setStatusVenda(SituacaoVenda.Encerrado.getCodigo());
-            Integer idempresa = venda.getEmpresa().getId();
-            AdmParametro parametro = FacesUtil.getParamentos();
-            List<PdvFormaPagamento> pagamentos = venda.getListaFormaPagamento();
-            venda = repository.atualizar(venda);
-            List<ProdutoVendaDTO> produtos = new ArrayList<>();
-            venda.getListaPdvVendaDetalhe().forEach(p->{
-                produtos.add(new ProdutoVendaDTO(p.getProduto().getId(),p.getQuantidade()));
-                if (parametro != null && parametro.getFrenteCaixa()) {
-                    syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, p.getProduto().getId());
-                }
-            });
-            estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
-            for (PdvFormaPagamento p:pagamentos) {
-                if(p.getPdvTipoPagamento().getGeraParcelas().equals("S")){
-                    finLancamentoReceberService.gerarLancamento(venda.getId(), p.getValor(),venda.getCliente(),p.getCondicao(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
-                }
-
-                if (p.getPdvTipoPagamento().getCodigo().equals("05")) {
-                    ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
-
-                    if (conta == null || conta.getSaldo().compareTo(p.getValor()) <= 0) {
-                        throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
-                    } else {
-                        contaPessoaService.lancaMovimento(conta, p.getValor(), TipoLancamento.DEBITO, Modulo.VENDA.getCodigo(), venda.getId().toString());
-                    }
-                }
-                if (p.getPdvTipoPagamento().getCodigo().equals("03")) {
-
-                    OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(new ArrayList<>(p.getOperadoraCartao().getListaOperadoraCartaoTaxas()), p.getQtdParcelas());
-                    FinLancamentoReceberCartao finLancamentoReceberCartao = finLancamentoReceberCartaoService.gerarLancamento(venda.getId(), p.getValor(), p.getOperadoraCartao(), operadoraCartaoTaxa, p.getQtdParcelas(), Modulo.VENDA.getCodigo(), venda.getEmpresa(), p.getPdvTipoPagamento().getIdentificador());
-                    finLancamentoReceberCartaoRepository.salvar(finLancamentoReceberCartao);
-                }
-
+        Integer idempresa = venda.getEmpresa().getId();
+        AdmParametro parametro = FacesUtil.getParamentos();
+        List<PdvFormaPagamento> pagamentos = venda.getListaFormaPagamento();
+        venda = repository.atualizar(venda);
+        List<ProdutoVendaDTO> produtos = new ArrayList<>();
+        venda.getListaPdvVendaDetalhe().forEach(p -> {
+            produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
+            if (parametro != null && parametro.getFrenteCaixa()) {
+                syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, p.getProduto().getId());
             }
-            movimentoService.lancaVenda(venda.getValorTotal(),venda.getValorDesconto(),venda.getTroco());
+        });
+        estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
+        for (PdvFormaPagamento p : pagamentos) {
+            if (p.getPdvTipoPagamento().getGeraParcelas().equals("S")) {
+                finLancamentoReceberService.gerarLancamento(venda.getId(), p.getValor(), venda.getCliente(), p.getCondicao(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
+            }
+
+            if (p.getPdvTipoPagamento().getCodigo().equals("05")) {
+                ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
+
+                if (conta == null || conta.getSaldo().compareTo(p.getValor()) <= 0) {
+                    throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
+                } else {
+                    contaPessoaService.lancaMovimento(conta, p.getValor(), TipoLancamento.DEBITO, Modulo.VENDA.getCodigo(), venda.getId().toString());
+                }
+            }
+            if (p.getPdvTipoPagamento().getCodigo().equals("03")) {
+
+                OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(new ArrayList<>(p.getOperadoraCartao().getListaOperadoraCartaoTaxas()), p.getQtdParcelas());
+                FinLancamentoReceberCartao finLancamentoReceberCartao = finLancamentoReceberCartaoService.gerarLancamento(venda.getId(), p.getValor(), p.getOperadoraCartao(), operadoraCartaoTaxa, p.getQtdParcelas(), Modulo.VENDA.getCodigo(), venda.getEmpresa(), p.getPdvTipoPagamento().getIdentificador());
+                finLancamentoReceberCartaoRepository.salvar(finLancamentoReceberCartao);
+            }
+
+        }
+        movimentoService.lancaVenda(venda.getValorTotal(), venda.getValorDesconto(), venda.getTroco());
 
 
         auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "PDV");
 
-            return venda;
+        return venda;
 
 
     }
@@ -121,7 +120,6 @@ public class VendaPdvService implements Serializable {
         }
 
 
-
         VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, venda);
         NfeCabecalho nfe = vendaNfe.gerarNfe();
         nfe.setPdv(venda);
@@ -134,7 +132,6 @@ public class VendaPdvService implements Serializable {
         }
 
         nfe.setSerie(configuracaoEmissorDTO.getSerie());
-
 
 
         nfe.setCsc(configuracaoEmissorDTO.getCsc());

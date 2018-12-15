@@ -565,7 +565,9 @@ public class NfeService implements Serializable {
                     || retorno.getProtNFe().getInfProt().getCStat().equals("539")) {
                 status = StatusTransmissao.DUPLICIDADE;
                 nfe.setStatusNota(StatusTransmissao.DUPLICIDADE.getCodigo());
-                nfe = repository.atualizar(nfe);
+                if (venda == null && os == null && pdv == null && transferencia == null) {
+                    nfe = repository.atualizar(nfe);
+                }
                 Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getXMotivo());
             } else {
                 salvarXml = true;
