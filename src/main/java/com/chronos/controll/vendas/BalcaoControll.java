@@ -314,7 +314,7 @@ public class BalcaoControll implements Serializable {
         produto.setQuantidadeVenda(item.getQuantidade());
         BigDecimal valorVenda = produtoService.defnirPrecoVenda(produto);
         item.setValorUnitario(valorVenda);
-
+        item.getValorSubtotal();
     }
 
     public void calcularDesconto() {
