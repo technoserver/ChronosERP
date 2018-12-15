@@ -411,8 +411,8 @@
                         <p:column headerText="Situacao" sortBy="#{row.statusVenda}" width="130"
                                   styleClass="text-center">
 
-                            <h:outputLabel value="#{row.statusVenda eq 'F'?'Finalizada':'Faturada'}"
-                                           styleClass="label  #{row.statusVenda eq 'F'?'label-success':'label-info'}"/>
+                            <h:outputLabel value="#{row.statusVenda eq 'F'?'Faturada':'Encerrada'}"
+                                           styleClass="label  #{row.statusVenda eq 'E'?'label-success':'label-info'}"/>
                         </p:column>
 
                         <p:column headerText="Ações" width="160" class="text-center">
