@@ -966,7 +966,6 @@ public class NfeService implements Serializable {
             throw new ChronosException("Configuração de numero fiscal para o modelo :" + modelo + " não definida");
         }
 
-        notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
 
         return notaFiscalTipo;
     }
