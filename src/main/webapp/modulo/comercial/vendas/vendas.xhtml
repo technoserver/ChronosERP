@@ -143,6 +143,16 @@
                                             icon="fa fa-print"
                                             ajax="false"/>
 
+
+                                <p:menuitem value="Encerrar"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{row.situacao eq 'D'}"
+                                            action="#{vendaCabecalhoControll.buscarEncerrarVenda}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaCabecalhoControll.objetoSelecionado}"/>
+                                </p:menuitem>
+
+
                                 <p:menuitem value="Faturar - NFe"
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.numeroFatura}"
@@ -366,7 +376,7 @@
                                     <p:dataTable id="dataTableVendaDetalhe" var="obj"
                                                  value="#{vendaCabecalhoControll.objeto.listaVendaDetalhe}"
                                                  paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                                                 resizableColumns="true" reflow="true"
+                                                 reflow="true"
                                                  rowIndexVar="index" rowKey="index" paginatorPosition="bottom">
 
                                         <p:column headerText="Produto">
@@ -402,7 +412,7 @@
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Ações" width="110">
+                                        <p:column headerText="Ações" width="120">
                                             <p:commandLink title="Alterar"
                                                            action="#{vendaCabecalhoControll.alterarVendaDetalhe}"
                                                            class=" btn btn-default"

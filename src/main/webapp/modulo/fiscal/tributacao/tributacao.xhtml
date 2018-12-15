@@ -117,7 +117,7 @@
                                  value="#{tributacaoControll.listTributIcmsUf}"
                                  paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
                                  paginatorPosition="bottom"
-                                 resizableColumns="true" reflow="true"
+                                 reflow="true"
                                  rowKey="#{obj.id}">
 
 
@@ -139,7 +139,7 @@
                         <p:column headerText="MVA">
                             <h:outputLabel value="#{obj.mva}"/>
                         </p:column>
-                        <p:column headerText="Ações" width="110">
+                        <p:column headerText="Ações" width="120">
                             <p:commandLink title="Alterar"
                                            action="#{tributacaoControll.alterarTributIcmsUf}"
                                            class=" btn btn-default"

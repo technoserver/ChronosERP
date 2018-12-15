@@ -108,7 +108,7 @@
                                  rowKey="#{row.id}"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{produtoControll.podeConsultar()}"
-                                 resizableColumns="true" lazy="true"
+                                 lazy="true"
                                  class="js-data-table">
 
                         <p:ajax event="rowToggle" listener="#{produtoControll.buscarProdutoEmpresas}"
@@ -136,7 +136,7 @@
                         <p:column headerText="UN" width="50" styleClass="text-center">
                             <h:outputLabel value="#{row.sigla}"/>
                         </p:column>
-                        <p:column headerText="Valor Venda" width="115" class="coluna-monetaria">
+                        <p:column headerText="Valor Venda" width="123" class="coluna-monetaria">
                             <h:outputLabel value="#{row.valorVenda}">
                                 <f:convertNumber pattern="#,###,##0.00"/>
                             </h:outputLabel>
@@ -146,7 +146,7 @@
                                 <f:convertNumber pattern="#,##0.000"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                        <p:column headerText="Ações" width="120" styleClass="text-center">
                             <p:commandLink title="Alterar" action="#{produtoControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
