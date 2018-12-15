@@ -78,7 +78,7 @@
                                            style="width: 100%">
                                 <p:ajax event="blur"
                                         listener="#{balcaoControll.calcularPrecoAtacado}"
-                                        update="formCentro:valorUnitario"
+                                        update="formCentro:valorUnitario,formCentro:mostra-produto"
                                         process="@this"/>
                             </p:inputNumber>
                         </td>
@@ -91,7 +91,8 @@
                             <label class="visible-xs">VALOR UNITÁRIO</label>
                             <p:inputNumber id="valorUnitario"
                                            decimalPlaces="2"
-                                           minValue="0.001" maxValue="999"
+                                           minValue="0.001"
+                                           maxValue="999"
                                            value="#{balcaoControll.item.valorUnitario}"
                                            required="true"
                                            dir="rtl"

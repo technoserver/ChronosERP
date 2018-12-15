@@ -146,7 +146,7 @@
                                 <f:convertNumber pattern="#,##0.000"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Ações" width="120" styleClass="text-center">
+                        <p:column headerText="Ações" width="180" styleClass="text-center">
                             <p:commandLink title="Alterar" action="#{produtoControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
@@ -158,7 +158,6 @@
                             </p:commandLink>
                             &nbsp;
                             <p:commandLink title="Excluir" action="#{produtoControll.remover()}"
-                                           style="position: relative; right: 7px"
                                            update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                            process="dataTableProduto"
                                            oncomplete="atualizarMsg();"
@@ -170,6 +169,18 @@
                                 <f:setPropertyActionListener value="#{row}"
                                                              target="#{produtoControll.produtoSelecionado}"/>
                             </p:commandLink>
+                            &nbsp;
+
+                            <p:commandLink title="Copiar" action="#{produtoControll.copiar}"
+                                           class=" btn btn-default"
+                                           oncomplete="addClass()"
+                                           update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                            >
+                                <i class="fa fa-files-o"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{produtoControll.produtoSelecionado}"/>
+                            </p:commandLink>
+
                         </p:column>
                         <p:rowExpansion>
 

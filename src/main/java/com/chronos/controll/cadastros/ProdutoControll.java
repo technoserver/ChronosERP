@@ -22,6 +22,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.model.Visibility;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
@@ -230,6 +231,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     }
 
+
     @Override
     public void salvar() {
         try {
@@ -253,13 +255,37 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             setObjeto(service.salvar(getObjeto(), empresas));
             Mensagem.addInfoMessage("Registro salvo com sucesso");
         } catch (Exception ex) {
-            ex.printStackTrace();
+
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("Ocorreu um erro ao salvar o registro!", ex);
             }
 
+        }
+
+
+    }
+
+    public void copiar() {
+
+        try {
+            Produto produto = new Produto();
+
+            Produto prodSelecionado = dao.getJoinFetch(produtoSelecionado.getId(), Produto.class);
+            BeanUtils.copyProperties(prodSelecionado, produto, "id", "gtin");
+
+            List<Empresa> empresas = new ArrayList<>();
+            empresas.add(empresa);
+            service.salvar(produto, empresas);
+            doEdit();
+            Mensagem.addInfoMessage("Produto copiado com sucesso");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao salvar o registro!", ex);
+            }
         }
 
 
