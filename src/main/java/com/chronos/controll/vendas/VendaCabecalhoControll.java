@@ -232,7 +232,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void buscarEncerrarVenda() {
 
         try {
-            VendaCabecalho venda = dataModel.getRowData(getObjeto().getId().toString());
+            VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
 
             if (venda.getListaVendaDetalhe().isEmpty()) {
                 throw new ChronosException("Não foram informado produtos para essa venda");
