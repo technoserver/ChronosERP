@@ -656,7 +656,7 @@ public class BalcaoControll implements Serializable {
     public List<PdvTipoPagamento> definirTipoPagament() {
         List<PdvTipoPagamento> pagamentos = new ArrayList<>();
         pagamentos.add(new PdvTipoPagamento(1, "01", "DINHEIRO", "S", "N"));
-        pagamentos.add(new PdvTipoPagamento(2, "02", "CHEQUE", "N", "S"));
+        pagamentos.add(new PdvTipoPagamento(2, "02", "CHEQUE", "N", "N"));
         pagamentos.add(new PdvTipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
         pagamentos.add(new PdvTipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
         pagamentos.add(new PdvTipoPagamento(5, "04", "CREDITO NA LOJA", "N", "N"));
