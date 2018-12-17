@@ -305,10 +305,11 @@
             }
 
             .caixa-botoes .btn-excluir {
+                color: black;
+                font-size: 25px;
                 margin: 15px;
                 width: 22px;
                 height: 22px;
-                background: url("#{resource['images/ico_edt_.svg']}") no-repeat center;
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -378,17 +379,18 @@
                             var="row" id="tableVenda" paginator="true"
                             rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                             reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
-                            resizableColumns="true" lazy="true" sortBy="#{row.id}" sortOrder="descending"
-                    >
+                            lazy="true" sortBy="#{row.id}" sortOrder="descending"
+                            resizableColumns="true">
 
-                        <p:column headerText="Caixa" width="120">
+                        <p:column headerText="Caixa" width="90">
                             <h:outputLabel value="#{row.caixa}"/>
                         </p:column>
 
                         <p:column headerText="Cliente" width="130">
                             <h:outputLabel value="#{row.nomeCliente == null ? 'Não identificado': row.nomeCliente}"/>
                         </p:column>
-                        <p:column headerText="Data Venda" width="130" sortBy="#{row.dataHoraVenda}">
+                        <p:column headerText="Data Venda" width="130" sortBy="#{row.dataHoraVenda}"
+                                  styleClass="text-center">
                             <h:outputLabel value="#{row.dataHoraVenda}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -398,7 +400,7 @@
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Desconto" class="coluna-monetaria" width="130">
+                        <p:column headerText="Desconto" class="coluna-monetaria" width="75">
                             <h:outputLabel value="#{row.valorDesconto}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
@@ -408,14 +410,14 @@
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Situacao" sortBy="#{row.statusVenda}" width="130"
+                        <p:column headerText="Situacao" sortBy="#{row.statusVenda}" width="85"
                                   styleClass="text-center">
 
                             <h:outputLabel value="#{row.statusVenda eq 'F'?'Faturada':'Encerrada'}"
                                            styleClass="label  #{row.statusVenda eq 'E'?'label-success':'label-info'}"/>
                         </p:column>
 
-                        <p:column headerText="Ações" width="160" class="text-center">
+                        <p:column headerText="Ações" width="60" class="text-center">
 
                             <p:menuButton>
                                 <p:menuitem value="Cupom"
