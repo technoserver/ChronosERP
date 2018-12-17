@@ -265,7 +265,7 @@ public class NfeService implements Serializable {
             }
             List<String> files = Arrays.asList(caminhoXml, arquivoPdf);
             File arquivoZip = ArquivoUtil.compactarArquivos(files, nfe.getChaveAcessoCompleta());
-            FacesUtil.downloadArquivo(arquivoZip, nfe.getChaveAcessoCompleta() + ".zip");
+            FacesUtil.downloadArquivo(arquivoZip, nfe.getChaveAcessoCompleta() + ".zip", true);
         }
 
     }
@@ -289,7 +289,7 @@ public class NfeService implements Serializable {
                 arqvuivos.add(arquivoPdf);
             }
             File arquivoZip = ArquivoUtil.getInstance().compactarArquivos(arqvuivos, nomeArquivo);
-            FacesUtil.downloadArquivo(arquivoZip, nomeArquivo + ".zip");
+            FacesUtil.downloadArquivo(arquivoZip, nomeArquivo + ".zip", true);
         }
     }
 
@@ -565,7 +565,9 @@ public class NfeService implements Serializable {
                     || retorno.getProtNFe().getInfProt().getCStat().equals("539")) {
                 status = StatusTransmissao.DUPLICIDADE;
                 nfe.setStatusNota(StatusTransmissao.DUPLICIDADE.getCodigo());
-                nfe = repository.atualizar(nfe);
+                if (venda == null && os == null && pdv == null && transferencia == null) {
+                    nfe = repository.atualizar(nfe);
+                }
                 Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getXMotivo());
             } else {
                 salvarXml = true;
@@ -634,10 +636,10 @@ public class NfeService implements Serializable {
         }
 
         if (filePdf.exists()) {
-            FacesUtil.downloadArquivo(filePdf, filePdf.getName());
+            FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         } else {
             gerarDanfe(nfe);
-            FacesUtil.downloadArquivo(filePdf, filePdf.getName());
+            FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         }
     }
 
@@ -678,6 +680,11 @@ public class NfeService implements Serializable {
                 nomeRelatorioJasper = Constantes.JASPERNFCE;
 
                 String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_CONSULTANFCE);
+
+                if (nfe.getQrcode() == null) {
+                    throw new ChronosException("Para NFC-e com chave " + nfe.getChaveAcessoCompleta() + " está faltando QRCode");
+                }
+
                 BufferedImage image = MatrixToImageWriter
                         .toBufferedImage(new QRCodeWriter().encode(nfe.getQrcode(), BarcodeFormat.QR_CODE, 300, 300));
                 parametrosRelatorio.put("QR_CODE", image);
@@ -959,7 +966,6 @@ public class NfeService implements Serializable {
             throw new ChronosException("Configuração de numero fiscal para o modelo :" + modelo + " não definida");
         }
 
-        notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
 
         return notaFiscalTipo;
     }

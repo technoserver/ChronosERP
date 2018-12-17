@@ -314,7 +314,7 @@ public class BalcaoControll implements Serializable {
         produto.setQuantidadeVenda(item.getQuantidade());
         BigDecimal valorVenda = produtoService.defnirPrecoVenda(produto);
         item.setValorUnitario(valorVenda);
-
+        item.getValorSubtotal();
     }
 
     public void calcularDesconto() {
@@ -323,13 +323,20 @@ public class BalcaoControll implements Serializable {
             item.setTaxaDesconto(desconto);
         } else {
             BigDecimal subTotal = item.getValorSubtotal();
-            BigDecimal razao = subTotal.subtract(desconto);
-            razao = razao.divide(subTotal, MathContext.DECIMAL64);
-            razao = razao.multiply(BigDecimal.valueOf(100));
-            BigDecimal cem = BigDecimal.valueOf(100);
-            BigDecimal percentual = cem.subtract(razao);
 
-            item.setTaxaDesconto(percentual);
+            if (desconto.compareTo(subTotal) >= 0) {
+                Mensagem.addErrorMessage("Desconto não permitido");
+            } else {
+                BigDecimal razao = subTotal.subtract(desconto);
+                razao = razao.divide(subTotal, MathContext.DECIMAL64);
+                razao = razao.multiply(BigDecimal.valueOf(100));
+                BigDecimal cem = BigDecimal.valueOf(100);
+                BigDecimal percentual = cem.subtract(razao);
+
+                item.setTaxaDesconto(percentual);
+            }
+
+
         }
     }
 
@@ -454,7 +461,7 @@ public class BalcaoControll implements Serializable {
             telaImpressao = false;
             telaCaixa = false;
             telaPagamentos = true;
-            listTipoPagamento = tipoPagamentoRepository.getAll(PdvTipoPagamento.class);
+            listTipoPagamento = definirTipoPagament();
         }
 
         totalVenda = BigDecimal.ZERO;
@@ -620,9 +627,11 @@ public class BalcaoControll implements Serializable {
         exibirCondicoes = tipoPagamento.getGeraParcelas().equals("S") && !tipoPagamento.getCodigo().equals("02");
         exibirQtdParcelas = tipoPagamento.getCodigo().equals("03");
         qtdParcelas = 1;
+
         if (exibirCondicoes) {
             condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class, new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
         }
+
         if (exibirQtdParcelas) {
             operadoras = operadoraCartaoRepository.getOperadoraResumidaComintervalo();
             if (operadoras.stream().findFirst().isPresent()) {
@@ -641,6 +650,19 @@ public class BalcaoControll implements Serializable {
 
     public void definirQtdParcelas(int qtd) {
         this.qtdParcelas = qtd;
+    }
+
+
+    public List<PdvTipoPagamento> definirTipoPagament() {
+        List<PdvTipoPagamento> pagamentos = new ArrayList<>();
+        pagamentos.add(new PdvTipoPagamento(1, "01", "DINHEIRO", "S", "N"));
+        pagamentos.add(new PdvTipoPagamento(2, "02", "CHEQUE", "N", "N"));
+        pagamentos.add(new PdvTipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
+        pagamentos.add(new PdvTipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
+        pagamentos.add(new PdvTipoPagamento(5, "04", "CREDITO NA LOJA", "N", "N"));
+        pagamentos.add(new PdvTipoPagamento(6, "14", "DUPLICATA", "N", "S"));
+
+        return pagamentos;
     }
 
     //</editor-fold>

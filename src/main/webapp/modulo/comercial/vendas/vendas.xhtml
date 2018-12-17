@@ -79,7 +79,7 @@
                             var="row" id="tableVenda" paginator="true"
                             rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                             reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
-                            resizableColumns="true" lazy="true" sortBy="#{row.id}" sortOrder="descending"
+                            lazy="true" sortBy="#{row.id}" sortOrder="descending"
                     >
                         <p:column headerText="Código" width="100">
                             <h:outputLabel value="#{row.id}"/>
@@ -92,7 +92,7 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Numero Fatura" width="140">
+                        <p:column headerText="Numero Fatura" width="148">
                             <h:outputLabel value="#{row.numeroFatura}"/>
                         </p:column>
                         <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
@@ -134,11 +134,24 @@
                             &nbsp;
                             <p:menuButton>
                                 <p:menuitem value="Imprimir A4"
+                                            target="_blank"
                                             actionListener="#{vendaRelatorioControll.imprimirPedido(row.id)}"
                                             icon="fa fa-print" ajax="false"/>
                                 <p:menuitem value="Imprimir Cupom"
+                                            target="_blank"
                                             actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(row.id)}"
-                                            icon="fa fa-print" ajax="false"/>
+                                            icon="fa fa-print"
+                                            ajax="false"/>
+
+
+                                <p:menuitem value="Encerrar"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{row.situacao eq 'D'}"
+                                            action="#{vendaCabecalhoControll.buscarEncerrarVenda}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaCabecalhoControll.objetoSelecionado}"/>
+                                </p:menuitem>
+
 
                                 <p:menuitem value="Faturar - NFe"
                                             update=":formCentro:growl,tableVenda"
@@ -156,6 +169,7 @@
                                 </p:menuitem>
 
                                 <p:menuitem value="Danfe"
+                                            target="_blank"
                                             icon="fa fa-print" ajax="false"
                                             rendered="#{not empty row.numeroFatura}"
                                             action="#{vendaCabecalhoControll.danfe}">
@@ -362,7 +376,7 @@
                                     <p:dataTable id="dataTableVendaDetalhe" var="obj"
                                                  value="#{vendaCabecalhoControll.objeto.listaVendaDetalhe}"
                                                  paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                                                 resizableColumns="true" reflow="true"
+                                                 reflow="true"
                                                  rowIndexVar="index" rowKey="index" paginatorPosition="bottom">
 
                                         <p:column headerText="Produto">
@@ -398,7 +412,7 @@
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Ações" width="110">
+                                        <p:column headerText="Ações" width="120">
                                             <p:commandLink title="Alterar"
                                                            action="#{vendaCabecalhoControll.alterarVendaDetalhe}"
                                                            class=" btn btn-default"
@@ -462,7 +476,7 @@
                                                         icon="ui-icon-arrowrefresh-1-w"/>
 
                                             <p:menuitem value="Faturar"
-                                                        actionListener="#{vendaCabecalhoControll.gerarNFe}"
+                                                        actionListener="#{vendaCabecalhoControll.faturarVenda}"
                                                         update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                                                         rendered="#{!vendaCabecalhoControll.objeto.faturado}"
                                                         icon="ui-icon-arrowrefresh-1-w"/>

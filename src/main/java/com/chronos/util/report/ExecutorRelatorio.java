@@ -64,8 +64,11 @@ public class ExecutorRelatorio implements Work {
                 exportador.setExporterInput(new SimpleExporterInput(print));
                 exportador.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
 
+                // Seta o nome do arquivo e a disposição: "inline" abre no próprio navegador
+                // Mude para "attachment" para indicar que deve ser feito um download
+
                 response.setContentType("application/pdf");
-                response.setHeader("Content-Disposition", "attachment; filename=\""
+                response.setHeader("Content-Disposition", "inline; filename=\""
                         + this.nomeArquivoSaida + "\"");
 
                 exportador.exportReport();

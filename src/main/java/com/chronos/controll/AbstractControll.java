@@ -745,7 +745,7 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public String doIndex() {
-        return "/privado/index?faces-redirect=true";
+        return "/index?faces-redirect=true";
     }
 
     public void doCreate() {

@@ -66,8 +66,9 @@ public class ItemToledo {
         }
 
         int pre = (int) valor.doubleValue();
-        double pos = (valor.doubleValue() - pre) * 100;
-        String precoConvertido = "" + pre + (int) pos;
+        double pos = ((valor.subtract(BigDecimal.valueOf(pre))).multiply(BigDecimal.valueOf(100))).doubleValue();
+        String precoConvertido = "" + pre + completarComZeroDireita(2, ((int) pos) + "");
+
 
         String novoPreco;
         if (precoConvertido.length() > 6) {

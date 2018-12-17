@@ -1,5 +1,6 @@
 package com.chronos.controll.nfe.relatorios;
 
+import br.com.samuelweb.certificado.exception.CertificadoException;
 import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.modelo.enuns.StatusTransmissao;
@@ -85,7 +86,7 @@ public class NfeRelatorioControll extends AbstractRelatorioControll implements S
                 Mensagem.addInfoMessage((modelo.equals("55") ? "NFe " : "NFCe") + " não localizada");
             }
         } catch (Exception ex) {
-            if (ex instanceof ChronosException) {
+            if (ex instanceof ChronosException || ex instanceof CertificadoException) {
                 Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("Erro ao baixa os xml", ex);

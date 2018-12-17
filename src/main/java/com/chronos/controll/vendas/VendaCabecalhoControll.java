@@ -12,6 +12,7 @@ import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaService;
@@ -228,18 +229,54 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
 
+    public void buscarEncerrarVenda() {
+
+        try {
+            VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+
+            if (venda.getListaVendaDetalhe().isEmpty()) {
+                throw new ChronosException("Não foram informado produtos para essa venda");
+            }
+
+            setObjeto(venda);
+            encerrarVenda();
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+            } else {
+                throw new RuntimeException("erro ao encerrar a venda", ex);
+            }
+
+        }
+
+
+    }
+
     public void encerrarVenda() {
         try {
-
             vendaService.faturarVenda(getObjeto());
             Mensagem.addInfoMessage("Venda faturada com sucesso");
             setTelaGrid(true);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+            } else {
+                throw new RuntimeException("erro ao encerrar a venda", ex);
+            }
+
+
+
         }
     }
 
+
+    public void faturarVenda() {
+        boolean estoque = isTemAcesso("ESTOQUE");
+        if (!getObjeto().getListaVendaDetalhe().isEmpty()) {
+            vendaService.transmitirNFe(getObjeto(), ModeloDocumento.NFE, estoque);
+        }
+    }
 
     public void gerarNFe() {
         ModeloDocumento modelo = ModeloDocumento.NFE;
@@ -265,7 +302,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         try {
             int idnfe = getObjetoSelecionado().getNumeroFatura();
             NfeCabecalho nfe = nfeRepository.get(idnfe, NfeCabecalho.class);
-
 
             nfeService.danfe(nfe);
         } catch (Exception ex) {
