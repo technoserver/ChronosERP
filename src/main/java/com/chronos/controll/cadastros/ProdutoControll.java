@@ -271,14 +271,13 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
         try {
             Produto produto = new Produto();
-
-            Produto prodSelecionado = dao.getJoinFetch(produtoSelecionado.getId(), Produto.class);
-            BeanUtils.copyProperties(prodSelecionado, produto, "id", "gtin");
+            doEdit();
+            BeanUtils.copyProperties(getObjeto(), produto, "id", "gtin");
 
             List<Empresa> empresas = new ArrayList<>();
             empresas.add(empresa);
             service.salvar(produto, empresas);
-            doEdit();
+            setObjeto(produto);
             Mensagem.addInfoMessage("Produto copiado com sucesso");
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
