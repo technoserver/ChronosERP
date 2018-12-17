@@ -242,14 +242,15 @@
                                 </div>
                             </div>
                             <div class="caixa-botoes">
-                                <h:commandButton styleClass="btn-excluir" type="button"
-                                                 action="#{balcaoControll.excluir}">
+                                <h:commandLink styleClass="btn-excluir" type="button"
+                                               action="#{balcaoControll.excluir}">
                                     <p:ajax process="@this"
                                             update=":formCentro:produtos-selecionados"
                                             oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
+                                    <i class="fa fa-trash"></i>
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{balcaoControll.itemSelecionado}"/>
-                                </h:commandButton>
+                                </h:commandLink>
                             </div>
 
 

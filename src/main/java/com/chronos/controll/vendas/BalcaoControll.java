@@ -39,6 +39,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 /**
  * Created by john on 19/09/17.
@@ -344,6 +345,7 @@ public class BalcaoControll implements Serializable {
         Optional<PdvVendaDetalhe> itemOpt = getItemVenda(item.getProduto());
         BigDecimal quantidade = item.getQuantidade();
         if (itemOpt.isPresent()) {
+            quantidade = quantidade.add(itemOpt.get().getQuantidade());
             item = itemOpt.get();
             item.setQuantidade(quantidade);
         } else {
@@ -365,7 +367,12 @@ public class BalcaoControll implements Serializable {
 
 
     public void excluir() {
-        venda.getListaPdvVendaDetalhe().remove(itemSelecionado);
+
+
+        int idx = IntStream.range(0, venda.getListaPdvVendaDetalhe().size())
+                .filter(i -> venda.getListaPdvVendaDetalhe().get(i).getProduto().equals(itemSelecionado.getProduto()))
+                .findAny().getAsInt();
+        venda.getListaPdvVendaDetalhe().remove(idx);
         venda.calcularValorTotal();
     }
 
