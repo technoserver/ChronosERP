@@ -458,6 +458,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void salvaProduto() {
         try {
+
+            if ((nfeDetalhe.getQuantidadeComercial() == null || nfeDetalhe.getQuantidadeComercial().signum() <= 0) ||
+                    (nfeDetalhe.getValorUnitarioComercial() == null || nfeDetalhe.getValorUnitarioComercial().signum() <= 0)) {
+                throw new ChronosException("Valores invalido");
+
+            }
+
             Optional<NfeDetalhe> itemNfeOptional = buscarItemPorProduto(nfeDetalhe.getProduto());
             if (!itemNfeOptional.isPresent()) {
                 nfeDetalhe.setValorSubtotal(nfeDetalhe.calcularSubTotalProduto());
@@ -482,8 +489,14 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
             podeIncluirProduto = false;
         } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro ao salvar o registro", e);
+            FacesContext.getCurrentInstance().validationFailed();
+            if (e instanceof ChronosException) {
+                Mensagem.addErrorMessage("", e);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao salvar o produto", e);
+            }
+
+
         }
     }
 

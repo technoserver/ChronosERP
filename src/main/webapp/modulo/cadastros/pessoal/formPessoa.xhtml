@@ -299,8 +299,11 @@
             <div class="row">
                 <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
                                 idComponente="pessoaEmail" label="Email"
+
                                 nomeAtributo="#{pessoasControll.objeto.email}"
-                                tamanhoMaximo="250"/>
+                                tamanhoMaximo="250">
+                    <p:keyFilter regEx="/[a-z0-9_\.\-@]/i"/>
+                </erp:campoTexto>
                 <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
                                 idComponente="pessoaSite" label="Site"
                                 nomeAtributo="#{pessoasControll.objeto.site}"

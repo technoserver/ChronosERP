@@ -273,11 +273,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             Produto produto = new Produto();
             doEdit();
             BeanUtils.copyProperties(getObjeto(), produto, "id", "gtin");
-
-            List<Empresa> empresas = new ArrayList<>();
-            empresas.add(empresa);
-            service.salvar(produto, empresas);
+            listaEmpresas = new HashMap<>();
             setObjeto(produto);
+            nomeFoto = produto.getImagem();
             Mensagem.addInfoMessage("Produto copiado com sucesso");
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
