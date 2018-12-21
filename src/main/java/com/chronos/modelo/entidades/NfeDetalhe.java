@@ -132,6 +132,8 @@ public class NfeDetalhe implements Serializable {
     private BigDecimal impostoMunicipal;
 
     public NfeDetalhe() {
+        this.quantidadeComercial = BigDecimal.ZERO;
+        this.quantidadeTributavel = BigDecimal.ZERO;
     }
 
     public NfeDetalhe(Integer id, Produto produto, BigDecimal quantidadeComercial) {

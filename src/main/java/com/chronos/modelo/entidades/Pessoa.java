@@ -1,6 +1,8 @@
 
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.Email;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -15,7 +17,7 @@ import java.util.Set;
 @Table(name = "PESSOA")
 public class Pessoa implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -27,6 +29,7 @@ public class Pessoa implements Serializable {
     @Column(name = "TIPO")
     private String tipo;
     @Column(name = "EMAIL")
+    @Email
     private String email;
     @Column(name = "SITE")
     private String site;
