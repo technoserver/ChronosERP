@@ -7,7 +7,6 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.FormaPagamento;
 import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.enuns.SituacaoVenda;
-import com.chronos.modelo.enuns.TipoFrete;
 import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
@@ -136,10 +135,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
-        getObjeto().setListaVendaDetalhe(new ArrayList<>());
-        getObjeto().setDataVenda(new Date());
-        getObjeto().setSituacao(SituacaoVenda.Digitacao.getCodigo());
-        getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
         pessoaCliente = null;
 
     }

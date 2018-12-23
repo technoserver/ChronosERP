@@ -3,14 +3,8 @@ package com.chronos.service.comercial;
 import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoVendaDTO;
-import com.chronos.modelo.entidades.AdmParametro;
-import com.chronos.modelo.entidades.NfeCabecalho;
-import com.chronos.modelo.entidades.VendaCabecalho;
-import com.chronos.modelo.entidades.VendaComissao;
-import com.chronos.modelo.enuns.AcaoLog;
-import com.chronos.modelo.enuns.Modulo;
-import com.chronos.modelo.enuns.SituacaoVenda;
-import com.chronos.modelo.enuns.StatusTransmissao;
+import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.*;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.VendaComissaoRepository;
 import com.chronos.repository.VendaRepository;
@@ -54,7 +48,7 @@ public class VendaService implements Serializable {
 
     @Transactional
     public VendaCabecalho faturarVenda(VendaCabecalho venda) {
-        try {
+
 
             venda.setSituacao(SituacaoVenda.Encerrado.getCodigo());
             Integer idempresa = venda.getEmpresa().getId();
@@ -74,10 +68,6 @@ public class VendaService implements Serializable {
             venda = repository.salvarFlush(venda);
             auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "VENDA");
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", ex);
-        }
 
         return venda;
     }
@@ -129,6 +119,51 @@ public class VendaService implements Serializable {
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
         return status;
+    }
+
+
+    public VendaCabecalho gerarVenaDoOrcamento(VendaOrcamentoCabecalho orcamento) {
+        VendaCabecalho venda = new VendaCabecalho();
+        VendaDetalhe itemVenda;
+        venda.setListaVendaDetalhe(new ArrayList<>());
+        venda.setVendaOrcamentoCabecalho(orcamento);
+
+        for (VendaOrcamentoDetalhe d : orcamento.getListaVendaOrcamentoDetalhe()) {
+            itemVenda = new VendaDetalhe();
+            itemVenda.setVendaCabecalho(venda);
+            itemVenda.setProduto(d.getProduto());
+            itemVenda.setQuantidade(d.getQuantidade());
+            itemVenda.setTaxaDesconto(d.getTaxaDesconto());
+            itemVenda.setValorDesconto(d.getValorDesconto());
+            itemVenda.setValorSubtotal(d.getValorSubtotal());
+            itemVenda.setValorTotal(d.getValorTotal());
+            itemVenda.setValorUnitario(d.getValorUnitario());
+
+            venda.getListaVendaDetalhe().add(itemVenda);
+        }
+
+
+        venda.setCliente(orcamento.getCliente());
+        venda.setCondicoesPagamento(orcamento.getCondicoesPagamento());
+        venda.setTransportadora(orcamento.getTransportadora());
+        venda.setVendedor(orcamento.getVendedor());
+        venda.setTipoFrete(orcamento.getTipoFrete());
+        venda.setValorSubtotal(orcamento.getValorSubtotal());
+        venda.setValorFrete(orcamento.getValorFrete());
+        venda.setTaxaComissao(orcamento.getTaxaComissao());
+        venda.setValorComissao(orcamento.getValorComissao());
+        venda.setTaxaDesconto(orcamento.getValorDesconto());
+        venda.setValorTotal(orcamento.getValorTotal());
+        venda.setObservacao(orcamento.getObservacao());
+        venda.setEmpresa(orcamento.getEmpresa());
+
+        String forma = venda.getCondicoesPagamento().getVistaPrazo().equals("V")
+                ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo();
+        venda.setFormaPagamento(forma);
+
+        venda.calcularValorTotal();
+
+        return venda;
     }
 
 

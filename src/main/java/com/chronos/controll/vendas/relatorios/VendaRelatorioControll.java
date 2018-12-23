@@ -111,11 +111,32 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     public void imprimirPedidoCupom(int id) {
         parametros = new HashMap<>();
         parametros.put("idvenda", id);
+        parametros.put("usuario", userService.getUsuarioLogado().getNome());
 
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "vendaCupom.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "pedidoVenda.pdf");
+    }
+
+    public void imprimirOrcamento(int id) {
+        parametros = new HashMap<>();
+        parametros.put("id", id);
+
+        String caminhoRelatorio = "/relatorios/vendas";
+        String nomeRelatorio = "orcamento.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "orcamento.pdf");
+    }
+
+    public void imprimirOrcamentoCupom(int id) {
+        parametros = new HashMap<>();
+        parametros.put("id", id);
+
+        String caminhoRelatorio = "/relatorios/vendas";
+        String nomeRelatorio = "orcamentoCupom.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "orcamento.pdf");
     }
 
     public void imprimirRelacaoVendas() {

@@ -28,11 +28,11 @@ public class FinLancamentoReceberService implements Serializable {
     @Inject
     private Repository<FinParcelaRecebimento> recebimentoRepository;
     @Inject
-    private Repository<VendaCondicoesParcelas> condicoes;
-    @Inject
-    private Repository<FinParcelaReceber> parcelasRepository;
+    private Repository<VendaCondicoesParcelas> parcelasRepository;
     @Inject
     private Repository<FinLctoReceberNtFinanceira> parcelaNaturezaRepository;
+    @Inject
+    private Repository<FinParcelaReceber> parcelaReceberRepository;
 
 
     public void gerarLancamento(int id, BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) {
@@ -50,11 +50,14 @@ public class FinLancamentoReceberService implements Serializable {
 
     @Transactional
     public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) {
-        VendaCondicoesPagamento condicoesParcelas = lancamento.getCondicoesPagamento();
+        VendaCondicoesPagamento condicao = lancamento.getCondicoesPagamento();
+        ContaCaixa conta = condicao.getTipoRecebimento().getContaCaixa();
+
+        List<VendaCondicoesParcelas> parcelas = new ArrayList<>();
         int qtdParcelas = 1;
-        if (condicoesParcelas.getVistaPrazo().equals("1")) {
-            condicoesParcelas.setParcelas(condicoes.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesParcelas.getId()));
-            qtdParcelas = condicoesParcelas.getParcelas().size();
+        if (condicao.getVistaPrazo().equals("1")) {
+            parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
+            qtdParcelas = parcelas.size();
         }
 
         String identificador = "E" + lancamento.getEmrpesa().getId()
@@ -83,17 +86,17 @@ public class FinLancamentoReceberService implements Serializable {
         FinParcelaReceber parcelaReceber;
         int number = 1;
 
-        if (condicoesParcelas.getVistaPrazo().equals("1")) {
-            lancamentoReceber.setQuantidadeParcela(condicoesParcelas.getParcelas().size());
-            for (VendaCondicoesParcelas parcelas : condicoesParcelas.getParcelas()) {
+        if (condicao.getVistaPrazo().equals("1")) {
+            lancamentoReceber.setQuantidadeParcela(qtdParcelas);
+            for (VendaCondicoesParcelas parcela : parcelas) {
                 parcelaReceber = new FinParcelaReceber();
                 parcelaReceber.setFinLancamentoReceber(lancamentoReceber);
                 parcelaReceber.setNumeroParcela(number++);
                 parcelaReceber.setFinStatusParcela(new FinStatusParcela(1));
-                parcelaReceber.setContaCaixa(condicoesParcelas.getTipoRecebimento().getContaCaixa());
+                parcelaReceber.setContaCaixa(condicao.getTipoRecebimento().getContaCaixa());
                 parcelaReceber.setDataEmissao(lancamento.getDataLancamento());
-                parcelaReceber.setDataVencimento(Biblioteca.addDay(lancamento.getDataLancamento(), parcelas.getDias()));
-                parcelaReceber.setValor(Biblioteca.calcularValorPercentual(lancamento.getValorTotal(), parcelas.getTaxa()));
+                parcelaReceber.setDataVencimento(Biblioteca.addDay(lancamento.getDataLancamento(), parcela.getDias()));
+                parcelaReceber.setValor(Biblioteca.calcularValorPercentual(lancamento.getValorTotal(), parcela.getTaxa()));
 
                 lancamentoReceber.getListaFinParcelaReceber().add(parcelaReceber);
             }
@@ -104,7 +107,7 @@ public class FinLancamentoReceberService implements Serializable {
             parcelaReceber.setFinLancamentoReceber(lancamentoReceber);
             parcelaReceber.setNumeroParcela(number++);
             parcelaReceber.setFinStatusParcela(new FinStatusParcela(2));
-            parcelaReceber.setContaCaixa(condicoesParcelas.getTipoRecebimento().getContaCaixa());
+            parcelaReceber.setContaCaixa(conta);
             parcelaReceber.setDataEmissao(lancamento.getDataLancamento());
             parcelaReceber.setDataVencimento(new Date());
             parcelaReceber.setValor(lancamento.getValorTotal());
@@ -112,14 +115,14 @@ public class FinLancamentoReceberService implements Serializable {
             FinParcelaRecebimento recebimento = new FinParcelaRecebimento();
 
             recebimento.setFinParcelaReceber(parcelaReceber);
-            recebimento.setContaCaixa(condicoesParcelas.getTipoRecebimento().getContaCaixa());
+            recebimento.setContaCaixa(conta);
             recebimento.setDataRecebimento(new Date());
-            recebimento.setFinTipoRecebimento(condicoesParcelas.getTipoRecebimento());
+            recebimento.setFinTipoRecebimento(condicao.getTipoRecebimento());
             recebimento.setTaxaDesconto(BigDecimal.ZERO);
             recebimento.setValorDesconto(BigDecimal.ZERO);
-            recebimento.setTaxaJuro(BigDecimal.ZERO);
+            recebimento.setTaxaJuro(conta.getTaxaJuro());
             recebimento.setValorJuro(BigDecimal.ZERO);
-            recebimento.setTaxaMulta(BigDecimal.ZERO);
+            recebimento.setTaxaMulta(conta.getTaxaMulta());
             recebimento.setValorMulta(BigDecimal.ZERO);
             recebimento.setValorRecebido(lancamento.getValorTotal());
 
@@ -162,8 +165,9 @@ public class FinLancamentoReceberService implements Serializable {
             filtros.add(new Filtro("numeroDocumento", numeroDocumeto));
             filtros.add(new Filtro("codigoModuloLcto", modulo.getCodigo()));
             FinLancamentoReceber lancamento = lancamentos.get(FinLancamentoReceber.class, filtros, new Object[]{"numeroDocumento",});
+
             if (lancamento != null) {
-                parcelasRepository.excluir(FinParcelaReceber.class, "finLancamentoReceber.id", lancamento.getId());
+                parcelaReceberRepository.excluir(FinParcelaReceber.class, "finLancamentoReceber.id", lancamento.getId());
                 parcelaNaturezaRepository.excluir(FinLctoReceberNtFinanceira.class, "finLancamentoReceber.id", lancamento.getId());
                 lancamentos.excluir(lancamento);
             }
