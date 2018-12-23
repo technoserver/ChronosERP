@@ -38,7 +38,7 @@ public class AbstractRelatorioControll implements Serializable {
     protected Map<String, Object> parametros;
     protected Empresa empresa;
     @Inject
-    private UsuarioService userService;
+    protected UsuarioService userService;
 
     @PostConstruct
     protected void init() {

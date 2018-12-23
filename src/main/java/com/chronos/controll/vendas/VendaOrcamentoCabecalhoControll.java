@@ -3,10 +3,12 @@ package com.chronos.controll.vendas;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.enuns.SituacaoVenda;
+import com.chronos.modelo.enuns.SituacaoOrcamentoPedido;
 import com.chronos.modelo.enuns.TipoFrete;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
+import com.chronos.service.comercial.VendaOrcamentoService;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
 
@@ -15,7 +17,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by john on 16/08/17.
@@ -36,6 +41,8 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     private Repository<Cliente> clientes;
     @Inject
     private Repository<Produto> produtos;
+    @Inject
+    private VendaOrcamentoService service;
 
     private VendaOrcamentoDetalhe vendaOrcamentoDetalhe;
     private VendaOrcamentoDetalhe vendaOrcamentoDetalheSelecionado;
@@ -57,11 +64,11 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
-        getObjeto().setListaVendaOrcamentoDetalhe(new HashSet<>());
-        getObjeto().setSituacao(SituacaoVenda.Digitacao.getCodigo());
+        getObjeto().setListaVendaOrcamentoDetalhe(new ArrayList<>());
+        getObjeto().setSituacao(SituacaoOrcamentoPedido.PENDENTE.getCodigo());
         getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
-        getObjeto().setTipo(Optional.ofNullable(tipo).orElse("O"));
         getObjeto().setDataCadastro(new Date());
+        getObjeto().setTipo("O");
     }
 
     @Override
@@ -70,36 +77,45 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
         VendaOrcamentoCabecalho orcamento = dataModel.getRowData(getObjeto().getId().toString());
         setObjeto(orcamento);
+
     }
 
     @Override
     public void salvar() {
         try {
-            String situacao = getObjeto().getSituacao();
-            if (!situacao.equals("D")) {
-                String mensagem = "Este registro não pode ser alterado.\n";
-                if (situacao.equals("P")) {
-                    mensagem += "Situação: Em Produção";
-                }
-                if (situacao.equals("X")) {
-                    mensagem += "Situação: Em Expedição";
-                }
-                if (situacao.equals("F")) {
-                    mensagem += "Situação: Faturado";
-                }
-                if (situacao.equals("E")) {
-                    mensagem += "Situação: Entregue";
-                }
-                throw new Exception(mensagem);
-            }
-            super.salvar();
+            VendaOrcamentoCabecalho orcamento = service.salvar(getObjeto());
+            setObjeto(orcamento);
+            Mensagem.addInfoMessage("Orçamento salvo com sucesso");
             setTelaGrid(false);
         } catch (Exception e) {
-            Mensagem.addErrorMessage("Ocorreu um erro!", e);
+
+            if (e instanceof ChronosException) {
+                Mensagem.addErrorMessage("", e);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao tenta salvar o orçamento", e);
+            }
 
         }
     }
 
+    public void gerarVenda() {
+        try {
+            VendaOrcamentoCabecalho orc = getObjeto() != null ? getObjeto() : dataModel.getRowData(getObjetoSelecionado().getId().toString());
+            if (orc.getListaVendaOrcamentoDetalhe() == null || orc.getListaVendaOrcamentoDetalhe().isEmpty()) {
+                throw new ChronosException("Itens do orcamento não definidos");
+            }
+            VendaOrcamentoCabecalho orcamento = service.conveterEmVenda(orc);
+            setObjeto(orcamento);
+            setTelaGrid(true);
+            Mensagem.addInfoMessage("Venda gerada com sucesso");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao gerar a venda", ex);
+            }
+        }
+    }
 
 
     public void incluirVendaOrcamentoDetalhe() {
@@ -117,30 +133,28 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         if (vendaOrcamentoDetalhe.getId() == null) {
             getObjeto().getListaVendaOrcamentoDetalhe().add(vendaOrcamentoDetalhe);
         }
-        try {
-            getObjeto().calcularValorTotal();
-            salvar("Registro salvo com sucesso!");
-            setTelaGrid(false);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", e);
 
-        }
+        getObjeto().calcularValorTotal();
+
     }
 
     public void excluirVendaOrcamentoDetalhe() {
 
-        try {
-            getObjeto().getListaVendaOrcamentoDetalhe().remove(vendaOrcamentoDetalheSelecionado);
-            getObjeto().calcularValorTotal();
-            salvar("Registro excluído com sucesso!");
-            setTelaGrid(false);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", e);
+
+        getObjeto().getListaVendaOrcamentoDetalhe().remove(vendaOrcamentoDetalheSelecionado);
+        getObjeto().calcularValorTotal();
+
+
+    }
+
+    public void definirValorVenda() {
+        if (vendaOrcamentoDetalhe.getProduto() != null) {
 
         }
 
+        BigDecimal valor = Optional.ofNullable(vendaOrcamentoDetalhe.getProduto())
+                .map(Produto::getValorVenda).orElse(null);
+        vendaOrcamentoDetalhe.setValorUnitario(valor);
     }
 
     public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
@@ -156,7 +170,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     public List<Vendedor> getListaVendedor(String nome) {
         List<Vendedor> listaVendedor = new ArrayList<>();
         try {
-            listaVendedor = vendedores.getEntitys(Vendedor.class ,"colaborador.pessoa.nome", nome);
+            listaVendedor = vendedores.getEntitys(Vendedor.class, "colaborador.pessoa.nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -192,7 +206,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     public List<Produto> getListaProduto(String nome) {
         List<Produto> listaProduto = new ArrayList<>();
         try {
-            listaProduto = produtos.getEntitys(Produto.class ,"nome", nome);
+            listaProduto = produtos.getEntitys(Produto.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }

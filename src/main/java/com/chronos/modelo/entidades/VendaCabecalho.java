@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import com.chronos.modelo.enuns.SituacaoVenda;
+import com.chronos.modelo.enuns.TipoFrete;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -96,6 +98,10 @@ public class VendaCabecalho implements Serializable {
 
 
     public VendaCabecalho() {
+        this.listaVendaDetalhe = new ArrayList<>();
+        this.dataVenda = new Date();
+        this.situacao = SituacaoVenda.Digitacao.getCodigo();
+        this.tipoFrete = TipoFrete.CIF.getCodigo();
     }
 
     public VendaCabecalho(Integer id, Date dataVenda, Integer numeroFatura, BigDecimal valorTotal, String situacao,String cliente) {
