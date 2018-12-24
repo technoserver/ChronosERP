@@ -15,9 +15,7 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.util.ArquivoUtil;
-import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import org.apache.commons.io.FileUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.UploadedFile;
@@ -30,8 +28,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -422,71 +418,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     }
 
 
-    public void gerarTxtToledo() {
 
-
-        try {
-            List<Produto> produtos = buscarProdutosBalanca();
-            if (!produtos.isEmpty()) {
-                File file = File.createTempFile("ITENSMGV", ".txt");
-
-                FileWriter writer = new FileWriter(file);
-
-                int i = 0;
-                for (Produto p : produtos) {
-
-                    String item = p.montarItemBalancaToledo();
-                    if ((produtos.size() - 1) > i) {
-                        item += "\r\n";
-                    }
-                    writer.write(item);
-                    i++;
-                }
-                writer.close();
-                //FileUtils.writeLines(file, linhas);
-
-                FacesUtil.downloadArquivo(file, "ITENSMGV.txt", true);
-            } else {
-                Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
-            }
-
-        } catch (Exception ex) {
-            if (ex instanceof ChronosException) {
-                Mensagem.addErrorMessage("", ex);
-            } else {
-                throw new RuntimeException("erro ao gera dados para balança", ex);
-            }
-
-        }
-    }
-
-    public void gerarTxtFilizola() {
-
-
-        try {
-            List<Produto> produtos = buscarProdutosBalanca();
-            if (!produtos.isEmpty()) {
-                File file = File.createTempFile("CADTXT", ".txt");
-
-                List<String> linhas = new ArrayList<>();
-                for (Produto p : produtos) {
-                    linhas.add(p.montarItemBalancaFilizola());
-                }
-                FileUtils.writeLines(file, linhas);
-                FacesUtil.downloadArquivo(file, "CADTXT.txt", true);
-            } else {
-                Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
-            }
-
-        } catch (Exception ex) {
-            if (ex instanceof ChronosException) {
-                Mensagem.addErrorMessage("", ex);
-            } else {
-                throw new RuntimeException("erro ao gera dados para balança", ex);
-            }
-
-        }
-    }
 
     public void buscarConfiguracoesBalanca() {
         configuracoesBalanca = pdvConfiguracaoBalancaRepository.getEntitys(PdvConfiguracaoBalanca.class);

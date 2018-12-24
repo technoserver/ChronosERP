@@ -12,10 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -27,6 +24,8 @@ public class TabelaNutricionalControll extends AbstractControll<TabelaNutriciona
     private Repository<Nutriente> nutrienteRepository;
 
     private Map<String, String> unidades;
+    private Map<String, String> medidaCaseria;
+    private Map<String, Integer> parteDecimalMedida;
 
     private TabelaNutricionalDetalhe item;
     private TabelaNutricionalDetalhe itemSelecionado;
@@ -98,8 +97,48 @@ public class TabelaNutricionalControll extends AbstractControll<TabelaNutriciona
 
     private void iniciarValores() {
         unidades = new HashMap<>();
+
         unidades.put("GRAMA", "GR");
         unidades.put("MILILITRO", "ML");
+        unidades.put("UNDIADE", "UN");
+
+        parteDecimalMedida = new LinkedHashMap<>();
+
+        parteDecimalMedida.put("Para 0", 0);
+        parteDecimalMedida.put("Para 1/4", 1);
+        parteDecimalMedida.put("Para 1/3", 2);
+        parteDecimalMedida.put("Para 1/2", 3);
+        parteDecimalMedida.put("Para 2/3", 4);
+        parteDecimalMedida.put("Para 3/4", 5);
+
+        medidaCaseria = new LinkedHashMap<>();
+        medidaCaseria.put("Colher(es) de Sopa", "00");
+        medidaCaseria.put("Colher(es) de Café", "01");
+        medidaCaseria.put("Colher(es) de Chá", "02");
+        medidaCaseria.put("Xícara(s)", "03");
+        medidaCaseria.put("De Xícara(s)", "04");
+        medidaCaseria.put("Unidade(s)", "05");
+        medidaCaseria.put("Pacote(s)", "06");
+        medidaCaseria.put("Fatia(s)", "07");
+        medidaCaseria.put("Fatia(s) Fina(s)", "08");
+        medidaCaseria.put("Pedaço(s)", "09");
+        medidaCaseria.put("Folha(s)", "10");
+        medidaCaseria.put("Pão(es)", "11");
+        medidaCaseria.put("Biscoito(s)", "12");
+        medidaCaseria.put("Bisnaguinha(s)", "13");
+        medidaCaseria.put("Disco(s)", "14");
+        medidaCaseria.put("Copo(s)", "15");
+        medidaCaseria.put("Porção(ões)", "16");
+        medidaCaseria.put("Tablete(s)", "17");
+        medidaCaseria.put("Sache(s)", "18");
+        medidaCaseria.put("Almôndega(s)", "19");
+        medidaCaseria.put("Bife(s)", "20");
+        medidaCaseria.put("Filé(s)", "21");
+        medidaCaseria.put("Concha(s)", "22");
+        medidaCaseria.put("Bala(s)", "23");
+        medidaCaseria.put("Prato(s) Fundo(s)", "24");
+        medidaCaseria.put("Pitada(s)", "25");
+        medidaCaseria.put("Lata(s)", "26");
     }
 
     @Override
@@ -139,5 +178,13 @@ public class TabelaNutricionalControll extends AbstractControll<TabelaNutriciona
 
     public void setItemSelecionado(TabelaNutricionalDetalhe itemSelecionado) {
         this.itemSelecionado = itemSelecionado;
+    }
+
+    public Map<String, String> getMedidaCaseria() {
+        return medidaCaseria;
+    }
+
+    public Map<String, Integer> getParteDecimalMedida() {
+        return parteDecimalMedida;
     }
 }

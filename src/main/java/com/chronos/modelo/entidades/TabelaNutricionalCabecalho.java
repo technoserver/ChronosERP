@@ -28,6 +28,12 @@ public class TabelaNutricionalCabecalho implements Serializable {
     private BigDecimal porcao;
     @NotBlank
     private String unidade;
+    @Column(name = "parte_inteira_medida_caseria")
+    private Integer parteInteiraMedidaCaseria;
+    @Column(name = "parte_decimal_medida_caseria")
+    private Integer parteDecimalMedidaCaseria;
+    @Column(name = "medida_caseira_utilizada")
+    private String medidaCaseiraUtilizada;
     @OneToMany(mappedBy = "tabelaNutricional", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TabelaNutricionalDetalhe> nutrientes;
 
@@ -78,6 +84,30 @@ public class TabelaNutricionalCabecalho implements Serializable {
 
     public void setNutrientes(List<TabelaNutricionalDetalhe> nutrientes) {
         this.nutrientes = nutrientes;
+    }
+
+    public Integer getParteInteiraMedidaCaseria() {
+        return parteInteiraMedidaCaseria;
+    }
+
+    public void setParteInteiraMedidaCaseria(Integer parteInteiraMedidaCaseria) {
+        this.parteInteiraMedidaCaseria = parteInteiraMedidaCaseria;
+    }
+
+    public Integer getParteDecimalMedidaCaseria() {
+        return parteDecimalMedidaCaseria;
+    }
+
+    public void setParteDecimalMedidaCaseria(Integer parteDecimalMedidaCaseria) {
+        this.parteDecimalMedidaCaseria = parteDecimalMedidaCaseria;
+    }
+
+    public String getMedidaCaseiraUtilizada() {
+        return medidaCaseiraUtilizada;
+    }
+
+    public void setMedidaCaseiraUtilizada(String medidaCaseiraUtilizada) {
+        this.medidaCaseiraUtilizada = medidaCaseiraUtilizada;
     }
 
     @Override
