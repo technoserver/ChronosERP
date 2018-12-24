@@ -721,9 +721,13 @@ public class Produto implements Serializable {
     }
 
     public String montarItemBalancaToledo() throws ChronosException {
-        ItemToledo item = new ItemToledo();
-        item.setProduto(this);
+        ItemToledo item = new ItemToledo(this);
         return item.montarItem();
+    }
+
+    public String montarItemBalancaToledoNutricao() {
+        ItemToledo item = new ItemToledo(this);
+        return item.montarValorNutricional();
     }
 
     public String montarItemBalancaFilizola() throws ChronosException {

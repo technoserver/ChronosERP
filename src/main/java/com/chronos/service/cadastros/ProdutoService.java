@@ -233,32 +233,93 @@ public class ProdutoService implements Serializable {
 
         List<Produto> produtos = repository.getProdutosBalanca();
 
-        if (!(configuracaoBalanca.getModelo() == ModeloBalanca.FILIZOLA)) {
-            throw new ChronosException("No momento apenas foi feito a integração com a Filizola");
-        }
 
         if (!produtos.isEmpty()) {
-            File file = File.createTempFile("ITENSMGV", ".txt");
 
-            FileWriter writer = new FileWriter(file);
-
-            int i = 0;
-            for (Produto p : produtos) {
-                p.setBalanca(configuracaoBalanca);
-                String item = p.montarItemBalancaFilizola();
-                if ((produtos.size() - 1) > i) {
-                    item += "\r\n";
-                }
-                writer.write(item);
-                i++;
+            if (configuracaoBalanca.getModelo() == ModeloBalanca.FILIZOLA) {
+                gerarTxtFilizola(produtos, configuracaoBalanca);
+            } else if (configuracaoBalanca.getModelo() == ModeloBalanca.TOLEDO) {
+                gerarTxtToledo(produtos, configuracaoBalanca);
+            } else {
+                throw new ChronosException("No momento apenas foi feito a integração com a Filizola ou Toledo");
             }
-            writer.close();
-            //FileUtils.writeLines(file, linhas);
 
-            FacesUtil.downloadArquivo(file, "ITENSMGV.txt", true);
         } else {
-            Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
+            Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança.");
         }
+
+    }
+
+    private void gerarTxtFilizola(List<Produto> produtos, PdvConfiguracaoBalanca configuracaoBalanca) throws Exception {
+        File file = File.createTempFile("CADTXT", ".txt");
+
+        FileWriter writer = new FileWriter(file);
+
+        int i = 0;
+        for (Produto p : produtos) {
+            p.setBalanca(configuracaoBalanca);
+            String item = p.montarItemBalancaFilizola();
+            if ((produtos.size() - 1) > i) {
+                item += "\r\n";
+            }
+            writer.write(item);
+            i++;
+        }
+        writer.close();
+
+
+        FacesUtil.downloadArquivo(file, "CADTXT.txt", true);
+    }
+
+
+    private void gerarTxtToledo(List<Produto> produtos, PdvConfiguracaoBalanca configuracaoBalanca) throws Exception {
+
+        List<String> arqvuivos = new ArrayList<>();
+
+        File fileProduto = File.createTempFile("ITENSMGV", ".txt");
+        File fileNutri = File.createTempFile("INFNUTRI", ".txt");
+        FileWriter writer = new FileWriter(fileProduto);
+        boolean exiteTabelaNutricional = false;
+        int i = 0;
+        for (Produto p : produtos) {
+            p.setBalanca(configuracaoBalanca);
+            String item = p.montarItemBalancaToledo();
+            if ((produtos.size() - 1) > i) {
+                item += "\r\n";
+            }
+            writer.write(item);
+            i++;
+            if (p.getTabelaNutricional() != null) {
+                exiteTabelaNutricional = true;
+            }
+        }
+        writer.close();
+
+        if (!exiteTabelaNutricional) {
+            FacesUtil.downloadArquivo(fileProduto, "ITENSMGV.txt", true);
+        } else {
+            arqvuivos.add(fileProduto.getAbsolutePath());
+            writer = new FileWriter(fileNutri);
+            for (Produto p : produtos) {
+
+                if (p.getTabelaNutricional() != null) {
+                    String item = p.montarItemBalancaToledoNutricao();
+                    if ((produtos.size() - 1) > i) {
+                        item += "\r\n";
+                    }
+                    writer.write(item);
+                    i++;
+                }
+
+            }
+
+            writer.close();
+            arqvuivos.add(fileNutri.getAbsolutePath());
+            File arquivoZip = ArquivoUtil.getInstance().compactarArquivos(arqvuivos, "toledo");
+            FacesUtil.downloadArquivo(arquivoZip, "toledo.zip", true);
+        }
+
+
 
     }
 
