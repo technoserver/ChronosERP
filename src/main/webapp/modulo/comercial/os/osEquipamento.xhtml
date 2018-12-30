@@ -22,7 +22,6 @@
     <p:dataTable id="dataTableOsAberturaEquipamento" var="obj"
                  value="#{osAberturaControll.objeto.listaOsAberturaEquipamento}"
                  paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                 resizableColumns="true"
                  reflow="true" paginatorPosition="bottom">
 
 
@@ -36,7 +35,7 @@
             <h:outputLabel
                     value="#{osAberturaControll.keyFromValue(osAberturaControll.osTipoCobertura, obj.tipoCobertura)}"/>
         </p:column>
-        <p:column headerText="Ações" width="150">
+        <p:column headerText="Ações" width="150" styleClass="text-center">
             <p:commandLink process="dataTableOsAberturaEquipamento" title="Alterar" style="margin-right: 4px"
                            oncomplete="PF('dialogOsAberturaEquipamento').show()" styleClass="btn btn-default"
                            action="#{osAberturaControll.alterarOsAberturaEquipamento}"

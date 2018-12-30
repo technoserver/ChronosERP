@@ -79,7 +79,7 @@ public class VendaPdvService implements Serializable {
         estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
         for (PdvFormaPagamento p : pagamentos) {
             if (p.getPdvTipoPagamento().getGeraParcelas().equals("S") && p.getPdvTipoPagamento().getCodigo().equals("14")) {
-                finLancamentoReceberService.gerarLancamento(venda.getId(), p.getValor(), venda.getCliente(), p.getCondicao(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
+                finLancamentoReceberService.gerarLancamento(venda.getId(), p.getValor(), venda.getCliente(), p.getCondicao(), Modulo.PDV.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
             }
 
             if (p.getPdvTipoPagamento().getCodigo().equals("05")) {

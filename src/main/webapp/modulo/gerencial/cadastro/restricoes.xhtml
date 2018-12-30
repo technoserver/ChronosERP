@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Restrições
+    </ui:define>
+
+    <ui:define name="tela">
+        #{cestControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Restrições
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{restricaoSistemaControll}"
+                       idDataTable="dataTableCest"
+                       nomeFuncao="RESTRICOES"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Usuário">
+                <h:outputLabel value="#{row.usuario.login}"/>
+            </p:column>
+
+            <p:column headerText="Desc. max na venda" styleClass="text-right">
+                <h:outputLabel value="#{row.descontoVenda}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{restricaoSistemaControll}"
+                                   nomeFuncao="RESTRICOES"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Usuario"
+                                  itemLabel="#{objeto.login}"
+                                  controller="#{restricaoSistemaControll}"
+                                  completeMethod="getListUsuario"
+                                  nomeAtributo="#{restricaoSistemaControll.objeto.usuario}"
+                                  idComponente="usuario"
+                />
+
+
+                <div class="col-xs-12 col-sm-3 col-md-2">
+                    <p:outputLabel value="DES. max permitido"
+                                   for="descontoVenda"/>
+
+                    <p:inputNumber id="descontoVenda"
+                                   value="#{restricaoSistemaControll.objeto.descontoVenda}"
+                                   required="true"
+                                   style="width: 100%;"
+                                   decimalPlaces="2"
+                                   minValue="0"
+                                   maxValue="99.99"
+                                   maxlength="4"
+                    >
+
+                    </p:inputNumber>
+                </div>
+
+
+            </div>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

@@ -174,6 +174,18 @@ public class FacesUtil {
 
     }
 
+    public static BigDecimal getDescVenda() {
+
+        BigDecimal desconto = BigDecimal.ZERO;
+        try {
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+            desconto = (BigDecimal) session.getAttribute("desc");
+
+        } catch (Exception ex) {
+        }
+        return desconto;
+    }
+
     private static HttpSession getHttpSession() {
         return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
     }
@@ -187,28 +199,26 @@ public class FacesUtil {
     }
 
 
-
-
     public static PdvMovimento getMovimento() {
 
         PdvMovimento movimento = null;
-        try{
+        try {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
             movimento = (PdvMovimento) session.getAttribute("caixaERP");
 
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
         return movimento;
     }
 
     public static void setMovimento(PdvMovimento movimento) {
-        try{
+        try {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
             session.removeAttribute("caixaERP");
             session.setAttribute("caixaERP", movimento);
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
     }

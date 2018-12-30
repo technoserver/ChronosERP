@@ -11,6 +11,7 @@ import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.service.comercial.PdvVendaDetalheService;
 import com.chronos.service.comercial.VendaPdvService;
 import com.chronos.service.comercial.VendedorService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
@@ -20,6 +21,7 @@ import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +100,8 @@ public class BalcaoControll implements Serializable {
     @Inject
     private ProdutoService produtoService;
 
+    @Inject
+    private PdvVendaDetalheService vendaDetalheService;
 
     private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
 
@@ -142,6 +146,9 @@ public class BalcaoControll implements Serializable {
     private int qtdParcelas = 1;
     private int qtdMaxParcelas = 1;
 
+    private String usuarioSupervisor;
+    private String senhaSupervisor;
+
 
     @PostConstruct
     private void init() {
@@ -173,6 +180,7 @@ public class BalcaoControll implements Serializable {
                 context.redirect(context.getRequestContextPath() + "/modulo/comercial/caixa/movimentos.xhtml");
                 return;
             } else {
+                vendedor = null;
                 telaGrid = false;
                 telaVenda = true;
                 telaPagamentos = false;
@@ -342,27 +350,29 @@ public class BalcaoControll implements Serializable {
     }
 
     public void addProduto() {
-        Optional<PdvVendaDetalhe> itemOpt = getItemVenda(item.getProduto());
-        BigDecimal quantidade = item.getQuantidade();
-        if (itemOpt.isPresent()) {
-            quantidade = quantidade.add(itemOpt.get().getQuantidade());
-            item = itemOpt.get();
-            item.setQuantidade(quantidade);
-        } else {
-            venda.getListaPdvVendaDetalhe().add(0, item);
+
+
+        try {
+
+            vendaDetalheService.verificarRestricao(item);
+
+            if (vendaDetalheService.isNecessarioAutorizacaoSupervisor()) {
+                RequestContext.getCurrentInstance().execute("PF('dialogSupervisor').show();");
+            } else {
+                venda = vendaDetalheService.addProduto(venda, item);
+                item = new PdvVendaDetalhe();
+                produto = new ProdutoDTO();
+            }
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao autoizar o procedimento", ex);
+            }
         }
 
-        venda.calcularValorTotal();
-        item = new PdvVendaDetalhe();
-        produto = new ProdutoDTO();
 
-    }
-
-    public void alterarQuantidade(Produto produto, BigDecimal quantidade) {
-        Optional<PdvVendaDetalhe> itemOpt = getItemVenda(produto);
-        if (itemOpt.isPresent()) {
-            itemOpt.get().setQuantidade(quantidade);
-        }
     }
 
 
@@ -376,9 +386,28 @@ public class BalcaoControll implements Serializable {
         venda.calcularValorTotal();
     }
 
-    private Optional<PdvVendaDetalhe> getItemVenda(Produto produto) {
-        return venda.getListaPdvVendaDetalhe().stream().filter(i -> i.getProduto().equals(produto)).findAny();
 
+    public boolean autorizacaoSupervisor() {
+
+        try {
+
+
+            if (vendaDetalheService.liberarRestricao(usuarioSupervisor, senhaSupervisor)) {
+                venda = vendaDetalheService.addProduto(venda, item);
+                item = new PdvVendaDetalhe();
+                produto = new ProdutoDTO();
+
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao autoizar o procedimento", ex);
+            }
+        }
+        return true;
     }
 
 
@@ -540,8 +569,6 @@ public class BalcaoControll implements Serializable {
                     formaPagamento.setQtdParcelas(qtdParcelas);
                     formaPagamento.setOperadoraCartao(operadoraCartao);
                 }
-
-
 
 
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
@@ -938,5 +965,19 @@ public class BalcaoControll implements Serializable {
         return qtdMaxParcelas;
     }
 
+    public String getUsuarioSupervisor() {
+        return usuarioSupervisor;
+    }
 
+    public void setUsuarioSupervisor(String usuarioSupervisor) {
+        this.usuarioSupervisor = usuarioSupervisor;
+    }
+
+    public String getSenhaSupervisor() {
+        return senhaSupervisor;
+    }
+
+    public void setSenhaSupervisor(String senhaSupervisor) {
+        this.senhaSupervisor = senhaSupervisor;
+    }
 }

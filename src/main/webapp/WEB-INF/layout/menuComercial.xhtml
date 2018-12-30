@@ -44,17 +44,19 @@
                 </a>
                 <ul class="nav nav-third-level">
                     <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
-                        <erp:subMenu caminho="/modulo/comercial/caixa/movimentos"
-                                     label="Movimentos"
-                                     exibir="#{true}"
-                                     funcao="condicoesPagamento"/>
-                    </li>
-                    <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
                         <erp:subMenu caminho="/modulo/comercial/caixa/operador"
                                      label="Operador"
                                      exibir="#{true}"
                                      funcao="operador"/>
                     </li>
+
+                    <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
+                        <erp:subMenu caminho="/modulo/comercial/caixa/movimentos"
+                                     label="Movimentos"
+                                     exibir="#{true}"
+                                     funcao="condicoesPagamento"/>
+                    </li>
+
                     <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
                         <erp:subMenu caminho="/modulo/comercial/caixa/caixa"
                                      label="Caixa"
@@ -137,7 +139,9 @@
 
         <c:if test="#{seguranca.userOs eq true }">
             <li class="${fn:contains(view.viewId,'modulo/comercial/os/')?'active':''}">
-                <a href="#">OS<span class="fa arrow"></span></a>
+                <a href="#">Serviço
+                    <span class="fa arrow"></span>
+                </a>
                 <ul class="nav nav-third-level">
                     <erp:subMenu caminho="/modulo/comercial/os/equipamentos"
                                  label="Equipamento"

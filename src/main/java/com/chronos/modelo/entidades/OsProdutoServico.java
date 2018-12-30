@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import com.chronos.modelo.anotacoes.TaxaMaior;
+
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -36,6 +38,7 @@ public class OsProdutoServico implements Serializable {
     private BigDecimal valorSubtotal;
     @Column(name = "TAXA_DESCONTO")
     @DecimalMax(value = "100.0", message = "O deve deve ser igual ou menor que 100")
+    @TaxaMaior
     private BigDecimal taxaDesconto;
     @Column(name = "VALOR_DESCONTO")
     private BigDecimal valorDesconto;
