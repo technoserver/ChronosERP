@@ -1,5 +1,6 @@
 package com.chronos.modelo.entidades;
 
+import com.chronos.modelo.anotacoes.TaxaMaior;
 import com.chronos.modelo.enuns.SituacaoVenda;
 import com.chronos.modelo.enuns.TipoFrete;
 import org.hibernate.annotations.DynamicUpdate;
@@ -46,6 +47,7 @@ public class VendaCabecalho implements Serializable {
     @Column(name = "VALOR_COMISSAO")
     private BigDecimal valorComissao;
     @Column(name = "TAXA_DESCONTO")
+    @TaxaMaior()
     private BigDecimal taxaDesconto;
     @Column(name = "VALOR_DESCONTO")
     private BigDecimal valorDesconto;

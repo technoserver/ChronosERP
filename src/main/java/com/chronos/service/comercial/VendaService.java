@@ -8,6 +8,8 @@ import com.chronos.modelo.enuns.*;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.VendaComissaoRepository;
 import com.chronos.repository.VendaRepository;
+import com.chronos.service.AbstractService;
+import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
@@ -17,18 +19,19 @@ import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.inject.Inject;
-import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by john on 06/09/17.
  */
-public class VendaService implements Serializable {
+public class VendaService extends AbstractService<VendaCabecalho> {
 
 
-    private static final long serialVersionUID = 1L;
+
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
     @Inject
@@ -44,6 +47,31 @@ public class VendaService implements Serializable {
 
     @Inject
     private AuditoriaService auditoriaService;
+
+
+    @Transactional
+    public VendaCabecalho salvar(VendaCabecalho venda) throws ChronosException {
+
+        if (venda.getCondicoesPagamento() != null) {
+            venda.setFormaPagamento(venda.getCondicoesPagamento().getVistaPrazo().equals("V")
+                    ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
+        }
+
+        if (venda.getListaVendaDetalhe() == null || venda.getListaVendaDetalhe().isEmpty()) {
+            throw new ChronosException("Não foram definido itens para o pedido de venda");
+        }
+
+        venda = repository.atualizar(venda);
+
+        return venda;
+
+    }
+
+    public boolean verificarRestricao(VendaCabecalho venda) throws Exception {
+        this.objeto = venda;
+        necessarioAutorizacaoSupervisor = false;
+        return verificarRestricao();
+    }
 
 
     @Transactional
@@ -166,6 +194,31 @@ public class VendaService implements Serializable {
         return venda;
     }
 
+    public VendaCabecalho addItem(VendaCabecalho venda, VendaDetalhe vendaDetalhe) {
+
+        Optional<VendaDetalhe> itemVenda = getItemVenda(venda, vendaDetalhe.getProduto());
+        BigDecimal quantidade = vendaDetalhe.getQuantidade();
+        BigDecimal valor = vendaDetalhe.getValorUnitario();
+
+        if (itemVenda.isPresent()) {
+            quantidade = itemVenda.get().getQuantidade().add(quantidade);
+            itemVenda.get().setQuantidade(quantidade);
+            itemVenda.get().setValorUnitario(valor);
+            itemVenda.get().setTaxaDesconto(vendaDetalhe.getTaxaDesconto());
+        } else {
+            venda.getListaVendaDetalhe().add(vendaDetalhe);
+        }
+
+        venda.calcularValorTotal();
+        return venda;
+    }
+
+
+    private Optional<VendaDetalhe> getItemVenda(VendaCabecalho venda, Produto produto) {
+        return venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().equals(produto)).findAny();
+
+    }
+
 
     private void gerarComissao(VendaCabecalho venda) {
         VendaComissao comissao = new VendaComissao();
@@ -178,4 +231,16 @@ public class VendaService implements Serializable {
         comissao.setVendedor(venda.getVendedor());
         comissoes.salvar(comissao);
     }
+
+    private void verificarR() {
+
+    }
+
+
+    @Override
+    protected Class<VendaCabecalho> getClazz() {
+        return VendaCabecalho.class;
+    }
+
+
 }

@@ -23,7 +23,7 @@
                  value="#{osAberturaControll.objeto.listaOsProdutoServico}"
                  paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
                  reflow="true" paginatorPosition="bottom"
-                 resizableColumns="true"
+
     >
 
 
@@ -70,7 +70,7 @@
             &nbsp;
             <p:commandLink process="dataTableOsProdutoServico" title="Excluir" styleClass="btn btn-default"
                            action="#{osAberturaControll.excluirOsProdutoServico}"
-                           update="dataTableOsProdutoServico">
+                           update="dataTableOsProdutoServico,formCentro:telaDetalhe:panel-valores">
                 <i class="fa fa-close"/>
                 <p:confirm header="Confirmação" message="Confirma Exclusão?"
                            icon="ui-icon-alert"/>

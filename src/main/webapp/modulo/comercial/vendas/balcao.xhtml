@@ -675,6 +675,49 @@
         </h:form>
     </ui:define>
 
+    <ui:define name="outrasTelas2">
+        <h:form id="formSupervisor">
+            <p:dialog id="dialogSupervisor"
+                      header="Autorização Supervisor"
+                      widgetVar="dialogSupervisor" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="400">
+
+                <p:outputPanel id="panelSupervisor">
+
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <p:outputLabel for="usuarioSupervisor" value="Usuário: "/>
+                        <p:inputText id="usuarioSupervisor" required="true"
+                                     value="#{balcaoControll.usuarioSupervisor}"/>
+                        <p:outputLabel for="senhaSupervisor" value="Senha: "/>
+                        <p:password id="senhaSupervisor" required="true" value="#{balcaoControll.senhaSupervisor}"/>
+                    </h:panelGrid>
+
+                </p:outputPanel>
+
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Autorizar"
+                                             id="btn-autorizar"
+                                             actionListener="#{balcaoControll.autorizacaoSupervisor()}"
+                                             update=":formSupervisor:panelSupervisor,:formCentro:produtos-selecionados,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogSupervisor').hide();document.getElementById('formCentro:produto_input').focus();}"/>
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogSupervisor').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
 
     <ui:define name="javaScript">
         <h:outputScript library="js" name="pdv.js"/>

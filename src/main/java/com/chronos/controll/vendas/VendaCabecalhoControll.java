@@ -4,7 +4,6 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.enuns.FormaPagamento;
 import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.enuns.SituacaoVenda;
 import com.chronos.modelo.view.PessoaCliente;
@@ -13,12 +12,14 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
+import com.chronos.service.comercial.ItemVendaService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.util.StringUtils;
 
@@ -63,6 +64,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Inject
     private VendaService vendaService;
     @Inject
+    private ItemVendaService itemService;
+    @Inject
     private ProdutoService produtoService;
     private ProdutoDTO produto;
 
@@ -73,7 +76,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private PessoaCliente pessoaCliente;
 
 
-
     private Produto produto2;
 
     private String justificativa;
@@ -82,6 +84,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private String nome;
     private String situacao;
     private Map<String, String> status;
+
+    private String tipoAutorizacao = "P";
 
     @PostConstruct
     @Override
@@ -98,13 +102,13 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     @Override
     public ERPLazyDataModel<VendaCabecalho> getDataModel() {
-        if(dataModel == null){
+        if (dataModel == null) {
             dataModel = new ERPLazyDataModel<>();
             dataModel.setDao(dao);
             dataModel.setClazz(VendaCabecalho.class);
         }
 
-        dataModel.setAtributos(new Object[]{"dataVenda","numeroFatura","valorTotal","situacao","cliente.pessoa.nome"});
+        dataModel.setAtributos(new Object[]{"dataVenda", "numeroFatura", "valorTotal", "situacao", "cliente.pessoa.nome"});
         dataModel.getFiltros().clear();
         pesquisar();
         return dataModel;
@@ -150,12 +154,20 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     @Override
     public void salvar() {
-        if (getObjeto().getCondicoesPagamento() != null) {
-            getObjeto().setFormaPagamento(getObjeto().getCondicoesPagamento().getVistaPrazo().equals("V")
-                    ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
+
+        try {
+
+            VendaCabecalho venda = vendaService.salvar(getObjeto());
+            setObjeto(venda);
+            Mensagem.addInfoMessage("Pedido de venda salvo");
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro salvar o pedido venda", ex);
+            }
         }
-        super.salvar();
-        setTelaGrid(false);
     }
 
     public void incluirVendaDetalhe() {
@@ -182,47 +194,63 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
     public void salvarVendaDetalhe() {
-        vendaDetalhe.setProduto(new Produto(produto.getId(), produto.getNome()));
-        if (vendaDetalhe.getId() == null) {
-            getObjeto().getListaVendaDetalhe().stream()
-                    .filter(p -> p.getProduto().getId() == vendaDetalhe.getProduto().getId())
-                    .forEach(item -> {
-                        item.setQuantidade(vendaDetalhe.getQuantidade());
-                        item.setValorUnitario(vendaDetalhe.getValorUnitario());
-                        item.setTaxaDesconto(vendaDetalhe.getTaxaDesconto());
-                    });
-            boolean encontrou = getObjeto().getListaVendaDetalhe().stream()
-                    .filter(p -> p.getProduto().getId() == vendaDetalhe.getProduto().getId())
-                    .findFirst().isPresent();
-            if (!encontrou) {
-                vendaDetalhe.calcularValorTotal();
-                getObjeto().getListaVendaDetalhe().add(vendaDetalhe);
+
+
+        try {
+            vendaDetalhe.setProduto(new Produto(produto.getId(), produto.getNome()));
+
+            itemService.verificarRestricao(vendaDetalhe);
+
+            if (itemService.isNecessarioAutorizacaoSupervisor()) {
+                RequestContext.getCurrentInstance().execute("PF('dialogVendaDetalhe').hide();");
+                RequestContext.getCurrentInstance().execute("PF('dialogSupervisor').show();");
+            } else {
+                vendaService.addItem(getObjeto(), vendaDetalhe);
             }
 
-
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao add o item da venda", ex);
+            }
         }
-        try {
-            getObjeto().calcularValorTotal();
-            salvar("Registro salvo com sucesso!");
-            setTelaGrid(false);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", e);
 
-        }
     }
 
     public void excluirVendaDetalhe() {
-        try {
-            getObjeto().getListaVendaDetalhe().remove(vendaDetalheSelecionado);
-            getObjeto().calcularValorTotal();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", e);
-        }
+
+        getObjeto().getListaVendaDetalhe().remove(vendaDetalheSelecionado);
+        getObjeto().calcularValorTotal();
+
 
     }
 
+    @Override
+    public boolean autorizacaoSupervisor() {
+
+        try {
+            if (vendaService.liberarRestricao(usuarioSupervisor, senhaSupervisor)) {
+                switch (tipoAutorizacao) {
+                    case "P":
+                        vendaService.addItem(getObjeto(), vendaDetalhe);
+                        break;
+
+                    default:
+                        vendaService.salvar(getObjeto());
+                }
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao autoizar o procedimento", ex);
+            }
+        }
+        return true;
+    }
 
     public void buscarEncerrarVenda() {
 
@@ -259,7 +287,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
             } else {
                 throw new RuntimeException("erro ao encerrar a venda", ex);
             }
-
 
 
         }
@@ -486,7 +513,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         Vendedor vendedor = (Vendedor) event.getObject();
         getObjeto().setTaxaComissao(vendedor.getComissao());
     }
-
 
 
     @Override

@@ -2,7 +2,6 @@
 package com.chronos.controll;
 
 import com.chronos.dto.UsuarioDTO;
-import com.chronos.modelo.anotacoes.DataMaior;
 import com.chronos.modelo.anotacoes.TaxaMaior;
 import com.chronos.modelo.entidades.Auditoria;
 import com.chronos.modelo.entidades.Empresa;
@@ -17,8 +16,6 @@ import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -46,11 +43,11 @@ public abstract class AbstractControll<T> implements Serializable {
     protected EmpresaEndereco enderecoEmpresa;
     protected Object[] atributos;
     protected Object[] joinFetch;
+    protected String usuarioSupervisor;
+    protected String senhaSupervisor;
     private T objetoSelecionado;
     private T objeto;
     private Auditoria log;
-    private String usuarioSupervisor;
-    private String senhaSupervisor;
     private boolean necessarioAutorizacaoSupervisor = false;
     private boolean restricaoLiberada = false;
     private boolean telaGrid = true;
@@ -775,7 +772,7 @@ public abstract class AbstractControll<T> implements Serializable {
     public void salvar(String mensagem) {
         try {
             necessarioAutorizacaoSupervisor = false;
-            verificaRestricao();
+            //verificaRestricao();
 
             objeto = dao.atualizar (objeto);
             telaGrid = true;
@@ -785,6 +782,7 @@ public abstract class AbstractControll<T> implements Serializable {
             Mensagem.addErrorMessage("Ocorreu um erro ao salvar o registro!", e);
         }
     }
+
 
     public void remover() {
         try {
@@ -824,7 +822,7 @@ public abstract class AbstractControll<T> implements Serializable {
         Field fields[] = objeto.getClass().getDeclaredFields();
         for (Field f : fields) {
             if (f.isAnnotationPresent(TaxaMaior.class)) {
-                BigDecimal taxa = FacesUtil.getRestricaoTaxaMaior();
+                BigDecimal taxa = FacesUtil.getDescVenda();
                 if (taxa != null) {
                     Method metodo = objeto.getClass().getDeclaredMethod("get" + Biblioteca.primeiraMaiuscula(f.getName()));
                     BigDecimal valorCampo = (BigDecimal) metodo.invoke(objeto);
@@ -833,36 +831,22 @@ public abstract class AbstractControll<T> implements Serializable {
                     }
                 }
             }
-            if (f.isAnnotationPresent(DataMaior.class)) {
-                Integer qtdeDias = FacesUtil.getRestricaoDataMaior();
-                if (qtdeDias != null) {
-                    Method metodo = objeto.getClass().getDeclaredMethod("get" + Biblioteca.primeiraMaiuscula(f.getName()));
-                    Date valorCampo = (Date) metodo.invoke(objeto);
-
-                    if (valorCampo != null && Biblioteca.verificaDataMaior(valorCampo, qtdeDias)) {
-                        necessarioAutorizacaoSupervisor = true;
-                    }
-                }
-            }
+//            if (f.isAnnotationPresent(DataMaior.class)) {
+//                Integer qtdeDias = FacesUtil.getRestricaoDataMaior();
+//                if (qtdeDias != null) {
+//                    Method metodo = objeto.getClass().getDeclaredMethod("get" + Biblioteca.primeiraMaiuscula(f.getName()));
+//                    Date valorCampo = (Date) metodo.invoke(objeto);
+//
+//                    if (valorCampo != null && Biblioteca.verificaDataMaior(valorCampo, qtdeDias)) {
+//                        necessarioAutorizacaoSupervisor = true;
+//                    }
+//                }
+//            }
         }
     }
 
-    public void autorizacaoSupervisor() {
-        try {
-
-
-            Usuario usuario = usuarioRepository.getUsuario(usuarioSupervisor);
-            PasswordEncoder passwordEnocder = new BCryptPasswordEncoder();
-            if (usuario==null || !passwordEnocder.matches(senhaSupervisor, usuario.getSenha())) {
-                Mensagem.addWarnMessage("Login inválido ou usuário NÂO tem privilégio de supervisor.");
-            } else if (usuario.getAdministrador() != null && usuario.getAdministrador().equals("S")) {
-                restricaoLiberada = true;
-                salvar();
-            }
-        } catch (Exception e) {
-            Mensagem.addErrorMessage("Ocorreu um erro", e);
-
-        }
+    public boolean autorizacaoSupervisor() {
+        return true;
     }
 
 
@@ -1408,4 +1392,19 @@ public abstract class AbstractControll<T> implements Serializable {
         return bandeiras;
     }
 
+    public String getUsuarioSupervisor() {
+        return usuarioSupervisor;
+    }
+
+    public void setUsuarioSupervisor(String usuarioSupervisor) {
+        this.usuarioSupervisor = usuarioSupervisor;
+    }
+
+    public String getSenhaSupervisor() {
+        return senhaSupervisor;
+    }
+
+    public void setSenhaSupervisor(String senhaSupervisor) {
+        this.senhaSupervisor = senhaSupervisor;
+    }
 }

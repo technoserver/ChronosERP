@@ -59,12 +59,10 @@ public class UsuarioRepository implements Serializable {
 
     public Usuario getUsuario(String login) {
 
-
-        Query q = em.createQuery("SELECT u FROM Usuario u WHERE u.login = :login");
+        TypedQuery<Usuario> q = em.createQuery("SELECT u FROM Usuario u WHERE u.login = :login", Usuario.class);
         q.setParameter("login", login);
-        List<Usuario> user = q.getResultList();
 
-        return user.get(0);
+        return q.getResultList().stream().findFirst().orElse(null);
         
         
     }

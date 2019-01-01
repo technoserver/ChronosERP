@@ -72,7 +72,7 @@
                     <h:outputLabel
                             value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
-                <p:column headerText="Ações" width="110" styleClass="text-center">
+                <p:column headerText="Ações" width="120" styleClass="text-center">
                     <p:commandLink title="Alterar"
                                    action="#{nfeCabecalhoControll.doEdit()}"
                                    class=" btn btn-default"
@@ -546,5 +546,12 @@
             </p:dialog>
         </h:form>
     </ui:define>
+
+    <ui:define name="telaSupervisor">
+        <erp:supervisor id="telaSupervisor"
+                        atualizar=",:formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe,:formCentro:telaDetalhe:tabNfe:panelTotais"
+                        controller="#{nfeCabecalhoControll}"/>
+    </ui:define>
+
 
 </ui:composition>

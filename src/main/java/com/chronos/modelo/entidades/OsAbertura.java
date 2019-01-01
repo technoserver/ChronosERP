@@ -58,7 +58,6 @@ public class OsAbertura implements Serializable {
     @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     @Column(name = "VALOR_TOTAL_DESCONTO")
     private BigDecimal valorTotalDesconto;
-    @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
     @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     @Column(name = "VALOR_TOTAL")
     private BigDecimal valorTotal;
@@ -91,7 +90,7 @@ public class OsAbertura implements Serializable {
     public OsAbertura() {
     }
 
-    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, int idcliente, String nome, Integer idstatus, String osStatus, Integer idnfeCabecalho) {
+    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, BigDecimal valorTotal, int idcliente, String nome, Integer idstatus, String osStatus, Integer idnfeCabecalho) {
         this.id = id;
         this.numero = numero;
         this.dataInicio = dataInicio;
@@ -100,6 +99,7 @@ public class OsAbertura implements Serializable {
         this.cliente = new Cliente(idcliente, nome);
         this.osStatus = new OsStatus(idstatus, osStatus);
         this.idnfeCabecalho = idnfeCabecalho;
+        this.valorTotal = valorTotal;
 
     }
 

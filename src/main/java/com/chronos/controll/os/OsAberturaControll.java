@@ -5,12 +5,15 @@ import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
+import com.chronos.service.comercial.OsProdutoServicoService;
 import com.chronos.service.comercial.OsService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.springframework.util.StringUtils;
 
@@ -48,6 +51,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Inject
     private OsService osService;
     @Inject
+    private OsProdutoServicoService produtoServicoService;
+    @Inject
     private ProdutoService produtoService;
     @Inject
     private Repository<VendaCondicoesPagamento> pagamentoRepository;
@@ -79,7 +84,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             dataModel.setClazz(getClazz());
             dataModel.setDao(dao);
         }
-        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "cliente.id", "cliente.pessoa.nome", "osStatus.id", "osStatus.nome", "idnfeCabecalho"});
+        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "valorTotal", "cliente.id", "cliente.pessoa.nome", "osStatus.id", "osStatus.nome", "idnfeCabecalho"});
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         return dataModel;
     }
@@ -207,11 +212,20 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public void salvarOsProdutoServico() {
         try {
 
-            setObjeto(osService.salvarItem(getObjeto(), osProdutoServico));
-            Mensagem.addInfoMessage("Produto " + osProdutoServico.getProduto().getNome() + " add com sucesso !");
+            produtoServicoService.verificarRestricao(osProdutoServico);
 
-            temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
-            setActiveTabIndex(1);
+            if (produtoServicoService.isNecessarioAutorizacaoSupervisor()) {
+                RequestContext.getCurrentInstance().execute("PF('dialogOsProdutoServico').hide();");
+                RequestContext.getCurrentInstance().execute("PF('dialogSupervisor').show();");
+            } else {
+                setObjeto(osService.salvarItem(getObjeto(), osProdutoServico));
+                Mensagem.addInfoMessage("Produto " + osProdutoServico.getProduto().getNome() + " add com sucesso !");
+
+                temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
+                setActiveTabIndex(1);
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao salvar o produto !", e);
@@ -219,8 +233,32 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         }
     }
 
+    @Override
+    public boolean autorizacaoSupervisor() {
+
+        try {
+            if (osService.liberarRestricao(usuarioSupervisor, senhaSupervisor)) {
+                setObjeto(osService.salvarItem(getObjeto(), osProdutoServico));
+                Mensagem.addInfoMessage("Produto " + osProdutoServico.getProduto().getNome() + " add com sucesso !");
+
+                temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
+                setActiveTabIndex(1);
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao autoizar o procedimento", ex);
+            }
+        }
+        return true;
+    }
+
     public void excluirOsProdutoServico() {
         getObjeto().getListaOsProdutoServico().remove(osProdutoServicoSelecionado);
+        getObjeto().calcularValores();
         setObjeto(dao.atualizar(getObjeto()));
         Mensagem.addInfoMessage("Servi/Produto excluído com sucesso!");
         temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
