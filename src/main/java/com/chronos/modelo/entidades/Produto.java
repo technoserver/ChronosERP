@@ -132,6 +132,8 @@ public class Produto implements Serializable {
     private String servico;
     @Column(name = "preco_prioritario")
     private PrecoPrioritario precoPrioritario;
+    @Column(name = "possui_grade")
+    private Boolean possuiGrade;
     @JoinColumn(name = "ID_UNIDADE_PRODUTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private UnidadeProduto unidadeProduto;
@@ -153,6 +155,10 @@ public class Produto implements Serializable {
     @JoinColumn(name = "id_tabela_nutricional_cabecalho", referencedColumnName = "ID")
     @ManyToOne
     private TabelaNutricionalCabecalho tabelaNutricional;
+    @JoinColumn(name = "id_produto_grade", referencedColumnName = "ID")
+    @ManyToOne
+    private ProdutoGrade produtoGrade;
+
 
     //@OneToMany(fetch = FetchType.LAZY, mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -710,6 +716,22 @@ public class Produto implements Serializable {
 
     public void setTabelaNutricional(TabelaNutricionalCabecalho tabelaNutricional) {
         this.tabelaNutricional = tabelaNutricional;
+    }
+
+    public Boolean getPossuiGrade() {
+        return possuiGrade;
+    }
+
+    public void setPossuiGrade(Boolean possuiGrade) {
+        this.possuiGrade = possuiGrade;
+    }
+
+    public ProdutoGrade getProdutoGrade() {
+        return produtoGrade;
+    }
+
+    public void setProdutoGrade(ProdutoGrade produtoGrade) {
+        this.produtoGrade = produtoGrade;
     }
 
     public PdvConfiguracaoBalanca getBalanca() {

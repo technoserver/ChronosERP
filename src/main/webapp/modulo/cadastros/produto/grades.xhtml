@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Grade do produto
+    </ui:define>
+
+    <ui:define name="tela">
+        #{produtoGradeControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Grade do produto
+    </ui:define>
+
+    <ui:define name="css">
+        <style type="text/css">
+            .field-action__icon {
+                margin: 0px 0 0 5px !important;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{produtoGradeControll}"
+                       idDataTable="dataTableCest"
+                       nomeFuncao="CEST"
+                       id="telaGrid"
+        >
+
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{produtoGradeControll}"
+                                   nomeFuncao="CEST"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="nome" label="Nome"
+                                nomeAtributo="#{produtoGradeControll.objeto.nome}"
+                                tamanhoMaximo="100"/>
+
+            </div>
+            <erp:separador label="Atrinutos"/>
+            <h:panelGroup layout="block" id="valor">
+
+                <div class="row m-b">
+                    <erp:autoCompleteAcao styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          id="compAtributo"
+                                          label="Atributo"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoGradeControll}"
+                                          completeMethod="getListaAtributos"
+                                          requerido="false"
+                                          nomeAtributo="#{produtoGradeControll.atributo}"
+                                          idComponente="atributo">
+
+                        <p:commandButton title="Adicinar atributo" icon="fa fa-plus"
+                                         process="@this,:formCentro:telaDetalhe:compAtributo:atributo"
+                                         update="formCentro:telaDetalhe:valor,formCentro:growl,:formCentro:telaDetalhe:dataTableAtributos"
+                                         action="#{produtoGradeControll.salvarAtributo}"/>
+
+
+                    </erp:autoCompleteAcao>
+                </div>
+
+                <p:dataTable id="dataTableAtributos" var="row"
+                             value="#{produtoGradeControll.objeto.listaProdutoGradeDetalhe}"
+                             reflow="true"
+                             paginator="true"
+                             rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom">
+
+
+                    <p:column headerText="Atributo">
+                        <h:outputLabel value="#{row.produtoAtributo.nome}"/>
+                    </p:column>
+
+                    <p:column headerText=" - " width="60" styleClass="text-center">
+                        <p:commandLink styleClass="btn btn-default" title="Exluir"
+                                       update="dataTableAtributos"
+                                       process="dataTableAtributos"
+                                       action="#{produtoGradeControll.removerAtributo}">
+                            <i class="fa fa-times"></i>
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{produtoGradeControll.gradeSelecionada}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                </p:dataTable>
+
+
+            </h:panelGroup>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

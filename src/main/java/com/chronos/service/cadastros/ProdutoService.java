@@ -66,6 +66,11 @@ public class ProdutoService implements Serializable {
                 if (!StringUtils.isEmpty(produto.getImagem())) {
                     ArquivoUtil.getInstance().salvarFotoProduto(produto.getImagem());
                 }
+
+                if (produto.getProdutoGrade() != null) {
+                    produto.setPossuiGrade(true);
+                }
+
                 if (produto.getId() == null) {
 
                     produto = produtoRepository.atualizar(produto);
