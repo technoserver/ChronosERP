@@ -797,8 +797,13 @@ public abstract class AbstractControll<T> implements Serializable {
                 Mensagem.addInfoMessage("Registro excluído com sucesso!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro ao excluir o registro!", e);
+            if (e.getCause().getClass().getName().contains("PersistenceException")) {
+                Mensagem.addErrorMessage("Ocorreu um erro ao excluir o registro! o mesmo já possue movimento", e);
+            } else {
+                e.printStackTrace();
+                Mensagem.addErrorMessage("Ocorreu um erro ao excluir o registro!", e);
+            }
+
         }
     }
 
