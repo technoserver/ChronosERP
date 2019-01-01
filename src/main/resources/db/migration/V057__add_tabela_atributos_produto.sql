@@ -15,7 +15,7 @@ CREATE TABLE produto_atributo_detalhe
   id_produto_atributo integer,
   nome                varchar(100),
   PRIMARY KEY (id),
-  FOREIGN KEY (produto_atributo) REFERENCES empresa_produto (id)
+  FOREIGN KEY (id_produto_atributo) REFERENCES produto_atributo (id)
 );
 
 DROP TABLE IF EXISTS estoque_grade;
