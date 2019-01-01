@@ -142,6 +142,11 @@
                              exibir="#{seguranca.isTemAcesso('PRODUTO_ATRIBUTO')}"
                              funcao="atributos"/>
 
+                <erp:subMenu caminho="/modulo/cadastros/produto/grades"
+                             label="Grade"
+                             exibir="#{seguranca.isTemAcesso('PRODUTO_GRADE')}"
+                             funcao="grades"/>
+
                 <erp:subMenu caminho="/modulo/cadastros/produto/produtos"
                              label="Produto"
                              exibir="#{seguranca.isTemAcesso('PRODUTO')}"

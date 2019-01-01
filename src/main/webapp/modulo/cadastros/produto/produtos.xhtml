@@ -551,6 +551,17 @@
                 </p:tab>
                 <p:tab title="Estoque">
                     <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Grade"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaProdutoGrade"
+                                          nomeAtributo="#{produtoControll.objeto.produtoGrade}"
+                                          idComponente="produtoGrade"
+                                          requerido="false"
+                                          id="campoprodutoGrade"/>
+                    </div>
+                    <div class="row">
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
                                           idComponente="produtoQuantidadeEstoqueAnterior"
                                           label="Qtde Est. Anterior"
@@ -951,7 +962,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <p:dataTable value="#{produtoControll.ncms}" var="row" paginator="true" reflow="true"
-                                         paginatorPosition="bottom" resizableColumns="true">
+                                         paginatorPosition="bottom">
                                 <p:column headerText="Código" width="100">
                                     <h:outputLabel value="#{row.codigo}"/>
                                 </p:column>

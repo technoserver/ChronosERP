@@ -70,6 +70,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     @Inject
     private Repository<PdvConfiguracaoBalanca> pdvConfiguracaoBalancaRepository;
+    @Inject
+    private Repository<ProdutoGrade> gradeRepository;
 
     @Inject
     private ProdutoService service;
@@ -180,6 +182,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         super.doCreate(); //To change body of generated methods, choose Tools | Templates.
         getObjeto().setExcluido("N");
         getObjeto().setInativo("N");
+        getObjeto().setPossuiGrade(false);
         getObjeto().setDataCadastro(new Date());
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
@@ -395,6 +398,16 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             e.printStackTrace();
         }
         return tabelas;
+    }
+
+    public List<ProdutoGrade> getListaProdutoGrade(String nome) {
+        List<ProdutoGrade> grades = new ArrayList<>();
+        try {
+            grades = gradeRepository.getEntitys(ProdutoGrade.class, "nome", nome, new Object[]{"nome"});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return grades;
     }
 
     public void buscarProdutoEmpresas(ToggleEvent event) {
