@@ -28,32 +28,27 @@
                        id="telaGrid"
                        >
 
-            <p:column headerText="Doc Origem">
-                <h:outputLabel value="#{row.finDocumentoOrigem.siglaDocumento}"/>
-            </p:column>
+
             <p:column headerText="Fornecedor">
                 <h:outputLabel value="#{row.fornecedor.pessoa.nome}"/>
             </p:column>
-            <p:column headerText="Qtde Parcela">
+            <p:column headerText="Qtde Parcela" styleClass="text-center" width="128">
                 <h:outputLabel value="#{row.quantidadeParcela}"/>
             </p:column>
-            <p:column headerText="Valor A Pagar">
-                <h:outputLabel value="#{row.valorAPagar}">
-                    <f:convertNumber pattern="#,##0.00"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Data Lcto">
+            <p:column headerText="Lançamento" styleClass="text-center" width="117">
                 <h:outputLabel value="#{row.dataLancamento}">
                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="1º Vencimento">
+            <p:column headerText="1º Vencimento" styleClass="text-center" width="145">
                 <h:outputLabel value="#{row.primeiroVencimento}">
                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="Mesclado">
-                <h:outputLabel value="#{row.mescladoPara}"/>
+            <p:column headerText="A Pagar" styleClass="text-right" width="150">
+                <h:outputLabel value="#{row.valorAPagar}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
             </p:column>
 
 

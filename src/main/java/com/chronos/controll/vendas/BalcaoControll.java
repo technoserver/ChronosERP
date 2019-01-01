@@ -693,7 +693,7 @@ public class BalcaoControll implements Serializable {
         pagamentos.add(new PdvTipoPagamento(2, "02", "CHEQUE", "N", "N"));
         pagamentos.add(new PdvTipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
         pagamentos.add(new PdvTipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
-        pagamentos.add(new PdvTipoPagamento(5, "04", "CREDITO NA LOJA", "N", "N"));
+        pagamentos.add(new PdvTipoPagamento(5, "05", "CREDITO NA LOJA", "N", "N"));
         pagamentos.add(new PdvTipoPagamento(6, "14", "DUPLICATA", "N", "S"));
 
         return pagamentos;

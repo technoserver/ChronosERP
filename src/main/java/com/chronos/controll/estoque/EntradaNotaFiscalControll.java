@@ -650,6 +650,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void incluirDuplicata() {
 
         duplicata = new NfeDuplicata();
+        duplicata.setValor(getObjeto().getValorTotal());
+
         if (naturezaFinanceira == null) {
             FacesContext.getCurrentInstance().validationFailed();
             Mensagem.addErrorMessage("É preciso seleciona a natureza financeira !!!");
@@ -727,9 +729,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             d.setNumero(Integer.valueOf(getObjeto().getNumero()) + "/" + String.valueOf(numero));
             d.setValor(Biblioteca.multiplica(getObjeto().getValorTotal(), p.getTaxa()).divide(BigDecimal.valueOf(100), RoundingMode.HALF_DOWN));
             d.setDataVencimento(Biblioteca.dataPagamento(p.getDias()));
-            getObjeto().getListaDuplicata().add(d);
 
+            duplicatas.add(d);
         }
+        getObjeto().setListaDuplicata(new HashSet<>(duplicatas));
 
     }
 
