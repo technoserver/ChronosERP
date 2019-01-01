@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Atributos do produto
+    </ui:define>
+
+    <ui:define name="tela">
+        #{produtoAtributoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Atributos do produto
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{produtoAtributoControll}"
+                       idDataTable="dataTableCest"
+                       nomeFuncao="CEST"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Sigla">
+                <h:outputLabel value="#{row.sigla}"/>
+            </p:column>
+
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{produtoAtributoControll}"
+                                   nomeFuncao="CEST"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
+                                idComponente="sigla" label="Sigla"
+                                nomeAtributo="#{produtoAtributoControll.objeto.sigla}"
+                                tamanhoMaximo="10"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-9 col-md-10"
+                                idComponente="nome" label="Nome"
+                                nomeAtributo="#{produtoAtributoControll.objeto.nome}"
+                                tamanhoMaximo="100"/>
+
+            </div>
+            <erp:separador label="Valores"/>
+            <h:panelGroup layout="block" id="valor">
+
+                <div class="row m-b">
+                    <div class="col-xs-12 col-sm-3 col-md-3">
+                        <p:outputLabel value="Valor"
+                                       for="valor-atributo"/>
+                        <i class="glyphicon glyphicon-info-sign" style="margin-left: 5px"
+                           title="Para adcionar mais de um valor ao mesmo tempo separe o com virgula"></i>
+                        <div class="field-action">
+                            <p:inputText id="valor-atributo"
+                                         value="#{produtoAtributoControll.valor}"
+                                         maxlength="100"
+
+
+                            />
+                            <div>
+                                <p:commandButton icon="fa fa-plus" title="Adiconar"
+                                                 action="#{produtoAtributoControll.salvarAtributo}"
+                                                 process="@this,:formCentro:telaDetalhe:valor-atributo"
+                                                 update="formCentro:telaDetalhe:valor,:formCentro:growl">
+
+                                </p:commandButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p:dataTable id="dataTableVendaCondicoesParcelas" var="row"
+                             value="#{produtoAtributoControll.objeto.listaProdutoAtributoDetalhe}"
+                             reflow="true"
+                             paginator="true"
+                             rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom">
+
+
+                    <p:column headerText="Valor">
+                        <h:outputLabel value="#{row.nome}"/>
+                    </p:column>
+
+                    <p:column headerText=" - " width="60" styleClass="text-center">
+                        <p:commandLink styleClass="btn btn-default" title="Exluir"
+                                       update="dataTableVendaCondicoesParcelas"
+                                       process="dataTableVendaCondicoesParcelas"
+                                       action="#{produtoAtributoControll.removerAtributo}">
+                            <i class="fa fa-times"></i>
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{produtoAtributoControll.atributoSelecionado}"/>
+                        </p:commandLink>
+                    </p:column>
+
+                </p:dataTable>
+
+
+            </h:panelGroup>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

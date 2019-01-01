@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,6 +29,9 @@ public class ProdutoAtributo implements Serializable {
     @OneToMany(mappedBy = "produtoAtributo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProdutoAtributoDetalhe> listaProdutoAtributoDetalhe;
 
+    public ProdutoAtributo() {
+        this.listaProdutoAtributoDetalhe = new ArrayList<>();
+    }
 
     public Integer getId() {
         return id;
