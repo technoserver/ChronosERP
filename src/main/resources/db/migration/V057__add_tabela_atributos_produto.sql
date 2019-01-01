@@ -1,6 +1,3 @@
-alter table produto
-  add column possui_grade boolean default false;
-
 CREATE TABLE produto_atributo
 (
   id    serial NOT NULL,
@@ -40,3 +37,12 @@ CREATE TABLE estoque_grade
   FOREIGN KEY (id_estoque_tamanho) REFERENCES estoque_tamanho (id),
   FOREIGN KEY (id_produto_atributo_detalhe) REFERENCES produto_atributo_detalhe (id)
 );
+
+alter table produto
+  add column possui_grade boolean default false;
+
+alter table produto
+  add column id_produto_atributo integer;
+
+ALTER TABLE produto
+  ADD CONSTRAINT produto_id_produto_atributo_fkey FOREIGN KEY (id_produto_atributo) REFERENCES produto_atributo (id);
