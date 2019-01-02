@@ -9,9 +9,11 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
@@ -37,6 +39,8 @@ public class ProdutoService implements Serializable {
 
     @Inject
     private Repository<EmpresaProduto> empresaProdutoRepository;
+    @Inject
+    private Repository<ProdutoGrade> gradeRepository;
 
 
     @Transactional
@@ -120,6 +124,62 @@ public class ProdutoService implements Serializable {
             filtros.add(new Filtro(Filtro.AND, "tipo", "V"));
         }
         listaProduto = repository.getProdutoDTO(descricao, empresa);
+        List<ProdutoDTO> newList;
+        boolean existeGrade = listaProduto.stream().filter(p -> p.getIdgrade() != null).count() > 0;
+
+        if (existeGrade) {
+            newList = listaProduto.stream().filter(p -> p.getIdgrade() == null).collect(Collectors.toList());
+
+            for (Iterator<ProdutoDTO> iterator = listaProduto.iterator(); iterator.hasNext(); ) {
+                ProdutoDTO value = iterator.next();
+
+                if (value.getIdgrade() != null) {
+                    ProdutoGrade grade = gradeRepository.getJoinFetchList(value.getIdgrade(), ProdutoGrade.class);
+
+                    List<List<String>> listC = new ArrayList<>();
+                    List<String> result = new ArrayList<>();
+                    String codigoGrade = "";
+
+                    for (ProdutoGradeDetalhe g : grade.getListaProdutoGradeDetalhe()) {
+
+                        List<String> list = new ArrayList<>();
+
+                        for (ProdutoAtributoDetalhe a : g.getProdutoAtributo().getListaProdutoAtributoDetalhe()) {
+                            codigoGrade = value.getId() + "." + g.getProdutoAtributo().getId() + "." + a.getId();
+                            value.setCodigoGrade(codigoGrade);
+                            list.add((a.getProdutoAtributo().getSigla() + "=" + a.getNome() + "; "));
+                        }
+
+//                        List<String>  list = g.getProdutoAtributo().getListaProdutoAtributoDetalhe()
+//                                .stream()
+//                                .map(a-> (a.getProdutoAtributo().getSigla()+"="+a.getNome()+"; "))
+//                                .collect(Collectors.toList());
+                        listC.add(list);
+
+                    }
+
+                    Biblioteca.generateCombination(listC, result, 0, "");
+
+
+                    for (String s : result) {
+                        ProdutoDTO newProduct = new ProdutoDTO();
+                        newProduct.setNome(value.getNome() + " " + s);
+                        BeanUtils.copyProperties(value, newProduct, "nome");
+                        newList.add(newProduct);
+
+                    }
+
+
+                }
+
+            }
+
+            return newList;
+        }
+
+
+
+
         return listaProduto;
     }
 
