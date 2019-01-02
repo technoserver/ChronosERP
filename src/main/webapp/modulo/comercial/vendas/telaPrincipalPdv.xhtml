@@ -22,7 +22,9 @@
                 <p:outputLabel value="#{objeto.nome}"/>
             </p:column>
             <p:column headerText="Valor">
-                <p:outputLabel value="#{objeto.valorVenda}"/>
+                <p:outputLabel value="#{objeto.valorVenda}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </p:outputLabel>
             </p:column>
             <p:column headerText="Estoque">
                 <p:outputLabel value="#{objeto.estoqueVerificado}">
