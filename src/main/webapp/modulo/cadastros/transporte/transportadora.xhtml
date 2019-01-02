@@ -31,14 +31,14 @@
                                  paginator="true"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{transportadoraControll.podeConsultar()}"
-                                 resizableColumns="true" lazy="true" sortBy="nome"
+                                 lazy="true" sortBy="nome"
                                  class="js-data-table">
 
 
                         <p:column headerText="Nome" sortBy="#{row.nome}">
                             <h:outputLabel value="#{row.nome}"/>
                         </p:column>
-                        <p:column headerText="CPF/CNPJ" width="140" styleClass="text-center">
+                        <p:column headerText="CPF/CNPJ" width="169" styleClass="text-center">
                             <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
                                 <f:converter converterId="cpfCnpjConverter"/>
                             </h:outputLabel>
@@ -57,7 +57,7 @@
                         </p:column>
 
 
-                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                        <p:column headerText="Ações" width="120" styleClass="text-center">
                             <p:commandLink title="Alterar" action="#{transportadoraControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
