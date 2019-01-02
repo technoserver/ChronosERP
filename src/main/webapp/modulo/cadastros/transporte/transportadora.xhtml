@@ -123,11 +123,11 @@
             <erp:dadosPessoa controller="#{transportadoraControll}" id="dadosPessoa">
                 <p:tab title="Dados Genreciais" id="dadosGerenciais">
                     <div class="row">
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
-                                        idComponente="rntrc" label="RNTRC"
-                                        nomeAtributo="#{transportadoraControll.objeto.rntrc}"
-                                        requerido="true"
-                                        tamanhoMaximo="8"/>
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="rntrc" label="RNTRC"
+                                          nomeAtributo="#{transportadoraControll.objeto.rntrc}"
+                                          requerido="true"
+                                          tamanhoMaximo="8"/>
 
                         <div class="col-xs-12 col-sm-2 col-md-2">
                             <h:outputLabel value="Tipo" for="tipo"/>

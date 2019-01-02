@@ -61,8 +61,12 @@ public class PessoaService implements Serializable {
     @Transactional
     public Transportadora salvarTransportadora(Transportadora transportadora, Empresa empresa) throws Exception {
         validarPessoa(transportadora.getPessoa());
+        boolean salvarEmpresaPessoa = transportadora.getId() == null;
         transportadora = transportadoras.atualizar(transportadora);
-        salvarEmpresaPessoa(empresa, transportadora.getPessoa());
+        if (salvarEmpresaPessoa) {
+            salvarEmpresaPessoa(empresa, transportadora.getPessoa());
+
+        }
         return transportadora;
     }
 
