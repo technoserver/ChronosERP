@@ -34,7 +34,7 @@
             <p:column headerText="CRC" width="130">
                 <h:outputLabel value="#{row.inscricaoCrc}"/>
             </p:column>
-            <p:column headerText="UF CRC" width="65">
+            <p:column headerText="UF CRC" width="90" styleClass="text-center">
                 <h:outputLabel value="#{row.ufCrc}"/>
             </p:column>
             <p:column headerText="Fone">
@@ -122,7 +122,7 @@
                 <div class="col-xs-12 col-sm-10 col-md-10">
                     <h:outputLabel value="Municipio :"/>
                     <br/>
-                    <p:autoComplete id="Municipio" value="#{contadorControll.objeto.cidade}"
+                    <p:autoComplete id="Municipio" value="#{contadorControll.municipio}"
                                     completeMethod="#{contadorControll.getMunicipios}"
                                     var="municipio" itemLabel="#{municipio.getNome()}"
                                     itemValue="#{municipio}" converter="defaultConverter"

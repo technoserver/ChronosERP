@@ -133,7 +133,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) {
 
 
-        String jpql = "select DISTINCT new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
+        String jpql = "select DISTINCT new com.chronos.dto.ProdutoDTO(p.id,p.produtoGrade.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
                 "ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,un.sigla," +
                 "un.podeFracionar,pp.valor,tp.preco,p.precoPrioritario,p.quantidadeVendaAtacado,p.valorVendaAtacado) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +

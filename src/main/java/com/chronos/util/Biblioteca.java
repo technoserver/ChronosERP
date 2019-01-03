@@ -30,6 +30,18 @@ import java.util.regex.Pattern;
 public class Biblioteca {
 
 
+    public static void generateCombination(List<List<String>> Lists, List<String> result, int depth, String current) {
+        if (depth == Lists.size()) {
+            result.add(current);
+            return;
+        }
+
+        for (int i = 0; i < Lists.get(depth).size(); ++i) {
+            generateCombination(Lists, result, depth + 1, current + Lists.get(depth).get(i));
+        }
+    }
+
+
     public static boolean renavamValido(String renavam) {
         //Completa com zeros a esquerda caso o renavam seja com 9 digitos
         if (renavam.matches("^([0-9]{9})$")) {

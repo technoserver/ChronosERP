@@ -8,12 +8,15 @@ import com.chronos.transmissor.infra.enuns.ConsumidorOperacao;
 import com.chronos.transmissor.infra.enuns.IndicadorIe;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.cdi.ManualCDILookup;
 import com.chronos.util.jsf.FacesUtil;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -74,6 +77,7 @@ public class VendaToNFe extends ManualCDILookup {
         gerarItensVenda();
         addItens();
         definirFormaPagamento();
+        gerarDuplicatas();
         return nfe;
     }
 
@@ -260,14 +264,64 @@ public class VendaToNFe extends ManualCDILookup {
         } else {
             FinTipoRecebimento tipoRecebimento = tipoVenda == TipoVenda.VENDA ? venda.getCondicoesPagamento().getTipoRecebimento() : os.getCondicoesPagamento().getTipoRecebimento();
             PdvTipoPagamento tipoPagamento = new PdvTipoPagamento();
-            tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
+            tipoPagamento = tipoPagamento.buscarPorCodigo("14");
             NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
             nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
             nfeFormaPagamento.setNfeCabecalho(nfe);
-            nfeFormaPagamento.setForma(tipoRecebimento.getTipo());
+            nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
             nfeFormaPagamento.setValor(tipoVenda == TipoVenda.VENDA ? venda.getValorTotal() : os.getValorTotal());
             nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
         }
+    }
+
+    public void gerarDuplicatas() {
+
+
+        for (NfeFormaPagamento f : nfe.getListaNfeFormaPagamento()) {
+
+            if (f.getForma().equals("14")) {
+
+
+                if (nfe.getListaDuplicata() == null) {
+                    nfe.setListaDuplicata(new HashSet<>());
+                }
+
+                BigDecimal residuo;
+                BigDecimal somaParcelas = BigDecimal.ZERO;
+                BigDecimal valorParcela;
+                int number = 0;
+                List<VendaCondicoesParcelas> parcelas = venda.getCondicoesPagamento().getParcelas();
+                for (VendaCondicoesParcelas parcela : parcelas) {
+                    NfeDuplicata duplicata = new NfeDuplicata();
+                    duplicata.setNfeCabecalho(nfe);
+                    valorParcela = Biblioteca.calcularValorPercentual(nfe.getValorTotal(), parcela.getTaxa());
+                    duplicata.setDataVencimento(Biblioteca.addDay(new Date(), parcela.getDias()));
+                    duplicata.setValor(valorParcela);
+                    somaParcelas = somaParcelas.add(valorParcela);
+                    if (number == (parcelas.size() - 1)) {
+                        residuo = nfe.getValorTotal().subtract(somaParcelas);
+                        valorParcela = valorParcela.add(residuo);
+                        duplicata.setValor(valorParcela);
+                    }
+                    duplicata.setNumero(String.format("%3s", String.valueOf(number++ + 1)));
+                    nfe.getListaDuplicata().add(duplicata);
+                }
+
+                NfeFatura fatura = new NfeFatura();
+                fatura.setNfeCabecalho(nfe);
+                nfe.setFatura(fatura);
+
+                String numFatura = String.valueOf(nfe.getListaDuplicata().size());
+                numFatura = org.apache.commons.lang3.StringUtils.leftPad(numFatura, 3, "0");
+                fatura.setNumero(numFatura);
+                fatura.setValorLiquido(nfe.getValorTotal());
+                fatura.setValorOriginal(nfe.getValorTotal());
+                fatura.setValorDesconto(nfe.getValorDesconto());
+
+            }
+
+        }
+
     }
 
     private LocalDestino getLocalDestino(String uf, String ufDestino) {

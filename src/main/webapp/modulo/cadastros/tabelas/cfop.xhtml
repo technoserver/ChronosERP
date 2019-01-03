@@ -9,38 +9,32 @@
 >
 
     <ui:define name="title">
-        CEST 
+        CFOP
     </ui:define>
 
     <ui:define name="tela">
-        #{cestControll.titulo}
+        #{cfopControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        CEST 
+        CFOP
     </ui:define>
 
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{cestControll}"
+        <erp:gridDados controller="#{cfopControll}"
                        idDataTable="dataTableCest"
-                       nomeFuncao="CEST"
+                       nomeFuncao="CFOP"
                        id="telaGrid"
                        somenteConsulta="true">
 
-            <p:column headerText="CEST">
-                <h:outputLabel value="#{row.cest}"/>
+            <p:column headerText="CFOP" width="100" styleClass="text-center">
+                <h:outputLabel value="#{row.cfop}"/>
             </p:column>
 
-            <p:column headerText="NCM">
-                <h:outputLabel value="#{row.ncmSh}"/>
-            </p:column>
-            <p:column headerText="Descricao CEST">
-                <h:outputLabel value="#{row.descricaoCest}"/>
-            </p:column>
-            <p:column headerText="Descricao Seguimento">
-                <h:outputLabel value="#{row.descricaoSegmento}"/>
+            <p:column headerText="Descrição">
+                <h:outputLabel value="#{row.descricao}"/>
             </p:column>
 
 
@@ -49,37 +43,30 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{cestControll}"
-                                   nomeFuncao="CEST"
+        <erp:telaInclusaoAlteracao controller="#{cfopControll}"
+                                   nomeFuncao="CFOP"
                                    id="telaDetalhe"
                                    somenteConsulta="true">
 
             <div class="row">
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
-                                idComponente="item" label="ITEM"
-                                nomeAtributo="#{cestControll.objeto.item}"
+                                idComponente="cfop" label="CFOP"
+                                nomeAtributo="#{cfopControll.objeto.cfop}"
                                 tamanhoMaximo="10"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
-                                idComponente="cest" label="CEST"
-                                nomeAtributo="#{cestControll.objeto.cest}"
+                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                idComponente="descricao" label="Descrição"
+                                nomeAtributo="#{cfopControll.objeto.descricao}"
                                 tamanhoMaximo="10"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
-                                idComponente="ncm" label="NCM SH"
-                                nomeAtributo="#{cestControll.objeto.ncmSh}"
-                                tamanhoMaximo="15"/>
+
             </div>
             <div class="row">
 
                 <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="cfopDescricao" label="Descricao"
-                                    nomeAtributo="#{cestControll.objeto.descricaoCest}"/>
+                                    idComponente="aplicacao" label="Aplicação"
+                                    nomeAtributo="#{cfopControll.objeto.aplicacao}"/>
             </div>
-            <div  class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="cfopAplicacao" label="Aplicacao"
-                                    nomeAtributo="#{cestControll.objeto.descricaoSegmento}"/>
-            </div>
+
 
         </erp:telaInclusaoAlteracao>
     </ui:define>

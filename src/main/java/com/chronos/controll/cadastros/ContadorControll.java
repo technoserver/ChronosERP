@@ -4,6 +4,7 @@ package com.chronos.controll.cadastros;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Contador;
 import com.chronos.modelo.entidades.Municipio;
+import com.chronos.modelo.entidades.Uf;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 
@@ -30,6 +31,12 @@ public class ContadorControll extends AbstractControll<Contador> implements Seri
     private Municipio municipio;
 
 
+    @Override
+    public void doEdit() {
+        super.doEdit();
+        instanciarMunicipio();
+    }
+
     public List<Municipio> getMunicipios(String nome) {
         List<Municipio> cidades = new ArrayList<>();
         try {
@@ -46,6 +53,7 @@ public class ContadorControll extends AbstractControll<Contador> implements Seri
         return cidades;
     }
 
+
     public void atualizarCodIbge() {
         municipio = new Municipio();
         getObjeto().setMunicipioIbge(municipio.getCodigoIbge());
@@ -54,7 +62,9 @@ public class ContadorControll extends AbstractControll<Contador> implements Seri
     }
 
     public void instanciarMunicipio() {
-        municipio = null;
+        municipio = new Municipio();
+        municipio.setNome(getObjeto().getCidade());
+        municipio.setUf(new Uf(getObjeto().getUf()));
     }
 
 

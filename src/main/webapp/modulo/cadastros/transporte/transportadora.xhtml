@@ -31,14 +31,14 @@
                                  paginator="true"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{transportadoraControll.podeConsultar()}"
-                                 resizableColumns="true" lazy="true" sortBy="nome"
+                                 lazy="true" sortBy="nome"
                                  class="js-data-table">
 
 
                         <p:column headerText="Nome" sortBy="#{row.nome}">
                             <h:outputLabel value="#{row.nome}"/>
                         </p:column>
-                        <p:column headerText="CPF/CNPJ" width="140" styleClass="text-center">
+                        <p:column headerText="CPF/CNPJ" width="169" styleClass="text-center">
                             <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
                                 <f:converter converterId="cpfCnpjConverter"/>
                             </h:outputLabel>
@@ -57,7 +57,7 @@
                         </p:column>
 
 
-                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                        <p:column headerText="Ações" width="120" styleClass="text-center">
                             <p:commandLink title="Alterar" action="#{transportadoraControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
@@ -123,11 +123,11 @@
             <erp:dadosPessoa controller="#{transportadoraControll}" id="dadosPessoa">
                 <p:tab title="Dados Genreciais" id="dadosGerenciais">
                     <div class="row">
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
-                                        idComponente="rntrc" label="RNTRC"
-                                        nomeAtributo="#{transportadoraControll.objeto.rntrc}"
-                                        requerido="true"
-                                        tamanhoMaximo="8"/>
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          idComponente="rntrc" label="RNTRC"
+                                          nomeAtributo="#{transportadoraControll.objeto.rntrc}"
+                                          requerido="true"
+                                          tamanhoMaximo="8"/>
 
                         <div class="col-xs-12 col-sm-2 col-md-2">
                             <h:outputLabel value="Tipo" for="tipo"/>

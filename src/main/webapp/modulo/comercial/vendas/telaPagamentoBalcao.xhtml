@@ -269,11 +269,11 @@
                              width="100%" cellpadding="5" cellspacing="5">
                     <h:column>
                         #{pag.pdvTipoPagamento.descricao}
-                        <small><i class="text-muted">(#{balcaoControll.qtdParcelas}x)</i></small>
+                        <small><i class="text-muted">(#{pag.qtdParcelas}x)</i></small>
                     </h:column>
                     <h:column class="nowrap" width="1">
                         R$
-                        <h:outputText value="#{pag.valor/balcaoControll.qtdParcelas}">
+                        <h:outputText value="#{pag.valor/pag.qtdParcelas}">
                             <f:convertNumber pattern="#,##0.00"/>
                         </h:outputText>
                     </h:column>

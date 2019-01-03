@@ -47,6 +47,7 @@ public class PdvFormaPagamento implements Serializable {
     private OperadoraCartao operadoraCartao;
 
     public PdvFormaPagamento() {
+        this.qtdParcelas = 1;
     }
 
     public Integer getId() {
