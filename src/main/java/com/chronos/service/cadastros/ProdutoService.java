@@ -127,7 +127,7 @@ public class ProdutoService implements Serializable {
         List<ProdutoDTO> newList;
         boolean existeGrade = listaProduto.stream().filter(p -> p.getIdgrade() != null).count() > 0;
 
-        if (existeGrade) {
+        if (existeGrade && false) {
             newList = listaProduto.stream().filter(p -> p.getIdgrade() == null).collect(Collectors.toList());
 
             for (Iterator<ProdutoDTO> iterator = listaProduto.iterator(); iterator.hasNext(); ) {

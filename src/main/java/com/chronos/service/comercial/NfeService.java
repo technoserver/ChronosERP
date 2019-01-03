@@ -61,8 +61,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 import static java.nio.file.FileSystems.getDefault;
 
@@ -454,6 +454,17 @@ public class NfeService implements Serializable {
                 nfe.getListaDuplicata().add(duplicata);
             }
         }
+
+        NfeFatura fatura = new NfeFatura();
+        fatura.setNfeCabecalho(nfe);
+        nfe.setFatura(fatura);
+
+        String numFatura = String.valueOf(nfe.getListaDuplicata().size());
+        numFatura = org.apache.commons.lang3.StringUtils.leftPad(numFatura, 3, "0");
+        fatura.setNumero(numFatura);
+        fatura.setValorLiquido(nfe.getValorTotal());
+        fatura.setValorOriginal(nfe.getValorTotal());
+        fatura.setValorDesconto(nfe.getValorDesconto());
 
 
     }
@@ -1156,7 +1167,7 @@ public class NfeService implements Serializable {
     private String gerarXml(int idnfe, String nome) throws IOException {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, idnfe));
-        String atributos[] = new String[]{"xml"};
+        String[] atributos = new String[]{"xml"};
         NfeXml nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
         if (nfeXml == null) {
             throw new RuntimeException("Xml inexistente!");
@@ -1174,7 +1185,7 @@ public class NfeService implements Serializable {
         } else {
             List<Filtro> filtros = new LinkedList<>();
             filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, nfe.getId()));
-            String atributos[] = null;
+            String[] atributos = null;
             nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
             nfeXml.setNfeCabecalho(nfe);
             nfeXml.setXml(xml.getBytes());

@@ -6,6 +6,7 @@ import com.chronos.dto.ProdutoVendaDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.*;
 import com.chronos.repository.EstoqueRepository;
+import com.chronos.repository.Repository;
 import com.chronos.repository.VendaComissaoRepository;
 import com.chronos.repository.VendaRepository;
 import com.chronos.service.AbstractService;
@@ -44,6 +45,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     private NfeService nfeService;
     @Inject
     private SyncPendentesService syncPendentesService;
+    @Inject
+    private Repository<VendaCondicoesParcelas> parcelasRepository;
 
     @Inject
     private AuditoriaService auditoriaService;
@@ -113,6 +116,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
             NfeCabecalho nfe;
+            List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", venda.getCondicoesPagamento().getId());
+            venda.getCondicoesPagamento().setParcelas(parcelas);
             VendaToNFe vendaNfe = new VendaToNFe(modelo, venda);
             nfe = vendaNfe.gerarNfe();
 
@@ -127,13 +132,15 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
             if (status == StatusTransmissao.AUTORIZADA) {
+                venda.getCondicoesPagamento().setParcelas(null);
                 venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
                 venda.setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
                 repository.atualizar(venda);
                 String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";
+                auditoriaService.gerarLog(AcaoLog.FATURAR_VENDA, "Faturamento do pedido de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
                 Mensagem.addInfoMessage(msg);
             }
-            auditoriaService.gerarLog(AcaoLog.FATURAR_VENDA, "Faturamento do pedido de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
+
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);

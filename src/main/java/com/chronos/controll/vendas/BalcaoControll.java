@@ -181,6 +181,7 @@ public class BalcaoControll implements Serializable {
                 return;
             } else {
                 vendedor = null;
+                cliente = null;
                 telaGrid = false;
                 telaVenda = true;
                 telaPagamentos = false;
