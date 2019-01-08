@@ -37,10 +37,13 @@
                     </h:selectOneMenu>
                 </div>
                 <div class="col-xs-12 col-sm-2 col-md-2">
-                    <h:outputLabel value="CPF/CNPJ" for="cpfCnpj"/>
+                    <p:outputLabel value="CPF/CNPJ" for="cpfCnpj"/>
                     <div class="field-action">
-                        <h:inputText class="form-control" id="cpfCnpj"
-                                     value="#{fornecedorRelatorioControll.cpfCnpj}"/>
+                        <p:inputText class="form-control" id="cpfCnpj"
+                                     maxlength="14"
+                                     value="#{fornecedorRelatorioControll.cpfCnpj}">
+                            <p:keyFilter regEx="/[\d\-]/"/>
+                        </p:inputText>
                         <div class="field-action__icon">
                             <p:commandLink title="Gerar relatório"
                                            styleClass="btn btn-default"

@@ -7,6 +7,7 @@ import com.chronos.modelo.entidades.Municipio;
 import com.chronos.modelo.entidades.Uf;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -31,10 +32,32 @@ public class ContadorControll extends AbstractControll<Contador> implements Seri
     private Municipio municipio;
 
 
+
     @Override
     public void doEdit() {
         super.doEdit();
         instanciarMunicipio();
+    }
+
+    @Override
+    public void salvar() {
+
+        try {
+
+            Contador contador = dao.get(Contador.class, "inscricaoCrc", getObjeto().getInscricaoCrc());
+
+            if (contador != null && !contador.equals(getObjeto())) {
+                throw new ChronosException("CRC já informado");
+            }
+
+            super.salvar();
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+
+            } else {
+                throw new RuntimeException("", ex);
+            }
+        }
     }
 
     public List<Municipio> getMunicipios(String nome) {

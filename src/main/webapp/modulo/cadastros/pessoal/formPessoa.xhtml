@@ -268,8 +268,9 @@
                     <div class="col-xs-12 col-sm-2 col-md-2">
                         <h:outputLabel value="UF :" for="pessoaEnderecoUf"/>
                         <h:selectOneMenu value="#{pessoasControll.endereco.uf}"
+                                         required="true"
                                          class="form-control" id="pessoaEnderecoUf">
-                            <f:selectItem itemValue="selecione" value="#{null}"/>
+
                             <f:selectItems var="uf" value="#{pessoasControll.estado}"/>
                             <p:ajax event="valueChange"
                                     process="@this" update="municipio"
@@ -480,7 +481,8 @@
                                    oncomplete="PF('dialogTelefone').show()"
                                    update=":formOutrasTelas3:panelPessoaTelefone,:formOutrasTelas3:dialogTelefone">
                         <i class="fa fa-file-text-o"></i>
-                        <f:setPropertyActionListener value="#{obj}" target="#{cc.attrs.pessoaTelefoneSelecionado}"/>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{pessoasControll.pessoaTelefoneSelecionado}"/>
                     </p:commandLink>
                     &nbsp;
                     <p:commandLink title="Excluir" action="#{pessoasControll.excluirTelefone()}"

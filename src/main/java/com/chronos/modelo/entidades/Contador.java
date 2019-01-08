@@ -2,8 +2,6 @@
 package com.chronos.modelo.entidades;
 
 import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.br.CNPJ;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,7 +12,7 @@ import java.util.Objects;
 @Table(name = "CONTADOR")
 public class Contador implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -24,12 +22,10 @@ public class Contador implements Serializable {
     @NotBlank
     private String nome;
     @Column(name = "CPF")
-    @CPF
     private String cpf;
     @Column(name = "CNPJ")
-    @CNPJ
     private String cnpj;
-    @Column(name = "INSCRICAO_CRC")
+    @Column(name = "INSCRICAO_CRC", unique = true)
     private String inscricaoCrc;
     @Column(name = "UF_CRC")
     private String ufCrc;    
@@ -59,6 +55,7 @@ public class Contador implements Serializable {
     private String site;
 
     public Contador() {
+        this.uf = "AL";
     }
 
 

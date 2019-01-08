@@ -71,10 +71,11 @@
                                  nomeAtributo="#{contadorControll.objeto.ufCrc}"
                                  itens="#{contadorControll.estado}"/>
                 <erp:campoCpf styleClass="col-xs-12 col-sm-2 col-md-2"
-                              idComponente="contadorCpf" label="Cpf"
+                              rendered="true"
+                              idComponente="contadorCpf" label="CPF"
                               nomeAtributo="#{contadorControll.objeto.cpf}"/>
                 <erp:campoCnpj styleClass="col-xs-12 col-sm-2 col-md-2"
-                               idComponente="contadorCnpj" label="Cnpj"
+                               idComponente="contadorCnpj" label="CNPJ"
                                nomeAtributo="#{contadorControll.objeto.cnpj}"/>
             </div>
 
@@ -110,19 +111,18 @@
                 <div class="col-xs-12 col-sm-2 col-md-2">
                     <h:outputLabel value="UF :" for="uf"/>
                     <h:selectOneMenu value="#{contadorControll.objeto.uf}"
-                                     class="form-control" id="uf">
-                        <f:selectItem itemValue="selecione" value="#{null}"/>
+                                     class="form-control" id="uf" required="true">
                         <f:selectItems var="uf" value="#{contadorControll.estado}"/>
                         <p:ajax event="valueChange"
-                                process="@this" update="Municipio"
+                                process="@this" update="municipio"
                                 listener="#{contadorControll.instanciarMunicipio()}"
                                 oncomplete="addClass()"/>
                     </h:selectOneMenu>
                 </div>
                 <div class="col-xs-12 col-sm-10 col-md-10">
-                    <h:outputLabel value="Municipio :"/>
+                    <p:outputLabel value="Municipio :" for="municipio"/>
                     <br/>
-                    <p:autoComplete id="Municipio" value="#{contadorControll.municipio}"
+                    <p:autoComplete id="municipio" value="#{contadorControll.municipio}"
                                     completeMethod="#{contadorControll.getMunicipios}"
                                     var="municipio" itemLabel="#{municipio.getNome()}"
                                     itemValue="#{municipio}" converter="defaultConverter"
