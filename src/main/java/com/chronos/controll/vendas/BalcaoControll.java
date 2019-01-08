@@ -330,7 +330,14 @@ public class BalcaoControll implements Serializable {
     public void calcularDesconto() {
         desconto = desconto == null ? BigDecimal.ZERO : desconto;
         if (tipoDesconto.equals("P")) {
-            item.setTaxaDesconto(desconto);
+
+            if (desconto.compareTo(BigDecimal.valueOf(99.99)) >= 0) {
+                Mensagem.addErrorMessage("Desconto não permitido");
+            } else {
+                item.setTaxaDesconto(desconto);
+            }
+
+
         } else {
             BigDecimal subTotal = item.getValorSubtotal();
 

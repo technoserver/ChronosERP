@@ -76,7 +76,7 @@
                     <h:outputLabel value="#{row.fone}"/>
                 </p:column>
 
-                <p:column headerText="Ações" width="100" styleClass="text-center">
+                <p:column headerText="Ações" width="120" styleClass="text-center">
                     <p:commandLink title="Alterar" action="#{pessoasControll.doEdit()}" class=" btn btn-default"
                                    oncomplete="addClass()"
                                    update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
@@ -91,6 +91,7 @@
                                    process="dataTablePessoa"
                                    oncomplete="atualizarMsg();"
                                    class="btn btn-default"
+                                   style="margin-left: 5px"
                                    rendered="#{pessoasControll.podeExcluir()}"
                     >
                         <i class="fa fa-times"></i>
@@ -311,7 +312,8 @@
                                          nomeAtributo="#{pessoasControll.pessoaTelefone.tipo}"
                                          itens="#{pessoasControll.tipoTelefone}"/>
 
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+
+                        <erp:campoTelefone styleClass="col-xs-12 col-sm-8 col-md-8"
                                         idComponente="pessoaTelefoneNumero" label="Número"
                                         nomeAtributo="#{pessoasControll.pessoaTelefone.numero}"
                                         tamanhoMaximo="14"/>
