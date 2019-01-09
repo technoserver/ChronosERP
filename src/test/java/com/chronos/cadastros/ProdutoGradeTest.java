@@ -1,5 +1,6 @@
 package com.chronos.cadastros;
 
+import com.chronos.dto.GradeDTO;
 import com.chronos.modelo.entidades.ProdutoAtributo;
 import com.chronos.modelo.entidades.ProdutoAtributoDetalhe;
 import com.chronos.modelo.entidades.ProdutoGrade;
@@ -21,6 +22,7 @@ public class ProdutoGradeTest {
     public void setUp() {
 
         grade = new ProdutoGrade();
+        grade.setId(1);
         ProdutoGradeDetalhe gradeDetalhe1 = new ProdutoGradeDetalhe();
         ProdutoGradeDetalhe gradeDetalhe2 = new ProdutoGradeDetalhe();
 
@@ -49,8 +51,12 @@ public class ProdutoGradeTest {
 
 
         atributoDetalheTam1.setNome("P");
+        atributoDetalheTam1.setId(1);
         atributoDetalheTam2.setNome("M");
+        atributoDetalheTam2.setId(2);
         atributoDetalheTam3.setNome("G");
+        atributoDetalheTam3.setId(3);
+
         atributoDetalheTam1.setProdutoAtributo(atributoTam);
         atributoDetalheTam2.setProdutoAtributo(atributoTam);
         atributoDetalheTam3.setProdutoAtributo(atributoTam);
@@ -61,9 +67,13 @@ public class ProdutoGradeTest {
         atributoDetalheCor4.setNome("ROSA");
 
         atributoDetalheCor1.setProdutoAtributo(atributoCor);
+        atributoDetalheCor1.setId(4);
         atributoDetalheCor2.setProdutoAtributo(atributoCor);
+        atributoDetalheCor2.setId(5);
         atributoDetalheCor3.setProdutoAtributo(atributoCor);
+        atributoDetalheCor3.setId(6);
         atributoDetalheCor4.setProdutoAtributo(atributoCor);
+        atributoDetalheCor4.setId(7);
 
         atributoTam.setListaProdutoAtributoDetalhe(new ArrayList<>());
         atributoTam.setSigla("TAM");
@@ -82,21 +92,22 @@ public class ProdutoGradeTest {
     @Test
     public void devemos_garantir_que_seja_gerado_todas_as_combinacoes() {
 
-        List<List<String>> listC = new ArrayList<>();
-        List<String> result = new ArrayList<>();
+        List<List<GradeDTO>> listC = new ArrayList<>();
+        List<GradeDTO> result = new ArrayList<>();
 
         for (ProdutoGradeDetalhe g : grade.getListaProdutoGradeDetalhe()) {
 
-            List<String> list = g.getProdutoAtributo().getListaProdutoAtributoDetalhe()
+            List<GradeDTO> list = g.getProdutoAtributo().getListaProdutoAtributoDetalhe()
                     .stream()
-                    .map(a -> (a.getProdutoAtributo().getSigla() + "=" + a.getNome() + "; "))
+                    .map(a -> new GradeDTO("A" + a.getProdutoAtributo().getId() + "." + a.getId().toString(), a.getProdutoAtributo().getSigla() + "=" + a.getNome() + "; "))
                     .collect(Collectors.toList());
+
             listC.add(list);
 
         }
 
 
-        Biblioteca.generateCombination(listC, result, 0, "");
+        Biblioteca.generateCombinations(listC, result, 0, new GradeDTO("", ""));
 
 
     }
