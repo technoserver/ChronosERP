@@ -92,7 +92,7 @@ public class PessoasControll extends AbstractControll<Pessoa> implements Seriali
         endereco.setCobranca("S");
         endereco.setCorrespondencia("S");
         endereco.setEntrega("S");
-
+        endereco.setUf("AL");
         endereco.setPessoa(getObjeto());
         getObjeto().getListaPessoaEndereco().add(endereco);
 
