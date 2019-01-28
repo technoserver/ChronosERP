@@ -8,6 +8,7 @@ import com.chronos.modelo.entidades.Uf;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
+import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -53,7 +54,7 @@ public class ContadorControll extends AbstractControll<Contador> implements Seri
             super.salvar();
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
-
+                Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("", ex);
             }
