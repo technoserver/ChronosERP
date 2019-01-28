@@ -27,6 +27,8 @@
 
 
                 <p:outputPanel
+                        id="panel-dados-principais"
+
                         rendered="#{not empty entradaNotaFiscalControll.objeto}">
 
                     <div class="row">
@@ -184,7 +186,7 @@
                                    type="button">
                         <i class="glyphicon glyphicon-plus"/>
                         <p:ajax update=":formCentro:growl,:formOutrasTelas:panelNfeDetalhe,:formOutrasTelas:dialogNfeDetalhe"
-                                process="@this"/>
+                                process="@this,:formCentro:tabNfe:panel-dados-principais"/>
                     </h:commandLink>
                 </div>
 
@@ -233,11 +235,12 @@
                         <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
                     </p:commandLink>
 
-                    <p:commandLink process="dataTableNfeDetalhe" title="Excluir" styleClass="btn btn-default"
+                    <p:commandLink process="dataTableNfeDetalhe,:formCentro:tabNfe:panel-dados-principais"
+                                   title="Excluir" styleClass="btn btn-default"
                                    id="btnExcluirProduto" style="margin-right: 5px"
                                    action="#{entradaNotaFiscalControll.excluirProduto}"
                                    rendered="#{not entradaNotaFiscalControll.importado}"
-                                   update="dataTableNfeDetalhe,formCentro:tabNfe:outputPanelTotais">
+                                   update="dataTableNfeDetalhe,:formCentro:tabNfe:panel-dados-principais">
                         <i class="fa fa-close"/>
                         <p:confirm header="Confirmação" message="Confirma Exclusão?"
                                    icon="ui-icon-alert" />

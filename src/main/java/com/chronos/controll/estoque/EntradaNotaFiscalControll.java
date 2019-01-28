@@ -198,6 +198,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             if (first.isPresent()) {
                 throw new ChronosException("Existem produtos não cadastrados");
             }
+            iniciarValorsValidacao();
+            calcularTotais();
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().validationFailed();
             if (ex instanceof ChronosException) {
