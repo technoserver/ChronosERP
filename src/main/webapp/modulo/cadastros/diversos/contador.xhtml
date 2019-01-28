@@ -73,9 +73,11 @@
                 <erp:campoCpf styleClass="col-xs-12 col-sm-2 col-md-2"
                               rendered="true"
                               idComponente="contadorCpf" label="CPF"
+                              requerido="true"
                               nomeAtributo="#{contadorControll.objeto.cpf}"/>
                 <erp:campoCnpj styleClass="col-xs-12 col-sm-2 col-md-2"
                                idComponente="contadorCnpj" label="CNPJ"
+                               requerido="true"
                                nomeAtributo="#{contadorControll.objeto.cnpj}"/>
             </div>
 
@@ -85,9 +87,11 @@
                 <erp:campoTexto styleClass="col-xs-12 col-sm-9 col-md-10"
                                 idComponente="contadorLogradouro" label="Logradouro"
                                 nomeAtributo="#{contadorControll.objeto.logradouro}"
+                                requerido="true"
                                 tamanhoMaximo="100"/>
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
-                                idComponente="contadorNumero" label="Numero"
+                                idComponente="contadorNumero" label="Número"
+                                requerido="true"
                                 nomeAtributo="#{contadorControll.objeto.numero}"
                                 tamanhoMaximo="10"/>
             </div>
@@ -98,11 +102,13 @@
                                 tamanhoMaximo="100"/>
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                 idComponente="contadorBairro" label="Bairro"
+                                requerido="true"
                                 nomeAtributo="#{contadorControll.objeto.bairro}"
                                 tamanhoMaximo="60"/>
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                idComponente="contadorCep" label="Cep"
+                                idComponente="contadorCep" label="CEP"
+                                requerido="true"
                                 nomeAtributo="#{contadorControll.objeto.cep}"
                                 tamanhoMaximo="8"/>
             </div>
@@ -137,15 +143,17 @@
             </div>
 
             <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                idComponente="contadorFone" label="Fone"
-                                nomeAtributo="#{contadorControll.objeto.fone}"
-                                tamanhoMaximo="14"/>
+                <erp:campoFone styleClass="col-xs-12 col-sm-2 col-md-2"
+                               idComponente="contadorFone" label="Fone"
+                               nomeAtributo="#{contadorControll.objeto.fone}"
+                />
 
                 <erp:campoTexto styleClass="col-xs-12 col-lg-4"
                                 idComponente="contadorEmail" label="Email"
                                 nomeAtributo="#{contadorControll.objeto.email}"
-                                tamanhoMaximo="250"/>
+                                tamanhoMaximo="250">
+                    <p:keyFilter regEx="/[a-z0-9_\.\-@]/i"/>
+                </erp:campoTexto>
             </div>
 
 
