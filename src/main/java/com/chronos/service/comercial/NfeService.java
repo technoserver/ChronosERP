@@ -61,8 +61,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static java.nio.file.FileSystems.getDefault;
 
@@ -683,7 +683,7 @@ public class NfeService implements Serializable {
             if (modelo == ModeloDocumento.NFE) {
                 nomeRelatorioJasper = Constantes.JASPERNFE;
                 JRXmlDataSource faturaDataSource = new JRXmlDataSource(caminho, "//dup");
-                InputStream inFt = this.getClass().getResourceAsStream("com/chronos/erplight/relatorios/comercial/nfe/DanfeRetratoFatura.jasper");
+                InputStream inFt = this.getClass().getResourceAsStream("/com/chronos/erplight/relatorios/comercial/nfe/DanfeRetratoFatura.jasper");
                 parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
                 parametrosRelatorio.put("danfeRetratoFatura", inFt);
             } else {
