@@ -45,12 +45,14 @@ public class FacesUtil {
     }
 
 
-    public static void downloadArquivo(File file, String nomeArquivo) throws Exception {
+    public static void downloadArquivo(File file, String nomeArquivo, boolean baixar) throws Exception {
+        String content = baixar ? "attachment" : "inline";
+        String contentType = baixar ? "application/octet-stream" : "application/pdf";
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
-        externalContext.setResponseHeader("Content-Type", "text/plain");
+        externalContext.setResponseHeader("Content-Type", contentType);
         externalContext.setResponseHeader("Content-Length", String.valueOf(file.length()));
-        externalContext.setResponseHeader("Content-Disposition", "attachment;filename=\"" + nomeArquivo + "\"");
+        externalContext.setResponseHeader("Content-Disposition", content + "; filename=\"" + nomeArquivo + "\"");
         externalContext.getResponseOutputStream().write(Biblioteca.getBytesFromFile(file));
         facesContext.responseComplete();
     }
@@ -172,6 +174,18 @@ public class FacesUtil {
 
     }
 
+    public static BigDecimal getDescVenda() {
+
+        BigDecimal desconto = BigDecimal.ZERO;
+        try {
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+            desconto = (BigDecimal) session.getAttribute("desc");
+
+        } catch (Exception ex) {
+        }
+        return desconto;
+    }
+
     private static HttpSession getHttpSession() {
         return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
     }
@@ -185,28 +199,26 @@ public class FacesUtil {
     }
 
 
-
-
     public static PdvMovimento getMovimento() {
 
         PdvMovimento movimento = null;
-        try{
+        try {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
             movimento = (PdvMovimento) session.getAttribute("caixaERP");
 
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
         return movimento;
     }
 
     public static void setMovimento(PdvMovimento movimento) {
-        try{
+        try {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
             session.removeAttribute("caixaERP");
             session.setAttribute("caixaERP", movimento);
-        }catch (Exception ex){
+        } catch (Exception ex) {
 
         }
     }

@@ -91,6 +91,16 @@ public class CreditoPessoaControll extends AbstractControll<ContaPessoa> impleme
 
     }
 
+    @Override
+    public void remover() {
+
+        try {
+            super.remover();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void lancaMovimento() {
         try {
             service.lancaMovimento(getObjeto(), valor, TipoLancamento.CREDITO, "0", "0");

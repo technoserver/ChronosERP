@@ -85,6 +85,7 @@
                                                      disabled="#{!entradaNotaFiscalControll.podeInserir() or entradaNotaFiscalControll.objeto.listaNfeDetalhe.size() le 0 }"
                                                      id="btnFechamento">
                                         <p:ajax
+                                                listener="#{entradaNotaFiscalControll.validar}"
                                                 update=":formOutrasTelas6:panelFechamento,formCentro:growl,formCentro:mensagem,navegacao,:formCentro:outputPanelDetalhe"
                                                 oncomplete="if (!args.validationFailed) {PF('dialogFechamento').show();}"
                                                 process="@form"/>
@@ -155,11 +156,11 @@
             <p:dialog id="dialogDuplicata" header="Cadastro de Duplicatas"
                       widgetVar="dialogDuplicata" showEffect="slide"
                       hideEffect="slide" resizable="true" modal="true" closable="true"
-                      width="900">
+                      width="800">
                 <p:outputPanel id="panelDuplicatas">
                     <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <p:outputLabel value="Codição pagamento" for="condicaoPagamento"/>
+                        <div class="col-xs-12 col-sm-9 col-md-9">
+                            <p:outputLabel value="Condição pagamento" for="condicaoPagamento"/>
                             <br/>
                             <p:autoComplete id="condicaoPagamento"
                                             value="#{entradaNotaFiscalControll.condicao}"
@@ -172,14 +173,9 @@
                                             emptyMessage="Nenhum registro encontrado"/>
                         </div>
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
-                                          idComponente="valorParcela" label="Valor Venda"
+                                          idComponente="valorParcela" label="Valor"
                                           nomeAtributo="#{entradaNotaFiscalControll.duplicata.valor}"
                         />
-                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
-                                       idComponente="dataVencimento"
-                                       label="Data Emissao"
-                                       nomeAtributo="#{entradaNotaFiscalControll.duplicata.dataVencimento}"
-                                       formato="dd/mm/yyyy"/>
                     </div>
                 </p:outputPanel>
                 <f:facet name="footer">
@@ -316,15 +312,13 @@
                 </p:outputPanel>
                 <f:facet name="footer">
                     <div class="row">
-                        <div class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Salvar"
+                        <div class="col-xs-6 col-lg-6 text-center">
+                            <p:commandButton value="Salvar"
                                              action="#{entradaNotaFiscalControll.vincularProduto()}"
-                                             styleClass="btn btn-danger center-block"
-                                             id="btnSalvarProdutoVinculado">
-                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogVincularProduto').hide();}"
-                                        process="@form"
-                                        update=":formCentro:growl,formCentro:mensagem,:formCentro:tabNfe:dataTableNfeDetalhe"/>
-                            </h:commandButton>
+                                             oncomplete="if (!args.validationFailed) {PF('dialogVincularProduto').hide();}"
+                                             process="@form"
+                                             update=":formCentro:growl,formCentro:mensagem,:formCentro:tabNfe:dataTableNfeDetalhe"
+                                             id="btnSalvarProdutoVinculado"/>
 
                         </div>
                         <div class="col-xs-6 col-lg-6">

@@ -77,10 +77,10 @@
                 <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-third-level">
-                <erp:subMenu caminho="/modulo/cadastros/financeiro/bancos"
-                             label="Banco"
-                             exibir="#{seguranca.isTemAcesso('BANCO')}"
-                             funcao="bancos"/>
+                <!--<erp:subMenu caminho="/modulo/cadastros/financeiro/bancos"-->
+                <!--label="Banco"-->
+                <!--exibir="#{seguranca.isTemAcesso('BANCO')}"-->
+                <!--funcao="bancos"/>-->
 
                 <erp:subMenu caminho="/modulo/cadastros/financeiro/agenciaBanco"
                              label="Agência Bancária"
@@ -110,15 +110,17 @@
                 <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-third-level">
-                <erp:subMenu caminho="/modulo/cadastros/produto/subGrupo"
-                             label="SubGrupo"
-                             exibir="#{seguranca.isTemAcesso('SUBGRUPO')}"
-                             funcao="subGrupo"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/produto/grupo"
                              label="Grupo"
                              exibir="#{seguranca.isTemAcesso('GRUPO')}"
                              funcao="grupo"/>
+
+                <erp:subMenu caminho="/modulo/cadastros/produto/subGrupo"
+                             label="SubGrupo"
+                             exibir="#{seguranca.isTemAcesso('SUBGRUPO')}"
+                             funcao="subGrupo"/>
+
 
                 <erp:subMenu caminho="/modulo/cadastros/produto/marca"
                              label="Marca"
@@ -129,6 +131,21 @@
                              label="UM"
                              exibir="#{seguranca.isTemAcesso('UNIDADE_MEDIDA')}"
                              funcao="unidadeMedida"/>
+
+                <erp:subMenu caminho="/modulo/cadastros/produto/tabelaNutricional"
+                             label="Tabela Nutricional"
+                             exibir="#{seguranca.isTemAcesso('TABELA_NUTRICIONAL')}"
+                             funcao="tabelaNutricional"/>
+
+                <erp:subMenu caminho="/modulo/cadastros/produto/atributos"
+                             label="Atributos"
+                             exibir="#{seguranca.isTemAcesso('PRODUTO_ATRIBUTO')}"
+                             funcao="atributos"/>
+
+                <erp:subMenu caminho="/modulo/cadastros/produto/grades"
+                             label="Grade"
+                             exibir="#{seguranca.isTemAcesso('PRODUTO_GRADE')}"
+                             funcao="grades"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/produto/produtos"
                              label="Produto"

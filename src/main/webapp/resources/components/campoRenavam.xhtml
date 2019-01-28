@@ -35,6 +35,7 @@
                      class="#{cc.attrs.styleClassInput}"
                      validator="renavamValidator"
         >
+            <p:keyFilter regEx="/[\d\-]/"/>
             <f:validateLength minimum="9" maximum="11"/>
         </p:inputText>
     </div>

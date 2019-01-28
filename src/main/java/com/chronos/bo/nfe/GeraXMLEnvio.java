@@ -986,7 +986,7 @@ public class GeraXMLEnvio {
                 }
 
                 TNFe.InfNFe.Cobr.Dup dup = new TNFe.InfNFe.Cobr.Dup();
-                dup.setNDup(nfeCabecalho.getNumero() + "/" + n.getNumero().trim());
+                dup.setNDup(org.apache.commons.lang3.StringUtils.leftPad(n.getNumero().trim(), 3, "0"));
                 dup.setDVenc(FormatValor.getInstance().formatarDataEUA(n.getDataVencimento()));
                 dup.setVDup(FormatValor.getInstance().formatarValor(n.getValor()));
 

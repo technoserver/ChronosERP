@@ -1,5 +1,8 @@
 package com.chronos.modelo.entidades;
 
+import com.chronos.modelo.anotacoes.TaxaMaior;
+import com.chronos.modelo.enuns.SituacaoVenda;
+import com.chronos.modelo.enuns.TipoFrete;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -16,7 +19,7 @@ import java.util.*;
 @DynamicUpdate
 public class VendaCabecalho implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -44,6 +47,7 @@ public class VendaCabecalho implements Serializable {
     @Column(name = "VALOR_COMISSAO")
     private BigDecimal valorComissao;
     @Column(name = "TAXA_DESCONTO")
+    @TaxaMaior()
     private BigDecimal taxaDesconto;
     @Column(name = "VALOR_DESCONTO")
     private BigDecimal valorDesconto;
@@ -96,6 +100,10 @@ public class VendaCabecalho implements Serializable {
 
 
     public VendaCabecalho() {
+        this.listaVendaDetalhe = new ArrayList<>();
+        this.dataVenda = new Date();
+        this.situacao = SituacaoVenda.Digitacao.getCodigo();
+        this.tipoFrete = TipoFrete.CIF.getCodigo();
     }
 
     public VendaCabecalho(Integer id, Date dataVenda, Integer numeroFatura, BigDecimal valorTotal, String situacao,String cliente) {
@@ -363,12 +371,12 @@ public class VendaCabecalho implements Serializable {
     }
 
 
-    public boolean isFaturado() {
-        return situacao != null && situacao.equals("F");
+    public boolean isEncerrado() {
+        return situacao != null && situacao.equals("E");
     }
 
-    public boolean isEmitido() {
-        return situacao != null && situacao.equals("N");
+    public boolean isFaturado() {
+        return situacao != null && situacao.equals("F");
     }
 
     public boolean isCancelado() {
@@ -428,13 +436,12 @@ public class VendaCabecalho implements Serializable {
 
     @Transient
     public boolean isPodeExcluir() {
-        boolean podeExcluir = (!situacao.equals("F") && !situacao.equals("N") && !situacao.equals("C"));
-        return podeExcluir;
+        return situacao.equals("D");
     }
 
     @Transient
     public boolean isPodeCancelar() {
-        boolean podeCacelar = (!situacao.equals("F") && !situacao.equals("N"));
+        boolean podeCacelar = (situacao.equals("F") || !situacao.equals("E"));
         return podeCacelar;
     }
 

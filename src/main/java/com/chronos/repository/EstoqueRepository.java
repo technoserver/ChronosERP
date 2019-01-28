@@ -133,7 +133,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) {
 
 
-        String jpql = "select DISTINCT new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
+        String jpql = "select DISTINCT new com.chronos.dto.ProdutoDTO(p.id,p.produtoGrade.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
                 "ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,un.sigla," +
                 "un.podeFracionar,pp.valor,tp.preco,p.precoPrioritario,p.quantidadeVendaAtacado,p.valorVendaAtacado) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
@@ -141,7 +141,8 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
                 "LEFT JOIN ProdutoPromocao pp on pp.produto.id = p.id " +
                 "LEFT JOIN TabelaPrecoProduto tp on tp.produto = p.id " +
                 "LEFT JOIN TabelaPreco t on t.id = tp.tabelaPreco.id " +
-                "where (LOWER(p.nome)  like ?1 or p.gtin = ?1 or p.codigoInterno = ?1) and ep.empresa.id = ?2 and  p.tributGrupoTributario is not null and p.tipo = 'V'";
+                "where (LOWER(p.nome)  like ?1 or p.gtin = ?1 or p.codigoInterno = ?1) and ep.empresa.id = ?2 and  p.tributGrupoTributario is not null and p.tipo = 'V' " +
+                "order by p.nome";
 
         nome = !org.apache.commons.lang3.StringUtils.isNumeric(nome) ? "%" + nome.toLowerCase().trim() + "%" : nome;
         List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, nome, empresa.getId());
@@ -171,6 +172,12 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
                 "WHERE p.controle < p.estoqueMinimo and ep.empresa.id = ?1";
 
         List<EstoqueIdealDTO> produtos = getEntity(EstoqueIdealDTO.class, jpql, empresa.getId());
+        return produtos;
+    }
+
+    public List<Produto> getProdutosBalanca() {
+        String jpql = "select new Produto(p.id,p.nome,p.valorVenda,p.codigoBalanca,p.diasValidade,p.tabelaNutricional) from Produto p  left join p.tabelaNutricional where p.codigoBalanca is not null";
+        List<Produto> produtos = getEntity(Produto.class, jpql);
         return produtos;
     }
 

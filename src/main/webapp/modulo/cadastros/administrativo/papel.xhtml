@@ -37,7 +37,7 @@
                                  var="row" id="dataTablePapel" paginator="true"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{papelControll.podeConsultar()}"
-                                 resizableColumns="true" lazy="true"
+                                 lazy="true"
                     >
 
                         <p:column headerText="Nome">
@@ -46,7 +46,7 @@
                         <p:column headerText="Acesso completo">
                             <h:outputLabel value="#{row.nome}"/>
                         </p:column>
-                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                        <p:column headerText="Ações" width="120" styleClass="text-center">
                             <p:commandLink title="Alterar" action="#{papelControll.doEdit()}" class=" btn btn-default"
                                            update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                                            id="btnAlterar"

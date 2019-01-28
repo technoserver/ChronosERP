@@ -34,22 +34,28 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <p:commandButton
-                                    action="#{produtoControll.gerarTxtToledo}"
-                                    value="Gerar TXT Toledo"
-                                    ajax="false">
+                                    value="Gerar Integracao com a balança"
+                                    action="#{produtoControll.buscarConfiguracoesBalanca}"
+                                    oncomplete="PF('dialogOutrasTelas7').show();"
+                                    update=":formOutrasTelas7:panelOutrasTelas7"
+                            />
 
-                            </p:commandButton>
-                            &nbsp;
-                            <p:commandButton
-                                    action="#{produtoControll.gerarTxtFilizola}"
-                                    value="Gerar TXT Filizola"
-                                    ajax="false">
 
-                            </p:commandButton>
                         </div>
                     </div>
                     <div class="row">
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                        <erp:campoInteiro idComponente="codigo"
+                                          styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          nomeAtributo="#{produtoControll.codigo}"
+                                          label="Código"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="produto"
+                                        label="GTIN"
+                                        tamanhoMaximo="14"
+                                        nomeAtributo="#{produtoControll.gtin}"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
                                         idComponente="produto"
                                         label="Produto"
                                         tamanhoMaximo="100"
@@ -87,7 +93,7 @@
                                  rowKey="#{row.id}"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{produtoControll.podeConsultar()}"
-                                 resizableColumns="true" lazy="true"
+                                 lazy="true"
                                  class="js-data-table">
 
                         <p:ajax event="rowToggle" listener="#{produtoControll.buscarProdutoEmpresas}"
@@ -115,7 +121,7 @@
                         <p:column headerText="UN" width="50" styleClass="text-center">
                             <h:outputLabel value="#{row.sigla}"/>
                         </p:column>
-                        <p:column headerText="Valor Venda" width="115" class="coluna-monetaria">
+                        <p:column headerText="Valor Venda" width="123" class="coluna-monetaria">
                             <h:outputLabel value="#{row.valorVenda}">
                                 <f:convertNumber pattern="#,###,##0.00"/>
                             </h:outputLabel>
@@ -125,7 +131,7 @@
                                 <f:convertNumber pattern="#,##0.000"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                        <p:column headerText="Ações" width="180" styleClass="text-center">
                             <p:commandLink title="Alterar" action="#{produtoControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
@@ -137,7 +143,6 @@
                             </p:commandLink>
                             &nbsp;
                             <p:commandLink title="Excluir" action="#{produtoControll.remover()}"
-                                           style="position: relative; right: 7px"
                                            update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                            process="dataTableProduto"
                                            oncomplete="atualizarMsg();"
@@ -149,6 +154,18 @@
                                 <f:setPropertyActionListener value="#{row}"
                                                              target="#{produtoControll.produtoSelecionado}"/>
                             </p:commandLink>
+                            &nbsp;
+
+                            <p:commandLink title="Copiar" action="#{produtoControll.copiar}"
+                                           class=" btn btn-default"
+                                           oncomplete="addClass()"
+                                           update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                            >
+                                <i class="fa fa-files-o"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{produtoControll.produtoSelecionado}"/>
+                            </p:commandLink>
+
                         </p:column>
                         <p:rowExpansion>
 
@@ -534,6 +551,17 @@
                 </p:tab>
                 <p:tab title="Estoque">
                     <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Grade"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaProdutoGrade"
+                                          nomeAtributo="#{produtoControll.objeto.produtoGrade}"
+                                          idComponente="produtoGrade"
+                                          requerido="false"
+                                          id="campoprodutoGrade"/>
+                    </div>
+                    <div class="row">
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
                                           idComponente="produtoQuantidadeEstoqueAnterior"
                                           label="Qtde Est. Anterior"
@@ -677,11 +705,35 @@
 
                 </p:tab>
 
+                <p:tab title="Informações Nutricionais">
+
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-2"
+                                          label="Tabela nutricional"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{produtoControll}"
+                                          completeMethod="getListaTabelaNutricional"
+                                          nomeAtributo="#{produtoControll.objeto.tabelaNutricional}"
+                                          requerido="false"
+                                          idComponente="tabelaNutricional"/>
+
+
+                        <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          nomeAtributo="#{produtoControll.objeto.diasValidade}"
+                                          idComponente="diasValidade"
+                                          tamanhoMaximo="3"
+                                          label="Dias de validade"/>
+                    </div>
+
+                </p:tab>
+
 
             </p:tabView>
 
 
         </erp:telaInclusaoAlteracao>
+
+
     </ui:define>
 
     <ui:define name="outrasTelas">
@@ -910,7 +962,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <p:dataTable value="#{produtoControll.ncms}" var="row" paginator="true" reflow="true"
-                                         paginatorPosition="bottom" resizableColumns="true">
+                                         paginatorPosition="bottom">
                                 <p:column headerText="Código" width="100">
                                     <h:outputLabel value="#{row.codigo}"/>
                                 </p:column>
@@ -948,6 +1000,54 @@
             </p:dialog>
         </h:form>
 
+    </ui:define>
+
+    <ui:define name="outrasTelas7">
+        <h:form id="formOutrasTelas7" enctype="multipart/form-data">
+            <p:dialog id="dialogOutrasTelas7" header="Gerar integração" responsive="true"
+                      widgetVar="dialogOutrasTelas7" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="600">
+                <p:outputPanel id="panelOutrasTelas7">
+                    <div class="row">
+
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <h:outputLabel value="Configuracao Balança" for="configuracaoBalanca"/>
+                            <h:selectOneMenu id="configuracaoBalanca"
+                                             class="form-control"
+                                             value="#{produtoControll.configuracaoBalanca}"
+                                             required="true"
+                                             converter="defaultConverter">
+                                <f:selectItems value="#{produtoControll.configuracoesBalanca}" var="obj"
+                                               itemValue="#{obj}" itemLabel="#{obj.modelo.descricao}"/>
+                            </h:selectOneMenu>
+                        </div>
+
+
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <f:facet name="footer">
+                        <div class="row">
+                            <div class="col-xs-6 text-center">
+                                <p:commandButton value="Gerar"
+                                                 ajax="false"
+                                                 action="#{produtoControll.gerarIntegracaoBalanca}"
+                                />
+
+
+                            </div>
+                            <div class="col-xs-6">
+                                <h:commandButton value="Cancelar"
+                                                 styleClass="btn btn-default center-block">
+                                    <p:ajax oncomplete="PF('dialogOutrasTelas7').hide();" process="@this"/>
+                                </h:commandButton>
+                            </div>
+                        </div>
+
+                    </f:facet>
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 </ui:composition>

@@ -192,7 +192,7 @@
             <p:dataTable id="dataTableNfeDetalhe" var="obj"
                          value="#{entradaNotaFiscalControll.objeto.listaNfeDetalhe}"
                          paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
-                         paginatorPosition="bottom"  reflow="true" resizableColumns="true"
+                         paginatorPosition="bottom" reflow="true"
                          emptyMessage="Nenhuma produto cadastrado"
             >
 
@@ -221,7 +221,7 @@
                         <f:convertNumber pattern="#,###,##0.00" />
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Ações" width="110" rendered="#{empty entradaNotaFiscalControll.objeto.id}"
+                <p:column headerText="Ações" width="120" rendered="#{empty entradaNotaFiscalControll.objeto.id}"
                           styleClass="text-center">
                     <p:commandLink process="dataTableNfeDetalhe" title="Alterar" style="margin-right: 5px"
                                    id="btnAlterarProduto"
@@ -307,7 +307,7 @@
             <p:dataTable id="dataTableDuplicata" var="obj"
                          value="#{entradaNotaFiscalControll.duplicatas}"
                          paginator="true" rows="10" rowsPerPageTemplate="10,20,30"
-                         paginatorPosition="bottom" reflow="true" resizableColumns="true"
+                         paginatorPosition="bottom" reflow="true"
                          sortBy="#{obj.dataVencimento}" sortOrder="ascending"
                          emptyMessage="Nenhuma duplicata cadastrada">
 

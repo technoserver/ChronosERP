@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import com.chronos.modelo.anotacoes.TaxaMaior;
+
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -32,6 +34,7 @@ public class VendaDetalhe implements Serializable {
     private BigDecimal valorSubtotal;
     @Column(name = "TAXA_DESCONTO")
     @DecimalMax(value = "99.99", message = "O valor  deve ser menor que R$99,99")
+    @TaxaMaior
     private BigDecimal taxaDesconto;
     @Column(name = "VALOR_DESCONTO")
     private BigDecimal valorDesconto;
@@ -52,6 +55,9 @@ public class VendaDetalhe implements Serializable {
     private Produto produto;
 
     public VendaDetalhe() {
+        this.valorSubtotal = BigDecimal.ZERO;
+        this.valorDesconto = BigDecimal.ZERO;
+
     }
 
     public Integer getId() {
@@ -143,6 +149,11 @@ public class VendaDetalhe implements Serializable {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public void calcularValorTotal() {
+        valorSubtotal = quantidade.multiply(valorUnitario);
+        valorTotal = this.valorSubtotal.subtract(this.valorDesconto);
     }
 
     @Override

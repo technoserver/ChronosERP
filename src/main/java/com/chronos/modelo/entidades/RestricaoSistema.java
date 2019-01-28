@@ -1,15 +1,12 @@
 
 package com.chronos.modelo.entidades;
 
+import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(name = "RESTRICAO_SISTEMA")
@@ -21,47 +18,51 @@ public class RestricaoSistema implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "TAXA_MAIOR")
-    private BigDecimal taxaMaior;
-    @Column(name = "TAXA_MENOR")
-    private BigDecimal taxaMenor;
-    @Column(name = "DATA_MAIOR")
-    private Integer dataMaior;
-    @Column(name = "DATA_MENOR")
-    private Integer dataMenor;
+    @Column(name = "desconto_venda")
+    @DecimalMin(value = "0.01", message = "O valor  do desconto deve ser maior que 0,1")
+    @DecimalMax(value = "99.99", message = "O valor  deve ser menor que 99.99")
+    private BigDecimal descontoVenda;
+    @JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    @NotNull
+    private Usuario usuario;
 
-    public BigDecimal getTaxaMaior() {
-        return taxaMaior;
+    public Integer getId() {
+        return id;
     }
 
-    public void setTaxaMaior(BigDecimal taxaMaior) {
-        this.taxaMaior = taxaMaior;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public BigDecimal getTaxaMenor() {
-        return taxaMenor;
+    public BigDecimal getDescontoVenda() {
+        return descontoVenda;
     }
 
-    public void setTaxaMenor(BigDecimal taxaMenor) {
-        this.taxaMenor = taxaMenor;
+    public void setDescontoVenda(BigDecimal descontoVenda) {
+        this.descontoVenda = descontoVenda;
     }
 
-    public Integer getDataMaior() {
-        return dataMaior;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setDataMaior(Integer dataMaior) {
-        this.dataMaior = dataMaior;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public Integer getDataMenor() {
-        return dataMenor;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RestricaoSistema)) return false;
+
+        RestricaoSistema that = (RestricaoSistema) o;
+
+        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
     }
 
-    public void setDataMenor(Integer dataMenor) {
-        this.dataMenor = dataMenor;
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
     }
-
-
-
 }

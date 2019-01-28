@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.chronos.modelo.entidades;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -10,7 +6,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 
@@ -21,8 +16,6 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "banco")
-@XmlRootElement
-
 public class Banco implements Serializable {
  
     private static final long serialVersionUID = 1L;

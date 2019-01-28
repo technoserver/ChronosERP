@@ -119,6 +119,9 @@
 
 
         </div>
+
+        <ui:insert name="telaSupervisor"/>
+
         <ui:insert name="outrasTelas" />
 
         <ui:insert name="outrasTelas1" />
@@ -132,6 +135,8 @@
         <ui:insert name="outrasTelas5" />
 
         <ui:insert name="outrasTelas6"/>
+
+        <ui:insert name="outrasTelas7"/>
 
 
         <h:outputScript library="js" name="vendor/metisMenu/jquery.metisMenu.js" />
@@ -158,7 +163,7 @@
                 $('.ui-inputnumber input').addClass('form-control');
                 $('.ui-autocomplete-input').addClass('form-control');
 
-                $('.js-data-table table').addClass("table table-striped table-bordered table-condensed");
+                // $('.js-data-table table').addClass("table table-striped table-bordered table-condensed");
             }
 
             function atualizarMsg() {
@@ -193,7 +198,7 @@
                 week: 'Semana',
                 day: 'Dia',
                 allDayText: 'Todo Dia'
-            }
+            };
             PrimeFaces.locales['pt_BR'] = configLocal;
             PrimeFaces.locales['pt'] = configLocal;
 

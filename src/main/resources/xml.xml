@@ -2,22 +2,22 @@
     <idLote>1</idLote>
     <indSinc>1</indSinc>
     <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe53181016925371000114550100000003051000003059">
+        <infNFe versao="4.00" Id="NFe53190116925371000114550100000003171000003176">
             <ide>
                 <cUF>53</cUF>
-                <cNF>00000305</cNF>
-                <natOp>VENDA A CONSUMIDOR FINAL</natOp>
+                <cNF>00000317</cNF>
+                <natOp>VENDA</natOp>
                 <mod>55</mod>
                 <serie>10</serie>
-                <nNF>305</nNF>
-                <dhEmi>2018-10-05T15:06:13-03:00</dhEmi>
-                <dhSaiEnt>2018-10-05T15:04:23-03:00</dhSaiEnt>
+                <nNF>317</nNF>
+                <dhEmi>2019-01-03T17:28:16-03:00</dhEmi>
+                <dhSaiEnt>2019-01-03T17:28:10-03:00</dhSaiEnt>
                 <tpNF>1</tpNF>
-                <idDest>1</idDest>
+                <idDest>2</idDest>
                 <cMunFG>5300108</cMunFG>
                 <tpImp>1</tpImp>
                 <tpEmis>1</tpEmis>
-                <cDV>9</cDV>
+                <cDV>6</cDV>
                 <tpAmb>2</tpAmb>
                 <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
@@ -44,15 +44,15 @@
                 <CRT>1</CRT>
             </emit>
             <dest>
-                <CPF>23117815880</CPF>
+                <CPF>02056446510</CPF>
                 <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
                 <enderDest>
-                    <xLgr>LOGRADOURO</xLgr>
+                    <xLgr>logradouro</xLgr>
                     <nro>1020</nro>
-                    <xBairro>CENTRO</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
+                    <xBairro>centro</xBairro>
+                    <cMun>2802908</cMun>
+                    <xMun>ITABAIANA</xMun>
+                    <UF>SE</UF>
                     <CEP>99999999</CEP>
                     <cPais>1058</cPais>
                     <xPais>Brazil</xPais>
@@ -62,15 +62,15 @@
             <det nItem="1">
                 <prod>
                     <cProd>1</cProd>
-                    <cEAN>SEM GTIN</cEAN>
+                    <cEAN>12345670</cEAN>
                     <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
                     <NCM>19053100</NCM>
-                    <CFOP>5102</CFOP>
+                    <CFOP>6102</CFOP>
                     <uCom>UN</uCom>
                     <qCom>1.0000</qCom>
                     <vUnCom>10</vUnCom>
                     <vProd>10.00</vProd>
-                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <cEANTrib>12345670</cEANTrib>
                     <uTrib>UN</uTrib>
                     <qTrib>1.0000</qTrib>
                     <vUnTrib>10</vUnTrib>
@@ -127,23 +127,29 @@
                 </ICMSTot>
             </total>
             <transp>
-                <modFrete>2</modFrete>
-                <transporta>
-                    <CNPJ>84237179000195</CNPJ>
-                    <xNome>TRANSPORTADORA 1</xNome>
-                    <xEnder>BRASILIA</xEnder>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
-                </transporta>
-                <veicTransp>
-                    <placa>AC</placa>
-                    <UF>DF</UF>
-                    <RNTC>12345678</RNTC>
-                </veicTransp>
+                <modFrete>0</modFrete>
             </transp>
+            <cobr>
+                <fat>
+                    <nFat>002</nFat>
+                    <vOrig>10.00</vOrig>
+                    <vDesc>0.00</vDesc>
+                    <vLiq>10.00</vLiq>
+                </fat>
+                <dup>
+                    <nDup>001</nDup>
+                    <dVenc>2019-02-02</dVenc>
+                    <vDup>5.00</vDup>
+                </dup>
+                <dup>
+                    <nDup>002</nDup>
+                    <dVenc>2019-03-04</dVenc>
+                    <vDup>5.00</vDup>
+                </dup>
+            </cobr>
             <pag>
                 <detPag>
-                    <tPag>01</tPag>
+                    <tPag>14</tPag>
                     <vPag>10.00</vPag>
                 </detPag>
             </pag>
@@ -155,17 +161,17 @@
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53181016925371000114550100000003051000003059">
+                <Reference URI="#NFe53190116925371000114550100000003171000003176">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>8d+iYbJ0XC+TNQApVrovY9ZL9LU=</DigestValue>
+                    <DigestValue>+ak+L6M/B7ZtuH4RJkYt1zhWRkA=</DigestValue>
                 </Reference>
             </SignedInfo>
             <SignatureValue>
-                a+z0pikhq2E0IZ6W0eyU6dUBtJnJp1gFdWeHTjv5y2DD1C5npuK0twPimxyOwaw1RokEEdP15hVPIf18zT8WYRZ4/lUjA/EmtaGiq8ReD6ZZzE9DaQLq87jpe4qiMH7Okqi+q7VSjXO66gxr1Jfw03yTZkSalxZ41pcOeK4x0EAZ7ZIcX9PHhOiBhBb3F1J/0QikZAqt7Za2ugruJrEI1l57kOG4Yvo49yT/LjHg+xIVUODmFWrclW4QNg7lGXTo/divThPcGl1CVjVtUFqsFtYvA1TZwiVuygXMBASEa1KIsXqd+RaMIVShV0OD01LloF8GKlFLpJuvSzaPkWZUew==
+                bmCDmnm5xxNGOBkYTtGEtS4zVCfAnjT3QKteJsRKoWrCcj13ImEOF4aRbRjY3/RLx/Tqu9ec/C3C+g6HkZyXz6ylBuVP0GpfbLcvhh3wKv8FOssGHtdtf6wEX5HbXZGDxgGCe1ICqXLaxa44p6NJ2zLlDAku6oYalRslv3MvBGOSBMIhL61j37m9j4e4Apnqc5NVqipfQyIxvlDgUivCVIe44L4QHXS6S9dsUqfJWkcq2xSKIL8jIOaI8n/mdIgExWsYhNFIkzjKyrlPAp3+rrgWIZPrZjx4bPQgV5RzO0G8XCw9YpD/87o00anyZE3/mFC29CV5dkLoZThSGXS7Ng==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>

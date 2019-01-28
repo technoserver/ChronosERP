@@ -56,6 +56,9 @@ public class Uf implements Serializable {
     public Uf() {
     }
 
+    public Uf(String sigla) {
+        this.sigla = sigla;
+    }
 
     public Integer getId() {
         return id;

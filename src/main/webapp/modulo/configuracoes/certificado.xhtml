@@ -62,33 +62,27 @@
                           rendered="#{certificadoConfiguracaoControll.objeto.tipo eq 'A1'}">
                 <div class="row">
                     <erp:campoSenha styleClass="col-xs-12 col-sm-3 col-md-2"
+                                    id="campo-senha"
                                     idComponente="senhaCertificado" label="Senha"
                                     nomeAtributo="#{certificadoConfiguracaoControll.objeto.senha}"
                                     requerido="true" tamanhoMaximo="100"/>
 
-                    <div class="col-xs-12 col-sm-6 col-md-6">
-                        <div class="input-group">
-                            <h:outputLabel value="Caminho Certificado :"
-                                           for="caminhoCertificado"/>
-                            <h:inputText
-                                    value="#{certificadoConfiguracaoControll.objeto.caminho}"
-                                    id="caminhoCertificado" class="form-control input-sm"
-                                    maxlength="255" readonly="true"/>
 
-                            <span class="input-group-btn">
-                                <h:commandLink title="Pesquisa"
-                                               id="btnPesquisarCertificado"
-                                               class="btn btn-default"
-                                               style="padding: 7px 12px !important;margin-top: 24px">
-                                <p:ajax update=":formUploadCertificado:dialogUploadCertificado"
-                                        oncomplete="PF('dialogUploadCertificado').show();"
-                                        process="@this"/>
-                                    <p:resetInput target="caminhoCertificado"/>
-                                    <i class="fa fa-search"></i>
-                                </h:commandLink>
-                             </span>
+                    <div class="col-xs-12 col-sm-6 col-md-6">
+                        <p:outputLabel value="Caminho Certificado" for="caminhoCertificado"/>
+                        <div class="ui-inputgroup">
+                            <p:inputText value="#{certificadoConfiguracaoControll.objeto.caminho}"
+                                         id="caminhoCertificado"
+                                         maxlength="255" readonly="true"/>
+                            <p:commandButton icon="fa fa-search" styleClass="white-button"
+                                             title="Pesquisar"
+                                             update=":formUploadCertificado:dialogUploadCertificado"
+                                             oncomplete="PF('dialogUploadCertificado').show();"
+                                             resetValues="caminhoCertificado"
+                                             process="@this,:formCentro:telaDetalhe:campo-senha:senhaCertificado"/>
                         </div>
                     </div>
+
                 </div>
 
             </h:panelGroup>

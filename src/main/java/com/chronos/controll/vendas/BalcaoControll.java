@@ -11,6 +11,7 @@ import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
+import com.chronos.service.comercial.PdvVendaDetalheService;
 import com.chronos.service.comercial.VendaPdvService;
 import com.chronos.service.comercial.VendedorService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
@@ -20,6 +21,7 @@ import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 /**
  * Created by john on 19/09/17.
@@ -97,6 +100,8 @@ public class BalcaoControll implements Serializable {
     @Inject
     private ProdutoService produtoService;
 
+    @Inject
+    private PdvVendaDetalheService vendaDetalheService;
 
     private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
 
@@ -141,6 +146,9 @@ public class BalcaoControll implements Serializable {
     private int qtdParcelas = 1;
     private int qtdMaxParcelas = 1;
 
+    private String usuarioSupervisor;
+    private String senhaSupervisor;
+
 
     @PostConstruct
     private void init() {
@@ -172,6 +180,8 @@ public class BalcaoControll implements Serializable {
                 context.redirect(context.getRequestContextPath() + "/modulo/comercial/caixa/movimentos.xhtml");
                 return;
             } else {
+                vendedor = null;
+                cliente = null;
                 telaGrid = false;
                 telaVenda = true;
                 telaPagamentos = false;
@@ -314,57 +324,98 @@ public class BalcaoControll implements Serializable {
         produto.setQuantidadeVenda(item.getQuantidade());
         BigDecimal valorVenda = produtoService.defnirPrecoVenda(produto);
         item.setValorUnitario(valorVenda);
-
+        item.getValorSubtotal();
     }
 
     public void calcularDesconto() {
         desconto = desconto == null ? BigDecimal.ZERO : desconto;
         if (tipoDesconto.equals("P")) {
-            item.setTaxaDesconto(desconto);
+
+            if (desconto.compareTo(BigDecimal.valueOf(99.99)) >= 0) {
+                Mensagem.addErrorMessage("Desconto não permitido");
+            } else {
+                item.setTaxaDesconto(desconto);
+            }
+
+
         } else {
             BigDecimal subTotal = item.getValorSubtotal();
-            BigDecimal razao = subTotal.subtract(desconto);
-            razao = razao.divide(subTotal, MathContext.DECIMAL64);
-            razao = razao.multiply(BigDecimal.valueOf(100));
-            BigDecimal cem = BigDecimal.valueOf(100);
-            BigDecimal percentual = cem.subtract(razao);
 
-            item.setTaxaDesconto(percentual);
+            if (desconto.compareTo(subTotal) >= 0) {
+                Mensagem.addErrorMessage("Desconto não permitido");
+            } else {
+                BigDecimal razao = subTotal.subtract(desconto);
+                razao = razao.divide(subTotal, MathContext.DECIMAL64);
+                razao = razao.multiply(BigDecimal.valueOf(100));
+                BigDecimal cem = BigDecimal.valueOf(100);
+                BigDecimal percentual = cem.subtract(razao);
+
+                item.setTaxaDesconto(percentual);
+            }
+
+
         }
     }
 
     public void addProduto() {
-        Optional<PdvVendaDetalhe> itemOpt = getItemVenda(item.getProduto());
-        BigDecimal quantidade = item.getQuantidade();
-        if (itemOpt.isPresent()) {
-            item = itemOpt.get();
-            item.setQuantidade(quantidade);
-        } else {
-            venda.getListaPdvVendaDetalhe().add(0, item);
+
+
+        try {
+
+            vendaDetalheService.verificarRestricao(item);
+
+            if (vendaDetalheService.isNecessarioAutorizacaoSupervisor()) {
+                RequestContext.getCurrentInstance().execute("PF('dialogSupervisor').show();");
+            } else {
+                venda = vendaDetalheService.addProduto(venda, item);
+                item = new PdvVendaDetalhe();
+                produto = new ProdutoDTO();
+            }
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao autoizar o procedimento", ex);
+            }
         }
 
-        venda.calcularValorTotal();
-        item = new PdvVendaDetalhe();
-        produto = new ProdutoDTO();
 
-    }
-
-    public void alterarQuantidade(Produto produto, BigDecimal quantidade) {
-        Optional<PdvVendaDetalhe> itemOpt = getItemVenda(produto);
-        if (itemOpt.isPresent()) {
-            itemOpt.get().setQuantidade(quantidade);
-        }
     }
 
 
     public void excluir() {
-        venda.getListaPdvVendaDetalhe().remove(itemSelecionado);
+
+
+        int idx = IntStream.range(0, venda.getListaPdvVendaDetalhe().size())
+                .filter(i -> venda.getListaPdvVendaDetalhe().get(i).getProduto().equals(itemSelecionado.getProduto()))
+                .findAny().getAsInt();
+        venda.getListaPdvVendaDetalhe().remove(idx);
         venda.calcularValorTotal();
     }
 
-    private Optional<PdvVendaDetalhe> getItemVenda(Produto produto) {
-        return venda.getListaPdvVendaDetalhe().stream().filter(i -> i.getProduto().equals(produto)).findAny();
 
+    public boolean autorizacaoSupervisor() {
+
+        try {
+
+
+            if (vendaDetalheService.liberarRestricao(usuarioSupervisor, senhaSupervisor)) {
+                venda = vendaDetalheService.addProduto(venda, item);
+                item = new PdvVendaDetalhe();
+                produto = new ProdutoDTO();
+
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao autoizar o procedimento", ex);
+            }
+        }
+        return true;
     }
 
 
@@ -454,7 +505,7 @@ public class BalcaoControll implements Serializable {
             telaImpressao = false;
             telaCaixa = false;
             telaPagamentos = true;
-            listTipoPagamento = tipoPagamentoRepository.getAll(PdvTipoPagamento.class);
+            listTipoPagamento = definirTipoPagament();
         }
 
         totalVenda = BigDecimal.ZERO;
@@ -526,8 +577,6 @@ public class BalcaoControll implements Serializable {
                     formaPagamento.setQtdParcelas(qtdParcelas);
                     formaPagamento.setOperadoraCartao(operadoraCartao);
                 }
-
-
 
 
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
@@ -620,9 +669,11 @@ public class BalcaoControll implements Serializable {
         exibirCondicoes = tipoPagamento.getGeraParcelas().equals("S") && !tipoPagamento.getCodigo().equals("02");
         exibirQtdParcelas = tipoPagamento.getCodigo().equals("03");
         qtdParcelas = 1;
+
         if (exibirCondicoes) {
             condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class, new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
         }
+
         if (exibirQtdParcelas) {
             operadoras = operadoraCartaoRepository.getOperadoraResumidaComintervalo();
             if (operadoras.stream().findFirst().isPresent()) {
@@ -641,6 +692,19 @@ public class BalcaoControll implements Serializable {
 
     public void definirQtdParcelas(int qtd) {
         this.qtdParcelas = qtd;
+    }
+
+
+    public List<PdvTipoPagamento> definirTipoPagament() {
+        List<PdvTipoPagamento> pagamentos = new ArrayList<>();
+        pagamentos.add(new PdvTipoPagamento(1, "01", "DINHEIRO", "S", "N"));
+        pagamentos.add(new PdvTipoPagamento(2, "02", "CHEQUE", "N", "N"));
+        pagamentos.add(new PdvTipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
+        pagamentos.add(new PdvTipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
+        pagamentos.add(new PdvTipoPagamento(5, "05", "CREDITO NA LOJA", "N", "N"));
+        pagamentos.add(new PdvTipoPagamento(6, "14", "DUPLICATA", "N", "S"));
+
+        return pagamentos;
     }
 
     //</editor-fold>
@@ -909,5 +973,19 @@ public class BalcaoControll implements Serializable {
         return qtdMaxParcelas;
     }
 
+    public String getUsuarioSupervisor() {
+        return usuarioSupervisor;
+    }
 
+    public void setUsuarioSupervisor(String usuarioSupervisor) {
+        this.usuarioSupervisor = usuarioSupervisor;
+    }
+
+    public String getSenhaSupervisor() {
+        return senhaSupervisor;
+    }
+
+    public void setSenhaSupervisor(String senhaSupervisor) {
+        this.senhaSupervisor = senhaSupervisor;
+    }
 }

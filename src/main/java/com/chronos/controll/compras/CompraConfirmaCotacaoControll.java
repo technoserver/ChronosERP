@@ -143,7 +143,7 @@ public class CompraConfirmaCotacaoControll extends AbstractControll<CompraCotaca
             }
             out.close();
 
-            FacesUtil.downloadArquivo(arquivoZip, "fornecedores.zip");
+            FacesUtil.downloadArquivo(arquivoZip, "fornecedores.zip", true);
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Erro na exportação do arquivo.!", e);
@@ -151,7 +151,7 @@ public class CompraConfirmaCotacaoControll extends AbstractControll<CompraCotaca
         }
     }
 
-    public void importaCsvFornecedor(FileUploadEvent event) throws Exception {
+    public void importaCsvFornecedor(FileUploadEvent event) {
         try {
             if (compraFornecedorCotacaoSelecionado == null) {
                 throw new Exception("Nenhum fornecedor selecionado!");

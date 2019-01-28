@@ -4,6 +4,7 @@ package com.chronos.security;
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.AdmModulo;
 import com.chronos.modelo.entidades.Papel;
+import com.chronos.modelo.entidades.RestricaoSistema;
 import com.chronos.modelo.tenant.Tenant;
 import com.chronos.repository.Repository;
 import com.chronos.repository.UsuarioRepository;
@@ -21,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -31,7 +33,8 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 
 
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-    private  UsuarioSistema user;
+    private UsuarioSistema user;
+    private BigDecimal desconto;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         try {
@@ -40,7 +43,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
             request.getSession().setAttribute("tenantId", tenant);
             UsuarioDTO usuarioDTO = definirPermissoes(user);
             request.getSession().setAttribute("userChronosERP", usuarioDTO);
-
+            request.getSession().setAttribute("desc", desconto);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,6 +96,13 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
                 modulos = admModuloRepository.getEntitys(AdmModulo.class, "ativo", "S");
             }
             modulos.forEach(m -> authorities.add(new SimpleGrantedAuthority("ROLE_" + m.getNome())));
+
+
+            Repository<RestricaoSistema> restricaoSistemaRepository = CDIServiceLocator.getBean(Repository.class);
+
+            RestricaoSistema restricao = restricaoSistemaRepository.get(RestricaoSistema.class, "usuario.id", user.getId());
+
+            desconto = restricao != null && restricao.getDescontoVenda() != null ? restricao.getDescontoVenda() : BigDecimal.ZERO;
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getSenha(), authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);

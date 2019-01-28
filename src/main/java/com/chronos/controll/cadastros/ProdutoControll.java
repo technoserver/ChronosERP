@@ -15,13 +15,12 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.util.ArquivoUtil;
-import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import org.apache.commons.io.FileUtils;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.model.Visibility;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
@@ -29,8 +28,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -68,6 +65,13 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private Repository<UnidadeConversao> unidadeConversaoRepository;
     @Inject
     private Repository<Ncm> ncmRepository;
+    @Inject
+    private Repository<TabelaNutricionalCabecalho> tabelaNutricionalRepository;
+
+    @Inject
+    private Repository<PdvConfiguracaoBalanca> pdvConfiguracaoBalancaRepository;
+    @Inject
+    private Repository<ProdutoGrade> gradeRepository;
 
     @Inject
     private ProdutoService service;
@@ -80,6 +84,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private List<Empresa> empresas;
     private ViewProdutoEmpresa produtoSelecionado;
 
+    private Integer codigo;
+    private String gtin;
     private String produto;
     private String strGrupo;
     private String strSubGrupo;
@@ -108,6 +114,10 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private int idempresa;
     private Map<String, Integer> listaEmpresas;
 
+    private PdvConfiguracaoBalanca configuracaoBalanca;
+
+    private List<PdvConfiguracaoBalanca> configuracoesBalanca;
+
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
         if (!StringUtils.isEmpty(produto)) {
@@ -124,7 +134,13 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
         }
 
+        if (!StringUtils.isEmpty(codigo)) {
+            produtoDataModel.addFiltro("id", codigo, Filtro.IGUAL);
+        }
 
+        if (!StringUtils.isEmpty(gtin)) {
+            produtoDataModel.addFiltro("gtin", gtin, Filtro.IGUAL);
+        }
 
         produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
         produtoDataModel.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
@@ -166,6 +182,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         super.doCreate(); //To change body of generated methods, choose Tools | Templates.
         getObjeto().setExcluido("N");
         getObjeto().setInativo("N");
+        getObjeto().setPossuiGrade(false);
         getObjeto().setDataCadastro(new Date());
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
@@ -213,6 +230,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     }
 
+
     @Override
     public void salvar() {
         try {
@@ -236,13 +254,34 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             setObjeto(service.salvar(getObjeto(), empresas));
             Mensagem.addInfoMessage("Registro salvo com sucesso");
         } catch (Exception ex) {
-            ex.printStackTrace();
+
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("Ocorreu um erro ao salvar o registro!", ex);
             }
 
+        }
+
+
+    }
+
+    public void copiar() {
+
+        try {
+            Produto produto = new Produto();
+            doEdit();
+            BeanUtils.copyProperties(getObjeto(), produto, "id", "gtin");
+            listaEmpresas = new HashMap<>();
+            setObjeto(produto);
+            nomeFoto = produto.getImagem();
+            Mensagem.addInfoMessage("Produto copiado com sucesso");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao salvar o registro!", ex);
+            }
         }
 
 
@@ -351,6 +390,26 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         return listaMarcaProduto;
     }
 
+    public List<TabelaNutricionalCabecalho> getListaTabelaNutricional(String nome) {
+        List<TabelaNutricionalCabecalho> tabelas = new ArrayList<>();
+        try {
+            tabelas = tabelaNutricionalRepository.getEntitys(TabelaNutricionalCabecalho.class, "nome", nome, new Object[]{"nome"});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tabelas;
+    }
+
+    public List<ProdutoGrade> getListaProdutoGrade(String nome) {
+        List<ProdutoGrade> grades = new ArrayList<>();
+        try {
+            grades = gradeRepository.getEntitys(ProdutoGrade.class, "nome", nome, new Object[]{"nome"});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return grades;
+    }
+
     public void buscarProdutoEmpresas(ToggleEvent event) {
 
 
@@ -372,70 +431,24 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     }
 
 
-    public void gerarTxtToledo() {
 
 
-        try {
-            List<Produto> produtos = buscarProdutosBalanca();
-            if (!produtos.isEmpty()) {
-                File file = File.createTempFile("ITENSMGV", ".txt");
-
-                FileWriter writer = new FileWriter(file);
-
-                int i = 0;
-                for (Produto p : produtos) {
-
-                    String item = p.montarItemBalancaToledo();
-                    if ((produtos.size() - 1) > i) {
-                        item += "\r\n";
-                    }
-                    writer.write(item);
-                    i++;
-                }
-                writer.close();
-                //FileUtils.writeLines(file, linhas);
-
-                FacesUtil.downloadArquivo(file, "ITENSMGV.txt");
-            } else {
-                Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
-            }
-
-        } catch (Exception ex) {
-            if (ex instanceof ChronosException) {
-                Mensagem.addErrorMessage("", ex);
-            } else {
-                throw new RuntimeException("erro ao gera dados para balança", ex);
-            }
-
-        }
+    public void buscarConfiguracoesBalanca() {
+        configuracoesBalanca = pdvConfiguracaoBalancaRepository.getEntitys(PdvConfiguracaoBalanca.class);
     }
 
-    public void gerarTxtFilizola() {
-
-
+    public void gerarIntegracaoBalanca() {
         try {
-            List<Produto> produtos = buscarProdutosBalanca();
-            if (!produtos.isEmpty()) {
-                File file = File.createTempFile("CADTXT", ".txt");
 
-                List<String> linhas = new ArrayList<>();
-                for (Produto p : produtos) {
-                    linhas.add(p.montarItemBalancaFilizola());
-                }
-                FileUtils.writeLines(file, linhas);
-                FacesUtil.downloadArquivo(file, "CADTXT.txt");
-            } else {
-                Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança e que podem ser fracionado");
-            }
-
+            service.gerarIntegracaoBalanca(configuracaoBalanca);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
             } else {
                 throw new RuntimeException("erro ao gera dados para balança", ex);
             }
-
         }
+
     }
 
     public void addMarca() {
@@ -727,5 +740,33 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setNcm(String ncm) {
         this.ncm = ncm;
+    }
+
+    public PdvConfiguracaoBalanca getConfiguracaoBalanca() {
+        return configuracaoBalanca;
+    }
+
+    public void setConfiguracaoBalanca(PdvConfiguracaoBalanca configuracaoBalanca) {
+        this.configuracaoBalanca = configuracaoBalanca;
+    }
+
+    public List<PdvConfiguracaoBalanca> getConfiguracoesBalanca() {
+        return configuracoesBalanca;
+    }
+
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getGtin() {
+        return gtin;
+    }
+
+    public void setGtin(String gtin) {
+        this.gtin = gtin;
     }
 }

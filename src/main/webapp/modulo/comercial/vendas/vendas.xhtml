@@ -2,7 +2,7 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns="http://www.w3.org/1999/xhtml"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
@@ -32,12 +32,54 @@
 
                 <div class="ibox-content">
                     <erp:msgPermissao permissao="#{vendaCabecalhoControll.podeConsultar()}"/>
+
+
+                    <div class="row m-b">
+
+                        <erp:campoTexto idComponente="nome"
+                                        nomeAtributo="#{vendaCabecalhoControll.nome}"
+                                        styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        tamanhoMaximo="60" label="Nome"/>
+
+
+                        <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataInicial}"
+                                       label="Data inicial"
+                                       idComponente="vencimentoDe"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                        <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataFinal}"
+                                       label="Data Final"
+                                       idComponente="vencimentoAte"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+
+                        <erp:campoSelect itens="#{vendaCabecalhoControll.status}"
+                                         styleClass="col-xs-12 col-sm-2 col-md-2 m-b"
+                                         idComponente="statusVendas"
+                                         label="Status"
+                                         nomeAtributo="#{vendaCabecalhoControll.situacao}"/>
+
+                        <div class="col-md-2" style="margin-top: 20px">
+
+                            <p:commandLink title="Pesquisar"
+                                           value="Pesquisar"
+                                           styleClass="btn btn-primary"
+                                           actionListener="#{vendaCabecalhoControll.pesquisar}"
+                                           update="formCentro:outputPanelGrid">
+
+                            </p:commandLink>
+
+                        </div>
+
+
+                    </div>
+
                     <p:dataTable
                             value="#{vendaCabecalhoControll.dataModel}"
                             var="row" id="tableVenda" paginator="true"
                             rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                             reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
-                            resizableColumns="true" lazy="true" sortBy="#{row.id}" sortOrder="descending"
+                            lazy="true" sortBy="#{row.id}" sortOrder="descending"
                     >
                         <p:column headerText="Código" width="100">
                             <h:outputLabel value="#{row.id}"/>
@@ -50,7 +92,7 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Numero Fatura" width="140">
+                        <p:column headerText="Numero Fatura" width="148">
                             <h:outputLabel value="#{row.numeroFatura}"/>
                         </p:column>
                         <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
@@ -92,20 +134,33 @@
                             &nbsp;
                             <p:menuButton>
                                 <p:menuitem value="Imprimir A4"
+                                            target="_blank"
                                             actionListener="#{vendaRelatorioControll.imprimirPedido(row.id)}"
                                             icon="fa fa-print" ajax="false"/>
                                 <p:menuitem value="Imprimir Cupom"
+                                            target="_blank"
                                             actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(row.id)}"
-                                            icon="fa fa-print" ajax="false"/>
+                                            icon="fa fa-print"
+                                            ajax="false"/>
 
-                                <p:menuitem value="Emitir NFe"
+
+                                <p:menuitem value="Encerrar"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{row.situacao eq 'D'}"
+                                            action="#{vendaCabecalhoControll.buscarEncerrarVenda}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaCabecalhoControll.objetoSelecionado}"/>
+                                </p:menuitem>
+
+
+                                <p:menuitem value="Faturar - NFe"
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.numeroFatura}"
                                             action="#{vendaCabecalhoControll.gerarNFe()}">
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                                 </p:menuitem>
-                                <p:menuitem value="Emitir NFCe"
+                                <p:menuitem value="Faturar - NFCe"
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.numeroFatura}"
                                             action="#{vendaCabecalhoControll.gerarNfce}">
@@ -114,6 +169,7 @@
                                 </p:menuitem>
 
                                 <p:menuitem value="Danfe"
+                                            target="_blank"
                                             icon="fa fa-print" ajax="false"
                                             rendered="#{not empty row.numeroFatura}"
                                             action="#{vendaCabecalhoControll.danfe}">
@@ -187,206 +243,194 @@
                 <h:panelGroup layout="block" id="panelCentroDetalhe">
                     <div class="ibox-content">
 
+                        <h:panelGroup layout="block" id="panel-valores" styleClass="row">
+                            <div class="col-lg-4 col-xs-6">
+                                <!-- small box -->
+                                <div class="small-box bg-gray">
+                                    <div class="inner">
+                                        <h3>R$<span>#{vendaCabecalhoControll.objeto.valorTotalFormatado()}</span>
+                                        </h3>
+
+                                        <p>Valor Total</p>
+                                    </div>
+                                    <div class="icon" style="top: 0px">
+                                        <i class="fa  fa-money"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-xs-6">
+                                <!-- small box -->
+                                <div class="small-box bg-gray">
+                                    <div class="inner">
+                                        <h3>R$<span>#{vendaCabecalhoControll.objeto.valorSubTotalFormatado()}</span>
+                                        </h3>
+
+                                        <p>Valor dos Produtos</p>
+                                    </div>
+                                    <div class="icon" style="top: 0px">
+                                        <i class="fa fa-shopping-cart"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-xs-6">
+                                <!-- small box -->
+                                <div class="small-box bg-gray">
+                                    <div class="inner">
+                                        <h3>R$<span>#{vendaCabecalhoControll.objeto.valorDescontoFormatado()}</span>
+                                        </h3>
+
+                                        <p>Valor do Desconto</p>
+                                    </div>
+                                    <div class="icon" style="top: 0px">
+                                        <i class="fa fa-percent" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </h:panelGroup>
+
                         <div class="row">
-                            <div class="col-lg-12">
-                                <h:panelGroup layout="block" rendered="#{not empty vendaCabecalhoControll.objeto}">
+                            <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                              label="Cliente"
+                                              itemLabel="#{objeto.nome}"
+                                              controller="#{vendaCabecalhoControll}"
+                                              completeMethod="getListaCliente"
+                                              nomeAtributo="#{vendaCabecalhoControll.pessoaCliente}"
+                                              idComponente="vendaCabecalhoCliente">
+                                <p:ajax event="itemSelecionado"
+                                        listener="#{vendaCabecalhoControll.definirEnderecoEntrega}"
+                                />
 
-                                    <div class="row">
-                                        <div class="col-lg-4 col-xs-6">
-                                            <!-- small box -->
-                                            <div class="small-box bg-gray">
-                                                <div class="inner">
-                                                    <h3>R$<span>#{vendaCabecalhoControll.objeto.valorTotalFormatado()}</span>
-                                                    </h3>
+                            </erp:autoComplete>
 
-                                                    <p>Valor Total</p>
-                                                </div>
-                                                <div class="icon" style="top: 0px">
-                                                    <i class="fa  fa-money"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-xs-6">
-                                            <!-- small box -->
-                                            <div class="small-box bg-gray">
-                                                <div class="inner">
-                                                    <h3>R$<span>#{vendaCabecalhoControll.objeto.valorSubTotalFormatado()}</span>
-                                                    </h3>
+                            <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                              label="Vendedor"
+                                              itemLabel="#{objeto.nome}"
+                                              controller="#{vendaCabecalhoControll}"
+                                              completeMethod="getListaVendedor"
+                                              nomeAtributo="#{vendaCabecalhoControll.objeto.vendedor}"
+                                              idComponente="vendaCabecalhoVendedor">
+                                <p:ajax event="itemSelecionado"
+                                        listener="#{vendaCabecalhoControll.definirTaxaComissao}"
+                                        update="formOutrasTelas:campoValor:valorUnitario"/>
 
-                                                    <p>Valor dos Produtos</p>
-                                                </div>
-                                                <div class="icon" style="top: 0px">
-                                                    <i class="fa fa-shopping-cart"></i>
-                                                </div>
-                                            </div>
-                                        </div>
+                            </erp:autoComplete>
 
+                            <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                              label="Venda Condicoes Pagamento"
+                                              itemLabel="#{objeto.nome}"
+                                              controller="#{vendaCabecalhoControll}"
+                                              completeMethod="getListaVendaCondicoesPagamento"
+                                              nomeAtributo="#{vendaCabecalhoControll.objeto.condicoesPagamento}"
+                                              idComponente="vendaCabecalhoVendaCondicoesPagamento"
+                            />
 
-                                        <div class="col-lg-4 col-xs-6">
-                                            <!-- small box -->
-                                            <div class="small-box bg-gray">
-                                                <div class="inner">
-                                                    <h3>R$<span>#{vendaCabecalhoControll.objeto.valorDescontoFormatado()}</span>
-                                                    </h3>
+                        </div>
+                        <div class="row">
+                            <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              idComponente="vendaCabecalhoNumeroFatura"
+                                              label="Numero Fatura"
+                                              nomeAtributo="#{vendaCabecalhoControll.objeto.numeroFatura}"
+                                              somenteLeitura="true"/>
+                            <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                           idComponente="vendaCabecalhoDataVenda" label="Data Venda"
+                                           nomeAtributo="#{vendaCabecalhoControll.objeto.dataVenda}"
+                                           desabilitado="true"/>
+                            <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
+                                           idComponente="vendaCabecalhoDataSaida" label="Data Saida"
+                                           nomeAtributo="#{vendaCabecalhoControll.objeto.dataSaida}"
+                                           desabilitado="true"/>
+                            <erp:campoMascara styleClass="col-xs-12 col-sm-3 col-md-3"
+                                              idComponente="vendaCabecalhoHoraSaida" label="Hora Saida"
+                                              nomeAtributo="#{vendaCabecalhoControll.objeto.horaSaida}"
+                                              mascara="99:99:99"
+                            />
+                        </div>
+                        <div class="row">
+                            <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                                idComponente="vendaCabecalhoObservacao" label="Observacao"
+                                                nomeAtributo="#{vendaCabecalhoControll.objeto.observacao}"/>
+                        </div>
 
-                                                    <p>Valor do Desconto</p>
-                                                </div>
-                                                <div class="icon" style="top: 0px">
-                                                    <i class="fa fa-percent" aria-hidden="true"></i>
-                                                </div>
-                                            </div>
-                                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <erp:separador label="Produtos"/>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <h:commandLink title="Novo" class="btn btn-default"
+                                                       actionListener="#{vendaCabecalhoControll.incluirVendaDetalhe}"
+                                                       type="button"
+                                        >
+                                            <p:resetInput target=":formOutrasTelas"/>
+                                            <i class="glyphicon glyphicon-plus"/>
+                                            <p:ajax update=":formOutrasTelas:panelVendaDetalhe,dataTableVendaDetalhe"
+                                                    oncomplete="PF('dialogVendaDetalhe').show()"
+                                                    process="@this"/>
+                                        </h:commandLink>
                                     </div>
+                                </div>
+                                <p:dataTable id="dataTableVendaDetalhe" var="obj"
+                                             value="#{vendaCabecalhoControll.objeto.listaVendaDetalhe}"
+                                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                             reflow="true"
+                                             rowIndexVar="index" rowKey="index" paginatorPosition="bottom">
 
-                                    <div class="row">
-                                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                                                          label="Cliente"
-                                                          itemLabel="#{objeto.nome}"
-                                                          controller="#{vendaCabecalhoControll}"
-                                                          completeMethod="getListaCliente"
-                                                          nomeAtributo="#{vendaCabecalhoControll.pessoaCliente}"
-                                                          idComponente="vendaCabecalhoCliente">
-                                            <p:ajax event="itemSelecionado"
-                                                    listener="#{vendaCabecalhoControll.definirEnderecoEntrega}"
-                                            />
+                                    <p:column headerText="Produto">
+                                        <h:outputLabel value="#{obj.produto.nome}"/>
+                                    </p:column>
+                                    <p:column headerText="Quantidade" styleClass="coluna-quantidade" width="120">
+                                        <h:outputLabel value="#{obj.quantidade}">
+                                            <f:convertNumber pattern="0.000"/>
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Valor UN" class="coluna-monetaria" width="100">
+                                        <h:outputLabel value="#{obj.valorUnitario}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Subtotal" class="coluna-monetaria" width="115">
+                                        <h:outputLabel value="#{obj.valorSubtotal}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="DESC." class="coluna-monetaria" width="100">
+                                        <h:outputLabel value="#{obj.valorDesconto}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Valor Total" class="coluna-monetaria" width="150">
+                                        <h:outputLabel value="#{obj.valorTotal}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputLabel>
+                                    </p:column>
+                                    <p:column headerText="Ações" width="120">
+                                        <p:commandLink title="Alterar"
+                                                       action="#{vendaCabecalhoControll.alterarVendaDetalhe}"
+                                                       class=" btn btn-default"
+                                                       oncomplete="PF('dialogVendaDetalhe').show()"
+                                                       update="dataTableVendaDetalhe,:formOutrasTelas:panelVendaDetalhe"
+                                        >
+                                            <i class="fa fa-file-text-o"></i>
+                                            <f:setPropertyActionListener value="#{obj}"
+                                                                         target="#{vendaCabecalhoControll.vendaDetalheSelecionado}"/>
+                                        </p:commandLink>
+                                        &nbsp;
+                                        <p:commandLink title="Excluir"
+                                                       action="#{vendaCabecalhoControll.excluirVendaDetalhe}"
+                                                       style="position: relative; right: 7px"
+                                                       update=":formCentro:growl,dataTableVendaDetalhe,:formCentro:outputPanelDetalhe"
+                                                       process="dataTableVendaDetalhe"
+                                                       oncomplete="atualizarMsg();"
+                                                       class="btn btn-default"
+                                        >
+                                            <i class="fa fa-times"></i>
+                                            <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
-                                        </erp:autoComplete>
-
-                                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                                                          label="Vendedor"
-                                                          itemLabel="#{objeto.nome}"
-                                                          controller="#{vendaCabecalhoControll}"
-                                                          completeMethod="getListaVendedor"
-                                                          nomeAtributo="#{vendaCabecalhoControll.objeto.vendedor}"
-                                                          idComponente="vendaCabecalhoVendedor">
-                                            <p:ajax event="itemSelecionado"
-                                                    listener="#{vendaCabecalhoControll.definirTaxaComissao}"
-                                                    update="formOutrasTelas:campoValor:valorUnitario"/>
-
-                                        </erp:autoComplete>
-
-                                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                                                          label="Venda Condicoes Pagamento"
-                                                          itemLabel="#{objeto.nome}"
-                                                          controller="#{vendaCabecalhoControll}"
-                                                          completeMethod="getListaVendaCondicoesPagamento"
-                                                          nomeAtributo="#{vendaCabecalhoControll.objeto.condicoesPagamento}"
-                                                          idComponente="vendaCabecalhoVendaCondicoesPagamento"
-                                        />
-
-                                    </div>
-                                    <div class="row">
-                                        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
-                                                          idComponente="vendaCabecalhoNumeroFatura"
-                                                          label="Numero Fatura"
-                                                          nomeAtributo="#{vendaCabecalhoControll.objeto.numeroFatura}"
-                                                          somenteLeitura="true"/>
-                                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
-                                                       idComponente="vendaCabecalhoDataVenda" label="Data Venda"
-                                                       nomeAtributo="#{vendaCabecalhoControll.objeto.dataVenda}"
-                                                       desabilitado="true"/>
-                                        <erp:campoData styleClass="col-xs-12 col-sm-3 col-md-3"
-                                                       idComponente="vendaCabecalhoDataSaida" label="Data Saida"
-                                                       nomeAtributo="#{vendaCabecalhoControll.objeto.dataSaida}"
-                                                       desabilitado="true"/>
-                                        <erp:campoMascara styleClass="col-xs-12 col-sm-3 col-md-3"
-                                                          idComponente="vendaCabecalhoHoraSaida" label="Hora Saida"
-                                                          nomeAtributo="#{vendaCabecalhoControll.objeto.horaSaida}"
-                                                          mascara="99:99:99"
-                                        />
-                                    </div>
-                                    <div class="row">
-                                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                                            idComponente="vendaCabecalhoObservacao" label="Observacao"
-                                                            nomeAtributo="#{vendaCabecalhoControll.objeto.observacao}"/>
-                                    </div>
-                                    <erp:separador label="Produtos"/>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <h:commandLink title="Novo" class="btn btn-default"
-                                                           actionListener="#{vendaCabecalhoControll.incluirVendaDetalhe}"
-                                                           type="button"
-                                                           rendered="#{not empty vendaCabecalhoControll.objeto.id}">
-                                                <p:resetInput target=":formOutrasTelas"/>
-                                                <i class="glyphicon glyphicon-plus"/>
-                                                <p:ajax update=":formOutrasTelas:panelVendaDetalhe,dataTableVendaDetalhe"
-                                                        oncomplete="PF('dialogVendaDetalhe').show()"
-                                                        process="@this"/>
-                                            </h:commandLink>
-                                        </div>
-                                    </div>
-
-
-                                    <p:dataTable id="dataTableVendaDetalhe" var="obj"
-                                                 value="#{vendaCabecalhoControll.objeto.listaVendaDetalhe}"
-                                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                                                 resizableColumns="true" reflow="true"
-                                                 rowIndexVar="index" rowKey="index" paginatorPosition="bottom">
-
-                                        <p:column headerText="Produto">
-                                            <h:outputLabel value="#{obj.produto.nome}"/>
-                                        </p:column>
-                                        <p:column headerText="Quantidade" styleClass="coluna-quantidade">
-                                            <h:outputLabel value="#{obj.quantidade}">
-                                                <f:convertNumber pattern="0.000"/>
-                                            </h:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="Valor Unitario" class="coluna-monetaria">
-                                            <h:outputLabel value="#{obj.valorUnitario}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="Valor Subtotal" class="coluna-monetaria">
-                                            <h:outputLabel value="#{obj.valorSubtotal}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="Taxa Desconto" class="coluna-monetaria">
-                                            <h:outputLabel value="#{obj.taxaDesconto}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="Valor Desconto" class="coluna-monetaria">
-                                            <h:outputLabel value="#{obj.valorDesconto}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="Valor Total" class="coluna-monetaria">
-                                            <h:outputLabel value="#{obj.valorTotal}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputLabel>
-                                        </p:column>
-                                        <p:column headerText="Ações" width="110">
-                                            <p:commandLink title="Alterar"
-                                                           action="#{vendaCabecalhoControll.alterarVendaDetalhe}"
-                                                           class=" btn btn-default"
-                                                           oncomplete="PF('dialogVendaDetalhe').show()"
-                                                           update="dataTableVendaDetalhe,:formOutrasTelas:panelVendaDetalhe"
-                                            >
-                                                <i class="fa fa-file-text-o"></i>
-                                                <f:setPropertyActionListener value="#{obj}"
-                                                                             target="#{vendaCabecalhoControll.vendaDetalheSelecionado}"/>
-                                            </p:commandLink>
-                                            &nbsp;
-                                            <p:commandLink title="Excluir"
-                                                           action="#{vendaCabecalhoControll.excluirVendaDetalhe}"
-                                                           style="position: relative; right: 7px"
-                                                           update=":formCentro:growl,dataTableVendaDetalhe,:formCentro:outputPanelDetalhe"
-                                                           process="dataTableVendaDetalhe"
-                                                           oncomplete="atualizarMsg();"
-                                                           class="btn btn-default"
-                                            >
-                                                <i class="fa fa-times"></i>
-                                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
-
-                                                <f:setPropertyActionListener value="#{obj}"
-                                                                             target="#{vendaCabecalhoControll.vendaDetalheSelecionado}"/>
-                                            </p:commandLink>
-                                        </p:column>
-                                    </p:dataTable>
-
-
-                                </h:panelGroup>
+                                            <f:setPropertyActionListener value="#{obj}"
+                                                                         target="#{vendaCabecalhoControll.vendaDetalheSelecionado}"/>
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:dataTable>
                             </div>
                         </div>
                     </div>
@@ -396,44 +440,43 @@
                             <div class="row">
                                 <div class="col-xs-6 col-lg-6 text-center">
                                     <h:panelGroup layout="block" class="btn-group"
-                                                  rendered="#{!vendaCabecalhoControll.objeto.emitido and !vendaCabecalhoControll.objeto.cancelado}">
-                                        <h:commandButton value="Salvar" class="btn btn-primary"
+                                                  id="grupo-botao"
+                                                  rendered="#{!vendaCabecalhoControll.objeto.faturado and !vendaCabecalhoControll.objeto.cancelado}">
+                                        <p:commandButton value="Salvar"
                                                          id="btnSalvar"
                                                          rendered="#{empty vendaCabecalhoControll.objeto.id}"
                                                          action="#{vendaCabecalhoControll.salvar()}"
                                                          disabled="#{!vendaCabecalhoControll.podeInserir()}"
-                                        >
-                                            <p:ajax process="@form"
-                                                    oncomplete="addClass()"
-                                                    update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
-                                        </h:commandButton>
-                                        <h:commandButton value="Salvar" class="btn btn-primary"
-                                                         id="btnAtualizar"
-                                                         rendered="#{not empty vendaCabecalhoControll.objeto.id and !vendaCabecalhoControll.objeto.temProduto()}"
-                                                         actionListener="#{vendaCabecalhoControll.salvar()}"
-                                                         disabled="#{!vendaCabecalhoControll.podeAlterar()}"
-                                        >
-                                            <p:ajax process="@form"
-                                                    oncomplete="addClass()"
-                                                    update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
-                                        </h:commandButton>
-                                        <c:if test="#{!vendaCabecalhoControll.telaGrid and vendaCabecalhoControll.objeto.temProduto()}">
+                                                         process="@form"
+                                                         oncomplete="addClass()"
+                                                         update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
 
-                                            <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar}" icon="ui-icon-disk">
-                                                <p:menuitem value="Salvar e Encerrar"
-                                                            actionListener="#{vendaCabecalhoControll.faturarVenda}"
-                                                            update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
-                                                            rendered="#{!vendaCabecalhoControll.objeto.faturado}"
-                                                            icon="ui-icon-arrowrefresh-1-w"/>
-
-                                            </p:splitButton>
+                                        </p:commandButton>
 
 
-                                        </c:if>
+                                        <p:splitButton value="Salvar"
+                                                       rendered="#{not empty vendaCabecalhoControll.objeto.id}"
+                                                       actionListener="#{osAberturaControll.salvar}"
+                                                       icon="ui-icon-disk">
+                                            <p:menuitem value="Encerrar"
+                                                        actionListener="#{vendaCabecalhoControll.encerrarVenda}"
+                                                        update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                                                        rendered="#{!vendaCabecalhoControll.objeto.encerrado}"
+                                                        icon="ui-icon-arrowrefresh-1-w"/>
+
+                                            <p:menuitem value="Faturar"
+                                                        actionListener="#{vendaCabecalhoControll.faturarVenda}"
+                                                        update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                                                        rendered="#{!vendaCabecalhoControll.objeto.faturado}"
+                                                        icon="ui-icon-arrowrefresh-1-w"/>
+
+                                        </p:splitButton>
+
+
                                     </h:panelGroup>
 
                                 </div>
-                                <div class="col-xs-6 col-lg-6">
+                                <div class="#{vendaCabecalhoControll.objeto.faturado} ? 'col-xs-12 col-lg-12' : 'col-xs-6 col-lg-6'">
                                     <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
                                                      actionListener="#{vendaCabecalhoControll.voltar()}"
                                     >
@@ -528,7 +571,7 @@
 
                                 <p:ajax process="@form"
                                         oncomplete="if (!args.validationFailed) {PF('dialogVendaDetalhe').hide();}"
-                                        update=":formOutrasTelas:panelVendaDetalhe,:formCentro:growl,:formCentro:outputPanelDetalhe"
+                                        update=":formOutrasTelas:panelVendaDetalhe,:formCentro:growl,:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe"
                                 />
                             </h:commandButton>
                         </div>
@@ -590,6 +633,12 @@
                 </f:facet>
             </p:dialog>
         </h:form>
+    </ui:define>
+
+    <ui:define name="telaSupervisor">
+        <erp:supervisor id="telaSupervisor"
+                        atualizar=",:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe"
+                        controller="#{vendaCabecalhoControll}"/>
     </ui:define>
 
 </ui:composition>

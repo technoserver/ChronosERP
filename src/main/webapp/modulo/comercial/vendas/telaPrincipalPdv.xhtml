@@ -21,6 +21,11 @@
             <p:column headerText="Nome">
                 <p:outputLabel value="#{objeto.nome}"/>
             </p:column>
+            <p:column headerText="Valor">
+                <p:outputLabel value="#{objeto.valorVenda}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </p:outputLabel>
+            </p:column>
             <p:column headerText="Estoque">
                 <p:outputLabel value="#{objeto.estoqueVerificado}">
                     <f:convertNumber pattern="#,##0.00"/>
@@ -78,7 +83,7 @@
                                            style="width: 100%">
                                 <p:ajax event="blur"
                                         listener="#{balcaoControll.calcularPrecoAtacado}"
-                                        update="formCentro:valorUnitario"
+                                        update="formCentro:valorUnitario,formCentro:mostra-produto"
                                         process="@this"/>
                             </p:inputNumber>
                         </td>
@@ -91,7 +96,8 @@
                             <label class="visible-xs">VALOR UNITÁRIO</label>
                             <p:inputNumber id="valorUnitario"
                                            decimalPlaces="2"
-                                           minValue="0.001" maxValue="999"
+                                           minValue="0.001"
+                                           maxValue="999"
                                            value="#{balcaoControll.item.valorUnitario}"
                                            required="true"
                                            dir="rtl"
@@ -112,6 +118,7 @@
                             <div class="input-group">
                                 <p:inputNumber id="desconto"
                                                decimalPlaces="2"
+                                               minValue="0.0"
                                                value="#{balcaoControll.desconto}"
                                                class="inputs"
                                                dir="rtl"
@@ -121,7 +128,7 @@
                                                style="width: 100%">
                                     <p:ajax event="blur" listener="#{balcaoControll.calcularDesconto}"
                                             process="@form"
-                                            update="formCentro:mostra-produto"/>
+                                            update="formCentro:mostra-produto,formCentro:growl"/>
                                 </p:inputNumber>
                                 <span class="input-group-btn">
                                     <h:selectOneMenu id="tipoDesconto"
@@ -241,14 +248,15 @@
                                 </div>
                             </div>
                             <div class="caixa-botoes">
-                                <h:commandButton styleClass="btn-excluir" type="button"
-                                                 action="#{balcaoControll.excluir}">
+                                <h:commandLink styleClass="btn-excluir" type="button"
+                                               action="#{balcaoControll.excluir}">
                                     <p:ajax process="@this"
                                             update=":formCentro:produtos-selecionados"
                                             oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
+                                    <i class="fa fa-trash"></i>
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{balcaoControll.itemSelecionado}"/>
-                                </h:commandButton>
+                                </h:commandLink>
                             </div>
 
 
@@ -315,7 +323,7 @@
 
         <div class="row">
             <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
-                <button id="aguardar" type="button" class="btn btn-warning btn-lg" onclick="aguardar();"
+                <button id="aguardar" type="button" class="btn btn-warning btn-lg"
                         disabled="true"
                         style="width:100%">PRE-VENDA
                 </button>
@@ -327,7 +335,7 @@
 
                                  action="#{balcaoControll.cancelar}"
                                  style="width:100%">
-                    <p:ajax process="@this" update="formCentro:produtos-selecionados"
+                    <p:ajax process="@this" update="formCentro:produtos-selecionados,:formCentro:telaPdv"
                             oncomplete="document.getElementById('formCentro:produto_input').focus()"/>
                 </h:commandButton>
             </div>

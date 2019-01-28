@@ -1,5 +1,6 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "VENDA_ORCAMENTO_CABECALHO")
+@DynamicUpdate
 public class VendaOrcamentoCabecalho implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -76,7 +78,7 @@ public class VendaOrcamentoCabecalho implements Serializable {
     @NotNull
     private Vendedor vendedor;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendaOrcamentoCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<VendaOrcamentoDetalhe> listaVendaOrcamentoDetalhe;
+    private List<VendaOrcamentoDetalhe> listaVendaOrcamentoDetalhe;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
@@ -270,11 +272,11 @@ public class VendaOrcamentoCabecalho implements Serializable {
         this.vendedor = vendedor;
     }
 
-    public Set<VendaOrcamentoDetalhe> getListaVendaOrcamentoDetalhe() {
-        return Optional.ofNullable(listaVendaOrcamentoDetalhe).orElse(new HashSet<>());
+    public List<VendaOrcamentoDetalhe> getListaVendaOrcamentoDetalhe() {
+        return Optional.ofNullable(listaVendaOrcamentoDetalhe).orElse(new ArrayList<>());
     }
 
-    public void setListaVendaOrcamentoDetalhe(Set<VendaOrcamentoDetalhe> listaVendaOrcamentoDetalhe) {
+    public void setListaVendaOrcamentoDetalhe(List<VendaOrcamentoDetalhe> listaVendaOrcamentoDetalhe) {
         this.listaVendaOrcamentoDetalhe = listaVendaOrcamentoDetalhe;
     }
 

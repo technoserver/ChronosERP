@@ -5,7 +5,9 @@
  */
 package com.chronos.util;
 
+import com.chronos.dto.GradeDTO;
 import com.chronos.dto.MapDTO;
+import com.chronos.dto.ProdutoGradeDTO;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import org.springframework.util.StringUtils;
 
@@ -28,6 +30,41 @@ import java.util.regex.Pattern;
  * @author john
  */
 public class Biblioteca {
+
+
+    public static void generateCombination(List<List<String>> Lists, List<String> result, int depth, String current) {
+        if (depth == Lists.size()) {
+            result.add(current);
+            return;
+        }
+
+        for (int i = 0; i < Lists.get(depth).size(); ++i) {
+            generateCombination(Lists, result, depth + 1, current + Lists.get(depth).get(i));
+        }
+    }
+
+    public static void generateCombination(List<List<ProdutoGradeDTO>> Lists, List<ProdutoGradeDTO> result, int depth, ProdutoGradeDTO current) {
+        if (depth == Lists.size()) {
+            result.add(current);
+            return;
+        }
+
+        for (int i = 0; i < Lists.get(depth).size(); ++i) {
+            generateCombination(Lists, result, depth + 1, Lists.get(depth).get(i));
+        }
+    }
+
+    public static void generateCombinations(List<List<GradeDTO>> lists, List<GradeDTO> result, int depth, GradeDTO grade) {
+        if (depth == lists.size()) {
+            result.add(grade);
+            return;
+        }
+
+        for (int i = 0; i < lists.get(depth).size(); ++i) {
+            GradeDTO g = lists.get(depth).get(i);
+            generateCombinations(lists, result, depth + 1, new GradeDTO(grade.getCodigo() + "." + g.getCodigo(), grade.getNome() + g.getNome()));
+        }
+    }
 
 
     public static boolean renavamValido(String renavam) {
@@ -351,7 +388,7 @@ public class Biblioteca {
     public static Object nullToEmpty(Object objeto, boolean relacionamentos) {
         Object atributo;
         try {
-            Field fields[] = objeto.getClass().getDeclaredFields();
+            Field[] fields = objeto.getClass().getDeclaredFields();
             for (Field f : fields) {
                 if (!(f.getName().equals("serialVersionUID") || f.getName().equals("bag"))) {
                     if (f.getType() == String.class || f.getType() == Integer.class || f.getType() == BigDecimal.class || f.getType() == Double.class || f.getType() == Date.class || f.getType() == Long.class) {
@@ -464,9 +501,9 @@ public class Biblioteca {
             anoPeriodo--;
         }
         if (mesPeriodo < 10) {
-            periodoAnterior = "0" + String.valueOf(mesPeriodo) + "/" + String.valueOf(mesPeriodo);
+            periodoAnterior = "0" + mesPeriodo + "/" + mesPeriodo;
         } else {
-            periodoAnterior = String.valueOf(mesPeriodo) + "/" + String.valueOf(anoPeriodo);
+            periodoAnterior = mesPeriodo + "/" + anoPeriodo;
         }
         return periodoAnterior;
     }
@@ -573,7 +610,7 @@ public class Biblioteca {
     }
 
     public String retiraAcentos(String string) {
-        String aux = new String(string);
+        String aux = string;
         aux = aux.replaceAll("[èëÈéêÉÊË]", "e");
         aux = aux.replaceAll("[ûùüúÛÚÙÜ]", "u");
         aux = aux.replaceAll("[ïîíìÏÎÍÌ]", "i");

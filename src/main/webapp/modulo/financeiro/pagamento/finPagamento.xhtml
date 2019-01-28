@@ -77,11 +77,13 @@
                                     idComponente="fornecedor"
                                     nomeAtributo="#{finPagamentoControll.fornecedor}"
                                     styleClass="col-xs-12 col-sm-3 col-md-4"/>
-                    <erp:campoTexto tamanhoMaximo="14"
-                                    label="CNPJ/CPF"
-                                    idComponente="cnpjCpf"
-                                    nomeAtributo="#{finPagamentoControll.cnpjCpf}"
-                                    styleClass="col-xs-12 col-sm-3 col-md-2"/>
+                    <erp:campoExpressaoRegular tamanhoMaximo="14"
+                                               expressao="/[\d\-]/"
+                                               label="CNPJ/CPF"
+                                               idComponente="cnpjCpf"
+                                               nomeAtributo="#{finPagamentoControll.cnpjCpf}"
+                                               styleClass="col-xs-12 col-sm-3 col-md-2"/>
+
                     <erp:campoData label="Vencimento de"
                                    idComponente="vencimentoDe"
                                    nomeAtributo="#{finPagamentoControll.dataInicial}"
