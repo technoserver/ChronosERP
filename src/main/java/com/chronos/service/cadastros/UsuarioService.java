@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by john on 19/09/17.
@@ -80,6 +81,24 @@ public class UsuarioService implements Serializable {
         return user;
     }
 
+    public void atualizarSenha(Usuario user, String novaSenha) throws ChronosException {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setSenha(encoder.encode(novaSenha));
+
+        Optional<UsuarioTenant> tenantOptional = tenantRepository.getUserTenant(user.getLogin());
+
+        if (!tenantOptional.isPresent()) {
+            throw new ChronosException("Usuário cadastrado mais sem permissão de acesso ao sistema");
+        }
+        UsuarioTenant usuarioTenant = tenantOptional.get();
+        usuarioTenant.setSenha(user.getSenha());
+        tenantRepository.salvar(usuarioTenant);
+
+        repository.atualizar(user);
+
+    }
+
+
     public UsuarioDTO getUsuarioLogado() {
 
 
@@ -129,4 +148,6 @@ public class UsuarioService implements Serializable {
 
         empresaPessoaRepository.salvar(empresaPessoas);
     }
+
+
 }

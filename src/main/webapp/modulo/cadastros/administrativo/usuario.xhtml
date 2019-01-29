@@ -23,26 +23,75 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{usuarioConttroll}"
-                       idDataTable="dataTableUsuario"
-                       nomeFuncao="USUARIO"
-                       id="telaGrid"
-        >
 
-            <p:column headerText="Login">
-                <h:outputLabel value="#{row.login}"/>
-            </p:column>
-            <p:column headerText="Administrador" styleClass="text-center">
-                <i class="fa #{row.administrador eq 'S'?'fa-check text-success' :'fa-ban text-danger'}"
-                   aria-hidden="true"></i>
-            </p:column>
-            <p:column headerText="Data Cadastro">
-                <h:outputLabel value="#{row.dataCadastro}" styleClass="text-center">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
+        <erp:formularioGrid controller="#{usuarioConttroll}"
+                            id="telaGrid">
 
-        </erp:gridDados>
+            <p:dataTable
+                    value="#{usuarioConttroll.dataModel}"
+                    var="row" id="dataTableUsuario" paginator="true"
+                    emptyMessage="Nenhum registro encontrado"
+                    rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                    reflow="true" rendered="#{usuarioConttroll.podeConsultar()}"
+                    lazy="true"
+            >
+
+                <p:column headerText="Login">
+                    <h:outputLabel value="#{row.login}"/>
+                </p:column>
+                <p:column headerText="Administrador" styleClass="text-center">
+                    <i class="fa #{row.administrador eq 'S'?'fa-check text-success' :'fa-ban text-danger'}"
+                       aria-hidden="true"></i>
+                </p:column>
+                <p:column headerText="Data Cadastro" styleClass="text-center">
+                    <h:outputLabel value="#{row.dataCadastro}" styleClass="text-center">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+
+                <p:column headerText="Ações" width="180" styleClass="text-center">
+
+                    <p:commandLink title="Alterar Senha"
+                                   class=" btn btn-default"
+                                   oncomplete="PF('dialogOutrasTelas').show()"
+                                   update=":formOutrasTelas:panelOutrasTelas"
+                                   id="btnAlterarSenha">
+                        <i class="fa fa-key"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{usuarioConttroll.objetoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+
+
+                    <p:commandLink title="Alterar" action="#{usuarioConttroll.doEdit()}"
+                                   class=" btn btn-default"
+                                   update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                   id="btnAlterar">
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{usuarioConttroll.objetoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{usuarioConttroll.remover()}"
+                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                   process="dataTableUsuario"
+                                   oncomplete="atualizarMsg();"
+                                   id="btnExcluir"
+                                   class="btn btn-default"
+                                   disabled="#{!usuarioConttroll.podeExcluir()}">
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{usuarioConttroll.objetoSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+
+
+            </p:dataTable>
+
+        </erp:formularioGrid>
+
     </ui:define>
 
 
@@ -50,9 +99,16 @@
         <erp:telaInclusaoAlteracao controller="#{usuarioConttroll}"
                                    nomeFuncao="USUARIO"
                                    id="telaDetalhe"
-                                   somenteConsulta="#{ ! usuarioConttroll.podeAlterarSenha}">
+        >
 
             <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="login" label="Login"
+                                nomeAtributo="#{usuarioConttroll.objeto.colaborador.pessoa.nome}"
+                                requerido="true"
+                                rendered="#{not empty usuarioConttroll.objeto.id}"
+                                somenteLeitura="true"
+                                tamanhoMaximo="60"/>
 
 
                 <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
@@ -62,6 +118,7 @@
                                   completeMethod="getListColaborador"
                                   nomeAtributo="#{usuarioConttroll.objeto.colaborador}"
                                   idComponente="colaborador"
+                                  rendered="#{empty usuarioConttroll.objeto.id}"
                 >
                     <p:ajax listener="#{usuarioConttroll.definirEmpresas}" event="itemSelecionado" process="@this"
                             update="formCentro:telaDetalhe:panelEmpresas"/>
@@ -84,6 +141,7 @@
                                 idComponente="login" label="Login"
                                 nomeAtributo="#{usuarioConttroll.objeto.login}"
                                 requerido="true"
+                                somenteLeitura="#{not empty usuarioConttroll.objeto.id}"
                                 tamanhoMaximo="60"/>
                 <div class="col-xs-12 col-sm-3 col-md-3">
                     <p:outputLabel for="pwd1" value="Senha" rendered="#{empty usuarioConttroll.objeto.id}"/>
@@ -115,6 +173,54 @@
 
 
         </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogOutrasTelas"
+                      header="Alterar senha"
+                      widgetVar="dialogOutrasTelas" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="200">
+
+                <p:outputPanel id="panelOutrasTelas">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p:outputLabel for="novaSenha" value="Nova Senha"/>
+                            <p:password id="novaSenha" value="#{usuarioConttroll.novaSenha}" match="confirmNovaSenha"
+                                        required="true"
+
+                                        validatorMessage="Senha não confere"/>
+                        </div>
+                        <div class="col-xs-12 col-sm-3 col-md-12">
+                            <p:outputLabel for="confirmNovaSenha" value="Confirmar nova senha"/>
+                            <p:password id="confirmNovaSenha" value="#{usuarioConttroll.novaSenha}" required="true"/>
+                        </div>
+                    </div>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             id="btnSalvarPermissao"
+                                             action="#{usuarioConttroll.atualizarSenha}"
+                                             process="@form"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas').hide();}"
+                                             update=":formOutrasTelas:panelOutrasTelas,:formCentro:growl"/>
+
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                            >
+                                <p:ajax oncomplete="PF('dialogOutrasTelas').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 </ui:composition>
