@@ -51,6 +51,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     @Inject
     private UsuarioService service;
 
+    private String novaSenha;
 
     @Override
     public ERPLazyDataModel<Usuario> getDataModel() {
@@ -82,7 +83,12 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     public void salvar() {
 
         try {
-            service.salvar(getObjeto(), senha, empresasSelecionada);
+            if (getObjeto().getId() == null) {
+                service.salvar(getObjeto(), senha, empresasSelecionada);
+            } else {
+                super.salvar();
+            }
+
             setTelaGrid(true);
             Mensagem.addInfoMessage("Dados salvo com sucesso");
         } catch (Exception ex) {
@@ -93,6 +99,19 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
             }
         }
 
+    }
+
+    public void atualizarSenha() {
+        try {
+            service.atualizarSenha(getObjetoSelecionado(), novaSenha);
+            Mensagem.addInfoMessage("senha atualizada");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao atualizar senha", ex);
+            }
+        }
     }
 
     @Override
@@ -192,5 +211,13 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
 
     public boolean isExisteEmpresa() {
         return empresas != null && !empresas.isEmpty();
+    }
+
+    public String getNovaSenha() {
+        return novaSenha;
+    }
+
+    public void setNovaSenha(String novaSenha) {
+        this.novaSenha = novaSenha;
     }
 }

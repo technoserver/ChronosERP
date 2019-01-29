@@ -180,16 +180,16 @@
             </a>
             <ul class="nav nav-third-level">
 
-                <erp:subMenu caminho="/modulo/cadastros/tabelas/cfop"
-                             label="CFOP"
-                             exibir="#{seguranca.isTemAcesso('CFOP')}"
-                             funcao="cfop"/>
+                <!-- <erp:subMenu caminho="/modulo/cadastros/tabelas/cfop"
+                              label="CFOP"
+                              exibir="#{seguranca.isTemAcesso('CFOP')}"
+                              funcao="cfop"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/tabelas/cest"
-                             label="CEST"
-                             exibir="#{seguranca.isTemAcesso('CEST')}"
-                             funcao="cest"/>
-
+                 <erp:subMenu caminho="/modulo/cadastros/tabelas/cest"
+                              label="CEST"
+                              exibir="#{seguranca.isTemAcesso('CEST')}"
+                              funcao="cest"/>
+ -->
                 <erp:subMenu caminho="/modulo/cadastros/tabelas/ibpt"
                              label="IBPT"
                              exibir="#{seguranca.isTemAcesso('IBPT')}"
@@ -198,26 +198,26 @@
 
             </ul>
         </li>
-        <li class="${fn:contains(view.viewId,'cadastros/endereco')?'active':''}">
-            <a href="#">Endereço
-                <span class="fa arrow"></span>
-            </a>
-            <ul class="nav nav-third-level">
+        <!--        <li class="${fn:contains(view.viewId,'cadastros/endereco')?'active':''}">
+                    <a href="#">Endereço
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-third-level">
 
-                <erp:subMenu caminho="/modulo/cadastros/endereco/pais"
-                             label="País"
-                             funcao="pais"/>
+                        <erp:subMenu caminho="/modulo/cadastros/endereco/pais"
+                                     label="País"
+                                     funcao="pais"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/endereco/uf"
-                             label="UF"
-                             funcao="uf"/>
-                <erp:subMenu caminho="/modulo/cadastros/endereco/municipio"
-                             label="Município"
-                             funcao="municipio"/>
+                        <erp:subMenu caminho="/modulo/cadastros/endereco/uf"
+                                     label="UF"
+                                     funcao="uf"/>
+                        <erp:subMenu caminho="/modulo/cadastros/endereco/municipio"
+                                     label="Município"
+                                     funcao="municipio"/>
 
 
-            </ul>
-        </li>
+                    </ul>
+                </li>-->
         <li class="${fn:contains(view.viewId,'cadastros/administrativo')?'active':''}">
             <a href="#">Administrativos
                 <span class="fa arrow"></span>

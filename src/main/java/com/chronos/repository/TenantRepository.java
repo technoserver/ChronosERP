@@ -35,6 +35,14 @@ public class TenantRepository implements Serializable {
         return q.getResultList().stream().findFirst();
     }
 
+    public Optional<UsuarioTenant> getUserTenant(String nomeUsuario) {
+
+        Query q = em.createQuery("SELECT u  FROM UsuarioTenant u WHERE u.login = :login");
+        q.setMaxResults(1);
+        q.setParameter("login", nomeUsuario);
+        return q.getResultList().stream().findFirst();
+    }
+
     public List<Tenant> getTenant() {
         Query q = em.createQuery("SELECT t  FROM Tenant t WHERE t.ativo = :ativo");
         q.setParameter("ativo", "S");
@@ -65,7 +73,12 @@ public class TenantRepository implements Serializable {
                 trx.begin();
 
                 criador = true;
-                em.persist(usuario);
+                if (usuario.getId() == null) {
+                    em.persist(usuario);
+                } else {
+                    em.merge(usuario);
+                }
+
             }
         }catch (Exception ex){
 
