@@ -138,6 +138,7 @@ public class NfeDetalhe implements Serializable {
     public NfeDetalhe() {
         this.quantidadeComercial = BigDecimal.ZERO;
         this.quantidadeTributavel = BigDecimal.ZERO;
+        this.produtoCadastrado = this.id != null;
     }
 
     public NfeDetalhe(Integer id, Produto produto, BigDecimal quantidadeComercial) {
