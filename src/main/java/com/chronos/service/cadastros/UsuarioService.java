@@ -58,7 +58,7 @@ public class UsuarioService implements Serializable {
 
         }
 
-        if (user.getPapel().getId() == 1) {
+        if (user.getPapel().getAcessoCompleto().equals("S")) {
             user.setAdministrador("S");
         } else {
             user.setAdministrador("N");
