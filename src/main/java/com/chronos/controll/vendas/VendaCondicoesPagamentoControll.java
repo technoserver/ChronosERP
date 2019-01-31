@@ -6,6 +6,7 @@ import com.chronos.modelo.entidades.VendaCondicoesPagamento;
 import com.chronos.modelo.entidades.VendaCondicoesParcelas;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -27,6 +28,16 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
     private Repository<FinTipoRecebimento> tipos;
 
     private VendaCondicoesParcelas vendaCondicoesParcelas;
+
+    private String nome;
+
+
+    public void pesquisar() {
+        dataModel.getFiltros().clear();
+        if (!StringUtils.isEmpty(nome)) {
+            dataModel.addFiltro("nome", nome);
+        }
+    }
 
     @Override
     public void doCreate() {
@@ -121,5 +132,11 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
         this.vendaCondicoesParcelas = vendaCondicoesParcelas;
     }
 
+    public String getNome() {
+        return nome;
+    }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 }
