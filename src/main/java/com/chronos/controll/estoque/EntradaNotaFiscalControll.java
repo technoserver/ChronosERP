@@ -169,6 +169,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void doEdit() {
         super.doEdit();
         NfeCabecalho nfe = dataModel.getRowData(getObjeto().getId().toString());
+        nfe.getListaNfeDetalhe().forEach(i -> i.setProdutoCadastrado(true));
         setObjeto(nfe);
         duplicatas = getObjeto().getDuplicatas();
     }

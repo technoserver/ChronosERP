@@ -85,7 +85,7 @@ public class VendaPdvService implements Serializable {
             if (p.getPdvTipoPagamento().getCodigo().equals("05")) {
                 ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
 
-                if (conta == null || conta.getSaldo().compareTo(p.getValor()) <= 0) {
+                if (conta == null || conta.getSaldo().compareTo(p.getValor()) < 0) {
                     throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
                 } else {
                     contaPessoaService.lancaMovimento(conta, p.getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), venda.getId().toString());

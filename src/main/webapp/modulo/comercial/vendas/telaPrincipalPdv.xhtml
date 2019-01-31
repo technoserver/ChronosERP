@@ -264,40 +264,37 @@
                     </ui:repeat>
                 </ul>
             </div>
-            <!--<h4>TOTAL DO PEDIDO</h4>-->
-            <!--<div class="total-pedido">-->
-            <!--<h:panelGroup layout="block" id="totalPedido">-->
-            <!--R$ <h:outputText-->
-            <!--value="#{balcaoControll.venda.valorTotal == null ?0:balcaoControll.venda.valorTotal}">-->
-            <!--<f:convertNumber pattern="#,##0.00"/>-->
-            <!--</h:outputText>-->
 
-            <!--</h:panelGroup>-->
 
-            <!--</div>-->
 
             <h:panelGroup layout="block" id="totalPedido" class="total-pedido2">
-                <ul class="sub" style="width: 162px">
+                <ul class="sub" style="width: 40%">
                     <li style="margin-top: 5px">
                         <label class="desc">Subtotal</label>
-                        <span class="value subtotal">R$
-                            <h:outputText
-                                    value="#{balcaoControll.venda.valorSubtotal == null ?0:balcaoControll.venda.valorSubtotal}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputText>
-                        </span>
+                        <p>
+                            <span class="value subtotal">
+                                R$
+                                <h:outputText
+                                        value="#{balcaoControll.venda.valorSubtotal == null ?0:balcaoControll.venda.valorSubtotal}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </span>
+                        </p>
+
                     </li>
                     <li>
                         <label class="desc">Descontos</label>
-                        <span class="value descount ng-binding">R$
-                             <h:outputText
-                                     value="#{balcaoControll.venda.valorDesconto == null ?0:balcaoControll.venda.valorDesconto}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputText>
-                        </span>
-                        <!--<button type="button" class="bt_edit" id="btn-desconto">-->
-                        <!--<i class="fa fa-edit"></i>-->
-                        <!--</button>-->
+                        <p>
+                            <span class="value descount ng-binding">
+                                R$
+                                 <h:outputText
+                                         value="#{balcaoControll.venda.valorDesconto == null ?0:balcaoControll.venda.valorDesconto}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </span>
+                        </p>
+
+
                     </li>
 
                 </ul>
@@ -322,13 +319,8 @@
         <!-- Fim produtos Selecionados -->
 
         <div class="row">
-            <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
-                <button id="aguardar" type="button" class="btn btn-warning btn-lg"
-                        disabled="true"
-                        style="width:100%">PRE-VENDA
-                </button>
-            </div>
-            <div class="margin-top-10px-xs col-sm-6 col-md-6 col-lg-6">
+
+            <div class="margin-top-10px-xs col-sm-12">
                 <h:commandButton id="cancelar-venda"
                                  value="CANCELAR"
                                  styleClass="btn btn-danger btn-lg"
