@@ -23,34 +23,37 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{vendaCondicoesPagamentoControll}"
-                       idDataTable="dataTableVendaCondicoesPagamento"
-                       nomeFuncao="Condicoes Pagamento"
-                       id="telaGrid"
-        >
 
-            <p:column headerText="Nome">
-                <h:outputLabel value="#{row.nome}"/>
-            </p:column>
-            <p:column headerText="Descricao">
-                <h:outputLabel value="#{row.descricao}"/>
-            </p:column>
-            <p:column headerText="Faturamento Minimo">
-                <h:outputLabel value="#{row.faturamentoMinimo}">
-                    <f:convertNumber pattern="#,##0.00"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Faturamento Maximo">
-                <h:outputLabel value="#{row.faturamentoMaximo}">
-                    <f:convertNumber pattern="#,##0.00"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Prazo Medio">
-                <h:outputLabel value="#{row.prazoMedio}"/>
-            </p:column>
+        <erp:formularioGrid controller="#{vendaCondicoesPagamentoControll}" id="telaGrid">
+
+            <div class="row m-b">
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <h:outputLabel value="Nome" for="nome"/>
+                    <div class="field-action">
+                        <h:inputText value="#{vendaCondicoesPagamentoControll.nome}"
+                                     id="nome"
+                                     styleClass="form-control"/>
+                        <p:commandButton value="Pesquisar"
+                                         action="#{vendaCondicoesPagamentoControll.pesquisar}"
+                                         update="outputPanelGrid"
+                                         style="margin-left: 10px"/>
+                    </div>
+                </div>
+            </div>
 
 
-        </erp:gridDados>
+            <erp:gridDadosSemForm controller="#{vendaCondicoesPagamentoControll}"
+                                  idDataTable="dataTableVendaCondicoesPagamento">
+                <p:column headerText="Nome">
+                    <h:outputLabel value="#{row.nome}"/>
+                </p:column>
+                <p:column headerText="Descricao">
+                    <h:outputLabel value="#{row.descricao}"/>
+                </p:column>
+
+            </erp:gridDadosSemForm>
+        </erp:formularioGrid>
+
     </ui:define>
 
 
