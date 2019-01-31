@@ -85,12 +85,16 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
         try {
             if (getObjeto().getId() == null) {
                 service.salvar(getObjeto(), senha, empresasSelecionada);
+                Mensagem.addInfoMessage("Dados salvo com sucesso");
             } else {
+                String adm = getObjeto().getPapel().getAcessoCompleto() != null && getObjeto().getPapel().getAcessoCompleto().equals("S")
+                        ? "S" : "N";
+                getObjeto().setAdministrador(adm);
                 super.salvar();
             }
 
             setTelaGrid(true);
-            Mensagem.addInfoMessage("Dados salvo com sucesso");
+
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
@@ -128,7 +132,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
         List<Papel> papeis = new ArrayList<>();
 
         try {
-            papeis = papelRepository.getEntitys(Papel.class, "nome", nome, new Object[]{"nome"});
+            papeis = papelRepository.getEntitys(Papel.class, "nome", nome, new Object[]{"nome", "acessoCompleto"});
         } catch (Exception ex) {
             ex.printStackTrace();
         }
