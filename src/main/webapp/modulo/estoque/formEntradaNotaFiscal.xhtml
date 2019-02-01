@@ -14,7 +14,7 @@
         <h:commandLink title="Importar NF-e" class="btn btn-default"
                        type="button"
                        id="btnBuscarXml"
-                       rendered="#{empty nfeDevolucaoControll.nfe.id}">
+                       rendered="#{empty entradaNotaFiscalControll.objeto.id}">
             <i class="glyphicon glyphicon-import"/>
             <p:ajax  update=":formUploadArquivo:dialogUploadArquivo" oncomplete="PF('dialogUploadArquivo').show()" />
         </h:commandLink>

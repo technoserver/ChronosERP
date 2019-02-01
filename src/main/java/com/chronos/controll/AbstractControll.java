@@ -968,6 +968,10 @@ public abstract class AbstractControll<T> implements Serializable {
         return FacesUtil.isUserInRole(getFuncaoBase() + "_EXCLUIR") || FacesUtil.isUserInRole("ADMIN");
     }
 
+    public boolean somenteConsulta(Object value) {
+        return false;
+    }
+
     public boolean isTemAcesso(String modulo) {
         return FacesUtil.isUserInRole(modulo);
     }
