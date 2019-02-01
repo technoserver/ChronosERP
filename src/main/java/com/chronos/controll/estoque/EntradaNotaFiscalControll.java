@@ -4,6 +4,7 @@ import com.chronos.bo.nfe.ImportaXMLNFe;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.enuns.TipoImportacaoXml;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
@@ -18,6 +19,7 @@ import com.chronos.util.jsf.Mensagem;
 import org.apache.commons.io.FileUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.SortOrder;
 import org.primefaces.model.UploadedFile;
 import org.springframework.util.StringUtils;
 
@@ -137,7 +139,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             dataModel.setClazz(getClazz());
             dataModel.setDao(dao);
         }
-
+        dataModel.setSortOrder(SortOrder.DESCENDING);
+        dataModel.setOrdernarPor("dataHoraEntradaSaida");
         Object[] atribut = new Object[]{"fornecedor", "serie", "numero", "dataHoraEntradaSaida", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota"};
         dataModel.setAtributos(atribut);
         dataModel.getFiltros().clear();
@@ -163,6 +166,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         valorTotalIpi = BigDecimal.ZERO;
         valorTotalNF = BigDecimal.ZERO;
         duplicatas = new ArrayList<>();
+
     }
 
     @Override
@@ -175,19 +179,35 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     }
 
 
-    @Override
-    public void salvar() {
+    public void salvarEntrada() {
         try {
-
             getObjeto().setListaDuplicata(new HashSet<>(duplicatas));
-            entradaService.salvar(getObjeto(), contaCaixa, naturezaFinanceira);
-
+            dao.atualizar(getObjeto());
+            Mensagem.addInfoMessage("Registro salvo com sucesso");
             setTelaGrid(true);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao finzalizer ", ex);
+            }
         }
 
+    }
+
+    public void finalizar() {
+        try {
+            getObjeto().setListaDuplicata(new HashSet<>(duplicatas));
+            entradaService.finalizar(getObjeto(), contaCaixa, naturezaFinanceira);
+            setTelaGrid(true);
+            Mensagem.addInfoMessage("NF fiscal finalizada não será mais possivel fazer a edição");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao finzalizer ", ex);
+            }
+        }
     }
 
 
@@ -934,6 +954,12 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     @Override
     protected boolean auditar() {
         return false;
+    }
+
+    @Override
+    public boolean somenteConsulta(Object value) {
+        NfeCabecalho nfe = (NfeCabecalho) value;
+        return nfe.getStatusNota().equals(StatusTransmissao.ENCERRADO.getCodigo());
     }
 
     public VendaCondicoesPagamento getCondicao() {
