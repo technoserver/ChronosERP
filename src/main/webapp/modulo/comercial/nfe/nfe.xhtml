@@ -125,7 +125,7 @@
                     <h:commandLink class="btn btn-default"
                                    title="Transmitir NF-e"
                                    actionListener="#{nfeCabecalhoControll.transmitirNfe}"
-                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeEnviar}"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeEnviar and seguranca.isPodeRealizar('ENVIAR_NFE')}"
                                    id="btnEnviarNfe">
                         <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:panelCentroDetalhe"/>
                         <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
@@ -142,7 +142,7 @@
 
                     <h:commandLink class="btn btn-default"
                                    title="Cancelar NF-e" style="margin-left: 5px;"
-                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar and seguranca.isPodeRealizar('CANCELAR_NFE')}"
                                    action="#{nfeCabecalhoControll.limparJustificativa}"
                                    id="btnCancelarNfe">
                         <p:ajax update=":formJustificativaCancelamento:panelJustificativaCancelamento"
