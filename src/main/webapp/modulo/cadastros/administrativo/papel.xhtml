@@ -155,7 +155,7 @@
                                      var="row" id="dataTablePapelFuncao" paginator="true"
                                      rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                      reflow="true"
-                                     resizableColumns="true"
+
                         >
 
                             <p:column headerText="Nome">
@@ -177,7 +177,7 @@
                                 <i class="fa #{row.podeExcluir eq 'S'?'fa-check text-success' :'fa-ban text-danger'}"
                                    aria-hidden="true"></i>
                             </p:column>
-                            <p:column headerText="Ações" width="110" styleClass="text-center">
+                            <p:column headerText="Ações" width="120" styleClass="text-center">
                                 <p:commandLink title="Alterar" action="#{papelControll.alterarPermissao}"
                                                class=" btn btn-default"
                                                update="dataTablePapelFuncao,:formOutrasTelas:panelPermissao"

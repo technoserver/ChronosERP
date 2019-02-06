@@ -86,17 +86,15 @@
                     <p:dataTable value="#{finRecebimentoControll.parcelas}"
                                  var="row" id="dataTableParcelas"
                                  reflow="true" rendered="#{finRecebimentoControll.podeConsultar()}"
-                                 resizableColumns="true" sortBy="#{row.dataVencimento}"
+                                 sortBy="#{row.dataVencimento}"
                                  rowKey="#{row.idParcelaReceber}"
                                  selectionMode="multiple" selection="#{finRecebimentoControll.parcelasSelecionadas}"
                                  rowStyleClass="#{row.vencido?'red_color':''}">
-                        <p:column headerText="Cliente" sortBy="#{row.nome}" style="width:21%">
-                            <h:outputLabel value="#{row.nome}"/>
-                        </p:column>
+
                         <p:column headerText="Num. Parcela" style="width:12%">
                             <h:outputLabel value="#{row.numeroDocumento}/#{row.numeroParcela}"/>
                         </p:column>
-                        <p:column headerText="Data Vencimento" style="width:15%"
+                        <p:column headerText="Vencimento" style="width:14%"
                                   sortBy="#{row.dataVencimento}">
                             <h:outputLabel value="#{row.dataVencimento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
@@ -228,7 +226,7 @@
                                                       nomeAtributo="#{finRecebimentoControll.tipoRecebimento}"
                                                       idComponente="tipoRecebimento"/>
 
-                                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                    <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
                                                       idComponente="valorAPagar"
                                                       label="Valor Parcela" requerido="true"
                                                       nomeAtributo="#{finRecebimentoControll.valorAPagar}"/>

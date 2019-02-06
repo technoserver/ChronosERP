@@ -79,6 +79,11 @@ public class Seguranca implements Serializable {
 
     }
 
+    public boolean isPodeRealizar(String modulo) {
+        return FacesUtil.isUserInRole(modulo) || FacesUtil.isUserInRole("ADMIN");
+
+    }
+
     private UsuarioDTO getUsuarioLogado() {
         return FacesUtil.getUsuarioSessao();
     }
