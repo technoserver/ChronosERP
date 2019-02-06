@@ -17,7 +17,7 @@ import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.SortOrder;
 import org.springframework.util.StringUtils;
@@ -235,8 +235,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             nfeDetalheService.verificarRestricao(nfeDetalhe);
 
             if (nfeDetalheService.isNecessarioAutorizacaoSupervisor()) {
-                RequestContext.getCurrentInstance().execute("PF('dialogNfeDetalhe').hide();");
-                RequestContext.getCurrentInstance().execute("PF('dialogSupervisor').show();");
+                PrimeFaces.current().executeScript("PF('dialogNfeDetalhe').hide();");
+                PrimeFaces.current().executeScript("PF('dialogSupervisor').show();");
             } else {
                 NfeCabecalho nfe = nfeDetalheService.addProduto(getObjeto(), nfeDetalhe);
                 setObjeto(nfe);
