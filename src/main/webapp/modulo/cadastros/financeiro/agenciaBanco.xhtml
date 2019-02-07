@@ -28,16 +28,16 @@
                 <div class="ibox-content">
                     <erp:msgPermissao permissao="#{agenciaBancoControll.podeConsultar()}"/>               
                     <p:dataTable value="#{agenciaBancoControll.dataModel}" var="row" id="dataTableAgenciaBanco" paginator="true"
-                                 rows="10" rowsPerPageTemplate="10,20,30,40"  paginatorPosition="bottom"                                                                   
+                                 rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true"
-                                 resizableColumns="true" lazy="true" 
+                                 lazy="true"
                                  rendered="#{agenciaBancoControll.podeConsultar()}">
 
                         <p:column headerText="Nome">
                             <h:outputLabel value="#{row.nome}" />
-                        </p:column>      
-                        
-                        <p:column headerText="Ações" width="100">
+                        </p:column>
+
+                        <p:column headerText="Ações" width="120" styleClass="text-center">
                             <p:commandLink title="Alterar"  action="#{agenciaBancoControll.doEdit()}" class=" btn btn-default"
                                            update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
                                 <i class="fa fa-file-text-o"></i>   

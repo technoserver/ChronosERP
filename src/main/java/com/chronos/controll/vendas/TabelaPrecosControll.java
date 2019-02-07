@@ -47,8 +47,8 @@ public class TabelaPrecosControll extends AbstractControll<TabelaPreco> implemen
     public void init() {
         super.init();
         aplicado = new HashMap<>();
-        aplicado.put("Cliente/Vendedor", "");
-        aplicado.put("Vendedor/Região", "");
+        aplicado.put("Cliente/Vendedor", "C");
+        aplicado.put("Vendedor/Região", "R");
     }
 
     @Override
@@ -127,6 +127,7 @@ public class TabelaPrecosControll extends AbstractControll<TabelaPreco> implemen
         }
 
         return produtos;
+
     }
 
     @Override

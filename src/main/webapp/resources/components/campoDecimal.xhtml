@@ -7,16 +7,17 @@
 
     <!-- INTERFACE -->
     <cc:interface>
-        <cc:attribute name="idComponente" />
-        <cc:attribute name="label" />
-        <cc:attribute name="nomeAtributo" />
+        <cc:attribute name="idComponente" required="true"/>
+        <cc:attribute name="label" required="true"/>
+        <cc:attribute name="nomeAtributo" required="true"/>
         <cc:attribute name="requerido" />
         <cc:attribute name="tipo" default="number" />
         <cc:attribute name="mascara" default="#0.00" />
-        <cc:attribute name="styleClass" />
+        <cc:attribute name="styleClass" required="true"/>
         <cc:attribute name="styleClassInput" default="form-control" />
         <cc:attribute name="somenteLeitura" default="false" />
         <cc:attribute name="desabilitado" default="false"/>
+        <cc:attribute name="valorMaximo" default="false"/>
 
     </cc:interface>
 
@@ -33,7 +34,7 @@
                            disabled="#{cc.attrs.desabilitado}"
                            readonly="#{cc.attrs.somenteLeitura}"
                            decimalPlaces="2"
-                           minValue="-9999999999.99"
+                           minValue="0"
                            >
 
             </p:inputNumber>

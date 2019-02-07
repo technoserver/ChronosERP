@@ -16,6 +16,8 @@ public class ProdutoDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
+    private Integer idgrade;
+    private String codigoGrade;
     private String nome;
     private String descricaoPdv;
     private BigDecimal valorVenda;
@@ -60,11 +62,12 @@ public class ProdutoDTO implements Serializable {
     }
 
 
-    public ProdutoDTO(Integer id, String nome, String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda,
+    public ProdutoDTO(Integer id, Integer idgrade, String nome, String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda,
                       BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem,
                       Integer idgrupotributario, String unidade, String podeFracionar, BigDecimal precoPromocao,
                       BigDecimal precoTabela, PrecoPrioritario precoPrioritario, BigDecimal quantidadeVendaAtacado, BigDecimal valorVendaAtacado) {
         this.id = id;
+        this.idgrade = idgrade;
         this.nome = nome;
         this.descricaoPdv = descricaoPdv;
         this.valorVenda = valorVenda;
@@ -100,6 +103,22 @@ public class ProdutoDTO implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdgrade() {
+        return idgrade;
+    }
+
+    public void setIdgrade(Integer idgrade) {
+        this.idgrade = idgrade;
+    }
+
+    public String getCodigoGrade() {
+        return codigoGrade;
+    }
+
+    public void setCodigoGrade(String codigoGrade) {
+        this.codigoGrade = codigoGrade;
     }
 
     public String getNome() {

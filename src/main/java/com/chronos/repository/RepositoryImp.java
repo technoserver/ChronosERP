@@ -296,6 +296,28 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
         }
     }
 
+    @Override
+    public T getJoinFetchList(Integer id, Class<T> clazz) throws PersistenceException {
+        StringBuilder jpql = new StringBuilder("SELECT DISTINCT o FROM " + clazz.getName() + " o");
+        Field fields[] = clazz.getDeclaredFields();
+        for (Field f : fields) {
+            if (f.getType() == List.class) {
+                jpql.append(" LEFT JOIN FETCH o.").append(f.getName());
+            }
+        }
+
+        jpql.append(" WHERE o.id = :id");
+
+        Query query = em.createQuery(jpql.toString());
+        query.setParameter("id", id);
+        try {
+            Object obj = query.getSingleResult();
+            return (T) obj;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
     @Override
     public List<T> getAll(Class<T> clazz) throws PersistenceException {

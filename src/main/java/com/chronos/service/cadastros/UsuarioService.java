@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by john on 19/09/17.
@@ -57,7 +58,7 @@ public class UsuarioService implements Serializable {
 
         }
 
-        if (user.getPapel().getId() == 1) {
+        if (user.getPapel().getAcessoCompleto().equals("S")) {
             user.setAdministrador("S");
         } else {
             user.setAdministrador("N");
@@ -68,7 +69,10 @@ public class UsuarioService implements Serializable {
             user.setSenha(encoder.encode(senha));
         }
 
-        definirEmpresa(user.getColaborador().getPessoa(), empresas);
+        if (empresas != null && !empresas.isEmpty()) {
+            definirEmpresa(user.getColaborador().getPessoa(), empresas);
+        }
+
         if (user.getId() == null) {
             definirUsuarioTenant(user);
         }
@@ -76,6 +80,24 @@ public class UsuarioService implements Serializable {
         user = repository.atualizar(user);
         return user;
     }
+
+    public void atualizarSenha(Usuario user, String novaSenha) throws ChronosException {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setSenha(encoder.encode(novaSenha));
+
+        Optional<UsuarioTenant> tenantOptional = tenantRepository.getUserTenant(user.getLogin());
+
+        if (!tenantOptional.isPresent()) {
+            throw new ChronosException("Usuário cadastrado mais sem permissão de acesso ao sistema");
+        }
+        UsuarioTenant usuarioTenant = tenantOptional.get();
+        usuarioTenant.setSenha(user.getSenha());
+        tenantRepository.salvar(usuarioTenant);
+
+        repository.atualizar(user);
+
+    }
+
 
     public UsuarioDTO getUsuarioLogado() {
 
@@ -126,4 +148,6 @@ public class UsuarioService implements Serializable {
 
         empresaPessoaRepository.salvar(empresaPessoas);
     }
+
+
 }

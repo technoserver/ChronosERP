@@ -5,28 +5,40 @@
  */
 package com.chronos;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.chronos.util.Biblioteca;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
  * @author john
  */
 public class Teste {
-    
-    public static void main(String[] args){
-           BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String senha = "admin";   
-        System.err.println(passwordEncoder.encode(senha));
-        System.err.println(passwordEncoder.encode(senha));
-        System.err.println(passwordEncoder.encode(senha));
-        System.err.println(passwordEncoder.encode(senha));
+
+    public static void main(String[] args) {
+
+
+        List<List<String>> teste = new ArrayList<>();
+
+        List<String> list1 = new ArrayList<>();
+        List<String> list2 = new ArrayList<>();
+
+        list1.add("A");
+        list1.add("B");
+        list1.add("C");
+
+        list2.add("D");
+        list2.add("E");
+        list2.add("F");
+
+        teste.add(list1);
+        teste.add(list2);
+        List<String> result = new ArrayList<>();
+
+        Biblioteca.generateCombination(teste, result, 0, "");
+
+
     }
-    
-       private static String getSenha(String usuario, String senha) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String senhaCrip = (usuario + senha).replaceAll("a", "@").replaceAll("e", "3").replaceAll("i", "1").replaceAll("o", "0").replaceAll("u", "#");
-        senhaCrip += senhaCrip.length();
-        senhaCrip = passwordEncoder.encode(senha);
-        return senhaCrip;
-    }
+
+
 }

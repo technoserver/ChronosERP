@@ -1,5 +1,6 @@
 package com.chronos.modelo.entidades;
 
+import com.chronos.modelo.anotacoes.TaxaMaior;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.StringUtils;
 
@@ -130,8 +131,14 @@ public class NfeDetalhe implements Serializable {
     private BigDecimal impostoEstadual;
     @Transient
     private BigDecimal impostoMunicipal;
+    @Transient
+    @TaxaMaior
+    private BigDecimal taxaDesconto;
 
     public NfeDetalhe() {
+        this.quantidadeComercial = BigDecimal.ZERO;
+        this.quantidadeTributavel = BigDecimal.ZERO;
+        this.produtoCadastrado = this.id != null;
     }
 
     public NfeDetalhe(Integer id, Produto produto, BigDecimal quantidadeComercial) {
@@ -563,6 +570,25 @@ public class NfeDetalhe implements Serializable {
 
     public void setImpostoMunicipal(BigDecimal impostoMunicipal) {
         this.impostoMunicipal = impostoMunicipal;
+    }
+
+    public BigDecimal getTaxaDesconto() {
+
+        BigDecimal valor = getValorDesconto();
+        if (valor.signum() > 0) {
+            BigDecimal razao = getValorSubtotal().subtract(valor);
+            razao = razao.divide(getValorSubtotal(), MathContext.DECIMAL64);
+            razao = razao.multiply(BigDecimal.valueOf(100));
+            BigDecimal cem = BigDecimal.valueOf(100);
+            taxaDesconto = cem.subtract(razao);
+        }
+
+
+        return Optional.ofNullable(taxaDesconto).orElse(BigDecimal.ZERO);
+    }
+
+    public void setTaxaDesconto(BigDecimal taxaDesconto) {
+        this.taxaDesconto = taxaDesconto;
     }
 
     public void pegarInfoProduto() {

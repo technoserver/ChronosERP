@@ -121,6 +121,8 @@ public class Produto implements Serializable {
     private String totalizadorParcial;
     @Column(name = "CODIGO_BALANCA")
     private Integer codigoBalanca;
+    @Column(name = "DIAS_VALIDADE")
+    private Integer diasValidade;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_ALTERACAO")
     private Date dataAlteracao;
@@ -130,6 +132,8 @@ public class Produto implements Serializable {
     private String servico;
     @Column(name = "preco_prioritario")
     private PrecoPrioritario precoPrioritario;
+    @Column(name = "possui_grade")
+    private Boolean possuiGrade;
     @JoinColumn(name = "ID_UNIDADE_PRODUTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private UnidadeProduto unidadeProduto;
@@ -148,6 +152,14 @@ public class Produto implements Serializable {
     @JoinColumn(name = "ID_TRIBUT_ICMS_CUSTOM_CAB", referencedColumnName = "ID")
     @ManyToOne
     private TributIcmsCustomCab tributIcmsCustomCab;
+    @JoinColumn(name = "id_tabela_nutricional_cabecalho", referencedColumnName = "ID")
+    @ManyToOne
+    private TabelaNutricionalCabecalho tabelaNutricional;
+    @JoinColumn(name = "id_produto_grade", referencedColumnName = "ID")
+    @ManyToOne
+    private ProdutoGrade produtoGrade;
+
+
     //@OneToMany(fetch = FetchType.LAZY, mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "EMPRESA_PRODUTO", joinColumns = {
@@ -162,6 +174,8 @@ public class Produto implements Serializable {
     private BigDecimal controle;
     @Transient
     private List<UnidadeConversao> conversoes;
+    @Transient
+    private PdvConfiguracaoBalanca balanca;
 
     public Produto() {
     }
@@ -203,6 +217,16 @@ public class Produto implements Serializable {
         this.nome = nome;
         this.valorVenda = valorVenda;
         this.codigoBalanca = codigoBalanca;
+
+    }
+
+    public Produto(Integer id, String nome, BigDecimal valorVenda, Integer codigoBalanca, Integer diasValidade, TabelaNutricionalCabecalho tabelaNutricional) {
+        this.id = id;
+        this.nome = nome;
+        this.valorVenda = valorVenda;
+        this.codigoBalanca = codigoBalanca;
+        this.diasValidade = diasValidade;
+        this.tabelaNutricional = tabelaNutricional;
     }
 
     public Integer getId() {
@@ -677,15 +701,59 @@ public class Produto implements Serializable {
         this.conversoes = conversoes;
     }
 
+
+    public Integer getDiasValidade() {
+        return diasValidade;
+    }
+
+    public void setDiasValidade(Integer diasValidade) {
+        this.diasValidade = diasValidade;
+    }
+
+    public TabelaNutricionalCabecalho getTabelaNutricional() {
+        return tabelaNutricional;
+    }
+
+    public void setTabelaNutricional(TabelaNutricionalCabecalho tabelaNutricional) {
+        this.tabelaNutricional = tabelaNutricional;
+    }
+
+    public Boolean getPossuiGrade() {
+        return possuiGrade;
+    }
+
+    public void setPossuiGrade(Boolean possuiGrade) {
+        this.possuiGrade = possuiGrade;
+    }
+
+    public ProdutoGrade getProdutoGrade() {
+        return produtoGrade;
+    }
+
+    public void setProdutoGrade(ProdutoGrade produtoGrade) {
+        this.produtoGrade = produtoGrade;
+    }
+
+    public PdvConfiguracaoBalanca getBalanca() {
+        return balanca;
+    }
+
+    public void setBalanca(PdvConfiguracaoBalanca balanca) {
+        this.balanca = balanca;
+    }
+
     public String montarItemBalancaToledo() throws ChronosException {
-        ItemToledo item = new ItemToledo();
-        item.setProduto(this);
+        ItemToledo item = new ItemToledo(this);
         return item.montarItem();
     }
 
+    public String montarItemBalancaToledoNutricao() {
+        ItemToledo item = new ItemToledo(this);
+        return item.montarValorNutricional();
+    }
+
     public String montarItemBalancaFilizola() throws ChronosException {
-        ItemFilizola item = new ItemFilizola();
-        item.setProduto(this);
+        ItemFilizola item = new ItemFilizola(this);
         return item.montarItem();
     }
 

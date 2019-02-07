@@ -51,6 +51,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     @Inject
     private UsuarioService service;
 
+    private String novaSenha;
 
     @Override
     public ERPLazyDataModel<Usuario> getDataModel() {
@@ -67,24 +68,33 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     public void doCreate() {
         super.doCreate();
         getObjeto().setDataCadastro(new Date());
-        empresas = getListEmpresas();
+        empresas = new ArrayList<>();
 
     }
 
     @Override
     public void doEdit() {
         super.doEdit();
+        List<Filtro> filtros = new ArrayList<>();
 
-        empresas = getListEmpresas();
     }
 
     @Override
     public void salvar() {
 
         try {
-            service.salvar(getObjeto(), senha, empresas);
+            if (getObjeto().getId() == null) {
+                service.salvar(getObjeto(), senha, empresasSelecionada);
+                Mensagem.addInfoMessage("Dados salvo com sucesso");
+            } else {
+                String adm = getObjeto().getPapel().getAcessoCompleto() != null && getObjeto().getPapel().getAcessoCompleto().equals("S")
+                        ? "S" : "N";
+                getObjeto().setAdministrador(adm);
+                super.salvar();
+            }
+
             setTelaGrid(true);
-            Mensagem.addInfoMessage("Dados salvo com sucesso");
+
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
@@ -93,6 +103,19 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
             }
         }
 
+    }
+
+    public void atualizarSenha() {
+        try {
+            service.atualizarSenha(getObjetoSelecionado(), novaSenha);
+            Mensagem.addInfoMessage("senha atualizada");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao atualizar senha", ex);
+            }
+        }
     }
 
     @Override
@@ -109,7 +132,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
         List<Papel> papeis = new ArrayList<>();
 
         try {
-            papeis = papelRepository.getEntitys(Papel.class, "nome", nome, new Object[]{"nome"});
+            papeis = papelRepository.getEntitys(Papel.class, "nome", nome, new Object[]{"nome", "acessoCompleto"});
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -128,20 +151,21 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
         return list;
     }
 
+    public void definirEmpresas() {
+        empresas = getListEmpresas();
+    }
+
     public List<Empresa> getListEmpresas() {
         List<Filtro> filtros = new ArrayList<>();
 
         empresas = new ArrayList<>();
 
-        if (getObjeto().getId() != null) {
-            filtros.add(new Filtro("empresaPrincipal", "S"));
-            filtros.add(new Filtro("pessoa.id", getObjeto().getColaborador().getPessoa().getId()));
-            empresaPessoa = empresaPessoaRepository.get(EmpresaPessoa.class, filtros, new Object[]{"empresa.id", "empresa.razaoSocial"});
-            filtros.clear();
-            filtros.add(new Filtro("id", Filtro.DIFERENTE, empresaPessoa.getEmpresa().getId()));
-        } else {
-            filtros.add(new Filtro("id", Filtro.DIFERENTE, empresa.getId()));
-        }
+
+        filtros.add(new Filtro("empresaPrincipal", "S"));
+        filtros.add(new Filtro("pessoa.id", getObjeto().getColaborador().getPessoa().getId()));
+        empresaPessoa = empresaPessoaRepository.get(EmpresaPessoa.class, filtros, new Object[]{"empresa.id", "empresa.razaoSocial"});
+        filtros.clear();
+        filtros.add(new Filtro("id", Filtro.DIFERENTE, empresaPessoa.getEmpresa().getId()));
 
 
         empresas = empresaRepository.getEntitys(Empresa.class, filtros, new Object[]{"razaoSocial"});
@@ -150,7 +174,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
 
     public boolean getPodeAlterarSenha() {
         UsuarioDTO user = FacesUtil.getUsuarioSessao();
-        return (getObjeto().getId() != null && user.getId().equals(getObjeto().getId())) || getObjeto().getId() == null;
+        return getObjeto().getId() == null || user.getId().equals(getObjeto().getId());
     }
 
     @Override
@@ -191,5 +215,13 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
 
     public boolean isExisteEmpresa() {
         return empresas != null && !empresas.isEmpty();
+    }
+
+    public String getNovaSenha() {
+        return novaSenha;
+    }
+
+    public void setNovaSenha(String novaSenha) {
+        this.novaSenha = novaSenha;
     }
 }

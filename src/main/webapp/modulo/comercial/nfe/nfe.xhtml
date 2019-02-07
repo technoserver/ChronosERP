@@ -72,7 +72,7 @@
                     <h:outputLabel
                             value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
-                <p:column headerText="Ações" width="110" styleClass="text-center">
+                <p:column headerText="Ações" width="120" styleClass="text-center">
                     <p:commandLink title="Alterar"
                                    action="#{nfeCabecalhoControll.doEdit()}"
                                    class=" btn btn-default"
@@ -125,7 +125,7 @@
                     <h:commandLink class="btn btn-default"
                                    title="Transmitir NF-e"
                                    actionListener="#{nfeCabecalhoControll.transmitirNfe}"
-                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeEnviar}"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeEnviar and seguranca.isPodeRealizar('ENVIAR_NFE')}"
                                    id="btnEnviarNfe">
                         <p:ajax update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:panelCentroDetalhe"/>
                         <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
@@ -142,7 +142,7 @@
 
                     <h:commandLink class="btn btn-default"
                                    title="Cancelar NF-e" style="margin-left: 5px;"
-                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar and seguranca.isPodeRealizar('CANCELAR_NFE')}"
                                    action="#{nfeCabecalhoControll.limparJustificativa}"
                                    id="btnCancelarNfe">
                         <p:ajax update=":formJustificativaCancelamento:panelJustificativaCancelamento"
@@ -176,6 +176,16 @@
                                    id="btnVisualizarXml">
                         <i class="fa fa-search" aria-hidden="true"></i>
                     </h:commandLink>
+
+                    <h:commandButton value="Exibir cartas de correção"
+                                     styleClass="btn btn-default"
+                                     rendered="#{!nfeCabecalhoControll.cartas.isEmpty()}">
+                        <p:ajax oncomplete="PF('dialogOutrasTelas6').show();"
+                                update=":formOutrasTelas6:panelOutrasTelas6"/>
+
+                    </h:commandButton>
+
+
                 </div>
 
 
@@ -464,7 +474,7 @@
                                 <p:ajax
                                         oncomplete="if (!args.validationFailed) {PF('dialogCartaCorrecao').hide();}"
                                         process="@form"
-                                        update="panelCartaCorrecao,:formCentro:growl"/>
+                                        update="panelCartaCorrecao,:formCentro:growl,:formCentro:telaDetalhe:panelCentroDetalhe"/>
                             </h:commandButton>
 
                         </div>
@@ -479,6 +489,68 @@
                 </f:facet>
             </p:dialog>
         </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas6">
+        <h:form id="formOutrasTelas6">
+            <p:dialog id="dialogOutrasTelas6" header="Lista de Carta de Correção"
+                      widgetVar="dialogOutrasTelas6" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800" responsive="true">
+                <p:outputPanel id="panelOutrasTelas6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p:dataTable value="#{nfeCabecalhoControll.cartas}" var="row" reflow="true"
+                                         resizableColumns="true">
+
+                                <p:column headerText="Data processamento">
+                                    <h:outputLabel value="#{row.dataHora}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                    </h:outputLabel>
+                                </p:column>
+                                <p:column headerText="Protocolo">
+                                    <h:outputLabel value="#{row.protocolo}">
+
+                                    </h:outputLabel>
+                                </p:column>
+
+                                <p:column styleClass="text-center">
+                                    <p:commandLink styleClass="btn btn-default"
+                                                   ajax="false"
+                                                   action="#{nfeCabecalhoControll.imprimirCartaCorrecao}">
+                                        <f:setPropertyActionListener value="#{row}"
+                                                                     target="#{nfeCabecalhoControll.nfeEventoSelecionado}"/>
+
+                                        <i class="fa fa-print"></i>
+                                    </p:commandLink>
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+
+
+                    </div>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas6').hide();init()"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="telaSupervisor">
+        <erp:supervisor id="telaSupervisor"
+                        atualizar=",:formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:dataTableNfeDetalhe,:formCentro:telaDetalhe:tabNfe:panelTotais"
+                        controller="#{nfeCabecalhoControll}"/>
     </ui:define>
 
 

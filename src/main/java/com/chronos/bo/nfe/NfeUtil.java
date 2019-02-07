@@ -290,11 +290,11 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         } else {
             if (servico) {
                 if (StringUtils.isEmpty(empresa.getInscricaoMunicipal())) {
-                    throw new Exception("IM não definida.");
+                    throw new ChronosException("IM não definida.");
                 }
 
                 if (StringUtils.isEmpty(item.getProduto().getCodigoLst())) {
-                    throw new Exception("Codigo LST do serviço não definido.");
+                    throw new ChronosException("Codigo LST do serviço não definido.");
                 }
                 item.setNfeDetalheImpostoIssqn(new NfeDetalheImpostoIssqn());
                 item.getNfeDetalheImpostoIssqn().setNfeDetalhe(item);
@@ -334,16 +334,16 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 ViewTributacaoIcms icms = icmsRepository.get(ViewTributacaoIcms.class, listaFiltro);
                 if (icms != null) {
                     if (icms.getCfop() == null) {
-                        throw new Exception("Não existe CFOP definido na tributação de ICMS definida para os parâmetros informados. Operação não realizada.");
+                        throw new ChronosException("Não existe CFOP definido na tributação de ICMS definida para os parâmetros informados. Operação não realizada.");
                     }
                     if (icms.getOrigemMercadoria() == null) {
-                        throw new Exception("Origem da mercadoria não definida na tributação de ICMS definida para os parâmetros informados. Operação não realizada.");
+                        throw new ChronosException("Origem da mercadoria não definida na tributação de ICMS definida para os parâmetros informados. Operação não realizada.");
                     }
                     if (icms.getModalidadeBc() == null) {
-                        throw new Exception("Modalidade da base de calculo do ICMS não definida na tributação de ICMS definida para os parâmetros informados.\n Operação não realizada.");
+                        throw new ChronosException("Modalidade da base de calculo do ICMS não definida na tributação de ICMS definida para os parâmetros informados.\n Operação não realizada.");
                     }
                     if (icms.getModalidadeBcSt() == null) {
-                        throw new Exception("Modalidade da base de calculo do ICMS ST não definida na tributação de ICMS definida para os parâmetros informados.\n Operação não realizada.");
+                        throw new ChronosException("Modalidade da base de calculo do ICMS ST não definida na tributação de ICMS definida para os parâmetros informados.\n Operação não realizada.");
                     }
                     item.setNfeDetalheImpostoIcms(new NfeDetalheImpostoIcms());
                     item.getNfeDetalheImpostoIcms().setNfeDetalhe(item);

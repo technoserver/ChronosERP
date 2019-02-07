@@ -44,21 +44,20 @@
                 </a>
                 <ul class="nav nav-third-level">
                     <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
-                        <erp:subMenu caminho="/modulo/comercial/caixa/movimentos"
-                                     label="Movimentos"
-                                     exibir="#{true}"
-                                     funcao="condicoesPagamento"/>
-                    </li>
-                    <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
                         <erp:subMenu caminho="/modulo/comercial/caixa/operador"
                                      label="Operador"
-                                     exibir="#{true}"
                                      funcao="operador"/>
                     </li>
+
+                    <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
+                        <erp:subMenu caminho="/modulo/comercial/caixa/movimentos"
+                                     label="Movimentos"
+                                     funcao="condicoesPagamento"/>
+                    </li>
+
                     <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
                         <erp:subMenu caminho="/modulo/comercial/caixa/caixa"
                                      label="Caixa"
-                                     exibir="#{true}"
                                      funcao="caixa"/>
                     </li>
                 </ul>
@@ -112,6 +111,10 @@
                                          label="Produtos +  Vendios"
                                          funcao="relacaoProdutosVendido"/>
 
+                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoProdutosVendido2"
+                                         label="Produtos  Vendios 2"
+                                         funcao="relacaoProdutosVendido2"/>
+
                             <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoClientesMaisCompram"
                                          label="Clientes +  Compram"
                                          funcao="relacaoClientesMaisCompram"/>
@@ -119,6 +122,10 @@
                             <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/comissaoVenda"
                                          label="Comissões"
                                          funcao="comissaoVenda"/>
+
+                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoEntradaProdutosValorVenda"
+                                         label="Entrada Produto X Valor Venda"
+                                         funcao="relacaoEntradaProdutosValorVenda"/>
 
 
                         </ul>
@@ -129,7 +136,9 @@
 
         <c:if test="#{seguranca.userOs eq true }">
             <li class="${fn:contains(view.viewId,'modulo/comercial/os/')?'active':''}">
-                <a href="#">OS<span class="fa arrow"></span></a>
+                <a href="#">Serviço
+                    <span class="fa arrow"></span>
+                </a>
                 <ul class="nav nav-third-level">
                     <erp:subMenu caminho="/modulo/comercial/os/equipamentos"
                                  label="Equipamento"

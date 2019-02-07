@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -20,6 +22,7 @@ public class VendaCondicoesPagamento implements Serializable {
     @Column(name = "ID")
     private Integer id;
     @Column(name = "NOME")
+    @NotBlank
     private String nome;
     @Column(name = "DESCRICAO")
     private String descricao;

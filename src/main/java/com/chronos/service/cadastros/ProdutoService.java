@@ -1,18 +1,25 @@
 package com.chronos.service.cadastros;
 
+import com.chronos.dto.GradeDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.ModeloBalanca;
 import com.chronos.modelo.enuns.PrecoPrioritario;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -33,6 +40,8 @@ public class ProdutoService implements Serializable {
 
     @Inject
     private Repository<EmpresaProduto> empresaProdutoRepository;
+    @Inject
+    private Repository<ProdutoGrade> gradeRepository;
 
 
     @Transactional
@@ -43,8 +52,8 @@ public class ProdutoService implements Serializable {
             throw new ChronosException("Para informar valor de venda no atacado  é preciso informar a quantidade para atacado");
         }
 
-        if (produto.getTributGrupoTributario() == null) {
-            Mensagem.addWarnMessage("É necesário informar o Grupo Tributário OU o ICMS Customizado.");
+        if (produto.getTipo().equals("V") && produto.getTributGrupoTributario() == null) {
+            throw new ChronosException("É necesário informar o Grupo Tributário");
         } else {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro(Filtro.AND, "gtin", Filtro.IGUAL, produto.getGtin()));
@@ -53,7 +62,7 @@ public class ProdutoService implements Serializable {
             }
             Produto p = StringUtils.isEmpty(produto.getGtin()) ? null : produtoRepository.get(Produto.class, filtros);
             if (p != null) {
-                Mensagem.addWarnMessage("Este GTIN já está sendo utilizado por outro produto.");
+                throw new ChronosException("Este GTIN já está sendo utilizado por outro produto.");
             } else {
                 if (StringUtils.isEmpty(produto.getDescricaoPdv())) {
                     String nomePdv = produto.getNome().length() > 30 ? produto.getNome().substring(0, 30) : produto.getNome();
@@ -62,6 +71,11 @@ public class ProdutoService implements Serializable {
                 if (!StringUtils.isEmpty(produto.getImagem())) {
                     ArquivoUtil.getInstance().salvarFotoProduto(produto.getImagem());
                 }
+
+                if (produto.getProdutoGrade() != null) {
+                    produto.setPossuiGrade(true);
+                }
+
                 if (produto.getId() == null) {
 
                     produto = produtoRepository.atualizar(produto);
@@ -111,6 +125,67 @@ public class ProdutoService implements Serializable {
             filtros.add(new Filtro(Filtro.AND, "tipo", "V"));
         }
         listaProduto = repository.getProdutoDTO(descricao, empresa);
+        List<ProdutoDTO> newList;
+        boolean existeGrade = listaProduto.stream().filter(p -> p.getIdgrade() != null).count() > 0;
+
+        if (existeGrade) {
+            newList = listaProduto.stream().filter(p -> p.getIdgrade() == null).collect(Collectors.toList());
+
+            for (Iterator<ProdutoDTO> iterator = listaProduto.iterator(); iterator.hasNext(); ) {
+                ProdutoDTO value = iterator.next();
+
+                if (value.getIdgrade() != null) {
+                    ProdutoGrade grade = gradeRepository.getJoinFetchList(value.getIdgrade(), ProdutoGrade.class);
+
+//                    List<List<String>> listC = new ArrayList<>();
+                    List<List<GradeDTO>> listC = new ArrayList<>();
+//                    List<String> result = new ArrayList<>();
+                    List<GradeDTO> result = new ArrayList<>();
+                    String codigoGrade = "";
+
+                    for (ProdutoGradeDetalhe g : grade.getListaProdutoGradeDetalhe()) {
+
+//                        List<String> list = new ArrayList<>();
+                        List<GradeDTO> list = new ArrayList<>();
+
+                        for (ProdutoAtributoDetalhe a : g.getProdutoAtributo().getListaProdutoAtributoDetalhe()) {
+                            codigoGrade = value.getId() + "." + g.getProdutoAtributo().getId() + "." + a.getId();
+                            value.setCodigoGrade(codigoGrade);
+//                            list.add((a.getProdutoAtributo().getSigla() + "=" + a.getNome() + "; "));
+
+
+                            list.add(new GradeDTO("A" + a.getProdutoAtributo().getId() + "." + a.getId().toString(), a.getProdutoAtributo().getSigla() + "=" + a.getNome() + "; "));
+                        }
+
+
+                        listC.add(list);
+
+
+                    }
+
+                    Biblioteca.generateCombinations(listC, result, 0, new GradeDTO("", ""));
+
+
+                    for (GradeDTO g : result) {
+                        ProdutoDTO newProduct = new ProdutoDTO();
+                        newProduct.setCodigoGrade("G" + value.getIdgrade() + g.getCodigo());
+                        newProduct.setNome(value.getNome() + " " + g.getNome());
+                        BeanUtils.copyProperties(value, newProduct, "nome", "codigoGrade");
+                        newList.add(newProduct);
+
+                    }
+
+
+                }
+
+            }
+
+            return newList;
+        }
+
+
+
+
         return listaProduto;
     }
 
@@ -220,6 +295,103 @@ public class ProdutoService implements Serializable {
         }
 
         return valor;
+    }
+
+    public void gerarIntegracaoBalanca(PdvConfiguracaoBalanca configuracaoBalanca) throws Exception {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro(Filtro.AND, "codigoBalanca", Filtro.NAO_NULO, ""));
+
+
+        List<Produto> produtos = repository.getProdutosBalanca();
+
+
+        if (!produtos.isEmpty()) {
+
+            if (configuracaoBalanca.getModelo() == ModeloBalanca.FILIZOLA) {
+                gerarTxtFilizola(produtos, configuracaoBalanca);
+            } else if (configuracaoBalanca.getModelo() == ModeloBalanca.TOLEDO) {
+                gerarTxtToledo(produtos, configuracaoBalanca);
+            } else {
+                throw new ChronosException("No momento apenas foi feito a integração com a Filizola ou Toledo");
+            }
+
+        } else {
+            Mensagem.addInfoMessage("Não foram encontrados produtos com codigo de balança.");
+        }
+
+    }
+
+    private void gerarTxtFilizola(List<Produto> produtos, PdvConfiguracaoBalanca configuracaoBalanca) throws Exception {
+        File file = File.createTempFile("CADTXT", ".txt");
+
+        FileWriter writer = new FileWriter(file);
+
+        int i = 0;
+        for (Produto p : produtos) {
+            p.setBalanca(configuracaoBalanca);
+            String item = p.montarItemBalancaFilizola();
+            if ((produtos.size() - 1) > i) {
+                item += "\r\n";
+            }
+            writer.write(item);
+            i++;
+        }
+        writer.close();
+
+
+        FacesUtil.downloadArquivo(file, "CADTXT.txt", true);
+    }
+
+
+    private void gerarTxtToledo(List<Produto> produtos, PdvConfiguracaoBalanca configuracaoBalanca) throws Exception {
+
+        List<String> arqvuivos = new ArrayList<>();
+
+        File fileProduto = File.createTempFile("ITENSMGV", ".txt");
+        File fileNutri = File.createTempFile("INFNUTRI", ".txt");
+        FileWriter writer = new FileWriter(fileProduto);
+        boolean exiteTabelaNutricional = false;
+        int i = 0;
+        for (Produto p : produtos) {
+            p.setBalanca(configuracaoBalanca);
+            String item = p.montarItemBalancaToledo();
+            if ((produtos.size() - 1) > i) {
+                item += "\r\n";
+            }
+            writer.write(item);
+            i++;
+            if (p.getTabelaNutricional() != null) {
+                exiteTabelaNutricional = true;
+            }
+        }
+        writer.close();
+
+        if (!exiteTabelaNutricional) {
+            FacesUtil.downloadArquivo(fileProduto, "ITENSMGV.txt", true);
+        } else {
+            arqvuivos.add(fileProduto.getAbsolutePath());
+            writer = new FileWriter(fileNutri);
+            for (Produto p : produtos) {
+
+                if (p.getTabelaNutricional() != null) {
+                    String item = p.montarItemBalancaToledoNutricao();
+                    if ((produtos.size() - 1) > i) {
+                        item += "\r\n";
+                    }
+                    writer.write(item);
+                    i++;
+                }
+
+            }
+
+            writer.close();
+            arqvuivos.add(fileNutri.getAbsolutePath());
+            File arquivoZip = ArquivoUtil.getInstance().compactarArquivos(arqvuivos, "toledo");
+            FacesUtil.downloadArquivo(arquivoZip, "toledo.zip", true);
+        }
+
+
+
     }
 
     private void gerarEmpresaProduto(Produto produto, List<Empresa> empresas) {

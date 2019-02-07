@@ -77,6 +77,8 @@ public interface Repository<T> {
 
     T getJoinFetch(Integer id, Class<T> clazz) throws PersistenceException;
 
+    T getJoinFetchList(Integer id, Class<T> clazz) throws PersistenceException;
+
     List<T> getAll(Class<T> clazz) throws PersistenceException;
 
     <T> List<T> getEntitysToQuery(Class<T> clazz, String query, Object... values) throws PersistenceException;

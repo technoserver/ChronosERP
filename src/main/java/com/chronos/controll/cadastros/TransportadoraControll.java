@@ -10,7 +10,6 @@ import com.chronos.modelo.entidades.Pessoa;
 import com.chronos.modelo.entidades.Transportadora;
 import com.chronos.modelo.entidades.ViewPessoaTransportadora;
 import com.chronos.modelo.enuns.TelaPessoa;
-import com.chronos.modelo.view.ViewPessoaFornecedor;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
@@ -40,7 +39,7 @@ public class TransportadoraControll extends PessoaControll<Transportadora> imple
 
     private ERPLazyDataModel<ViewPessoaTransportadora> transportadoraDataModel;
 
-    private ViewPessoaFornecedor transportadoraSelecionado;
+    private ViewPessoaTransportadora transportadoraSelecionado;
 
     private String completo;
 
@@ -69,6 +68,7 @@ public class TransportadoraControll extends PessoaControll<Transportadora> imple
 
     @Override
     public void doEdit() {
+
         Transportadora transportadora = dao.getJoinFetch(transportadoraSelecionado.getId(), Transportadora.class);
         setObjeto(transportadora);
         super.doEdit();
@@ -78,11 +78,11 @@ public class TransportadoraControll extends PessoaControll<Transportadora> imple
     @Override
     public void salvar() {
 
-        Transportadora transportadora = null;
+        Transportadora transportadora;
         try {
             transportadora = service.salvarTransportadora(getObjeto(), empresa);
             setObjeto(transportadora);
-            Mensagem.addInfoMessage("Cliente salvo com sucesso");
+            super.salvar();
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("", e);
@@ -120,11 +120,11 @@ public class TransportadoraControll extends PessoaControll<Transportadora> imple
         return TelaPessoa.CLIENTE.getCodigo();
     }
 
-    public ViewPessoaFornecedor getTransportadoraSelecionado() {
+    public ViewPessoaTransportadora getTransportadoraSelecionado() {
         return transportadoraSelecionado;
     }
 
-    public void setTransportadoraSelecionado(ViewPessoaFornecedor transportadoraSelecionado) {
+    public void setTransportadoraSelecionado(ViewPessoaTransportadora transportadoraSelecionado) {
         this.transportadoraSelecionado = transportadoraSelecionado;
     }
 }

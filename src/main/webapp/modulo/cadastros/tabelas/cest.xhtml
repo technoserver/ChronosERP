@@ -30,7 +30,7 @@
                        somenteConsulta="true">
 
             <p:column headerText="CEST">
-                <h:outputLabel value="#{row.cest}" />
+                <h:outputLabel value="#{row.z}"/>
             </p:column>
             
             <p:column headerText="NCM">
@@ -57,9 +57,9 @@
             <div class="row">
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
-                                   idComponente="item" label="ITEM"
-                                   nomeAtributo="#{cestControll.objeto.item}" 
-                                   tamanhoMaximo="10"/>
+                                idComponente="item" label="ITEM"
+                                nomeAtributo="#{cestControll.objeto.item}"
+                                tamanhoMaximo="10"/>
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
                                    idComponente="cest" label="CEST"
                                    nomeAtributo="#{cestControll.objeto.cest}" 

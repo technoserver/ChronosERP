@@ -11,7 +11,7 @@ import java.util.Objects;
 @Table(name = "PDV_CONFIGURACAO")
 public class PdvConfiguracao implements Serializable {
 
-    private static final long serialVersionUID = 3L;
+    private static final long serialVersionUID = 4L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -90,6 +90,10 @@ public class PdvConfiguracao implements Serializable {
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "pdvConfiguracao", orphanRemoval = true, cascade = CascadeType.ALL)
+    private PdvConfiguracaoBalanca pdvConfiguracaoBalanca;
+
+
 
     public PdvConfiguracao() {
         setCaminhoArquivoDanfe("");
@@ -98,6 +102,11 @@ public class PdvConfiguracao implements Serializable {
         setFormatoImpressaoDanfe(1);
         setProcessoEmissao(0);
         setSalvarXml("S");
+    }
+
+    public PdvConfiguracao(Integer id, String mensagemCupom) {
+        this.id = id;
+        this.mensagemCupom = mensagemCupom;
     }
 
     public PdvConfiguracao(Integer id, PdvCaixa pdvCaixa) {
@@ -394,6 +403,14 @@ public class PdvConfiguracao implements Serializable {
 
     public void setObservacaoPadrao(String observacaoPadrao) {
         this.observacaoPadrao = observacaoPadrao;
+    }
+
+    public PdvConfiguracaoBalanca getPdvConfiguracaoBalanca() {
+        return pdvConfiguracaoBalanca;
+    }
+
+    public void setPdvConfiguracaoBalanca(PdvConfiguracaoBalanca pdvConfiguracaoBalanca) {
+        this.pdvConfiguracaoBalanca = pdvConfiguracaoBalanca;
     }
 
     @Override

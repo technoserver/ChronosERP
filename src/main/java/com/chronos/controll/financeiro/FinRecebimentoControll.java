@@ -118,7 +118,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     public void baixaParcelas() {
 
         if (parcelasSelecionadas == null || parcelasSelecionadas.isEmpty()) {
-            Mensagem.addInfoMessage("É preciso seleionar ao menos 1 parcela");
+            Mensagem.addInfoMessage("É preciso selecionar ao menos 1 parcela");
         } else {
             Collections.sort(parcelasSelecionadas);
 

@@ -144,6 +144,17 @@
                                 <f:setPropertyActionListener value="#{row}"
                                                              target="#{transferenciaControll.itemSelecionado}"/>
                             </p:commandLink>
+
+                            <p:commandLink styleClass="btn btn-default" title="Imprimir"
+                                           ajax="false"
+                                           rendered="#{not empty transferenciaControll.objeto.idnfecabeclaho}"
+                                           update="produtos" action="#{transferenciaControll.danfe}">
+
+                                <i class=" fa fa-prints"></i>
+                                <f:setPropertyActionListener value="#{row}"
+                                                             target="#{transferenciaControll.itemSelecionado}"/>
+                            </p:commandLink>
+
                         </p:column>
 
                     </p:dataTable>

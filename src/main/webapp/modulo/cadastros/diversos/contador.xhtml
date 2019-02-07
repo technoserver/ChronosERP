@@ -34,7 +34,7 @@
             <p:column headerText="CRC" width="130">
                 <h:outputLabel value="#{row.inscricaoCrc}"/>
             </p:column>
-            <p:column headerText="UF CRC" width="65">
+            <p:column headerText="UF CRC" width="90" styleClass="text-center">
                 <h:outputLabel value="#{row.ufCrc}"/>
             </p:column>
             <p:column headerText="Fone">
@@ -71,10 +71,13 @@
                                  nomeAtributo="#{contadorControll.objeto.ufCrc}"
                                  itens="#{contadorControll.estado}"/>
                 <erp:campoCpf styleClass="col-xs-12 col-sm-2 col-md-2"
-                              idComponente="contadorCpf" label="Cpf"
+                              rendered="true"
+                              idComponente="contadorCpf" label="CPF"
+                              requerido="true"
                               nomeAtributo="#{contadorControll.objeto.cpf}"/>
                 <erp:campoCnpj styleClass="col-xs-12 col-sm-2 col-md-2"
-                               idComponente="contadorCnpj" label="Cnpj"
+                               idComponente="contadorCnpj" label="CNPJ"
+                               requerido="true"
                                nomeAtributo="#{contadorControll.objeto.cnpj}"/>
             </div>
 
@@ -84,9 +87,11 @@
                 <erp:campoTexto styleClass="col-xs-12 col-sm-9 col-md-10"
                                 idComponente="contadorLogradouro" label="Logradouro"
                                 nomeAtributo="#{contadorControll.objeto.logradouro}"
+                                requerido="true"
                                 tamanhoMaximo="100"/>
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
-                                idComponente="contadorNumero" label="Numero"
+                                idComponente="contadorNumero" label="Número"
+                                requerido="true"
                                 nomeAtributo="#{contadorControll.objeto.numero}"
                                 tamanhoMaximo="10"/>
             </div>
@@ -97,11 +102,13 @@
                                 tamanhoMaximo="100"/>
                 <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                 idComponente="contadorBairro" label="Bairro"
+                                requerido="true"
                                 nomeAtributo="#{contadorControll.objeto.bairro}"
                                 tamanhoMaximo="60"/>
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                idComponente="contadorCep" label="Cep"
+                                idComponente="contadorCep" label="CEP"
+                                requerido="true"
                                 nomeAtributo="#{contadorControll.objeto.cep}"
                                 tamanhoMaximo="8"/>
             </div>
@@ -110,19 +117,18 @@
                 <div class="col-xs-12 col-sm-2 col-md-2">
                     <h:outputLabel value="UF :" for="uf"/>
                     <h:selectOneMenu value="#{contadorControll.objeto.uf}"
-                                     class="form-control" id="uf">
-                        <f:selectItem itemValue="selecione" value="#{null}"/>
+                                     class="form-control" id="uf" required="true">
                         <f:selectItems var="uf" value="#{contadorControll.estado}"/>
                         <p:ajax event="valueChange"
-                                process="@this" update="Municipio"
+                                process="@this" update="municipio"
                                 listener="#{contadorControll.instanciarMunicipio()}"
                                 oncomplete="addClass()"/>
                     </h:selectOneMenu>
                 </div>
                 <div class="col-xs-12 col-sm-10 col-md-10">
-                    <h:outputLabel value="Municipio :"/>
+                    <p:outputLabel value="Municipio :" for="municipio"/>
                     <br/>
-                    <p:autoComplete id="Municipio" value="#{contadorControll.objeto.cidade}"
+                    <p:autoComplete id="municipio" value="#{contadorControll.municipio}"
                                     completeMethod="#{contadorControll.getMunicipios}"
                                     var="municipio" itemLabel="#{municipio.getNome()}"
                                     itemValue="#{municipio}" converter="defaultConverter"
@@ -137,15 +143,17 @@
             </div>
 
             <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                idComponente="contadorFone" label="Fone"
-                                nomeAtributo="#{contadorControll.objeto.fone}"
-                                tamanhoMaximo="14"/>
+                <erp:campoFone styleClass="col-xs-12 col-sm-2 col-md-2"
+                               idComponente="contadorFone" label="Fone"
+                               nomeAtributo="#{contadorControll.objeto.fone}"
+                />
 
                 <erp:campoTexto styleClass="col-xs-12 col-lg-4"
                                 idComponente="contadorEmail" label="Email"
                                 nomeAtributo="#{contadorControll.objeto.email}"
-                                tamanhoMaximo="250"/>
+                                tamanhoMaximo="250">
+                    <p:keyFilter regEx="/[a-z0-9_\.\-@]/i"/>
+                </erp:campoTexto>
             </div>
 
 

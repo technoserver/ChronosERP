@@ -4,24 +4,26 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
-import com.chronos.modelo.enuns.FormaPagamento;
 import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.enuns.SituacaoVenda;
-import com.chronos.modelo.enuns.TipoFrete;
 import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
+import com.chronos.service.comercial.ItemVendaService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
-import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,23 +53,18 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Inject
     private Repository<Vendedor> vendedores;
     @Inject
-    private Repository<Produto> produtos;
-    @Inject
-    private Repository<ComissaoObjetivo> objetivos;
-    @Inject
-    private Repository<VendaComissao> comissoes;
-    @Inject
     private Repository<NfeCabecalho> nfeRepository;
     @Inject
     private NfeService nfeService;
-    @Inject
-    private AuditoriaService audService;
+
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
     @Inject
     private EstoqueRepository estoqueRepositoy;
     @Inject
     private VendaService vendaService;
+    @Inject
+    private ItemVendaService itemService;
     @Inject
     private ProdutoService produtoService;
     private ProdutoDTO produto;
@@ -79,34 +76,69 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private PessoaCliente pessoaCliente;
 
 
-
     private Produto produto2;
 
     private String justificativa;
 
+    private Date dataInicial, dataFinal;
+    private String nome;
+    private String situacao;
+    private Map<String, String> status;
+
+    private String tipoAutorizacao = "P";
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+
+        status = new LinkedHashMap<>();
+        status.put("Todos", "");
+        status.put("Faturada", "F");
+        status.put("Encerrada", "E");
+        status.put("Cancelada", "C");
+
+    }
 
     @Override
     public ERPLazyDataModel<VendaCabecalho> getDataModel() {
-        if(dataModel == null){
+        if (dataModel == null) {
             dataModel = new ERPLazyDataModel<>();
             dataModel.setDao(dao);
             dataModel.setClazz(VendaCabecalho.class);
         }
 
-        dataModel.setAtributos(new Object[]{"dataVenda","numeroFatura","valorTotal","situacao","cliente.pessoa.nome"});
+        dataModel.setAtributos(new Object[]{"dataVenda", "numeroFatura", "valorTotal", "situacao", "cliente.pessoa.nome"});
         dataModel.getFiltros().clear();
-        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        pesquisar();
         return dataModel;
+    }
+
+
+    public void pesquisar() {
+
+        if (dataInicial != null) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "dataVenda", Filtro.MAIOR_OU_IGUAL, dataInicial));
+        }
+        if (dataFinal != null) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "dataVenda", Filtro.MENOR_OU_IGUAL, dataFinal));
+        }
+
+        if (!StringUtils.isEmpty(nome)) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "cliente.pessoa.nome", Filtro.LIKE, nome));
+        }
+
+        if (!StringUtils.isEmpty(situacao) && !situacao.equals("T")) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "situacao", Filtro.IGUAL, situacao));
+        }
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+
     }
 
     @Override
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
-        getObjeto().setListaVendaDetalhe(new ArrayList<>());
-        getObjeto().setDataVenda(new Date());
-        getObjeto().setSituacao(SituacaoVenda.Digitacao.getCodigo());
-        getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
         pessoaCliente = null;
 
     }
@@ -122,12 +154,20 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     @Override
     public void salvar() {
-        if (getObjeto().getCondicoesPagamento() != null) {
-            getObjeto().setFormaPagamento(getObjeto().getCondicoesPagamento().getVistaPrazo().equals("V")
-                    ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
+
+        try {
+
+            VendaCabecalho venda = vendaService.salvar(getObjeto());
+            setObjeto(venda);
+            Mensagem.addInfoMessage("Pedido de venda salvo");
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro salvar o pedido venda", ex);
+            }
         }
-        super.salvar();
-        setTelaGrid(false);
     }
 
     public void incluirVendaDetalhe() {
@@ -154,60 +194,111 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
     public void salvarVendaDetalhe() {
-        vendaDetalhe.setProduto(new Produto(produto.getId(), produto.getNome()));
-        if (vendaDetalhe.getId() == null) {
-            getObjeto().getListaVendaDetalhe().stream()
-                    .filter(p -> p.getProduto().getId() == vendaDetalhe.getProduto().getId())
-                    .forEach(item -> {
-                        item.setQuantidade(vendaDetalhe.getQuantidade());
-                        item.setValorUnitario(vendaDetalhe.getValorUnitario());
-                        item.setTaxaDesconto(vendaDetalhe.getTaxaDesconto());
-                    });
-            boolean encontrou = getObjeto().getListaVendaDetalhe().stream()
-                    .filter(p -> p.getProduto().getId() == vendaDetalhe.getProduto().getId())
-                    .findFirst().isPresent();
-            if (!encontrou) {
-                getObjeto().getListaVendaDetalhe().add(vendaDetalhe);
+
+
+        try {
+            vendaDetalhe.setProduto(new Produto(produto.getId(), produto.getNome()));
+
+            itemService.verificarRestricao(vendaDetalhe);
+
+            if (itemService.isNecessarioAutorizacaoSupervisor()) {
+                RequestContext.getCurrentInstance().execute("PF('dialogVendaDetalhe').hide();");
+                RequestContext.getCurrentInstance().execute("PF('dialogSupervisor').show();");
+            } else {
+                vendaService.addItem(getObjeto(), vendaDetalhe);
             }
 
-
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao add o item da venda", ex);
+            }
         }
-        try {
-            getObjeto().calcularValorTotal();
-            salvar("Registro salvo com sucesso!");
-            setTelaGrid(false);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", e);
 
-        }
     }
 
     public void excluirVendaDetalhe() {
-        try {
-            getObjeto().getListaVendaDetalhe().remove(vendaDetalheSelecionado);
-            getObjeto().calcularValorTotal();
-            salvar("Registro excluído com sucesso!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", e);
-        }
+
+        getObjeto().getListaVendaDetalhe().remove(vendaDetalheSelecionado);
+        getObjeto().calcularValorTotal();
+
 
     }
 
+    @Override
+    public boolean autorizacaoSupervisor() {
 
-    public void faturarVenda() {
         try {
+            if (vendaService.liberarRestricao(usuarioSupervisor, senhaSupervisor)) {
+                switch (tipoAutorizacao) {
+                    case "P":
+                        vendaService.addItem(getObjeto(), vendaDetalhe);
+                        break;
 
+                    default:
+                        vendaService.salvar(getObjeto());
+                }
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao autoizar o procedimento", ex);
+            }
+        }
+        return true;
+    }
+
+    public void buscarEncerrarVenda() {
+
+        try {
+            VendaCabecalho venda = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+
+            if (venda.getListaVendaDetalhe().isEmpty()) {
+                throw new ChronosException("Não foram informado produtos para essa venda");
+            }
+
+            setObjeto(venda);
+            encerrarVenda();
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+            } else {
+                throw new RuntimeException("erro ao encerrar a venda", ex);
+            }
+
+        }
+
+
+    }
+
+    public void encerrarVenda() {
+        try {
             vendaService.faturarVenda(getObjeto());
             Mensagem.addInfoMessage("Venda faturada com sucesso");
             setTelaGrid(true);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+            } else {
+                throw new RuntimeException("erro ao encerrar a venda", ex);
+            }
+
+
         }
     }
 
+
+    public void faturarVenda() {
+        boolean estoque = isTemAcesso("ESTOQUE");
+        if (!getObjeto().getListaVendaDetalhe().isEmpty()) {
+            vendaService.transmitirNFe(getObjeto(), ModeloDocumento.NFE, estoque);
+        }
+    }
 
     public void gerarNFe() {
         ModeloDocumento modelo = ModeloDocumento.NFE;
@@ -234,7 +325,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
             int idnfe = getObjetoSelecionado().getNumeroFatura();
             NfeCabecalho nfe = nfeRepository.get(idnfe, NfeCabecalho.class);
 
-
             nfeService.danfe(nfe);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -258,7 +348,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                 for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
                     estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
                 }
-            } else if (situacao == SituacaoVenda.NotaFiscal) {
+            } else if (situacao == SituacaoVenda.Faturado) {
                 setObjeto(getObjetoSelecionado());
                 NfeCabecalho nfe = nfeRepository.get(getObjeto().getNumeroFatura(), NfeCabecalho.class);
                 nfe.setJustificativaCancelamento(justificativa);
@@ -425,7 +515,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
 
-
     @Override
     protected Class<VendaCabecalho> getClazz() {
         return VendaCabecalho.class;
@@ -487,5 +576,41 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void setProduto2(Produto produto2) {
         this.produto2 = produto2;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getSituacao() {
+        return situacao;
+    }
+
+    public void setSituacao(String situacao) {
+        this.situacao = situacao;
+    }
+
+    public Map<String, String> getStatus() {
+        return status;
     }
 }

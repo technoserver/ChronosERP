@@ -111,11 +111,32 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     public void imprimirPedidoCupom(int id) {
         parametros = new HashMap<>();
         parametros.put("idvenda", id);
+        parametros.put("usuario", userService.getUsuarioLogado().getNome());
 
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "vendaCupom.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "pedidoVenda.pdf");
+    }
+
+    public void imprimirOrcamento(int id) {
+        parametros = new HashMap<>();
+        parametros.put("id", id);
+
+        String caminhoRelatorio = "/relatorios/vendas";
+        String nomeRelatorio = "orcamento.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "orcamento.pdf");
+    }
+
+    public void imprimirOrcamentoCupom(int id) {
+        parametros = new HashMap<>();
+        parametros.put("id", id);
+
+        String caminhoRelatorio = "/relatorios/vendas";
+        String nomeRelatorio = "orcamentoCupom.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "orcamento.pdf");
     }
 
     public void imprimirRelacaoVendas() {
@@ -184,6 +205,19 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "produtosMaisVendido.pdf");
     }
 
+    public void imprimirProdutoVendido2() {
+        parametros = new HashMap<>();
+        parametros.put("dataInicial", dataInicial);
+        parametros.put("dataFinal", dataFinal);
+        parametros.put("idempresa", empresa.getId());
+
+
+        String caminhoRelatorio = "/relatorios/vendas";
+        String nomeRelatorio = "relacaoProdutosVendido2.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "produtosMaisVendido.pdf");
+    }
+
     public void imprimirClienteCompra() {
         parametros = new HashMap<>();
         parametros.put("peridoInicial", dataInicial);
@@ -194,6 +228,17 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         String nomeRelatorio = "relacaoClientesVenda.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "clientesMaisCompram.pdf");
+    }
+
+    public void imprimirRelacaoProdutosEnradaXValorVenda() {
+        parametros = new HashMap<>();
+        parametros.put("dataInicial", dataInicial);
+        parametros.put("dataFinal", dataFinal);
+
+        String caminhoRelatorio = "/relatorios/vendas";
+        String nomeRelatorio = "relacaoProdutosValorEntradaXValorVenda.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoProdutos.pdf");
     }
 
     public List<PessoaCliente> getListaCliente(String nome) {

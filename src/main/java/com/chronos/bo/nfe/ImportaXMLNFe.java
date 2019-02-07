@@ -169,6 +169,7 @@ public class ImportaXMLNFe {
 
         //destinatario
         destinatario = tipoImportacao == TipoImportacaoXml.ENTRADA ? getDestinatario(dest) : getDestinatario(emit);
+
         destinatario.setNfeCabecalho(nfeCabecalho);
         nfeCabecalho.setDestinatario(destinatario);
 
@@ -315,7 +316,7 @@ public class ImportaXMLNFe {
         item.setNumeroItem(Integer.valueOf(det.getNItem()));
         item.setCodigoProduto(prod.getCProd());
         String gtin = prod.getCEAN() != null && !prod.getCEAN().equals("SEM GTIN") ? prod.getCEAN() : null;
-        item.setGtin(prod.getCEAN());
+        item.setGtin(gtin);
         item.setNomeProduto(prod.getXProd());
         item.setNcm(prod.getNCM());
         item.setCest(prod.getCEST());
@@ -327,7 +328,7 @@ public class ImportaXMLNFe {
         item.setQuantidadeComercial(FormatValor.getInstance().formatarQuantidadeToBigDecimal(prod.getQCom()));
         item.setValorUnitarioComercial(FormatValor.getInstance().formatarValorToBigDecimal(prod.getVUnCom()));
         item.setValorBrutoProduto(FormatValor.getInstance().formatarValorToBigDecimal(prod.getVProd()));
-        item.setGtinUnidadeTributavel(prod.getCEANTrib());
+        item.setGtinUnidadeTributavel(gtin);
         item.setUnidadeTributavel(prod.getUTrib());
         item.setQuantidadeTributavel(FormatValor.getInstance().formatarQuantidadeToBigDecimal(prod.getQTrib()));
         item.setValorUnitarioTributavel(FormatValor.getInstance().formatarQuantidadeToBigDecimal(prod.getVUnTrib()));

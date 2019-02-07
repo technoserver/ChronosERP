@@ -203,9 +203,6 @@ public class NfeService implements Serializable {
         validacaoNfe(nfe);
 
 
-
-
-
         definirFormaPagamento(nfe, tipoPagamento);
 
         int i = 0;
@@ -268,7 +265,7 @@ public class NfeService implements Serializable {
             }
             List<String> files = Arrays.asList(caminhoXml, arquivoPdf);
             File arquivoZip = ArquivoUtil.compactarArquivos(files, nfe.getChaveAcessoCompleta());
-            FacesUtil.downloadArquivo(arquivoZip, nfe.getChaveAcessoCompleta() + ".zip");
+            FacesUtil.downloadArquivo(arquivoZip, nfe.getChaveAcessoCompleta() + ".zip", true);
         }
 
     }
@@ -292,7 +289,7 @@ public class NfeService implements Serializable {
                 arqvuivos.add(arquivoPdf);
             }
             File arquivoZip = ArquivoUtil.getInstance().compactarArquivos(arqvuivos, nomeArquivo);
-            FacesUtil.downloadArquivo(arquivoZip, nomeArquivo + ".zip");
+            FacesUtil.downloadArquivo(arquivoZip, nomeArquivo + ".zip", true);
         }
     }
 
@@ -347,7 +344,7 @@ public class NfeService implements Serializable {
         String serie;
         NotaFiscalTipo notaFiscalTipo = null;
         ModeloDocumento modelo = nfe.getModeloDocumento();
-        if (nfe.getNumero() == null || StringUtils.isEmpty(nfe.getNumero())) {
+        if (StringUtils.isEmpty(nfe.getNumero())) {
             notaFiscalTipo = modelo == ModeloDocumento.NFE ? getNotaFicalTipo(modelo) : getNotaFicalTipo(modelo, nfe.getSerie());
             numero = notaFiscalTipo.proximoNumero();
             serie = notaFiscalTipo.getSerie();
@@ -457,6 +454,17 @@ public class NfeService implements Serializable {
                 nfe.getListaDuplicata().add(duplicata);
             }
         }
+
+        NfeFatura fatura = new NfeFatura();
+        fatura.setNfeCabecalho(nfe);
+        nfe.setFatura(fatura);
+
+        String numFatura = String.valueOf(nfe.getListaDuplicata().size());
+        numFatura = org.apache.commons.lang3.StringUtils.leftPad(numFatura, 3, "0");
+        fatura.setNumero(numFatura);
+        fatura.setValorLiquido(nfe.getValorTotal());
+        fatura.setValorOriginal(nfe.getValorTotal());
+        fatura.setValorDesconto(nfe.getValorDesconto());
 
 
     }
@@ -568,7 +576,9 @@ public class NfeService implements Serializable {
                     || retorno.getProtNFe().getInfProt().getCStat().equals("539")) {
                 status = StatusTransmissao.DUPLICIDADE;
                 nfe.setStatusNota(StatusTransmissao.DUPLICIDADE.getCodigo());
-                nfe = repository.atualizar(nfe);
+                if (venda == null && os == null && pdv == null && transferencia == null) {
+                    nfe = repository.atualizar(nfe);
+                }
                 Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getXMotivo());
             } else {
                 salvarXml = true;
@@ -597,6 +607,32 @@ public class NfeService implements Serializable {
         return status;
     }
 
+    public void imprimirCartaCorrecao(NfeEvento evento, NfeCabecalho nfe) throws Exception {
+
+
+        String nomeRelatorioJasper = "CartaCorrecao";
+        HashMap parametrosRelatorio = new LinkedHashMap();
+
+
+        parametrosRelatorio.put("chaveAcesso", nfe.getChaveAcessoCompleta());
+
+        parametrosRelatorio.put("protocolo", evento.getProtocolo());
+        parametrosRelatorio.put("justificativa", evento.getJustificativa());
+
+        parametrosRelatorio.put("orgao", empresa.buscarEnderecoPrincipal().getUf());
+        parametrosRelatorio.put("seqEvento", evento.getSequencia().toString());
+        parametrosRelatorio.put("cnpj", empresa.getCnpj());
+        parametrosRelatorio.put("dataHoraEvento", FormatValor.getInstance().formatarDataNota(evento.getDataHora()));
+
+
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        JasperReportUtil report = new JasperReportUtil(response);
+
+        report.gerarRelatorioBaixa(parametrosRelatorio, Constantes.CAMINHODANFE, nomeRelatorioJasper, "CartaCorrecao.pdf");
+
+
+    }
+
     public void danfe(NfeCabecalho nfe) throws Exception {
         empresa = nfe.getEmpresa();
         String cnpj = empresa.getCnpj();
@@ -611,10 +647,10 @@ public class NfeService implements Serializable {
         }
 
         if (filePdf.exists()) {
-            FacesUtil.downloadArquivo(filePdf, filePdf.getName());
+            FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         } else {
             gerarDanfe(nfe);
-            FacesUtil.downloadArquivo(filePdf, filePdf.getName());
+            FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         }
     }
 
@@ -647,7 +683,7 @@ public class NfeService implements Serializable {
             if (modelo == ModeloDocumento.NFE) {
                 nomeRelatorioJasper = Constantes.JASPERNFE;
                 JRXmlDataSource faturaDataSource = new JRXmlDataSource(caminho, "//dup");
-                InputStream inFt = this.getClass().getResourceAsStream("com/chronos/erplight/relatorios/comercial/nfe/DanfeRetratoFatura.jasper");
+                InputStream inFt = this.getClass().getResourceAsStream("/com/chronos/erplight/relatorios/comercial/nfe/DanfeRetratoFatura.jasper");
                 parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
                 parametrosRelatorio.put("danfeRetratoFatura", inFt);
             } else {
@@ -655,6 +691,11 @@ public class NfeService implements Serializable {
                 nomeRelatorioJasper = Constantes.JASPERNFCE;
 
                 String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_CONSULTANFCE);
+
+                if (nfe.getQrcode() == null) {
+                    throw new ChronosException("Para NFC-e com chave " + nfe.getChaveAcessoCompleta() + " está faltando QRCode");
+                }
+
                 BufferedImage image = MatrixToImageWriter
                         .toBufferedImage(new QRCodeWriter().encode(nfe.getQrcode(), BarcodeFormat.QR_CODE, 300, 300));
                 parametrosRelatorio.put("QR_CODE", image);
@@ -718,7 +759,7 @@ public class NfeService implements Serializable {
 
     }
 
-    public String cartaCorrecao(NfeCabecalho nfe, String justificativa) throws Exception {
+    public NfeEvento cartaCorrecao(NfeCabecalho nfe, String justificativa) throws Exception {
 
         if (!StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
             throw new ChronosException("NF-e náo autorizada. Cancelamento náo permitido!");
@@ -770,7 +811,7 @@ public class NfeService implements Serializable {
 
         Mensagem.addInfoMessage(result);
 
-        return result;
+        return nfeEvento;
 
     }
 
@@ -921,6 +962,11 @@ public class NfeService implements Serializable {
 
     public NotaFiscalTipo getNotaFicalTipo(ModeloDocumento modelo, String serie) throws ChronosException {
 
+        if (modelo == null || StringUtils.isEmpty(serie)) {
+            String msg = modelo == null ? "Modelo não definido" : "Serie não definida";
+            throw new ChronosException("Configuração de " + msg);
+        }
+
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
         filtros.add(new Filtro(Filtro.AND, "notaFiscalModelo.codigo", Filtro.IGUAL, modelo.getCodigo().toString()));
@@ -931,7 +977,6 @@ public class NfeService implements Serializable {
             throw new ChronosException("Configuração de numero fiscal para o modelo :" + modelo + " não definida");
         }
 
-        notaFiscalTipo.setUltimoNumero(notaFiscalTipo.proximoNumero());
 
         return notaFiscalTipo;
     }
@@ -1122,7 +1167,7 @@ public class NfeService implements Serializable {
     private String gerarXml(int idnfe, String nome) throws IOException {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, idnfe));
-        String atributos[] = new String[]{"xml"};
+        String[] atributos = new String[]{"xml"};
         NfeXml nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
         if (nfeXml == null) {
             throw new RuntimeException("Xml inexistente!");
@@ -1140,7 +1185,7 @@ public class NfeService implements Serializable {
         } else {
             List<Filtro> filtros = new LinkedList<>();
             filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, nfe.getId()));
-            String atributos[] = null;
+            String[] atributos = null;
             nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
             nfeXml.setNfeCabecalho(nfe);
             nfeXml.setXml(xml.getBytes());

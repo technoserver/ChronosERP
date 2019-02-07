@@ -4,13 +4,14 @@ package com.chronos.modelo.enuns;
  * Created by john on 07/09/17.
  */
 public enum SituacaoVenda {
+
     Digitacao("D"),
     Producao("P"),
     Expedicao("X"),
     Faturado("F"),
-    Entregue("E"),
+    Encerrado("E"),
+    Entregue("T"),
     Devolucao("V"),
-    NotaFiscal("N"),
     CANCELADA("C");
 
     private String codigo;

@@ -1,5 +1,7 @@
 package com.chronos.modelo.entidades;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -21,6 +23,7 @@ public class Papel implements Serializable {
     @Column(name = "DESCRICAO")
     private String descricao;
     @Column(name = "ACESSO_COMPLETO")
+    @NotBlank
     private String acessoCompleto;
     @OneToMany(mappedBy = "papel", fetch = FetchType.LAZY)
     private List<PapelFuncao> listaPapelFuncao;
@@ -31,6 +34,12 @@ public class Papel implements Serializable {
     public Papel(Integer id, String nome) {
         this.id = id;
         this.nome = nome;
+    }
+
+    public Papel(Integer id, String nome, String acessoCompleto) {
+        this.id = id;
+        this.nome = nome;
+        this.acessoCompleto = acessoCompleto;
     }
 
     public Papel(Integer id) {

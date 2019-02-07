@@ -24,12 +24,12 @@
                  var="row" id="#{cc.attrs.idDataTable}" paginator="true"
                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                  reflow="true" rendered="#{cc.attrs.controller.podeConsultar()}"
-                 resizableColumns="true" lazy="true"
-                 class="js-data-table">
+                 lazy="true"
+    >
 
         <cc:insertChildren/>
 
-        <p:column headerText="Ações" width="110" styleClass="text-center" rendered="#{cc.attrs.exibirAcoes}">
+        <p:column headerText="Ações" width="120" styleClass="text-center" rendered="#{cc.attrs.exibirAcoes}">
             <p:commandLink title="Alterar" action="#{cc.attrs.controller.doEdit()}" class=" btn btn-default"
                            oncomplete="addClass()"
                            update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"

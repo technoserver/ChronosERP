@@ -2,6 +2,7 @@ package com.chronos.service.estoque;
 
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.AcaoLog;
+import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.FornecedorService;
@@ -48,12 +49,12 @@ public class EntradaNotaFiscalService implements Serializable {
     private FornecedorService fornecedorService;
 
 
+
     @Transactional
-    public void salvar(NfeCabecalho nfe, ContaCaixa contaCaixa, NaturezaFinanceira naturezaFinanceira) {
-
-
+    public void finalizar(NfeCabecalho nfe, ContaCaixa contaCaixa, NaturezaFinanceira naturezaFinanceira) throws Exception {
         boolean inclusao = false;
 
+        nfe.setStatusNota(StatusTransmissao.ENCERRADO.getCodigo());
         Integer idempresa = nfe.getEmpresa().getId();
         AdmParametro parametro = FacesUtil.getParamentos();
         nfe.setNaturezaOperacao(nfe.getTributOperacaoFiscal().getDescricaoNaNf());
@@ -76,11 +77,11 @@ public class EntradaNotaFiscalService implements Serializable {
                 }
             }
             if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
-                estoqueRepository.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), nfe.getListaNfeDetalhe());
+                estoqueRepository.atualizaEstoqueEmpresaControleFiscal(idempresa, nfe.getListaNfeDetalhe());
             } else if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
-                estoqueRepository.atualizaEstoqueEmpresaControle(empresa.getId(), nfe.getListaNfeDetalhe());
+                estoqueRepository.atualizaEstoqueEmpresaControle(idempresa, nfe.getListaNfeDetalhe());
             } else {
-                estoqueRepository.atualizaEstoqueEmpresa(empresa.getId(), nfe.getListaNfeDetalhe());
+                estoqueRepository.atualizaEstoqueEmpresa(idempresa, nfe.getListaNfeDetalhe());
             }
         }
         String descricao = "Entrada da NFe :" + nfe.getNumero() + " Fornecedor :" + nfe.getEmitente().getNome();
@@ -131,7 +132,7 @@ public class EntradaNotaFiscalService implements Serializable {
         }
 
 
-        salvar(nfe, null, null);
+        finalizar(nfe, null, null);
     }
 
     public NfeCabecalho iniciar(Empresa empresa){
@@ -166,7 +167,7 @@ public class EntradaNotaFiscalService implements Serializable {
 
     private void valoresPadrao(NfeCabecalho nfe) {
         nfe.setTipoOperacao(0);
-        nfe.setStatusNota(0);
+        nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
         nfe.setFormatoImpressaoDanfe(1);
         nfe.setConsumidorOperacao(1);
         nfe.setTipoEmissao(1);

@@ -5,7 +5,9 @@
  */
 package com.chronos.util;
 
+import com.chronos.dto.GradeDTO;
 import com.chronos.dto.MapDTO;
+import com.chronos.dto.ProdutoGradeDTO;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import org.springframework.util.StringUtils;
 
@@ -18,6 +20,7 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -27,6 +30,41 @@ import java.util.regex.Pattern;
  * @author john
  */
 public class Biblioteca {
+
+
+    public static void generateCombination(List<List<String>> Lists, List<String> result, int depth, String current) {
+        if (depth == Lists.size()) {
+            result.add(current);
+            return;
+        }
+
+        for (int i = 0; i < Lists.get(depth).size(); ++i) {
+            generateCombination(Lists, result, depth + 1, current + Lists.get(depth).get(i));
+        }
+    }
+
+    public static void generateCombination(List<List<ProdutoGradeDTO>> Lists, List<ProdutoGradeDTO> result, int depth, ProdutoGradeDTO current) {
+        if (depth == Lists.size()) {
+            result.add(current);
+            return;
+        }
+
+        for (int i = 0; i < Lists.get(depth).size(); ++i) {
+            generateCombination(Lists, result, depth + 1, Lists.get(depth).get(i));
+        }
+    }
+
+    public static void generateCombinations(List<List<GradeDTO>> lists, List<GradeDTO> result, int depth, GradeDTO grade) {
+        if (depth == lists.size()) {
+            result.add(grade);
+            return;
+        }
+
+        for (int i = 0; i < lists.get(depth).size(); ++i) {
+            GradeDTO g = lists.get(depth).get(i);
+            generateCombinations(lists, result, depth + 1, new GradeDTO(grade.getCodigo() + "." + g.getCodigo(), grade.getNome() + g.getNome()));
+        }
+    }
 
 
     public static boolean renavamValido(String renavam) {
@@ -79,7 +117,7 @@ public class Biblioteca {
         ultimoDigitoCalculado = (ultimoDigitoCalculado >= 10 ? 0 : ultimoDigitoCalculado);
 
         // Pego o ultimo digito do renavam original (para confrontar com o calculado)
-        int digitoRealInformado = Integer.valueOf(renavam.substring(renavam.length() - 1, renavam.length()));
+        int digitoRealInformado = Integer.valueOf(renavam.substring(renavam.length() - 1));
 
         // Comparo os digitos calculado e informado
         if (ultimoDigitoCalculado == digitoRealInformado) {
@@ -350,7 +388,7 @@ public class Biblioteca {
     public static Object nullToEmpty(Object objeto, boolean relacionamentos) {
         Object atributo;
         try {
-            Field fields[] = objeto.getClass().getDeclaredFields();
+            Field[] fields = objeto.getClass().getDeclaredFields();
             for (Field f : fields) {
                 if (!(f.getName().equals("serialVersionUID") || f.getName().equals("bag"))) {
                     if (f.getType() == String.class || f.getType() == Integer.class || f.getType() == BigDecimal.class || f.getType() == Double.class || f.getType() == Date.class || f.getType() == Long.class) {
@@ -463,9 +501,9 @@ public class Biblioteca {
             anoPeriodo--;
         }
         if (mesPeriodo < 10) {
-            periodoAnterior = "0" + String.valueOf(mesPeriodo) + "/" + String.valueOf(mesPeriodo);
+            periodoAnterior = "0" + mesPeriodo + "/" + mesPeriodo;
         } else {
-            periodoAnterior = String.valueOf(mesPeriodo) + "/" + String.valueOf(anoPeriodo);
+            periodoAnterior = mesPeriodo + "/" + anoPeriodo;
         }
         return periodoAnterior;
     }
@@ -561,8 +599,18 @@ public class Biblioteca {
         return matcher.matches();
     }
 
+    public static String removerAcentos(String str) {
+        str = str.replaceAll("\r", "");
+        str = str.replaceAll("\t", "");
+        str = str.replaceAll("\n", "");
+        str = str.replaceAll("&", "E");
+        str = str.replaceAll(">\\s+<", "><");
+        CharSequence cs = new StringBuilder(str == null ? "" : str);
+        return Normalizer.normalize(cs, Normalizer.Form.NFKD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+    }
+
     public String retiraAcentos(String string) {
-        String aux = new String(string);
+        String aux = string;
         aux = aux.replaceAll("[èëÈéêÉÊË]", "e");
         aux = aux.replaceAll("[ûùüúÛÚÙÜ]", "u");
         aux = aux.replaceAll("[ïîíìÏÎÍÌ]", "i");

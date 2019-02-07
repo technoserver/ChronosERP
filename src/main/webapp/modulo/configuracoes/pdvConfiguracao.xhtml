@@ -10,99 +10,160 @@
                 xmlns:f="http://java.sun.com/jsf/core">
 
     <ui:define name="title">
-        NFCe configuracao
+        PDV configuracao
     </ui:define>
 
     <ui:define name="tela">
-        #{nfceConfiguracaoControll.titulo}
+        #{pdvConfiguracaoControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        NFCe configuracao
+        PDV configuracao
     </ui:define>
 
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{nfceConfiguracaoControll}"
+        <erp:gridDados controller="#{pdvConfiguracaoControll}"
                        idDataTable="dataTableNfceConfiguracao"
                        nomeFuncao="NFCe configuracao"
                        id="telaGrid"
         >
 
-            <p:column headerText="Empresa">
-                <h:outputLabel value="#{row.empresa.razaoSocial}"/>
+            <p:column headerText="Caixa">
+                <h:outputLabel value="#{row.pdvCaixa.nome}"/>
             </p:column>
 
             <p:column headerText="Processo Emissão">
                 <h:outputLabel
-                        value="#{nfceConfiguracaoControll.keyFromValue(nfceConfiguracaoControll.webserviceAmbiente,row.webserviceAmbiente)}"/>
+                        value="#{pdvConfiguracaoControll.keyFromValue(pdvConfiguracaoControll.webserviceAmbiente,row.webserviceAmbiente)}"/>
             </p:column>
         </erp:gridDados>
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{nfceConfiguracaoControll}"
+        <erp:telaInclusaoAlteracao controller="#{pdvConfiguracaoControll}"
                                    nomeFuncao="NFCe configuracao"
                                    id="telaDetalhe"
         >
 
-            <div class="row">
-                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
-                                 idComponente="emissorAmbiente" label="Ambiente"
-                                 nomeAtributo="#{nfceConfiguracaoControll.objeto.webserviceAmbiente}"
-                                 itens="#{nfceConfiguracaoControll.webserviceAmbiente}"/>
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
-                                idComponente="csc" label="Csc" requerido="true"
-                                nomeAtributo="#{nfceConfiguracaoControll.objeto.codigoCsc}"
-                                tamanhoMaximo="32" tamanhoMinimo="32"/>
+            <p:tabView id="tabConf">
+                <p:tab title="Configuracoes para Gerais" id="geral">
 
-                <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
-                                  label="Caixa"
-                                  itemLabel="#{objeto.nome}"
-                                  controller="#{nfceConfiguracaoControll}"
-                                  completeMethod="getListaPdvCaixa"
-                                  nomeAtributo="#{nfceConfiguracaoControll.objeto.pdvCaixa}"
-                                  idComponente="pdvCaixa"/>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <p:outputLabel value="Caminho Logo :" for="caminhoLogo"/>
+                            <div class="ui-inputgroup">
+                                <p:inputText value="#{pdvConfiguracaoControll.objeto.caminhoLogomarca}" id="caminhoLogo"
+                                             maxlength="255" readonly="true"/>
+                                <p:commandButton icon="fa fa-search" styleClass="white-button"
+                                                 update=":formLogo:dialogLogo"
+                                                 oncomplete="PF('dialogLogo').show();"
+                                                 resetValues="caminhoLogo"
+                                                 process="@this"/>
+                            </div>
+                        </div>
 
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6">
-                    <div class="input-group">
-                        <h:outputLabel value="Caminho Logo :" for="caminhoLogo"/>
-                        <h:inputText
-                                value="#{nfceConfiguracaoControll.objeto.caminhoLogomarca}"
-                                id="caminhoLogo" class="form-control input-sm" maxlength="255"
-                                readonly="true"/>
-                        <span class="input-group-btn">
-                            <h:commandLink title="Pesquisa"
-                                           class="btn btn-default"
-                                           id="btnPesquisarLogo"
-                                           style="padding: 7px 12px !important;margin-top: 24px">
-                                <p:ajax update=":formLogo:dialogLogo"
-                                        oncomplete="PF('dialogLogo').show();"
-                                        process="@this"/>
-                                    <p:resetInput target="caminhoLogo"/>
-                                    <i class="fa fa-search"></i>
-                                </h:commandLink>
-                        </span>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+
+                        </div>
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          label="Caixa"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{pdvConfiguracaoControll}"
+                                          completeMethod="getListaPdvCaixa"
+                                          nomeAtributo="#{pdvConfiguracaoControll.objeto.pdvCaixa}"
+                                          idComponente="pdvCaixa"/>
+
                     </div>
-                </div>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
-                                idComponente="caminhoSchemas" label="Schemas"
-                                exibirInfo="true"
-                                somenteLeitura="true"
-                                mensangemInfo="o caminho para o schema será definido ao salvar as configuracoes"
-                                nomeAtributo="#{nfceConfiguracaoControll.objeto.caminhoSchemas}"
-                                tamanhoMaximo="255"/>
-            </div>
 
-            <div class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="obsPadrao" label="Observacão Padrão"
-                                    nomeAtributo="#{nfceConfiguracaoControll.objeto.observacaoPadrao}"/>
-            </div>
+
+                </p:tab>
+                <p:tab title="Configuracoes para NFC-e" id="nfce">
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="emissorAmbiente" label="Ambiente"
+                                         nomeAtributo="#{pdvConfiguracaoControll.objeto.webserviceAmbiente}"
+                                         itens="#{pdvConfiguracaoControll.webserviceAmbiente}"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        idComponente="csc" label="Csc" requerido="true"
+                                        nomeAtributo="#{pdvConfiguracaoControll.objeto.codigoCsc}"
+                                        tamanhoMaximo="32" tamanhoMinimo="32"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                        idComponente="caminhoSchemas" label="Schemas"
+                                        exibirInfo="true"
+                                        somenteLeitura="true"
+                                        mensangemInfo="o caminho para o schema será definido ao salvar as configuracoes"
+                                        nomeAtributo="#{pdvConfiguracaoControll.objeto.caminhoSchemas}"
+                                        tamanhoMaximo="255"/>
+                    </div>
+
+
+                    <div class="row">
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            idComponente="obsPadrao" label="Observacão Padrão"
+                                            nomeAtributo="#{pdvConfiguracaoControll.objeto.observacaoPadrao}"/>
+                    </div>
+                </p:tab>
+
+                <p:tab title="Configuracoes para Balança" id="balanca">
+                    <h:panelGroup layout="block" id="confBalanca">
+                        <div class="row">
+
+                            <div class="col-xs-12 col-sm-2 col-md-2">
+                                <p:outputLabel value="Modelo" for="modeloBalanca"/>
+                                <h:selectOneMenu id="modeloBalanca" styleClass="form-control"
+                                                 value="#{pdvConfiguracaoControll.balanca.modelo}">
+                                    <f:selectItems value="#{pdvConfiguracaoControll.modelos}" var="obj"
+                                                   itemValue="#{obj}" itemLabel="#{obj.descricao}"/>
+
+                                </h:selectOneMenu>
+                            </div>
+
+                            <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                             id="campo-identificador"
+                                             idComponente="identificador" label="Tipo"
+                                             nomeAtributo="#{pdvConfiguracaoControll.balanca.identificador}"
+                                             itens="#{pdvConfiguracaoControll.tipos}"/>
+
+                            <div class="col-xs-12 col-sm-2 col-md-2">
+                                <p:outputLabel value="Tamanho tipo" for="tamanhoIdentificador"/>
+                                <p:selectOneMenu id="tamanhoIdentificador"
+                                                 value="#{pdvConfiguracaoControll.balanca.tamanhoIdentificador}">
+                                    <f:selectItem itemValue="#{4}" itemLabel="4"/>
+                                    <f:selectItem itemValue="#{5}" itemLabel="5"/>
+                                    <f:selectItem itemValue="#{6}" itemLabel="6"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-2 col-md-2">
+                                <p:outputLabel value="Tam. cod. Produto" for="tamanhoCodigoProduto"/>
+                                <p:selectOneMenu id="tamanhoCodigoProduto"
+                                                 value="#{pdvConfiguracaoControll.balanca.tamanhoCodigoProduto}">
+                                    <f:selectItem itemValue="#{4}" itemLabel="4"/>
+                                    <f:selectItem itemValue="#{5}" itemLabel="5"/>
+                                    <f:selectItem itemValue="#{6}" itemLabel="6"/>
+                                </p:selectOneMenu>
+                            </div>
+
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                            idComponente="tipoConfiguracao"
+                                            id="campo-tipoConfiguracao"
+                                            label="Layout"
+                                            nomeAtributo="#{pdvConfiguracaoControll.balanca.tipoConfiguracao}"
+                                            somenteLeitura="true"
+                                            tamanhoMaximo="20"/>
+
+                        </div>
+                    </h:panelGroup>
+
+                </p:tab>
+            </p:tabView>
+
 
         </erp:telaInclusaoAlteracao>
     </ui:define>
@@ -117,9 +178,9 @@
                     <div class="row">
 
                         <p:fileUpload id="uploadLogo"
-                                      fileUploadListener="#{nfceConfiguracaoControll.uploadLogomarca}"
+                                      fileUploadListener="#{pdvConfiguracaoControll.uploadLogomarca}"
                                       mode="advanced" fileLimit="1" allowTypes="/(\.|\/)(png)$/"
-                                      update=":formCentro:growl,:formCentro:telaDetalhe:caminhoLogo"
+                                      update=":formCentro:growl,formCentro:telaDetalhe:tabConf:caminhoLogo"
                                       oncomplete="PF('dialogLogo').hide();"
                                       process="@this"/>
                     </div>

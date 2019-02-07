@@ -20,7 +20,7 @@
                               requerido="false"
                               idComponente="condicoesPagamento"/>
 
-            <erp:campoData label="Primeiro Vencimento"
+            <erp:campoData label="1º Vencimento"
                            styleClass="col-xs-12 col-sm-2 col-md-2"
                            nomeAtributo="#{nfeCabecalhoControll.primeiroVencimento}"
                            idComponente="primeiroVencimento"/>
@@ -35,7 +35,7 @@
                 <div class="field-action">
                     <h:inputText class="form-control" id="qtdParcelas" value="#{nfeCabecalhoControll.qtdParcelas}"/>
                     <div class="field-action__icon">
-                        <h:commandButton value="Gerar Parcelas" class="btn btn-default"
+                        <h:commandButton value="Gerar" class="btn btn-default"
                                          action="#{nfeCabecalhoControll.gerarDulicatas}"
                                          id="btnGerarDuplicatas">
                             <p:ajax process="@this,:formCentro:telaDetalhe:tabNfe:panelDuplicatas"
