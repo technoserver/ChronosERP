@@ -81,7 +81,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     public VendaCabecalho faturarVenda(VendaCabecalho venda) {
 
 
-            venda.setSituacao(SituacaoVenda.Encerrado.getCodigo());
+        venda.setSituacao(SituacaoVenda.Encerrado.getCodigo());
             Integer idempresa = venda.getEmpresa().getId();
             AdmParametro parametro = FacesUtil.getParamentos();
             List<ProdutoVendaDTO> produtos = new ArrayList<>();
@@ -97,7 +97,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             gerarComissao(venda);
             venda = repository.salvarFlush(venda);
-            auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "VENDA");
+        auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "VENDA");
 
 
         return venda;

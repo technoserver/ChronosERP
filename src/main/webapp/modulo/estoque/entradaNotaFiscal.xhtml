@@ -24,41 +24,71 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{entradaNotaFiscalControll}"
-                       idDataTable="dataTableGrupo"
-                       nomeFuncao="Entrada de NFe"
-                       id="telaGrid"
-                       somenteConsulta="true"
-                       telaDetalhePadrao="false">
 
-            <p:column headerText="Fornecedor">
-                <h:outputLabel value="#{row.fornecedor.pessoa.nome}"/>
-            </p:column>
-            <p:column headerText="Serie" width="60" styleClass="text-center">
-                <h:outputLabel value="#{row.serie}"/>
-            </p:column>
-            <p:column headerText="Número" width="100" styleClass="text-center">
-                <h:outputLabel value="#{row.numero}"/>
-            </p:column>
-            <p:column headerText="Data Entrada" width="140" sortBy="#{row.dataHoraEntradaSaida}"
-                      styleClass="text-center">
-                <h:outputLabel value="#{row.dataHoraEntradaSaida}">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Data Emissao" width="140" styleClass="text-center">
-                <h:outputLabel value="#{row.dataHoraEmissao}">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Valor Total" width="100" style="text-align: right">
-                <h:outputLabel value="#{row.valorTotal}">
-                    <f:convertNumber pattern="#,###,##0.00"/>
-                </h:outputLabel>
-            </p:column>
+        <erp:formularioGrid controller="#{entradaNotaFiscalControll}"
+                            id="telaGrid"
+                            telaDetalhePadrao="false">
+            <p:dataTable
+                    value="#{entradaNotaFiscalControll.dataModel}"
+                    var="row" id="tableEntrada" paginator="true"
+                    rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                    reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
+                    lazy="true" sortBy="#{row.id}" sortOrder="descending"
+            >
+
+                <p:column headerText="Fornecedor">
+                    <h:outputLabel value="#{row.fornecedor.pessoa.nome}"/>
+                </p:column>
+                <p:column headerText="Serie" width="60" styleClass="text-center">
+                    <h:outputLabel value="#{row.serie}"/>
+                </p:column>
+                <p:column headerText="Número" width="100" styleClass="text-center">
+                    <h:outputLabel value="#{row.numero}"/>
+                </p:column>
+                <p:column headerText="Data Entrada" width="153" sortBy="#{row.dataHoraEntradaSaida}"
+                          styleClass="text-center">
+                    <h:outputLabel value="#{row.dataHoraEntradaSaida}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Valor Total" width="116" styleClass="text-right">
+                    <h:outputLabel value="#{row.valorTotal}">
+                        <f:convertNumber pattern="#,###,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+
+                <p:column headerText="Ações" width="120" class="text-center">
+                    <p:commandLink title="Alterar" action="#{entradaNotaFiscalControll.doEdit()}"
+                                   class=" btn btn-default"
+                                   oncomplete="addClass()"
+                                   update=":formCentro:telaGrid:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                    >
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{entradaNotaFiscalControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{entradaNotaFiscalControll.remover()}"
+
+                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                                   process="tableEntrada"
+                                   oncomplete="atualizarMsg();"
+                                   class="btn btn-default"
+                                   rendered="#{!entradaNotaFiscalControll.somenteConsulta(row)}"
+                    >
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{entradaNotaFiscalControll.objetoSelecionado}"/>
+                    </p:commandLink>
 
 
-        </erp:gridDados>
+                </p:column>
+
+            </p:dataTable>
+        </erp:formularioGrid>
+
     </ui:define>
 
 

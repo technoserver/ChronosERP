@@ -56,8 +56,8 @@
                                                oncomplete="atualizarMsg();"
                                                id="btnExcluir"
                                                class="btn btn-default"
-                                               rendered="#{!cc.attrs.controller.somenteConsulta(row) || !cc.attrs.somenteConsulta }"
-                                               disabled="#{!cc.attrs.controller.podeExcluir()}">
+                                               rendered="#{!cc.attrs.somenteConsulta }"
+                                >
                                     <i class="fa fa-times"></i>
                                     <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
