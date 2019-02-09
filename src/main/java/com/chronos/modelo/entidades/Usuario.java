@@ -10,6 +10,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "USUARIO")
+@NamedQuery(name = "Usuario.UpdateAdministrador", query = "update Usuario set administrador = ?1 where papel.id=?2")
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
