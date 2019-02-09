@@ -126,7 +126,7 @@
             <div class="row">
 
                 <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="papelDescricao" label="Descricao"
+                                    idComponente="papelDescricao" label="Descrição"
                                     nomeAtributo="#{papelControll.objeto.descricao}"/>
             </div>
             <h:panelGroup id="permissoes" layout="block"
@@ -328,7 +328,7 @@
                             <p:commandButton value="Salvar"
                                              process="@form"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
-                                             update="dataTablePapelFuncao,:formOutrasTelas2:panelOutrasTelas2,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                             update=":formOutrasTelas2:panelOutrasTelas2,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
                             />
 
                         </div>

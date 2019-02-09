@@ -33,8 +33,7 @@
                     <div class="col-xs-6 col-lg-6">
                         <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
                                          actionListener="#{cc.attrs.controller.doCreate()}"
-                                         disabled="#{!cc.attrs.controller.podeInserir()}"
-                                         rendered="#{!cc.attrs.somenteConsulta}"
+                                         rendered="#{cc.attrs.controller.podeInserir() and ( !cc.attrs.somenteConsulta and cc.attrs.controller.podeInserir())}"
                         >
                             <p:ajax process="@form"
                                     oncomplete="addClass()"

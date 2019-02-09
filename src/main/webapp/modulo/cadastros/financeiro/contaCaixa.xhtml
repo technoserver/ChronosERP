@@ -28,16 +28,13 @@
                        nomeFuncao="Cheque"
                        id="telaGrid">
 
-            <p:column headerText="Código">
+            <p:column headerText="Código" width="100">
                 <h:outputLabel value="#{row.codigo}" />
             </p:column>
             <p:column headerText="Nome">
                 <h:outputLabel value="#{row.nome}" />
-            </p:column>
-            <p:column headerText="Descrição">
-                <h:outputLabel value="#{row.descricao}" />
-            </p:column>
-            <p:column headerText="Tipo">
+            </p:column> >
+            <p:column headerText="Tipo" width="133">
                 <h:outputLabel value="#{contaCaixaControll.keyFromValue(contaCaixaControll.tipoContaCaixa, row.tipo)}" />
             </p:column>
             <p:column headerText="Agência Banco">
