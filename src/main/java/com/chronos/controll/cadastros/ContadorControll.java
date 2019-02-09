@@ -33,7 +33,6 @@ public class ContadorControll extends AbstractControll<Contador> implements Seri
     private Municipio municipio;
 
 
-
     @Override
     public void doEdit() {
         super.doEdit();

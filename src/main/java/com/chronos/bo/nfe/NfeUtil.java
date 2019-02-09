@@ -40,12 +40,6 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
     @Inject
     private Repository<NotaFiscalTipo> tiposNotaFiscal;
 
-
-
-
-
-
-
     public NfeCabecalho calcularTotalNFe(NfeCabecalho nfe) throws Exception {
         ibptRepository = getFacadeWithJNDI(IbptRepository.class);
         boolean servico;

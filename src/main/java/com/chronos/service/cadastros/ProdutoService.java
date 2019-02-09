@@ -391,7 +391,6 @@ public class ProdutoService implements Serializable {
         }
 
 
-
     }
 
     private void gerarEmpresaProduto(Produto produto, List<Empresa> empresas) {

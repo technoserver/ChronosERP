@@ -12,6 +12,7 @@
 <cc:interface>
     <cc:attribute name="controller" type="com.chronos.controll.AbstractControll" required="true"/>
     <cc:attribute name="somenteConsulta" default="false"/>
+    <cc:attribute name="telaDetalhePadrao" default="#{true}"/>
 
 
 
@@ -37,7 +38,7 @@
                         >
                             <p:ajax process="@form"
                                     oncomplete="addClass()"
-                                    update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
+                                    update=":formCentro:telaGrid:outputPanelGrid,#{cc.attrs.telaDetalhePadrao?':formCentro:telaDetalhe:outputPanelDetalhe':':formCentro:outputPanelDetalhe'},navegacao,:formCentro:mensagem"/>
                         </h:commandButton>
                     </div>
                     <div class="#{!cc.attrs.somenteConsulta? 'col-xs-6 col-lg-6':'col-xs-12 col-lg-12'}">
