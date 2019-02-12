@@ -13,7 +13,7 @@ import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.springframework.util.StringUtils;
 
@@ -215,8 +215,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             produtoServicoService.verificarRestricao(osProdutoServico);
 
             if (produtoServicoService.isNecessarioAutorizacaoSupervisor()) {
-                RequestContext.getCurrentInstance().execute("PF('dialogOsProdutoServico').hide();");
-                RequestContext.getCurrentInstance().execute("PF('dialogSupervisor').show();");
+                PrimeFaces.current().executeScript("PF('dialogOsProdutoServico').hide();");
+                PrimeFaces.current().executeScript("PF('dialogSupervisor').show();");
             } else {
                 setObjeto(osService.salvarItem(getObjeto(), osProdutoServico));
                 Mensagem.addInfoMessage("Produto " + osProdutoServico.getProduto().getNome() + " add com sucesso !");
