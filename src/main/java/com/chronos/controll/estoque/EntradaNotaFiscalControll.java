@@ -214,7 +214,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void validar() {
 
         try {
-
+            fornecedor = getObjeto().getFornecedor();
             verificarSeExisteEntrada();
 
             Optional<NfeDetalhe> first = getObjeto().getListaNfeDetalhe().stream().filter(p -> !p.isProdutoCadastrado()).findFirst();
