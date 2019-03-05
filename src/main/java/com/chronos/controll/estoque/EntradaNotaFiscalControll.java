@@ -373,7 +373,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         filtro.add(new Filtro(Filtro.AND, "numero", Filtro.IGUAL, getObjeto().getNumero()));
 
         NfeCabecalho nfe = dao.get(NfeCabecalho.class, filtro, new Object[]{"numero"});
-        if (nfe != null) {
+        if (nfe != null && !nfe.equals(getObjeto())) {
             doCreate();
             throw new ChronosException("Essa nota já foi  digitada pra esse fornecedor !");
         }
