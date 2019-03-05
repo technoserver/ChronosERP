@@ -3,7 +3,6 @@ package com.chronos.repository;
 
 import com.chronos.modelo.tenant.Tenant;
 import com.chronos.modelo.tenant.UsuarioTenant;
-import com.chronos.modelo.view.ViewUsuarioTenant;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.tenant.EntityManageProduceInject;
 
@@ -27,21 +26,14 @@ public class TenantRepository implements Serializable {
     @EntityManageProduceInject
     private EntityManager em;
 
-    public Optional<ViewUsuarioTenant> getUser(String nomeUsuario) {
-
-        Query q = em.createQuery("SELECT u  FROM ViewUsuarioTenant u WHERE u.login = :login");
-        q.setMaxResults(1);
-        q.setParameter("login", nomeUsuario);
-        return q.getResultList().stream().findFirst();
-    }
-
-    public Optional<UsuarioTenant> getUserTenant(String nomeUsuario) {
+    public Optional<UsuarioTenant> getUser(String nomeUsuario) {
 
         Query q = em.createQuery("SELECT u  FROM UsuarioTenant u WHERE u.login = :login");
         q.setMaxResults(1);
         q.setParameter("login", nomeUsuario);
         return q.getResultList().stream().findFirst();
     }
+
 
     public List<Tenant> getTenant() {
         Query q = em.createQuery("SELECT t  FROM Tenant t WHERE t.ativo = :ativo");

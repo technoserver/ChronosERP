@@ -1,7 +1,7 @@
 package com.chronos.util.tenant;
 
 import com.chronos.modelo.tenant.Tenant;
-import com.chronos.modelo.view.ViewUsuarioTenant;
+import com.chronos.modelo.tenant.UsuarioTenant;
 import com.chronos.repository.TenantRepository;
 
 import javax.annotation.PreDestroy;
@@ -22,13 +22,13 @@ public class TenantRegistry implements Serializable {
     @Inject
     private TenantRepository repository;
 
-    public Optional<ViewUsuarioTenant> getTenant(final String login) {
-        Optional<ViewUsuarioTenant> tenantUsuario = repository.getUser(login);
+    public Optional<UsuarioTenant> getTenant(final String login) {
+        Optional<UsuarioTenant> tenantUsuario = repository.getUser(login);
 
 
         if (tenantUsuario.isPresent()) {
 
-            Tenant tenant = new Tenant(tenantUsuario.get().getId(), tenantUsuario.get().getNomeTenant());
+            Tenant tenant = tenantUsuario.get().getTenant();
             if (ConstantsTenant.FACTORIES.isEmpty()) {
                 final EntityManagerFactory emf = createEntityManagerFactory(tenant);
                 ConstantsTenant.FACTORIES.put("ChronosLightUP", emf);
