@@ -82,6 +82,15 @@
                                   label="Meta"
                                   nomeAtributo="#{vendedorControll.objeto.metaVendas}"/>
 
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="Tipo" for="tipo"/>
+                    <h:selectOneMenu id="tipo" class="form-control"
+                                     value="#{vendedorControll.objeto.tipo}">
+                        <f:selectItem itemLabel="Interno" itemValue="I"/>
+                        <f:selectItem itemLabel="Externo" itemValue="E"/>
+                    </h:selectOneMenu>
+                </div>
+
 
             </div>
 
