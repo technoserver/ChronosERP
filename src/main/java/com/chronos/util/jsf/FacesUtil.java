@@ -125,7 +125,7 @@ public class FacesUtil {
                 if (auth != null) {
                     if (auth.getPrincipal() instanceof UsuarioSistema) {
                         UsuarioSistema user = (UsuarioSistema) auth.getPrincipal();
-                        tenant = new Tenant(user.getUsuario().getId(), user.getUsuario().getNomeTenant());
+                        tenant = user.getUsuario().getTenant();
                     } else if (auth.getPrincipal() instanceof String) {
                         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
                         tenant = (Tenant) session.getAttribute("tenantId");

@@ -27,6 +27,8 @@ public class Vendedor implements Serializable {
     private BigDecimal taxaGerente;
     @Column(name = "gerente")
     private Character gerente;
+    @Column(name = "tipo")
+    private Character tipo;
     @JoinColumn(name = "ID_COLABORADOR", referencedColumnName = "ID")
     @ManyToOne
     @NotNull
@@ -45,6 +47,7 @@ public class Vendedor implements Serializable {
 
 
     public Vendedor() {
+        this.tipo = 'I';
     }
 
     public Vendedor(Integer id, String nome) {
@@ -143,6 +146,13 @@ public class Vendedor implements Serializable {
         this.tabelaPreco = tabelaPreco;
     }
 
+    public Character getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Character tipo) {
+        this.tipo = tipo;
+    }
 
     public String getNome() {
         return nome;

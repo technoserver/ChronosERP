@@ -431,8 +431,6 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     }
 
 
-
-
     public void buscarConfiguracoesBalanca() {
         configuracoesBalanca = pdvConfiguracaoBalancaRepository.getEntitys(PdvConfiguracaoBalanca.class);
     }

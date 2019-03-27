@@ -126,7 +126,7 @@
             <div class="row">
 
                 <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="papelDescricao" label="Descricao"
+                                    idComponente="papelDescricao" label="Descrição"
                                     nomeAtributo="#{papelControll.objeto.descricao}"/>
             </div>
             <h:panelGroup id="permissoes" layout="block"
@@ -180,8 +180,8 @@
                             <p:column headerText="Ações" width="120" styleClass="text-center">
                                 <p:commandLink title="Alterar" action="#{papelControll.alterarPermissao}"
                                                class=" btn btn-default"
-                                               update="dataTablePapelFuncao,:formOutrasTelas:panelPermissao"
-                                               oncomplete="PF('dialogPermissao').show()"
+                                               update="dataTablePapelFuncao,:formOutrasTelas2:panelOutrasTelas2"
+                                               oncomplete="PF('dialogOutrasTelas2').show()"
                                                id="btnAlterarPermissao"
                                                rendered="#{row.id !=1 }">
                                     <i class="fa fa-file-text-o"></i>
@@ -287,4 +287,65 @@
         </h:form>
     </ui:define>
 
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+            <p:dialog id="dialogOutrasTelas2"
+                      header="Alteração de Permissão"
+                      widgetVar="dialogOutrasTelas2" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+
+                <p:outputPanel id="panelOutrasTelas2">
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="podeConsultar"
+                                         label="Pode Consultar"
+                                         itens="#{papelControll.naoSim}"
+                                         nomeAtributo="#{papelControll.papelFuncao.podeConsultar}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="podeInserir"
+                                         label="Pode Inserir"
+                                         itens="#{papelControll.naoSim}"
+                                         nomeAtributo="#{papelControll.papelFuncao.podeInserir}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="podeAlterar"
+                                         label="Pode Alterar"
+                                         itens="#{papelControll.naoSim}"
+                                         nomeAtributo="#{papelControll.papelFuncao.podeAlterar}"/>
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                                         idComponente="podeExcluir"
+                                         label="Pode Excluir"
+                                         itens="#{papelControll.naoSim}"
+                                         nomeAtributo="#{papelControll.papelFuncao.podeExcluir}"/>
+                    </div>
+
+
+                </p:outputPanel>
+
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             process="@form"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
+                                             update=":formOutrasTelas2:panelOutrasTelas2,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                            />
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                            >
+                                <p:ajax oncomplete="PF('dialogOutrasTelas2').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+
+        </h:form>
+    </ui:define>
+
 </ui:composition>
+
+

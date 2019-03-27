@@ -278,7 +278,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void encerrarVenda() {
         try {
             vendaService.faturarVenda(getObjeto());
-            Mensagem.addInfoMessage("Venda faturada com sucesso");
+            Mensagem.addInfoMessage("Venda encerrada com sucesso");
             setTelaGrid(true);
         } catch (Exception ex) {
 

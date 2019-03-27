@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.Funcao;
 import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.entidades.PapelFuncao;
+import com.chronos.modelo.entidades.Usuario;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.TransferEvent;
@@ -32,6 +33,9 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
     @Inject
     private Repository<Funcao> funcaoRepository;
 
+    @Inject
+    private Repository<Usuario> usuarioRepository;
+
     private List<PapelFuncao> listaPapelFuncao;
     private List<Funcao> funcoes;
     private List<Funcao> funcoestarget;
@@ -46,8 +50,8 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
         super.init();
         funcoes = funcaoRepository.getEntitys(Funcao.class, new Object[]{"nome"});
         funcoestarget = new ArrayList<>();
-        listModel = new DualListModel<Funcao>(funcoes, funcoestarget);
-        ;
+        listModel = new DualListModel<>(funcoes, funcoestarget);
+
     }
 
     @Override
@@ -67,24 +71,24 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
             listaPapelFuncao = new ArrayList<>();
         }
 
-        ;
-
     }
 
     @Override
     public void salvar() {
 
+        boolean atualizarUsuarios = getObjeto().getId() != null;
 
         super.salvar();
+
+        if (atualizarUsuarios) {
+            usuarioRepository.atualizarNamedQuery("Usuario.UpdateAdministrador", getObjeto().getAcessoCompleto(), getObjeto().getId());
+        }
+
         if (getObjeto().getAcessoCompleto().equals("S")) {
-            listaPapelFuncao.stream().forEach(pf -> {
-                repositoryPapelFuncaoRepository.excluir(pf);
-            });
+            listaPapelFuncao.stream().forEach(pf -> repositoryPapelFuncaoRepository.excluir(pf));
             listaPapelFuncao = new ArrayList<>();
         } else {
-            listaPapelFuncao.stream().forEach(pf -> {
-                repositoryPapelFuncaoRepository.atualizar(pf);
-            });
+            listaPapelFuncao.stream().forEach(pf -> repositoryPapelFuncaoRepository.atualizar(pf));
         }
         setTelaGrid(false);
     }
@@ -111,7 +115,6 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
 
     public void salvarPermissao() {
 
-
         if (funcoestarget.isEmpty()) {
             Mensagem.addInfoMessage("Não foi definido funcções");
             FacesContext.getCurrentInstance().validationFailed();
@@ -126,12 +129,11 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
                 }
             }
 
-
             Mensagem.addInfoMessage("Permissão salva com sucesso");
         }
 
-
     }
+
 
     public void onTransfer(TransferEvent event) {
         funcoestarget = new ArrayList<>();

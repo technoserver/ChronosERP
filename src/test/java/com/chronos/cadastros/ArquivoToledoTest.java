@@ -1,7 +1,6 @@
 package com.chronos.cadastros;
 
 import com.chronos.modelo.entidades.*;
-import com.chronos.service.ChronosException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +59,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_que_o_inicio_da_string_da_info_nutricional_comerce_com_a_letra_N() throws ChronosException {
+    public void devemos_garantir_que_o_inicio_da_string_da_info_nutricional_comerce_com_a_letra_N() {
         produto.setTabelaNutricional(tabelaNutricional);
         String itemBalanca = produto.montarItemBalancaToledoNutricao();
         String codigo = itemBalanca.substring(0, 1);
@@ -68,7 +67,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_do_codigo_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_do_codigo_nutricional() {
         produto.setTabelaNutricional(tabelaNutricional);
         String itemBalanca = produto.montarItemBalancaToledoNutricao();
         String codigo = itemBalanca.substring(1, 7);
@@ -76,7 +75,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_do_reservado_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_do_reservado_da_info_nutricional() {
         produto.setTabelaNutricional(tabelaNutricional);
         String itemBalanca = produto.montarItemBalancaToledoNutricao();
         String codigo = itemBalanca.substring(7, 8);
@@ -84,7 +83,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_da_quantidade_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_quantidade_da_info_nutricional() {
         produto.setTabelaNutricional(tabelaNutricional);
         String itemBalanca = produto.montarItemBalancaToledoNutricao();
         String codigo = itemBalanca.substring(8, 11);
@@ -93,7 +92,7 @@ public class ArquivoToledoTest {
 
 
     @Test
-    public void devemos_garantir_a_geracao_da_undidade_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_undidade_da_info_nutricional() {
         produto.setTabelaNutricional(tabelaNutricional);
         String itemBalanca = produto.montarItemBalancaToledoNutricao();
         String codigo = itemBalanca.substring(11, 12);
@@ -101,7 +100,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_da_parte_interia_da_medida_caseria_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_parte_interia_da_medida_caseria_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -112,7 +111,7 @@ public class ArquivoToledoTest {
 
 
     @Test
-    public void devemos_garantir_a_geracao_da_parte_decimal_da_medida_caseria_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_parte_decimal_da_medida_caseria_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -122,7 +121,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_da_medida_caseria_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_medida_caseria_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -132,7 +131,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_do_valor_calorico_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_do_valor_calorico_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -142,7 +141,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_do_carboidratos_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_do_carboidratos_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -152,7 +151,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_da_proteinas_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_proteinas_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -162,7 +161,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_da_gorduras_totais_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_gorduras_totais_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -172,7 +171,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_da_gorduras_saturadas_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_gorduras_saturadas_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -182,7 +181,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_da_gorduras_trans_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_gorduras_trans_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -192,7 +191,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_da_fibra_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_da_fibra_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -202,7 +201,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_do_sodio_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_do_sodio_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 
@@ -212,7 +211,7 @@ public class ArquivoToledoTest {
     }
 
     @Test
-    public void devemos_garantir_a_geracao_de_da_info_nutricional() throws ChronosException {
+    public void devemos_garantir_a_geracao_de_da_info_nutricional() {
 
         produto.setTabelaNutricional(tabelaNutricional);
 

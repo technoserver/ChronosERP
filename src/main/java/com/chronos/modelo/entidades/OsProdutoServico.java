@@ -125,7 +125,7 @@ public class OsProdutoServico implements Serializable {
 
     public BigDecimal getValorDesconto() {
         this.valorDesconto = Optional.ofNullable(this.taxaDesconto).isPresent()
-                ? taxaDesconto.multiply(this.valorUnitario).divide(quantidade).divide(BigDecimal.valueOf(100))
+                ? taxaDesconto.multiply(this.valorSubtotal).divide(BigDecimal.valueOf(100))
                 : BigDecimal.ZERO;
         this.valorDesconto.setScale(2, BigDecimal.ROUND_HALF_DOWN);
         return valorDesconto;

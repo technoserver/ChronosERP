@@ -85,7 +85,7 @@ public class UsuarioService implements Serializable {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setSenha(encoder.encode(novaSenha));
 
-        Optional<UsuarioTenant> tenantOptional = tenantRepository.getUserTenant(user.getLogin());
+        Optional<UsuarioTenant> tenantOptional = tenantRepository.getUser(user.getLogin());
 
         if (!tenantOptional.isPresent()) {
             throw new ChronosException("Usuário cadastrado mais sem permissão de acesso ao sistema");

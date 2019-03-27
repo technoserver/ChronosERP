@@ -369,7 +369,9 @@ public class ProdutoService implements Serializable {
         if (!exiteTabelaNutricional) {
             FacesUtil.downloadArquivo(fileProduto, "ITENSMGV.txt", true);
         } else {
-            arqvuivos.add(fileProduto.getAbsolutePath());
+
+
+            //arqvuivos.add(fileProduto.getAbsolutePath());
             writer = new FileWriter(fileNutri);
             for (Produto p : produtos) {
 
@@ -385,11 +387,12 @@ public class ProdutoService implements Serializable {
             }
 
             writer.close();
-            arqvuivos.add(fileNutri.getAbsolutePath());
-            File arquivoZip = ArquivoUtil.getInstance().compactarArquivos(arqvuivos, "toledo");
-            FacesUtil.downloadArquivo(arquivoZip, "toledo.zip", true);
+            //  arqvuivos.add(fileNutri.getAbsolutePath());
+            // File arquivoZip = ArquivoUtil.getInstance().compactarArquivos(arqvuivos, "toledo");
+            //FacesUtil.downloadArquivo(arquivoZip, "toledo.zip", true);
+            FacesUtil.downloadArquivo(fileProduto, "ITENSMGV.txt", true);
+            FacesUtil.downloadArquivo(fileNutri, "INFNUTRI.txt", true);
         }
-
 
 
     }

@@ -214,6 +214,9 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void validar() {
 
         try {
+            fornecedor = getObjeto().getFornecedor();
+            verificarSeExisteEntrada();
+
             Optional<NfeDetalhe> first = getObjeto().getListaNfeDetalhe().stream().filter(p -> !p.isProdutoCadastrado()).findFirst();
 
             if (first.isPresent()) {
@@ -347,15 +350,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 getObjeto().setListaDuplicata((HashSet) map.get("duplicata"));
                 getObjeto().setDataHoraEntradaSaida(new Date());
                 verificarFornecedor();
-                List<Filtro> filtro = new LinkedList<>();
-                filtro.add(new Filtro(Filtro.AND, "fornecedor.id", Filtro.IGUAL, fornecedor.getId()));
-                filtro.add(new Filtro(Filtro.AND, "numero", Filtro.IGUAL, getObjeto().getNumero()));
-
-                NfeCabecalho nfe = dao.get(NfeCabecalho.class, filtro, new Object[]{"numero"});
-                if (nfe != null) {
-                    doCreate();
-                    throw new ChronosException("Essa nota já foi  digitada pra esse fornecedor !");
-                }
+                verificarSeExisteEntrada();
                 verificaProdutoNaoCadastrado(true);
                 getObjeto().setDataHoraEntradaSaida(new Date());
                 importado = true;
@@ -369,6 +364,18 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 throw new RuntimeException("Erro ao importat XML", ex);
             }
 
+        }
+    }
+
+    private void verificarSeExisteEntrada() throws ChronosException {
+        List<Filtro> filtro = new LinkedList<>();
+        filtro.add(new Filtro(Filtro.AND, "fornecedor.id", Filtro.IGUAL, fornecedor.getId()));
+        filtro.add(new Filtro(Filtro.AND, "numero", Filtro.IGUAL, getObjeto().getNumero()));
+
+        NfeCabecalho nfe = dao.get(NfeCabecalho.class, filtro, new Object[]{"numero"});
+        if (nfe != null && !nfe.equals(getObjeto())) {
+            doCreate();
+            throw new ChronosException("Essa nota já foi  digitada pra esse fornecedor !");
         }
     }
 

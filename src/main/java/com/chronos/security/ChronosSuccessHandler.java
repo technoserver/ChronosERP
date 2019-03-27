@@ -8,14 +8,11 @@ import com.chronos.modelo.entidades.RestricaoSistema;
 import com.chronos.modelo.tenant.Tenant;
 import com.chronos.repository.Repository;
 import com.chronos.repository.UsuarioRepository;
-import com.chronos.util.Constantes;
 import com.chronos.util.cdi.CDIServiceLocator;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.DefaultRedirectStrategy;
-import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -23,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -32,14 +28,14 @@ import java.util.Set;
 public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+
     private UsuarioSistema user;
     private BigDecimal desconto;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         try {
             user = (UsuarioSistema) authentication.getPrincipal();
-            Tenant tenant = new Tenant(user.getUsuario().getIdtenant(), user.getUsuario().getNomeTenant());
+            Tenant tenant = user.getUsuario().getTenant();
             request.getSession().setAttribute("tenantId", tenant);
             UsuarioDTO usuarioDTO = definirPermissoes(user);
             request.getSession().setAttribute("userChronosERP", usuarioDTO);
@@ -68,12 +64,6 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             }
 
-            LocalDate dataPermitida = LocalDate.now();
-            if (dataPermitida.isAfter(usuarioSistema.getUsuario().getDataVencimento().plusDays(5)) && !Constantes.DESENVOLVIMENTO) {
-                authorities.add(new SimpleGrantedAuthority("ROLE_INADIPLENTE"));
-            } else {
-                authorities.add(new SimpleGrantedAuthority("ROLE_ADIMPLENTE"));
-            }
 
             papel.getListaPapelFuncao().forEach((p) -> {
                 if (p.getPodeConsultar() != null && p.getPodeConsultar().equals("S")) {

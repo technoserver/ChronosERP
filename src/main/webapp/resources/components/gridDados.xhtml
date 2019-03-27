@@ -40,10 +40,13 @@
 
                             <cc:insertChildren/>
 
-                            <p:column headerText="Ações" width="115" styleClass="text-center">
-                                <p:commandLink title="Alterar" action="#{cc.attrs.controller.doEdit()}"
+                            <p:column headerText="Ações" width="115" styleClass="text-center"
+                                      rendered="#{cc.attrs.controller.podeExcluir() or  cc.attrs.controller.podeAlterar()}">
+                                <p:commandLink title="Alterar"
+                                               action="#{cc.attrs.controller.doEdit()}"
                                                class=" btn btn-default"
                                                update=":formCentro:telaGrid:outputPanelGrid,#{cc.attrs.telaDetalhePadrao?':formCentro:telaDetalhe:outputPanelDetalhe':':formCentro:outputPanelDetalhe'},navegacao,:formCentro:mensagem"
+                                               rendered="#{cc.attrs.controller.podeAlterar()}"
                                                id="btnAlterar">
                                     <i class="fa fa-file-text-o"></i>
                                     <f:setPropertyActionListener value="#{row}"
@@ -56,8 +59,8 @@
                                                oncomplete="atualizarMsg();"
                                                id="btnExcluir"
                                                class="btn btn-default"
-                                               rendered="#{!cc.attrs.controller.somenteConsulta(row) || !cc.attrs.somenteConsulta }"
-                                               disabled="#{!cc.attrs.controller.podeExcluir()}">
+                                               rendered="#{cc.attrs.controller.podeExcluir() and ( !cc.attrs.somenteConsulta and cc.attrs.controller.podeExcluir())}"
+                                >
                                     <i class="fa fa-times"></i>
                                     <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
@@ -76,8 +79,7 @@
                     <div class="col-xs-6 col-lg-6">
                         <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
                                          actionListener="#{cc.attrs.controller.doCreate()}"
-                                         disabled="#{!cc.attrs.controller.podeInserir()}"
-                                         rendered="#{!cc.attrs.somenteConsulta}"
+                                         rendered="#{cc.attrs.controller.podeInserir() and ( !cc.attrs.somenteConsulta and cc.attrs.controller.podeInserir())}"
                                          id="btnCadastrar">
                             <p:resetInput target=":formCentro"/>
                             <p:ajax process="@form"
