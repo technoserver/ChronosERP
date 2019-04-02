@@ -12,6 +12,7 @@ import com.chronos.repository.*;
 import com.chronos.service.ChronosException;
 import com.chronos.transmissor.infra.enuns.FormatoImpressaoDanfe;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.cdi.ManualCDILookup;
 import org.springframework.util.StringUtils;
 
@@ -118,9 +119,9 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 impEstadual = Optional.ofNullable(item.getImpostoEstadual()).orElse(BigDecimal.ZERO);
                 impMunicipal = Optional.ofNullable(item.getImpostoMunicipal()).orElse(BigDecimal.ZERO);
 
-                impostoFederal = impostoFederal.add(impFederal);
-                impostoEstadual = impostoEstadual.add(impEstadual);
-                impostoMunicipal = impostoMunicipal.add(impMunicipal);
+                impostoFederal = Biblioteca.soma(impostoFederal, impFederal);
+                impostoEstadual = Biblioteca.soma(impostoEstadual, impEstadual);
+                impostoMunicipal = Biblioteca.soma(impostoMunicipal, impMunicipal);
 
 
             }
@@ -158,11 +159,16 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setValorPis(valorPis);
         nfe.setValorCofins(valorCofins);
         nfe.calcularValorTotal();
+
         String msg = "Trib. Aprox. Federal R$ " + new DecimalFormat("#,###,##0.00").format(impostoFederal)
                 + " e R$ " + new DecimalFormat("#,###,##0.00").format(impostoEstadual) + " Estadual "
                 + "e R$ " + new DecimalFormat("#,###,##0.00").format(impostoMunicipal) + " Municipal Fonte IBPT";
 
-        valorTotalTributos = valorTotalTributos.add(impostoFederal).add(impostoEstadual).add(impostoMunicipal);
+
+        valorTotalTributos = Biblioteca.soma(valorTotalTributos, impostoFederal);
+        valorTotalTributos = Biblioteca.soma(valorTotalTributos, impostoEstadual);
+        valorTotalTributos = Biblioteca.soma(valorTotalTributos, impostoMunicipal);
+
         nfe.setValorTotalTributosFederais(impostoFederal);
         nfe.setValorTotalTributosEstaduais(impostoEstadual);
         nfe.setValorTotalTributosMunicipais(impostoMunicipal);
