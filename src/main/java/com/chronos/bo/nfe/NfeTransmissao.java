@@ -81,7 +81,8 @@ public class NfeTransmissao {
 
 
         br.inf.portalfiscal.nfe.schema_4.inutNFe.TRetInutNFe retorno;
-        retorno = Nfe.inutilizacao(id, justificativa, ConstantesNFe.NFE, false);
+        String tipo = modelo == ModeloDocumento.NFE ? ConstantesNFe.NFE : ConstantesNFe.NFCE;
+        retorno = Nfe.inutilizacao(id, justificativa, tipo, false);
         br.inf.portalfiscal.nfe.schema_4.inutNFe.TRetInutNFe.InfInut infRetorno = retorno.getInfInut();
 
         return infRetorno;
