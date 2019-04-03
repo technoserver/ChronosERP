@@ -1,77 +1,176 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<inutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
-    <infInut Id="ID53191692537100011465001000000001000000001">
-        <tpAmb>2</tpAmb>
-        <xServ>INUTILIZAR</xServ>
-        <cUF>53</cUF>
-        <ano>19</ano>
-        <CNPJ>16925371000114</CNPJ>
-        <mod>65</mod>
-        <serie>1</serie>
-        <nNFIni>1</nNFIni>
-        <nNFFin>1</nNFFin>
-        <xJust>testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</xJust>
-    </infInut>
-    <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-        <SignedInfo>
-            <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-            <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-            <Reference URI="#ID53191692537100011465001000000001000000001">
-                <Transforms>
-                    <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
-                    <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-                </Transforms>
-                <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                <DigestValue>tvwkzVBT7zXIIWRNRoDfH/byWqo=</DigestValue>
-            </Reference>
-        </SignedInfo>
-        <SignatureValue>nPsacsK20Rrf7bl0k5lEKeu1AZUzOf4fqEMlpjMc33C/DZYcoipbHXQUHzD/etHSIrT6bzU152cP
-            YsyooHGH3bf+InxXxK8M80vyyzYZeX5efTkpFkvOBGicdhEwwfKpc3jerYHh8N6Y6vZ+9n5gpaDh
-            pbJha133nAraS7ZhhVGzKc34TV0ltIkUzo0HAGsnMV42YpN1c7N+PROhMbY6DxPyLq6ijbZINOUw
-            onkOOAOqwGi2fg1zLs0FkILqxJH20MZtYs7HwrIKsy4BLDveKZ7QlZLpH2RExCgTQBWHaJ7NrOPK
-            sLvOls0o5GYRChA3l4d2oZ91whWndrXcbLP8MQ==
-        </SignatureValue>
-        <KeyInfo>
-            <X509Data>
-                <X509Certificate>MIIIKDCCBhCgAwIBAgIINWuMz3k53qMwDQYJKoZIhvcNAQELBQAwcjELMAkGA1UEBhMCQlIxEzAR
-                    BgNVBAoTCklDUC1CcmFzaWwxNjA0BgNVBAsTLVNlY3JldGFyaWEgZGEgUmVjZWl0YSBGZWRlcmFs
-                    IGRvIEJyYXNpbCAtIFJGQjEWMBQGA1UEAxMNQUMgT05MSU5FIFJGQjAeFw0xOTAzMjgyMDAyMzZa
-                    Fw0yMDAzMjcyMDAyMzZaMIH1MQswCQYDVQQGEwJCUjELMAkGA1UECAwCREYxETAPBgNVBAcMCEJS
-                    QVNJTElBMRMwEQYDVQQKDApJQ1AtQnJhc2lsMTYwNAYDVQQLDC1TZWNyZXRhcmlhIGRhIFJlY2Vp
-                    dGEgRmVkZXJhbCBkbyBCcmFzaWwgLSBSRkIxFjAUBgNVBAsMDVJGQiBlLUNOUEogQTExFjAUBgNV
-                    BAsMDUFSIENPTkVDVFNJR04xSTBHBgNVBAMMQFRFQ0hOT1NFUlZFUiBBVVRPTUFDQU8gQ09NRVJD
-                    SUFMIEUgREVTRU5WT0xWSU1FTlQ6MTY5MjUzNzEwMDAxMTQwggEiMA0GCSqGSIb3DQEBAQUAA4IB
-                    DwAwggEKAoIBAQC0jQubzRq7+q07yDCxDedtnsAaOgW+BK8DL5+zCWVyxAEMOAotfAA7ZDp66cWq
-                    ug2W8ozCnJ9oTeuxHjMpqOmEmdA1OaSE8PrWahbmhw5k1ViKhUxwWMF+20laV5Va1YXHAwhET8zN
-                    0mKo+yPIVzqLXrP1F9Ass6RbfVbjv6TchSdcAK4F8prTK9R4ZWQgWYtLZe8/6FPvFI2TJltI1Gmf
-                    B4tzXIiScboaOggS8tJYLk+SEg1KaZXuUDQVqPLC4uW4uFGuTlrN3KCskP0ZnvNCwixaI9ZtoVLX
-                    BME2S+yFjqzS0aY4SAJwgU7HLmBxKrj+TT273Gv43SUcR9VojJ4NAgMBAAGjggM8MIIDODCBoQYI
-                    KwYBBQUHAQEEgZQwgZEwXAYIKwYBBQUHMAKGUGh0dHA6Ly9pY3AtYnJhc2lsLnZwa2kudmFsaWRj
-                    ZXJ0aWZpY2Fkb3JhLmNvbS5ici9hYy1vbmxpbmVyZmIvYWMtb25saW5lcmZidjIucDdiMDEGCCsG
-                    AQUFBzABhiVodHRwOi8vb2NzcC52YWxpZGNlcnRpZmljYWRvcmEuY29tLmJyMAkGA1UdEwQCMAAw
-                    HwYDVR0jBBgwFoAUkZp2jCuokxiYmHoD5MvstbAZJ/8wdQYDVR0gBG4wbDBqBgZgTAECATcwYDBe
-                    BggrBgEFBQcCARZSaHR0cDovL2ljcC1icmFzaWwudnBraS52YWxpZGNlcnRpZmljYWRvcmEuY29t
-                    LmJyL2FjLW9ubGluZXJmYi9kcGMtYWMtb25saW5lcmZiLnBkZjCCAQYGA1UdHwSB/jCB+zBVoFOg
-                    UYZPaHR0cDovL2ljcC1icmFzaWwudmFsaWRjZXJ0aWZpY2Fkb3JhLmNvbS5ici9hYy1vbmxpbmVy
-                    ZmIvbGNyLWFjLW9ubGluZXJmYnYyLmNybDBWoFSgUoZQaHR0cDovL2ljcC1icmFzaWwyLnZhbGlk
-                    Y2VydGlmaWNhZG9yYS5jb20uYnIvYWMtb25saW5lcmZiL2xjci1hYy1vbmxpbmVyZmJ2Mi5jcmww
-                    SqBIoEaGRGh0dHA6Ly9yZXBvc2l0b3Jpby5pY3BicmFzaWwuZ292LmJyL2xjci9WQUxJRC9sY3It
-                    YWMtb25saW5lcmZidjIuY3JsMA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYI
-                    KwYBBQUHAwQwgbUGA1UdEQSBrTCBqoEYaXZhbkB0ZWNobm9zZXJ2ZXIuY29tLmJyoDgGBWBMAQME
-                    oC8ELTA1MDExOTc3ODE5MTQ4ODExNjgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMKAgBgVgTAED
-                    AqAXBBVJVkFOIFBFUkVJUkEgREEgU0lMVkGgGQYFYEwBAwOgEAQOMTY5MjUzNzEwMDAxMTSgFwYF
-                    YEwBAwegDgQMMDAwMDAwMDAwMDAwMA0GCSqGSIb3DQEBCwUAA4ICAQCO/DZZOleblbgyF+tFcQ3w
-                    K8JcPfzSzZpyzkp3O/HbKQJ4GHpQxw0MoAoG/icAZNeaL9LHtlAzno+K0DnBjMM4wOJEemaSyN4g
-                    rh94XdjbwVljgLLfK2LHps8MlXS447a6jf0fP8oEkUh6FrjgoNyx2Wl1ZFbhyfJQ/7bhNMjfhLNn
-                    RGYl6s0qjRKR7aum7RBm3DBxnpdTRT85AjbJcfzMu9nPyPD6Vp9hVQA7OrDjcx/eBXF6tFBaQnU0
-                    EcnaQ5qiMxo/FPEf3ZNdCfsBe2NXVpYhvg1qJcvOv2kRG+N9duHReYixc5AAPQppgAdGGHRUnZoK
-                    oTlXLaDICF9hwErRJWdfWXrbM4fJUpcqdMg5Cy+bcU8GLrrUpfYyRku1PwH5tvRQT9RjNrXKCLnd
-                    iJWokDm2TvM/gh33k96Ypv5+7Iwc8G07LNR9SNWxxZwly7FPc+1RXnOCi4lj5MirBShxeQ6WaUfY
-                    NqHBif4Nb8Ftz/qQvZY7OH4X7rXwzPwEnHWF20Jc1rCakb/qpwTibvUQgbO1oy1YjmTkzTEzhFoa
-                    DcZYOu0PLIRTsXvE0xUlKFbT7MyDJvwKtP4Q38Phy2IJsbN8aQmCnJVxlDy2vnzkc4d+7tkZ0av+
-                    BmwEuTUADzvDbgHBHXUf9nkhZW022PiVsxWeXEI56ewO0Xrp+lbwpw==
-                </X509Certificate>
-            </X509Data>
-        </KeyInfo>
-    </Signature>
-</inutNFe>
+<enviNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+    <idLote>1</idLote>
+    <indSinc>1</indSinc>
+    <NFe>
+        <infNFe versao="4.00" Id="NFenullnull">
+            <ide>
+                <cUF>53</cUF>
+                <natOp>DEVOLUCAO DENTRO ESTADO</natOp>
+                <mod>55</mod>
+                <serie>000</serie>
+                <nNF>000000000</nNF>
+                <dhEmi>2019-04-03T12:13:00-03:00</dhEmi>
+                <dhSaiEnt>2019-04-03T12:13:00-03:00</dhSaiEnt>
+                <tpNF>1</tpNF>
+                <idDest>1</idDest>
+                <cMunFG>5300108</cMunFG>
+                <tpImp>1</tpImp>
+                <tpEmis>1</tpEmis>
+                <tpAmb>1</tpAmb>
+                <finNFe>4</finNFe>
+                <indFinal>1</indFinal>
+                <indPres>1</indPres>
+                <procEmi>0</procEmi>
+                <verProc>3.1.13</verProc>
+                <NFref>
+                    <refNFe>53180801713958000354550010010753731111022083</refNFe>
+                </NFref>
+            </ide>
+            <emit>
+                <CNPJ>16925371000114</CNPJ>
+                <xNome>TECHNOSERVER AUTOMACAO COMERCIAL</xNome>
+                <xFant>TECHNOSERVER AUTOMACAO COMERCIAL</xFant>
+                <enderEmit>
+                    <xLgr>ST DESENV ECON QD 1 CJ D LT 5 KITS 106 E 107</xLgr>
+                    <nro>1</nro>
+                    <xCpl>COMPLEMENTO</xCpl>
+                    <xBairro>BAIRRO</xBairro>
+                    <cMun>5300108</cMun>
+                    <xMun>BRASILIA</xMun>
+                    <UF>DF</UF>
+                    <CEP>72237140</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>BRASIL</xPais>
+                    <fone>6130827375</fone>
+                </enderEmit>
+                <IE>0762315200183</IE>
+                <IM>5300108</IM>
+                <CRT>1</CRT>
+            </emit>
+            <dest>
+                <CNPJ>01713958000354</CNPJ>
+                <xNome>MUNDIAL CENTER ATACADISTA</xNome>
+                <enderDest>
+                    <xLgr>ROD BR 060 KM 9 CHACARAS 18A/18B</xLgr>
+                    <nro>S/N</nro>
+                    <xCpl>S/N</xCpl>
+                    <xBairro>BRASILIA</xBairro>
+                    <cMun>5300108</cMun>
+                    <xMun>BRASILIA</xMun>
+                    <UF>DF</UF>
+                    <CEP>72317800</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>BRASIL</xPais>
+                </enderDest>
+                <indIEDest>1</indIEDest>
+                <IE>0737032300305</IE>
+                <IM>0737032300305</IM>
+            </dest>
+            <det nItem="1">
+                <prod>
+                    <cProd>02853</cProd>
+                    <cEAN>SEM GTIN</cEAN>
+                    <xProd>TELA VIVEIRO ESPECIAL 1,00 ROLO FIO.....</xProd>
+                    <NCM>73144100</NCM>
+                    <CEST>0000000</CEST>
+                    <CFOP>5202</CFOP>
+                    <uCom>RL</uCom>
+                    <qCom>2.0000</qCom>
+                    <vUnCom>229.980000</vUnCom>
+                    <vProd>459.96</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <uTrib>RL</uTrib>
+                    <qTrib>2.0000</qTrib>
+                    <vUnTrib>229.980000</vUnTrib>
+                    <indTot>1</indTot>
+                </prod>
+                <imposto>
+                    <ICMS>
+                        <ICMSSN500>
+                            <orig>0</orig>
+                            <CSOSN>500</CSOSN>
+                            <vBCSTRet>0.00</vBCSTRet>
+                            <pST>0.00</pST>
+                            <vICMSSTRet>0.00</vICMSSTRet>
+                        </ICMSSN500>
+                    </ICMS>
+                    <PIS>
+                        <PISNT>
+                            <CST>07</CST>
+                        </PISNT>
+                    </PIS>
+                    <COFINS>
+                        <COFINSNT>
+                            <CST>07</CST>
+                        </COFINSNT>
+                    </COFINS>
+                </imposto>
+            </det>
+            <total>
+                <ICMSTot>
+                    <vBC>0.00</vBC>
+                    <vICMS>0.00</vICMS>
+                    <vICMSDeson>0.00</vICMSDeson>
+                    <vFCP>0.00</vFCP>
+                    <vBCST>459.96</vBCST>
+                    <vST>0.00</vST>
+                    <vFCPST>0.00</vFCPST>
+                    <vFCPSTRet>0.00</vFCPSTRet>
+                    <vProd>459.96</vProd>
+                    <vFrete>0.00</vFrete>
+                    <vSeg>0.00</vSeg>
+                    <vDesc>0.00</vDesc>
+                    <vII>0.00</vII>
+                    <vIPI>0.00</vIPI>
+                    <vIPIDevol>0.00</vIPIDevol>
+                    <vPIS>0.00</vPIS>
+                    <vCOFINS>0.00</vCOFINS>
+                    <vOutro>0.00</vOutro>
+                    <vNF>459.96</vNF>
+                    <vTotTrib>0.00</vTotTrib>
+                </ICMSTot>
+            </total>
+            <transp>
+                <modFrete>0</modFrete>
+            </transp>
+            <pag>
+                <detPag>
+                    <tPag>90</tPag>
+                    <vPag>0.00</vPag>
+                </detPag>
+            </pag>
+            <infAdic>
+                <infCpl>Empresa optante pelo Simples Nacional segundo LC 123/2006. LEI FEDERAL 12741/2012, impostos
+                    aproximados. Procon 151 SQN Q 8 VEN 200 BL B 60 SL 240 CP 703390000 Software www.softsol.com.br
+                    Local dev emb. vazia de agrotoxicos - rod 430 km Vila Sao Jose Brazlandia-DF VAT (Vl Aprox Tributos)
+                    R$ 101.09 ( 21.98%) Fonte:IBPT ICMS: 1.25%
+                </infCpl>
+            </infAdic>
+        </infNFe>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+            <SignedInfo>
+                <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+                <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                <Reference URI="#NFenullnull">
+                    <Transforms>
+                        <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                        <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+                    </Transforms>
+                    <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                    <DigestValue>271y7EqVV+/MTBoARwJKa5sIvxQ=</DigestValue>
+                </Reference>
+            </SignedInfo>
+            <SignatureValue>
+                AZm6+ZzNG9hXBfvjgCF3UnSh1eCd2DWBt3HBP24u6+97NZXcrXvE4mYGPFEGK2d1aCzSrBqYrBPM13JAnrvEJ+4Ffw7WMCcXVQy3AppYJp93OPb6/6aWprPhRfIN/jppPIaWI8tlZ1GyZTmmWhfNwJ7btTCqeco44PHOEW7UBf+McXX7ItTLUrcBwZlgVM4ZyQsMgNnMhYCGnXDdfNAufmdhwRmdKadDKpsDkteHIAbkcnD5iG1VHV1mmHnpvTXLOVH+tAJ5V6TtDQBb/EU3ObOFcYNAjw0Q3XY/q0u4IIO8gPiaIMKTlEOEStt+1zNoY7jM1BPu4cdzBY2FnA5VWQ==
+            </SignatureValue>
+            <KeyInfo>
+                <X509Data>
+                    <X509Certificate>
+                        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
+                    </X509Certificate>
+                </X509Data>
+            </KeyInfo>
+        </Signature>
+    </NFe>
+</enviNFe>

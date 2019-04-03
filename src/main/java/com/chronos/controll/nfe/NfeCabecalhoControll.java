@@ -70,6 +70,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeDetalhe nfeDetalheSelecionado;
     private NfeReferenciada nfeReferenciada;
     private NfeReferenciada nfeReferenciadaSelecionado;
+    private NfeTransporteVolume volume;
     private PdvTipoPagamento tipoPagamento;
     private VendaCondicoesPagamento condicoesPagamento;
     private int qtdParcelas;
@@ -132,6 +133,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
             veiculo = null;
             transportadora = null;
+            volume = new NfeTransporteVolume();
+            volume.setNfeTransporte(getObjeto().getTransporte());
             cartas = new ArrayList<>();
             this.setActiveTabIndex(0);
         } catch (Exception ex) {
@@ -164,6 +167,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
                 veiculos.add(veiculo);
                 getObjeto().getTransporte().setPlacaVeiculo(veiculo.getUf());
                 getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
+
+                if (getObjeto().getTransporte().getListaTransporteVolume() != null && getObjeto().getTransporte().getListaTransporteVolume().size() > 0) {
+                    volume = getObjeto().getTransporte().getListaTransporteVolume().iterator().next();
+                }
+
             }
 
             cartas = eventoRepository.getEntitys(NfeEvento.class, "idnfecabecalho", getObjeto().getId());
@@ -186,6 +194,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             if (getObjeto().getTransporte() != null && getObjeto().getTransporte().getTransportadora() != null && veiculo != null) {
                 getObjeto().getTransporte().setPlacaVeiculo(veiculo.getPlaca());
                 getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
+
+                if (getObjeto().getTransporte().getListaTransporteVolume() != null) {
+                    getObjeto().getTransporte().getListaTransporteVolume().clear();
+                    getObjeto().getTransporte().getListaTransporteVolume().add(volume);
+                }
             }
 
             setObjeto(nfeService.salvar(getObjeto(), tipoPagamento));
@@ -742,6 +755,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     // <editor-fold defaultstate="collapsed" desc="GETS SETS">
 
+
+    public NfeTransporteVolume getVolume() {
+        return volume;
+    }
+
+    public void setVolume(NfeTransporteVolume volume) {
+        this.volume = volume;
+    }
 
     public List<NfeEvento> getCartas() {
         return cartas;
