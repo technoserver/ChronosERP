@@ -25,6 +25,7 @@ public class FormatValor {
 
     private DecimalFormat formatoQuantidade;
     private DecimalFormat formatoValor;
+    private DecimalFormat formatoPeso;
     private DecimalFormat formatoNumeroDocFiscal;
     private DecimalFormat formatoCodigoNumeroDocFiscal;
     private DecimalFormat formatoSerie;
@@ -38,6 +39,7 @@ public class FormatValor {
         this.simboloDecimal.setDecimalSeparator('.');
         this.formatoQuantidade = new DecimalFormat("0.0000", simboloDecimal);
         this.formatoValor = new DecimalFormat("0.00", simboloDecimal);
+        this.formatoPeso = new DecimalFormat("0.000", simboloDecimal);
         this.formatoNumeroDocFiscal = new DecimalFormat("000000000");
         this.formatoCodigoNumeroDocFiscal = new DecimalFormat("00000000");
         this.formatoSerie = new DecimalFormat("000");
@@ -129,6 +131,11 @@ public class FormatValor {
     public String formatarQuantidade(Object valor) {
 
         return formatoQuantidade.format(valor);
+    }
+
+    public String formatarPeso(Object valor) {
+
+        return formatoPeso.format(valor);
     }
 
     public Number formatarQuantidadeToNumber(String valor) throws ParseException {
