@@ -1,185 +1,77 @@
-<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
-    <idLote>1</idLote>
-    <indSinc>1</indSinc>
-    <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe53190116925371000114550100000003171000003176">
-            <ide>
-                <cUF>53</cUF>
-                <cNF>00000317</cNF>
-                <natOp>VENDA</natOp>
-                <mod>55</mod>
-                <serie>10</serie>
-                <nNF>317</nNF>
-                <dhEmi>2019-01-03T17:28:16-03:00</dhEmi>
-                <dhSaiEnt>2019-01-03T17:28:10-03:00</dhSaiEnt>
-                <tpNF>1</tpNF>
-                <idDest>2</idDest>
-                <cMunFG>5300108</cMunFG>
-                <tpImp>1</tpImp>
-                <tpEmis>1</tpEmis>
-                <cDV>6</cDV>
-                <tpAmb>2</tpAmb>
-                <finNFe>1</finNFe>
-                <indFinal>1</indFinal>
-                <indPres>1</indPres>
-                <procEmi>0</procEmi>
-                <verProc>4.0.0.3</verProc>
-            </ide>
-            <emit>
-                <CNPJ>16925371000114</CNPJ>
-                <xNome>EMPRESA MATRIZ PARA TESTE</xNome>
-                <xFant>EMPRESA MATRIZ PARA TESTE</xFant>
-                <enderEmit>
-                    <xLgr>logradouro</xLgr>
-                    <nro>11020</nro>
-                    <xBairro>centro</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
-                    <CEP>49500970</CEP>
-                    <cPais>1058</cPais>
-                    <xPais>BRASIL</xPais>
-                </enderEmit>
-                <IE>0762315200183</IE>
-                <CRT>1</CRT>
-            </emit>
-            <dest>
-                <CPF>02056446510</CPF>
-                <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
-                <enderDest>
-                    <xLgr>logradouro</xLgr>
-                    <nro>1020</nro>
-                    <xBairro>centro</xBairro>
-                    <cMun>2802908</cMun>
-                    <xMun>ITABAIANA</xMun>
-                    <UF>SE</UF>
-                    <CEP>99999999</CEP>
-                    <cPais>1058</cPais>
-                    <xPais>Brazil</xPais>
-                </enderDest>
-                <indIEDest>9</indIEDest>
-            </dest>
-            <det nItem="1">
-                <prod>
-                    <cProd>1</cProd>
-                    <cEAN>12345670</cEAN>
-                    <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
-                    <NCM>19053100</NCM>
-                    <CFOP>6102</CFOP>
-                    <uCom>UN</uCom>
-                    <qCom>1.0000</qCom>
-                    <vUnCom>10</vUnCom>
-                    <vProd>10.00</vProd>
-                    <cEANTrib>12345670</cEANTrib>
-                    <uTrib>UN</uTrib>
-                    <qTrib>1.0000</qTrib>
-                    <vUnTrib>10</vUnTrib>
-                    <indTot>1</indTot>
-                </prod>
-                <imposto>
-                    <vTotTrib>0.00</vTotTrib>
-                    <ICMS>
-                        <ICMSSN102>
-                            <orig>0</orig>
-                            <CSOSN>102</CSOSN>
-                        </ICMSSN102>
-                    </ICMS>
-                    <PIS>
-                        <PISAliq>
-                            <CST>01</CST>
-                            <vBC>10.00</vBC>
-                            <pPIS>1.65</pPIS>
-                            <vPIS>0.16</vPIS>
-                        </PISAliq>
-                    </PIS>
-                    <COFINS>
-                        <COFINSAliq>
-                            <CST>01</CST>
-                            <vBC>10.00</vBC>
-                            <pCOFINS>3.00</pCOFINS>
-                            <vCOFINS>0.30</vCOFINS>
-                        </COFINSAliq>
-                    </COFINS>
-                </imposto>
-            </det>
-            <total>
-                <ICMSTot>
-                    <vBC>0.00</vBC>
-                    <vICMS>0.00</vICMS>
-                    <vICMSDeson>0.00</vICMSDeson>
-                    <vFCP>0.00</vFCP>
-                    <vBCST>0.00</vBCST>
-                    <vST>0.00</vST>
-                    <vFCPST>0.00</vFCPST>
-                    <vFCPSTRet>0.00</vFCPSTRet>
-                    <vProd>10.00</vProd>
-                    <vFrete>0.00</vFrete>
-                    <vSeg>0.00</vSeg>
-                    <vDesc>0.00</vDesc>
-                    <vII>0.00</vII>
-                    <vIPI>0.00</vIPI>
-                    <vIPIDevol>0.00</vIPIDevol>
-                    <vPIS>0.16</vPIS>
-                    <vCOFINS>0.30</vCOFINS>
-                    <vOutro>0.00</vOutro>
-                    <vNF>10.00</vNF>
-                    <vTotTrib>0.00</vTotTrib>
-                </ICMSTot>
-            </total>
-            <transp>
-                <modFrete>0</modFrete>
-            </transp>
-            <cobr>
-                <fat>
-                    <nFat>002</nFat>
-                    <vOrig>10.00</vOrig>
-                    <vDesc>0.00</vDesc>
-                    <vLiq>10.00</vLiq>
-                </fat>
-                <dup>
-                    <nDup>001</nDup>
-                    <dVenc>2019-02-02</dVenc>
-                    <vDup>5.00</vDup>
-                </dup>
-                <dup>
-                    <nDup>002</nDup>
-                    <dVenc>2019-03-04</dVenc>
-                    <vDup>5.00</vDup>
-                </dup>
-            </cobr>
-            <pag>
-                <detPag>
-                    <tPag>14</tPag>
-                    <vPag>10.00</vPag>
-                </detPag>
-            </pag>
-            <infAdic>
-                <infCpl>Trib. Aprox. Federal R$ 0,00 e R$ 0,00 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
-            </infAdic>
-        </infNFe>
-        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-            <SignedInfo>
-                <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-                <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53190116925371000114550100000003171000003176">
-                    <Transforms>
-                        <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
-                        <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
-                    </Transforms>
-                    <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>+ak+L6M/B7ZtuH4RJkYt1zhWRkA=</DigestValue>
-                </Reference>
-            </SignedInfo>
-            <SignatureValue>
-                bmCDmnm5xxNGOBkYTtGEtS4zVCfAnjT3QKteJsRKoWrCcj13ImEOF4aRbRjY3/RLx/Tqu9ec/C3C+g6HkZyXz6ylBuVP0GpfbLcvhh3wKv8FOssGHtdtf6wEX5HbXZGDxgGCe1ICqXLaxa44p6NJ2zLlDAku6oYalRslv3MvBGOSBMIhL61j37m9j4e4Apnqc5NVqipfQyIxvlDgUivCVIe44L4QHXS6S9dsUqfJWkcq2xSKIL8jIOaI8n/mdIgExWsYhNFIkzjKyrlPAp3+rrgWIZPrZjx4bPQgV5RzO0G8XCw9YpD/87o00anyZE3/mFC29CV5dkLoZThSGXS7Ng==
-            </SignatureValue>
-            <KeyInfo>
-                <X509Data>
-                    <X509Certificate>
-                        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
-                    </X509Certificate>
-                </X509Data>
-            </KeyInfo>
-        </Signature>
-    </NFe>
-</enviNFe>
+<?xml version="1.0" encoding="UTF-8"?>
+<inutNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+    <infInut Id="ID53191692537100011465001000000001000000001">
+        <tpAmb>2</tpAmb>
+        <xServ>INUTILIZAR</xServ>
+        <cUF>53</cUF>
+        <ano>19</ano>
+        <CNPJ>16925371000114</CNPJ>
+        <mod>65</mod>
+        <serie>1</serie>
+        <nNFIni>1</nNFIni>
+        <nNFFin>1</nNFFin>
+        <xJust>testeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee</xJust>
+    </infInut>
+    <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+        <SignedInfo>
+            <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+            <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+            <Reference URI="#ID53191692537100011465001000000001000000001">
+                <Transforms>
+                    <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+                    <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+                </Transforms>
+                <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                <DigestValue>tvwkzVBT7zXIIWRNRoDfH/byWqo=</DigestValue>
+            </Reference>
+        </SignedInfo>
+        <SignatureValue>nPsacsK20Rrf7bl0k5lEKeu1AZUzOf4fqEMlpjMc33C/DZYcoipbHXQUHzD/etHSIrT6bzU152cP
+            YsyooHGH3bf+InxXxK8M80vyyzYZeX5efTkpFkvOBGicdhEwwfKpc3jerYHh8N6Y6vZ+9n5gpaDh
+            pbJha133nAraS7ZhhVGzKc34TV0ltIkUzo0HAGsnMV42YpN1c7N+PROhMbY6DxPyLq6ijbZINOUw
+            onkOOAOqwGi2fg1zLs0FkILqxJH20MZtYs7HwrIKsy4BLDveKZ7QlZLpH2RExCgTQBWHaJ7NrOPK
+            sLvOls0o5GYRChA3l4d2oZ91whWndrXcbLP8MQ==
+        </SignatureValue>
+        <KeyInfo>
+            <X509Data>
+                <X509Certificate>MIIIKDCCBhCgAwIBAgIINWuMz3k53qMwDQYJKoZIhvcNAQELBQAwcjELMAkGA1UEBhMCQlIxEzAR
+                    BgNVBAoTCklDUC1CcmFzaWwxNjA0BgNVBAsTLVNlY3JldGFyaWEgZGEgUmVjZWl0YSBGZWRlcmFs
+                    IGRvIEJyYXNpbCAtIFJGQjEWMBQGA1UEAxMNQUMgT05MSU5FIFJGQjAeFw0xOTAzMjgyMDAyMzZa
+                    Fw0yMDAzMjcyMDAyMzZaMIH1MQswCQYDVQQGEwJCUjELMAkGA1UECAwCREYxETAPBgNVBAcMCEJS
+                    QVNJTElBMRMwEQYDVQQKDApJQ1AtQnJhc2lsMTYwNAYDVQQLDC1TZWNyZXRhcmlhIGRhIFJlY2Vp
+                    dGEgRmVkZXJhbCBkbyBCcmFzaWwgLSBSRkIxFjAUBgNVBAsMDVJGQiBlLUNOUEogQTExFjAUBgNV
+                    BAsMDUFSIENPTkVDVFNJR04xSTBHBgNVBAMMQFRFQ0hOT1NFUlZFUiBBVVRPTUFDQU8gQ09NRVJD
+                    SUFMIEUgREVTRU5WT0xWSU1FTlQ6MTY5MjUzNzEwMDAxMTQwggEiMA0GCSqGSIb3DQEBAQUAA4IB
+                    DwAwggEKAoIBAQC0jQubzRq7+q07yDCxDedtnsAaOgW+BK8DL5+zCWVyxAEMOAotfAA7ZDp66cWq
+                    ug2W8ozCnJ9oTeuxHjMpqOmEmdA1OaSE8PrWahbmhw5k1ViKhUxwWMF+20laV5Va1YXHAwhET8zN
+                    0mKo+yPIVzqLXrP1F9Ass6RbfVbjv6TchSdcAK4F8prTK9R4ZWQgWYtLZe8/6FPvFI2TJltI1Gmf
+                    B4tzXIiScboaOggS8tJYLk+SEg1KaZXuUDQVqPLC4uW4uFGuTlrN3KCskP0ZnvNCwixaI9ZtoVLX
+                    BME2S+yFjqzS0aY4SAJwgU7HLmBxKrj+TT273Gv43SUcR9VojJ4NAgMBAAGjggM8MIIDODCBoQYI
+                    KwYBBQUHAQEEgZQwgZEwXAYIKwYBBQUHMAKGUGh0dHA6Ly9pY3AtYnJhc2lsLnZwa2kudmFsaWRj
+                    ZXJ0aWZpY2Fkb3JhLmNvbS5ici9hYy1vbmxpbmVyZmIvYWMtb25saW5lcmZidjIucDdiMDEGCCsG
+                    AQUFBzABhiVodHRwOi8vb2NzcC52YWxpZGNlcnRpZmljYWRvcmEuY29tLmJyMAkGA1UdEwQCMAAw
+                    HwYDVR0jBBgwFoAUkZp2jCuokxiYmHoD5MvstbAZJ/8wdQYDVR0gBG4wbDBqBgZgTAECATcwYDBe
+                    BggrBgEFBQcCARZSaHR0cDovL2ljcC1icmFzaWwudnBraS52YWxpZGNlcnRpZmljYWRvcmEuY29t
+                    LmJyL2FjLW9ubGluZXJmYi9kcGMtYWMtb25saW5lcmZiLnBkZjCCAQYGA1UdHwSB/jCB+zBVoFOg
+                    UYZPaHR0cDovL2ljcC1icmFzaWwudmFsaWRjZXJ0aWZpY2Fkb3JhLmNvbS5ici9hYy1vbmxpbmVy
+                    ZmIvbGNyLWFjLW9ubGluZXJmYnYyLmNybDBWoFSgUoZQaHR0cDovL2ljcC1icmFzaWwyLnZhbGlk
+                    Y2VydGlmaWNhZG9yYS5jb20uYnIvYWMtb25saW5lcmZiL2xjci1hYy1vbmxpbmVyZmJ2Mi5jcmww
+                    SqBIoEaGRGh0dHA6Ly9yZXBvc2l0b3Jpby5pY3BicmFzaWwuZ292LmJyL2xjci9WQUxJRC9sY3It
+                    YWMtb25saW5lcmZidjIuY3JsMA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEFBQcDAgYI
+                    KwYBBQUHAwQwgbUGA1UdEQSBrTCBqoEYaXZhbkB0ZWNobm9zZXJ2ZXIuY29tLmJyoDgGBWBMAQME
+                    oC8ELTA1MDExOTc3ODE5MTQ4ODExNjgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMKAgBgVgTAED
+                    AqAXBBVJVkFOIFBFUkVJUkEgREEgU0lMVkGgGQYFYEwBAwOgEAQOMTY5MjUzNzEwMDAxMTSgFwYF
+                    YEwBAwegDgQMMDAwMDAwMDAwMDAwMA0GCSqGSIb3DQEBCwUAA4ICAQCO/DZZOleblbgyF+tFcQ3w
+                    K8JcPfzSzZpyzkp3O/HbKQJ4GHpQxw0MoAoG/icAZNeaL9LHtlAzno+K0DnBjMM4wOJEemaSyN4g
+                    rh94XdjbwVljgLLfK2LHps8MlXS447a6jf0fP8oEkUh6FrjgoNyx2Wl1ZFbhyfJQ/7bhNMjfhLNn
+                    RGYl6s0qjRKR7aum7RBm3DBxnpdTRT85AjbJcfzMu9nPyPD6Vp9hVQA7OrDjcx/eBXF6tFBaQnU0
+                    EcnaQ5qiMxo/FPEf3ZNdCfsBe2NXVpYhvg1qJcvOv2kRG+N9duHReYixc5AAPQppgAdGGHRUnZoK
+                    oTlXLaDICF9hwErRJWdfWXrbM4fJUpcqdMg5Cy+bcU8GLrrUpfYyRku1PwH5tvRQT9RjNrXKCLnd
+                    iJWokDm2TvM/gh33k96Ypv5+7Iwc8G07LNR9SNWxxZwly7FPc+1RXnOCi4lj5MirBShxeQ6WaUfY
+                    NqHBif4Nb8Ftz/qQvZY7OH4X7rXwzPwEnHWF20Jc1rCakb/qpwTibvUQgbO1oy1YjmTkzTEzhFoa
+                    DcZYOu0PLIRTsXvE0xUlKFbT7MyDJvwKtP4Q38Phy2IJsbN8aQmCnJVxlDy2vnzkc4d+7tkZ0av+
+                    BmwEuTUADzvDbgHBHXUf9nkhZW022PiVsxWeXEI56ewO0Xrp+lbwpw==
+                </X509Certificate>
+            </X509Data>
+        </KeyInfo>
+    </Signature>
+</inutNFe>
