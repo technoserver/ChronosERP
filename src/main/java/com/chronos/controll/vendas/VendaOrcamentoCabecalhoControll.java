@@ -10,6 +10,7 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.VendaOrcamentoService;
 import com.chronos.util.jsf.Mensagem;
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.SelectEvent;
 
 import javax.faces.view.ViewScoped;
@@ -54,9 +55,11 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
             dataModel = new ERPLazyDataModel<>();
             dataModel.setClazz(VendaOrcamentoCabecalho.class);
             dataModel.setDao(dao);
-            dataModel.getFiltros().clear();
-            dataModel.addFiltro("tipo", Optional.ofNullable(tipo).orElse("O"), Filtro.IGUAL);
         }
+
+        dataModel.getFiltros().clear();
+        dataModel.addFiltro("tipo", Optional.ofNullable(tipo).orElse("O"), Filtro.IGUAL);
+
         return dataModel;
     }
 
@@ -85,17 +88,28 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         try {
             VendaOrcamentoCabecalho orcamento = service.salvar(getObjeto());
             setObjeto(orcamento);
-            Mensagem.addInfoMessage("Orçamento salvo com sucesso");
+            Mensagem.addInfoMessage("Registro salvo com sucesso");
             setTelaGrid(false);
         } catch (Exception e) {
 
             if (e instanceof ChronosException) {
                 Mensagem.addErrorMessage("", e);
             } else {
-                throw new RuntimeException("Ocorreu um erro ao tenta salvar o orçamento", e);
+                throw new RuntimeException("Ocorreu um erro ao tenta salvar", e);
             }
 
         }
+    }
+
+
+    public void gerarPedido() {
+        VendaOrcamentoCabecalho orcamento = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        orcamento.setTipo("P");
+        orcamento.setSituacao("A");
+        String codigo = orcamento.getTipo().equals("P") ? "#PE" : "#OE";
+        codigo += StringUtils.leftPad(orcamento.getId().toString(), 3, "0");
+        orcamento.setCodigo(codigo);
+        dao.atualizar(orcamento);
     }
 
     public void gerarVenda() {

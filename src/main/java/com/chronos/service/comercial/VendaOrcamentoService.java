@@ -6,6 +6,7 @@ import com.chronos.modelo.enuns.SituacaoOrcamentoPedido;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.jpa.Transactional;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -42,9 +43,16 @@ public class VendaOrcamentoService implements Serializable {
             }
             throw new ChronosException(mensagem);
         }
+        Integer id = orcamento.getId();
         orcamento = repository.atualizar(orcamento);
-        String codigo = "OC" + orcamento.getId();
-        orcamento.setCodigo(codigo);
+
+        if (id == null) {
+            String codigo = orcamento.getTipo().equals("P") ? "#PE" : "#OE";
+            codigo += StringUtils.leftPad(orcamento.getId().toString(), 3, "0");
+            orcamento.setCodigo(codigo);
+            orcamento = repository.atualizar(orcamento);
+        }
+
 
         return orcamento;
     }

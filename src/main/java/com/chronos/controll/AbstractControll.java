@@ -401,12 +401,10 @@ public abstract class AbstractControll<T> implements Serializable {
         vendaOrcamentoTipo.put("Pedido", "P");
 
         vendaOrcamentoSituacao = new LinkedHashMap<>();
-        vendaOrcamentoSituacao.put("Digitacao", "D");
-        vendaOrcamentoSituacao.put("Producao", "P");
-        vendaOrcamentoSituacao.put("Expedicao", "X");
-        vendaOrcamentoSituacao.put("Entregue", "T");
-        vendaOrcamentoSituacao.put("Encerrado", "E");
-        vendaOrcamentoSituacao.put("Faturado", "F");
+        vendaOrcamentoSituacao.put("Aprovado", "A");
+        vendaOrcamentoSituacao.put("Atendido", "T");
+        vendaOrcamentoSituacao.put("Não Aprovado", "N");
+        vendaOrcamentoSituacao.put("Pendente", "P");
         vendaOrcamentoSituacao.put("Cancelada", "C");
 
         formaPagamento = new LinkedHashMap<>();
