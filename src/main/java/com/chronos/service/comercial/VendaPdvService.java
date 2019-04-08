@@ -52,6 +52,9 @@ public class VendaPdvService implements Serializable {
     private Repository<ContaPessoa> contaPessoaRepository;
 
     @Inject
+    private Repository<Cliente> clienteRepository;
+
+    @Inject
     private SyncPendentesService syncPendentesService;
 
     @Inject
@@ -79,6 +82,12 @@ public class VendaPdvService implements Serializable {
         estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
         for (PdvFormaPagamento p : pagamentos) {
             if (p.getPdvTipoPagamento().getGeraParcelas().equals("S") && p.getPdvTipoPagamento().getCodigo().equals("14")) {
+
+                if (venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
+                    throw new ChronosException("Cliente com restrinções de bloqueio");
+                }
+
+
                 finLancamentoReceberService.gerarLancamento(venda.getId(), p.getValor(), venda.getCliente(), p.getCondicao(), Modulo.PDV.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
             }
 

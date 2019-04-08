@@ -83,6 +83,12 @@ public class Cliente implements Serializable {
         this.pessoa = new Pessoa(nome, email);
     }
 
+    public Cliente(Integer id, String nome, String situacao, String bloquear) {
+        this.id = id;
+        this.pessoa = new Pessoa(nome);
+        this.situacaoForCli = new SituacaoForCli(situacao, bloquear);
+    }
+
     @PreUpdate
     @PrePersist
     private void preUpdate() {

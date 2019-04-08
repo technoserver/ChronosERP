@@ -18,7 +18,7 @@ import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
 import org.apache.commons.io.FileUtils;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.UploadedFile;
@@ -308,7 +308,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             nfeDetalheImpostoIpi = nfeDetalheSelecionado.getNfeDetalheImpostoIpi() == null ? new NfeDetalheImpostoIpi() : nfeDetalheSelecionado.getNfeDetalheImpostoIpi();
             nfeDetalheImpostoPis = nfeDetalheSelecionado.getNfeDetalheImpostoPis() == null ? new NfeDetalheImpostoPis() : nfeDetalheSelecionado.getNfeDetalheImpostoPis();
             dadosSalvos = false;
-            RequestContext.getCurrentInstance().execute("PF('dialogOutrasTelas2').show()");
+            PrimeFaces.current().executeScript("PF('dialogOutrasTelas2').show()");
         }
     }
 

@@ -9,7 +9,7 @@ import com.chronos.repository.Repository;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -170,7 +170,7 @@ public class FinPagamentoControll extends AbstractControll<FinParcelaPagar> impl
             finChequeEmitido.setValor(totalParcelas);
         }
         pagamentoCheque = true;
-        RequestContext.getCurrentInstance().update("formOutrasTelas:dialogFinChequeEmitido");
+        PrimeFaces.current().ajax().update("formOutrasTelas:dialogFinChequeEmitido");
     }
 
     public void cancelaPagamentoCheque() {

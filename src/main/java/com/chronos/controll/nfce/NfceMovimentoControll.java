@@ -11,7 +11,7 @@ import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
@@ -295,7 +295,7 @@ public class NfceMovimentoControll extends AbstractControll<PdvMovimento> implem
 //            Path localPdf = getDefault().getPath(fileTemp.getPath());
             nomeImpressaoMovimento = "movimento" + getObjeto().getId() + ".pdf";
 //            ArquivoUtil.getInstance().escrever(pdfFile, nomeImpressaoMovimento, localPdf.toString());
-            RequestContext.getCurrentInstance().addCallbackParam("movimentoIniciado", true);
+            PrimeFaces.current().ajax().addCallbackParam("movimentoIniciado", true);
 
         } catch (Exception ex) {
             Mensagem.addErrorMessage("Ocorreu um erro ao imprimir o relatório de encerramento de movimento.\n." + ex);
