@@ -54,10 +54,10 @@
                              exibir="#{seguranca.isTemAcesso('ATIVIDADE_FOR_CLIENTE')}"
                              funcao="atividadeForCli"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/comercial/situacaoForCli"
+                <erp:subMenu caminho="/modulo/cadastros/comercial/situacaoCliente"
                              label="Situação"
-                             exibir="#{seguranca.isTemAcesso('SITUACAO_FOR_CLIENTE')}"
-                             funcao="situacaoForCli"/>
+                             exibir="#{seguranca.isTemAcesso('SITUACAO_CLIENTE')}"
+                             funcao="situacaoCliente"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/comercial/cliente"
                              label="Cliente"
@@ -67,7 +67,6 @@
                              label="Fornecedor"
                              exibir="#{seguranca.isTemAcesso('FORNECEDOR')}"
                              funcao="fornecedor"/>
-
 
 
             </ul>

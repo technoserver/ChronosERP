@@ -19,7 +19,7 @@ import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.springframework.util.StringUtils;
 
@@ -67,6 +67,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private ItemVendaService itemService;
     @Inject
     private ProdutoService produtoService;
+    @Inject
+    private Repository<SituacaoForCli> situacaoForCliRepository;
+
     private ProdutoDTO produto;
 
 
@@ -202,8 +205,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
             itemService.verificarRestricao(vendaDetalhe);
 
             if (itemService.isNecessarioAutorizacaoSupervisor()) {
-                RequestContext.getCurrentInstance().execute("PF('dialogVendaDetalhe').hide();");
-                RequestContext.getCurrentInstance().execute("PF('dialogSupervisor').show();");
+                PrimeFaces.current().executeScript("PF('dialogVendaDetalhe').hide();");
+                PrimeFaces.current().executeScript("PF('dialogSupervisor').show();");
             } else {
                 vendaService.addItem(getObjeto(), vendaDetalhe);
             }
@@ -498,7 +501,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void definirEnderecoEntrega(SelectEvent event) {
         PessoaCliente pessoaCliente = (PessoaCliente) event.getObject();
+        SituacaoForCli situacao = situacaoForCliRepository.get(pessoaCliente.getIdSituacaoForCli(), SituacaoForCli.class);
         Cliente cliente = new Cliente();
+        cliente.setSituacaoForCli(situacao);
         cliente.setId(pessoaCliente.getId());
         getObjeto().setCliente(cliente);
         String endereco = "End: " + pessoaCliente.getLogradouro() + "," + pessoaCliente.getNumero() + " ";

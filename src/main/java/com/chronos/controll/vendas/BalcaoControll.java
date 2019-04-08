@@ -21,7 +21,7 @@ import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -365,7 +365,7 @@ public class BalcaoControll implements Serializable {
             vendaDetalheService.verificarRestricao(item);
 
             if (vendaDetalheService.isNecessarioAutorizacaoSupervisor()) {
-                RequestContext.getCurrentInstance().execute("PF('dialogSupervisor').show();");
+                PrimeFaces.current().executeScript("PF('dialogSupervisor').show();");
             } else {
                 venda = vendaDetalheService.addProduto(venda, item);
                 item = new PdvVendaDetalhe();

@@ -21,7 +21,7 @@ import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -518,7 +518,7 @@ public class NfceControll implements Serializable {
             if (status == StatusTransmissao.AUTORIZADA) {
                 gerarCupom();
                 Mensagem.addInfoMessage("NFe transmitida com sucesso");
-                RequestContext.getCurrentInstance().addCallbackParam("vendaFinalizada", true);
+                PrimeFaces.current().ajax().addCallbackParam("vendaFinalizada", true);
             }
 
 

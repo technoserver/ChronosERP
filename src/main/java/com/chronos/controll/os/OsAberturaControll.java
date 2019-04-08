@@ -349,7 +349,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
             filtros.add(new Filtro("pessoa.cliente", "S"));
-            atributos = new Object[]{"pessoa.nome"};
+            atributos = new Object[]{"pessoa.nome", "situacaoForCli.nome", "situacaoForCli.bloquear"};
             listaCliente = clienteRepository.getEntitys(Cliente.class, filtros, atributos);
         } catch (Exception e) {
             e.printStackTrace();

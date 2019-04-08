@@ -5,7 +5,7 @@ import com.chronos.bo.nfe.NfeTransmissao;
 import com.chronos.modelo.entidades.NfeCabecalho;
 import com.chronos.repository.Repository;
 import com.chronos.transmissor.util.XmlUtil;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -84,7 +84,7 @@ public class TesteControll implements Serializable {
 
 
         xml = XmlUtil.objectToXml(tEnviNFe);
-        RequestContext.getCurrentInstance().addCallbackParam("nfe", xml);
+        PrimeFaces.current().ajax().addCallbackParam("nfe", xml);
     }
 
     public void testResultPrint() {
@@ -127,7 +127,7 @@ public class TesteControll implements Serializable {
 ////        marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
 //        marshaller.marshal(tNfeProc, sw);
 //        xml = sw.toString();
-        RequestContext.getCurrentInstance().addCallbackParam("xml", xml);
+        PrimeFaces.current().ajax().addCallbackParam("xml", xml);
     }
 
     public String getTeste() {

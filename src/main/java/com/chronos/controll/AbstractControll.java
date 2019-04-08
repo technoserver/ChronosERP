@@ -786,16 +786,20 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public void remover() {
         try {
+
             Integer idObjeto = null;
+
             if (objetoSelecionado != null) {
                 idObjeto = (Integer) getClazz().getMethod("getId").invoke(objetoSelecionado);
             }
+
             if (objetoSelecionado == null || idObjeto == null) {
                 Mensagem.addWarnMessage("Nenhum registro selecionado!");
             } else {
                 dao.excluir(objetoSelecionado, idObjeto);
                 Mensagem.addInfoMessage("Registro excluído com sucesso!");
             }
+
         } catch (Exception e) {
             if (e.getCause().getClass().getName().contains("PersistenceException")) {
                 Mensagem.addErrorMessage("Ocorreu um erro ao excluir o registro! o mesmo já possue movimento", e);

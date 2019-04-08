@@ -60,6 +60,10 @@ public class VendaService extends AbstractService<VendaCabecalho> {
                     ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
         }
 
+        if (venda.getFormaPagamento().equals("1") && venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
+            throw new ChronosException("Cliente com restrinções de bloqueio");
+        }
+
         if (venda.getListaVendaDetalhe() == null || venda.getListaVendaDetalhe().isEmpty()) {
             throw new ChronosException("Não foram definido itens para o pedido de venda");
         }
