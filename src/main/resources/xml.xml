@@ -1,109 +1,105 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<enviNFe versao="4.00" xmlns="http://www.portalfiscal.inf.br/nfe">
+<enviNFe xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
     <idLote>1</idLote>
     <indSinc>1</indSinc>
-    <NFe>
-        <infNFe versao="4.00" Id="NFenullnull">
+    <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+        <infNFe versao="4.00" Id="NFe53190416925371000114550100000010021000010020">
             <ide>
                 <cUF>53</cUF>
-                <natOp>DEVOLUCAO DENTRO ESTADO</natOp>
+                <cNF>00001002</cNF>
+                <natOp>VENDA</natOp>
                 <mod>55</mod>
-                <serie>000</serie>
-                <nNF>000000000</nNF>
-                <dhEmi>2019-04-03T12:13:00-03:00</dhEmi>
-                <dhSaiEnt>2019-04-03T12:13:00-03:00</dhSaiEnt>
+                <serie>10</serie>
+                <nNF>1002</nNF>
+                <dhEmi>2019-04-17T20:40:51-04:00</dhEmi>
+                <dhSaiEnt>2019-04-17T20:40:48-04:00</dhSaiEnt>
                 <tpNF>1</tpNF>
-                <idDest>1</idDest>
+                <idDest>2</idDest>
                 <cMunFG>5300108</cMunFG>
                 <tpImp>1</tpImp>
                 <tpEmis>1</tpEmis>
-                <tpAmb>1</tpAmb>
-                <finNFe>4</finNFe>
+                <cDV>0</cDV>
+                <tpAmb>2</tpAmb>
+                <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
                 <indPres>1</indPres>
                 <procEmi>0</procEmi>
-                <verProc>3.1.13</verProc>
-                <NFref>
-                    <refNFe>53180801713958000354550010010753731111022083</refNFe>
-                </NFref>
+                <verProc>4.0.0.3</verProc>
             </ide>
             <emit>
                 <CNPJ>16925371000114</CNPJ>
-                <xNome>TECHNOSERVER AUTOMACAO COMERCIAL</xNome>
-                <xFant>TECHNOSERVER AUTOMACAO COMERCIAL</xFant>
+                <xNome>EMPRESA MATRIZ PARA TESTE</xNome>
+                <xFant>EMPRESA MATRIZ PARA TESTE</xFant>
                 <enderEmit>
-                    <xLgr>ST DESENV ECON QD 1 CJ D LT 5 KITS 106 E 107</xLgr>
-                    <nro>1</nro>
-                    <xCpl>COMPLEMENTO</xCpl>
-                    <xBairro>BAIRRO</xBairro>
+                    <xLgr>logradouro</xLgr>
+                    <nro>11020</nro>
+                    <xBairro>centro</xBairro>
                     <cMun>5300108</cMun>
                     <xMun>BRASILIA</xMun>
                     <UF>DF</UF>
-                    <CEP>72237140</CEP>
+                    <CEP>49500970</CEP>
                     <cPais>1058</cPais>
                     <xPais>BRASIL</xPais>
-                    <fone>6130827375</fone>
                 </enderEmit>
                 <IE>0762315200183</IE>
-                <IM>5300108</IM>
                 <CRT>1</CRT>
             </emit>
             <dest>
-                <CNPJ>01713958000354</CNPJ>
-                <xNome>MUNDIAL CENTER ATACADISTA</xNome>
+                <CPF>02056446510</CPF>
+                <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
                 <enderDest>
-                    <xLgr>ROD BR 060 KM 9 CHACARAS 18A/18B</xLgr>
-                    <nro>S/N</nro>
-                    <xCpl>S/N</xCpl>
-                    <xBairro>BRASILIA</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
-                    <CEP>72317800</CEP>
+                    <xLgr>logradouro</xLgr>
+                    <nro>1020</nro>
+                    <xBairro>centro</xBairro>
+                    <cMun>2802908</cMun>
+                    <xMun>ITABAIANA</xMun>
+                    <UF>SE</UF>
+                    <CEP>99999999</CEP>
                     <cPais>1058</cPais>
-                    <xPais>BRASIL</xPais>
+                    <xPais>Brazil</xPais>
                 </enderDest>
-                <indIEDest>1</indIEDest>
-                <IE>0737032300305</IE>
-                <IM>0737032300305</IM>
+                <indIEDest>9</indIEDest>
             </dest>
             <det nItem="1">
                 <prod>
-                    <cProd>02853</cProd>
-                    <cEAN>SEM GTIN</cEAN>
-                    <xProd>TELA VIVEIRO ESPECIAL 1,00 ROLO FIO.....</xProd>
-                    <NCM>73144100</NCM>
-                    <CEST>0000000</CEST>
-                    <CFOP>5202</CFOP>
-                    <uCom>RL</uCom>
-                    <qCom>2.0000</qCom>
-                    <vUnCom>229.980000</vUnCom>
-                    <vProd>459.96</vProd>
-                    <cEANTrib>SEM GTIN</cEANTrib>
-                    <uTrib>RL</uTrib>
-                    <qTrib>2.0000</qTrib>
-                    <vUnTrib>229.980000</vUnTrib>
+                    <cProd>1</cProd>
+                    <cEAN>12345670</cEAN>
+                    <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
+                    <NCM>19053100</NCM>
+                    <CFOP>6102</CFOP>
+                    <uCom>UN</uCom>
+                    <qCom>1.0000</qCom>
+                    <vUnCom>10</vUnCom>
+                    <vProd>10.00</vProd>
+                    <cEANTrib>12345670</cEANTrib>
+                    <uTrib>UN</uTrib>
+                    <qTrib>1.0000</qTrib>
+                    <vUnTrib>10</vUnTrib>
+                    <vDesc>0.50</vDesc>
                     <indTot>1</indTot>
                 </prod>
                 <imposto>
+                    <vTotTrib>0.00</vTotTrib>
                     <ICMS>
-                        <ICMSSN500>
+                        <ICMSSN102>
                             <orig>0</orig>
-                            <CSOSN>500</CSOSN>
-                            <vBCSTRet>0.00</vBCSTRet>
-                            <pST>0.00</pST>
-                            <vICMSSTRet>0.00</vICMSSTRet>
-                        </ICMSSN500>
+                            <CSOSN>102</CSOSN>
+                        </ICMSSN102>
                     </ICMS>
                     <PIS>
-                        <PISNT>
-                            <CST>07</CST>
-                        </PISNT>
+                        <PISAliq>
+                            <CST>01</CST>
+                            <vBC>9.50</vBC>
+                            <pPIS>1.65</pPIS>
+                            <vPIS>0.15</vPIS>
+                        </PISAliq>
                     </PIS>
                     <COFINS>
-                        <COFINSNT>
-                            <CST>07</CST>
-                        </COFINSNT>
+                        <COFINSAliq>
+                            <CST>01</CST>
+                            <vBC>9.50</vBC>
+                            <pCOFINS>3.00</pCOFINS>
+                            <vCOFINS>0.28</vCOFINS>
+                        </COFINSAliq>
                     </COFINS>
                 </imposto>
             </det>
@@ -113,56 +109,60 @@
                     <vICMS>0.00</vICMS>
                     <vICMSDeson>0.00</vICMSDeson>
                     <vFCP>0.00</vFCP>
-                    <vBCST>459.96</vBCST>
+                    <vBCST>0.00</vBCST>
                     <vST>0.00</vST>
                     <vFCPST>0.00</vFCPST>
                     <vFCPSTRet>0.00</vFCPSTRet>
-                    <vProd>459.96</vProd>
+                    <vProd>10.00</vProd>
                     <vFrete>0.00</vFrete>
                     <vSeg>0.00</vSeg>
-                    <vDesc>0.00</vDesc>
+                    <vDesc>0.50</vDesc>
                     <vII>0.00</vII>
                     <vIPI>0.00</vIPI>
                     <vIPIDevol>0.00</vIPIDevol>
-                    <vPIS>0.00</vPIS>
-                    <vCOFINS>0.00</vCOFINS>
+                    <vPIS>0.15</vPIS>
+                    <vCOFINS>0.28</vCOFINS>
                     <vOutro>0.00</vOutro>
-                    <vNF>459.96</vNF>
+                    <vNF>9.50</vNF>
                     <vTotTrib>0.00</vTotTrib>
                 </ICMSTot>
             </total>
             <transp>
                 <modFrete>0</modFrete>
             </transp>
+            <cobr>
+                <fat>
+                    <nFat>000</nFat>
+                    <vOrig>10.00</vOrig>
+                    <vDesc>0.50</vDesc>
+                    <vLiq>9.50</vLiq>
+                </fat>
+            </cobr>
             <pag>
                 <detPag>
-                    <tPag>90</tPag>
-                    <vPag>0.00</vPag>
+                    <tPag>14</tPag>
+                    <vPag>9.50</vPag>
                 </detPag>
             </pag>
             <infAdic>
-                <infCpl>Empresa optante pelo Simples Nacional segundo LC 123/2006. LEI FEDERAL 12741/2012, impostos
-                    aproximados. Procon 151 SQN Q 8 VEN 200 BL B 60 SL 240 CP 703390000 Software www.softsol.com.br
-                    Local dev emb. vazia de agrotoxicos - rod 430 km Vila Sao Jose Brazlandia-DF VAT (Vl Aprox Tributos)
-                    R$ 101.09 ( 21.98%) Fonte:IBPT ICMS: 1.25%
-                </infCpl>
+                <infCpl>Trib. Aprox. Federal R$ 0,00 e R$ 0,00 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
             </infAdic>
         </infNFe>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFenullnull">
+                <Reference URI="#NFe53190416925371000114550100000010021000010020">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>271y7EqVV+/MTBoARwJKa5sIvxQ=</DigestValue>
+                    <DigestValue>qrt4e0bCOjI74ouw5qXrQpCxVYk=</DigestValue>
                 </Reference>
             </SignedInfo>
             <SignatureValue>
-                AZm6+ZzNG9hXBfvjgCF3UnSh1eCd2DWBt3HBP24u6+97NZXcrXvE4mYGPFEGK2d1aCzSrBqYrBPM13JAnrvEJ+4Ffw7WMCcXVQy3AppYJp93OPb6/6aWprPhRfIN/jppPIaWI8tlZ1GyZTmmWhfNwJ7btTCqeco44PHOEW7UBf+McXX7ItTLUrcBwZlgVM4ZyQsMgNnMhYCGnXDdfNAufmdhwRmdKadDKpsDkteHIAbkcnD5iG1VHV1mmHnpvTXLOVH+tAJ5V6TtDQBb/EU3ObOFcYNAjw0Q3XY/q0u4IIO8gPiaIMKTlEOEStt+1zNoY7jM1BPu4cdzBY2FnA5VWQ==
+                sgoombIy9IHimS/NPObWcfY8LrwdTr/n7pkGl05RxOBS4sidobEEgB3eJrgftYjU9naPoQBn7eZa98HruJw/JH0d5AHg/zeTdioUQgYmku+WlYcLR3bNYTriqTdLEEiYvfDA/r8UUsMTIKqT3T22wdV1WfmTdUBm+ahFJzbe1m8vSfo0zdemdr/6gmj76nR50+gguBaAQ1KCzBTxDnwGpSQjywXK1L2HuzT1SKHxg4Ws3+rLcrNnEmZkr+NnatHcJkYl1O7nGKAwUG2b49ZwRMnzXpNSeWq5hCLLaj7zOVEEA8bmGpSqgyUgHD2KAdRI00C4JZS1+ZbaphZ4HIBQYA==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>
