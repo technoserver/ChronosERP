@@ -315,7 +315,7 @@ public class VendaToNFe extends ManualCDILookup {
                 numFatura = org.apache.commons.lang3.StringUtils.leftPad(numFatura, 3, "0");
                 fatura.setNumero(numFatura);
                 fatura.setValorLiquido(nfe.getValorTotal());
-                fatura.setValorOriginal(nfe.getValorTotal());
+                fatura.setValorOriginal(nfe.getValorTotalProdutos());
                 fatura.setValorDesconto(nfe.getValorDesconto());
 
             }
