@@ -190,6 +190,7 @@ public class BalcaoControll implements Serializable {
                 venda.setListaPdvVendaDetalhe(new ArrayList<>());
                 vendedor = instanciarVendedor(usuario);
                 venda.setVendedor(vendedor);
+                venda.setTaxaComissao(vendedor.getComissao());
                 venda.setPdvMovimento(movimento);
                 item = new PdvVendaDetalhe();
                 desconto = BigDecimal.ZERO;
@@ -712,6 +713,7 @@ public class BalcaoControll implements Serializable {
 
     public void selecionarVendedor() {
         venda.setVendedor(vendedor);
+        venda.setTaxaComissao(vendedor.getComissao());
     }
 
     public Vendedor getVendedor() {

@@ -29,9 +29,8 @@ public class VendaComissao implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_LANCAMENTO")
     private Date dataLancamento;
-    @JoinColumn(name = "ID_VENDA_CABECALHO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private VendaCabecalho vendaCabecalho;
+    @Column(name = "numero_documento")
+    private String numeroDocumento;
     @JoinColumn(name = "ID_VENDEDOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Vendedor vendedor;
@@ -107,12 +106,12 @@ public class VendaComissao implements Serializable {
         this.dataLancamento = dataLancamento;
     }
 
-    public VendaCabecalho getVendaCabecalho() {
-        return vendaCabecalho;
+    public String getNumeroDocumento() {
+        return numeroDocumento;
     }
 
-    public void setVendaCabecalho(VendaCabecalho vendaCabecalho) {
-        this.vendaCabecalho = vendaCabecalho;
+    public void setNumeroDocumento(String numeroDocumento) {
+        this.numeroDocumento = numeroDocumento;
     }
 
     public Vendedor getVendedor() {

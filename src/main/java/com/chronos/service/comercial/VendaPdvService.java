@@ -63,6 +63,9 @@ public class VendaPdvService implements Serializable {
     @Inject
     private AuditoriaService auditoriaService;
 
+    @Inject
+    private VendaComissaoService vendaComissaoService;
+
 
     @Transactional
     public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda) throws Exception {
@@ -109,6 +112,11 @@ public class VendaPdvService implements Serializable {
 
         }
         movimentoService.lancaVenda(venda.getValorTotal(), venda.getValorDesconto(), venda.getTroco());
+
+        String doc = "M" + Modulo.PDV.getCodigo() + "V" + venda.getId();
+
+
+        vendaComissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(), doc, venda.getVendedor());
 
 
         auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "PDV");
