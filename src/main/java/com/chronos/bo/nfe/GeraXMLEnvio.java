@@ -441,9 +441,10 @@ public class GeraXMLEnvio {
                                 TNFe.InfNFe.Transp.Vol volume = new TNFe.InfNFe.Transp.Vol();
                                 volume.setQVol(v.getQuantidade().toString());
                                 volume.setEsp(v.getEspecie());
+                                volume.setNVol(v.getNumeracao());
                                 volume.setMarca(v.getMarca());
-                                volume.setPesoL(FormatValor.getInstance().formatarQuantidade(v.getPesoLiquido()));
-                                volume.setPesoB(FormatValor.getInstance().formatarQuantidade(v.getPesoBruto()));
+                                volume.setPesoL(FormatValor.getInstance().formatarPeso(v.getPesoLiquido()));
+                                volume.setPesoB(FormatValor.getInstance().formatarPeso(v.getPesoBruto()));
                                 v.getListaTransporteVolumeLacre().stream()
                                         .forEach(l -> {
                                             TNFe.InfNFe.Transp.Vol.Lacres lacre = new TNFe.InfNFe.Transp.Vol.Lacres();
@@ -1059,9 +1060,15 @@ public class GeraXMLEnvio {
             TNFe.InfNFe.Total.ISSQNtot issqnTot = new TNFe.InfNFe.Total.ISSQNtot();
             total.setISSQNtot(issqnTot);
 
-            issqnTot.setVServ(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorServicos()));
+            if (nfeCabecalho.getValorServicos().compareTo(BigDecimal.ZERO) > 0) {
+                issqnTot.setVServ(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorServicos()));
+            }
+
             if (nfeCabecalho.getBaseCalculoIssqn().compareTo(BigDecimal.ZERO) > 0) {
                 total.getISSQNtot().setVBC(FormatValor.getInstance().formatarValor(nfeCabecalho.getBaseCalculoIssqn()));
+            }
+
+            if (nfeCabecalho.getValorIssqn().compareTo(BigDecimal.ZERO) > 0) {
                 issqnTot.setVISS(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorIssqn()));
             }
 

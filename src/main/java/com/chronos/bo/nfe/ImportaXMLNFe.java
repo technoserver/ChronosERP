@@ -94,7 +94,8 @@ public class ImportaXMLNFe {
         nfeCabecalho.setDigitoChaveAcesso(ide.getCDV());
         nfeCabecalho.setFormatoImpressaoDanfe(Integer.valueOf(ide.getTpImp()));
         nfeCabecalho.setChaveAcesso(protNfe.getInfProt().getChNFe());
-        if (protNfe.getInfProt().getCStat().equals("100")) {
+
+        if (tipoImportacao != TipoImportacaoXml.ENTRADA && protNfe.getInfProt().getCStat().equals("100")) {
             nfeCabecalho.setStatusNota(5);
         }
 

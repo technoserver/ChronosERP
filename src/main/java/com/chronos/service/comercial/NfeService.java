@@ -61,8 +61,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 import static java.nio.file.FileSystems.getDefault;
 
@@ -217,16 +217,19 @@ public class NfeService implements Serializable {
 
 
     public ConfiguracaoEmissorDTO setarConfiguracoesNFe(NfeCabecalho nfe, ModeloDocumento modelo) throws Exception {
+
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
 
-        ConfiguracaoEmissorDTO configuracaoEmissorDTO = null;
+        ConfiguracaoEmissorDTO configuracaoEmissorDTO;
+
         if (modelo == ModeloDocumento.NFE) {
             NfeConfiguracao configuracao = configuracoesNfe.get(NfeConfiguracao.class, filtros);
 
             if (configuracao == null) {
                 throw new ChronosException("Configurações da NF-e  não definidas");
             }
+
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
             nfe.setProcessoEmissao(configuracao.getProcessoEmissao());
             nfe.setVersaoProcessoEmissao(configuracao.getVersaoProcessoEmissao());
@@ -235,7 +238,9 @@ public class NfeService implements Serializable {
             configuracaoEmissorDTO = new ConfiguracaoEmissorDTO(configuracao);
 
         } else {
+
             PdvConfiguracao configuracao = configuracoesNfce.get(PdvConfiguracao.class, filtros);
+
             if (configuracao == null) {
                 throw new ChronosException("Configurações da NFC-e  não definidas");
             }
@@ -263,6 +268,7 @@ public class NfeService implements Serializable {
             if (!fileXml.exists() || !filePdf.exists()) {
                 gerarDanfe(nfe);
             }
+
             List<String> files = Arrays.asList(caminhoXml, arquivoPdf);
             File arquivoZip = ArquivoUtil.compactarArquivos(files, nfe.getChaveAcessoCompleta());
             FacesUtil.downloadArquivo(arquivoZip, nfe.getChaveAcessoCompleta() + ".zip", true);
@@ -271,7 +277,9 @@ public class NfeService implements Serializable {
     }
 
     public void baixaXml(List<NfeCabecalho> nfes, String nomeArquivo) throws Exception {
+
         if (!nfes.isEmpty()) {
+
             List<String> arqvuivos = new ArrayList<>();
             for (NfeCabecalho nfe : nfes) {
 
@@ -283,11 +291,12 @@ public class NfeService implements Serializable {
 
                 if (!fileXml.exists() || !filePdf.exists()) {
                     gerarDanfe(nfe);
-
                 }
+
                 arqvuivos.add(caminhoXml);
                 arqvuivos.add(arquivoPdf);
             }
+
             File arquivoZip = ArquivoUtil.getInstance().compactarArquivos(arqvuivos, nomeArquivo);
             FacesUtil.downloadArquivo(arquivoZip, nomeArquivo + ".zip", true);
         }
@@ -305,6 +314,7 @@ public class NfeService implements Serializable {
         String resultado = "";
         switch (infRetorno.getCStat()) {
             case "102":
+
                 for (int i = numInicial; i <= numFinal; i++) {
                     NfeNumeroInutilizado numInutilizado = new NfeNumeroInutilizado();
                     numInutilizado.setDataInutilizacao(new Date());
@@ -319,6 +329,7 @@ public class NfeService implements Serializable {
 
                     atualizarNumeroNfe(notaFiscalTipo, numFinal);
                 }
+
                 resultado = infRetorno.getXMotivo();
                 break;
             case "241":
@@ -403,59 +414,74 @@ public class NfeService implements Serializable {
         if (nfe.getValorTotal() == null || nfe.getValorTotal().signum() == 0) {
             throw new ChronosException("O valor total da NFe deve ser maior que 0");
         }
+
         if (condicoesPagamento == null && (primeiroVencimento == null || intervaloParcelas == 0 || qtdParcelas == 0)) {
             throw new ChronosException("Se a condição de pagament não for informada é preciso informa o primeiro vencimento,intervalo de parcelas e a quantidade.");
         }
+
         if (nfe.getListaDuplicata() == null) {
             nfe.setListaDuplicata(new HashSet<>());
         }
+
         nfe.getListaDuplicata().clear();
         BigDecimal residuo;
         BigDecimal somaParcelas = BigDecimal.ZERO;
         BigDecimal valorParcela;
+
         if (condicoesPagamento != null) {
             int number = 0;
+
             for (VendaCondicoesParcelas parcelas : condicoesPagamento.getParcelas()) {
+
                 NfeDuplicata duplicata = new NfeDuplicata();
                 duplicata.setNfeCabecalho(nfe);
                 valorParcela = Biblioteca.calcularValorPercentual(nfe.getValorTotal(), parcelas.getTaxa());
                 duplicata.setDataVencimento(Biblioteca.addDay(new Date(), parcelas.getDias()));
                 duplicata.setValor(valorParcela);
                 somaParcelas = somaParcelas.add(valorParcela);
+
                 if (number == (condicoesPagamento.getParcelas().size() - 1)) {
                     residuo = nfe.getValorTotal().subtract(somaParcelas);
                     valorParcela = valorParcela.add(residuo);
                     duplicata.setValor(valorParcela);
                 }
+
                 duplicata.setNumero(String.format("%3s", String.valueOf(number++ + 1)));
                 nfe.getListaDuplicata().add(duplicata);
             }
+
         } else {
+
             Calendar firstVencimento = Calendar.getInstance();
             firstVencimento.setTime(primeiroVencimento);
             valorParcela = nfe.getValorTotal().divide(BigDecimal.valueOf(qtdParcelas), RoundingMode.HALF_DOWN);
 
             for (int i = 0; i < qtdParcelas; i++) {
+
                 NfeDuplicata duplicata = new NfeDuplicata();
                 duplicata.setNfeCabecalho(nfe);
                 duplicata.setNumero(String.format("%3s", String.valueOf(i + 1)));
+
                 if (i > 0) {
                     firstVencimento.add(Calendar.DAY_OF_MONTH, intervaloParcelas);
                 }
+
                 duplicata.setDataVencimento(firstVencimento.getTime());
                 duplicata.setValor(valorParcela);
-
                 somaParcelas = somaParcelas.add(valorParcela);
+
                 if (i == (qtdParcelas - 1)) {
                     residuo = nfe.getValorTotal().subtract(somaParcelas);
                     valorParcela = valorParcela.add(residuo);
                     duplicata.setValor(valorParcela);
                 }
+
                 nfe.getListaDuplicata().add(duplicata);
             }
         }
 
         NfeFatura fatura = new NfeFatura();
+
         fatura.setNfeCabecalho(nfe);
         nfe.setFatura(fatura);
 
@@ -463,7 +489,8 @@ public class NfeService implements Serializable {
         numFatura = org.apache.commons.lang3.StringUtils.leftPad(numFatura, 3, "0");
         fatura.setNumero(numFatura);
         fatura.setValorLiquido(nfe.getValorTotal());
-        fatura.setValorOriginal(nfe.getValorTotal());
+
+        fatura.setValorOriginal(nfe.getValorTotalProdutos());
         fatura.setValorDesconto(nfe.getValorDesconto());
 
 

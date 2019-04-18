@@ -120,12 +120,12 @@
             <div class="col-xs-6 col-sm-6 col-md-6 text-center">
                 <p:commandButton value="Salvar"
                                  update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
-                                 action="#{osAberturaControll.salvar}"
+                                 action="#{osAberturaControll.salvar()}"
                                  rendered="#{empty osAberturaControll.objeto.id}">
 
                 </p:commandButton>
                 <c:if test="#{osAberturaControll.temProduto and !osAberturaControll.objeto.emitidoOrFaturado}">
-                    <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar}" icon="ui-icon-disk">
+                    <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar()}" icon="ui-icon-disk">
                         <p:menuitem value="Faturar" actionListener="#{osAberturaControll.faturar}"
                                     icon="ui-icon-arrowrefresh-1-w"/>
                         <p:menuitem value="Gerar NFe" actionListener="#{osAberturaControll.gerarNF}"

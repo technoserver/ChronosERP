@@ -12,6 +12,7 @@ import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.AbstractService;
+import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Constantes;
@@ -45,10 +46,13 @@ public class OsService extends AbstractService<OsAbertura> {
     private FinLancamentoReceberService finLancamentoReceberService;
 
 
+    public OsAbertura salvar(OsAbertura os) throws ChronosException {
 
 
+        if (os.getCondicoesPagamento().getVistaPrazo().equals("1") && os.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
+            throw new ChronosException("Cliente com restrinções de bloqueio");
+        }
 
-    public OsAbertura salvar(OsAbertura os) {
         if (os.isNovo()) {
             repository.salvar(os);
             os.setNumero("OS" + new DecimalFormat("0000000").format(os.getId()));
@@ -60,7 +64,7 @@ public class OsService extends AbstractService<OsAbertura> {
     }
 
 
-    public OsAbertura salvarItem(OsAbertura os, OsProdutoServico item) {
+    public OsAbertura salvarItem(OsAbertura os, OsProdutoServico item) throws ChronosException {
         itens = os.getListaOsProdutoServico();
         Optional<OsProdutoServico> itemOptional = buscarItem(item.getProduto());
         BigDecimal quantidade = item.getQuantidade();
@@ -91,6 +95,7 @@ public class OsService extends AbstractService<OsAbertura> {
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
+
         if (status == StatusTransmissao.AUTORIZADA) {
             String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";
             Mensagem.addInfoMessage(msg);

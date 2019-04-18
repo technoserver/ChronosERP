@@ -47,15 +47,19 @@
                         <p:column headerText="Vendedor">
                             <h:outputLabel value="#{row.vendedor.colaborador.pessoa.nome}"/>
                         </p:column>
-                        <p:column headerText="Codigo">
+                        <p:column headerText="Codigo" width="105">
                             <h:outputLabel value="#{row.codigo}"/>
                         </p:column>
-                        <p:column headerText="Valor Total">
+                        <p:column headerText="Valor Total" styleClass="text-right" width="130">
                             <h:outputLabel value="#{row.valorTotal}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Ações" width="160" class="text-center">
+                        <p:column headerText="Status" width="130" styleClass="text-center">
+                            <h:outputLabel
+                                    value="#{vendaOrcamentoCabecalhoControll.keyFromValue(vendaOrcamentoCabecalhoControll.vendaOrcamentoSituacao,row.situacao)}"/>
+                        </p:column>
+                        <p:column headerText="Ações" width="80" class="text-center">
                             <p:commandLink title="Alterar" action="#{vendaOrcamentoCabecalhoControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
@@ -95,9 +99,18 @@
                                             ajax="false"/>
 
 
+                                <p:menuitem value="Aprovar e Gerar Pedido"
+                                            update=":formCentro:growl,tableOrcamento"
+                                            rendered="#{row.tipo eq 'O'}"
+                                            action="#{vendaOrcamentoCabecalhoControll.gerarPedido}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaOrcamentoCabecalhoControll.objetoSelecionado}"/>
+                                </p:menuitem>
+
+
                                 <p:menuitem value="Aprovar e Gerar Venda"
                                             update=":formCentro:growl,tableOrcamento"
-                                            rendered="#{row.situacao eq 'P'}"
+                                            rendered="#{row.tipo eq 'P'}"
                                             action="#{vendaOrcamentoCabecalhoControll.gerarVenda}">
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{vendaOrcamentoCabecalhoControll.objetoSelecionado}"/>

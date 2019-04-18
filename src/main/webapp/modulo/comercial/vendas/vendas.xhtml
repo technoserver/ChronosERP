@@ -456,16 +456,17 @@
 
                                         <p:splitButton value="Salvar"
                                                        rendered="#{not empty vendaCabecalhoControll.objeto.id}"
-                                                       actionListener="#{osAberturaControll.salvar}"
+                                                       action="#{vendaCabecalhoControll.salvar()}"
+                                                       update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                                                        icon="ui-icon-disk">
                                             <p:menuitem value="Encerrar"
-                                                        actionListener="#{vendaCabecalhoControll.encerrarVenda}"
+                                                        action="#{vendaCabecalhoControll.encerrarVenda}"
                                                         update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                                                         rendered="#{!vendaCabecalhoControll.objeto.encerrado}"
                                                         icon="ui-icon-arrowrefresh-1-w"/>
 
                                             <p:menuitem value="Faturar"
-                                                        actionListener="#{vendaCabecalhoControll.faturarVenda}"
+                                                        action="#{vendaCabecalhoControll.faturarVenda}"
                                                         update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                                                         rendered="#{!vendaCabecalhoControll.objeto.faturado}"
                                                         icon="ui-icon-arrowrefresh-1-w"/>

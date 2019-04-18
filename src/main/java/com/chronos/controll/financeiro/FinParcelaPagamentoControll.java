@@ -4,7 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -104,7 +104,7 @@ public class FinParcelaPagamentoControll extends AbstractControll<FinParcelaPaga
             finChequeEmitido.setValor(totalParcelas);
         }
         pagamentoCheque = true;
-        RequestContext.getCurrentInstance().update("formOutrasTelas:dialogFinChequeEmitido");
+        PrimeFaces.current().executeScript("formOutrasTelas:dialogFinChequeEmitido");
     }
 
     public void cancelaPagamentoCheque() {

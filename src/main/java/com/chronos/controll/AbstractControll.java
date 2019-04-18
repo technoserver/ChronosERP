@@ -401,12 +401,10 @@ public abstract class AbstractControll<T> implements Serializable {
         vendaOrcamentoTipo.put("Pedido", "P");
 
         vendaOrcamentoSituacao = new LinkedHashMap<>();
-        vendaOrcamentoSituacao.put("Digitacao", "D");
-        vendaOrcamentoSituacao.put("Producao", "P");
-        vendaOrcamentoSituacao.put("Expedicao", "X");
-        vendaOrcamentoSituacao.put("Entregue", "T");
-        vendaOrcamentoSituacao.put("Encerrado", "E");
-        vendaOrcamentoSituacao.put("Faturado", "F");
+        vendaOrcamentoSituacao.put("Aprovado", "A");
+        vendaOrcamentoSituacao.put("Atendido", "T");
+        vendaOrcamentoSituacao.put("Não Aprovado", "N");
+        vendaOrcamentoSituacao.put("Pendente", "P");
         vendaOrcamentoSituacao.put("Cancelada", "C");
 
         formaPagamento = new LinkedHashMap<>();
@@ -786,16 +784,20 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public void remover() {
         try {
+
             Integer idObjeto = null;
+
             if (objetoSelecionado != null) {
                 idObjeto = (Integer) getClazz().getMethod("getId").invoke(objetoSelecionado);
             }
+
             if (objetoSelecionado == null || idObjeto == null) {
                 Mensagem.addWarnMessage("Nenhum registro selecionado!");
             } else {
                 dao.excluir(objetoSelecionado, idObjeto);
                 Mensagem.addInfoMessage("Registro excluído com sucesso!");
             }
+
         } catch (Exception e) {
             if (e.getCause().getClass().getName().contains("PersistenceException")) {
                 Mensagem.addErrorMessage("Ocorreu um erro ao excluir o registro! o mesmo já possue movimento", e);

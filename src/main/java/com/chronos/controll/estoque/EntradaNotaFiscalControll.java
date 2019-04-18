@@ -17,7 +17,7 @@ import com.chronos.util.Biblioteca;
 import com.chronos.util.Constantes;
 import com.chronos.util.jsf.Mensagem;
 import org.apache.commons.io.FileUtils;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.UploadedFile;
@@ -695,7 +695,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             FacesContext.getCurrentInstance().validationFailed();
             Mensagem.addErrorMessage("É preciso informar o valor total!!!");
         } else {
-            RequestContext.getCurrentInstance().execute("PF('dialogDuplicata').show()");
+            PrimeFaces.current().executeScript("PF('dialogDuplicata').show()");
         }
 
     }

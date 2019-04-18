@@ -57,6 +57,40 @@
 
             </div>
 
+            <erp:separador label="Volumes"/>
+
+            <div class="row">
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="volumeQuantidade" label="Quantidade"
+                                  nomeAtributo="#{nfeCabecalhoControll.volume.quantidade}"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="volumeEspecie" label="Especie"
+                                tamanhoMaximo="60"
+                                nomeAtributo="#{nfeCabecalhoControll.volume.especie}"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="volumeMarca" label="Marca"
+                                tamanhoMaximo="60"
+                                nomeAtributo="#{nfeCabecalhoControll.volume.marca}"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="volumeNum" label="Numeração"
+                                tamanhoMaximo="60"
+                                nomeAtributo="#{nfeCabecalhoControll.volume.numeracao}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="volumePesoBruto"
+                                  label="Peso bruto"
+                                  nomeAtributo="#{nfeCabecalhoControll.volume.pesoBruto}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="volumePesoLiquido"
+                                  label="Peso liquioo"
+                                  nomeAtributo="#{nfeCabecalhoControll.volume.pesoLiquido}"/>
+
+            </div>
+
             <erp:separador label="Retenção ICMS"/>
 
             <div class="row">
@@ -70,7 +104,7 @@
                                   nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.valorServico}"/>
                 <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
                                   idComponente="nfeTransporteValorBcRetencaoIcms"
-                                  label="Valor BC Retenção ICMS"
+                                  label="VLR BC Reten. ICMS"
                                   nomeAtributo="#{nfeCabecalhoControll.objeto.transporte.valorBcRetencaoIcms}"/>
                 <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-3"
                                   idComponente="nfeTransporteAliquotaRetencaoIcms"

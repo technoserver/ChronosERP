@@ -14,7 +14,7 @@ import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.ExternalContext;
@@ -242,7 +242,7 @@ public class MovimentoService implements Serializable {
             Path localPdf = getDefault().getPath(fileTemp.getPath());
             nomeImpressaoMovimento = "movimento.pdf";
             ArquivoUtil.getInstance().escrever(pdfFile, nomeImpressaoMovimento, localPdf.toString());
-            RequestContext.getCurrentInstance().addCallbackParam("movimentoIniciado", true);
+            PrimeFaces.current().ajax().addCallbackParam("movimentoIniciado", true);
 
         } catch (Exception ex) {
             ex.printStackTrace();

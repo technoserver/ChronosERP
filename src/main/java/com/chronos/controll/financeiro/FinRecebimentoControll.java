@@ -13,7 +13,7 @@ import com.chronos.util.Constantes;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 
 import javax.faces.view.ViewScoped;
@@ -129,7 +129,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
                     Mensagem.addInfoMessage("Não é possivel realizar pagamento de parcela vencidas com cheque");
                 } else {
                     finChequeRecebido = new FinChequeRecebido();
-                    RequestContext.getCurrentInstance().execute("PF('dialogFinChequeRecebido').show()");
+                    PrimeFaces.current().executeScript("PF('dialogFinChequeRecebido').show()");
                     //RequestContext.getCurrentInstance().update("formOutrasTelas:dialogFinChequeRecebido");
                 }
             } else {
@@ -172,7 +172,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         recibo.setIdsrecebimento(ids);
 
         buscarParcelas();
-        RequestContext.getCurrentInstance().execute("PF('recibo').show()");
+        PrimeFaces.current().executeScript("PF('recibo').show()");
     }
 
     @Transactional
