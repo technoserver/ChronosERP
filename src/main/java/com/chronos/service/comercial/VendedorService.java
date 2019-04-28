@@ -7,6 +7,11 @@ import com.chronos.repository.Repository;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class VendedorService implements Serializable {
 
@@ -31,5 +36,15 @@ public class VendedorService implements Serializable {
         }
 
         return vendedor;
+    }
+
+    public Map<String, Integer> getMapVendedores() {
+        List<Vendedor> list = repository.getEntitys(Vendedor.class, new ArrayList<>(), new Object[]{"colaborador.pessoa.nome"});
+        list.add(0, new Vendedor(0, "TODOS"));
+        Map<String, Integer> listaVendedor = new LinkedHashMap<>();
+        listaVendedor.putAll(list.stream()
+                .collect(Collectors.toMap((Vendedor::getNome), Vendedor::getId)));
+
+        return listaVendedor;
     }
 }

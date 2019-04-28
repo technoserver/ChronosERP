@@ -4,9 +4,9 @@ import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
 import com.chronos.modelo.entidades.ProdutoGrupo;
-import com.chronos.modelo.entidades.Vendedor;
 import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.Repository;
+import com.chronos.service.comercial.VendedorService;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +26,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     private static final long serialVersionUID = 1L;
     @Inject
-    private Repository<Vendedor> vendedorRepository;
+    private VendedorService vendedorService;
     @Inject
     private Repository<PdvVendaCabecalho> pdvRepository;
     @Inject
@@ -60,11 +60,8 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     @Override
     protected void init() {
         super.init();
-        List<Vendedor> list = vendedorRepository.getEntitys(Vendedor.class, new ArrayList<>(), new Object[]{"colaborador.pessoa.nome"});
-        list.add(0, new Vendedor(0, "TODOS"));
-        listaVendedor = new LinkedHashMap<>();
-        listaVendedor.putAll(list.stream()
-                .collect(Collectors.toMap((Vendedor::getNome), Vendedor::getId)));
+
+        listaVendedor = vendedorService.getMapVendedores();
 
         listaGrupo = new LinkedHashMap<>();
         listaGrupo.put("TODOS", 0);
