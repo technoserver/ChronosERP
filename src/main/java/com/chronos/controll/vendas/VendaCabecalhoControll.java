@@ -383,47 +383,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
 
-    public void carregaItensOrcamento(SelectEvent event) {
-        try {
-            VendaOrcamentoCabecalho orcamento = (VendaOrcamentoCabecalho) event.getObject();
-            VendaDetalhe itemVenda;
-            getObjeto().setListaVendaDetalhe(new ArrayList<>());
-            getObjeto().setVendaOrcamentoCabecalho(orcamentos.getEntityJoinFetch(orcamento.getId(), VendaOrcamentoCabecalho.class));
-            for (VendaOrcamentoDetalhe d : getObjeto().getVendaOrcamentoCabecalho().getListaVendaOrcamentoDetalhe()) {
-                itemVenda = new VendaDetalhe();
-                itemVenda.setVendaCabecalho(getObjeto());
-                itemVenda.setProduto(d.getProduto());
-                itemVenda.setQuantidade(d.getQuantidade());
-                itemVenda.setTaxaDesconto(d.getTaxaDesconto());
-                itemVenda.setValorDesconto(d.getValorDesconto());
-                itemVenda.setValorSubtotal(d.getValorSubtotal());
-                itemVenda.setValorTotal(d.getValorTotal());
-                itemVenda.setValorUnitario(d.getValorUnitario());
-
-                getObjeto().getListaVendaDetalhe().add(itemVenda);
-            }
-
-            getObjeto().setCliente(orcamento.getCliente());
-            getObjeto().setCondicoesPagamento(orcamento.getCondicoesPagamento());
-            getObjeto().setTransportadora(orcamento.getTransportadora());
-            getObjeto().setVendedor(orcamento.getVendedor());
-            getObjeto().setTipoFrete(orcamento.getTipoFrete());
-            getObjeto().setValorSubtotal(orcamento.getValorSubtotal());
-            getObjeto().setValorFrete(orcamento.getValorFrete());
-            getObjeto().setTaxaComissao(orcamento.getTaxaComissao());
-            getObjeto().setValorComissao(orcamento.getValorComissao());
-            getObjeto().setTaxaDesconto(orcamento.getValorDesconto());
-            getObjeto().setValorTotal(orcamento.getValorTotal());
-            getObjeto().setObservacao(orcamento.getObservacao());
-
-            getObjeto().calcularValorTotal();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro!", e);
-
-        }
-    }
-
     public List<VendaOrcamentoCabecalho> getListaVendaOrcamentoCabecalho(String nome) {
         List<VendaOrcamentoCabecalho> listaVendaOrcamentoCabecalho = new ArrayList<>();
         try {

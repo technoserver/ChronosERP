@@ -7,7 +7,6 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.*;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
-import com.chronos.repository.VendaComissaoRepository;
 import com.chronos.repository.VendaRepository;
 import com.chronos.service.AbstractService;
 import com.chronos.service.ChronosException;
@@ -22,7 +21,6 @@ import com.chronos.util.jsf.Mensagem;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,13 +30,11 @@ import java.util.Optional;
 public class VendaService extends AbstractService<VendaCabecalho> {
 
 
-
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
     @Inject
     private EstoqueRepository estoqueRepositoy;
-    @Inject
-    private VendaComissaoRepository comissoes;
+
     @Inject
     private VendaRepository repository;
     @Inject
@@ -50,6 +46,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
     @Inject
     private AuditoriaService auditoriaService;
+    @Inject
+    private VendaComissaoService vendaComissaoService;
 
 
     @Transactional
@@ -86,27 +84,29 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
         venda.setSituacao(SituacaoVenda.Encerrado.getCodigo());
-            Integer idempresa = venda.getEmpresa().getId();
-            AdmParametro parametro = FacesUtil.getParamentos();
-            List<ProdutoVendaDTO> produtos = new ArrayList<>();
-            venda.getListaVendaDetalhe().forEach(p->{
-                produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
-                if (parametro != null && parametro.getFrenteCaixa()) {
-                    syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, p.getId());
-                }
-            });
-            estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
-            finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
-                    venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
+        Integer idempresa = venda.getEmpresa().getId();
+        AdmParametro parametro = FacesUtil.getParamentos();
+        List<ProdutoVendaDTO> produtos = new ArrayList<>();
+        venda.getListaVendaDetalhe().forEach(p -> {
+            produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
+            if (parametro != null && parametro.getFrenteCaixa()) {
+                syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, p.getProduto().getId());
+            }
+        });
+        estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
+        finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
+                venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
 
-            gerarComissao(venda);
-            venda = repository.salvarFlush(venda);
+        String doc = "M" + Modulo.VENDA.getCodigo() + "V" + venda.getId();
+        venda = repository.salvarFlush(venda);
+
+        vendaComissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(), doc, venda.getVendedor());
+
         auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "VENDA");
 
 
         return venda;
     }
-
 
 
     @Transactional
@@ -116,7 +116,6 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             if (situacao == SituacaoVenda.Faturado) {
                 throw new Exception("Essa venda já possue NFe");
             }
-
 
 
             NfeCabecalho nfe;
@@ -227,23 +226,6 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
     private Optional<VendaDetalhe> getItemVenda(VendaCabecalho venda, Produto produto) {
         return venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().equals(produto)).findAny();
-
-    }
-
-
-    private void gerarComissao(VendaCabecalho venda) {
-        VendaComissao comissao = new VendaComissao();
-        comissao.setDataLancamento(new Date());
-        comissao.setSituacao("A");
-        comissao.setTipoContabil("C");
-        comissao.setValorComissao(venda.getValorComissao());
-        comissao.setValorVenda(venda.getValorTotal());
-        comissao.setVendaCabecalho(venda);
-        comissao.setVendedor(venda.getVendedor());
-        comissoes.salvar(comissao);
-    }
-
-    private void verificarR() {
 
     }
 
