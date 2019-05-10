@@ -1050,7 +1050,7 @@ public class GeraXMLEnvio {
         icmsTot.setVOutro(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorDespesasAcessorias()));
         icmsTot.setVNF(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorTotal()));
         icmsTot.setVICMSDeson(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorIcmsDesonerado()));
-        icmsTot.setVTotTrib(FormatValor.getInstance().formatarValor(valorTotalTributos));
+        icmsTot.setVTotTrib(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorTotalTributos()));
 
         icmsTot.setVFCP(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcp()));
         icmsTot.setVFCPST(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcpSt()));
