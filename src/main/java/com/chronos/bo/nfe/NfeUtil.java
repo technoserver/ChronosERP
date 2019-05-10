@@ -131,6 +131,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
             item.setValorTotalTributosMunicipais(impostoMunicipal);
             item.setValorTotalTributos(impFederal.add(impEstadual).add(impMunicipal));
 
+            valorTotalTributos = Biblioteca.soma(valorTotalTributos, item.getValorTotalTributos());
 
         }
         valorNotaFiscal = valorNotaFiscal.add(valorIpi).add(valorIcmsSt).add(totalProdutos);
@@ -165,14 +166,11 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 + "e R$ " + new DecimalFormat("#,###,##0.00").format(impostoMunicipal) + " Municipal Fonte IBPT";
 
 
-        valorTotalTributos = Biblioteca.soma(valorTotalTributos, impostoFederal);
-        valorTotalTributos = Biblioteca.soma(valorTotalTributos, impostoEstadual);
-        valorTotalTributos = Biblioteca.soma(valorTotalTributos, impostoMunicipal);
-
         nfe.setValorTotalTributosFederais(impostoFederal);
         nfe.setValorTotalTributosEstaduais(impostoEstadual);
         nfe.setValorTotalTributosMunicipais(impostoMunicipal);
         nfe.setValorTotalTributos(valorTotalTributos);
+
         nfe.setInformacoesAddContribuinte(msg);
 
 
