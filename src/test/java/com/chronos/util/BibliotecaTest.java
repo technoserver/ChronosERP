@@ -17,7 +17,7 @@ public class BibliotecaTest {
         BigDecimal valor4 = new BigDecimal("0.12420000");
         BigDecimal valor5 = new BigDecimal("0.12");
 
-        BigDecimal valorEsperado = new BigDecimal("5.05");
+        BigDecimal valorEsperado = new BigDecimal("4.84");
 
         BigDecimal total = BigDecimal.ZERO;
 
