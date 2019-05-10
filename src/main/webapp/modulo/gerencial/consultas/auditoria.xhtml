@@ -23,33 +23,79 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{auditoriaControll}"
-                       idDataTable="dataTableAuditoria"
-                       nomeFuncao="AUDITORIA"
-                       id="telaGrid"
-                       somenteConsulta="true">
 
-            <p:column headerText="Usuário">
-                <h:outputLabel value="#{row.usuario.login}"/>
-            </p:column>
-
-            <p:column headerText="Data ocorrência" styleClass="text-center" width="155">
-                <h:outputLabel value="#{row.dataRegistro}">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Hora ocorrencia" width="150">
-                <h:outputLabel value="#{row.horaRegistro}"/>
-            </p:column>
-            <p:column headerText="Janela" width="165">
-                <h:outputLabel value="#{row.janelaController}"/>
-            </p:column>
-            <p:column headerText="Ação">
-                <h:outputLabel value="#{row.acao}"/>
-            </p:column>
+        <erp:formularioGrid controller="#{auditoriaControll}" id="telaGrid">
 
 
-        </erp:gridDados>
+            <div class="row">
+                <erp:campoTexto idComponente="usuario"
+                                tamanhoMaximo="60"
+                                label="Usuário"
+                                nomeAtributo="#{auditoriaControll.usuario}" styleClass="col-xs-12 col-sm-6 col-md-6"/>
+
+
+                <erp:campoData idComponente="dataInicial"
+                               label="Data inicial"
+                               nomeAtributo="#{auditoriaControll.dataInicial}"
+                               styleClass="col-xs-12 col-sm-3 col-md-3"/>
+
+
+                <erp:campoData idComponente="dataFinal"
+                               label="Data final"
+                               nomeAtributo="#{auditoriaControll.dataFinal}" styleClass="col-xs-12 col-sm-3 col-md-3"/>
+
+
+            </div>
+
+            <div class="row m-b">
+                <erp:campoTexto idComponente="descricao"
+                                tamanhoMaximo="255"
+                                label="Ação"
+                                nomeAtributo="#{auditoriaControll.descricao}" styleClass="col-xs-12 col-sm-6 col-md-6"/>
+
+                <erp:campoTexto idComponente="janela"
+                                tamanhoMaximo="255"
+                                label="Janela"
+                                nomeAtributo="#{auditoriaControll.janela}" styleClass="col-xs-12 col-sm-3 col-md-3"/>
+
+
+                <div class="col-md-3" style="margin-top: 20px">
+                    <p:commandButton value="Pesquisar"
+                                     action="#{auditoriaControll.pesquisar}"
+                                     update="formCentro:telaGrid:outputPanelGrid"/>
+                </div>
+            </div>
+
+
+            <erp:gridDadosSemForm controller="#{auditoriaControll}"
+                                  idDataTable="dataTableAuditoria"
+                                  id="telaGrid"
+                                  somenteConsulta="true">
+
+                <p:column headerText="Usuário">
+                    <h:outputLabel value="#{row.usuario.login}"/>
+                </p:column>
+
+                <p:column headerText="Data ocorrência" styleClass="text-center" width="155">
+                    <h:outputLabel value="#{row.dataRegistro}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Hora ocorrencia" width="150">
+                    <h:outputLabel value="#{row.horaRegistro}"/>
+                </p:column>
+                <p:column headerText="Janela" width="165">
+                    <h:outputLabel value="#{row.janelaController}"/>
+                </p:column>
+                <p:column headerText="Ação">
+                    <h:outputLabel value="#{row.acao}"/>
+                </p:column>
+
+
+            </erp:gridDadosSemForm>
+        </erp:formularioGrid>
+
+
     </ui:define>
 
 
