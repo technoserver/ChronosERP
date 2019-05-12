@@ -2,6 +2,8 @@ package com.chronos.modelo.enuns;
 
 public enum SituacaoOrcamentoPedido {
 
+    DIGITACAO("D"),
+    NAO_APROVADO("N"),
     PENDENTE("P"),
     APROVADO("A"),
     CANCELADO("C");
