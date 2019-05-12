@@ -120,11 +120,14 @@ public abstract class AbstractControll<T> implements Serializable {
 
     //vendas
     private Map<String, String> vendaOrcamentoTipo;
-    private Map<String, String> vendaOrcamentoSituacao;
+    private Map<String, String> vendaSituacao;
     private Map<String, String> formaPagamento;
     private Map<String, String> vendaResponsavelFrete;
     private Map<String, String> vendaRomaneioSituacao;
     private HashMap<String, String> metodoTabela;
+
+    private Map<String, String> orcamentoSituacao;
+    private Map<String, String> pedidoSituacao;
 
     //comissao
     private HashMap<String, String> tipoContagem;
@@ -400,12 +403,21 @@ public abstract class AbstractControll<T> implements Serializable {
         vendaOrcamentoTipo.put("Orçamento", "O");
         vendaOrcamentoTipo.put("Pedido", "P");
 
-        vendaOrcamentoSituacao = new LinkedHashMap<>();
-        vendaOrcamentoSituacao.put("Aprovado", "A");
-        vendaOrcamentoSituacao.put("Atendido", "T");
-        vendaOrcamentoSituacao.put("Não Aprovado", "N");
-        vendaOrcamentoSituacao.put("Pendente", "P");
-        vendaOrcamentoSituacao.put("Cancelada", "C");
+        vendaSituacao = new LinkedHashMap<>();
+        vendaSituacao.put("Digitação", "D");
+        vendaSituacao.put("Encerrado", "E");
+        vendaSituacao.put("Faturado", "F");
+        vendaSituacao.put("Cancelada", "C");
+        vendaSituacao.put("Devolvido", "V");
+
+
+        orcamentoSituacao = new LinkedHashMap<>();
+        orcamentoSituacao.put("Pendente", "P");
+        orcamentoSituacao.put("Aprovado", "A");
+        orcamentoSituacao.put("Não Aprovado", "N");
+        orcamentoSituacao.put("Cancelado", "C");
+        orcamentoSituacao.put("Digitacao", "D");
+
 
         formaPagamento = new LinkedHashMap<>();
         formaPagamento.put("0 - A Vista", "0");
@@ -1210,10 +1222,6 @@ public abstract class AbstractControll<T> implements Serializable {
         return vendaOrcamentoTipo;
     }
 
-    public Map<String, String> getVendaOrcamentoSituacao() {
-        return vendaOrcamentoSituacao;
-    }
-
     public Map<String, String> getFormaPagamento() {
         return formaPagamento;
     }
@@ -1417,5 +1425,17 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public void setSenhaSupervisor(String senhaSupervisor) {
         this.senhaSupervisor = senhaSupervisor;
+    }
+
+    public Map<String, String> getOrcamentoSituacao() {
+        return orcamentoSituacao;
+    }
+
+    public Map<String, String> getPedidoSituacao() {
+        return pedidoSituacao;
+    }
+
+    public Map<String, String> getVendaSituacao() {
+        return vendaSituacao;
     }
 }
