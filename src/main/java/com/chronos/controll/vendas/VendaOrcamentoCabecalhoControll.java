@@ -70,7 +70,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
         situacoes = new LinkedHashMap<>();
         situacoes.put("Todos", "");
-        situacoes.putAll(getVendaOrcamentoSituacao());
+        situacoes.putAll(getOrcamentoSituacao());
 
     }
 
