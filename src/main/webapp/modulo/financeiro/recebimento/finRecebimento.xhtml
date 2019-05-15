@@ -91,11 +91,18 @@
                                  selectionMode="multiple" selection="#{finRecebimentoControll.parcelasSelecionadas}"
                                  rowStyleClass="#{row.vencido?'red_color':''}">
 
+                        <p:ajax event="rowToggle"
+                                listener="#{finRecebimentoControll.localizarFatorGerador(row.numeroDocumento)}"
+                                update=":formCentro:growl"/>
+                        <p:column style="width:3%">
+                            <p:rowToggler/>
+                        </p:column>
+
                         <p:column headerText="Num. Parcela" style="width:12%">
                             <h:outputLabel value="#{row.numeroDocumento}/#{row.numeroParcela}"/>
                         </p:column>
                         <p:column headerText="Vencimento" style="width:14%"
-                                  sortBy="#{row.dataVencimento}">
+                                  sortBy="#{row.dataVencimento}" styleClass="text-center">
                             <h:outputLabel value="#{row.dataVencimento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
@@ -124,6 +131,36 @@
                                   sortBy="#{row.descricaoSituacaoParcela}">
                             <h:outputLabel value="#{row.descricaoSituacaoParcela}"/>
                         </p:column>
+
+                        <p:rowExpansion>
+
+                            <h:panelGrid columns="2" style="width:300px">
+
+                                <h:outputText value="Código da venda"/>
+                                <h:outputText value="#{finRecebimentoControll.fatorGerador.id}"/>
+
+                                <h:outputText value="Data da venda"/>
+                                <h:outputText value="#{finRecebimentoControll.fatorGerador.dataVenda}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+
+                                <h:outputText value="Valor:"/>
+                                <h:outputText value="#{finRecebimentoControll.fatorGerador.valor}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+
+                                <h:outputText value="Vendedor:"/>
+                                <h:outputText value="#{finRecebimentoControll.fatorGerador.vendedor}"/>
+
+                                <h:outputText value="Num. Nota"/>
+                                <h:outputText value="#{finRecebimentoControll.fatorGerador.numNota}"/>
+
+                                <h:outputText value="Num. Nota"/>
+                                <h:outputText value="#{finRecebimentoControll.fatorGerador.dataNota}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </h:panelGrid>
+                        </p:rowExpansion>
 
                     </p:dataTable>
                     <br/>
