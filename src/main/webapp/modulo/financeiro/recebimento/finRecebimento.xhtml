@@ -134,7 +134,7 @@
 
                         <p:rowExpansion>
 
-                            <h:panelGrid columns="2" style="width:50%">
+                            <h:panelGrid columns="4" style="width:100%">
 
                                 <h:outputText value="Código pedido de venda"/>
                                 <h:outputText value="#{finRecebimentoControll.fatorGerador.id}"/>
@@ -160,6 +160,28 @@
                                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                                 </h:outputText>
                             </h:panelGrid>
+                            <div class="text-center">
+                                <strong>Itens</strong>
+                                <p:dataTable value="#{finRecebimentoControll.fatorGerador.itens}" var="obj"
+                                             reflow="true">
+                                    <p:column headerText="Produto">
+                                        <h:outputText value="#{obj.produto}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Quantidade" styleClass="text-center">
+                                        <h:outputText value="#{obj.quantidade}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Total" styleClass="text-right">
+                                        <h:outputText value="#{obj.valor}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                </p:dataTable>
+                            </div>
                         </p:rowExpansion>
 
                     </p:dataTable>

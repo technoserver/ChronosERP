@@ -53,6 +53,8 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     private Repository<FinChequeRecebido> chequesRecebidos;
     @Inject
     private VendaRepository vendaRepository;
+    @Inject
+    private Repository<VendaDetalhe> vendaDetalheRepository;
 
     private Cliente cliente;
 
@@ -165,6 +167,15 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
                 id = Integer.parseInt(str);
                 fatorGerador = vendaRepository.getVendaToParcela(id);
                 fatorGerador.setDoc(numDoc);
+                fatorGerador.setItens(new ArrayList<>());
+                List<VendaDetalhe> itens = vendaDetalheRepository.getEntitys(VendaDetalhe.class, "vendaCabecalho.id", id);
+
+                itens.forEach(i -> {
+                    fatorGerador.addItem(i.getProduto().getNome(), i.getQuantidade(), i.getValorTotal());
+                });
+
+
+
             }
         } else if (numDoc.contains("M" + Modulo.PDV.getCodigo())) {
 
