@@ -1,14 +1,17 @@
 package com.chronos.controll.financeiro;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.dto.FatorGeradorDTO;
 import com.chronos.dto.ReciboPagamentoDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.AcaoLog;
+import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.modelo.view.ViewFinLancamentoReceber;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.ParcelaReceberRepository;
 import com.chronos.repository.Repository;
+import com.chronos.repository.VendaRepository;
 import com.chronos.util.Constantes;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
@@ -48,6 +51,10 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     private Repository<PessoaCliente> pessoaClienteRepository;
     @Inject
     private Repository<FinChequeRecebido> chequesRecebidos;
+    @Inject
+    private VendaRepository vendaRepository;
+    @Inject
+    private Repository<VendaDetalhe> vendaDetalheRepository;
 
     private Cliente cliente;
 
@@ -69,6 +76,9 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     private ReciboPagamentoDTO recibo;
 
     private BigDecimal valorAPagar;
+
+    private FatorGeradorDTO fatorGerador;
+
 
     public void buscarParcelas() {
         List<Filtro> filtros = new ArrayList<>();
@@ -136,6 +146,40 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
                 finalizarRecebimento(valorAPagar);
             }
 
+
+        }
+    }
+
+    public void localizarFatorGerador(String numDoc) {
+
+        if (fatorGerador != null && numDoc.equals(fatorGerador.getDoc())) {
+            return;
+        }
+
+        Integer id;
+
+        String idempresa = "E" + empresa.getId();
+        if (numDoc.contains(idempresa + "M" + Modulo.VENDA.getCodigo())) {
+
+            String str = numDoc.substring(6 + 1, numDoc.lastIndexOf("C"));
+            boolean isNumber = str.chars().allMatch(Character::isDigit);
+            if (isNumber) {
+                id = Integer.parseInt(str);
+                fatorGerador = vendaRepository.getVendaToParcela(id);
+                fatorGerador.setDoc(numDoc);
+                fatorGerador.setItens(new ArrayList<>());
+                List<VendaDetalhe> itens = vendaDetalheRepository.getEntitys(VendaDetalhe.class, "vendaCabecalho.id", id);
+
+                itens.forEach(i -> {
+                    fatorGerador.addItem(i.getProduto().getNome(), i.getQuantidade(), i.getValorTotal());
+                });
+
+
+
+            }
+        } else if (numDoc.contains("M" + Modulo.PDV.getCodigo())) {
+
+        } else if (numDoc.contains("M" + Modulo.OS.getCodigo())) {
 
         }
     }
@@ -388,5 +432,9 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
 
     public void setFinChequeRecebido(FinChequeRecebido finChequeRecebido) {
         this.finChequeRecebido = finChequeRecebido;
+    }
+
+    public FatorGeradorDTO getFatorGerador() {
+        return fatorGerador;
     }
 }
