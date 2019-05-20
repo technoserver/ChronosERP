@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.chronos</groupId>
-    <artifactId>ChronoERPLight</artifactId>
-    <version>1.0.17</version>
+    <artifactId>ERP</artifactId>
+    <version>1.0.18</version>
     <packaging>war</packaging>
 
-    <name>ChronoERPLight</name>
+    <name>ChronosERP</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
@@ -399,21 +399,7 @@
             <version>1.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>5.3.0</version>
-        </dependency>
 
-        <dependency>
-
-            <groupId>org.eclipse.persistence</groupId>
-
-            <artifactId>org.eclipse.persistence.moxy</artifactId>
-
-            <version>2.5.2</version>
-
-        </dependency>
 
 
     </dependencies>

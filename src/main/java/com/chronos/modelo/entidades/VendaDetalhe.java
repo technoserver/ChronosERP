@@ -53,6 +53,8 @@ public class VendaDetalhe implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private Produto produto;
+    @Transient
+    private BigDecimal quantidadeDevolvida;
 
     public VendaDetalhe() {
         this.valorSubtotal = BigDecimal.ZERO;
@@ -149,6 +151,14 @@ public class VendaDetalhe implements Serializable {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public BigDecimal getQuantidadeDevolvida() {
+        return quantidadeDevolvida;
+    }
+
+    public void setQuantidadeDevolvida(BigDecimal quantidadeDevolvida) {
+        this.quantidadeDevolvida = quantidadeDevolvida;
     }
 
     public void calcularValorTotal() {

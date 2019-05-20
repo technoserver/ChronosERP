@@ -13,10 +13,12 @@ import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.beans.BeanUtils;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -48,6 +50,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     private AuditoriaService auditoriaService;
     @Inject
     private VendaComissaoService vendaComissaoService;
+    @Inject
+    private Repository<NfeCabecalho> nfeCabecalhoRepository;
 
 
     @Transactional
@@ -58,7 +62,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
                     ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
         }
 
-        if (venda.getFormaPagamento().equals("1") && venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
+        if (venda.getSituacao().equals(SituacaoVenda.Digitacao.getCodigo()) && venda.getFormaPagamento().equals("1") && venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
             throw new ChronosException("Cliente com restrinções de bloqueio");
         }
 
@@ -114,7 +118,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         try {
             SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getSituacao());
             if (situacao == SituacaoVenda.Faturado) {
-                throw new Exception("Essa venda já possue NFe");
+                throw new ChronosException("Essa venda já possue NFe");
             }
 
 
@@ -157,6 +161,65 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
         return status;
+    }
+
+    @Transactional
+    public void gerarDevolucao(VendaCabecalho venda, TributOperacaoFiscal operacaoFiscal) throws Exception {
+
+        if (operacaoFiscal == null && venda.getSituacao().equals(SituacaoVenda.Faturado.getCodigo())) {
+            throw new ChronosException("è preciso informa uma operação fiscal para gerar a NFe de devolução");
+        }
+
+        for (VendaDetalhe item : venda.getListaVendaDetalhe()) {
+            if (item.getQuantidadeDevolvida().compareTo(item.getQuantidade()) > 0) {
+                throw new ChronosException("Quantidade devolvida maior que a quantidade vendida");
+            }
+        }
+
+        if (venda.getSituacao().equals(SituacaoVenda.Faturado.getCodigo())) {
+
+            NfeCabecalho nfeSalva = nfeCabecalhoRepository.get(NfeCabecalho.class, "venda.id", venda.getId());
+
+            if (nfeSalva == null) {
+                throw new ChronosException("NFe não locaizada");
+            }
+
+            NfeCabecalho nfe = new NfeCabecalho();
+
+
+            BeanUtils.copyProperties(nfe, nfeSalva, "id");
+
+
+            ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
+
+            nfe.getListaNfeDetalhe().forEach(item -> {
+
+                Optional<VendaDetalhe> first = venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().getId() == item.getId()).findFirst();
+
+                item.setId(null);
+
+
+                if (first.isPresent()) {
+
+                    VendaDetalhe vendaDetalhe = first.get();
+
+                    alterarQuantidade(item, vendaDetalhe.getQuantidade());
+
+
+                } else {
+                    nfe.getListaNfeDetalhe().remove(item);
+                }
+            });
+
+
+            atualizaTotais(nfe);
+
+
+        } else {
+
+        }
+
+
     }
 
 
@@ -228,6 +291,171 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         return venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().equals(produto)).findAny();
 
     }
+
+
+    public void alterarQuantidade(NfeDetalhe item, BigDecimal qtdAtual) {
+
+        BigDecimal qtdOld = item.getQuantidadeComercial();
+        BigDecimal vlrAux;
+
+
+        item.setQuantidadeComercial(qtdAtual);
+        item.setQuantidadeTributavel(qtdAtual);
+
+        BigDecimal descontoUnitario = item.getValorDesconto() != null ? item.getValorDesconto().divide(qtdOld) : BigDecimal.ZERO;
+
+        item
+                .setValorBrutoProduto(qtdAtual.multiply(item.getValorUnitarioComercial()));
+        item.setValorDesconto(descontoUnitario.multiply(qtdAtual));
+        item.setValorSubtotal(item.getValorBrutoProduto());
+        item.setValorTotal(item.getValorBrutoProduto()
+                .subtract(item.getValorDesconto()));
+
+        // icms
+        if (item.getNfeDetalheImpostoIcms() != null) {
+            item.getNfeDetalheImpostoIcms().setId(null);
+            if (item.getNfeDetalheImpostoIcms().getBaseCalculoIcms() != null) {
+                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                        item.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
+                item.getNfeDetalheImpostoIcms().setBaseCalculoIcms(vlrAux);
+                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                        item.getNfeDetalheImpostoIcms().getValorIcms());
+
+                item.getNfeDetalheImpostoIcms().setValorIcms(vlrAux);
+            }
+
+            if (item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt() != null) {
+                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                        item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
+                item.getNfeDetalheImpostoIcms().setValorBaseCalculoIcmsSt(vlrAux);
+
+                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                        item.getNfeDetalheImpostoIcms().getValorIcmsSt());
+                item.getNfeDetalheImpostoIcms().setValorIcmsSt(vlrAux);
+            }
+        }
+        // IPI
+
+        if (item.getNfeDetalheImpostoIpi() != null) {
+            item.getNfeDetalheImpostoIpi().setId(null);
+            if (item.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi() != null) {
+                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                        item.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi());
+                item.getNfeDetalheImpostoIpi().setValorBaseCalculoIpi(vlrAux);
+                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                        item.getNfeDetalheImpostoIpi().getValorIpi());
+                item.getNfeDetalheImpostoIpi().setValorIpi(vlrAux);
+            }
+        }
+
+        // PIS
+        if (item.getNfeDetalheImpostoPis() != null) {
+            item.getNfeDetalheImpostoPis().setId(null);
+            vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                    item.getNfeDetalheImpostoPis().getValorPis());
+            item.getNfeDetalheImpostoPis().setValorPis(vlrAux);
+        }
+
+        // COFINS
+        if (item.getNfeDetalheImpostoCofins() != null) {
+            item.getNfeDetalheImpostoCofins().setId(null);
+            vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                    item.getNfeDetalheImpostoCofins().getValorCofins());
+            item.getNfeDetalheImpostoCofins().setValorCofins(vlrAux);
+        }
+
+
+    }
+
+    private void atualizaTotais(NfeCabecalho nfe) {
+        BigDecimal totalProdutos = BigDecimal.ZERO;
+        BigDecimal valorFrete = BigDecimal.ZERO;
+        BigDecimal valorSeguro = BigDecimal.ZERO;
+        BigDecimal valorOutrasDespesas = BigDecimal.ZERO;
+        BigDecimal desconto = BigDecimal.ZERO;
+        BigDecimal baseCalculoIcms = BigDecimal.ZERO;
+        BigDecimal valorIcms = BigDecimal.ZERO;
+        BigDecimal baseCalculoIcmsSt = BigDecimal.ZERO;
+        BigDecimal valorIcmsSt = BigDecimal.ZERO;
+        BigDecimal valorIpi = BigDecimal.ZERO;
+        BigDecimal valorPis = BigDecimal.ZERO;
+        BigDecimal valorCofins = BigDecimal.ZERO;
+        BigDecimal valorNotaFiscal;
+        BigDecimal valorIcmsDesonerado = BigDecimal.ZERO;
+        BigDecimal totalServicos = BigDecimal.ZERO;
+        BigDecimal baseCalculoIssqn = BigDecimal.ZERO;
+        BigDecimal valorIssqn = BigDecimal.ZERO;
+        BigDecimal valorPisIssqn = BigDecimal.ZERO;
+        BigDecimal valorCofinsIssqn = BigDecimal.ZERO;
+
+        for (NfeDetalhe itensNfe : nfe.getListaNfeDetalhe()) {
+            totalProdutos = totalProdutos.add(itensNfe.getValorBrutoProduto());
+            valorFrete = valorFrete.add(itensNfe.getValorFrete() != null ? itensNfe.getValorFrete() : BigDecimal.ZERO);
+            valorSeguro = valorSeguro.add(itensNfe.getValorSeguro() != null ? itensNfe.getValorSeguro() : BigDecimal.ZERO);
+            valorOutrasDespesas = valorOutrasDespesas.add(itensNfe.getValorOutrasDespesas() != null ? itensNfe.getValorOutrasDespesas() : BigDecimal.ZERO);
+            desconto = desconto.add(itensNfe.getValorDesconto() != null ? itensNfe.getValorDesconto() : BigDecimal.ZERO);
+
+            if (itensNfe.getNfeDetalheImpostoIcms().getBaseCalculoIcms() != null) {
+                baseCalculoIcms = baseCalculoIcms.add(itensNfe.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
+            }
+            if (itensNfe.getNfeDetalheImpostoIcms().getValorIcms() != null) {
+                valorIcms = valorIcms.add(itensNfe.getNfeDetalheImpostoIcms().getValorIcms());
+            }
+            if (itensNfe.getNfeDetalheImpostoIcms().getValorIcmsDesonerado() != null) {
+                valorIcmsDesonerado = valorIcmsDesonerado
+                        .add(itensNfe.getNfeDetalheImpostoIcms().getValorIcmsDesonerado());
+            }
+            if (itensNfe.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt() != null) {
+                baseCalculoIcmsSt = baseCalculoIcmsSt
+                        .add(itensNfe.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
+            }
+            if (itensNfe.getNfeDetalheImpostoIcms().getValorIcmsSt() != null) {
+                valorIcmsSt = valorIcmsSt.add(itensNfe.getNfeDetalheImpostoIcms().getValorIcmsSt());
+            }
+            if (itensNfe.getNfeDetalheImpostoIpi() != null
+                    && itensNfe.getNfeDetalheImpostoIpi().getValorIpi() != null) {
+                valorIpi = valorIpi.add(itensNfe.getNfeDetalheImpostoIpi().getValorIpi());
+            }
+            if (itensNfe.getNfeDetalheImpostoPis() != null
+                    && itensNfe.getNfeDetalheImpostoPis().getValorPis() != null) {
+                valorPis = valorPis.add(itensNfe.getNfeDetalheImpostoPis().getValorPis());
+            }
+            if (itensNfe.getNfeDetalheImpostoCofins() != null
+                    && itensNfe.getNfeDetalheImpostoCofins().getValorCofins() != null) {
+                valorCofins = valorCofins.add(itensNfe.getNfeDetalheImpostoCofins().getValorCofins());
+            }
+        }
+
+        valorNotaFiscal = totalProdutos.add(valorIcmsSt).add(valorFrete).add(valorSeguro).add(valorOutrasDespesas)
+                .add(valorIpi).subtract(desconto);
+
+
+        nfe.setValorFrete(valorFrete);
+        nfe.setValorDespesasAcessorias(valorOutrasDespesas);
+        nfe.setValorSeguro(valorSeguro);
+        nfe.setValorDesconto(desconto);
+
+        nfe.setValorServicos(totalServicos);
+        nfe.setBaseCalculoIssqn(baseCalculoIssqn);
+        nfe.setValorIssqn(valorIssqn);
+        nfe.setValorPisIssqn(valorPisIssqn);
+        nfe.setValorCofinsIssqn(valorCofinsIssqn);
+        nfe.setValorIcmsDesonerado(valorIcmsDesonerado);
+
+        nfe.setValorTotalProdutos(totalProdutos);
+        nfe.setBaseCalculoIcms(baseCalculoIcms);
+        nfe.setValorIcms(valorIcms);
+        nfe.setBaseCalculoIcmsSt(baseCalculoIcmsSt);
+        nfe.setValorIcmsSt(valorIcmsSt);
+        nfe.setValorIpi(valorIpi);
+        nfe.setValorPis(valorPis);
+        nfe.setValorCofins(valorCofins);
+
+        nfe.setValorTotal(valorNotaFiscal);
+    }
+
+
+
 
 
     @Override

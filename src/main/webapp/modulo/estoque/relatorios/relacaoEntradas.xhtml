@@ -25,6 +25,16 @@
         <div class="ibox-content">
             <div class="row">
 
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Fornecedor"
+                                  itemLabel="#{objeto.pessoa.nome}"
+                                  controller="#{estoqueRelatorioControll}"
+                                  completeMethod="getListaFornecedor"
+                                  nomeAtributo="#{estoqueRelatorioControll.fornecedor}"
+                                  idComponente="fornecedor"
+                                  requerido="false"
+                />
+
                 <erp:campoData nomeAtributo="#{estoqueRelatorioControll.dataInicial}"
                                label="Data inicial"
                                idComponente="vencimentoDe"
@@ -39,6 +49,7 @@
 
                     <p:commandLink title="Gerar relatório"
                                    value="Gerar Relatório"
+                                   target="_blank"
                                    styleClass="btn btn-primary"
                                    actionListener="#{estoqueRelatorioControll.imprimirRelacaoEntradas}"
                                    ajax="false">
