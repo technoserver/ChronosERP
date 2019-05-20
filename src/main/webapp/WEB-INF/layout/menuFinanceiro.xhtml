@@ -1,4 +1,3 @@
-
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -8,9 +7,10 @@
 
     <ul class="nav nav-second-level collapse ">
         <li class="${fn:contains(view.viewId,'modulo/financeiro/diversos/')?'active':''}">
-            <a href="#">Diversos <span class="fa arrow"></span></a>
+            <a href="#">Diversos
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
-
 
 
                 <erp:subMenu caminho="/modulo/financeiro/diversos/finTipoRecebimento"
@@ -47,7 +47,9 @@
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'modulo/financeiro/pagamento/')?'active':''}">
-            <a href="#">Pagamentos <span class="fa arrow"></span></a>
+            <a href="#">Pagamentos
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/financeiro/pagamento/finLancamentoPagar"
                              label="Lançamento a Pagar"
@@ -63,7 +65,9 @@
             </ul>
         </li>
         <li class="${fn:contains(view.viewId,'modulo/financeiro/recebimento/')?'active':''}">
-            <a href="#">Recebimentos <span class="fa arrow"></span></a>
+            <a href="#">Recebimentos
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/financeiro/recebimento/finLancamentoReceber"
                              label="Lançamento a Receber"
@@ -87,14 +91,16 @@
                              exibir="#{seguranca.isTemAcesso('RECEBIMENTO')}"
                              funcao="finRecebimentoCartao"/>
 
-                <!--<erp:subMenu caminho="/modulo/financeiro/recebimento/finCobranca"-->
-                <!--label="Cobrança"-->
-                <!--funcao="finCobranca"/>-->
+                <!--                <erp:subMenu caminho="/modulo/financeiro/recebimento/finCobranca"-->
+                <!--                             label="Cobrança"-->
+                <!--                             funcao="finCobranca"/>-->
             </ul>
         </li>
 
         <li class="${fn:contains(view.viewId,'modulo/financeiro/movimento/')?'active':''}">
-            <a href="#">Movimentos <span class="fa arrow"></span></a>
+            <a href="#">Movimentos
+                <span class="fa arrow"></span>
+            </a>
             <ul class="nav nav-third-level">
                 <erp:subMenu caminho="/modulo/financeiro/movimento/finFluxoCaixa"
                              label="Fluxo Caixa"

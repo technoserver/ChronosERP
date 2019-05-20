@@ -32,6 +32,17 @@ import java.util.regex.Pattern;
 public class Biblioteca {
 
 
+    public static BigDecimal valorPorItem(BigDecimal qtd, BigDecimal qtdAtual, BigDecimal valor) {
+        try {
+            BigDecimal valorPorItem = valor.divide(qtd);
+            valorPorItem = valorPorItem.setScale(2, RoundingMode.HALF_DOWN);
+            return valorPorItem.multiply(qtdAtual);
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
     public static void generateCombination(List<List<String>> Lists, List<String> result, int depth, String current) {
         if (depth == Lists.size()) {
             result.add(current);

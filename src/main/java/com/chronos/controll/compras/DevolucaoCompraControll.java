@@ -61,16 +61,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
     private BigDecimal qtdAux;
     private BigDecimal qtdOld;
 
-    private static BigDecimal valorPorItem(BigDecimal qtd, BigDecimal qtdAtual, BigDecimal valor) {
-        try {
-            BigDecimal valorPorItem = valor.divide(qtd);
-            valorPorItem = valorPorItem.setScale(2, RoundingMode.HALF_DOWN);
-            return valorPorItem.multiply(qtdAtual);
-        } catch (Exception e) {
-            return null;
-        }
 
-    }
 
     @Override
     public ERPLazyDataModel<NfeCabecalho> getDataModel() {
@@ -229,21 +220,21 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
                 // icms
                 if (nfeDetalheSelecionado.getNfeDetalheImpostoIcms() != null) {
                     if (nfeDetalheSelecionado.getNfeDetalheImpostoIcms().getBaseCalculoIcms() != null) {
-                        vlrAux = valorPorItem(qtdOld, qtdAux,
+                        vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAux,
                                 nfeDetalheSelecionado.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
                         nfeDetalheSelecionado.getNfeDetalheImpostoIcms().setBaseCalculoIcms(vlrAux);
-                        vlrAux = valorPorItem(qtdOld, qtdAux,
+                        vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAux,
                                 nfeDetalheSelecionado.getNfeDetalheImpostoIcms().getValorIcms());
 
                         nfeDetalheSelecionado.getNfeDetalheImpostoIcms().setValorIcms(vlrAux);
                     }
 
                     if (nfeDetalheSelecionado.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt() != null) {
-                        vlrAux = valorPorItem(qtdOld, qtdAux,
+                        vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAux,
                                 nfeDetalheSelecionado.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
                         nfeDetalheSelecionado.getNfeDetalheImpostoIcms().setValorBaseCalculoIcmsSt(vlrAux);
 
-                        vlrAux = valorPorItem(qtdOld, qtdAux,
+                        vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAux,
                                 nfeDetalheSelecionado.getNfeDetalheImpostoIcms().getValorIcmsSt());
                         nfeDetalheSelecionado.getNfeDetalheImpostoIcms().setValorIcmsSt(vlrAux);
                     }
@@ -252,10 +243,10 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
 
                 if (nfeDetalheSelecionado.getNfeDetalheImpostoIpi() != null) {
                     if (nfeDetalheSelecionado.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi() != null) {
-                        vlrAux = valorPorItem(qtdOld, qtdAux,
+                        vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAux,
                                 nfeDetalheSelecionado.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi());
                         nfeDetalheSelecionado.getNfeDetalheImpostoIpi().setValorBaseCalculoIpi(vlrAux);
-                        vlrAux = valorPorItem(qtdOld, qtdAux,
+                        vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAux,
                                 nfeDetalheSelecionado.getNfeDetalheImpostoIpi().getValorIpi());
                         nfeDetalheSelecionado.getNfeDetalheImpostoIpi().setValorIpi(vlrAux);
                     }
@@ -263,14 +254,14 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
 
                 // PIS
                 if (nfeDetalheSelecionado.getNfeDetalheImpostoPis() != null) {
-                    vlrAux = valorPorItem(qtdOld, qtdAux,
+                    vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAux,
                             nfeDetalheSelecionado.getNfeDetalheImpostoPis().getValorPis());
                     nfeDetalheSelecionado.getNfeDetalheImpostoPis().setValorPis(vlrAux);
                 }
 
                 // COFINS
                 if (nfeDetalheSelecionado.getNfeDetalheImpostoCofins() != null) {
-                    vlrAux = valorPorItem(qtdOld, qtdAux,
+                    vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAux,
                             nfeDetalheSelecionado.getNfeDetalheImpostoCofins().getValorCofins());
                     nfeDetalheSelecionado.getNfeDetalheImpostoCofins().setValorCofins(vlrAux);
                 }

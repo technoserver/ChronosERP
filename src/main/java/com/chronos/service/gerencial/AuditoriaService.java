@@ -31,8 +31,8 @@ public class AuditoriaService implements Serializable {
         gerarLog(AcaoLog.BAIXA_PARCELA, conteudo, "Recebimento de parcela");
     }
 
-    public void cancelarVenda(UsuarioDTO usuario, int idvenda, String motivo, Usuario user) {
-        String conteudo = "cancelado a venda com id :" + idvenda + " por " + user.getLogin() + " pelo seguinte :\n" + motivo;
+    public void cancelarVenda(UsuarioDTO usuario, int idvenda, String motivo) {
+        String conteudo = "cancelado a venda com id :" + idvenda + " por " + usuario.getLogin() + " pelo seguinte :\n" + motivo;
         gerarLog(AcaoLog.CANCELAR, conteudo, "CANCELAR VENDA");
     }
 
