@@ -35,6 +35,12 @@
                         <erp:subMenu caminho="/modulo/estoque/transferencia"
                                      label="Transferências"
                                      funcao="transferencia"/>
+
+                        <erp:subMenu caminho="/modulo/estoque/balanco"
+                                     exibir="#{seguranca.isTemAcesso('BALANCO')}"
+                                     label="Balanço"
+                                     funcao="balanco"/>
+
                     </li>
                     <li class="${fn:contains(view.viewId,'modulo/estoque/relatorios/')?'active':''}">
                         <a href="#">Relatorios <span class="fa arrow"></span></a>

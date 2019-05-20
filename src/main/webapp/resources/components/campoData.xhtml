@@ -6,11 +6,11 @@
 
     <!-- INTERFACE -->
     <cc:interface>
-        <cc:attribute name="idComponente" />
-        <cc:attribute name="label" />
-        <cc:attribute name="nomeAtributo" />
+        <cc:attribute name="idComponente" required="true"/>
+        <cc:attribute name="label" required="true"/>
+        <cc:attribute name="nomeAtributo" required="true"/>
         <cc:attribute name="requerido" />
-        <cc:attribute name="styleClass" />    
+        <cc:attribute name="styleClass" required="true"/>
         <cc:attribute name="styleClassInput" default="data form-control" />
         <cc:attribute name="somenteLeitura"  default="false"/>
         <cc:attribute name="formato"  default="dd/MM/yyyy"/>
