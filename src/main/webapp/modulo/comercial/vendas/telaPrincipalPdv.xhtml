@@ -15,7 +15,7 @@
                         id="produto"
                         converter="defaultConverter" minQueryLength="3"
                         completeMethod="#{balcaoControll.getListProduto}"
-                        maxResults="20" emptyMessage="Nenhum Produto localizado"
+                        emptyMessage="Nenhum Produto localizado"
                         itemLabel="#{objeto.produto.nome}" itemValue="#{objeto}" var="objeto"
                         style="width: 100%;margin-bottom: 10px" onfocus="true">
             <p:column headerText="Nome">

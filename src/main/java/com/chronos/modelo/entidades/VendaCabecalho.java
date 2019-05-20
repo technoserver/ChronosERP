@@ -441,7 +441,7 @@ public class VendaCabecalho implements Serializable {
 
     @Transient
     public boolean isPodeCancelar() {
-        boolean podeCacelar = (situacao.equals("F") || !situacao.equals("E"));
+        boolean podeCacelar = situacao.equals("E");
         return podeCacelar;
     }
 

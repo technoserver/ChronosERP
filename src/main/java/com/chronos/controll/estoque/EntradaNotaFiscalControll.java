@@ -145,6 +145,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         dataModel.setAtributos(atribut);
         dataModel.getFiltros().clear();
         dataModel.addFiltro("tipoOperacao", 0, Filtro.IGUAL);
+        dataModel.addFiltro("finalidadeEmissao", 1, Filtro.IGUAL);
         return dataModel;
     }
 
@@ -222,6 +223,26 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             if (first.isPresent()) {
                 throw new ChronosException("Existem produtos não cadastrados");
             }
+
+            if (!getObjeto().getListaDuplicata().isEmpty()) {
+
+
+                for (NfeDuplicata duplicata : getObjeto().getListaDuplicata()) {
+
+                    if (duplicata.getId() == null) {
+                        if (contaCaixa == null) {
+                            throw new ChronosException("Para geração de contas a pagar é preciso informa uma conta caixa");
+                        }
+
+                        if (naturezaFinanceira == null) {
+                            throw new ChronosException("Para geração de contas a pagar é preciso informa uma natureza financeira");
+                        }
+                    }
+                }
+
+
+            }
+
             iniciarValorsValidacao();
             calcularTotais();
         } catch (Exception ex) {

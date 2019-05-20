@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.enuns.SituacaoVenda;
 import com.chronos.modelo.view.PessoaCliente;
@@ -16,6 +17,7 @@ import com.chronos.service.comercial.ItemVendaService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
@@ -55,6 +57,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Inject
     private Repository<NfeCabecalho> nfeRepository;
     @Inject
+    private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
+    @Inject
     private NfeService nfeService;
 
     @Inject
@@ -67,6 +71,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private ItemVendaService itemService;
     @Inject
     private ProdutoService produtoService;
+    @Inject
+    private AuditoriaService auditoriaService;
     @Inject
     private Repository<SituacaoForCli> situacaoForCliRepository;
 
@@ -89,6 +95,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private Map<String, String> status;
 
     private String tipoAutorizacao = "P";
+
+    private TributOperacaoFiscal operacaoFiscal;
 
     @PostConstruct
     @Override
@@ -342,17 +350,19 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
         try {
             SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(getObjetoSelecionado().getSituacao());
-            if (situacao == SituacaoVenda.Faturado) {
+            VendaCabecalho venda = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+            if (situacao == SituacaoVenda.Encerrado) {
 
-                setObjeto(getObjetoSelecionado());
+                setObjeto(venda);
                 getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());
                 finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
                 salvar();
                 for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
                     estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
                 }
+                auditoriaService.gerarLog(AcaoLog.CANCELAR_VENDA, "Venda cancelada", " VENDAS");
             } else if (situacao == SituacaoVenda.Faturado) {
-                setObjeto(getObjetoSelecionado());
+                setObjeto(venda);
                 NfeCabecalho nfe = nfeRepository.get(getObjeto().getNumeroFatura(), NfeCabecalho.class);
                 nfe.setJustificativaCancelamento(justificativa);
 
@@ -372,14 +382,63 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                         }
                     }
 
+                    auditoriaService.gerarLog(AcaoLog.CANCELAR_VENDA, "Venda cancelada por " + justificativa, " VENDAS");
+
                 }
 
             }
 
+
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+            } else {
+                throw new RuntimeException("erro ao cancelar a venda", ex);
+            }
         }
+    }
+
+    public void exibirDevolucao() {
+        VendaCabecalho venda = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+        setObjeto(venda);
+
+        getObjeto().getListaVendaDetalhe().forEach(i -> i.setQuantidadeDevolvida(i.getQuantidade()));
+    }
+
+    public void definirQuantidadeDevolvida() {
+
+    }
+
+
+    public void gerarDevolucao() {
+
+        try {
+
+
+            vendaService.gerarDevolucao(getObjeto(), operacaoFiscal);
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+            } else {
+                throw new RuntimeException("erro ao gerar a devolucao", ex);
+            }
+        }
+
+    }
+
+    public List<TributOperacaoFiscal> getListaTributOperacaoFiscal(String descricao) {
+        List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
+
+        try {
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("descricao", Filtro.LIKE, descricao));
+            filtros.add(new Filtro("cfop", Filtro.MENOR, 3000));
+            listaTributOperacaoFiscal = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, filtros, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoInss", "estoque", "estoqueVerificado"});
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaTributOperacaoFiscal;
     }
 
 
@@ -576,5 +635,13 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public Map<String, String> getStatus() {
         return status;
+    }
+
+    public TributOperacaoFiscal getOperacaoFiscal() {
+        return operacaoFiscal;
+    }
+
+    public void setOperacaoFiscal(TributOperacaoFiscal operacaoFiscal) {
+        this.operacaoFiscal = operacaoFiscal;
     }
 }

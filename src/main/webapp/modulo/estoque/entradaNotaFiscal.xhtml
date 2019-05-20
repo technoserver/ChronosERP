@@ -57,11 +57,17 @@
                     </h:outputLabel>
                 </p:column>
 
+                <p:column headerText="Status" sortBy="#{row.statusNota}" width="110" styleClass="text-center">
+                    <h:outputLabel
+                            value="#{entradaNotaFiscalControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
+                </p:column>
+
                 <p:column headerText="Ações" width="120" class="text-center">
                     <p:commandLink title="Alterar" action="#{entradaNotaFiscalControll.doEdit()}"
                                    class=" btn btn-default"
                                    oncomplete="addClass()"
                                    update=":formCentro:telaGrid:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+
                     >
                         <i class="fa fa-file-text-o"></i>
                         <f:setPropertyActionListener value="#{row}"
