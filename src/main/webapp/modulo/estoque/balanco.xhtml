@@ -28,20 +28,19 @@
                        nomeFuncao="BALANCO"
                        id="telaGrid">
 
-            <p:column headerText="Data Contagem">
+            <p:column headerText="Data Contagem" styleClass="text-center">
                 <h:outputLabel value="#{row.dataContagem}">
                     <f:convertDateTime pattern="dd/MM/yyyy"/>
                 </h:outputLabel>
             </p:column>
-            <p:column headerText="Estoque Atualizado">
+            <p:column headerText="Estoque Atualizado" styleClass="text-center">
                 <h:outputLabel
                         value="#{inventarioContagemControll.keyFromValue(inventarioContagemControll.simNao, row.estoqueAtualizado)}"/>
             </p:column>
-            <p:column headerText="Tipo">
+            <p:column headerText="Tipo" styleClass="text-center">
                 <h:outputLabel
                         value="#{inventarioContagemControll.keyFromValue(inventarioContagemControll.tipoContagem, row.tipo)}"/>
             </p:column>
-
 
         </erp:gridDados>
     </ui:define>
@@ -98,7 +97,7 @@
                         <p:column headerText="Produto">
                             <h:outputLabel value="#{obj.produto.nome}"/>
                         </p:column>
-                        <p:column headerText="Cont. 01" width="94">
+                        <p:column headerText="Cont. 01" width="94" styleClass="text-center">
                             <p:cellEditor>
                                 <f:facet name="output">
                                     <h:outputLabel value="#{obj.contagem01}">
@@ -112,7 +111,7 @@
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
-                        <p:column headerText="Cont. 02" width="94">
+                        <p:column headerText="Cont. 02" width="94" styleClass="text-center">
                             <p:cellEditor>
                                 <f:facet name="output">
                                     <h:outputLabel value="#{obj.contagem02}">
@@ -126,7 +125,7 @@
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
-                        <p:column headerText="Cont. 03" width="94">
+                        <p:column headerText="Cont. 03" width="94" styleClass="text-center">
                             <p:cellEditor>
                                 <f:facet name="output">
                                     <h:outputLabel value="#{obj.contagem03}">
@@ -140,28 +139,19 @@
                                 </f:facet>
                             </p:cellEditor>
                         </p:column>
-                        <p:column headerText="Fechado" width="94">
+                        <p:column headerText="Fechado" width="94" styleClass="text-center">
                             <h:outputLabel value="#{obj.fechadoContagem}"/>
                         </p:column>
-                        <p:column headerText="Qtde" width="94">
+                        <p:column headerText="Qtde" width="94" styleClass="text-center">
                             <h:outputLabel value="#{obj.quantidadeSistema}">
                                 <f:convertNumber pattern="#,##0.000"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Acuracidade" width="120">
-                            <h:outputLabel value="#{obj.acuracidade}">
-                                <f:convertNumber pattern="00.00"/>
-                            </h:outputLabel>
-                        </p:column>
-                        <p:column headerText="Divergencia" width="115">
-                            <h:outputLabel value="#{obj.divergencia}">
-                                <f:convertNumber pattern="00.00"/>
-                            </h:outputLabel>
-                        </p:column>
-                        <p:column headerText="contagem" width="105">
+                        <p:column headerText="contagem" width="105" styleClass="text-center">
                             <p:cellEditor>
                                 <f:facet name="output">
-                                    <h:outputText value="#{obj.contagem}"/>
+                                    <h:outputText
+                                            value="#{ inventarioContagemControll.keyFromValue(inventarioContagemControll.contagens,obj.contagem)}"/>
                                 </f:facet>
                                 <f:facet name="input">
                                     <h:selectOneMenu class="form-control"

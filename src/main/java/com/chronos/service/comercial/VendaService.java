@@ -178,7 +178,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
         if (venda.getSituacao().equals(SituacaoVenda.Faturado.getCodigo())) {
 
-            NfeCabecalho nfeSalva = nfeCabecalhoRepository.get(NfeCabecalho.class, "venda.id", venda.getId());
+            NfeCabecalho nfeSalva = nfeCabecalhoRepository.get(NfeCabecalho.class, "vendaCabecalho.id", venda.getId());
 
             if (nfeSalva == null) {
                 throw new ChronosException("NFe não locaizada");
@@ -187,32 +187,60 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             NfeCabecalho nfe = new NfeCabecalho();
 
 
-            BeanUtils.copyProperties(nfe, nfeSalva, "id");
+            BeanUtils.copyProperties(nfeSalva, nfe, "id", "chaveAcesso", "numero", "codigoNumerico", "serie", "listaNfeDetalhe",
+                    "digitoChaveAcesso", "listaNfeFormaPagamento", "listaDuplicata", "fatura", "tributOperacaoFiscal", "qrcode", "urlChave", "statusNota");
 
+            nfe.setCodigoModelo(ModeloDocumento.NFE.getCodigo().toString());
 
             ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
 
-            nfe.getListaNfeDetalhe().forEach(item -> {
+            nfe.setNaturezaOperacao(operacaoFiscal.getDescricaoNaNf());
+            nfe.setTributOperacaoFiscal(operacaoFiscal);
+            nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
+            nfe.setSerie(configuracaoEmissorDTO.getSerie());
+            nfe.setTipoOperacao(0);
+            nfe.setFinalidadeEmissao(FinalidadeEmissao.DEVOLUCAO.getCodigo());
 
-                Optional<VendaDetalhe> first = venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().getId() == item.getId()).findFirst();
 
-                item.setId(null);
+            List<NfeDetalhe> itens = new ArrayList<>();
+
+            nfeSalva.getListaNfeDetalhe().forEach(item -> {
+
+                NfeDetalhe newItem = new NfeDetalhe();
+
+                Optional<VendaDetalhe> first = venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().getId() == item.getProduto().getId()).findFirst();
+
+
 
 
                 if (first.isPresent()) {
 
+
                     VendaDetalhe vendaDetalhe = first.get();
 
-                    alterarQuantidade(item, vendaDetalhe.getQuantidade());
+                    newItem = alterarQuantidade(item, vendaDetalhe.getQuantidade());
+                    newItem.setCfop(operacaoFiscal.getCfop());
 
+                    itens.add(newItem);
 
-                } else {
-                    nfe.getListaNfeDetalhe().remove(item);
                 }
             });
 
+            nfe.setListaNfeDetalhe(itens);
+
+
 
             atualizaTotais(nfe);
+
+            StatusTransmissao status = nfeService.transmitirNFe(nfe, true);
+
+
+            if (status == StatusTransmissao.AUTORIZADA) {
+
+                Mensagem.addInfoMessage("Devolução gerada com sucesso");
+                auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
+
+            }
 
 
         } else {
@@ -293,7 +321,12 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     }
 
 
-    public void alterarQuantidade(NfeDetalhe item, BigDecimal qtdAtual) {
+    public NfeDetalhe alterarQuantidade(NfeDetalhe item, BigDecimal qtdAtual) {
+
+
+        NfeDetalhe newItem = new NfeDetalhe();
+
+        BeanUtils.copyProperties(item, newItem, "id", "nfeDetalheImpostoCofins", "nfeDetalheImpostoPis", "nfeDetalheImpostoIcms", "nfeDetalheImpostoIpi");
 
         BigDecimal qtdOld = item.getQuantidadeComercial();
         BigDecimal vlrAux;
@@ -313,58 +346,80 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
         // icms
         if (item.getNfeDetalheImpostoIcms() != null) {
-            item.getNfeDetalheImpostoIcms().setId(null);
-            if (item.getNfeDetalheImpostoIcms().getBaseCalculoIcms() != null) {
-                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
-                        item.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
-                item.getNfeDetalheImpostoIcms().setBaseCalculoIcms(vlrAux);
-                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
-                        item.getNfeDetalheImpostoIcms().getValorIcms());
 
-                item.getNfeDetalheImpostoIcms().setValorIcms(vlrAux);
+            newItem.setNfeDetalheImpostoIcms(new NfeDetalheImpostoIcms());
+            newItem.getNfeDetalheImpostoIcms().setNfeDetalhe(newItem);
+
+            BeanUtils.copyProperties(item.getNfeDetalheImpostoIcms(), newItem.getNfeDetalheImpostoIcms(), "id", "nfeDetalhe");
+
+            if (newItem.getNfeDetalheImpostoIcms().getBaseCalculoIcms() != null) {
+                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                        newItem.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
+                newItem.getNfeDetalheImpostoIcms().setBaseCalculoIcms(vlrAux);
+                vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
+                        newItem.getNfeDetalheImpostoIcms().getValorIcms());
+
+                newItem.getNfeDetalheImpostoIcms().setValorIcms(vlrAux);
             }
 
-            if (item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt() != null) {
+            if (newItem.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt() != null) {
                 vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
-                        item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
-                item.getNfeDetalheImpostoIcms().setValorBaseCalculoIcmsSt(vlrAux);
+                        newItem.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
+                newItem.getNfeDetalheImpostoIcms().setValorBaseCalculoIcmsSt(vlrAux);
 
                 vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
-                        item.getNfeDetalheImpostoIcms().getValorIcmsSt());
-                item.getNfeDetalheImpostoIcms().setValorIcmsSt(vlrAux);
+                        newItem.getNfeDetalheImpostoIcms().getValorIcmsSt());
+                newItem.getNfeDetalheImpostoIcms().setValorIcmsSt(vlrAux);
             }
         }
         // IPI
 
         if (item.getNfeDetalheImpostoIpi() != null) {
-            item.getNfeDetalheImpostoIpi().setId(null);
+
+            newItem.setNfeDetalheImpostoIpi(new NfeDetalheImpostoIpi());
+            newItem.getNfeDetalheImpostoIpi().setNfeDetalhe(newItem);
+
+            BeanUtils.copyProperties(item.getNfeDetalheImpostoIpi(), newItem.getNfeDetalheImpostoIpi(), "id", "nfeDetalhe");
+
             if (item.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi() != null) {
                 vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
-                        item.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi());
-                item.getNfeDetalheImpostoIpi().setValorBaseCalculoIpi(vlrAux);
+                        newItem.getNfeDetalheImpostoIpi().getValorBaseCalculoIpi());
+                newItem.getNfeDetalheImpostoIpi().setValorBaseCalculoIpi(vlrAux);
                 vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
-                        item.getNfeDetalheImpostoIpi().getValorIpi());
-                item.getNfeDetalheImpostoIpi().setValorIpi(vlrAux);
+                        newItem.getNfeDetalheImpostoIpi().getValorIpi());
+                newItem.getNfeDetalheImpostoIpi().setValorIpi(vlrAux);
             }
         }
 
         // PIS
         if (item.getNfeDetalheImpostoPis() != null) {
-            item.getNfeDetalheImpostoPis().setId(null);
+
+            newItem.setNfeDetalheImpostoPis(new NfeDetalheImpostoPis());
+            newItem.getNfeDetalheImpostoPis().setNfeDetalhe(newItem);
+
+            BeanUtils.copyProperties(item.getNfeDetalheImpostoPis(), newItem.getNfeDetalheImpostoPis(), "id", "nfeDetalhe");
+
+            newItem.getNfeDetalheImpostoPis().setId(null);
             vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
-                    item.getNfeDetalheImpostoPis().getValorPis());
-            item.getNfeDetalheImpostoPis().setValorPis(vlrAux);
+                    newItem.getNfeDetalheImpostoPis().getValorPis());
+            newItem.getNfeDetalheImpostoPis().setValorPis(vlrAux);
         }
 
         // COFINS
         if (item.getNfeDetalheImpostoCofins() != null) {
-            item.getNfeDetalheImpostoCofins().setId(null);
+
+            newItem.setNfeDetalheImpostoCofins(new NfeDetalheImpostoCofins());
+            newItem.getNfeDetalheImpostoCofins().setNfeDetalhe(newItem);
+
+            BeanUtils.copyProperties(item.getNfeDetalheImpostoCofins(), newItem.getNfeDetalheImpostoCofins(), "id", "nfeDetalhe");
+
+            newItem.getNfeDetalheImpostoCofins().setId(null);
             vlrAux = Biblioteca.valorPorItem(qtdOld, qtdAtual,
-                    item.getNfeDetalheImpostoCofins().getValorCofins());
-            item.getNfeDetalheImpostoCofins().setValorCofins(vlrAux);
+                    newItem.getNfeDetalheImpostoCofins().getValorCofins());
+            newItem.getNfeDetalheImpostoCofins().setValorCofins(vlrAux);
         }
 
-
+        return newItem;
     }
 
     private void atualizaTotais(NfeCabecalho nfe) {

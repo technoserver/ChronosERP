@@ -13,6 +13,7 @@ import com.chronos.bo.nfe.NfeUtil;
 import com.chronos.dto.*;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.EventoNfe;
+import com.chronos.modelo.enuns.FinalidadeEmissao;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.repository.EstoqueRepository;
@@ -940,14 +941,15 @@ public class NfeService implements Serializable {
             throw new ChronosException("Não foram definido itens para emissão da NFe");
         }
         for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
-            cfopAux = item.getCfop();
-            if (cfop == 0) {
-                cfop = item.getCfop();
+            if (item.getCfop() == null) {
+                throw new ChronosException("CFOP para " + item.getProduto().getNome() + " não definido");
+            }
+
+            if (nfe.getFinalidadeEmissao().equals(FinalidadeEmissao.NORMAL.getCodigo()) && destino == LocalDestino.INTERESTADUAL && item.getCfop() < 6000) {
+                throw new ChronosException("CFOP :" + cfop + " inválido para operações Interestadual");
             }
         }
-        if (destino == LocalDestino.INTERESTADUAL && cfop < 6000) {
-            throw new ChronosException("CFOP :" + cfop + " inválido para operações Interestadual");
-        }
+
 
         LocalDestino local = LocalDestino.getByCodigo(nfe.getLocalDestino());
         if (local == LocalDestino.INTERESTADUAL && modelo == ModeloDocumento.NFCE) {
