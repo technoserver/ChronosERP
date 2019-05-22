@@ -1,11 +1,16 @@
 package com.chronos.controll.estoque;
 
 import com.chronos.controll.AbstractControll;
-import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.entidades.EmpresaProduto;
+import com.chronos.modelo.entidades.InventarioContagemCab;
+import com.chronos.modelo.entidades.InventarioContagemDet;
+import com.chronos.modelo.entidades.ProdutoSubGrupo;
+import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.util.Biblioteca;
+import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.SelectEvent;
@@ -16,9 +21,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -26,8 +29,7 @@ public class InventarioContagemControll extends AbstractControll<InventarioConta
 
     private static final long serialVersionUID = 1L;
 
-    @Inject
-    private Repository<Produto> produtoRepository;
+
     @Inject
     private Repository<EmpresaProduto> empresaProdutoRepository;
     @Inject
@@ -67,10 +69,18 @@ public class InventarioContagemControll extends AbstractControll<InventarioConta
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
+        getObjeto().setDataContagem(new Date());
         getObjeto().setListaInventarioContagemDet(new ArrayList<>());
         produtoSubgrupo = new ProdutoSubGrupo();
 
         Mensagem.addInfoMessage("Para definir a quantidade contado é preciso clicar na grid. após ter realizado a contagem escolhar qual contagem irá atualizar o estoque");
+    }
+
+    @Override
+    public void doEdit() {
+        InventarioContagemCab inventario = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        setObjeto(inventario);
+        setTelaGrid(false);
     }
 
     @Transactional
@@ -85,7 +95,7 @@ public class InventarioContagemControll extends AbstractControll<InventarioConta
 
                 for (InventarioContagemDet det : getObjeto().getListaInventarioContagemDet()) {
 
-                    det.getProduto().setQuantidadeEstoque(det.getContagem01());
+
 
                     BigDecimal quantidade;
 
@@ -105,8 +115,12 @@ public class InventarioContagemControll extends AbstractControll<InventarioConta
 
                     estoqueRepository.ajustarEstoqueEmpresa(empresa.getId(), det.getProduto().getId(), quantidade);
 
+                    auditoriaService.gerarLog(AcaoLog.AJUSTE, "Ajute do estoque do produto " + det.getProduto() + " para quantidade " + FormatValor.getInstance().formatarQuantidade(quantidade), "BALANCO");
+
                 }
+                setTelaGrid(false);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -126,14 +140,14 @@ public class InventarioContagemControll extends AbstractControll<InventarioConta
                     switch (item.getContagem()) {
 
                         case 2:
-                            quantidade = item.getContagem02();
+                            quantidade = Optional.ofNullable(item.getContagem02()).orElse(BigDecimal.ZERO);
                             break;
 
                         case 3:
-                            quantidade = item.getContagem03();
+                            quantidade = Optional.ofNullable(item.getContagem03()).orElse(BigDecimal.ZERO);
                             break;
                         default:
-                            quantidade = item.getContagem01();
+                            quantidade = Optional.ofNullable(item.getContagem01()).orElse(BigDecimal.ZERO);
                             break;
                     }
 

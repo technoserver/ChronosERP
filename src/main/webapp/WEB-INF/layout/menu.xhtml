@@ -119,6 +119,16 @@
                     <ui:include src="menuConfiguracao.xhtml"/>
                 </li>
 
+                <!--relatorios-->
+                <li class="${fn:contains(view.viewId,'relatorios')?'active':''}">
+                    <a href="#">
+                        <i class="fa fa-print"></i>
+                        <span class="nav-label">Relatórios</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ui:include src="menuRelatorio.xhtml"/>
+                </li>
+
 
             </ul>
         </h:form>

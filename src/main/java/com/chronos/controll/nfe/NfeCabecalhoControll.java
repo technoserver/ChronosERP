@@ -109,6 +109,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         dataModel.getFiltros().clear();
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         dataModel.addFiltro("codigoModelo", "55", Filtro.IGUAL);
+        dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
 
         dataModel.setSortOrder(SortOrder.DESCENDING);
         dataModel.setOrdernarPor("numero");
