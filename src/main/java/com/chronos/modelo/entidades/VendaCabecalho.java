@@ -410,6 +410,14 @@ public class VendaCabecalho implements Serializable {
         return valorTotal;
     }
 
+    public BigDecimal calcularValorDevolucao() {
+
+        return getListaVendaDetalhe().stream()
+                .map(VendaDetalhe::getValorTotalDevolvido)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+    }
+
     public String valorSubTotalFormatado() {
         return formatarValor(calcularValorProdutos());
     }

@@ -20,9 +20,11 @@ import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.springframework.beans.BeanUtils;
 
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +54,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     private VendaComissaoService vendaComissaoService;
     @Inject
     private Repository<NfeCabecalho> nfeCabecalhoRepository;
+    @Inject
+    private Repository<VendaDevolucao> vendaDevolucaoRepository;
 
 
     @Transactional
@@ -176,6 +180,15 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             }
         }
 
+        VendaDevolucao devolucao = new VendaDevolucao();
+
+
+        String totalParcial = venda.calcularValorDevolucao().compareTo(venda.getValorTotal()) == 0 ? "T" : "P";
+
+        devolucao.setTotalParcial(totalParcial);
+        devolucao.setValorCredito(venda.getValorTotal());
+        devolucao.setVendaCabecalho(venda);
+
         if (venda.getSituacao().equals(SituacaoVenda.Faturado.getCodigo())) {
 
             NfeCabecalho nfeSalva = nfeCabecalhoRepository.get(NfeCabecalho.class, "vendaCabecalho.id", venda.getId());
@@ -187,26 +200,26 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             NfeCabecalho nfe = new NfeCabecalho();
 
 
-            BeanUtils.copyProperties(nfeSalva, nfe, "id", "chaveAcesso", "numero", "codigoNumerico", "serie", "listaNfeDetalhe",
+            BeanUtils.copyProperties(nfeSalva, nfe, "id", "chaveAcesso", "numero", "codigoNumerico", "serie", "listaNfeDetalhe", "listaNfeReferenciada",
                     "digitoChaveAcesso", "listaNfeFormaPagamento", "listaDuplicata", "fatura", "tributOperacaoFiscal", "qrcode", "urlChave", "statusNota");
 
             nfe.setCodigoModelo(ModeloDocumento.NFE.getCodigo().toString());
 
             ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
 
-            nfe.setNaturezaOperacao(operacaoFiscal.getDescricaoNaNf());
+            nfe.setNaturezaOperacao(operacaoFiscal.getDescricao());
             nfe.setTributOperacaoFiscal(operacaoFiscal);
             nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
             nfe.setSerie(configuracaoEmissorDTO.getSerie());
             nfe.setTipoOperacao(0);
             nfe.setFinalidadeEmissao(FinalidadeEmissao.DEVOLUCAO.getCodigo());
-
+            nfe.setDataHoraEntradaSaida(new Date());
 
             List<NfeDetalhe> itens = new ArrayList<>();
 
             nfeSalva.getListaNfeDetalhe().forEach(item -> {
 
-                NfeDetalhe newItem = new NfeDetalhe();
+                NfeDetalhe newItem;
 
                 Optional<VendaDetalhe> first = venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().getId() == item.getProduto().getId()).findFirst();
 
@@ -220,11 +233,13 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
                     newItem = alterarQuantidade(item, vendaDetalhe.getQuantidade());
                     newItem.setCfop(operacaoFiscal.getCfop());
+                    newItem.setNfeCabecalho(nfe);
 
                     itens.add(newItem);
 
                 }
             });
+
 
             nfe.setListaNfeDetalhe(itens);
 
@@ -232,18 +247,47 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             atualizaTotais(nfe);
 
+            NfeFormaPagamento forma = new NfeFormaPagamento();
+            forma.setNfeCabecalho(nfe);
+            forma.setPdvTipoPagamento(new PdvTipoPagamento().buscarPorCodigo("90"));
+            forma.setForma("90");
+
+            nfe.getListaNfeFormaPagamento().add(forma);
+
+
+            NfeReferenciada referenciada = new NfeReferenciada();
+            referenciada.setNfeCabecalho(nfe);
+            referenciada.setChaveAcesso(nfeSalva.getChaveAcessoCompleta());
+            nfe.getListaNfeReferenciada().add(referenciada);
+
+
             StatusTransmissao status = nfeService.transmitirNFe(nfe, true);
 
 
             if (status == StatusTransmissao.AUTORIZADA) {
 
+                vendaDevolucaoRepository.salvar(devolucao);
+
                 Mensagem.addInfoMessage("Devolução gerada com sucesso");
                 auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
 
+            } else {
+                FacesContext.getCurrentInstance().validationFailed();
             }
 
 
         } else {
+
+            venda.getListaVendaDetalhe().forEach(item -> {
+                estoqueRepositoy.atualizaEstoqueEmpresaControle(venda.getEmpresa().getId(), item.getProduto().getId(), item.getQuantidadeDevolvida());
+            });
+
+
+            vendaDevolucaoRepository.salvar(devolucao);
+
+            auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId(), "VENDA");
+
+            Mensagem.addInfoMessage("Devolução gerada com sucesso");
 
         }
 
@@ -326,7 +370,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
         NfeDetalhe newItem = new NfeDetalhe();
 
-        BeanUtils.copyProperties(item, newItem, "id", "nfeDetalheImpostoCofins", "nfeDetalheImpostoPis", "nfeDetalheImpostoIcms", "nfeDetalheImpostoIpi");
+        BeanUtils.copyProperties(item, newItem, "id", "nfeDetalheImpostoCofins", "nfeDetalheImpostoPis", "nfeDetalheImpostoIcms", "nfeDetalheImpostoIpi", "nfeCabecalho");
 
         BigDecimal qtdOld = item.getQuantidadeComercial();
         BigDecimal vlrAux;

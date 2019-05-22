@@ -402,6 +402,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void exibirDevolucao() {
         VendaCabecalho venda = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
         setObjeto(venda);
+        operacaoFiscal = null;
 
         getObjeto().getListaVendaDetalhe().forEach(i -> i.setQuantidadeDevolvida(i.getQuantidade()));
     }
