@@ -9,7 +9,7 @@
               auth="Container"
               driverClass="org.postgresql.Driver"
               factory="org.apache.naming.factory.BeanFactory"
-              jdbcUrl="jdbc:postgresql://localhost:5432/erp_admin?autoReconnect=true"
+              jdbcUrl="jdbc:postgresql://localhost:5432/admin?autoReconnect=true"
               initialPoolSize="5"
               maxIdleTime="300"
               maxPoolSize="20"

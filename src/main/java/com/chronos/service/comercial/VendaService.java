@@ -181,6 +181,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         }
 
         VendaDevolucao devolucao = new VendaDevolucao();
+        List<VendaDevolucaoItem> itensDevolucao = new ArrayList<>();
 
 
         String totalParcial = venda.calcularValorDevolucao().compareTo(venda.getValorTotal()) == 0 ? "T" : "P";
@@ -217,6 +218,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             List<NfeDetalhe> itens = new ArrayList<>();
 
+
             nfeSalva.getListaNfeDetalhe().forEach(item -> {
 
                 NfeDetalhe newItem;
@@ -231,11 +233,23 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
                     VendaDetalhe vendaDetalhe = first.get();
 
-                    newItem = alterarQuantidade(item, vendaDetalhe.getQuantidade());
+                    newItem = alterarQuantidade(item, vendaDetalhe.getQuantidadeDevolvida());
                     newItem.setCfop(operacaoFiscal.getCfop());
                     newItem.setNfeCabecalho(nfe);
 
                     itens.add(newItem);
+
+                    VendaDevolucaoItem itemDevolucao = new VendaDevolucaoItem();
+
+                    itemDevolucao.setVendaDevolucao(devolucao);
+                    itemDevolucao.setQuantidade(vendaDetalhe.getQuantidadeDevolvida());
+                    itemDevolucao.setProduto(vendaDetalhe.getProduto());
+
+                    BigDecimal valorPorItem = Biblioteca.valorPorItem(vendaDetalhe.getQuantidade(), vendaDetalhe.getQuantidadeDevolvida(), vendaDetalhe.getValorTotal());
+
+                    itemDevolucao.setValor(valorPorItem);
+
+                    itensDevolucao.add(itemDevolucao);
 
                 }
             });
@@ -266,7 +280,15 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             if (status == StatusTransmissao.AUTORIZADA) {
 
+                devolucao.setListaVendaDevolucaoItem(itensDevolucao);
+
                 vendaDevolucaoRepository.salvar(devolucao);
+
+                String situacao = totalParcial.equals("T") ? SituacaoVenda.Devolucao.getCodigo() : SituacaoVenda.Devolucao_PARCIAL.getCodigo();
+
+                venda.setSituacao(situacao);
+
+                repository.atualizar(venda);
 
                 Mensagem.addInfoMessage("Devolução gerada com sucesso");
                 auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
@@ -279,11 +301,36 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         } else {
 
             venda.getListaVendaDetalhe().forEach(item -> {
-                estoqueRepositoy.atualizaEstoqueEmpresaControle(venda.getEmpresa().getId(), item.getProduto().getId(), item.getQuantidadeDevolvida());
+
+                if (item.getQuantidadeDevolvida().signum() > 0) {
+
+                    VendaDevolucaoItem itemDevolucao = new VendaDevolucaoItem();
+
+                    itemDevolucao.setVendaDevolucao(devolucao);
+                    itemDevolucao.setQuantidade(item.getQuantidadeDevolvida());
+                    itemDevolucao.setProduto(item.getProduto());
+
+                    BigDecimal valorPorItem = Biblioteca.valorPorItem(item.getQuantidade(), item.getQuantidadeDevolvida(), item.getValorTotal());
+
+                    itemDevolucao.setValor(valorPorItem);
+
+                    itensDevolucao.add(itemDevolucao);
+
+                    estoqueRepositoy.atualizaEstoqueEmpresaControle(venda.getEmpresa().getId(), item.getProduto().getId(), item.getQuantidadeDevolvida());
+
+                }
+
             });
 
-
+            devolucao.setListaVendaDevolucaoItem(itensDevolucao);
             vendaDevolucaoRepository.salvar(devolucao);
+
+
+            String situacao = totalParcial.equals("T") ? SituacaoVenda.Devolucao.getCodigo() : SituacaoVenda.Devolucao_PARCIAL.getCodigo();
+
+            venda.setSituacao(situacao);
+
+            repository.atualizar(venda);
 
             auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId(), "VENDA");
 
@@ -381,8 +428,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
         BigDecimal descontoUnitario = item.getValorDesconto() != null ? item.getValorDesconto().divide(qtdOld) : BigDecimal.ZERO;
 
-        item
-                .setValorBrutoProduto(qtdAtual.multiply(item.getValorUnitarioComercial()));
+        item.setValorBrutoProduto(qtdAtual.multiply(item.getValorUnitarioComercial()));
         item.setValorDesconto(descontoUnitario.multiply(qtdAtual));
         item.setValorSubtotal(item.getValorBrutoProduto());
         item.setValorTotal(item.getValorBrutoProduto()

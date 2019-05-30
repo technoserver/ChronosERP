@@ -11,7 +11,8 @@ public enum SituacaoVenda {
     Faturado("F"),
     Encerrado("E"),
     Entregue("T"),
-    Devolucao("V"),
+    Devolucao("DV"),
+    Devolucao_PARCIAL("DP"),
     CANCELADA("C");
 
     private String codigo;
