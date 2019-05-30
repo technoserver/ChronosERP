@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -41,6 +42,9 @@ public class VendaDevolucao implements Serializable {
     @JoinColumn(name = "ID_VENDA_CABECALHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private VendaCabecalho vendaCabecalho;
+
+    @OneToMany(mappedBy = "vendaDevolucao", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VendaDevolucaoItem> listaVendaDevolucaoItem;
 
 
     public VendaDevolucao() {
@@ -103,6 +107,14 @@ public class VendaDevolucao implements Serializable {
 
     public void setVendaCabecalho(VendaCabecalho vendaCabecalho) {
         this.vendaCabecalho = vendaCabecalho;
+    }
+
+    public List<VendaDevolucaoItem> getListaVendaDevolucaoItem() {
+        return listaVendaDevolucaoItem;
+    }
+
+    public void setListaVendaDevolucaoItem(List<VendaDevolucaoItem> listaVendaDevolucaoItem) {
+        this.listaVendaDevolucaoItem = listaVendaDevolucaoItem;
     }
 
     @Override
