@@ -200,7 +200,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     }
 
     public void salvarVendaOrcamentoDetalhe() {
-        vendaOrcamentoDetalhe.setValorUnitario(vendaOrcamentoDetalhe.getProduto().getValorVenda());
+
         if (vendaOrcamentoDetalhe.getId() == null) {
             getObjeto().getListaVendaOrcamentoDetalhe().add(vendaOrcamentoDetalhe);
         }
