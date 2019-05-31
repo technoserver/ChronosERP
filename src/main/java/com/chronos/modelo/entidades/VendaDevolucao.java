@@ -53,6 +53,15 @@ public class VendaDevolucao implements Serializable {
         this.totalParcial = "T";
     }
 
+    public VendaDevolucao(Integer id, Date dataDevolucao, BigDecimal valorCredito, String totalParcial, String creditoUtilizado, Integer idvenda) {
+        this.id = id;
+        this.dataDevolucao = dataDevolucao;
+        this.valorCredito = valorCredito;
+        this.totalParcial = totalParcial;
+        this.creditoUtilizado = creditoUtilizado;
+        this.vendaCabecalho = new VendaCabecalho(idvenda);
+    }
+
     public Integer getId() {
         return id;
     }

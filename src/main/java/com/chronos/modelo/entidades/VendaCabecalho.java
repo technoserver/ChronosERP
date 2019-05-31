@@ -106,6 +106,10 @@ public class VendaCabecalho implements Serializable {
         this.tipoFrete = TipoFrete.CIF.getCodigo();
     }
 
+    public VendaCabecalho(Integer id) {
+        this.id = id;
+    }
+
     public VendaCabecalho(Integer id, Date dataVenda, Integer numeroFatura, BigDecimal valorTotal, String situacao,String cliente) {
         this.id = id;
         this.dataVenda = dataVenda;
