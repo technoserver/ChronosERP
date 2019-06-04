@@ -130,9 +130,9 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
 
-    public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa) {
+    public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa, String servico) {
 
-
+        String filtro = servico.equals("S") ? "" : "and p.servico = '" + servico + "'";
         String jpql = "select DISTINCT new com.chronos.dto.ProdutoDTO(p.id,p.produtoGrade.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
                 "ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,un.sigla," +
                 "un.podeFracionar,pp.valor,tp.preco,p.precoPrioritario,p.quantidadeVendaAtacado,p.valorVendaAtacado) From Produto p " +
@@ -141,7 +141,9 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
                 "LEFT JOIN ProdutoPromocao pp on pp.produto.id = p.id " +
                 "LEFT JOIN TabelaPrecoProduto tp on tp.produto = p.id " +
                 "LEFT JOIN TabelaPreco t on t.id = tp.tabelaPreco.id " +
-                "where (LOWER(p.nome)  like ?1 or p.gtin = ?1 or p.codigoInterno = ?1) and ep.empresa.id = ?2 and  p.tributGrupoTributario is not null and p.tipo = 'V' " +
+                "where (LOWER(p.nome)  like ?1 or p.gtin = ?1 or p.codigoInterno = ?1) and ep.empresa.id = ?2 and  " +
+                "p.tributGrupoTributario is not null and p.tipo = 'V' " +
+                filtro +
                 "order by p.nome";
 
         nome = !org.apache.commons.lang3.StringUtils.isNumeric(nome) ? "%" + nome.toLowerCase().trim() + "%" : nome;

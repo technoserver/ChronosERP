@@ -370,7 +370,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public List<Produto> getListaProduto(String nome) {
         List<Produto> listaProduto = new ArrayList<>();
         try {
-            listaProduto = produtoService.getListProdutoVenda(nome, empresa);
+            listaProduto = produtoService.getListProdutoVenda(nome, empresa, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
