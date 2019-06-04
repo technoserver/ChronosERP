@@ -218,12 +218,6 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
 
         nfe.getEmitente().setNfeCabecalho(nfe);
 
-        nfe.getDestinatario().setNfeCabecalho(nfe);
-
-
-        nfe.getFatura().setNfeCabecalho(nfe);
-
-
         return nfe;
     }
 
