@@ -71,8 +71,12 @@ public class VendaToNFe extends ManualCDILookup {
     public NfeCabecalho gerarNfe() throws Exception {
 
         nfe = nfeUtil.definirDadosPadrao(modelo, empresa);
+
         definirEmitente();
+
         definirDestinatario();
+
+
         definirOperacaoTributaria();
         gerarItensVenda();
         addItens();
@@ -113,7 +117,6 @@ public class VendaToNFe extends ManualCDILookup {
     }
 
 
-
     private void definirOperacaoTributaria() throws java.lang.Exception {
         if (cliente != null && cliente.getTributOperacaoFiscal() == null) {
             throw new Exception("Operação tributaria do Cliente " + cliente.getPessoa().getNome() + " não definida");
@@ -130,7 +133,10 @@ public class VendaToNFe extends ManualCDILookup {
     }
 
     private void definirDestinatario() {
-        if (cliente != null ) {
+
+        nfe.setDestinatario(new NfeDestinatario());
+        nfe.getDestinatario().setNfeCabecalho(nfe);
+        if (cliente != null) {
             if (cliente.getId() != null) {
                 nfe.setCliente(cliente);
             }
@@ -290,7 +296,7 @@ public class VendaToNFe extends ManualCDILookup {
                 BigDecimal somaParcelas = BigDecimal.ZERO;
                 BigDecimal valorParcela;
                 int number = 0;
-                List<VendaCondicoesParcelas> parcelas = venda.getCondicoesPagamento().getParcelas();
+                List<VendaCondicoesParcelas> parcelas = tipoVenda == TipoVenda.OS ? os.getCondicoesPagamento().getParcelas() : venda.getCondicoesPagamento().getParcelas();
                 for (VendaCondicoesParcelas parcela : parcelas) {
                     NfeDuplicata duplicata = new NfeDuplicata();
                     duplicata.setNfeCabecalho(nfe);
