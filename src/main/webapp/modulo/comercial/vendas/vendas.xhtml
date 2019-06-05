@@ -81,7 +81,7 @@
                             reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
                             lazy="true" sortBy="#{row.id}" sortOrder="descending"
                     >
-                        <p:column headerText="Código" width="100">
+                        <p:column headerText="Código" width="100" class="text-center">
                             <h:outputLabel value="#{row.id}"/>
                         </p:column>
                         <p:column headerText="Cliente">
@@ -116,9 +116,11 @@
                                 <f:setPropertyActionListener value="#{row}"
                                                              target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                             </p:commandLink>
+
+
                             &nbsp;
                             <p:commandLink title="Excluir" action="#{vendaCabecalhoControll.remover()}"
-
+                                           style="margin-right: 5px"
                                            update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                                            process="tableVenda"
                                            oncomplete="atualizarMsg();"
@@ -131,6 +133,19 @@
                                 <f:setPropertyActionListener value="#{row}"
                                                              target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                             </p:commandLink>
+
+                            <p:menuButton rendered="#{row.podeExcluir}">
+                                <p:menuitem value="Imprimir A4"
+                                            target="_blank"
+                                            actionListener="#{vendaRelatorioControll.imprimirPedido(row.id)}"
+                                            icon="fa fa-print" ajax="false"/>
+                                <p:menuitem value="Imprimir Cupom"
+                                            target="_blank"
+                                            actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(row.id)}"
+                                            icon="fa fa-print"
+                                            ajax="false"/>
+
+                            </p:menuButton>
                             &nbsp;
                             <p:menuButton rendered="#{row.situacao eq 'E' or row.situacao eq 'F'}">
                                 <p:menuitem value="Imprimir A4"

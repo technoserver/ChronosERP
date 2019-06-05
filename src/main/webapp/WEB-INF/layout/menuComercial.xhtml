@@ -96,40 +96,13 @@
                                      exibir="#{seguranca.isTemAcesso('FRENTE_CAIXA')}"
                                      funcao="modulo/comercial/vendas/balcao"/>
 
+                        <erp:subMenu caminho="/modulo/comercial/vendas/devolucao"
+                                     label="Devoluções"
+                                     funcao="modulo/comercial/vendas/devolucao"/>
+
 
                     </li>
-                    <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/relatorios/')?'active':''}">
-                        <a href="#">Relatorios <span class="fa arrow"></span></a>
-                        <ul class="nav nav-bedroom-level">
-                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoVendas"
-                                         label="Vendas"
-                                         funcao="relacaoVendas"/>
-                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/ranckProdutos"
-                                         label="Ranck de Produtos"
-                                         funcao="ranckProdutos"/>
-                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoProdutosVendido"
-                                         label="Produtos +  Vendios"
-                                         funcao="relacaoProdutosVendido"/>
 
-                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoProdutosVendido2"
-                                         label="Produtos  Vendios 2"
-                                         funcao="relacaoProdutosVendido2"/>
-
-                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoClientesMaisCompram"
-                                         label="Clientes +  Compram"
-                                         funcao="relacaoClientesMaisCompram"/>
-
-                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/comissaoVenda"
-                                         label="Comissões"
-                                         funcao="comissaoVenda"/>
-
-                            <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoEntradaProdutosValorVenda"
-                                         label="Entrada Produto X Valor Venda"
-                                         funcao="relacaoEntradaProdutosValorVenda"/>
-
-
-                        </ul>
-                    </li>
                 </ul>
             </li>
         </c:if>
@@ -155,16 +128,7 @@
                                  exibir="#{seguranca.isTemAcesso('OS_HISTORICO')}"
                                  funcao="historico"/>
 
-                    <li class="${fn:contains(view.viewId,'modulo/comercial/os/relatorios/')?'active':''}">
-                        <a href="#">Relatorios <span class="fa arrow"></span></a>
-                        <ul class="nav nav-bedroom-level">
-                            <erp:subMenu caminho="/modulo/comercial/os/relatorios/relacaoOs"
-                                         label="Relação"
-                                         funcao="relacaoOs"/>
 
-
-                        </ul>
-                    </li>
                 </ul>
 
             </li>
@@ -192,24 +156,6 @@
                                  exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
                                  funcao="statusNfe"/>
 
-
-                    <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/relatorios/')?'active':''}">
-                        <a href="#">Relatorios <span class="fa arrow"></span></a>
-                        <ul class="nav nav-bedroom-level">
-                            <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNumeros"
-                                         label="Numeração utilizada"
-                                         funcao="relacaoNumeros"/>
-                            <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNfe"
-                                         label="Relação de NFe"
-                                         funcao="relacaoNfe"/>
-
-                            <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoXmlNfe"
-                                         label="Relação de XML"
-                                         funcao="relacaoXmlNfe"/>
-
-
-                        </ul>
-                    </li>
 
 
                 </ul>

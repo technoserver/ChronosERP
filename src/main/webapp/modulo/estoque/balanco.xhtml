@@ -1,0 +1,176 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        BALANÇO
+    </ui:define>
+
+    <ui:define name="tela">
+        #{inventarioContagemControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        BALANÇO
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{inventarioContagemControll}"
+                       idDataTable="dataTableBalanco"
+                       nomeFuncao="BALANCO"
+                       id="telaGrid">
+
+            <p:column headerText="Data Contagem" styleClass="text-center">
+                <h:outputLabel value="#{row.dataContagem}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Estoque Atualizado" styleClass="text-center">
+                <h:outputLabel
+                        value="#{inventarioContagemControll.keyFromValue(inventarioContagemControll.simNao, row.estoqueAtualizado)}"/>
+            </p:column>
+            <p:column headerText="Tipo" styleClass="text-center">
+                <h:outputLabel
+                        value="#{inventarioContagemControll.keyFromValue(inventarioContagemControll.tipoContagem, row.tipo)}"/>
+            </p:column>
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{inventarioContagemControll}"
+                                   nomeFuncao="BALANCO"
+                                   id="telaDetalhe"
+                                   somenteConsulta="#{inventarioContagemControll.objeto.estoqueAtualizado eq 'S'}">
+
+
+            <div class="row m-b">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="SubGrupo"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{inventarioContagemControll}"
+                                  completeMethod="getListaSubGrupo"
+                                  nomeAtributo="#{inventarioContagemControll.produtoSubgrupo}"
+                                  idComponente="produtoSubgrupo"
+                                  requerido="false">
+
+                    <p:ajax event="itemSelecionado"
+                            listener="#{inventarioContagemControll.buscaGrupoProdutos}"
+                            update="formCentro:telaDetalhe:outputPanelDetalhe"/>
+
+                </erp:autoComplete>
+
+                <erp:campoData label="Data contagem"
+                               styleClass="col-xs-12 col-sm-2 col-md-2"
+                               idComponente="dataContagem"
+                               requerido="true"
+                               nomeAtributo="#{inventarioContagemControll.objeto.dataContagem}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="inventarioContagemCabEstoqueAtualizado"
+                                 label="Atualiza Estoque"
+                                 nomeAtributo="#{inventarioContagemControll.objeto.estoqueAtualizado}"
+                                 itens="#{inventarioContagemControll.simNao}"/>
+                <erp:campoSelect styleClass="tcol-xs-12 col-sm-2 col-md-2"
+                                 idComponente="inventarioContagemCabTipo" label="Tipo"
+                                 nomeAtributo="#{inventarioContagemControll.objeto.tipo}"
+                                 itens="#{inventarioContagemControll.tipoContagem}"/>
+
+            </div>
+
+            <h:panelGroup layout="block" class="row">
+                <div class="col-md-12">
+                    <p:dataTable id="dataTableInventario" var="obj" paginatorPosition="bottom"
+                                 value="#{inventarioContagemControll.objeto.listaInventarioContagemDet}"
+                                 editable="true" editMode="cell"
+                                 paginator="true" rows="20" rowsPerPageTemplate="20,30,40,50,60">
+
+                        <p:column headerText="Produto">
+                            <h:outputLabel value="#{obj.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="Cont. 01" width="94" styleClass="text-center">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.contagem01}">
+                                        <f:convertNumber pattern="#,##0.000"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.contagem01}"
+                                                   decimalPlaces="2"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Cont. 02" width="94" styleClass="text-center">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.contagem02}">
+                                        <f:convertNumber pattern="#,##0.000"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.contagem02}"
+                                                   decimalPlaces="2"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Cont. 03" width="94" styleClass="text-center">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.contagem03}">
+                                        <f:convertNumber pattern="#,##0.000"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.contagem03}"
+                                                   decimalPlaces="2"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Fechado" width="94" styleClass="text-center">
+                            <h:outputLabel value="#{obj.fechadoContagem}"/>
+                        </p:column>
+                        <p:column headerText="Qtde" width="94" styleClass="text-center">
+                            <h:outputLabel value="#{obj.quantidadeSistema}">
+                                <f:convertNumber pattern="#,##0.000"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="contagem" width="105" styleClass="text-center">
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputText
+                                            value="#{ inventarioContagemControll.keyFromValue(inventarioContagemControll.contagens,obj.contagem)}"/>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <h:selectOneMenu class="form-control"
+                                                     value="#{obj.contagem}">
+                                        <f:selectItems value="#{inventarioContagemControll.contagens}"/>
+                                    </h:selectOneMenu>
+                                </f:facet>
+
+                            </p:cellEditor>
+
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </h:panelGroup>
+
+
+        </erp:telaInclusaoAlteracao>
+
+
+    </ui:define>
+
+</ui:composition>

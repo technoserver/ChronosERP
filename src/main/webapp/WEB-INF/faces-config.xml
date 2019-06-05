@@ -31,7 +31,6 @@
     <factory>
         <exception-handler-factory>
             org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory
-            <!--            com.chronos.util.jsf.JSFExceptionHandlerFactory-->
         </exception-handler-factory>
     </factory>
 

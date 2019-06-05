@@ -106,6 +106,10 @@ public class VendaCabecalho implements Serializable {
         this.tipoFrete = TipoFrete.CIF.getCodigo();
     }
 
+    public VendaCabecalho(Integer id) {
+        this.id = id;
+    }
+
     public VendaCabecalho(Integer id, Date dataVenda, Integer numeroFatura, BigDecimal valorTotal, String situacao,String cliente) {
         this.id = id;
         this.dataVenda = dataVenda;
@@ -408,6 +412,14 @@ public class VendaCabecalho implements Serializable {
                 .add(getValorSeguro())
                 .subtract(calcularTotalDesconto());
         return valorTotal;
+    }
+
+    public BigDecimal calcularValorDevolucao() {
+
+        return getListaVendaDetalhe().stream()
+                .map(VendaDetalhe::getValorTotalDevolvido)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 
     public String valorSubTotalFormatado() {

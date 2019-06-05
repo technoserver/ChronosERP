@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.Auditoria;
 import com.chronos.repository.Filtro;
+import org.primefaces.model.SortOrder;
 import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
@@ -34,6 +35,8 @@ public class AuditoriaControll extends AbstractControll<Auditoria> implements Se
         Object[] atributos = new Object[]{"dataRegistro", "horaRegistro", "janelaController", "acao", "conteudo", "usuario.login"};
 
         dataModel.getFiltros().clear();
+        dataModel.setOrdernarPor("dataRegistro");
+        dataModel.setSortOrder(SortOrder.DESCENDING);
         pesquisar();
 
         dataModel.setAtributos(atributos);

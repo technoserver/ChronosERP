@@ -32,6 +32,21 @@ import java.util.regex.Pattern;
 public class Biblioteca {
 
 
+    public static BigDecimal calcularPercentual(BigDecimal subTotal, BigDecimal total) {
+
+
+        BigDecimal desconto = subtrai(subTotal, total);
+
+
+        desconto = divide(desconto, subTotal);
+        desconto = multiplica(desconto, BigDecimal.valueOf(100));
+        BigDecimal cem = BigDecimal.valueOf(100);
+        BigDecimal percentual = cem.subtract(desconto);
+
+        return percentual;
+
+    }
+
     public static BigDecimal valorPorItem(BigDecimal qtd, BigDecimal qtdAtual, BigDecimal valor) {
         try {
             BigDecimal valorPorItem = valor.divide(qtd);

@@ -3,10 +3,7 @@ package com.chronos.service.comercial;
 import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoVendaDTO;
-import com.chronos.modelo.entidades.NfeCabecalho;
-import com.chronos.modelo.entidades.OsAbertura;
-import com.chronos.modelo.entidades.OsProdutoServico;
-import com.chronos.modelo.entidades.Produto;
+import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.EstoqueRepository;
@@ -44,6 +41,9 @@ public class OsService extends AbstractService<OsAbertura> {
     private NfeService nfeService;
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
+
+    @Inject
+    private Repository<VendaCondicoesParcelas> parcelasRepository;
 
 
     public OsAbertura salvar(OsAbertura os) throws ChronosException {
@@ -87,6 +87,8 @@ public class OsService extends AbstractService<OsAbertura> {
 
 
         NfeCabecalho nfe;
+        List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", os.getCondicoesPagamento().getId());
+        os.getCondicoesPagamento().setParcelas(parcelas);
         VendaToNFe vendaNfe = new VendaToNFe(modelo, os);
         nfe = vendaNfe.gerarNfe();
         nfe.setOs(os);

@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+
+    <ul class="nav nav-second-level collapse ">
+        <li class="${fn:contains(view.viewId,'cadastros/relatorios')?'active':''}">
+            <a href="#">Cadastros
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/cadastros/relatorios/relacaoClientes"
+                             label="Clientes"
+                             funcao="relacaoClientes"/>
+                <erp:subMenu caminho="/modulo/cadastros/relatorios/relacaoFornecedor"
+                             label="Fornecedor"
+                             funcao="relacaoProdutos"/>
+                <erp:subMenu caminho="/modulo/cadastros/relatorios/relacaoProdutos"
+                             label="Produtos"
+                             funcao="relacaoProdutos"/>
+            </ul>
+        </li>
+
+
+        <li class="${fn:contains(view.viewId,'modulo/financeiro/relatorios/')?'active':''}">
+            <a href="#">Financeiro
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasPagar"
+                             label="Contas a pagar"
+                             funcao="relacaoContasPagar"/>
+                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasReceber"
+                             label="Contas a receber"
+                             funcao="relacaoContasReceber"/>
+
+            </ul>
+        </li>
+
+
+        <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/relatorios/')?'active':''}">
+            <a href="#">Vendas
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-bedroom-level">
+                <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoVendas"
+                             label="Vendas"
+                             funcao="relacaoVendas"/>
+                <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/ranckProdutos"
+                             label="Ranck de Produtos"
+                             funcao="ranckProdutos"/>
+                <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoProdutosVendido"
+                             label="Produtos +  Vendios"
+                             funcao="relacaoProdutosVendido"/>
+
+                <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoProdutosVendido2"
+                             label="Produtos  Vendios 2"
+                             funcao="relacaoProdutosVendido2"/>
+
+                <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoClientesMaisCompram"
+                             label="Clientes +  Compram"
+                             funcao="relacaoClientesMaisCompram"/>
+
+                <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/comissaoVenda"
+                             label="Comissões"
+                             funcao="comissaoVenda"/>
+
+                <erp:subMenu caminho="/modulo/comercial/vendas/relatorios/relacaoEntradaProdutosValorVenda"
+                             label="Entrada Produto X Valor Venda"
+                             funcao="relacaoEntradaProdutosValorVenda"/>
+
+
+            </ul>
+        </li>
+
+        <li class="${fn:contains(view.viewId,'modulo/comercial/os/relatorios/')?'active':''}">
+            <a href="#">OS
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-bedroom-level">
+                <erp:subMenu caminho="/modulo/comercial/os/relatorios/relacaoOs"
+                             label="Relação"
+                             funcao="relacaoOs"/>
+
+
+            </ul>
+        </li>
+
+        <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/relatorios/')?'active':''}">
+            <a href="#">NF-e
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-bedroom-level">
+                <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNumeros"
+                             label="Numeração utilizada"
+                             funcao="relacaoNumeros"/>
+                <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNfe"
+                             label="Relação de NFe"
+                             funcao="relacaoNfe"/>
+
+                <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoXmlNfe"
+                             label="Relação de XML"
+                             funcao="relacaoXmlNfe"/>
+
+
+            </ul>
+        </li>
+
+        <li class="${fn:contains(view.viewId,'modulo/estoque/relatorios/')?'active':''}">
+            <a href="#">Estoque
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-bedroom-level">
+                <erp:subMenu caminho="/modulo/estoque/relatorios/relacaoEntradas"
+                             label="Entradas"
+                             funcao="relacaoEntradas"/>
+
+
+            </ul>
+        </li>
+
+
+    </ul>
+
+
+</ui:composition>

@@ -55,6 +55,8 @@ public class VendaDetalhe implements Serializable {
     private Produto produto;
     @Transient
     private BigDecimal quantidadeDevolvida;
+    @Transient
+    private BigDecimal valorTotalDevolvido;
 
     public VendaDetalhe() {
         this.valorSubtotal = BigDecimal.ZERO;
@@ -154,17 +156,27 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getQuantidadeDevolvida() {
-        return quantidadeDevolvida;
+        return Optional.ofNullable(quantidadeDevolvida).orElse(BigDecimal.ZERO);
     }
 
     public void setQuantidadeDevolvida(BigDecimal quantidadeDevolvida) {
         this.quantidadeDevolvida = quantidadeDevolvida;
     }
 
+    public BigDecimal getValorTotalDevolvido() {
+        valorTotalDevolvido = getQuantidadeDevolvida().multiply(getValorUnitario()).subtract(getValorDesconto());
+        return valorTotalDevolvido;
+    }
+
+    public void setValorTotalDevolvido(BigDecimal valorTotalDevolvido) {
+        this.valorTotalDevolvido = valorTotalDevolvido;
+    }
+
     public void calcularValorTotal() {
         valorSubtotal = quantidade.multiply(valorUnitario);
         valorTotal = this.valorSubtotal.subtract(this.valorDesconto);
     }
+
 
     @Override
     public int hashCode() {

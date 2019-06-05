@@ -95,11 +95,12 @@ public class ProdutoService implements Serializable {
         return produto;
     }
 
-    public List<Produto> getListProdutoVenda(String nome, Empresa empresa) {
+    public List<Produto> getListProdutoVenda(String nome, Empresa empresa, boolean servico) {
         List<Produto> produtos = new ArrayList<>();
-        List<ProdutoDTO> produtosDTO = new ArrayList<>();
+        List<ProdutoDTO> produtosDTO;
         try {
-            produtosDTO = repository.getProdutoDTO(nome, empresa);
+            String isServico = servico ? "S" : "N";
+            produtosDTO = repository.getProdutoDTO(nome, empresa, isServico);
             produtos = produtosDTO.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,7 +125,8 @@ public class ProdutoService implements Serializable {
             filtros.add(new Filtro(Filtro.AND, "servico", "N"));
             filtros.add(new Filtro(Filtro.AND, "tipo", "V"));
         }
-        listaProduto = repository.getProdutoDTO(descricao, empresa);
+        String servico = moduloVenda ? "N" : "S";
+        listaProduto = repository.getProdutoDTO(descricao, empresa, servico);
         List<ProdutoDTO> newList;
         boolean existeGrade = listaProduto.stream().filter(p -> p.getIdgrade() != null).count() > 0;
 
@@ -182,8 +184,6 @@ public class ProdutoService implements Serializable {
 
             return newList;
         }
-
-
 
 
         return listaProduto;

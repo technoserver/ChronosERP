@@ -26,6 +26,7 @@ import org.primefaces.event.SelectEvent;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -401,6 +402,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void exibirDevolucao() {
         VendaCabecalho venda = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
         setObjeto(venda);
+        operacaoFiscal = null;
 
         getObjeto().getListaVendaDetalhe().forEach(i -> i.setQuantidadeDevolvida(i.getQuantidade()));
     }
@@ -420,6 +422,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+                FacesContext.getCurrentInstance().validationFailed();
             } else {
                 throw new RuntimeException("erro ao gerar a devolucao", ex);
             }
@@ -433,7 +436,6 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         try {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("descricao", Filtro.LIKE, descricao));
-            filtros.add(new Filtro("cfop", Filtro.MENOR, 3000));
             listaTributOperacaoFiscal = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, filtros, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoInss", "estoque", "estoqueVerificado"});
         } catch (Exception e) {
             // e.printStackTrace();

@@ -40,6 +40,7 @@ public class NfeFormaPagamento implements Serializable {
     private PdvTipoPagamento pdvTipoPagamento;
 
     public NfeFormaPagamento() {
+        this.valor = BigDecimal.ZERO;
     }
 
     public Integer getId() {
