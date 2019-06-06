@@ -603,6 +603,13 @@ public class Biblioteca {
         return valor;
     }
 
+    public static BigDecimal calcularFator(BigDecimal subtotal, BigDecimal total) {
+        BigDecimal result = subtrai(subtotal, total);
+        result = divide(result, subtotal);
+        result = multiplica(result, BigDecimal.valueOf(100));
+        return result;
+    }
+
     public static Integer modulo11(String codigo) {
         int total = 0;
         int peso = 2;
