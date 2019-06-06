@@ -388,6 +388,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
     public VendaCabecalho addItem(VendaCabecalho venda, VendaDetalhe vendaDetalhe) {
 
+        vendaDetalhe.calcularDesconto();
+        vendaDetalhe.calcularValorTotal();
+
         Optional<VendaDetalhe> itemVenda = getItemVenda(venda, vendaDetalhe.getProduto());
         BigDecimal quantidade = vendaDetalhe.getQuantidade();
         BigDecimal valor = vendaDetalhe.getValorUnitario();
