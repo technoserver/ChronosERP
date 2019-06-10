@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.time.LocalDate;
 
 /**
  * Created by john on 01/02/18.
@@ -27,9 +26,13 @@ public class ViewUsuarioTenant implements Serializable {
     private Integer idtenant;
     @Column(name = "nome_tenant")
     private String nomeTenant;
-    @Column(name = "data_vencimento")
-    private LocalDate dataVencimento;
+    @Column(name = "sistema")
+    private String sistema;
+    @Column(name = "status")
+    private String status;
 
+    public ViewUsuarioTenant() {
+    }
 
     public Integer getId() {
         return id;
@@ -71,12 +74,20 @@ public class ViewUsuarioTenant implements Serializable {
         this.nomeTenant = nomeTenant;
     }
 
-    public LocalDate getDataVencimento() {
-        return dataVencimento;
+    public String getSistema() {
+        return sistema;
     }
 
-    public void setDataVencimento(LocalDate dataVencimento) {
-        this.dataVencimento = dataVencimento;
+    public void setSistema(String sistema) {
+        this.sistema = sistema;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
