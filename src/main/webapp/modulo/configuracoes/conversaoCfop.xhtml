@@ -40,6 +40,10 @@
                        id="telaGrid"
         >
 
+            <p:column headerText="Tipo">
+                <h:outputLabel value="#{row.tipo eq 'S'? 'Saida':'Entrada'}"/>
+            </p:column>
+
             <p:column headerText="CFOP Origem">
                 <h:outputLabel value="#{row.cfopOrigem}"/>
             </p:column>

@@ -793,14 +793,49 @@ public class GeraXMLEnvio {
 
                 icms900.setCSOSN(csosn);
                 icms900.setOrig(origemMercadoria);
-                if (impIcms.getModalidadeBcIcms() != null) {
-                    icms900.setModBC(String.valueOf(impIcms.getModalidadeBcIcms()));
-                }
-                icms900.setVBC(impIcms.getBaseCalculoIcms() == null ? null : FormatValor.getInstance().formatarValor(impIcms.getBaseCalculoIcms()));
 
-                icms900.setPICMS(impIcms.getAliquotaIcms() == null ? null : FormatValor.getInstance().formatarValor(impIcms.getAliquotaIcms()));
-                icms900.setVICMS(impIcms.getValorIcms() == null ? null : FormatValor.getInstance().formatarValor(impIcms.getValorIcms()));
-                if (impIcms.getValorIcmsSt() != null) {
+                if (impIcms.getModalidadeBcIcms() != null) {
+
+
+                    if (impIcms.getTaxaReducaoBcIcms() == null) {
+                        throw new ChronosException("percentual de redução não informado para o produto \n"
+                                + impIcms.getNfeDetalhe().getCodigoProduto() + " - " + nomeProduto + "\n !!!");
+                    }
+
+                    icms900.setModBC(String.valueOf(impIcms.getModalidadeBcIcms()));
+                    icms900.setPRedBC(impIcms.getTaxaReducaoBcIcms() == null ? null : FormatValor.getInstance().formatarValor(impIcms.getTaxaReducaoBcIcms()));
+
+                    icms900.setVBC(impIcms.getBaseCalculoIcms() == null ? null : FormatValor.getInstance().formatarValor(impIcms.getBaseCalculoIcms()));
+
+                    icms900.setPICMS(impIcms.getAliquotaIcms() == null ? null : FormatValor.getInstance().formatarValor(impIcms.getAliquotaIcms()));
+                    icms900.setVICMS(impIcms.getValorIcms() == null ? null : FormatValor.getInstance().formatarValor(impIcms.getValorIcms()));
+                }
+
+
+                if (impIcms.getModalidadeBcIcmsSt() != null) {
+
+
+                    if (impIcms.getPercentualReducaoBcIcmsSt() == null) {
+                        throw new ChronosException("percentual de redução ICMS ST não informado para o produto \n"
+                                + impIcms.getNfeDetalhe().getCodigoProduto() + " - " + nomeProduto + "\n !!!");
+                    }
+
+                    if (impIcms.getAliquotaIcmsSt() == null) {
+                        throw new ChronosException("Aliquota de ICMS ST não informado para o produto \n"
+                                + impIcms.getNfeDetalhe().getCodigoProduto() + " - " + nomeProduto + "\n !!!");
+                    }
+
+                    if (impIcms.getValorIcmsSt() == null) {
+                        throw new ChronosException("Valor do ICMS ST não informado para o produto \n"
+                                + impIcms.getNfeDetalhe().getCodigoProduto() + " - " + nomeProduto + "\n !!!");
+                    }
+
+
+                    if (impIcms.getPercentualMvaIcmsSt() == null) {
+                        throw new ChronosException("Aliquota do MVA não informado para o produto \n"
+                                + impIcms.getNfeDetalhe().getCodigoProduto() + " - " + nomeProduto + "\n !!!");
+                    }
+
                     icms900.setModBCST(String.valueOf(impIcms.getModalidadeBcIcmsSt()));
                     icms900.setPMVAST(FormatValor.getInstance().formatarValor(
                             impIcms.getPercentualMvaIcmsSt() == null ? BigDecimal.ZERO
@@ -927,6 +962,7 @@ public class GeraXMLEnvio {
                 TNFe.InfNFe.Det.Imposto.ICMS.ICMS90 icms90 = new TNFe.InfNFe.Det.Imposto.ICMS.ICMS90();
                 icms.setICMS90(icms90);
 
+
                 icms90.setCST(impIcms.getCstIcms());
                 icms90.setOrig(origemMercadoria);
                 icms90.setModBC(String.valueOf(impIcms.getModalidadeBcIcms()));
@@ -1050,7 +1086,7 @@ public class GeraXMLEnvio {
         icmsTot.setVOutro(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorDespesasAcessorias()));
         icmsTot.setVNF(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorTotal()));
         icmsTot.setVICMSDeson(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorIcmsDesonerado()));
-        icmsTot.setVTotTrib(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorTotalTributos()));
+        icmsTot.setVTotTrib(nfeCabecalho.getValorTotalTributos() == null ? null : FormatValor.getInstance().formatarValor(nfeCabecalho.getValorTotalTributos()));
 
         icmsTot.setVFCP(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcp()));
         icmsTot.setVFCPST(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcpSt()));
