@@ -110,7 +110,7 @@
             n.observacao_padrao
             from certificado_configuracao c, pdv_configuracao n
             inner join pdv_caixa cx on cx.id = n.id_pdv_caixa
-            where c.id_empresa = ?1
+            where cx.web = 'S' and c.id_empresa = ?1
         </query>
 
     </named-native-query>
