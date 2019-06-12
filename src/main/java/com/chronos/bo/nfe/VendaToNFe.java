@@ -14,10 +14,7 @@ import com.chronos.util.jsf.FacesUtil;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 18/09/17.
@@ -318,10 +315,13 @@ public class VendaToNFe extends ManualCDILookup {
                 nfe.setFatura(fatura);
 
                 String numFatura = String.valueOf(nfe.getListaDuplicata().size());
+                BigDecimal valorOriginal = tipoVenda == TipoVenda.OS
+                        ? Biblioteca.soma(nfe.getValorServicos(), Optional.ofNullable(nfe.getValorTotalProdutos()).orElse(BigDecimal.ZERO))
+                        : nfe.getValorTotalProdutos();
                 numFatura = org.apache.commons.lang3.StringUtils.leftPad(numFatura, 3, "0");
                 fatura.setNumero(numFatura);
                 fatura.setValorLiquido(nfe.getValorTotal());
-                fatura.setValorOriginal(nfe.getValorTotalProdutos());
+                fatura.setValorOriginal(valorOriginal);
                 fatura.setValorDesconto(nfe.getValorDesconto());
 
             }
