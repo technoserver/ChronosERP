@@ -8,6 +8,12 @@ $(document).bind('keydown', function (event) {
 
 
     if($('#formCentro\\:tela-inicial').css('display') == 'block'){
+
+        if (event.which == 27) {
+            $('#formMenu\\:url-pdv')[0].click();
+            return false;
+        }
+
         if (event.which == 112) {
             $('#painel-teclas-atalho').modal('show');
             return false;

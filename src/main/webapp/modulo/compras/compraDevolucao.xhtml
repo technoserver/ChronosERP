@@ -64,7 +64,7 @@
                             value="#{devolucaoCompraControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
 
-                <p:column headerText="Ações" width="110" styleClass="text-center">
+                <p:column headerText="Ações" width="140" styleClass="text-center">
                     <p:commandLink title="Alterar"
                                    action="#{devolucaoCompraControll.doEdit()}"
                                    class=" btn btn-default"
@@ -413,7 +413,7 @@
                                  value="#{devolucaoCompraControll.objeto.listaNfeDetalhe}"
                                  rowIndexVar="rowIndex"
                                  selection="#{devolucaoCompraControll.nfeDetalheSelecionado}"
-                                 reflow="true" editable="true" resizableColumns="true"
+                                 reflow="true" editable="true"
                                  sortOrder="numeroitem" selectionMode="single"
                                  rowKey="#{obj.numeroItem}">
 

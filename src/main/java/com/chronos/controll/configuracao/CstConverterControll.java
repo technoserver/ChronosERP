@@ -34,6 +34,7 @@ public class CstConverterControll extends AbstractControll<ConverterCst> impleme
     public void doEdit() {
         super.doEdit();
         popularMap();
+        definiCst();
     }
 
     @Override
