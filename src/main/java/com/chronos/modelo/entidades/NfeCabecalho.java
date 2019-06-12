@@ -272,6 +272,9 @@ public class NfeCabecalho implements Serializable {
 
         this.emitente = new NfeEmitente();
         this.emitente.setNfeCabecalho(this);
+        this.transporte = new NfeTransporte();
+        this.transporte.setNfeCabecalho(this);
+        this.transporte.setModalidadeFrete(0);
 
 
         this.listaNfeReferenciada = new HashSet<>();

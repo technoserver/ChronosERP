@@ -127,7 +127,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             getObjeto().setDestinatario(new NfeDestinatario());
             getObjeto().getDestinatario().setNfeCabecalho(getObjeto());
 
-            NfeCabecalho nfeCabecalho = nfeService.dadosPadroes(ModeloDocumento.NFE);
+            NfeCabecalho nfeCabecalho = nfeService.dadosPadroes(empresa, ModeloDocumento.NFE);
             setObjeto(nfeCabecalho);
             dadosSalvos = false;
             observacao = getObjeto().getInformacoesAddContribuinte();
