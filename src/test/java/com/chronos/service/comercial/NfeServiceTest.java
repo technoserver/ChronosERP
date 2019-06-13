@@ -49,9 +49,9 @@ public class NfeServiceTest {
     }
 
     @Test(expected = ChronosException.class)
-    public void devemos_garantir_que_para_gerar_daados_emitente_os_dados_da_empresa_estejam_completo() throws ChronosException {
+    public void devemos_garantir_que_para_gerar_dados_emitente_os_dados_da_empresa_estejam_completo() throws ChronosException {
         NfeCabecalho nfe = new NfeCabecalho();
-        nfe.setEmpresa(empresa);
+        nfe.setEmpresa(new Empresa());
         service.definirEmitente(nfe);
     }
 
