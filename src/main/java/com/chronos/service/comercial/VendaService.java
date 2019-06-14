@@ -184,7 +184,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         List<VendaDevolucaoItem> itensDevolucao = new ArrayList<>();
 
 
-        String totalParcial = venda.isExcludoItem() || venda.calcularValorDevolucao().compareTo(venda.getValorTotal()) == 0 ? "T" : "P";
+        String totalParcial = venda.isExcludoItem() || venda.calcularValorDevolucao().compareTo(venda.getValorTotal()) != 0 ? "P" : "T";
 
         devolucao.setTotalParcial(totalParcial);
         devolucao.setValorCredito(venda.getValorTotal());
