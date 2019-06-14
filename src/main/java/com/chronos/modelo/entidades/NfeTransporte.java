@@ -62,9 +62,11 @@ public class NfeTransporte implements Serializable {
     @JoinColumn(name = "ID_TRANSPORTADORA", referencedColumnName = "ID")
     @ManyToOne
     private Transportadora transportadora;
-    @OneToMany(mappedBy = "nfeTransporte", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    //@OneToMany(mappedBy = "nfeTransporte", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Transient
     private Set<NfeTransporteReboque> listaTransporteReboque;
-    @OneToMany(mappedBy = "nfeTransporte", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    //  @OneToMany(mappedBy = "nfeTransporte", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @Transient
     private Set<NfeTransporteVolume> listaTransporteVolume;
 
     public NfeTransporte() {
