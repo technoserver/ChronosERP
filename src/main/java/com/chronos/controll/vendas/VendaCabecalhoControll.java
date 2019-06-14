@@ -238,7 +238,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
         getObjeto().getListaVendaDetalhe().remove(vendaDetalheSelecionado);
         getObjeto().calcularValorTotal();
-
+        getObjeto().setExcludoItem(true);
 
     }
 
