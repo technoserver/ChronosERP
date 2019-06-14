@@ -16,6 +16,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "VENDA_CABECALHO")
+@NamedQuery(name = "VendaCabecalho.UpdateSituacao", query = "UPDATE VendaCabecalho v SET v.situacao = ?1 where v.id = ?2")
 @DynamicUpdate
 public class VendaCabecalho implements Serializable {
 

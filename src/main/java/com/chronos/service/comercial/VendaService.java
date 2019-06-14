@@ -202,7 +202,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
             BeanUtils.copyProperties(nfeSalva, nfe, "id", "chaveAcesso", "numero", "codigoNumerico", "serie", "listaNfeDetalhe", "listaNfeReferenciada",
-                    "digitoChaveAcesso", "listaNfeFormaPagamento", "listaDuplicata", "fatura", "tributOperacaoFiscal", "qrcode", "urlChave", "statusNota");
+                    "digitoChaveAcesso", "listaNfeFormaPagamento", "listaDuplicata", "fatura", "tributOperacaoFiscal",
+                    "qrcode", "urlChave", "statusNota", "valorTotalTributos",
+                    "valorTotalTributosFederais", "valorTotalTributosEstaduais", "valorTotalTributosMunicipais");
 
             nfe.setCodigoModelo(ModeloDocumento.NFE.getCodigo().toString());
 
@@ -223,7 +225,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
                 NfeDetalhe newItem;
 
-                Optional<VendaDetalhe> first = venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().getId() == item.getProduto().getId()).findFirst();
+                Optional<VendaDetalhe> first = venda.getListaVendaDetalhe().stream()
+                        .filter(i -> i.getProduto().getId() == item.getProduto().getId() && i.getQuantidadeDevolvida().signum() > 0)
+                        .findFirst();
 
 
 
@@ -286,9 +290,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
                 String situacao = totalParcial.equals("T") ? SituacaoVenda.Devolucao.getCodigo() : SituacaoVenda.Devolucao_PARCIAL.getCodigo();
 
-                venda.setSituacao(situacao);
 
-                repository.atualizar(venda);
+                repository.atualizarNamedQuery("VendaCabecalho.UpdateSituacao", situacao, venda.getId());
 
                 Mensagem.addInfoMessage("Devolução gerada com sucesso");
                 auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
@@ -329,8 +332,6 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             String situacao = totalParcial.equals("T") ? SituacaoVenda.Devolucao.getCodigo() : SituacaoVenda.Devolucao_PARCIAL.getCodigo();
 
             venda.setSituacao(situacao);
-
-            repository.atualizar(venda);
 
             auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId(), "VENDA");
 
@@ -420,7 +421,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
         NfeDetalhe newItem = new NfeDetalhe();
 
-        BeanUtils.copyProperties(item, newItem, "id", "nfeDetalheImpostoCofins", "nfeDetalheImpostoPis", "nfeDetalheImpostoIcms", "nfeDetalheImpostoIpi", "nfeCabecalho");
+        BeanUtils.copyProperties(item, newItem, "id", "nfeDetalheImpostoCofins", "nfeDetalheImpostoPis",
+                "nfeDetalheImpostoIcms", "nfeDetalheImpostoIpi", "nfeCabecalho", "valorTotalTributos",
+                "valorTotalTributosFederais", "valorTotalTributosEstaduais", "valorTotalTributosMunicipais");
 
         BigDecimal qtdOld = item.getQuantidadeComercial();
         BigDecimal vlrAux;
