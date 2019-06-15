@@ -203,7 +203,7 @@ public class NfceControll implements Serializable {
             item = new NfeDetalhe();
 
 
-            venda = nfeService.dadosPadroes(ModeloDocumento.NFCE);
+            venda = nfeService.dadosPadroes(empresa, ModeloDocumento.NFCE);
             desconto = BigDecimal.ZERO;
 
         } catch (Exception ex) {

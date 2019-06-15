@@ -548,6 +548,7 @@ public abstract class AbstractControll<T> implements Serializable {
         statusNfe.put("Enviada", 4);
         statusNfe.put("Autorizada", 5);
         statusNfe.put("Cancelada", 6);
+        statusNfe.put("Encerrada", 7);
 
         webserviceAmbiente = new HashMap<>();
         webserviceAmbiente.put("Produção", 1);

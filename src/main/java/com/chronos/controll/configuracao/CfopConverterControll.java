@@ -33,6 +33,8 @@ public class CfopConverterControll extends AbstractControll<ConverterCfop> imple
     public void doCreate() {
         super.doCreate();
         popularMap();
+        cfopDestino = null;
+        cfopOrigem = null;
     }
 
     @Override

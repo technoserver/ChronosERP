@@ -16,6 +16,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "VENDA_CABECALHO")
+@NamedQuery(name = "VendaCabecalho.UpdateSituacao", query = "UPDATE VendaCabecalho v SET v.situacao = ?1 where v.id = ?2")
 @DynamicUpdate
 public class VendaCabecalho implements Serializable {
 
@@ -97,7 +98,8 @@ public class VendaCabecalho implements Serializable {
     private Empresa empresa;
     @OneToMany(mappedBy = "vendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VendaDetalhe> listaVendaDetalhe;
-
+    @Transient
+    private boolean excludoItem;
 
     public VendaCabecalho() {
         this.listaVendaDetalhe = new ArrayList<>();
@@ -374,6 +376,13 @@ public class VendaCabecalho implements Serializable {
         this.empresa = empresa;
     }
 
+    public boolean isExcludoItem() {
+        return excludoItem;
+    }
+
+    public void setExcludoItem(boolean excludoItem) {
+        this.excludoItem = excludoItem;
+    }
 
     public boolean isEncerrado() {
         return situacao != null && situacao.equals("E");
@@ -456,7 +465,6 @@ public class VendaCabecalho implements Serializable {
         boolean podeCacelar = situacao.equals("E");
         return podeCacelar;
     }
-
 
 
     @Override

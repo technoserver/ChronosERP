@@ -40,6 +40,7 @@
                                 </div>
                                 <div class="icon" style="top: 0px">
                                     <i class="fa fa-shopping-cart"></i>
+
                                 </div>
                             </div>
                         </div>
@@ -47,10 +48,19 @@
                             <!-- small box -->
                             <div class="small-box bg-gray">
                                 <div class="inner">
-                                    <h3>R$<span>#{vendaCabecalhoControll.objeto.valorDescontoFormatado()}</span>
+                                    <h3>
+                                        R$<span>#{vendaCabecalhoControll.objeto.valorDescontoFormatado()}</span>
+                                        <p:commandLink styleClass="btn btn-link"
+                                                       title="Aplicar desconto no valor total da venda"
+                                                       update=":formOutrasTelas5:panelOutrasTelas5"
+                                                       disabled="#{vendaCabecalhoControll.objeto.valorTotal.signum() eq 0}"
+                                                       oncomplete="PF('dialogOutrasTelas5').show()">
+                                            <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
+                                        </p:commandLink>
                                     </h3>
 
                                     <p>Valor do Desconto</p>
+
                                 </div>
                                 <div class="icon" style="top: 0px">
                                     <i class="fa fa-percent" aria-hidden="true"></i>

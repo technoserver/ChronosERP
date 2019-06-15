@@ -106,7 +106,6 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorDesconto() {
-        valorDesconto = getTaxaDesconto().multiply(getValorSubtotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
         return valorDesconto;
     }
 
@@ -170,6 +169,10 @@ public class VendaDetalhe implements Serializable {
 
     public void setValorTotalDevolvido(BigDecimal valorTotalDevolvido) {
         this.valorTotalDevolvido = valorTotalDevolvido;
+    }
+
+    public void calcularDesconto() {
+        valorDesconto = getTaxaDesconto().multiply(getValorSubtotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
     }
 
     public void calcularValorTotal() {

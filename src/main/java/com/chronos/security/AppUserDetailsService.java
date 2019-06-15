@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.chronos.security;
 
-import com.chronos.modelo.tenant.UsuarioTenant;
+import com.chronos.modelo.view.ViewUsuarioTenant;
 import com.chronos.util.cdi.CDIServiceLocator;
 import com.chronos.util.cdi.ManualCDILookup;
 import com.chronos.util.tenant.TenantRegistry;
@@ -26,7 +22,7 @@ import java.util.Optional;
 public class AppUserDetailsService extends ManualCDILookup implements UserDetailsService {
 
 
-    private UsuarioTenant usr;
+    private ViewUsuarioTenant usr;
     private TenantRegistry tenantRegistry;
 
     @Override
@@ -36,7 +32,7 @@ public class AppUserDetailsService extends ManualCDILookup implements UserDetail
             tenantRegistry = CDIServiceLocator.getBean(TenantRegistry.class);
 
 
-            Optional<UsuarioTenant> userOptional = tenantRegistry.getTenant(usuario);
+            Optional<ViewUsuarioTenant> userOptional = tenantRegistry.getTenant(usuario);
             usr = userOptional.orElseThrow(() -> new UsernameNotFoundException("Usuário e/ou senha incorretos"));
             return new UsuarioSistema(usr, new HashSet<>());
         } catch (Exception e) {

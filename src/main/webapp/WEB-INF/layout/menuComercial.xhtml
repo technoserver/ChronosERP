@@ -1,9 +1,10 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                xmlns:erp="http://java.sun.com/jsf/composite/components" xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:c="http://java.sun.com/jsp/jstl/core"
->
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
     <ul class="nav nav-second-level collapse ">
@@ -91,10 +92,13 @@
                                      label="Vendas"
                                      exibir="#{seguranca.isTemAcesso('VENDA')}"
                                      funcao="modulo/comercial/vendas/vendas"/>
-                        <erp:subMenu caminho="/modulo/comercial/vendas/balcao"
-                                     label="PDV"
-                                     exibir="#{seguranca.isTemAcesso('FRENTE_CAIXA')}"
-                                     funcao="modulo/comercial/vendas/balcao"/>
+
+
+                        <c:if test="#{seguranca.isTemAcesso('FRENTE_CAIXA')}">
+                            <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/balcao') ? 'active': '' }">
+                                <h:link id="url-pdv" outcome="/modulo/comercial/vendas/balcao" value="PDV"/>
+                            </li>
+                        </c:if>
 
                         <erp:subMenu caminho="/modulo/comercial/vendas/devolucao"
                                      label="Devoluções"

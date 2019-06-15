@@ -184,7 +184,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         List<VendaDevolucaoItem> itensDevolucao = new ArrayList<>();
 
 
-        String totalParcial = venda.calcularValorDevolucao().compareTo(venda.getValorTotal()) == 0 ? "T" : "P";
+        String totalParcial = venda.isExcludoItem() || venda.calcularValorDevolucao().compareTo(venda.getValorTotal()) != 0 ? "P" : "T";
 
         devolucao.setTotalParcial(totalParcial);
         devolucao.setValorCredito(venda.getValorTotal());
@@ -202,7 +202,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
             BeanUtils.copyProperties(nfeSalva, nfe, "id", "chaveAcesso", "numero", "codigoNumerico", "serie", "listaNfeDetalhe", "listaNfeReferenciada",
-                    "digitoChaveAcesso", "listaNfeFormaPagamento", "listaDuplicata", "fatura", "tributOperacaoFiscal", "qrcode", "urlChave", "statusNota");
+                    "digitoChaveAcesso", "listaNfeFormaPagamento", "listaDuplicata", "fatura", "tributOperacaoFiscal",
+                    "qrcode", "urlChave", "statusNota", "valorTotalTributos",
+                    "valorTotalTributosFederais", "valorTotalTributosEstaduais", "valorTotalTributosMunicipais");
 
             nfe.setCodigoModelo(ModeloDocumento.NFE.getCodigo().toString());
 
@@ -223,7 +225,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
                 NfeDetalhe newItem;
 
-                Optional<VendaDetalhe> first = venda.getListaVendaDetalhe().stream().filter(i -> i.getProduto().getId() == item.getProduto().getId()).findFirst();
+                Optional<VendaDetalhe> first = venda.getListaVendaDetalhe().stream()
+                        .filter(i -> i.getProduto().getId().equals(item.getProduto().getId()) && i.getQuantidadeDevolvida().signum() > 0)
+                        .findFirst();
 
 
 
@@ -286,9 +290,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
                 String situacao = totalParcial.equals("T") ? SituacaoVenda.Devolucao.getCodigo() : SituacaoVenda.Devolucao_PARCIAL.getCodigo();
 
-                venda.setSituacao(situacao);
 
-                repository.atualizar(venda);
+                repository.atualizarNamedQuery("VendaCabecalho.UpdateSituacao", situacao, venda.getId());
 
                 Mensagem.addInfoMessage("Devolução gerada com sucesso");
                 auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
@@ -329,8 +332,6 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             String situacao = totalParcial.equals("T") ? SituacaoVenda.Devolucao.getCodigo() : SituacaoVenda.Devolucao_PARCIAL.getCodigo();
 
             venda.setSituacao(situacao);
-
-            repository.atualizar(venda);
 
             auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId(), "VENDA");
 
@@ -388,6 +389,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
     public VendaCabecalho addItem(VendaCabecalho venda, VendaDetalhe vendaDetalhe) {
 
+        vendaDetalhe.calcularDesconto();
+        vendaDetalhe.calcularValorTotal();
+
         Optional<VendaDetalhe> itemVenda = getItemVenda(venda, vendaDetalhe.getProduto());
         BigDecimal quantidade = vendaDetalhe.getQuantidade();
         BigDecimal valor = vendaDetalhe.getValorUnitario();
@@ -417,7 +421,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
         NfeDetalhe newItem = new NfeDetalhe();
 
-        BeanUtils.copyProperties(item, newItem, "id", "nfeDetalheImpostoCofins", "nfeDetalheImpostoPis", "nfeDetalheImpostoIcms", "nfeDetalheImpostoIpi", "nfeCabecalho");
+        BeanUtils.copyProperties(item, newItem, "id", "nfeDetalheImpostoCofins", "nfeDetalheImpostoPis",
+                "nfeDetalheImpostoIcms", "nfeDetalheImpostoIpi", "nfeCabecalho", "valorTotalTributos",
+                "valorTotalTributosFederais", "valorTotalTributosEstaduais", "valorTotalTributosMunicipais");
 
         BigDecimal qtdOld = item.getQuantidadeComercial();
         BigDecimal vlrAux;

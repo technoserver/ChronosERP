@@ -97,6 +97,19 @@ public abstract class AbstractRepository implements Serializable {
         return result;
     }
 
+    public void atualizarNamedQuery(String namedQuery, Object... values) {
+        Query updateQuery = em.createNamedQuery(namedQuery);
+        if (values != null) {
+            for (int i = 0; i < values.length; i++) {
+                Object obj = values[i];
+                updateQuery.setParameter(i + 1, obj);
+
+            }
+        }
+        updateQuery.executeUpdate();
+    }
+
+
     private <T> TypedQuery<T> createQuery(String jpql, Class<T> resultClass, Object[] values) {
         TypedQuery<T> query = em.createQuery(jpql, resultClass);
         if (values != null) {

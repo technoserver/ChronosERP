@@ -88,36 +88,49 @@
             </div>
 
             <div class="row">
-                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
                                   idComponente="nfeDetalheImpostoIcmsBaseCalculoIcms"
                                   label="Base calculo ICMS"
                                   nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.baseCalculoIcms}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="nfeDetalheImpostoIcmsBaseCalculoIcms"
+                                  label="% Red. Base calc. ICMS"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.taxaReducaoBcIcms}"/>
 
                 <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
                                   idComponente="nfeDetalheImpostoIcmsAliquotaIcms"
                                   label="% ICMS"
                                   nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.aliquotaIcms}"/>
-                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                   idComponente="nfeDetalheImpostoIcmsValorIcms" label="Valor ICMS"
                                   nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.valorIcms}"/>
 
-                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                   idComponente="aliquotaCreditoIcmsSn"
-                                  label="% Crédito SN"
+                                  label="% Créd. SN"
                                   nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.aliquotaCreditoIcmsSn}"/>
 
             </div>
 
             <div class="row">
-                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
                                   idComponente="nfeDetalheImpostoIcmsValorBaseCalculoIcmsSt"
                                   label="Base calculo ICMS ST"
                                   nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.valorBaseCalculoIcmsSt}"/>
+
+
                 <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="percentualReducaoBcIcmsSt"
+                                  label="% Red. Base calc. ICMS ST"
+                                  nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.percentualReducaoBcIcmsSt}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                   idComponente="nfeDetalheImpostoIcmsAliquotaIcmsSt"
                                   label="% ICMS ST"
                                   nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.aliquotaIcmsSt}"/>
-                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                   idComponente="nfeDetalheImpostoIcmsValorIcmsSt"
                                   label="Valor ICMS ST"
                                   nomeAtributo="#{devolucaoCompraControll.nfeDetalheImpostoIcms.valorIcmsSt}"/>
@@ -134,6 +147,18 @@
                     <h:outputLabel value="Modalidade Base Calc. ICMS" for="modalidadeBaseCalcIcms"/>
                     <h:selectOneMenu id="modalidadeBaseCalcIcms"
                                      value="#{devolucaoCompraControll.nfeDetalheImpostoIcms.modalidadeBcIcms}"
+                                     class="form-control">
+                        <f:selectItem itemLabel="Selecione"
+                                      noSelectionOption="true"
+                                      itemDisabled="true"/>
+                        <f:selectItems value="#{devolucaoCompraControll.tributIcmsBaseCalculo}"/>
+
+                    </h:selectOneMenu>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <h:outputLabel value="Modalidade Base Calc. ICMS ST" for="modalidadeBcIcmsSt"/>
+                    <h:selectOneMenu id="modalidadeBcIcmsSt"
+                                     value="#{devolucaoCompraControll.nfeDetalheImpostoIcms.modalidadeBcIcmsSt}"
                                      class="form-control">
                         <f:selectItem itemLabel="Selecione"
                                       noSelectionOption="true"
