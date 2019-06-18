@@ -267,7 +267,7 @@ public class VendaToNFe extends ManualCDILookup {
         } else {
             FinTipoRecebimento tipoRecebimento = tipoVenda == TipoVenda.VENDA ? venda.getCondicoesPagamento().getTipoRecebimento() : os.getCondicoesPagamento().getTipoRecebimento();
             PdvTipoPagamento tipoPagamento = new PdvTipoPagamento();
-            tipoPagamento = tipoPagamento.buscarPorCodigo("14");
+            tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
             NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
             nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
             nfeFormaPagamento.setNfeCabecalho(nfe);

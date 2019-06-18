@@ -126,10 +126,14 @@
                 </p:commandButton>
                 <c:if test="#{osAberturaControll.temProduto and !osAberturaControll.objeto.emitidoOrFaturado}">
                     <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar()}" icon="ui-icon-disk">
-                        <p:menuitem value="Faturar" actionListener="#{osAberturaControll.faturar}"
+                        <p:menuitem value="Encerrar" actionListener="#{osAberturaControll.faturar}"
                                     icon="ui-icon-arrowrefresh-1-w"/>
-                        <p:menuitem value="Gerar NFe" actionListener="#{osAberturaControll.gerarNF}"
-                                    icon="ui-icon-close"/>
+                        <p:menuitem value="Faturar - NFe"
+                                    actionListener="#{osAberturaControll.gerarNF}"
+                        />
+                        <p:menuitem value="Faturar - NFCe"
+                                    actionListener="#{osAberturaControll.gerarNFce}"
+                        />
                     </p:splitButton>
                 </c:if>
             </div>
