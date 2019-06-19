@@ -473,7 +473,17 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     }
 
     public void salvarGrupo() {
-        grupo = grupos.atualizar(grupo);
+
+
+        boolean existe = grupos.existeRegisro(ProdutoGrupo.class, "nome", grupo.getNome());
+
+        if (existe) {
+            Mensagem.addErrorMessage("Já existe grupo com esse nome");
+        } else {
+            grupo = grupos.atualizar(grupo);
+        }
+
+
     }
 
     public void addSubGrupo() {
