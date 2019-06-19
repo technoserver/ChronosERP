@@ -8,6 +8,7 @@ import com.chronos.modelo.view.ViewResumoContas;
 import com.chronos.modelo.view.ViewResumoContasID;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.repository.VendaRepository;
 import com.chronos.util.Biblioteca;
 import com.google.gson.Gson;
 
@@ -16,6 +17,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +40,8 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
 
     @Inject
     private Repository<AvisoSistema> avisoSistemaRepository;
+    @Inject
+    private VendaRepository vendaRepository;
 
     private List<AgendaCompromisso> compromissos;
 
@@ -50,6 +54,10 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
     private String jsonDespesas;
     private String jsonReceitas;
     private String jsonResumoContas;
+
+    private BigDecimal valorTotalVendaNoAno;
+    private BigDecimal valorTotalVendaNoMes;
+    private BigDecimal valorVendaMedioNoAno;
 
     private List<AvisoSistema> avisos;
 
@@ -69,6 +77,10 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
         avisos = avisoSistemaRepository.getEntitys(AvisoSistema.class, "confirmado", "N");
 
         possueAviso = !avisos.isEmpty();
+
+        valorTotalVendaNoAno = vendaRepository.valorTotalNoAno();
+        valorTotalVendaNoMes = vendaRepository.valorTotalNoMes();
+        valorVendaMedioNoAno = vendaRepository.valorVendaMedioNoAno();
     }
 
     public void confirmarAviso() {
@@ -142,6 +154,19 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
 
     public void setAvisoConfirmado(AvisoSistema avisoConfirmado) {
         this.avisoConfirmado = avisoConfirmado;
+    }
+
+
+    public BigDecimal getValorTotalVendaNoAno() {
+        return valorTotalVendaNoAno;
+    }
+
+    public BigDecimal getValorTotalVendaNoMes() {
+        return valorTotalVendaNoMes;
+    }
+
+    public BigDecimal getValorVendaMedioNoAno() {
+        return valorVendaMedioNoAno;
     }
 }
 

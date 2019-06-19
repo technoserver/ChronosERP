@@ -30,6 +30,13 @@
                     <erp:msgPermissao permissao="#{clienteControll.podeConsultar()}"/>
 
                     <div class="row m-b">
+
+
+                        <erp:campoInteiro idComponente="codigo"
+                                          label="Código"
+                                          nomeAtributo="#{clienteControll.codigo}"
+                                          styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
                         <erp:campoTexto idComponente="nome"
                                         label="Nome"
                                         nomeAtributo="#{clienteControll.nome}"
@@ -55,14 +62,16 @@
                                  paginator="true"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{clienteControll.podeConsultar()}"
-                                 lazy="true" sortBy="nome"
-                                 class="js-data-table">
+                                 lazy="true" sortBy="nome">
 
 
+                        <p:column headerText="Cód" width="100">
+                            <h:outputLabel value="#{row.id}"/>
+                        </p:column>
                         <p:column headerText="Nome" sortBy="#{row.nome}">
                             <h:outputLabel value="#{row.nome}"/>
                         </p:column>
-                        <p:column headerText="CPF/CNPJ" width="140" styleClass="text-center">
+                        <p:column headerText="CPF/CNPJ" width="175" styleClass="text-center">
                             <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
                                 <f:converter converterId="cpfCnpjConverter"/>
                             </h:outputLabel>
@@ -72,11 +81,13 @@
                         </p:column>
                         <p:column headerText="Endereço">
                             <h:outputLabel value="#{row.logradouro}"/>
+                            <p>
+                                <small><h:outputText value="#{row.cidade} - #{row.uf}"/></small>
+                            </p>
+
                         </p:column>
-                        <p:column headerText="Cidade">
-                            <h:outputLabel value="#{row.cidade} - #{row.uf}"/>
-                        </p:column>
-                        <p:column headerText="Fone" width="110">
+
+                        <p:column headerText="Fone" width="134">
                             <h:outputLabel value="#{row.fone}"/>
                         </p:column>
 
