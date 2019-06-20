@@ -28,18 +28,52 @@
         <p:outputPanel id="outputPanelGrid">
             <p:outputPanel rendered="#{fornecedorControll.telaGrid}">
                 <div class="ibox-content">
+                    <erp:msgPermissao permissao="#{fornecedorControll.podeConsultar()}"/>
+
+
+                    <div class="row m-b">
+
+
+                        <erp:campoInteiro idComponente="codigo"
+                                          label="Código"
+                                          nomeAtributo="#{fornecedorControll.codigo}"
+                                          styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                        <erp:campoTexto idComponente="nome"
+                                        label="Nome"
+                                        nomeAtributo="#{fornecedorControll.nome}"
+                                        styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        tamanhoMaximo="100"/>
+
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <h:outputLabel value="CPF/CNPJ" for="cpf"/>
+                            <div class="field-action">
+                                <h:inputText value="#{fornecedorControll.cpfCnpj}"
+                                             id="cpf"
+                                             styleClass="form-control"/>
+                                <p:commandButton value="Pesquisar"
+                                                 action="#{fornecedorControll.pesquisar}"
+                                                 update="outputPanelGrid"
+                                                 style="margin-left: 10px"/>
+                            </div>
+                        </div>
+
+                    </div>
+
                     <p:dataTable value="#{fornecedorControll.fornecedorDataModel}" var="row" id="dataTableCliente"
                                  paginator="true"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{fornecedorControll.podeConsultar()}"
-                                 resizableColumns="true" lazy="true" sortBy="nome"
+                                 lazy="true" sortBy="nome"
                                  class="js-data-table">
 
-
+                        <p:column headerText="Cód" width="100">
+                            <h:outputLabel value="#{row.id}"/>
+                        </p:column>
                         <p:column headerText="Nome" sortBy="#{row.nome}">
                             <h:outputLabel value="#{row.nome}"/>
                         </p:column>
-                        <p:column headerText="CPF/CNPJ" width="140" styleClass="text-center">
+                        <p:column headerText="CPF/CNPJ" width="150" styleClass="text-center">
                             <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
                                 <f:converter converterId="cpfCnpjConverter"/>
                             </h:outputLabel>
@@ -49,16 +83,16 @@
                         </p:column>
                         <p:column headerText="Endereço">
                             <h:outputLabel value="#{row.logradouro}"/>
-                        </p:column>
-                        <p:column headerText="Cidade">
-                            <h:outputLabel value="#{row.cidade} - #{row.uf}"/>
+                            <p>
+                                <small><h:outputText value="#{row.cidade} - #{row.uf}"/></small>
+                            </p>
                         </p:column>
                         <p:column headerText="Fone" width="110">
                             <h:outputLabel value="#{row.fone}"/>
                         </p:column>
 
 
-                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                        <p:column headerText="Ações" width="140" styleClass="text-center">
                             <p:commandLink title="Alterar" action="#{fornecedorControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
