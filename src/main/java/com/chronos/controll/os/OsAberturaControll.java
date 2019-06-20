@@ -76,6 +76,12 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private boolean temProduto;
     private boolean emailValido;
 
+    private String numero;
+    private String cliente;
+    private Date dataInicial;
+    private Date dataFinal;
+
+
 
     @Override
     public ERPLazyDataModel<OsAbertura> getDataModel() {
@@ -85,9 +91,41 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             dataModel.setDao(dao);
         }
         dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "valorTotal", "cliente.id", "cliente.pessoa.nome", "osStatus.id", "osStatus.nome", "idnfeCabecalho"});
-        dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
+
+        if (dataModel.getFiltros().isEmpty()) {
+            dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
+        }
+
         return dataModel;
     }
+
+
+    public void pesquisar() {
+
+        dataModel.getFiltros().clear();
+        dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
+
+
+        if (!StringUtils.isEmpty(cliente)) {
+            dataModel.addFiltro("cliente.pessoa.nome", cliente, Filtro.LIKE);
+        }
+
+        if (!StringUtils.isEmpty(numero)) {
+            dataModel.addFiltro("numero", numero, Filtro.LIKE);
+        }
+
+
+        if (dataInicial != null) {
+            dataModel.addFiltro("dataInicio", dataInicial, Filtro.MAIOR_OU_IGUAL);
+        }
+
+        if (dataFinal != null) {
+            dataModel.addFiltro("dataInicio", dataFinal, Filtro.MENOR_OU_IGUAL);
+        }
+
+
+    }
+
 
     @Override
     public void doCreate() {
@@ -487,5 +525,37 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         String email = getObjeto().getCliente().getPessoa().getEmail();
         emailValido = Biblioteca.validarEmail(email);
         return emailValido;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
     }
 }

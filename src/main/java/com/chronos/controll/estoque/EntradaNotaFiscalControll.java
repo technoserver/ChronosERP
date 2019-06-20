@@ -132,6 +132,12 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     private boolean importado;
 
+    private String nomeFornecedor;
+    private String numero;
+    private Date dataInicial;
+    private Date dataFinal;
+
+
     @Override
     public ERPLazyDataModel<NfeCabecalho> getDataModel() {
         if (dataModel == null) {
@@ -143,32 +149,49 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         dataModel.setOrdernarPor("dataHoraEntradaSaida");
         Object[] atribut = new Object[]{"fornecedor", "serie", "numero", "dataHoraEntradaSaida", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota"};
         dataModel.setAtributos(atribut);
+
+        if (dataModel.getFiltros().isEmpty()) {
+            dataModel.addFiltro("tipoOperacao", 0, Filtro.IGUAL);
+            dataModel.addFiltro("finalidadeEmissao", 1, Filtro.IGUAL);
+        }
+
+        return dataModel;
+    }
+
+
+    public void pesquisar() {
         dataModel.getFiltros().clear();
         dataModel.addFiltro("tipoOperacao", 0, Filtro.IGUAL);
         dataModel.addFiltro("finalidadeEmissao", 1, Filtro.IGUAL);
-        return dataModel;
+
+
+        if (dataInicial != null) {
+            dataModel.addFiltro("dataHoraEntradaSaida", dataInicial, Filtro.MAIOR_OU_IGUAL);
+        }
+
+        if (dataFinal != null) {
+            dataModel.addFiltro("dataHoraEntradaSaida", dataFinal, Filtro.MENOR_OU_IGUAL);
+        }
+
+        if (!StringUtils.isEmpty(numero)) {
+            dataModel.addFiltro("numero", numero, Filtro.LIKE);
+        }
+
+        if (!StringUtils.isEmpty(nomeFornecedor)) {
+            dataModel.addFiltro("fornecedor.pessoa.nome", nomeFornecedor, Filtro.LIKE);
+        }
+
     }
 
     @Override
     public void doCreate() {
         setObjeto(entradaService.iniciar(empresa));
         setTelaGrid(false);
-        valorTotalFrete = BigDecimal.ZERO;
-        valorTotalDesconto = BigDecimal.ZERO;
-        valorTotalProdutos = BigDecimal.ZERO;
-        valorTotalBaseCalcIcms = BigDecimal.ZERO;
-        valorTotalIcms = BigDecimal.ZERO;
-        valorTotalBaseCalcIcmsST = BigDecimal.ZERO;
-        valorTotalIcmsST = BigDecimal.ZERO;
-        valorTotalBaseCalcPis = BigDecimal.ZERO;
-        valorTotalPis = BigDecimal.ZERO;
-        valorTotalBaseCalcCofins = BigDecimal.ZERO;
-        valorTotalCofins = BigDecimal.ZERO;
-        valorTotalIpi = BigDecimal.ZERO;
-        valorTotalNF = BigDecimal.ZERO;
+        iniciarValorsValidacao();
         duplicatas = new ArrayList<>();
 
     }
+
 
     @Override
     public void doEdit() {
@@ -264,6 +287,33 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         valorTotalNF = Biblioteca.soma(valorTotalNF, item.getValorTotal());
 
+        calcularValorSobreImposto(item);
+    }
+
+
+
+    public void calcularTotais() {
+
+        getObjeto().calcularValorTotal();
+
+        valorTotalFrete = getObjeto().getValorFrete();
+        valorTotalDesconto = getObjeto().getValorDesconto();
+        valorTotalProdutos = getObjeto().getValorTotalProdutos();
+
+        valorTotalNF = getObjeto().getListaNfeDetalhe()
+                .stream()
+                .map(NfeDetalhe::getValorTotal)
+                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+
+        getObjeto().getListaNfeDetalhe().forEach(item -> {
+            item.calcularValorTotalProduto();
+            calcularValorSobreImposto(item);
+        });
+
+    }
+
+    private void calcularValorSobreImposto(NfeDetalhe item) {
+
         if (item.getNfeDetalheImpostoIcms() != null) {
             valorTotalBaseCalcIcms = Biblioteca.soma(valorTotalBaseCalcIcms, item.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
             valorTotalIcms = Biblioteca.soma(valorTotalIcms, item.getNfeDetalheImpostoIcms().getValorIcms());
@@ -283,42 +333,6 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             valorTotalBaseCalcCofins = Biblioteca.soma(valorTotalBaseCalcCofins, item.getNfeDetalheImpostoCofins().getBaseCalculoCofins());
             valorTotalCofins = Biblioteca.soma(valorTotalCofins, item.getNfeDetalheImpostoCofins().getValorCofins());
         }
-    }
-
-    public void calcularTotais() {
-
-        getObjeto().calcularValorTotal();
-
-        valorTotalFrete = getObjeto().getValorFrete();
-        valorTotalDesconto = getObjeto().getValorDesconto();
-        valorTotalProdutos = getObjeto().getValorTotalProdutos();
-
-        valorTotalNF = getObjeto().getValorTotal();
-
-        getObjeto().getListaNfeDetalhe().forEach(item -> {
-            item.calcularValorTotalProduto();
-            if (item.getNfeDetalheImpostoIcms() != null) {
-
-                valorTotalBaseCalcIcms = Biblioteca.soma(valorTotalBaseCalcIcms, item.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
-                valorTotalIcms = Biblioteca.soma(valorTotalIcms, item.getNfeDetalheImpostoIcms().getValorIcms());
-                valorTotalBaseCalcIcmsST = Biblioteca.soma(valorTotalBaseCalcIcmsST, item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
-                valorTotalIcmsST = Biblioteca.soma(valorTotalIcmsST, item.getNfeDetalheImpostoIcms().getValorIcmsSt());
-                valorTotalNF = Biblioteca.soma(valorTotalNF, item.getNfeDetalheImpostoIcms().getValorIcmsSt());
-            }
-            if (item.getNfeDetalheImpostoIpi() != null) {
-                valorTotalIpi = Biblioteca.soma(valorTotalIpi, item.getNfeDetalheImpostoIpi().getValorIpi());
-                valorTotalNF = Biblioteca.soma(valorTotalNF, item.getNfeDetalheImpostoIpi().getValorIpi());
-            }
-            if (item.getNfeDetalheImpostoPis() != null) {
-                valorTotalBaseCalcPis = Biblioteca.soma(valorTotalBaseCalcPis, item.getNfeDetalheImpostoPis().getValorBaseCalculoPis());
-                valorTotalPis = Biblioteca.soma(valorTotalPis, item.getNfeDetalheImpostoPis().getValorPis());
-            }
-            if (item.getNfeDetalheImpostoPis() != null) {
-                valorTotalBaseCalcCofins = Biblioteca.soma(valorTotalBaseCalcCofins, item.getNfeDetalheImpostoCofins().getBaseCalculoCofins());
-                valorTotalCofins = Biblioteca.soma(valorTotalCofins, item.getNfeDetalheImpostoCofins().getValorCofins());
-            }
-        });
-
     }
 
     private void cadastrarFornecedor(NfeEmitente emitente) throws Exception {
@@ -523,6 +537,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 nfeDetalhe.setCodigoProduto(nfeDetalhe.getProduto().getId().toString());
                 nfeDetalhe.setNomeProduto(nfeDetalhe.getProduto().getNome());
                 nfeDetalhe.setNcm(nfeDetalhe.getProduto().getNcm());
+                nfeDetalhe.setCest(nfeDetalhe.getProduto().getCest());
                 nfeDetalhe.setUnidadeComercial(nfeDetalhe.getProduto().getUnidadeProduto().getSigla());
                 nfeDetalhe.setValorBrutoProduto(nfeDetalhe.getValorUnitarioComercial());
                 nfeDetalhe.setUnidadeTributavel(nfeDetalhe.getUnidadeComercial());
@@ -565,6 +580,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         produto.setCustoUnitario(nfeDetalhe.getValorUnitarioComercial());
         produto.setDescricao(nfeDetalhe.getNomeProduto());
         produto.setNcm(nfeDetalhe.getNcm());
+        produto.setCest(nfeDetalhe.getCest());
         produto.setNome(nfeDetalhe.getNomeProduto());
         produto.setValorCompra(nfeDetalhe.getValorUnitarioComercial());
         produto.setExcluido("N");
@@ -1261,5 +1277,37 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setAcao(String acao) {
         this.acao = acao;
+    }
+
+    public String getNomeFornecedor() {
+        return nomeFornecedor;
+    }
+
+    public void setNomeFornecedor(String nomeFornecedor) {
+        this.nomeFornecedor = nomeFornecedor;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
     }
 }
