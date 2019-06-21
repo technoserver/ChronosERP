@@ -331,7 +331,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             String situacao = totalParcial.equals("T") ? SituacaoVenda.Devolucao.getCodigo() : SituacaoVenda.Devolucao_PARCIAL.getCodigo();
 
-            venda.setSituacao(situacao);
+            repository.atualizarNamedQuery("VendaCabecalho.UpdateSituacao", situacao, venda.getId());
 
             auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId(), "VENDA");
 
