@@ -54,6 +54,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     private PessoaService service;
 
     private String nome;
+    private Integer codigo;
     private String cpfCnpj;
 
 
@@ -82,6 +83,10 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         }
         if (!StringUtils.isEmpty(cpfCnpj)) {
             clienteDataModel.getFiltros().add(new Filtro("cpfCnpj", Filtro.LIKE, cpfCnpj));
+        }
+
+        if (codigo != null) {
+            clienteDataModel.getFiltros().add(new Filtro("id", Filtro.IGUAL, codigo));
         }
     }
 
@@ -292,5 +297,13 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
     public void setCpfCnpj(String cpfCnpj) {
         this.cpfCnpj = cpfCnpj;
+    }
+
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
     }
 }

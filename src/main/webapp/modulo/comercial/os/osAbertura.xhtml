@@ -23,21 +23,58 @@
 
     <ui:define name="gridDados">
         <erp:formularioGrid controller="#{osAberturaControll}" id="telaGrid">
+
+            <div class="row m-b">
+
+                <erp:campoData nomeAtributo="#{osAberturaControll.dataInicial}"
+                               label="Data inicial"
+                               idComponente="dataInicial"
+                               styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                <erp:campoData nomeAtributo="#{osAberturaControll.dataFinal}"
+                               label="Data Final"
+                               idComponente="dataFinal"
+                               styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                <erp:campoTexto nomeAtributo="#{osAberturaControll.numero}"
+                                styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="numero"
+                                label="Número"
+                                tamanhoMaximo="9"/>
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <h:outputLabel value="Cliente" for="cliente"/>
+
+                    <div class="field-action">
+                        <h:inputText value="#{osAberturaControll.cliente}"
+                                     id="cliente"
+                                     styleClass="form-control"/>
+                        <p:commandButton value="Pesquisar"
+                                         action="#{osAberturaControll.pesquisar}"
+                                         update="formCentro:telaGrid:outputPanelGrid"
+                                         style="margin-left: 10px"/>
+                    </div>
+                </div>
+
+
+            </div>
+
             <p:dataTable value="#{osAberturaControll.dataModel}" var="row" id="dataTableOsAbertura"
-                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20" lazy="true"
-                         paginatorPosition="bottom" reflow="true" sortOrder="DESCENDING"
+                         paginator="true" rows="20" rowsPerPageTemplate="20,30,40,50" lazy="true"
+                         paginatorPosition="bottom" reflow="true" sortBy="#{row.id}" sortOrder="descending"
                          rendered="#{osAberturaControll.podeConsultar()}">
 
-                <p:column headerText="Status" width="240">
-                    <h:outputLabel value="#{row.osStatus.nome}"/>
-                </p:column>
-                <p:column headerText="Cliente">
-                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
-                </p:column>
+
                 <p:column headerText="Numero" width="105" sortBy="#{row.numero}">
                     <h:outputLabel value="#{row.numero}"/>
                 </p:column>
-                <p:column headerText="Data Inicio" width="115" sortBy="#{row.dataInicio}">
+
+
+                <p:column headerText="Cliente">
+                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                </p:column>
+
+                <p:column headerText="Data Inicio" width="125" sortBy="#{row.dataInicio}">
                     <h:outputLabel value="#{row.dataInicio}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputLabel>
@@ -46,6 +83,9 @@
                     <h:outputLabel value="#{row.valorTotal}">
                         <f:convertNumber pattern="#,##0.00"/>
                     </h:outputLabel>
+                </p:column>
+                <p:column headerText="Status" width="240">
+                    <h:outputLabel value="#{row.osStatus.nome}"/>
                 </p:column>
                 <p:column headerText="Ações" width="160" styleClass="text-center">
                     <p:commandLink title="Alterar" id="btnEditar" action="#{osAberturaControll.doEdit()}"

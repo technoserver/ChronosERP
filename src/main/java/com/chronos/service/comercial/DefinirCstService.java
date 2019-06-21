@@ -4,6 +4,7 @@ import br.inf.portalfiscal.nfe.schema_4.procNFe.TNFe;
 import com.chronos.dto.ImpostoDTO;
 import com.chronos.modelo.entidades.ConverterCst;
 import com.chronos.modelo.entidades.NfeDetalheImpostoIcms;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ public class DefinirCstService implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public NfeDetalheImpostoIcms definirIcms(TNFe.InfNFe.Det.Imposto.ICMS icms, List<ConverterCst> csts, String crt) {
+
         NfeDetalheImpostoIcms detalheImpostoIcms;
         ImpostoDTO imposto = new ImpostoDTO();
 
@@ -152,6 +154,7 @@ public class DefinirCstService implements Serializable {
             imposto.setCst(definirCst(csts, imposto, crt));
 
         }
+
         if (icms.getICMSSN102() != null) {
             imposto.setCst(icms.getICMSSN101().getCSOSN());
 
@@ -159,6 +162,7 @@ public class DefinirCstService implements Serializable {
 
             imposto.setCst(definirCst(csts, imposto, crt));
         }
+
         if (icms.getICMSSN201() != null) {
             imposto.setCst(icms.getICMSSN201().getCSOSN());
 
@@ -177,6 +181,7 @@ public class DefinirCstService implements Serializable {
             imposto.setCst(definirCst(csts, imposto, crt));
 
         }
+
         if (icms.getICMSSN202() != null) {
             imposto.setCst(icms.getICMSSN202().getCSOSN());
 
@@ -191,6 +196,7 @@ public class DefinirCstService implements Serializable {
 
             imposto.setCst(definirCst(csts, imposto, crt));
         }
+
         if (icms.getICMSSN500() != null) {
             imposto.setCst(icms.getICMSSN500().getCSOSN());
 
@@ -199,6 +205,7 @@ public class DefinirCstService implements Serializable {
             imposto.setCst(definirCst(csts, imposto, crt));
 
         }
+
         if (icms.getICMSSN900() != null) {
             imposto.setCst(icms.getICMSSN900().getCSOSN());
 
@@ -222,14 +229,18 @@ public class DefinirCstService implements Serializable {
 
             imposto.setCst(definirCst(csts, imposto, crt));
         }
+
         detalheImpostoIcms = definirNfeDetalheIcms(imposto.getCst(), crt, imposto);
+
         return detalheImpostoIcms;
     }
 
     public NfeDetalheImpostoIcms definirNfeDetalheIcms(String cst, String crt, ImpostoDTO imposto) {
+
         NfeDetalheImpostoIcms icms = new NfeDetalheImpostoIcms();
 
         icms.setOrigemMercadoria(Integer.valueOf(imposto.getOrigem()));
+
         if (!crt.equals("1")) {
             icms.setCstIcms(cst);
         } else {
@@ -353,13 +364,15 @@ public class DefinirCstService implements Serializable {
                 break;
             case "201":
 
-                icms.setModalidadeBcIcmsSt(Integer.valueOf(imposto.getModalidadeBaseCalculoST()));
+                if (!StringUtils.isEmpty(imposto.getModalidadeBaseCalculoST())) {
+                    icms.setModalidadeBcIcmsSt(Integer.valueOf(imposto.getModalidadeBaseCalculoST()));
 
-                icms.setPercentualMvaIcmsSt(imposto.getMva());
-                icms.setPercentualReducaoBcIcmsSt(imposto.getReducaoBaseCalculoIcmsST());
-                icms.setBaseCalculoIcms(imposto.getBaseCalculoIcms());
-                icms.setAliquotaIcmsSt(imposto.getAliquotaIcmsST());
-                icms.setValorIcmsSt(imposto.getValorIcmsST());
+                    icms.setPercentualMvaIcmsSt(imposto.getMva());
+                    icms.setPercentualReducaoBcIcmsSt(imposto.getReducaoBaseCalculoIcmsST());
+                    icms.setBaseCalculoIcms(imposto.getBaseCalculoIcms());
+                    icms.setAliquotaIcmsSt(imposto.getAliquotaIcmsST());
+                    icms.setValorIcmsSt(imposto.getValorIcmsST());
+                }
 
                 icms.setAliquotaCreditoIcmsSn(imposto.getAliquotaCreditoIcms());
                 icms.setValorCreditoIcmsSn(imposto.getValorCreditoIcms());
@@ -390,6 +403,7 @@ public class DefinirCstService implements Serializable {
                     icms.setBaseCalculoIcms(imposto.getBaseCalculoIcms());
                     icms.setValorIcms(imposto.getValorIcms());
                 }
+
                 if (imposto.getModalidadeBaseCalculoST() != null) {
                     icms.setModalidadeBcIcmsSt(Integer.valueOf(imposto.getModalidadeBaseCalculoST()));
 

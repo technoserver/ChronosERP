@@ -16,6 +16,7 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.PessoaService;
 import com.chronos.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -53,6 +54,9 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
     private ViewPessoaFornecedor fornecedorSelecionado;
 
     private String completo;
+    private String nome;
+    private Integer codigo;
+    private String cpfCnpj;
 
     @PostConstruct
     @Override
@@ -72,6 +76,20 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
         return fornecedorDataModel;
     }
 
+
+    public void pesquisar() {
+        fornecedorDataModel.getFiltros().clear();
+        if (!StringUtils.isEmpty(nome)) {
+            fornecedorDataModel.getFiltros().add(new Filtro("nome", Filtro.LIKE, nome));
+        }
+        if (!StringUtils.isEmpty(cpfCnpj)) {
+            fornecedorDataModel.getFiltros().add(new Filtro("cpfCnpj", Filtro.LIKE, cpfCnpj));
+        }
+
+        if (codigo != null) {
+            fornecedorDataModel.getFiltros().add(new Filtro("id", Filtro.IGUAL, codigo));
+        }
+    }
 
     @Override
     public void doCreate() {
@@ -192,5 +210,29 @@ public class FornecedorControll extends PessoaControll<Fornecedor> implements Se
 
     public void setFornecedorSelecionado(ViewPessoaFornecedor fornecedorSelecionado) {
         this.fornecedorSelecionado = fornecedorSelecionado;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public Integer getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Integer codigo) {
+        this.codigo = codigo;
+    }
+
+    public String getCpfCnpj() {
+        return cpfCnpj;
+    }
+
+    public void setCpfCnpj(String cpfCnpj) {
+        this.cpfCnpj = cpfCnpj;
     }
 }

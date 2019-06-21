@@ -39,7 +39,7 @@ public class ImpostoDTO {
         this.origem = icms.getOrigemMercadoria().toString();
         this.cst = icms.getCstIcms() != null ? icms.getCstIcms() : icms.getCsosn();
         this.modalidadeBaseCalculo = icms.getModalidadeBcIcms() != null ? icms.getModalidadeBcIcms().toString() : null;
-        this.modalidadeBaseCalculoST = icms.getValorBaseCalculoIcmsSt().toString();
+        this.modalidadeBaseCalculoST = icms.getModalidadeBcIcmsSt() != null ? icms.getModalidadeBcIcmsSt().toString() : null;
         this.aliquotaIcms = icms.getAliquotaIcms();
         this.aliquotaIcmsST = icms.getAliquotaIcmsSt();
         this.baseCalculoIcms = icms.getBaseCalculoIcms();

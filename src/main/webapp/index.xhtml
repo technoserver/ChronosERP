@@ -63,6 +63,32 @@
                 color: #fff;
             }
 
+            .box {
+                padding: 20px;
+                margin-bottom: 15px;
+                border: 1px solid #eeeeee;
+                border-bottom: 3px solid #1ab394;
+                background: #ffffff;
+            }
+
+            .box__icon {
+                float: left;
+                color: #1ab394;
+            }
+
+            .box__value {
+                font-size: 1.69em;
+                font-weight: 300;
+                text-align: right;
+            }
+
+            .box__title {
+                display: block;
+                font-size: 1em;
+                font-weight: 600;
+                text-align: right;
+            }
+
         </style>
     </ui:define>
     <ui:define name="title">
@@ -178,6 +204,12 @@
                                 </h:link>
                             </div>
                             <div class="col-xs-6 col-sm-4 col-md-2">
+                                <h:link outcome="/modulo/cadastros/produto/produtos" class="btn btn-app"
+                                        style="width: 100%;margin-top: 5px">
+                                    <i class="fa fa-cubes"></i>Produtos
+                                </h:link>
+                            </div>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
                                 <h:link outcome="/modulo/financeiro/pagamento/finPagamento"
                                         class="btn btn-app" style="width: 100%;margin-top: 5px">
                                     <i class="fa fa-money text-primary"></i>Contas a pagar
@@ -198,7 +230,56 @@
         </div>
 
 
-        <div class="row">
+        <h:panelGroup layout="block" styleClass="row">
+
+            <div class="col-xs-12 col-md-4">
+                <div class="box">
+                    <div class="box__icon">
+                        <i class="fa  fa-signal  fa-3x"></i>
+                    </div>
+                    <div class="box__value">
+                        <h:outputText value="#{homeControll.valorTotalVendaNoMes}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </div>
+                    <div class="box__title">Pedidos de Venda no mês</div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-md-4">
+                <div class="box">
+                    <div class="box__icon">
+                        <i class="fa  fa-usd  fa-3x"></i>
+                    </div>
+                    <div class="box__value">
+                        <h:outputText value="#{homeControll.valorTotalVendaNoAno}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </div>
+                    <div class="box__title">Pedidos Venda no ano</div>
+                </div>
+            </div>
+
+
+            <div class="col-xs-12 col-md-4">
+                <div class="box">
+                    <div class="box__icon">
+                        <i class="fa  fa-shopping-cart  fa-3x"></i>
+                    </div>
+                    <div class="box__value">
+                        <h:outputText value="#{homeControll.valorVendaMedioNoAno}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </div>
+                    <div class="box__title">Pedidos de Venda em média</div>
+                </div>
+            </div>
+
+        </h:panelGroup>
+
+
+        <h:panelGroup layout="block" styleClass="row"
+                      rendered="#{seguranca.financeiro and seguranca.isTemAcesso('RECEBIMENTO') and seguranca.isTemAcesso('PAGAMENTO')}">
             <div class="col-md-4">
                 <div class="ibox">
                     <div class="ibox-content">
@@ -225,7 +306,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </h:panelGroup>
 
 
     </ui:define>
