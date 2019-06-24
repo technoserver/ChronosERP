@@ -718,4 +718,5 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void setDesconto(BigDecimal desconto) {
         this.desconto = desconto;
     }
+
 }

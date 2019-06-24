@@ -9,6 +9,7 @@ import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.PdvMovimento;
+import com.chronos.modelo.entidades.RestricaoSistema;
 import com.chronos.modelo.tenant.Tenant;
 import com.chronos.security.UsuarioSistema;
 import com.chronos.transmissor.init.Configuracoes;
@@ -174,16 +175,16 @@ public class FacesUtil {
 
     }
 
-    public static BigDecimal getDescVenda() {
+    public static RestricaoSistema getRestricao() {
 
-        BigDecimal desconto = BigDecimal.ZERO;
+        RestricaoSistema restricao = null;
         try {
             HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-            desconto = (BigDecimal) session.getAttribute("desc");
+            restricao = (RestricaoSistema) session.getAttribute("restricoes");
 
         } catch (Exception ex) {
         }
-        return desconto;
+        return restricao;
     }
 
     private static HttpSession getHttpSession() {
