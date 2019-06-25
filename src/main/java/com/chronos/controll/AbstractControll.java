@@ -2,7 +2,6 @@
 package com.chronos.controll;
 
 import com.chronos.dto.UsuarioDTO;
-import com.chronos.modelo.anotacoes.TaxaMaior;
 import com.chronos.modelo.entidades.Auditoria;
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.EmpresaEndereco;
@@ -11,7 +10,6 @@ import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.modelo.enuns.Estados;
 import com.chronos.repository.Repository;
 import com.chronos.repository.UsuarioRepository;
-import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.component.tabview.TabView;
@@ -21,9 +19,6 @@ import org.springframework.util.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -836,33 +831,6 @@ public abstract class AbstractControll<T> implements Serializable {
             auditoriaRepository.salvar(log);
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-    }
-
-    private void verificaRestricao() throws Exception {
-        Field fields[] = objeto.getClass().getDeclaredFields();
-        for (Field f : fields) {
-            if (f.isAnnotationPresent(TaxaMaior.class)) {
-                BigDecimal taxa = FacesUtil.getDescVenda();
-                if (taxa != null) {
-                    Method metodo = objeto.getClass().getDeclaredMethod("get" + Biblioteca.primeiraMaiuscula(f.getName()));
-                    BigDecimal valorCampo = (BigDecimal) metodo.invoke(objeto);
-                    if (valorCampo != null && valorCampo.compareTo(taxa) > 0) {
-                        necessarioAutorizacaoSupervisor = true;
-                    }
-                }
-            }
-//            if (f.isAnnotationPresent(DataMaior.class)) {
-//                Integer qtdeDias = FacesUtil.getRestricaoDataMaior();
-//                if (qtdeDias != null) {
-//                    Method metodo = objeto.getClass().getDeclaredMethod("get" + Biblioteca.primeiraMaiuscula(f.getName()));
-//                    Date valorCampo = (Date) metodo.invoke(objeto);
-//
-//                    if (valorCampo != null && Biblioteca.verificaDataMaior(valorCampo, qtdeDias)) {
-//                        necessarioAutorizacaoSupervisor = true;
-//                    }
-//                }
-//            }
         }
     }
 
