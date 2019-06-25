@@ -88,19 +88,19 @@
             </ul>
         </li>
 
-        <li class="${fn:contains(view.viewId,'modulo/comercial/nfe/relatorios/')?'active':''}">
+        <li class="${fn:contains(view.viewId,'modulo/relatorios/comercial')?'active':''}">
             <a href="#">NF-e
                 <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-bedroom-level">
-                <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNumeros"
+                <erp:subMenu caminho="/modulo/relatorios/comercial/nfe/relacaoNumeros"
                              label="Numeração utilizada"
                              funcao="relacaoNumeros"/>
-                <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoNfe"
+                <erp:subMenu caminho="/modulo/relatorios/comercial/nfe/relacaoNfe"
                              label="Relação de NFe"
                              funcao="relacaoNfe"/>
 
-                <erp:subMenu caminho="/modulo/comercial/nfe/relatorios/relacaoXmlNfe"
+                <erp:subMenu caminho="/modulo/relatorios/comercial/nfe/relacaoXmlNfe"
                              label="Relação de XML"
                              funcao="relacaoXmlNfe"/>
 
