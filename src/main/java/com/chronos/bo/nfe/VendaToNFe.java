@@ -277,7 +277,7 @@ public class VendaToNFe extends ManualCDILookup {
         }
     }
 
-    public void gerarDuplicatas() {
+    public void gerarDuplicatas() throws ChronosException {
 
 
         for (NfeFormaPagamento f : nfe.getListaNfeFormaPagamento()) {

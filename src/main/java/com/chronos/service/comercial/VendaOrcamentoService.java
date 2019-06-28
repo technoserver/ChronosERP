@@ -58,7 +58,7 @@ public class VendaOrcamentoService implements Serializable {
     }
 
     @Transactional
-    public VendaOrcamentoCabecalho conveterEmVenda(VendaOrcamentoCabecalho orcamento) {
+    public VendaOrcamentoCabecalho conveterEmVenda(VendaOrcamentoCabecalho orcamento) throws ChronosException {
 
         VendaCabecalho venda = vendaService.gerarVenaDoOrcamento(orcamento);
         venda = vendaRepository.atualizar(venda);

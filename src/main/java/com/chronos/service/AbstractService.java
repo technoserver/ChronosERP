@@ -90,4 +90,6 @@ public abstract class AbstractService<T> implements Serializable {
     public boolean isRestricaoLiberada() {
         return restricaoLiberada;
     }
+
+
 }

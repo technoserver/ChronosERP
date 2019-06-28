@@ -2,6 +2,7 @@ package com.chronos.service.financeiro;
 
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.util.Biblioteca;
 import org.springframework.util.StringUtils;
 
@@ -23,8 +24,7 @@ public class FinLancamentoReceberCartaoService implements Serializable {
     private Repository<FinLancamentoReceberCartao> lancamentoReceberCartaoRepository;
 
 
-
-    public FinLancamentoReceberCartao gerarLancamento(FinLancamentoReceberCartao lancamento, OperadoraCartaoTaxa operadoraCartaoTaxa) {
+    public FinLancamentoReceberCartao gerarLancamento(FinLancamentoReceberCartao lancamento, OperadoraCartaoTaxa operadoraCartaoTaxa) throws ChronosException {
 
 
         int number = 1;
@@ -94,7 +94,7 @@ public class FinLancamentoReceberCartaoService implements Serializable {
         return lancamento;
     }
 
-    public FinLancamentoReceberCartao gerarLancamento(int id, BigDecimal valor, OperadoraCartao operadoraCartao, OperadoraCartaoTaxa operadoraCartaoTaxa, int qtdParcelas, String codModulo, Empresa empresa, String identificador) {
+    public FinLancamentoReceberCartao gerarLancamento(int id, BigDecimal valor, OperadoraCartao operadoraCartao, OperadoraCartaoTaxa operadoraCartaoTaxa, int qtdParcelas, String codModulo, Empresa empresa, String identificador) throws ChronosException {
 
         String numDoc = "E" + empresa.getId()
                 + "M" + codModulo

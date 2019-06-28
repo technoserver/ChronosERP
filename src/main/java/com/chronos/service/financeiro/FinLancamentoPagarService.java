@@ -3,6 +3,7 @@ package com.chronos.service.financeiro;
 import com.chronos.dto.LancamentoPagar;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
@@ -61,7 +62,7 @@ public class FinLancamentoPagarService implements Serializable {
 
 
     @Transactional
-    public void gerarContasReceber(LancamentoPagar lancamento, NaturezaFinanceira naturezaFinanceira) {
+    public void gerarContasReceber(LancamentoPagar lancamento, NaturezaFinanceira naturezaFinanceira) throws ChronosException {
 
 
         FinLancamentoPagar lancamentoPagar = new FinLancamentoPagar();
@@ -127,7 +128,7 @@ public class FinLancamentoPagarService implements Serializable {
         return parcelas;
     }
 
-    private List<FinParcelaPagar> gerarParcelas(FinLancamentoPagar lancamentoPagar, VendaCondicoesPagamento condicoesPagamento) {
+    private List<FinParcelaPagar> gerarParcelas(FinLancamentoPagar lancamentoPagar, VendaCondicoesPagamento condicoesPagamento) throws ChronosException {
         List<FinParcelaPagar> parcelas = new ArrayList<>();
 
         if (condicoesPagamento.getVistaPrazo().equals("1")) {

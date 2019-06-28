@@ -142,27 +142,31 @@
             <p:dataTable id="dataTableEstoqueReajusteDetalhe" var="obj"
                          value="#{estoqueReajusteCabecalhoControll.objeto.listaEstoqueReajusteDetalhe}"
                          paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20" editable="true" editMode="cell"
-                         resizableColumns="true" paginatorPosition="bottom" reflow="true">
+                         paginatorPosition="bottom" reflow="true">
 
+
+                <p:column headerText="Cód" width="100">
+                    <h:outputLabel value="#{obj.produto.id}"/>
+                </p:column>
                 <p:column headerText="Produto">
                     <h:outputLabel value="#{obj.produto.nome}"/>
                 </p:column>
-                <p:column headerText="Valor Original" styleClass="coluna-monetaria">
+                <p:column headerText="Valor" styleClass="coluna-monetaria" width="125">
                     <h:outputLabel value="#{obj.valorOriginal}">
                         <f:convertNumber pattern="#,##0.00"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Valor Reajuste" styleClass="coluna-monetaria">
+                <p:column headerText="Reajuste" styleClass="coluna-monetaria" width="125">
                     <h:outputLabel value="#{obj.valorReajuste}">
                         <f:convertNumber pattern="#,##0.00"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Quantidade Original" styleClass="coluna-monetaria">
+                <p:column headerText="Qtd. Original" styleClass="coluna-monetaria" width="135">
                     <h:outputLabel value="#{obj.quantidadeOriginal}">
                         <f:convertNumber pattern="#,##0.00"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Quantidade Reajuste" styleClass="coluna-monetaria">
+                <p:column headerText="Qtd. Reajuste" styleClass="coluna-monetaria" width="140">
                     <p:cellEditor>
                         <f:facet name="output">
                             <h:outputLabel value="#{obj.quantidadeReajuste}">
