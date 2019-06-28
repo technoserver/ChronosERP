@@ -83,7 +83,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
             dataModel.setDao(dao);
         }
 
-        if (dataModel.getFiltros().size() == 0) {
+        if (dataModel.getFiltros().isEmpty()) {
             dataModel.addFiltro("tipo", Optional.ofNullable(tipo).orElse("O"), Filtro.IGUAL);
         }
 

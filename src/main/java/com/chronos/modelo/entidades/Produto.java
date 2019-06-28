@@ -16,6 +16,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "PRODUTO")
+@NamedQuery(name = "Produto.atualizarValorVenda"
+        , query = "UPDATE Produto p SET p.valorVenda = ?1  where p.id =?2")
 @DynamicUpdate
 public class Produto implements Serializable {
 

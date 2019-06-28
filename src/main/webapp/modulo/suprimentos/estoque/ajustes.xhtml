@@ -10,14 +10,14 @@
 >
 
     <ui:define name="title">
-        CEST
+        Estoque
     </ui:define>
 
     <ui:define name="tela">
-        #{cestControll.titulo}
+        Ajuste
     </ui:define>
     <ui:define name="controle">
-        CEST
+        Estoque
     </ui:define>
 
 
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div class="row m-t">
-                <erp:campoTexto label="Codigo"
+                <erp:campoTexto label="Código"
                                 idComponente="codigo"
                                 styleClass="col-xs-12 col-sm-3 col-md-3"
                                 tamanhoMaximo="14"
@@ -41,21 +41,33 @@
                 <erp:campoDecimal label="Quantidade"
                                   idComponente="quantidade"
                                   styleClass="col-xs-12 col-sm-3 col-md-2"
-                                  nomeAtributo="#{estoqueAjusteControll.quantidade}"
-                />
+                                  nomeAtributo="#{estoqueAjusteControll.quantidade}"/>
+
+                <erp:campoDecimal label="Valor venda"
+                                  idComponente="valorVenda"
+                                  styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  nomeAtributo="#{estoqueAjusteControll.valorVenda}"/>
             </div>
             <div class="row m-t">
                 <div class="col-md-12">
                     <p:dataTable value="#{estoqueAjusteControll.produtos}" var="row" id="produtos"
                                  emptyMessage="Nenhum produto adicionado"
-                                 reflow="true"
-                                 resizableColumns="true"
-                    >
+                                 reflow="true">
+
+
+                        <p:column headerText="Código" width="120">
+                            <h:outputLabel value="#{row.produto.id}"/>
+                        </p:column>
                         <p:column headerText="Produto">
                             <h:outputLabel value="#{row.produto.nome}"/>
                         </p:column>
-                        <p:column headerText="Quantidade" styleClass="text-center">
+                        <p:column headerText="Quantidade" styleClass="text-center" width="160">
                             <h:outputLabel value="#{row.quantidadeEstoque}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor" styleClass="text-right" width="160">
+                            <h:outputLabel value="#{row.valorVenda}">
                                 <f:convertNumber pattern="#,###,##0.00"/>
                             </h:outputLabel>
                         </p:column>

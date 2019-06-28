@@ -36,6 +36,8 @@ public class EmpresaProduto implements Serializable {
     @JoinColumn(name = "id_produto", referencedColumnName = "id", nullable = false)
     @ManyToOne(optional = false)
     private Produto produto;
+    @Transient
+    private BigDecimal valorVenda;
 
     public EmpresaProduto() {
         this.estoqueVerificado = BigDecimal.ZERO;
@@ -46,6 +48,12 @@ public class EmpresaProduto implements Serializable {
         this.id = id;
         this.produto = new Produto(idproduto, nome);
     }
+
+    public EmpresaProduto(Integer id, Integer idproduto, String nome, BigDecimal valorVenda) {
+        this.id = id;
+        this.produto = new Produto(idproduto, nome, valorVenda);
+    }
+
 
     public EmpresaProduto(Integer id, Integer idempresa, String nomeEmpresa, BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado) {
         this.id = id;
@@ -104,6 +112,14 @@ public class EmpresaProduto implements Serializable {
 
     public void setEstoqueVerificado(BigDecimal estoqueVerificado) {
         this.estoqueVerificado = estoqueVerificado;
+    }
+
+    public BigDecimal getValorVenda() {
+        return valorVenda;
+    }
+
+    public void setValorVenda(BigDecimal valorVenda) {
+        this.valorVenda = valorVenda;
     }
 
     @Override

@@ -88,7 +88,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
     @Transactional
-    public VendaCabecalho faturarVenda(VendaCabecalho venda) {
+    public VendaCabecalho faturarVenda(VendaCabecalho venda) throws ChronosException {
 
 
         venda.setSituacao(SituacaoVenda.Encerrado.getCodigo());
@@ -606,7 +606,63 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     }
 
 
+    public void aplicarDesconto(VendaCabecalho venda, int tipoDesconto, BigDecimal desconto) throws ChronosException {
+        BigDecimal valorDesconto;
 
+
+        if (venda.getValorTotal() == null) {
+            throw new ChronosException("Valor total não informando");
+        }
+
+        if (venda.getListaVendaDetalhe() == null || venda.getListaVendaDetalhe().isEmpty()) {
+            throw new ChronosException("Não foram informado item(s) para está venda");
+        }
+
+        if (tipoDesconto == 1) {
+            valorDesconto = desconto;
+        } else {
+            valorDesconto = Biblioteca.calcularValorPercentual(venda.getValorTotal(), desconto);
+
+        }
+
+        BigDecimal fator = Biblioteca.divide(valorDesconto, venda.getValorSubtotal());
+        BigDecimal descAntecipado = venda.getListaVendaDetalhe()
+                .stream()
+                .map(VendaDetalhe::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        for (VendaDetalhe i : venda.getListaVendaDetalhe()) {
+            BigDecimal descItem = Biblioteca.multiplica(fator, i.getValorSubtotal());
+            BigDecimal vlrDesc = Biblioteca.soma(Optional.ofNullable(i.getValorDesconto()).orElse(BigDecimal.ZERO), descItem);
+            BigDecimal vlrTotal = Biblioteca.subtrai(i.getValorSubtotal(), vlrDesc);
+            BigDecimal txDesc = Biblioteca.calcularFator(i.getValorSubtotal(), vlrTotal);
+            i.setValorDesconto(vlrDesc);
+            i.setValorTotal(vlrTotal);
+            i.setTaxaDesconto(txDesc);
+
+        }
+
+        BigDecimal descItens = venda.getListaVendaDetalhe()
+                .stream()
+                .map(VendaDetalhe::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        BigDecimal sobra = Biblioteca.soma(valorDesconto, descAntecipado);
+        sobra = Biblioteca.subtrai(sobra, descItens);
+
+        if (sobra.signum() > 0) {
+            VendaDetalhe item = venda.getListaVendaDetalhe().get(0);
+            BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
+            BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);
+            BigDecimal txDesc = Biblioteca.calcularFator(item.getValorSubtotal(), vlrTotal);
+            item.setValorDesconto(vlrDesc);
+            item.setValorTotal(vlrTotal);
+        }
+
+        venda.calcularValorTotal();
+    }
 
 
     @Override

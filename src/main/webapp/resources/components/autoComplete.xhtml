@@ -18,6 +18,7 @@
         <cc:attribute name="exibirInfo" default="#{false}"/>
         <cc:attribute name="drop" default="#{true}"/>
         <cc:attribute name="mensangemInfo"/>
+        <cc:attribute name="emptyMessage" default="Nenhum registro encontrado"/>
         <cc:clientBehavior name="itemSelecionado" targets="#{cc.attrs.idComponente}" event="itemSelect" />
 
     </cc:interface>
@@ -41,7 +42,7 @@
                             style="width: 100%"
                             converter="defaultConverter" forceSelection="true"
                             minQueryLength="#{cc.attrs.tamanhoMinimo}" required="#{cc.attrs.requerido}"
-                            emptyMessage="Nenhum registro encontrado">
+                            emptyMessage="#{cc.attrs.emptyMessage}">
 
                 <cc:insertChildren />
 

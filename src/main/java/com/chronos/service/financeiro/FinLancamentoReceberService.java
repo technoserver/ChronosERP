@@ -6,6 +6,7 @@ import com.chronos.modelo.enuns.Modulo;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.FinLancamentoReceberRepository;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
 
@@ -35,7 +36,7 @@ public class FinLancamentoReceberService implements Serializable {
     private Repository<FinParcelaReceber> parcelaReceberRepository;
 
 
-    public void gerarLancamento(int id, BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) {
+    public void gerarLancamento(int id, BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws ChronosException {
         LancamentoReceber lancamento = new LancamentoReceber();
         lancamento.setCliente(cliente);
         lancamento.setCondicoesPagamento(condicoesPagamento);
@@ -49,7 +50,7 @@ public class FinLancamentoReceberService implements Serializable {
 
 
     @Transactional
-    public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) {
+    public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) throws ChronosException {
         VendaCondicoesPagamento condicao = lancamento.getCondicoesPagamento();
         ContaCaixa conta = condicao.getTipoRecebimento().getContaCaixa();
 
