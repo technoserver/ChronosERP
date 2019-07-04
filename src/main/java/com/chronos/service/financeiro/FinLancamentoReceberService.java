@@ -8,6 +8,7 @@ import com.chronos.repository.FinLancamentoReceberRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.Biblioteca;
+import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
 
 import javax.inject.Inject;
@@ -36,6 +37,45 @@ public class FinLancamentoReceberService implements Serializable {
     private Repository<FinParcelaReceber> parcelaReceberRepository;
 
 
+    @Transactional
+    public void gerarContasReceber(PdvVendaCabecalho venda, List<FinParcelaReceber> parcelas) {
+
+
+        String identificador = "E" + venda.getEmpresa().getId()
+                + "M" + Modulo.PDV.getCodigo()
+                + "V" + venda.getId()
+                + "C" + venda.getCliente().getId()
+                + "Q" + parcelas.size();
+
+
+        FinLancamentoReceber lancamentoReceber = new FinLancamentoReceber();
+        lancamentoReceber.setCliente(venda.getCliente());
+        lancamentoReceber.setFinDocumentoOrigem(new FinDocumentoOrigem(101));
+
+        lancamentoReceber.setValorTotal(venda.getValorTotal());
+        lancamentoReceber.setValorAReceber(venda.getValorTotal());
+        lancamentoReceber.setDataLancamento(venda.getDataHoraVenda());
+        lancamentoReceber.setNumeroDocumento(identificador);
+        lancamentoReceber.setCodigoModuloLcto(Modulo.PDV.getCodigo());
+        lancamentoReceber.setEmpresa(venda.getEmpresa());
+
+
+        Date primeiroVencimento = parcelas.stream().map(p -> p.getDataVencimento()).min(Date::compareTo).get();
+
+        // pega o primeiro vencimento
+        lancamentoReceber.setPrimeiroVencimento(primeiroVencimento);
+        lancamentoReceber.setIntervaloEntreParcelas(null);
+        lancamentoReceber.setListaFinParcelaReceber(new ArrayList<>());
+        lancamentoReceber.setListaFinLctoReceberNtFinanceira(new HashSet<>());
+
+        parcelas.forEach(p -> p.setFinLancamentoReceber(lancamentoReceber));
+        lancamentoReceber.setQuantidadeParcela(parcelas.size());
+        lancamentoReceber.setListaFinParcelaReceber(parcelas);
+
+        geraNaturezaFinanceira(lancamentoReceber, Constantes.FIN.NATUREZA_VENDA);
+        lancamentos.salvar(lancamentoReceber);
+    }
+
     public void gerarLancamento(int id, BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws ChronosException {
         LancamentoReceber lancamento = new LancamentoReceber();
         lancamento.setCliente(cliente);
@@ -54,18 +94,12 @@ public class FinLancamentoReceberService implements Serializable {
         VendaCondicoesPagamento condicao = lancamento.getCondicoesPagamento();
         ContaCaixa conta = condicao.getTipoRecebimento().getContaCaixa();
 
-        List<VendaCondicoesParcelas> parcelas = new ArrayList<>();
-        int qtdParcelas = 1;
-        if (condicao.getVistaPrazo().equals("1")) {
-            parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
-            qtdParcelas = parcelas.size();
-        }
 
         String identificador = "E" + lancamento.getEmrpesa().getId()
                 + "M" + lancamento.getCodigoModulo()
                 + "V" + lancamento.getId()
                 + "C" + lancamento.getCliente().getId()
-                + "Q" + qtdParcelas;
+                + "Q";
 
         FinLancamentoReceber lancamentoReceber = new FinLancamentoReceber();
         lancamentoReceber.setCliente(lancamento.getCliente());
@@ -85,28 +119,21 @@ public class FinLancamentoReceberService implements Serializable {
         lancamentoReceber.setListaFinLctoReceberNtFinanceira(new HashSet<>());
 
         FinParcelaReceber parcelaReceber;
-        int number = 1;
+
 
         if (condicao.getVistaPrazo().equals("1")) {
-            lancamentoReceber.setQuantidadeParcela(qtdParcelas);
-            for (VendaCondicoesParcelas parcela : parcelas) {
-                parcelaReceber = new FinParcelaReceber();
-                parcelaReceber.setFinLancamentoReceber(lancamentoReceber);
-                parcelaReceber.setNumeroParcela(number++);
-                parcelaReceber.setFinStatusParcela(new FinStatusParcela(1));
-                parcelaReceber.setContaCaixa(condicao.getTipoRecebimento().getContaCaixa());
-                parcelaReceber.setDataEmissao(lancamento.getDataLancamento());
-                parcelaReceber.setDataVencimento(Biblioteca.addDay(lancamento.getDataLancamento(), parcela.getDias()));
-                parcelaReceber.setValor(Biblioteca.calcularValorPercentual(lancamento.getValorTotal(), parcela.getTaxa()));
 
-                lancamentoReceber.getListaFinParcelaReceber().add(parcelaReceber);
-            }
+            List<FinParcelaReceber> finParcelaRecebers = gerarParcelas(lancamentoReceber.getValorTotal(), lancamento.getDataLancamento(), condicao);
+            finParcelaRecebers.forEach(p -> p.setFinLancamentoReceber(lancamentoReceber));
+            lancamentoReceber.setQuantidadeParcela(finParcelaRecebers.size());
+            lancamentoReceber.setListaFinParcelaReceber(finParcelaRecebers);
+
         } else {
 
             lancamentoReceber.setQuantidadeParcela(1);
             parcelaReceber = new FinParcelaReceber();
             parcelaReceber.setFinLancamentoReceber(lancamentoReceber);
-            parcelaReceber.setNumeroParcela(number++);
+            parcelaReceber.setNumeroParcela(1);
             parcelaReceber.setFinStatusParcela(new FinStatusParcela(2));
             parcelaReceber.setContaCaixa(conta);
             parcelaReceber.setDataEmissao(lancamento.getDataLancamento());
@@ -141,6 +168,28 @@ public class FinLancamentoReceberService implements Serializable {
     }
 
 
+    public List<FinParcelaReceber> gerarParcelas(BigDecimal valor, Date dataEmissao, VendaCondicoesPagamento condicao) throws ChronosException {
+
+        List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
+
+
+        int number = 1;
+        List<FinParcelaReceber> parcelasReceber = new ArrayList<>();
+        for (VendaCondicoesParcelas parcela : parcelas) {
+            FinParcelaReceber parcelaReceber = new FinParcelaReceber();
+
+            parcelaReceber.setNumeroParcela(number++);
+            parcelaReceber.setFinStatusParcela(new FinStatusParcela(1));
+            parcelaReceber.setContaCaixa(condicao.getTipoRecebimento().getContaCaixa());
+            parcelaReceber.setDataEmissao(dataEmissao);
+            parcelaReceber.setDataVencimento(Biblioteca.addDay(dataEmissao, parcela.getDias()));
+            parcelaReceber.setValor(Biblioteca.calcularValorPercentual(valor, parcela.getTaxa()));
+
+            parcelasReceber.add(parcelaReceber);
+        }
+
+        return parcelasReceber;
+    }
 
     private void geraNaturezaFinanceira(FinLancamentoReceber lancamentoReceber, NaturezaFinanceira naturezaFinanceira) {
         FinLctoReceberNtFinanceira finLctoReceberNaturezaFinancaeira = new FinLctoReceberNtFinanceira();
@@ -175,4 +224,6 @@ public class FinLancamentoReceberService implements Serializable {
 
         }
     }
+
+
 }

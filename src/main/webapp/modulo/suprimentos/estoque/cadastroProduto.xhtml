@@ -11,10 +11,17 @@
     <p:tabView id="tabNfeProduto" style="border: 0px;">
         <p:tab title="Dados Principais">
             <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-12"
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="codigoInterno" label="Codigo Interno"
+                                nomeAtributo="#{entradaNotaFiscalControll.produto.codigoInterno}"
+                                tamanhoMaximo="9"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
                                 idComponente="produtoNome" label="Nome"
                                 nomeAtributo="#{entradaNotaFiscalControll.produto.nome}"
                                 tamanhoMaximo="120" requerido="true"/>
+
 
             </div>
             <div class="row">

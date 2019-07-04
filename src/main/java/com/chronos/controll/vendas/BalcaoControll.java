@@ -9,7 +9,6 @@ import com.chronos.repository.OperadoraCartaoRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
-import com.chronos.service.cadastros.UsuarioService;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.comercial.PdvVendaDetalheService;
 import com.chronos.service.comercial.VendaPdvService;
@@ -58,13 +57,10 @@ public class BalcaoControll implements Serializable {
     @Inject
     private Repository<PdvVendaCabecalho> vendas;
     @Inject
-    private Repository<EmpresaProduto> produtos;
-    @Inject
     private Repository<Vendedor> vendedores;
     @Inject
     private Repository<Cliente> clientes;
-    @Inject
-    private Repository<VendaComissao> comissoes;
+
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
@@ -75,16 +71,10 @@ public class BalcaoControll implements Serializable {
     @Inject
     private Repository<NfeCabecalho> nfeRepository;
     @Inject
-    private Repository<TributOperacaoFiscal> operacaoRepository;
-    @Inject
-    private Repository<PdvTipoPagamento> tipoPagamentoRepository;
-    @Inject
     private Repository<AdmParametro> parametroRepository;
     @Inject
     private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
 
-    @Inject
-    private UsuarioService userService;
     @Inject
     private FinLancamentoReceberService recebimentoService;
     @Inject
@@ -124,6 +114,9 @@ public class BalcaoControll implements Serializable {
     private List<VendaCondicoesPagamento> condicoesPagamentos;
     private List<OperadoraCartao> operadoras;
     private BigDecimal desconto;
+    private List<FinParcelaReceber> parcelas;
+    private BigDecimal valorParcelas;
+    private BigDecimal diferecaParcelas;
 
 
     private String tipoDesconto;
@@ -199,6 +192,7 @@ public class BalcaoControll implements Serializable {
                 telaImpressao = false;
                 exibirCondicoes = false;
                 instanciarParametro();
+                parcelas = new ArrayList<>();
             }
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -530,6 +524,7 @@ public class BalcaoControll implements Serializable {
 
     public void lancaPagamento() {
         try {
+            boolean update = true;
 
             if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
                 Mensagem.addErrorMessage("Todos os valores já foram recebidos. Finalize a venda.");
@@ -544,6 +539,8 @@ public class BalcaoControll implements Serializable {
                     incluiPagamento(tipoPagamento, valorPago);
                 }
             }
+
+
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("Erro ao lança os pagamentos", ex);
@@ -555,7 +552,7 @@ public class BalcaoControll implements Serializable {
 
     }
 
-    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) {
+    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
         Optional<PdvFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
         if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
             Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
@@ -579,6 +576,10 @@ public class BalcaoControll implements Serializable {
                     formaPagamento.setOperadoraCartao(operadoraCartao);
                 }
 
+                if (tipoPagamento.getCodigo().equals("14")) {
+                    parcelas = recebimentoService.gerarParcelas(formaPagamento.getValor(), venda.getDataHoraVenda(), formaPagamento.getCondicao());
+                }
+
 
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
                 troco = Biblioteca.subtrai(totalRecebido, totalReceber);
@@ -589,6 +590,8 @@ public class BalcaoControll implements Serializable {
                 venda.getListaFormaPagamento().add(formaPagamento);
                 venda.setTroco(troco);
                 verificaSaldoRestante();
+
+
             }
 
         }
@@ -606,6 +609,11 @@ public class BalcaoControll implements Serializable {
     public void excluirPagamento() {
         if (formaPagamentoSelecionado != null) {
             venda.getListaFormaPagamento().remove(formaPagamentoSelecionado);
+
+            if (formaPagamentoSelecionado.getForma().equals("14")) {
+                parcelas = new ArrayList<>();
+            }
+
             verificaSaldoRestante();
         }
         Mensagem.addInfoMessage("Forma de pagamento removida");
@@ -616,7 +624,7 @@ public class BalcaoControll implements Serializable {
             verificaSaldoRestante();
             if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
                 venda.setTroco(troco);
-                venda = service.finalizarVenda(venda);
+                venda = service.finalizarVenda(venda, parcelas);
                 telaVenda = false;
                 telaPagamentos = false;
                 telaImpressao = true;
@@ -671,8 +679,9 @@ public class BalcaoControll implements Serializable {
         exibirQtdParcelas = tipoPagamento.getCodigo().equals("03");
         qtdParcelas = 1;
 
+
         if (exibirCondicoes) {
-            condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class, new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
+            condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class, "vistaPrazo", "1", new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
         }
 
         if (exibirQtdParcelas) {
@@ -708,7 +717,36 @@ public class BalcaoControll implements Serializable {
         return pagamentos;
     }
 
+    public void editarLancamentoReceber() {
+        valorParcelas = getParcelas().stream().map(p -> p.getValor()).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        diferecaParcelas = formaPagamentoSelecionado == null ? BigDecimal.ZERO : Biblioteca.subtrai(formaPagamentoSelecionado.getValor(), getValorParcelas());
+    }
+
+    public void calcularDiferencaParcela() {
+        valorParcelas = getParcelas().stream().map(p -> p.getValor()).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        diferecaParcelas = formaPagamentoSelecionado == null ? BigDecimal.ZERO : Biblioteca.subtrai(formaPagamentoSelecionado.getValor(), getValorParcelas());
+    }
+
+    public void confimarLancamento() {
+
+        if (diferecaParcelas.signum() != 0) {
+            Mensagem.addErrorMessage("Existe diferença nos valores informado");
+            FacesContext.getCurrentInstance().validationFailed();
+        }
+
+    }
+
+
     //</editor-fold>
+
+
+    public BigDecimal getValorParcelas() {
+        return valorParcelas;
+    }
+
+    public BigDecimal getDiferecaParcelas() {
+        return diferecaParcelas;
+    }
 
 
     public void selecionarVendedor() {
@@ -989,5 +1027,13 @@ public class BalcaoControll implements Serializable {
 
     public void setSenhaSupervisor(String senhaSupervisor) {
         this.senhaSupervisor = senhaSupervisor;
+    }
+
+    public List<FinParcelaReceber> getParcelas() {
+        return parcelas;
+    }
+
+    public void setParcelas(List<FinParcelaReceber> parcelas) {
+        this.parcelas = parcelas;
     }
 }

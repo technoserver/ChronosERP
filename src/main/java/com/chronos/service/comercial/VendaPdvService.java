@@ -11,7 +11,6 @@ import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.*;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
-import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -68,7 +67,7 @@ public class VendaPdvService implements Serializable {
 
 
     @Transactional
-    public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda) throws Exception {
+    public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda, List<FinParcelaReceber> parcelas) throws Exception {
 
         venda.setStatusVenda(SituacaoVenda.Encerrado.getCodigo());
         Integer idempresa = venda.getEmpresa().getId();
@@ -91,7 +90,7 @@ public class VendaPdvService implements Serializable {
                 }
 
 
-                finLancamentoReceberService.gerarLancamento(venda.getId(), p.getValor(), venda.getCliente(), p.getCondicao(), Modulo.PDV.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
+                finLancamentoReceberService.gerarContasReceber(venda, parcelas);
             }
 
             if (p.getPdvTipoPagamento().getCodigo().equals("05")) {
