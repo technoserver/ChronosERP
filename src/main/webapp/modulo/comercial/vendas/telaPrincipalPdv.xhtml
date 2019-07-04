@@ -216,35 +216,28 @@
                         <li class="item">
                             <div class="conteudo">
                                 <div class="descricao-produto">
-                                <span class="quantidade itens">
-                                    <h:outputText value="#{row.quantidade}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                                    </h:outputText>
-
-                                    #{row.produto.unidadeProduto.sigla}
-                                    x
-                                </span>
-                                    <span class="codigo-item">#{row.produto.id}</span>
+                                    <span class="quantidade itens">
+                                        <h:outputText value="#{row.quantidade}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                        #{row.produto.unidadeProduto.sigla}
+                                        x
+                                    </span>
+                                    <span class="preco-unitario">
+                                        <h:outputText value="#{row.valorUnitario}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </span>
                                     <p class="nome-item">
                                         #{row.produto.descricaoPdv}
                                     </p>
-                                </div>
-
-                                <div class="caixa-preco">
-                                    <div class="preco">
-                                        <span class="preco-unitario">
-                                            R$
-                                            <h:outputText value="#{row.valorUnitario}">
+                                    <p class="nome-item text-right">
+                                        <span class="valor-total-item">
+                                            <h:outputText value="R$ #{row.valorTotal}">
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputText>
                                         </span>
-                                        <span class="preco-total">
-                                            R$
-                                            <h:outputText value="#{row.valorTotal}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputText>
-                                        </span>
-                                    </div>
+                                    </p>
                                 </div>
                             </div>
                             <div class="caixa-botoes">
@@ -264,7 +257,6 @@
                     </ui:repeat>
                 </ul>
             </div>
-
 
 
             <h:panelGroup layout="block" id="totalPedido" class="total-pedido2">
