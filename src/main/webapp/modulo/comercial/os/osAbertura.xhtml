@@ -124,24 +124,24 @@
                                     ajax="false">
 
                         </p:menuitem>
-                        <p:menuitem value="Faturar OS"
-                                    action="#{osAberturaControll.faturar}"
+                        <p:menuitem value="Encerrar OS"
+                                    action="#{osAberturaControll.encerrar}"
                                     update=":formCentro:mensagem"
                                     rendered="#{osAberturaControll.isTemAcesso('FINANCEIRO')}">
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
-                        <p:menuitem value="Gerar NFe"
-                                    action="#{osAberturaControll.gerarNFe}"
+                        <p:menuitem value="Faturar - NFe"
+                                    action="#{osAberturaControll.faturar('55')}"
                                     update=":formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     rendered="#{osAberturaControll.isTemAcesso('NFE') and empty row.idnfeCabecalho}"
                                    >
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
-                        <p:menuitem value="Gerar NFCe"
+                        <p:menuitem value="Faturar - NFCe"
                                     rendered="#{osAberturaControll.isTemAcesso('NFCE') and empty row.idnfeCabecalho}"
-                                    action="#{osAberturaControll.gerarNFce}"
+                                    action="#{osAberturaControll.faturar('65')}"
                                     update=":formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                         >
                             <f:setPropertyActionListener value="#{row}"
