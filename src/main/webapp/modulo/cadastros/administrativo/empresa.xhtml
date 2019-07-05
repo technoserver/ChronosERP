@@ -30,23 +30,22 @@
                                  var="row" id="dataTabelEmpresa" paginator="true"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{empresaControll.podeConsultar()}"
-                                 resizableColumns="true" lazy="true"
-                                 >
+                                 lazy="true">
 
                         <p:column headerText="Razão Social">
                             <h:outputLabel value="#{row.razaoSocial}"/>
                         </p:column>
-                        <p:column headerText="CNPJ">
+                        <p:column headerText="CNPJ" width="155">
                             <h:outputLabel value="#{row.cnpj}"/>
                         </p:column>
-                        <p:column headerText="Tipo">
+                        <p:column headerText="Tipo" width="100">
                             <h:outputLabel value="#{row.tipo eq 'M'?'MATRIZ':'FILIAL'}"/>
                         </p:column>
-                        <p:column headerText="CRT">
+                        <p:column headerText="CRT" width="200">
                             <h:outputLabel value="#{empresaControll.keyFromValue(empresaControll.crt, row.crt)}"/>
                         </p:column>
 
-                        <p:column headerText="Ações" width="110" styleClass="text-center">
+                        <p:column headerText="Ações" width="140" styleClass="text-center">
                             <p:commandLink title="Alterar" action="#{empresaControll.doEdit()}" class=" btn btn-default"
                                            update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                                            id="btnAlterar">
@@ -270,6 +269,7 @@
                                         tamanhoMaximo="50"/>
                         <erp:campoTelefone styleClass="col-xs-12 col-sm-3 col-md-2" idComponente="telefone"
                                            label="Telefone" nomeAtributo="#{empresaControll.endereco.fone}"/>
+
 
                     </div>
                 </p:tab>

@@ -107,7 +107,7 @@ public class OsService extends AbstractService<OsAbertura> {
     }
 
     @Transactional
-    public void faturar(OsAbertura os) throws ChronosException {
+    public void encerrar(OsAbertura os) throws ChronosException {
         os.setOsStatus(Constantes.OS.STATUS_FATURADO);
 
         List<ProdutoVendaDTO> produtos = new ArrayList<>();

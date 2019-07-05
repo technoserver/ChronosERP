@@ -166,13 +166,14 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         }
     }
 
-    public void faturar() {
+
+    public void encerrar() {
         try {
             OsAbertura os = dataModel.getRowData(getObjetoSelecionado().getId().toString());
             if(os.getOsStatus().getId()>4){
                 Mensagem.addInfoMessage("Está OS não pode ser mais faturada");
             }else{
-                osService.faturar(os);
+                osService.encerrar(os);
                 Mensagem.addInfoMessage("OS Faturada com sucesso");
             }
 
@@ -182,28 +183,22 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         }
     }
 
-    public void gerarNFe() {
+    public void faturar(String codigoModelo) {
+
         try {
 
-            OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
+            OsAbertura os = isTelaGrid() ? dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class) : getObjeto();
+
+            ModeloDocumento modelo = codigoModelo.equals("65") ? ModeloDocumento.NFCE : ModeloDocumento.NFE;
+
             gerarNFe(os, ModeloDocumento.NFE);
 
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Erro ao gerar Nfe do servico", ex);
-        }
-    }
-
-    public void gerarNFce() {
-        try {
-
-            OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
-
-            gerarNFe(os, ModeloDocumento.NFCE);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Erro ao gerar NFCe do servico. \r\n", ex);
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao gerar faturamento", ex);
+            }
         }
     }
 

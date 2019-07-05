@@ -289,8 +289,8 @@ public abstract class AbstractControll<T> implements Serializable {
         clienteFormaDesconto.put("Fim do Pedido", "F");
 
         crt = new LinkedHashMap<>();
-        crt.put("1 - SIMples Nacional", "1");
-        crt.put("2 - SIMples Nac - Excesso", "2");
+        crt.put("1 - Simples Nacional", "1");
+        crt.put("2 - Simples Nac - Excesso", "2");
         crt.put("3 - Regime Normal", "3");
 
         tipoRegimeEmpresa = new LinkedHashMap<>();
