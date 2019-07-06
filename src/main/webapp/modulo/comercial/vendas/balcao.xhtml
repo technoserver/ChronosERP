@@ -7,8 +7,7 @@
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:erp="http://java.sun.com/jsf/composite/components"
->
+                xmlns:erp="http://java.sun.com/jsf/composite/components">
     <ui:define name="title">
         Balcão
     </ui:define>
@@ -223,8 +222,15 @@
                 -ms-text-overflow: ellipsis;
                 -o-text-overflow: ellipsis;
                 text-overflow: ellipsis;
-                width: 250px;
+                width: 80%;
                 overflow: hidden;
+                margin: 0 0 0 0;
+            }
+
+            .valor-total-item {
+                display: block;
+                font-size: 16px;
+                font-weight: bold
             }
 
             .caixa-preco {
@@ -274,7 +280,7 @@
 
             .lista .lista-produtos > li.item {
                 background-color: #e8f0f2;
-                height: 50px;
+                height: 70px;
             }
 
             .lista .lista-produtos > li:first-child {
@@ -495,9 +501,6 @@
                 </h:panelGroup>
                 <h:panelGroup id="telaPdv" layout="block">
                     <div id="pdv" class="row">
-                        <div id="botao-operacoes">
-                            <i class="fa fa-cogs"></i>
-                        </div>
                         <h:panelGroup layout="block" id="tela-inicial" class="etapa" style="overflow: hidden"
                                       rendered="#{balcaoControll.telaVenda}">
                             <ui:include src="telaPrincipalPdv.xhtml"/>
@@ -715,6 +718,96 @@
 
             </p:dialog>
         </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formOutrasTelas3">
+            <p:dialog id="dialogOutrasTela3"
+                      header="Confirmar parcelas a receber"
+                      widgetVar="dialogOutrasTela3" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="600">
+                <p:outputPanel id="panelOutrasTelas3">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p:dataTable value="#{balcaoControll.parcelas}" var="row" editable="true" reflow="true">
+
+                                <p:ajax event="rowEdit" listener="#{balcaoControll.calcularDiferencaParcela}"
+                                        update="formOutrasTelas3:valores-parcelas"/>
+
+                                <p:column headerText="Valor" styleClass="text-right">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{row.valor}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:inputNumber value="#{row.valor}"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+
+                                </p:column>
+                                <p:column headerText="Vencimento" styleClass="text-center">
+                                    <p:cellEditor>
+                                        <f:facet name="output">
+                                            <h:outputText value="#{row.dataVencimento}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                            </h:outputText>
+                                        </f:facet>
+                                        <f:facet name="input">
+                                            <p:calendar
+                                                    value="#{row.dataVencimento}" style="width: 100% !important;"
+                                                    pattern="dd/MM/yyyy"/>
+                                        </f:facet>
+                                    </p:cellEditor>
+
+
+                                </p:column>
+                                <p:column style="width:35px">
+                                    <p:rowEditor/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                    <div class="row m-t">
+                        <div class="col-md-6">
+                            <p:panelGrid columns="2" cellpadding="20" cellspacing="1" id="valores-parcelas">
+                                <label>Valor total</label>
+                                <h:outputText value="#{balcaoControll.formaPagamentoSelecionado.valorTotal}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                                <label>Valor das parcelas</label>
+                                <h:outputText value="#{balcaoControll.valorParcelas}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                                <label>Diferença</label>
+                                <h:outputText value="#{balcaoControll.diferecaParcelas}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:panelGrid>
+                        </div>
+                    </div>
+
+                </p:outputPanel>
+
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12 text-center">
+                            <p:commandButton value="Confirmar"
+                                             id="btn-confirmar-parcelas"
+                                             actionListener="#{balcaoControll.confimarLancamento()}"
+                                             update=":formOutrasTelas3:panelOutrasTelas3,formCentro:growl"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTela3').hide();}"/>
+
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+
+        </h:form>
+
     </ui:define>
 
 

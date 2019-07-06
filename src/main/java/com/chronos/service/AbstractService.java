@@ -1,6 +1,7 @@
 package com.chronos.service;
 
 import com.chronos.modelo.anotacoes.TaxaMaior;
+import com.chronos.modelo.entidades.RestricaoSistema;
 import com.chronos.modelo.entidades.Usuario;
 import com.chronos.repository.Repository;
 import com.chronos.repository.UsuarioRepository;
@@ -25,11 +26,12 @@ public abstract class AbstractService<T> implements Serializable {
 
     @Inject
     protected Repository<T> repository;
+    @Inject
+    private UsuarioRepository usuarioRepository;
+
     protected T objeto;
     protected boolean necessarioAutorizacaoSupervisor = false;
     protected boolean restricaoLiberada = false;
-    @Inject
-    private UsuarioRepository usuarioRepository;
 
     protected abstract Class<T> getClazz();
 
@@ -39,7 +41,8 @@ public abstract class AbstractService<T> implements Serializable {
             Field fields[] = objeto.getClass().getDeclaredFields();
             for (Field f : fields) {
                 if (f.isAnnotationPresent(TaxaMaior.class)) {
-                    BigDecimal taxa = FacesUtil.getDescVenda();
+                    RestricaoSistema restricao = FacesUtil.getRestricao();
+                    BigDecimal taxa = restricao == null ? BigDecimal.ZERO : restricao.getDescontoVenda();
                     if (taxa != null) {
                         Method metodo = objeto.getClass().getDeclaredMethod("get" + Biblioteca.primeiraMaiuscula(f.getName()));
                         BigDecimal valorCampo = (BigDecimal) metodo.invoke(objeto);
@@ -71,6 +74,14 @@ public abstract class AbstractService<T> implements Serializable {
         return restricaoLiberada;
     }
 
+    public boolean podeAlteraPrecoVenda() {
+        RestricaoSistema restricao = FacesUtil.getRestricao();
+
+        boolean isAdministrador = FacesUtil.getUsuarioSessao().getAdministrador().equals("S");
+
+        return isAdministrador || restricao == null ? true : restricao.getAlteraPrecoNaVenda().equals("S") ? true : false;
+    }
+
 
     public boolean isNecessarioAutorizacaoSupervisor() {
         return necessarioAutorizacaoSupervisor;
@@ -79,4 +90,6 @@ public abstract class AbstractService<T> implements Serializable {
     public boolean isRestricaoLiberada() {
         return restricaoLiberada;
     }
+
+
 }

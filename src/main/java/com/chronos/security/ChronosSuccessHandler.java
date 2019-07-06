@@ -19,7 +19,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +29,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 
 
     private UsuarioSistema user;
-    private BigDecimal desconto;
+    private RestricaoSistema restricaoSistema;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         try {
@@ -39,7 +38,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
             request.getSession().setAttribute("tenantId", tenant);
             UsuarioDTO usuarioDTO = definirPermissoes(user);
             request.getSession().setAttribute("userChronosERP", usuarioDTO);
-            request.getSession().setAttribute("desc", desconto);
+            request.getSession().setAttribute("restricoes", restricaoSistema);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,7 +98,8 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 
             RestricaoSistema restricao = restricaoSistemaRepository.get(RestricaoSistema.class, "usuario.id", user.getId());
 
-            desconto = restricao != null && restricao.getDescontoVenda() != null ? restricao.getDescontoVenda() : BigDecimal.ZERO;
+
+            restricaoSistema = restricao != null ? restricao : new RestricaoSistema();
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getSenha(), authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);

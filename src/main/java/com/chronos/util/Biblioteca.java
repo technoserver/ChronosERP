@@ -8,6 +8,7 @@ package com.chronos.util;
 import com.chronos.dto.GradeDTO;
 import com.chronos.dto.MapDTO;
 import com.chronos.dto.ProdutoGradeDTO;
+import com.chronos.service.ChronosException;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import org.springframework.util.StringUtils;
 
@@ -32,7 +33,7 @@ import java.util.regex.Pattern;
 public class Biblioteca {
 
 
-    public static BigDecimal calcularPercentual(BigDecimal subTotal, BigDecimal total) {
+    public static BigDecimal calcularPercentual(BigDecimal subTotal, BigDecimal total) throws ChronosException {
 
 
         BigDecimal desconto = subtrai(subTotal, total);
@@ -498,7 +499,12 @@ public class Biblioteca {
         return resultado;
     }
 
-    public static BigDecimal divide(BigDecimal valor1, BigDecimal valor2) {
+    public static BigDecimal divide(BigDecimal valor1, BigDecimal valor2) throws ChronosException {
+
+        if (valor2.signum() == 0) {
+            throw new ChronosException("Não é possivel realizar uma divisão por 0");
+        }
+
         BigDecimal resultado = valor1.divide(valor2, MathContext.DECIMAL64);
         resultado = resultado.setScale(2, RoundingMode.HALF_UP);
         return resultado;
@@ -597,13 +603,13 @@ public class Biblioteca {
 
     }
 
-    public static BigDecimal calcularValorPercentual(BigDecimal total, BigDecimal taxa) {
+    public static BigDecimal calcularValorPercentual(BigDecimal total, BigDecimal taxa) throws ChronosException {
         BigDecimal valor = multiplica(total, taxa);
         valor = divide(valor, BigDecimal.valueOf(100));
         return valor;
     }
 
-    public static BigDecimal calcularFator(BigDecimal subtotal, BigDecimal total) {
+    public static BigDecimal calcularFator(BigDecimal subtotal, BigDecimal total) throws ChronosException {
         BigDecimal result = subtrai(subtotal, total);
         result = divide(result, subtotal);
         result = multiplica(result, BigDecimal.valueOf(100));

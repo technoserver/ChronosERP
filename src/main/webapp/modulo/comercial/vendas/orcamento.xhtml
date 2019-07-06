@@ -165,7 +165,7 @@
 
                                 <p:menuitem value="Aprovar e Gerar Venda"
                                             update=":formCentro:growl,tableOrcamento"
-                                            rendered="#{row.tipo eq 'P'}"
+                                            rendered="#{row.tipo eq 'P' and (row.situacao eq 'P' or row.situacao eq 'D') }"
                                             action="#{vendaOrcamentoCabecalhoControll.gerarVenda}">
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{vendaOrcamentoCabecalhoControll.objetoSelecionado}"/>
@@ -421,7 +421,7 @@
 
                                             <p:menuitem value="Aprovar e gerar Pedido de venda"
                                                         actionListener="#{vendaOrcamentoCabecalhoControll.gerarVenda}"
-                                                        update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe"
+                                                        update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
                                                         rendered="#{vendaOrcamentoCabecalhoControll.objeto.situacao eq 'P'}"
                                                         icon="ui-icon-arrowrefresh-1-w"/>
 

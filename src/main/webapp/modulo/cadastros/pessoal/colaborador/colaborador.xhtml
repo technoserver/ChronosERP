@@ -57,22 +57,11 @@
                 <p:column headerText="Nome">
                     <h:outputLabel value="#{row.pessoa.nome}"/>
                 </p:column>
-                <p:column headerText="Matrícula">
-                    <h:outputLabel value="#{row.matricula}"/>
-                </p:column>
-                <p:column headerText="Data Admissão">
-                    <h:outputLabel value="#{row.dataAdmissao}">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputLabel>
-                </p:column>
-                <p:column headerText="Situação">
-                    <h:outputLabel value="#{row.situacaoColaborador.nome}"/>
-                </p:column>
-                <p:column headerText="Cargo">
+                <p:column headerText="Cargo" width="175">
                     <h:outputLabel value="#{row.cargo.nome}"/>
                 </p:column>
-                <p:column headerText="Setor">
-                    <h:outputLabel value="#{row.setor.nome}"/>
+                <p:column headerText="Situação" styleClass="text-center" width="100">
+                    <h:outputLabel value="#{row.situacaoColaborador.nome}"/>
                 </p:column>
             </erp:gridDadosSemForm>
 
@@ -86,15 +75,39 @@
                                    nomeFuncao="Colaborador"
                                    id="telaDetalhe">
 
+            <div class="row">
+
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="Cadastro completo"
+                                   for="clienteBloqueado"/>
+                    <h:selectOneMenu id="clienteBloqueado"
+                                     class="form-control"
+                                     value="#{colaboradorControll.completo}">
+                        <f:selectItems value="#{colaboradorControll.naoSim}"/>
+                        <p:ajax event="change" update=":formCentro:telaDetalhe:tipoCadastro"
+                                process="@this"
+                                oncomplete="addClass()"/>
+                    </h:selectOneMenu>
+                </div>
+
+            </div>
+            <br/>
+
 
             <h:panelGroup layout="block" id="tipoCadastro">
 
+                <h:panelGroup layout="block" rendered="#{colaboradorControll.completo eq 'N'}">
+                    <ui:include src="formColaborador.xhtml"/>
+                </h:panelGroup>
 
-                <erp:dadosPessoa controller="#{colaboradorControll}" id="dadosPessoa">
-                    <p:tab title="Dados Colaborador" id="dadosGerenciais">
-                        <ui:include src="formColaborador.xhtml"/>
-                    </p:tab>
-                </erp:dadosPessoa>
+                <h:panelGroup layout="block" rendered="#{colaboradorControll.completo eq 'S'}">
+                    <erp:dadosPessoa controller="#{colaboradorControll}" id="dadosPessoa">
+                        <p:tab title="Dados Colaborador" id="dadosGerenciais">
+                            <ui:include src="formColaborador.xhtml"/>
+                        </p:tab>
+                    </erp:dadosPessoa>
+                </h:panelGroup>
+
 
             </h:panelGroup>
 

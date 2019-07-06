@@ -79,11 +79,19 @@
                     </p:inputNumber>
                 </div>
 
+                <erp:campoSelect label="Pode alterar preço na venda"
+                                 styleClass="col-xs-12 col-sm-4 col-md-3"
+                                 nomeAtributo="#{restricaoSistemaControll.objeto.alteraPrecoNaVenda}"
+                                 idComponente="alteraPrecoNaVenda"
+                                 itens="#{restricaoSistemaControll.simNao}"/>
+
 
             </div>
 
 
         </erp:telaInclusaoAlteracao>
+
+
     </ui:define>
 
 </ui:composition>

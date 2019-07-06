@@ -36,6 +36,14 @@ public class NfeXml implements Serializable {
         this.xml = xml;
     }
 
+    public NfeXml(Integer id, byte[] xml, String cnpj) {
+        this.id = id;
+        this.xml = xml;
+        this.nfeCabecalho = new NfeCabecalho();
+        this.nfeCabecalho.setEmpresa(new Empresa());
+        this.nfeCabecalho.getEmpresa().setCnpj(cnpj);
+    }
+
     public Integer getId() {
         return id;
     }

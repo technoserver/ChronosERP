@@ -2,8 +2,12 @@ package com.chronos.controll.estoque;
 
 import com.chronos.modelo.entidades.Empresa;
 import com.chronos.modelo.entidades.EmpresaProduto;
+import com.chronos.modelo.entidades.Produto;
+import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.gerencial.AuditoriaService;
+import com.chronos.util.FormatValor;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
@@ -28,9 +32,15 @@ public class EstoqueAjusteControll implements Serializable {
     @Inject
     private Repository<EmpresaProduto> repository;
 
+    @Inject
+    private Repository<Produto> produtoRepository;
+    @Inject
+    private AuditoriaService auditoriaService;
+
     private Empresa empresa;
     private String codigo;
     private BigDecimal quantidade;
+    private BigDecimal valorVenda;
 
     private List<EmpresaProduto> produtos;
     private EmpresaProduto produtoSelecionado;
@@ -52,7 +62,7 @@ public class EstoqueAjusteControll implements Serializable {
                 int cod = Integer.valueOf(str);
                 filtros.add(new Filtro("produto.id", cod));
             }
-            Object[] atributos = new Object[]{"produto.id", "produto.nome"};
+            Object[] atributos = new Object[]{"produto.id", "produto.nome", "produto.valorVenda"};
             EmpresaProduto produto = repository.get(EmpresaProduto.class, filtros, atributos);
 
             if (produto == null) {
@@ -63,6 +73,7 @@ public class EstoqueAjusteControll implements Serializable {
                 } else {
                     produto.setEstoqueVerificado(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
                     produto.setQuantidadeEstoque(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
+                    produto.setValorVenda(valorVenda);
                     produtos.add(produto);
                 }
 
@@ -76,6 +87,7 @@ public class EstoqueAjusteControll implements Serializable {
         produtos.remove(produtoSelecionado);
     }
 
+
     public void salvar() {
 
 
@@ -86,6 +98,18 @@ public class EstoqueAjusteControll implements Serializable {
 
                 for (EmpresaProduto produto : produtos) {
                     repository.atualizarNamedQuery("EmpresaProduto.atualizarEstoque", produto.getQuantidadeEstoque(), produto.getId());
+
+                    auditoriaService.gerarLog(AcaoLog.AJUSTE, "alterado a quantidade em estoque do produto " + produto.getProduto().getNome()
+                            + " para " + FormatValor.getInstance().formatarValor(produto.getQuantidadeEstoque()), "Estoque Ajuste");
+
+
+                    if (produto.getValorVenda() != null) {
+
+                        produtoRepository.atualizarNamedQuery("Produto.atualizarValorVenda", produto.getValorVenda(), produto.getProduto().getId());
+
+                        auditoriaService.gerarLog(AcaoLog.AJUSTE, "alterado o valor de venda do produto " + produto.getProduto().getNome()
+                                + " para " + FormatValor.getInstance().formatarValor(produto.getValorVenda()), "Estoque Ajuste");
+                    }
                 }
 
                 Mensagem.addInfoMessage("Estoque Reajustado");
@@ -127,5 +151,13 @@ public class EstoqueAjusteControll implements Serializable {
 
     public void setProdutoSelecionado(EmpresaProduto produtoSelecionado) {
         this.produtoSelecionado = produtoSelecionado;
+    }
+
+    public BigDecimal getValorVenda() {
+        return valorVenda;
+    }
+
+    public void setValorVenda(BigDecimal valorVenda) {
+        this.valorVenda = valorVenda;
     }
 }

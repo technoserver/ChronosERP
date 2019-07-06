@@ -972,17 +972,28 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     }
 
     private void definirQuantidadeConvertida(NfeDetalhe d, UnidadeConversao unidadeConversao) {
-        d.setUnidadeComercial(unidadeConversao.getProduto().getUnidadeProduto().getSigla());
 
-        BigDecimal quantidade = unidadeConversao.getAcao().equals("M")
-                ? Biblioteca.multiplica(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao())
-                : Biblioteca.divide(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao());
 
-        BigDecimal valorTotal = d.getValorSubtotal();
-        BigDecimal valorUnt = valorTotal.divide(quantidade, MathContext.DECIMAL64).setScale(5, RoundingMode.HALF_DOWN);
-        valorUnt = valorUnt.setScale(3, RoundingMode.DOWN);
-        d.setQuantidadeComercial(quantidade);
-        d.setValorUnitarioComercial(valorUnt);
+        try {
+            d.setUnidadeComercial(unidadeConversao.getProduto().getUnidadeProduto().getSigla());
+
+            BigDecimal quantidade = unidadeConversao.getAcao().equals("M")
+                    ? Biblioteca.multiplica(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao())
+                    : Biblioteca.divide(d.getQuantidadeComercial(), unidadeConversao.getFatorConversao());
+
+            BigDecimal valorTotal = d.getValorSubtotal();
+            BigDecimal valorUnt = valorTotal.divide(quantidade, MathContext.DECIMAL64).setScale(5, RoundingMode.HALF_DOWN);
+            valorUnt = valorUnt.setScale(3, RoundingMode.DOWN);
+            d.setQuantidadeComercial(quantidade);
+            d.setValorUnitarioComercial(valorUnt);
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao definir a quantidade convertida", ex);
+            }
+        }
+
     }
 
     @Override

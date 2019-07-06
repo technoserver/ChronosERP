@@ -132,14 +132,33 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
 
         Colaborador colaborador = null;
         try {
-            Empresa ep = getObjeto().getId() != null ? empresa : emp;
 
-            getObjeto().setNivelFormacao(new NivelFormacao(idnivelFormacao));
-            getObjeto().setTipoAdmissao(new TipoAdmissao(idtipoAdimissao));
-            getObjeto().setSituacaoColaborador(new SituacaoColaborador(idsituacao));
-            getObjeto().setTipoColaborador(new TipoColaborador(idtipo));
-            colaborador = service.salvarColaborador(getObjeto(), ep);
-            setObjeto(colaborador);
+            if (completo.equals("S")) {
+                Empresa ep = getObjeto().getId() != null ? empresa : emp;
+
+                getObjeto().setNivelFormacao(new NivelFormacao(idnivelFormacao));
+                getObjeto().setTipoAdmissao(new TipoAdmissao(idtipoAdimissao));
+                getObjeto().setSituacaoColaborador(new SituacaoColaborador(idsituacao));
+                getObjeto().setTipoColaborador(new TipoColaborador(idtipo));
+                colaborador = service.salvarColaborador(getObjeto(), ep);
+                setObjeto(colaborador);
+
+            } else {
+                Pessoa pessoa = pessoas.getJoinFetch(getObjeto().getPessoa().getId(), Pessoa.class);
+                pessoa.setColaborador("S");
+
+                getObjeto().setPessoa(pessoa);
+
+                getObjeto().setDataCadastro(new Date());
+                getObjeto().setDataAdmissao(new Date());
+                getObjeto().setSituacaoColaborador(new SituacaoColaborador(1));
+                getObjeto().setTipoAdmissao(new TipoAdmissao(1));
+                getObjeto().setNivelFormacao(new NivelFormacao(1));
+                getObjeto().setTipoColaborador(new TipoColaborador(1));
+
+                dao.atualizar(getObjeto());
+            }
+
             Mensagem.addInfoMessage("Colaborador salvo com sucesso");
         } catch (Exception e) {
             e.printStackTrace();

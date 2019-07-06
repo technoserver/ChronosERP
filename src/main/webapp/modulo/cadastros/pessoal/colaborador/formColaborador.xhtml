@@ -4,10 +4,21 @@
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:erp="http://java.sun.com/jsf/composite/components" xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
 >
 
 
-
+    <h:panelGroup layout="block" styleClass="row" rendered="#{colaboradorControll.completo eq 'N'}">
+        <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
+                          label="Pessoa"
+                          itemLabel="#{objeto.nome}"
+                          controller="#{colaboradorControll}"
+                          completeMethod="getListaPessoa"
+                          nomeAtributo="#{colaboradorControll.objeto.pessoa}"
+                          idComponente="clientePessoa"
+                          requerido="false"
+                          rendered="#{empty colaboradorControll.objeto.id}"/>
+    </h:panelGroup>
 
     <div class="row">
 

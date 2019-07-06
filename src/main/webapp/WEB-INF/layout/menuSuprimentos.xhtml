@@ -13,30 +13,33 @@
                     <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-third-level collapse ">
-                    <li class="${fn:contains(view.viewId,'modulo/estoque/')?'active':''}">
-                        <!--<erp:subMenu caminho="/modulo/estoque/estoqueFormacaoPreco"-->
-                        <!--label="Formação Preço"-->
-                        <!--funcao="estoqueFormacaoPreco"/>-->
-                        <!--<erp:subMenu caminho="/modulo/estoque/requisicaoInternaCabecalho"-->
-                        <!--label="Requisição Interna"-->
-                        <!--funcao="requisicaoInternaCabecalho"/>-->
-                        <erp:subMenu caminho="/modulo/estoque/ajuste"
+                    <li class="${fn:contains(view.viewId,'modulo/suprimentos/estoque/')?'active':''}">
+
+                        <erp:subMenu caminho="/modulo/suprimentos/estoque/estoqueFormacaoPreco"
+                                     label="Formação Preço"
+                                     funcao="estoqueFormacaoPreco"/>
+
+                        <!--                        <erp:subMenu caminho="/modulo/suprimentos/estoque/requisicaoInternaCabecalho"-->
+                        <!--                                     label="Requisição Interna"-->
+                        <!--                                     funcao="requisicaoInternaCabecalho"/>-->
+
+                        <erp:subMenu caminho="/modulo/suprimentos/estoque/ajustes"
                                      label="Ajuste"
                                      exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
-                                     funcao="ajuste"/>
-                        <erp:subMenu caminho="/modulo/estoque/estoqueReajuste"
+                                     funcao="ajustes"/>
+                        <erp:subMenu caminho="/modulo/suprimentos/estoque/estoqueReajuste"
                                      label="Reajuste"
                                      exibir="#{seguranca.isTemAcesso('ESTOQUE_REAJUSTE')}"
                                      funcao="estoqueReajuste"/>
-                        <erp:subMenu caminho="/modulo/estoque/entradaNotaFiscal"
+                        <erp:subMenu caminho="/modulo/suprimentos/estoque/entradaNotaFiscal"
                                      label="Entrada"
                                      exibir="#{seguranca.isTemAcesso('NFE_ENTRADA')}"
                                      funcao="entradaNotaFiscal"/>
-                        <erp:subMenu caminho="/modulo/estoque/transferencia"
+                        <erp:subMenu caminho="/modulo/suprimentos/estoque/transferencia"
                                      label="Transferências"
                                      funcao="transferencia"/>
 
-                        <erp:subMenu caminho="/modulo/estoque/balanco"
+                        <erp:subMenu caminho="/modulo/suprimentos/estoque/balanco"
                                      exibir="#{seguranca.isTemAcesso('BALANCO')}"
                                      label="Balanço"
                                      funcao="balanco"/>
@@ -55,31 +58,38 @@
                     <span class="fa arrow"></span>
                 </a>
                 <ul class="nav nav-third-level collapse ">
-                    <li class="${fn:contains(view.viewId,'modulo/compras/')?'active':''}">
-                        <!--<erp:subMenu caminho="/modulo/compras/compraRequisicao"-->
-                        <!--label="Requisição"-->
-                        <!--funcao="compraRequisicao"/>-->
-                        <!--<erp:subMenu caminho="/modulo/compras/compraCotacao"-->
-                        <!--label="Cotação"-->
-                        <!--funcao="compraCotacao"/>-->
-                        <!--<erp:subMenu caminho="/modulo/compras/compraMapaComparativo"-->
-                        <!--label="Mapa Comparativo"-->
-                        <!--funcao="compraMapaComparativo"/>-->
-                        <erp:subMenu caminho="/modulo/compras/compraPedido"
+
+                    <li class="${fn:contains(view.viewId,'modulo/suprimentos/compras/')?'active':''}">
+
+                        <erp:subMenu caminho="/modulo/suprimentos/compras/compraRequisicao"
+                                     label="Requisição"
+                                     funcao="compraRequisicao"/>
+
+                        <erp:subMenu caminho="/modulo/suprimentos/compras/compraCotacao"
+                                     label="Cotação"
+                                     funcao="compraCotacao"/>
+
+                        <erp:subMenu caminho="/modulo/suprimentos/compras/compraMapaComparativo"
+                                     label="Mapa Comparativo"
+                                     funcao="compraMapaComparativo"/>
+
+                        <erp:subMenu caminho="/modulo/suprimentos/compras/compraPedido"
                                      label="Pedido"
                                      exibir="#{seguranca.isTemAcesso('COMPRA_PEDIDO')}"
                                      funcao="compraPedido"/>
-                        <!--<erp:subMenu caminho="/modulo/compras/compraSugerida"-->
-                        <!--label="Compra Sugerida"-->
-                        <!--funcao="compraSugerida"/>-->
+
+                        <erp:subMenu caminho="/modulo/suprimentos/compras/compraSugerida"
+                                     label="Compra Sugerida"
+                                     funcao="compraSugerida"/>
 
 
-                        <erp:subMenu caminho="/modulo/compras/compraDevolucao"
+                        <erp:subMenu caminho="/modulo/suprimentos/compras/compraDevolucao"
                                      label="Devolução"
                                      exibir="#{seguranca.isTemAcesso('DEVOLUCAO_COMPRA')}"
                                      funcao="compraDevolucao"/>
 
                     </li>
+
                 </ul>
             </li>
         </c:if>

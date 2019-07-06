@@ -22,10 +22,20 @@ public class RestricaoSistema implements Serializable {
     @DecimalMin(value = "0.01", message = "O valor  do desconto deve ser maior que 0,1")
     @DecimalMax(value = "99.99", message = "O valor  deve ser menor que 99.99")
     private BigDecimal descontoVenda;
+    @Column(name = "altera_preco_na_venda")
+    private String alteraPrecoNaVenda;
+
     @JoinColumn(name = "ID_USUARIO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private Usuario usuario;
+
+    public RestricaoSistema() {
+        this.alteraPrecoNaVenda = "S";
+        this.descontoVenda = BigDecimal.ZERO;
+    }
+
+
 
     public Integer getId() {
         return id;
@@ -41,6 +51,14 @@ public class RestricaoSistema implements Serializable {
 
     public void setDescontoVenda(BigDecimal descontoVenda) {
         this.descontoVenda = descontoVenda;
+    }
+
+    public String getAlteraPrecoNaVenda() {
+        return alteraPrecoNaVenda;
+    }
+
+    public void setAlteraPrecoNaVenda(String alteraPrecoNaVenda) {
+        this.alteraPrecoNaVenda = alteraPrecoNaVenda;
     }
 
     public Usuario getUsuario() {

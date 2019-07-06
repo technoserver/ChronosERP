@@ -191,6 +191,8 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
                             <h4>TOTAL PAGO</h4>
                             <div class="input-group">
+
+
                                 <p:inputNumber id="PedidoValorPago"
                                                styleClass="input-valor-pagar"
                                                value="#{balcaoControll.valorPago}"/>
@@ -282,11 +284,24 @@
                                        process="@this,:formCentro:tablePagamentos"
                                        update=":formCentro:panelValoresPagamento,:formCentro:tablePagamentos,:formCentro:PedidoValorPago,:formCentro:botao-confirma-pagamento"
                                        action="#{balcaoControll.excluirPagamento}"
-                                       class="btn btn-md btn-danger remove-pagamento">
+                                       class="btn btn-md btn-danger">
                             <i class="glyphicon glyphicon-remove"></i>
                             <f:setPropertyActionListener value="#{pag}"
                                                          target="#{balcaoControll.formaPagamentoSelecionado}"/>
                         </p:commandLink>
+
+                        <p:commandLink
+                                rendered="#{pag.forma eq '14'}"
+                                action="#{balcaoControll.editarLancamentoReceber}"
+                                oncomplete="PF('dialogOutrasTela3').show()"
+                                update=":formOutrasTelas3:panelOutrasTelas3"
+                                style="margin-left: 5px"
+                                class="btn btn-md btn-default">
+                            <i class="glyphicon glyphicon-search"></i>
+                            <f:setPropertyActionListener value="#{pag}"
+                                                         target="#{balcaoControll.formaPagamentoSelecionado}"/>
+                        </p:commandLink>
+
                     </h:column>
                 </h:dataTable>
             </fieldset>
@@ -319,18 +334,6 @@
                             <h4>R$
                                 <span id="descontos">
                                     <h:outputText value="#{balcaoControll.desconto}">
-                                        <f:convertNumber pattern="#,##0.00"/>
-                                    </h:outputText>
-                                </span>
-                            </h4>
-                        </td>
-                    </tr>
-                    <tr class="border-bottom-1px">
-                        <td><h4>ACRECIMOS:</h4></td>
-                        <td class="nowrap" width="1">
-                            <h4>R$
-                                <span id="acrescimos">
-                                    <h:outputText value="#{balcaoControll.acrescimo}">
                                         <f:convertNumber pattern="#,##0.00"/>
                                     </h:outputText>
                                 </span>

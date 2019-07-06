@@ -19,7 +19,6 @@ import com.chronos.service.comercial.VendaService;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
-import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.PrimeFaces;
@@ -545,53 +544,18 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
 
     public void aplicarDesconto() {
-        BigDecimal valorDesconto;
 
-        if (tipoDesconto == 1) {
-            valorDesconto = desconto;
-        } else {
-            valorDesconto = Biblioteca.calcularValorPercentual(desconto, getObjeto().getValorTotal());
-
+        try {
+            vendaService.aplicarDesconto(getObjeto(), tipoDesconto, desconto);
+            desconto = BigDecimal.ZERO;
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+                FacesContext.getCurrentInstance().validationFailed();
+            } else {
+                throw new RuntimeException("erro ao aplicar desconto", ex);
+            }
         }
-
-        BigDecimal fator = Biblioteca.divide(desconto, getObjeto().getValorSubtotal());
-        BigDecimal descAntecipado = getObjeto().getListaVendaDetalhe()
-                .stream()
-                .map(VendaDetalhe::getValorDesconto)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-
-        getObjeto().getListaVendaDetalhe().forEach(i -> {
-            BigDecimal descItem = Biblioteca.multiplica(fator, i.getValorSubtotal());
-            BigDecimal vlrDesc = Biblioteca.soma(Optional.ofNullable(i.getValorDesconto()).orElse(BigDecimal.ZERO), descItem);
-            BigDecimal vlrTotal = Biblioteca.subtrai(i.getValorSubtotal(), vlrDesc);
-            BigDecimal txDesc = Biblioteca.calcularFator(i.getValorSubtotal(), vlrTotal);
-            i.setValorDesconto(vlrDesc);
-            i.setValorTotal(vlrTotal);
-            i.setTaxaDesconto(txDesc);
-
-        });
-
-        BigDecimal descItens = getObjeto().getListaVendaDetalhe()
-                .stream()
-                .map(VendaDetalhe::getValorDesconto)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-
-        BigDecimal sobra = Biblioteca.soma(valorDesconto, descAntecipado);
-        sobra = Biblioteca.subtrai(sobra, descItens);
-
-        if (sobra.signum() > 0) {
-            VendaDetalhe item = getObjeto().getListaVendaDetalhe().get(0);
-            BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
-            BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);
-            BigDecimal txDesc = Biblioteca.calcularFator(item.getValorSubtotal(), vlrTotal);
-            item.setValorDesconto(vlrDesc);
-            item.setValorTotal(vlrTotal);
-        }
-
-        getObjeto().calcularValorTotal();
-        desconto = BigDecimal.ZERO;
 
     }
 
@@ -718,4 +682,5 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void setDesconto(BigDecimal desconto) {
         this.desconto = desconto;
     }
+
 }

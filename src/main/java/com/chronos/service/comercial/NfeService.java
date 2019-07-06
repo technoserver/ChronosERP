@@ -472,7 +472,7 @@ public class NfeService implements Serializable {
 
     public String gerarNfePreProcessada(NfeCabecalho nfe) throws Exception {
         String xml = NfeTransmissao.getInstance().gerarXmlNfe(nfe);
-        return salvarXml(xml, TipoArquivo.NFePreProcessada, nfe.getChaveAcesso() + nfe.getDigitoChaveAcesso() + ".xml", nfe.getEmpresa());
+        return salvarXml(xml, TipoArquivo.NFePreProcessada, nfe.getChaveAcesso() + nfe.getDigitoChaveAcesso() + ".xml", nfe.getEmpresa().getCnpj());
     }
 
 
@@ -551,7 +551,7 @@ public class NfeService implements Serializable {
                 nfe = nfeRepository.procedimentoNfeAutorizada(nfe, atualizarEstoque);
                 atualizarNumeroNfe(notaFiscalTipo, Integer.valueOf(nfe.getNumero()));
                 salvaNfeXml(xmlProc, nfe);
-                salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa());
+                salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa().getCnpj());
 
                 if (venda != null) {
                     venda.setNumeroFatura(nfe.getId());
@@ -601,7 +601,7 @@ public class NfeService implements Serializable {
 
         if (salvarXml) {
             String xml = XmlUtil.objectToXml(nfeEnv);
-            salvarXml(xml, TipoArquivo.NFePreProcessada, nfe.getChaveAcessoCompleta() + ".xml", nfe.getEmpresa());
+            salvarXml(xml, TipoArquivo.NFePreProcessada, nfe.getChaveAcessoCompleta() + ".xml", nfe.getEmpresa().getCnpj());
 
         }
 
@@ -879,7 +879,7 @@ public class NfeService implements Serializable {
                 atualizarNumeroNfe(notaFiscalTipo, Integer.valueOf(nfe.getNumero()));
             }
             salvaNfeXml(xmlProc, nfe);
-            salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa());
+            salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa().getCnpj());
         } else {
             nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
             nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false);
@@ -1134,8 +1134,8 @@ public class NfeService implements Serializable {
     }
 
 
-    private String salvarXml(String xml, TipoArquivo tipoArquivo, String nomeArquivo, Empresa empresa) throws IOException {
-        return ArquivoUtil.getInstance().escrever(tipoArquivo, empresa.getCnpj(), xml.getBytes(), nomeArquivo);
+    private String salvarXml(String xml, TipoArquivo tipoArquivo, String nomeArquivo, String cnpj) throws IOException {
+        return ArquivoUtil.getInstance().escrever(tipoArquivo, cnpj, xml.getBytes(), nomeArquivo);
     }
 
     private String salvarXmlCancelado(NfeCabecalho nfe) throws Exception {
@@ -1155,19 +1155,21 @@ public class NfeService implements Serializable {
 
         salvaNfeXml(xml, nfe);
 
-        return salvarXml(xml, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa());
+        return salvarXml(xml, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa().getCnpj());
     }
 
     private String gerarXml(int idnfe, String nome) throws IOException {
         List<Filtro> filtros = new LinkedList<>();
         filtros.add(new Filtro(Filtro.AND, "nfeCabecalho.id", Filtro.IGUAL, idnfe));
-        String[] atributos = new String[]{"xml"};
+        String[] atributos = new String[]{"xml", "nfeCabecalho.empresa.cnpj"};
         NfeXml nfeXml = nfeXmlRepository.get(NfeXml.class, filtros, atributos);
+
         if (nfeXml == null) {
             throw new RuntimeException("Xml inexistente!");
         }
+
         String xml = new String(nfeXml.getXml(), StandardCharsets.UTF_8);
-        return salvarXml(xml, TipoArquivo.NFe, nome, nfeXml.getNfeCabecalho().getEmpresa());
+        return salvarXml(xml, TipoArquivo.NFe, nome, nfeXml.getNfeCabecalho().getEmpresa().getCnpj());
     }
 
     private NfeXml salvaNfeXml(String xml, NfeCabecalho nfe) {
