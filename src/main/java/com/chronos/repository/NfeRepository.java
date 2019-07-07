@@ -15,7 +15,7 @@ public class NfeRepository extends AbstractRepository implements Serializable {
 
     private NfeCabecalho nfe;
 
-    public NfeCabecalho procedimentoNfeAutorizada(NfeCabecalho nfe, boolean atualizarEstoque) {
+    public NfeCabecalho procedimentoNfeAutorizada(NfeCabecalho nfe, boolean atualizarEstoque) throws Exception {
         this. nfe = nfe;
         nfe = atualizar(nfe);
 
@@ -40,7 +40,7 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         return nfe;
     }
 
-    public NfeCabecalho procedimentoNfeCancelada(NfeCabecalho nfe, boolean estoque) {
+    public NfeCabecalho procedimentoNfeCancelada(NfeCabecalho nfe, boolean estoque) throws Exception {
         this.nfe = atualizar(nfe);
         if (estoque) {
             for (NfeDetalhe nfeDetalhe : nfe.getListaNfeDetalhe()) {
@@ -61,7 +61,7 @@ public class NfeRepository extends AbstractRepository implements Serializable {
     }
 
 
-    public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) {
+    public void atualizaEstoqueEmpresa(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
 
         listaNfeDetalhe.stream()
                 .filter(item->item.getProduto().getServico().equalsIgnoreCase("N"))
@@ -76,7 +76,7 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         }
     }
 
-    public void atualizaEstoqueVerificado(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) {
+    public void atualizaEstoqueVerificado(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             if(nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")){
                 atualizaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
@@ -85,7 +85,7 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         }
     }
 
-    public void atualizaEstoqueEmpresaEstoqueVerificado(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) {
+    public void atualizaEstoqueEmpresaEstoqueVerificado(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe) throws Exception {
         String codigo = nfe.getCodigoModelo().equals("55") ? Modulo.NFe.getCodigo() : Modulo.NFCe.getCodigo();
         String numero = listaNfeDetalhe.get(0).getNfeCabecalho().getNumero();
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {

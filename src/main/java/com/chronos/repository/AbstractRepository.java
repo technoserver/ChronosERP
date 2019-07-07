@@ -48,11 +48,11 @@ public abstract class AbstractRepository implements Serializable {
         return (T) qr.getResultList().stream().findFirst().orElse(null);
     }
 
-    public <T> T get(Class<T> classToCast, List<Filtro> filtros) {
+    public <T> T get(Class<T> classToCast, List<Filtro> filtros) throws Exception {
         return get(classToCast, filtros, null);
     }
 
-    public <T> T get(Class<T> classToCast, List<Filtro> filtros, Object[] atributos) {
+    public <T> T get(Class<T> classToCast, List<Filtro> filtros, Object[] atributos) throws Exception {
         return get(classToCast, filtros, atributos, null);
     }
 
