@@ -2,21 +2,21 @@
     <idLote>1</idLote>
     <indSinc>1</indSinc>
     <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe53190616925371000114650010000007521000007522">
+        <infNFe versao="4.00" Id="NFe53190716925371000114650010000007521354689043">
             <ide>
                 <cUF>53</cUF>
-                <cNF>00000752</cNF>
+                <cNF>35468904</cNF>
                 <natOp>VENDA</natOp>
                 <mod>65</mod>
                 <serie>1</serie>
                 <nNF>752</nNF>
-                <dhEmi>2019-06-18T18:12:31-03:00</dhEmi>
+                <dhEmi>2019-07-07T17:41:59-03:00</dhEmi>
                 <tpNF>1</tpNF>
                 <idDest>1</idDest>
                 <cMunFG>5300108</cMunFG>
                 <tpImp>4</tpImp>
                 <tpEmis>1</tpEmis>
-                <cDV>2</cDV>
+                <cDV>3</cDV>
                 <tpAmb>2</tpAmb>
                 <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
@@ -38,69 +38,51 @@
                     <CEP>49500970</CEP>
                     <cPais>1058</cPais>
                     <xPais>BRASIL</xPais>
+                    <fone>7934311020</fone>
                 </enderEmit>
                 <IE>0762315200183</IE>
                 <IM>12345678</IM>
                 <CRT>1</CRT>
             </emit>
-            <dest>
-                <CPF>23117815880</CPF>
-                <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
-                <enderDest>
-                    <xLgr>LOGRADOURO</xLgr>
-                    <nro>1020</nro>
-                    <xBairro>CENTRO</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
-                    <CEP>99999999</CEP>
-                    <cPais>1058</cPais>
-                    <xPais>Brazil</xPais>
-                </enderDest>
-                <indIEDest>9</indIEDest>
-            </dest>
             <det nItem="1">
                 <prod>
-                    <cProd>35</cProd>
-                    <cEAN>SEM GTIN</cEAN>
+                    <cProd>1</cProd>
+                    <cEAN>12345670</cEAN>
                     <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
-                    <NCM>00</NCM>
-                    <CFOP>5933</CFOP>
+                    <NCM>01022911</NCM>
+                    <CFOP>5102</CFOP>
                     <uCom>UN</uCom>
                     <qCom>1.0000</qCom>
-                    <vUnCom>10.000000</vUnCom>
-                    <vProd>10.00</vProd>
-                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <vUnCom>15.000000</vUnCom>
+                    <vProd>15.00</vProd>
+                    <cEANTrib>12345670</cEANTrib>
                     <uTrib>UN</uTrib>
                     <qTrib>1.0000</qTrib>
-                    <vUnTrib>10.000000</vUnTrib>
+                    <vUnTrib>15.000000</vUnTrib>
                     <indTot>1</indTot>
                 </prod>
                 <imposto>
-                    <vTotTrib>1.84</vTotTrib>
-                    <ISSQN>
-                        <vBC>10.00</vBC>
-                        <vAliq>5.00</vAliq>
-                        <vISSQN>0.50</vISSQN>
-                        <cMunFG>5300108</cMunFG>
-                        <cListServ>10.07</cListServ>
-                        <indISS>5</indISS>
-                        <indIncentivo>1</indIncentivo>
-                    </ISSQN>
+                    <vTotTrib>3.33</vTotTrib>
+                    <ICMS>
+                        <ICMSSN102>
+                            <orig>0</orig>
+                            <CSOSN>102</CSOSN>
+                        </ICMSSN102>
+                    </ICMS>
                     <PIS>
                         <PISAliq>
                             <CST>01</CST>
-                            <vBC>10.00</vBC>
+                            <vBC>15.00</vBC>
                             <pPIS>1.65</pPIS>
-                            <vPIS>0.16</vPIS>
+                            <vPIS>0.24</vPIS>
                         </PISAliq>
                     </PIS>
                     <COFINS>
                         <COFINSAliq>
                             <CST>01</CST>
-                            <vBC>10.00</vBC>
+                            <vBC>15.00</vBC>
                             <pCOFINS>3.00</pCOFINS>
-                            <vCOFINS>0.30</vCOFINS>
+                            <vCOFINS>0.45</vCOFINS>
                         </COFINSAliq>
                     </COFINS>
                 </imposto>
@@ -115,27 +97,19 @@
                     <vST>0.00</vST>
                     <vFCPST>0.00</vFCPST>
                     <vFCPSTRet>0.00</vFCPSTRet>
-                    <vProd>0.00</vProd>
+                    <vProd>15.00</vProd>
                     <vFrete>0.00</vFrete>
                     <vSeg>0.00</vSeg>
                     <vDesc>0.00</vDesc>
                     <vII>0.00</vII>
                     <vIPI>0.00</vIPI>
                     <vIPIDevol>0.00</vIPIDevol>
-                    <vPIS>0.00</vPIS>
-                    <vCOFINS>0.00</vCOFINS>
+                    <vPIS>0.24</vPIS>
+                    <vCOFINS>0.45</vCOFINS>
                     <vOutro>0.00</vOutro>
-                    <vNF>10.00</vNF>
-                    <vTotTrib>1.85</vTotTrib>
+                    <vNF>15.00</vNF>
+                    <vTotTrib>3.33</vTotTrib>
                 </ICMSTot>
-                <ISSQNtot>
-                    <vServ>10.00</vServ>
-                    <vBC>10.00</vBC>
-                    <vISS>0.50</vISS>
-                    <vPIS>0.16</vPIS>
-                    <vCOFINS>0.30</vCOFINS>
-                    <dCompet>2019-06-18</dCompet>
-                </ISSQNtot>
             </total>
             <transp>
                 <modFrete>9</modFrete>
@@ -143,33 +117,33 @@
             <pag>
                 <detPag>
                     <tPag>01</tPag>
-                    <vPag>10.00</vPag>
+                    <vPag>15.00</vPag>
                 </detPag>
             </pag>
             <infAdic>
-                <infCpl>Trib. Aprox. Federal R$ 1,35 e R$ 0,00 Estadual e R$ 0,50 Municipal Fonte IBPT</infCpl>
+                <infCpl>Trib. Aprox. Federal R$ 0,63 e R$ 2,70 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
             </infAdic>
         </infNFe>
         <infNFeSupl>
             <qrCode>
-                <![CDATA[http://dec.fazenda.df.gov.br/ConsultarNFCe.aspx?p=53190616925371000114650010000007521000007522|2|2|1|F0F6D49D7168C4BE828A259E0ABB0636A884421B]]></qrCode>
+                <![CDATA[http://dec.fazenda.df.gov.br/ConsultarNFCe.aspx?p=53190716925371000114650010000007521354689043|2|2|1|C95B8247DD4C3C9E71EB5B9E641EB1996C13E3B3]]></qrCode>
             <urlChave>http://dec.fazenda.df.gov.br/ConsultarNFCe.aspx</urlChave>
         </infNFeSupl>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53190616925371000114650010000007521000007522">
+                <Reference URI="#NFe53190716925371000114650010000007521354689043">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>IbgJ1eCOCBz79qhHhju3wPAWACY=</DigestValue>
+                    <DigestValue>+4DrGvXOcYKyKHoIPByIlP0gGhk=</DigestValue>
                 </Reference>
             </SignedInfo>
             <SignatureValue>
-                k3HAUKxXqbCq6SQexmT9NA22fKj5fgP6kKrab2mjdi+RYB1ulfDYP/xlPAtFMWtPbCYcgjkJWnjiCSULOoEgTnjhsuIG5goXvAEYGetBZiZ8CJFVs334H4O6DWG2szrMDhwQ5EyTqW6kp6UK3NHcMLNfWVGwc9FUd1LDNLINyE7U4NpR6mC/MvXQZZohreO4L26fSXCi3kLfzXQmOGg+c24I3rsWDcqGZe/aKVzSjdze9g2GFm4S+eoVOylcoygaFnU04woxxoLIPEJERePedQGy4+Z7i6qqZps5Ofrf9A622dvXrDMW9bpVDm3ceyLG/T1XMrhQWpSj50EcnFTOkQ==
+                gsCqgqJ0ao5CNZKyRDSEtQoun/49ljorD0+wPB87nuWlaYRUGKEaTyo/sFLNrb4WmJTlft8IUWD4jsfyqIjhhe9e8xmA8T1J9o5seG8aly2a9EhCV8HQXd3MNKZRdT58M9O3uxd7TPMeRYdZJhTEj1Liam88OmBzmoHRlonl4HMyi44ZkWzaTtXL10XTVB5U0081oIL70Lq1/mOPTcrGgeFmqrPr32IZRhiD++5YmQJesWdVJNM4gneM9LnVpJgXeaMA6HwprjZ6SK9eccpIX7Zvn1ufSFUK/PX5L4bWG79p1CfZfjIfxNCJi+iQOFUqzMJIG9ZwCP6kdJWYJwUPew==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>
