@@ -338,8 +338,10 @@ public class NfeService implements Serializable {
             serie = nfe.getSerie();
         }
 
+        Random random = new Random();
+
         nfe.setNumero(FormatValor.getInstance().formatarNumeroDocFiscalToString(numero));
-        nfe.setCodigoNumerico(FormatValor.getInstance().formatarCodigoNumeroDocFiscalToString(numero));
+        nfe.setCodigoNumerico(String.valueOf(random.nextInt(99999999)));
         nfe.setSerie(serie);
         nfe.setChaveAcesso("" + nfe.getEmpresa().getCodigoIbgeUf()
                 + FormatValor.getInstance().formatarAno(new Date())

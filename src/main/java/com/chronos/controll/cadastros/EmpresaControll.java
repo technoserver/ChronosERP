@@ -79,6 +79,12 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
 
     @Override
     public void salvar() {
+        String cep = endereco.getCep() != null ? endereco.getCep().replaceAll("\\D", "") : "";
+        String fone = endereco.getFone() != null ? endereco.getFone().replaceAll("\\D", "") : "";
+
+        endereco.setCep(cep);
+        endereco.setFone(fone);
+
         if (getObjeto().getTipo().equals("F")) {
             getObjeto().setIdempresa(matriz.getIdempresa());
         }
