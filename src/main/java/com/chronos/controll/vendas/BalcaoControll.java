@@ -39,6 +39,7 @@ import java.math.MathContext;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -142,6 +143,12 @@ public class BalcaoControll implements Serializable {
     private String usuarioSupervisor;
     private String senhaSupervisor;
 
+    private String filtro;
+    private List<ProdutoDTO> listaProduto;
+    private int tipoPesquisa;
+
+    private boolean exibirDetalheProduto = true;
+    private String msgListaProduto = "";
 
     @PostConstruct
     private void init() {
@@ -149,6 +156,13 @@ public class BalcaoControll implements Serializable {
         empresa = FacesUtil.getEmpresaUsuario();
         usuario = FacesUtil.getUsuarioSessao();
 
+    }
+
+    public void definirTipoPesquisa() {
+        Map<String, String> parameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String tipoPesquiaPDV = parameterMap.get("tipoPesquiaPDV");
+        tipoPesquisa = StringUtils.isEmpty(tipoPesquiaPDV) || tipoPesquiaPDV.equals("1") ? 1 : 2;
+        msgListaProduto = "";
     }
 
 
@@ -193,6 +207,7 @@ public class BalcaoControll implements Serializable {
                 exibirCondicoes = false;
                 instanciarParametro();
                 parcelas = new ArrayList<>();
+                msgListaProduto = "";
             }
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -287,12 +302,21 @@ public class BalcaoControll implements Serializable {
 
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Produto">
+
+
+    public void pesquisarProduto() {
+
+        getListProduto(filtro);
+    }
+
     public List<ProdutoDTO> getListProduto(String nome) {
-        List<ProdutoDTO> listaProduto = new ArrayList<>();
+        listaProduto = new ArrayList<>();
 
         try {
 
             listaProduto = produtoService.getListaProdutoDTO(empresa, nome, true);
+            exibirDetalheProduto = tipoPesquisa == 1 && !listaProduto.isEmpty();
+            msgListaProduto = tipoPesquisa == 2 && listaProduto.isEmpty() ? "Nenhum produto encontrado" : "";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -301,6 +325,12 @@ public class BalcaoControll implements Serializable {
 
     public void selecionarProduto(SelectEvent event) {
         ProdutoDTO produtoSelecionado = (ProdutoDTO) event.getObject();
+
+        selecionarProduto(produtoSelecionado);
+
+    }
+
+    public void selecionarProduto(ProdutoDTO produtoSelecionado) {
         desconto = BigDecimal.ZERO;
 
         item = new PdvVendaDetalhe();
@@ -313,6 +343,11 @@ public class BalcaoControll implements Serializable {
         item.setValorDesconto(BigDecimal.ZERO);
 
         produto = produtoSelecionado;
+
+
+        exibirDetalheProduto = true;
+        listaProduto = new ArrayList<>();
+
     }
 
     public void calcularPrecoAtacado() {
@@ -1035,5 +1070,33 @@ public class BalcaoControll implements Serializable {
 
     public void setParcelas(List<FinParcelaReceber> parcelas) {
         this.parcelas = parcelas;
+    }
+
+    public String getFiltro() {
+        return filtro;
+    }
+
+    public void setFiltro(String filtro) {
+        this.filtro = filtro;
+    }
+
+    public List<ProdutoDTO> getListaProduto() {
+        return listaProduto;
+    }
+
+    public int getTipoPesquisa() {
+        return tipoPesquisa;
+    }
+
+    public void setTipoPesquisa(int tipoPesquisa) {
+        this.tipoPesquisa = tipoPesquisa;
+    }
+
+    public boolean isExibirDetalheProduto() {
+        return exibirDetalheProduto;
+    }
+
+    public String getMsgListaProduto() {
+        return msgListaProduto;
     }
 }

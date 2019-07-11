@@ -141,9 +141,7 @@ body .ui-button.default-btn.ui-state-active {
 
 .eventoCalendarioAniversario .fc-event, .eventoCalendarioAniversario a, .eventoCalendarioAniversario .fc-event-inner {
     text-align: right;
-    background: green;
-    background-image: url("../images/cake.png");
-    background-repeat: no-repeat;
+    background: green url("../images/cake.png") no-repeat;
 }
 
 .eventoCalendarioAmarelo {
@@ -174,9 +172,7 @@ body .ui-button.default-btn.ui-state-active {
 
 .eventoCalendarioAniversario {
     text-align: right !important;
-    background: green !important;
-    background-image: url("#{facesContext.externalContext.requestContextPath}/resources/images/cake.png") !important;
-    background-repeat: no-repeat !important;
+    background: green url("#{facesContext.externalContext.requestContextPath}/resources/images/cake.png") no-repeat !important;
 }
 
 .ui-autocomplete-input {

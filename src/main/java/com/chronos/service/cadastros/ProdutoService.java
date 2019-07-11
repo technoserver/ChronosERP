@@ -126,6 +126,7 @@ public class ProdutoService implements Serializable {
             filtros.add(new Filtro(Filtro.AND, "tipo", "V"));
         }
         String servico = moduloVenda ? "N" : "S";
+        descricao = descricao.trim();
         listaProduto = repository.getProdutoDTO(descricao, empresa, servico);
         List<ProdutoDTO> newList;
         boolean existeGrade = listaProduto.stream().filter(p -> p.getIdgrade() != null).count() > 0;

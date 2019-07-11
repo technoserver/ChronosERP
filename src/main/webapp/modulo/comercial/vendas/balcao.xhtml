@@ -368,11 +368,19 @@
                 float: left;
                 margin-right: 4px;
             }
+
+            body .ui-radiobutton .ui-radiobutton-box {
+                width: 22px !important;
+                height: 22px !important;
+            }
         </style>
     </ui:define>
 
 
     <ui:define name="gridDados">
+
+        <p:remoteCommand name="definirTipoPesquisa" process="@this"
+                         actionListener="#{balcaoControll.definirTipoPesquisa}"/>
 
         <p:outputPanel id="outputPanelGrid">
             <p:outputPanel rendered="#{balcaoControll.telaGrid}" id="telaGrid">
@@ -470,6 +478,7 @@
                             <p:commandButton value="Nova Venda"
                                              actionListener="#{balcaoControll.novaVenda}"
                                              process="@this"
+                                             onclick="loadLocalStorage()"
                                              oncomplete="$('.navbar-minimalize').trigger('click');$('.ibox-title').css({ display: 'none' });"
                                              update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                             >
@@ -813,6 +822,7 @@
 
     <ui:define name="javaScript">
         <h:outputScript library="js" name="pdv.js"/>
+
     </ui:define>
 
 </ui:composition>
