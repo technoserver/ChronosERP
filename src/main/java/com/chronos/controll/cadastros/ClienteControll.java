@@ -124,6 +124,10 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
             } else {
 
+                if (getObjeto().getId() == null) {
+                    service.validarCliente(getObjeto());
+                }
+
                 Pessoa pessoa = pessoas.getJoinFetch(getObjeto().getPessoa().getId(), Pessoa.class);
                 pessoa.setCliente("S");
 

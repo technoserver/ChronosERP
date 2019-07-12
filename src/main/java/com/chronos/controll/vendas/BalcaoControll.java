@@ -247,10 +247,6 @@ public class BalcaoControll implements Serializable {
 
     }
 
-    public void cancelarVenda() {
-
-    }
-
     public void cancelar() {
         telaVenda = true;
         telaPagamentos = false;
@@ -296,6 +292,21 @@ public class BalcaoControll implements Serializable {
                 Mensagem.addErrorMessage("Erro ao gera Cupom \n", ex);
             } else {
                 throw new RuntimeException("Erro ao gerar Cupom", ex);
+            }
+        }
+    }
+
+    public void cancelarVenda() {
+        try {
+
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            service.cancelar(venda.getId(), estoque);
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao cancelar Cupom \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao cancelar Cupom", ex);
             }
         }
     }
