@@ -50,9 +50,9 @@ public class PessoaService implements Serializable {
         validarPessoa(cliente.getPessoa());
         boolean salvarEmpresaPessoa = cliente.getId() == null;
         cliente = clientes.atualizar(cliente);
+
         if (salvarEmpresaPessoa) {
             salvarEmpresaPessoa(empresa, cliente.getPessoa());
-
         }
 
         return cliente;
@@ -61,19 +61,26 @@ public class PessoaService implements Serializable {
     @Transactional
     public Transportadora salvarTransportadora(Transportadora transportadora, Empresa empresa) throws Exception {
         validarPessoa(transportadora.getPessoa());
+
         boolean salvarEmpresaPessoa = transportadora.getId() == null;
+
         transportadora = transportadoras.atualizar(transportadora);
+
         if (salvarEmpresaPessoa) {
             salvarEmpresaPessoa(empresa, transportadora.getPessoa());
-
         }
+
         return transportadora;
     }
 
     @Transactional
     public Colaborador salvarColaborador(Colaborador colaborador, Empresa empresa) throws Exception {
+
+
         validarPessoa(colaborador.getPessoa());
-        boolean salvarEmpresaPessoa = colaborador.getId() == null;
+
+        boolean salvarEmpresaPessoa = colaborador.getPessoa().getId() == null;
+
         colaborador = colaboradores.atualizar(colaborador);
         if (salvarEmpresaPessoa) {
             salvarEmpresaPessoa(empresa, colaborador.getPessoa());
@@ -94,6 +101,24 @@ public class PessoaService implements Serializable {
             salvarEmpresaPessoa(empresa, pessoa);
         }
         return pessoa;
+    }
+
+    public void validarColaborador(Colaborador colaborador) throws ChronosException {
+
+        boolean existeRegisro = colaboradores.existeRegisro(Colaborador.class, "pessoa.id", colaborador.getPessoa().getId());
+
+        if (existeRegisro) {
+            throw new ChronosException("Está pessoa já foi definida como colaborador");
+        }
+    }
+
+    public void validarCliente(Cliente cliente) throws ChronosException {
+
+        boolean existeRegisro = clientes.existeRegisro(Cliente.class, "pessoa.id", cliente.getPessoa().getId());
+
+        if (existeRegisro) {
+            throw new ChronosException("Está pessoa já foi definida como cliente");
+        }
     }
 
     private void validarPessoa(Pessoa pessoa) throws Exception {

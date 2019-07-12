@@ -37,6 +37,10 @@ public class VendaPdvService implements Serializable {
 
     @Inject
     private Repository<PdvVendaCabecalho> repository;
+
+    @Inject
+    private Repository<PdvVendaDetalhe> vendaDetalheRepository;
+
     @Inject
     private Repository<FinLancamentoReceberCartao> finLancamentoReceberCartaoRepository;
 
@@ -51,9 +55,6 @@ public class VendaPdvService implements Serializable {
     private Repository<ContaPessoa> contaPessoaRepository;
 
     @Inject
-    private Repository<Cliente> clienteRepository;
-
-    @Inject
     private SyncPendentesService syncPendentesService;
 
     @Inject
@@ -64,6 +65,9 @@ public class VendaPdvService implements Serializable {
 
     @Inject
     private VendaComissaoService vendaComissaoService;
+
+    @Inject
+    private Repository<NfeCabecalho> nfeRepository;
 
 
     @Transactional
@@ -160,5 +164,48 @@ public class VendaPdvService implements Serializable {
             Mensagem.addInfoMessage("NFCe transmitida com sucesso");
         }
         auditoriaService.gerarLog(AcaoLog.FATURAR_VENDA, "Faturamento do pedido de venda " + venda.getId() + " numero da NFC-e " + nfe.getNumero(), "PDV");
+    }
+
+    @Transactional
+    public void cancelar(Integer idvenda, boolean estoque) throws Exception {
+        boolean cancelado = true;
+
+        PdvVendaCabecalho venda = repository.get(idvenda, PdvVendaCabecalho.class);
+
+
+        String numDoc = "E" + venda.getEmpresa().getId()
+                + "M" + Modulo.PDV.getCodigo()
+                + "V" + venda.getId();
+
+
+        if (venda.getStatusVenda().equals("F")) {
+            NfeCabecalho nfe = nfeRepository.get(venda.getIdnfe(), NfeCabecalho.class);
+            nfe.setJustificativaCancelamento("Cancelamento de por informação de valores invalido");
+
+
+            cancelado = nfeService.cancelarNFe(nfe, estoque);
+            if (cancelado) {
+                finLancamentoReceberService.excluirFinanceiro(numDoc, Modulo.PDV);
+            }
+        } else {
+            finLancamentoReceberService.excluirFinanceiro(numDoc, Modulo.PDV);
+        }
+
+
+        if (estoque && cancelado) {
+            List<PdvVendaDetalhe> itens = vendaDetalheRepository.getEntitys(PdvVendaDetalhe.class, "pdvVendaCabecalho.id", idvenda);
+            for (PdvVendaDetalhe item : itens) {
+                if (item.getProduto().getServico().equals("N")) {
+                    estoqueRepositoy.atualizaEstoqueEmpresaControle(venda.getEmpresa().getId(), item.getProduto().getId(), item.getQuantidade());
+                }
+
+            }
+        }
+
+        auditoriaService.gerarLog(AcaoLog.CANCELAR_VENDA, "Venda cancelada", "PDV");
+
+        venda.setStatusVenda("C");
+        repository.atualizar(venda);
+        Mensagem.addInfoMessage("OS cancelada com sucesso");
     }
 }

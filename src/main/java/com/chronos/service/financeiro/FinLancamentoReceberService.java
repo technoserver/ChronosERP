@@ -204,7 +204,7 @@ public class FinLancamentoReceberService implements Serializable {
     @Transactional
     public void excluirFinanceiro(String numeroDocumeto, Modulo modulo) throws Exception {
         List<Filtro> filtros = new LinkedList<>();
-        filtros.add(new Filtro("finParcelaReceber.finLancamentoReceber.numeroDocumento", numeroDocumeto));
+        filtros.add(new Filtro("finParcelaReceber.finLancamentoReceber.numeroDocumento", Filtro.LIKE, numeroDocumeto));
         filtros.add(new Filtro("finParcelaReceber.finLancamentoReceber.codigoModuloLcto", modulo.getCodigo()));
         FinParcelaRecebimento finLan = recebimentoRepository.get(FinParcelaRecebimento.class, filtros, new Object[]{"dataRecebimento",});
 
@@ -212,7 +212,7 @@ public class FinLancamentoReceberService implements Serializable {
             throw new Exception(modulo + " já possue recebimentos");
         } else {
             filtros.clear();
-            filtros.add(new Filtro("numeroDocumento", numeroDocumeto));
+            filtros.add(new Filtro("numeroDocumento", Filtro.LIKE, numeroDocumeto));
             filtros.add(new Filtro("codigoModuloLcto", modulo.getCodigo()));
             FinLancamentoReceber lancamento = lancamentos.get(FinLancamentoReceber.class, filtros, new Object[]{"numeroDocumento",});
 
