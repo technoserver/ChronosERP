@@ -585,7 +585,7 @@ public class NfeService implements Serializable {
                 Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getXMotivo());
             } else {
                 salvarXml = true;
-                Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getXMotivo());
+                Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getCStat() + " - " + retorno.getProtNFe().getInfProt().getXMotivo());
             }
         } else if (retorno.getCStat().equals("215") || retorno.getCStat().equals("225")) {
             status = StatusTransmissao.SCHEMA_INVALIDO;
@@ -598,7 +598,7 @@ public class NfeService implements Serializable {
             }
 
         } else {
-            Mensagem.addErrorMessage(retorno.getXMotivo());
+            Mensagem.addErrorMessage(retorno.getProtNFe().getInfProt().getCStat() + " - " + retorno.getXMotivo());
         }
 
         if (salvarXml) {
