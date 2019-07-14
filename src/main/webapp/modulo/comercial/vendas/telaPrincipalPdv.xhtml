@@ -102,7 +102,7 @@
                         <p:commandButton styleClass="btn-add-item" value=""
                                          title="Adicionar produto"
                                          action="#{balcaoControll.selecionarProduto(row)}"
-                                         oncomplete="document.getElementById('formCentro:quantidade_input').focus(); document.getElementById('formCentro:quantidade_input').select();"
+                                         oncomplete="document.getElementById('formCentro:quantidade_input').select();"
                                          update=":formCentro:mostra-produto,formCentro:lista-produtos">
 
                         </p:commandButton>
@@ -243,7 +243,7 @@
                                                  action="#{balcaoControll.addProduto}">
                                     <p:ajax process="@form"
                                             update=":formCentro:produtos-selecionados,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
-                                            oncomplete="document.getElementById('formCentro:produto_input').focus();"/>
+                                    />
                                 </h:commandButton>
 
                             </td>

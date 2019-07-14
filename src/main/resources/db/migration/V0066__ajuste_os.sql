@@ -13,3 +13,5 @@ where id_os_status = 6;
 update os_abertura
 set status = 'C'
 where id_os_status = 7;
+
+alter table  os_abertura drop column if exists id_os_status;
