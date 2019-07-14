@@ -343,6 +343,11 @@ public class BalcaoControll implements Serializable {
     public void pesquisarProduto() {
 
         getListProduto(filtro);
+        if (tipoPesquisa == 2 && listaProduto.size() == 1) {
+            selecionarProduto(listaProduto.get(0));
+            PrimeFaces.current().ajax().update("formCentro:mostra-produto");
+        }
+
     }
 
     public List<ProdutoDTO> getListProduto(String nome) {
