@@ -150,6 +150,8 @@ public class BalcaoControll implements Serializable {
     private boolean exibirDetalheProduto = true;
     private String msgListaProduto = "";
 
+    private String justificativa;
+
     @PostConstruct
     private void init() {
 
@@ -300,7 +302,13 @@ public class BalcaoControll implements Serializable {
         try {
 
             boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
-            service.cancelar(venda.getId(), estoque);
+            if (venda.getStatusVenda().equals("F")) {
+                justificativa = "";
+                PrimeFaces.current().executeScript("PF('dialogOutrasTelas4').show();");
+            } else {
+                service.cancelar(venda.getId(), estoque, null);
+            }
+
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -310,6 +318,23 @@ public class BalcaoControll implements Serializable {
             }
         }
     }
+
+    public void cancelarVendaNFCe() {
+        try {
+
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            service.cancelar(venda.getId(), estoque, justificativa);
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao cancelar Cupom \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao cancelar Cupom", ex);
+            }
+        }
+    }
+
+
 
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Produto">
@@ -1109,5 +1134,13 @@ public class BalcaoControll implements Serializable {
 
     public String getMsgListaProduto() {
         return msgListaProduto;
+    }
+
+    public String getJustificativa() {
+        return justificativa;
+    }
+
+    public void setJustificativa(String justificativa) {
+        this.justificativa = justificativa;
     }
 }

@@ -167,7 +167,7 @@ public class VendaPdvService implements Serializable {
     }
 
     @Transactional
-    public void cancelar(Integer idvenda, boolean estoque) throws Exception {
+    public void cancelar(Integer idvenda, boolean estoque, String justificativa) throws Exception {
         boolean cancelado = true;
 
         PdvVendaCabecalho venda = repository.get(idvenda, PdvVendaCabecalho.class);
@@ -180,7 +180,7 @@ public class VendaPdvService implements Serializable {
 
         if (venda.getStatusVenda().equals("F")) {
             NfeCabecalho nfe = nfeRepository.get(venda.getIdnfe(), NfeCabecalho.class);
-            nfe.setJustificativaCancelamento("Cancelamento de por informação de valores invalido");
+            nfe.setJustificativaCancelamento(justificativa);
 
 
             cancelado = nfeService.cancelarNFe(nfe, estoque);
@@ -206,6 +206,6 @@ public class VendaPdvService implements Serializable {
 
         venda.setStatusVenda("C");
         repository.atualizar(venda);
-        Mensagem.addInfoMessage("OS cancelada com sucesso");
+        Mensagem.addInfoMessage("Venda cancelada com sucesso");
     }
 }

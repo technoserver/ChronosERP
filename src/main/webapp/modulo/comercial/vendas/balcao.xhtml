@@ -838,6 +838,53 @@
     </ui:define>
 
 
+    <ui:define name="outrasTelas4">
+        <h:form id="formOutrasTelas4">
+            <p:dialog id="outrasTelas4"
+                      header="Justificativa Cancelamento" responsive="true"
+                      widgetVar="dialogOutrasTelas4" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="400">
+                <p:outputPanel id="panelOutrasTelas4">
+                    <div class="row">
+
+                        <erp:campoTexto idComponente="labelJustificativaCancelamento"
+                                        label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        nomeAtributo="#{balcaoControll.justificativa}"
+                                        tamanhoMaximo="255" requerido="true" tamanhoMinimo="15">
+
+                        </erp:campoTexto>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Enviar"
+                                             actionListener="#{balcaoControll.cancelarVendaNFCe}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas4').hide();}"
+                                        process="@form"
+                                        update="panelOutrasTelas4,:formCentro:growl,formCentro:tableVenda"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas4').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+
     <ui:define name="javaScript">
         <h:outputScript library="js" name="pdv.js"/>
 
