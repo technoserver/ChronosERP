@@ -126,7 +126,7 @@
                         <p:menuitem value="Encerrar OS"
                                     action="#{osAberturaControll.encerrar}"
                                     update=":formCentro:mensagem"
-                                    rendered="#{osAberturaControll.isTemAcesso('FINANCEIRO') and (row.status ne '13'  and row.status ne '12')}">
+                                    rendered="#{osAberturaControll.isTemAcesso('FINANCEIRO') and (row.status ne 13  and row.status ne 12)}">
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>

@@ -560,7 +560,7 @@ public class NfeService implements Serializable {
                     nfe.setVendaCabecalho(venda);
                 }
                 if (os != null) {
-                    os.setStatus("13");
+                    os.setStatus(13);
                     os.setIdnfeCabecalho(nfe.getId());
                     osRepository.atualizar(os);
                 }

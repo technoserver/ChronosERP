@@ -142,7 +142,7 @@ public abstract class AbstractControll<T> implements Serializable {
     // OS
     private HashMap<String, Integer> osTipoCobertura;
     private HashMap<String, Integer> osTipoProdutoServico;
-    private HashMap<String, String> osStatus;
+    private HashMap<String, Integer> osStatus;
 
     //Agenda
     private HashMap<String, String> categoriaCompromissoCor;
@@ -559,19 +559,19 @@ public abstract class AbstractControll<T> implements Serializable {
 
         osStatus = new HashMap<>();
 
-        osStatus.put("PENDENTE", "1");
-        osStatus.put("EM ATENDIMENTO", "2");
-        osStatus.put("AGUARDANDO", "3");
-        osStatus.put("AGUARDANDO APROVAÇÃO", "4");
-        osStatus.put("APROVADO", "5");
-        osStatus.put("REPROVADO", "6");
-        osStatus.put("EM TRÂNSITO", "7");
-        osStatus.put("AGUARDANDO DIAGNÓSTICO", "8");
-        osStatus.put("DIAGNÓSTICO PRONTO", "9");
-        osStatus.put("SEM CONSERTO", "10");
-        osStatus.put("CANCELADA", "11");
-        osStatus.put("ENCERRADO", "12");
-        osStatus.put("FATURADO", "13");
+        osStatus.put("PENDENTE", 1);
+        osStatus.put("EM ATENDIMENTO", 2);
+        osStatus.put("AGUARDANDO", 3);
+        osStatus.put("AGUARDANDO APROVAÇÃO", 4);
+        osStatus.put("APROVADO", 5);
+        osStatus.put("REPROVADO", 6);
+        osStatus.put("EM TRÂNSITO", 7);
+        osStatus.put("AGUARDANDO DIAGNÓSTICO", 8);
+        osStatus.put("DIAGNÓSTICO PRONTO", 9);
+        osStatus.put("SEM CONSERTO", 10);
+        osStatus.put("CANCELADA", 11);
+        osStatus.put("ENCERRADO", 12);
+        osStatus.put("FATURADO", 13);
 
 
         //Agenda
@@ -1422,7 +1422,7 @@ public abstract class AbstractControll<T> implements Serializable {
         return vendaSituacao;
     }
 
-    public HashMap<String, String> getOsStatus() {
+    public HashMap<String, Integer> getOsStatus() {
         return osStatus;
     }
 }

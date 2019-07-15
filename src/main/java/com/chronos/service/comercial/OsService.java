@@ -107,7 +107,7 @@ public class OsService extends AbstractService<OsAbertura> {
 
     @Transactional
     public void encerrar(OsAbertura os) throws ChronosException {
-        os.setStatus("12");
+        os.setStatus(12);
 
         List<ProdutoVendaDTO> produtos = new ArrayList<>();
         os.getListaOsProdutoServico()
@@ -126,7 +126,7 @@ public class OsService extends AbstractService<OsAbertura> {
     @Transactional
     public void cancelarOs(OsAbertura os, boolean estoque) throws Exception {
         boolean cancelado = true;
-        if (os.getStatus().equals("13")) {
+        if (os.getStatus().equals(13)) {
             NfeCabecalho nfe = nfeRepository.get(os.getIdnfeCabecalho(), NfeCabecalho.class);
             nfe.setJustificativaCancelamento("Cancelamento de por informação de valores invalido");
 
@@ -147,7 +147,7 @@ public class OsService extends AbstractService<OsAbertura> {
 
             }
         }
-        os.setStatus("11");
+        os.setStatus(11);
         salvar(os);
         Mensagem.addInfoMessage("OS cancelada com sucesso");
     }
