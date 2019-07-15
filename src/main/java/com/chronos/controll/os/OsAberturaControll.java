@@ -72,7 +72,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private Date dataInicial;
     private Date dataFinal;
 
-    private Map<String, String> status;
+    private Map<String, Integer> status;
 
 
     @PostConstruct
@@ -81,7 +81,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         super.init();
 
         status = getOsStatus().entrySet().stream()
-                .filter(x -> !x.getValue().equals("11") || !x.getValue().equals("12") || !x.getValue().equals("13"))
+                .filter(x -> !x.getValue().equals(11) || !x.getValue().equals(12) || !x.getValue().equals(13))
                 .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
     }
 
@@ -141,7 +141,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         getObjeto().setListaOsAberturaEquipamento(new HashSet<>());
         getObjeto().setListaOsProdutoServico(new HashSet<>());
         getObjeto().setListaOsEvolucao(new HashSet<>());
-        getObjeto().setStatus("1");
+        getObjeto().setStatus(1);
         getObjeto().setEmpresa(empresa);
 
         temProduto = false;
@@ -171,7 +171,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void encerrar() {
         try {
-            OsAbertura os = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+            OsAbertura os = isTelaGrid() ? dataModel.getRowData(getObjetoSelecionado().getId().toString()) : getObjeto();
 
             osService.encerrar(os);
             setTelaGrid(true);
@@ -557,7 +557,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         this.dataFinal = dataFinal;
     }
 
-    public Map<String, String> getStatus() {
+    public Map<String, Integer> getStatus() {
         return status;
     }
 }

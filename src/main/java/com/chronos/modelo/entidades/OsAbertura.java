@@ -66,7 +66,7 @@ public class OsAbertura implements Serializable {
     @NotNull
     private Cliente cliente;
     @Column(name = "status")
-    private String status;
+    private Integer status;
     @JoinColumn(name = "ID_COLABORADOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
@@ -88,7 +88,7 @@ public class OsAbertura implements Serializable {
     public OsAbertura() {
     }
 
-    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, BigDecimal valorTotal, int idcliente, String nome, String status, Integer idnfeCabecalho) {
+    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, BigDecimal valorTotal, int idcliente, String nome, Integer status, Integer idnfeCabecalho) {
         this.id = id;
         this.numero = numero;
         this.dataInicio = dataInicio;
@@ -221,11 +221,11 @@ public class OsAbertura implements Serializable {
         this.colaborador = colaborador;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -373,23 +373,23 @@ public class OsAbertura implements Serializable {
     }
 
     public boolean isFaturado() {
-        return this.status != null && this.status.equals("13");
+        return this.status != null && this.status.equals(13);
     }
 
     public boolean isEncerrado() {
-        return this.status != null && this.status.equals("12");
+        return this.status != null && this.status.equals(12);
     }
 
     public boolean isCancelado() {
-        return this.status != null && this.status.equals("1");
+        return this.status != null && this.status.equals(11);
     }
 
     public boolean isPodeExcluir() {
-        return this.status != null && !(this.status.equals("12") || this.status.equals("13"));
+        return this.status != null && !(this.status.equals(12) || this.status.equals(13));
     }
 
     public boolean isPodeCancelar() {
-        return this.status != null && (this.status.equals("12") || this.status.equals("13"));
+        return this.status != null && (this.status.equals(12) || this.status.equals(13));
     }
 
 
