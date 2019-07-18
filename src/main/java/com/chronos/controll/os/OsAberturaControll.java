@@ -11,6 +11,7 @@ import com.chronos.service.comercial.OsProdutoServicoService;
 import com.chronos.service.comercial.OsService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -71,6 +72,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private String cliente;
     private Date dataInicial;
     private Date dataFinal;
+    private String justificativa;
 
     private Map<String, Integer> status;
 
@@ -225,11 +227,36 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
             boolean estoque = isTemAcesso("ESTOQUE");
             OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
-            osService.cancelarOs(os, estoque);
+
+
+            if (os.getStatus().equals(13)) {
+                justificativa = "";
+                PrimeFaces.current().executeScript("PF('dialogOutrasTelas4').show();");
+            } else {
+                osService.cancelarOs(os, estoque, "");
+            }
+
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("Erro ao cancelar servico", ex);
+        }
+    }
+
+    public void cancelarNFe() {
+        try {
+
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
+            osService.cancelarOs(os, estoque, justificativa);
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao cancelar Cupom \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao cancelar Cupom", ex);
+            }
         }
     }
 
@@ -559,5 +586,13 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public Map<String, Integer> getStatus() {
         return status;
+    }
+
+    public String getJustificativa() {
+        return justificativa;
+    }
+
+    public void setJustificativa(String justificativa) {
+        this.justificativa = justificativa;
     }
 }

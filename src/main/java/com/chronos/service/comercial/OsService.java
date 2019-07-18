@@ -71,7 +71,7 @@ public class OsService extends AbstractService<OsAbertura> {
 
         if (itemOptional.isPresent()) {
             item = itemOptional.get();
-            item.setQuantidade(item.getQuantidade().add(quantidade));
+            item.setQuantidade(quantidade);
         } else {
             item.setQuantidade(quantidade);
             itens.add(item);
@@ -124,11 +124,12 @@ public class OsService extends AbstractService<OsAbertura> {
     }
 
     @Transactional
-    public void cancelarOs(OsAbertura os, boolean estoque) throws Exception {
+    public void cancelarOs(OsAbertura os, boolean estoque, String justificativa) throws Exception {
         boolean cancelado = true;
+
         if (os.getStatus().equals(13)) {
             NfeCabecalho nfe = nfeRepository.get(os.getIdnfeCabecalho(), NfeCabecalho.class);
-            nfe.setJustificativaCancelamento("Cancelamento de por informação de valores invalido");
+            nfe.setJustificativaCancelamento(justificativa);
 
 
             cancelado = nfeService.cancelarNFe(nfe, estoque);
