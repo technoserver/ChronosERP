@@ -497,7 +497,15 @@ public class BalcaoControll implements Serializable {
         List<Cliente> list = new ArrayList<>();
         try {
 
-            list = clientes.getEntitys(Cliente.class, "pessoa.nome", nome, new Object[]{"pessoa.nome"});
+            List<Filtro> filtros = new ArrayList<>();
+
+            filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
+
+            int id = org.apache.commons.lang3.StringUtils.isNumeric(nome) ? Integer.parseInt(nome) : 0;
+
+            filtros.add(new Filtro(Filtro.OR, "id", Filtro.IGUAL, id));
+
+            list = clientes.getEntitys(Cliente.class, filtros, new Object[]{"pessoa.nome"});
         } catch (Exception ex) {
 
         }
