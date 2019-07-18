@@ -252,7 +252,15 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         List<Cliente> listaCliente = new ArrayList<>();
         try {
 
-            listaCliente = clientes.getEntitys(Cliente.class, "pessoa.nome", nome, new Object[]{"pessoa.nome"});
+            List<Filtro> filtros = new ArrayList<>();
+
+            filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
+
+            int id = org.apache.commons.lang3.StringUtils.isNumeric(nome) ? Integer.parseInt(nome) : 0;
+
+            filtros.add(new Filtro(Filtro.OR, "id", Filtro.IGUAL, id));
+
+            listaCliente = clientes.getEntitys(Cliente.class, filtros, new Object[]{"pessoa.nome"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
