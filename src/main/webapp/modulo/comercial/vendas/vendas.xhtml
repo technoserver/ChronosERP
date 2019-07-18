@@ -92,7 +92,7 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Numero Fatura" width="148">
+                        <p:column headerText="Num. Fatura" width="148">
                             <h:outputLabel value="#{row.numeroFatura}"/>
                         </p:column>
                         <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
@@ -316,6 +316,7 @@
                                            value="#{vendaCabecalhoControll.vendaDetalhe.quantidade}"
                                            required="true"
                                            style="width: 100%;"
+                                           disabled="#{!vendaCabecalhoControll.podeAlterarPreco}"
                                            decimalPlaces="2"
                                            minValue="-9999999999.99"
                             >

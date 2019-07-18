@@ -50,46 +50,17 @@
         >
 
             <div class="row">
-                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
+                <erp:campoSelect styleClass="col-xs-12 col-sm-4 col-md-4"
                                  idComponente="emissorAmbiente" label="Ambiente"
                                  nomeAtributo="#{mdfeConfiguracaoControll.objeto.webserviceAmbiente}"
                                  itens="#{mdfeConfiguracaoControll.webserviceAmbiente}"/>
-                <erp:campoSenha styleClass="col-xs-12 col-sm-3 col-md-2"
-                                idComponente="senhaCertificado" label="Senha certificado"
-                                nomeAtributo="#{mdfeConfiguracaoControll.objeto.certificadoDigitalSenha}"
-                                requerido="true" tamanhoMaximo="100"/>
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                 idComponente="rntrc" label="RNTRC"
                                 nomeAtributo="#{mdfeConfiguracaoControll.objeto.rntrc}"
                                 requerido="true"
                                 tamanhoMaximo="8"/>
-            </div>
 
-            <div class="row">
-                <div class="col-xs-12 col-sm-6 col-md-6">
-                    <div class="input-group">
-                        <h:outputLabel value="Caminho Certificado :"
-                                       for="caminhoCertificado"/>
-                        <h:inputText
-                                value="#{mdfeConfiguracaoControll.objeto.certificadoDigitalCaminho}"
-                                id="caminhoCertificado" class="form-control input-sm"
-                                maxlength="255" readonly="true"/>
-
-                        <span class="input-group-btn">
-                            <h:commandLink title="Pesquisa"
-                                           id="btnPesquisarCertificado"
-                                           class="btn btn-default"
-                                           style="padding: 7px 12px !important;margin-top: 24px">
-                                <p:ajax update=":formUploadCertificado:dialogUploadCertificado"
-                                        oncomplete="PF('dialogUploadCertificado').show();"
-                                        process="@this"/>
-                                    <p:resetInput target="caminhoCertificado"/>
-                                    <i class="fa fa-search"></i>
-                                </h:commandLink>
-                        </span>
-                    </div>
-                </div>
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <div class="input-group">
                         <h:outputLabel value="Caminho Logo :" for="caminhoLogo"/>
@@ -101,7 +72,7 @@
                             <h:commandLink title="Pesquisa"
                                            class="btn btn-default"
                                            id="btnPesquisarLogo"
-                                           style="padding: 7px 12px !important;margin-top: 24px">
+                                           style="padding: 9px 12px !important;margin-top: 23px">
                                 <p:ajax update=":formLogo:dialogLogo"
                                         oncomplete="PF('dialogLogo').show();"
                                         process="@this"/>
@@ -111,44 +82,12 @@
                         </span>
                     </div>
                 </div>
-            </div>
-
-
-            <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
-                                idComponente="emailUsuario" label="Usuário Email"
-                                nomeAtributo="#{mdfeConfiguracaoControll.objeto.emailUsuario}"
-                                tamanhoMaximo="100"/>
-                <erp:campoSenha styleClass="col-xs-12 col-sm-4 col-md-4"
-                                idComponente="emailSenha" label="Senha Email"
-                                nomeAtributo="#{mdfeConfiguracaoControll.objeto.emailSenha}"
-                                tamanhoMaximo="100"/>
-                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
-                                  idComponente="portaEmail" label="Porta de saída"
-                                  nomeAtributo="#{mdfeConfiguracaoControll.objeto.emailPorta}"/>
-                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                                 idComponente="ssl" label="SSL"
-                                 nomeAtributo="#{mdfeConfiguracaoControll.objeto.emailAutenticaSsl}"
-                                 itens="#{mdfeConfiguracaoControll.simNao}"/>
-            </div>
-            <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
-                                idComponente="servidor" label="Servidor SMTP"
-                                nomeAtributo="#{mdfeConfiguracaoControll.objeto.emailServidorSmtp}"
-                                tamanhoMaximo="100"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
-                                idComponente="emailAssunto" label="Assunto Email"
-                                nomeAtributo="#{mdfeConfiguracaoControll.objeto.emailAssunto}"
-                                tamanhoMaximo="100"/>
 
             </div>
 
             <div class="row">
-                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    idComponente="textoEmail" label="Texto Email"
-                                    nomeAtributo="#{mdfeConfiguracaoControll.objeto.emailTexto}"/>
-            </div>
-            <div class="row">
+
+
                 <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
                                     idComponente="obsPadrao" label="Observacão Padrão"
                                     nomeAtributo="#{mdfeConfiguracaoControll.objeto.observacaoPadrao}"/>
@@ -159,32 +98,6 @@
     </ui:define>
 
 
-    <ui:define name="outrasTelas">
-        <h:form id="formUploadCertificado" enctype="multipart/form-data">
-            <p:dialog id="dialogUploadCertificado" header="Upload do certificado"
-                      responsive="true" widgetVar="dialogUploadCertificado"
-                      showEffect="slide" hideEffect="slide" resizable="true" modal="true"
-                      closable="false" width="600">
-                <p:outputPanel id="panelUploadCertificado">
-                    <div class="row">
-
-                        <p:fileUpload id="uploadCertificado"
-                                      fileUploadListener="#{mdfeConfiguracaoControll.uploadCertificado}"
-                                      mode="advanced" fileLimit="1" allowTypes="/(\.|\/)(pfx|p12)$/"
-                                      update=":formCentro:growl,:formCentro:telaDetalhe:caminhoCertificado"
-                                      oncomplete="PF('dialogUploadCertificado').hide();"
-                                      process="@this"/>
-                    </div>
-                </p:outputPanel>
-                <f:facet name="footer">
-                    <p:commandButton value="Fechar"
-                                     oncomplete="PF('dialogUploadCertificado').hide();"/>
-
-
-                </f:facet>
-            </p:dialog>
-        </h:form>
-    </ui:define>
     <ui:define name="outrasTelas2">
         <h:form id="formLogo" enctype="multipart/form-data">
             <p:dialog id="dialogLogo" header="Upload Logomarca" responsive="true"

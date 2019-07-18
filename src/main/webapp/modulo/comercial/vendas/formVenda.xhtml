@@ -19,7 +19,12 @@
                             <!-- small box -->
                             <div class="small-box bg-gray">
                                 <div class="inner">
-                                    <h3>R$<span>#{vendaCabecalhoControll.objeto.valorTotalFormatado()}</span>
+                                    <h3>R$
+                                        <span>
+                                            <h:outputText value="#{vendaCabecalhoControll.objeto.valorTotal}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </span>
                                     </h3>
 
                                     <p>Valor Total</p>
@@ -33,7 +38,12 @@
                             <!-- small box -->
                             <div class="small-box bg-gray">
                                 <div class="inner">
-                                    <h3>R$<span>#{vendaCabecalhoControll.objeto.valorSubTotalFormatado()}</span>
+                                    <h3>R$
+                                        <span>
+                                            <h:outputText value="#{vendaCabecalhoControll.objeto.valorSubtotal}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </span>
                                     </h3>
 
                                     <p>Valor dos Produtos</p>
@@ -49,13 +59,27 @@
                             <div class="small-box bg-gray">
                                 <div class="inner">
                                     <h3>
-                                        R$<span>#{vendaCabecalhoControll.objeto.valorDescontoFormatado()}</span>
+                                        R$
+                                        <span>
+                                            <h:outputText value="#{vendaCabecalhoControll.objeto.valorDesconto}">
+                                                <f:convertNumber pattern="#,##0.00"/>
+                                            </h:outputText>
+                                        </span>
                                         <p:commandLink styleClass="btn btn-link"
                                                        title="Aplicar desconto no valor total da venda"
                                                        update=":formOutrasTelas5:panelOutrasTelas5"
                                                        disabled="#{vendaCabecalhoControll.objeto.valorTotal.signum() eq 0}"
                                                        oncomplete="PF('dialogOutrasTelas5').show()">
                                             <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
+                                        </p:commandLink>
+
+                                        <p:commandLink styleClass="btn btn-link"
+                                                       title="Remover Desconto"
+                                                       action="#{vendaCabecalhoControll.removerDesconto}"
+                                                       process="@this"
+                                                       update=":formCentro:growl,:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe"
+                                                       rendered="#{vendaCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
+                                            <i class="fa fa-ban fa-2x" aria-hidden="true"></i>
                                         </p:commandLink>
                                     </h3>
 

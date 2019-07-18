@@ -8,7 +8,6 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -94,11 +93,7 @@ public class VendaOrcamentoDetalhe implements Serializable {
     }
 
     public BigDecimal getValorDesconto() {
-        valorDesconto = getTaxaDesconto()
-                .multiply(getValorSubtotal())
-                .divide(BigDecimal.valueOf(100))
-                .setScale(2, RoundingMode.HALF_UP);
-        return valorDesconto;
+        return Optional.ofNullable(valorDesconto).orElse(BigDecimal.ZERO);
     }
 
     public void setValorDesconto(BigDecimal valorDesconto) {
