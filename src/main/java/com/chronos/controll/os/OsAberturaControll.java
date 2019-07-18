@@ -76,6 +76,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     private Map<String, Integer> status;
 
+    private boolean podeAlterarPreco = true;
+
 
     @PostConstruct
     @Override
@@ -85,6 +87,9 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         status = getOsStatus().entrySet().stream()
                 .filter(x -> !x.getValue().equals(11) || !x.getValue().equals(12) || !x.getValue().equals(13))
                 .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+
+        this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
+                || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
     }
 
     @Override
@@ -594,5 +599,9 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void setJustificativa(String justificativa) {
         this.justificativa = justificativa;
+    }
+
+    public boolean isPodeAlterarPreco() {
+        return podeAlterarPreco;
     }
 }

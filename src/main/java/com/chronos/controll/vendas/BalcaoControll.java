@@ -152,11 +152,16 @@ public class BalcaoControll implements Serializable {
 
     private String justificativa;
 
+    private boolean podeAlterarPreco = true;
+
     @PostConstruct
     private void init() {
 
         empresa = FacesUtil.getEmpresaUsuario();
         usuario = FacesUtil.getUsuarioSessao();
+
+        this.podeAlterarPreco = usuario.getAdministrador().equals("S")
+                || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
 
     }
 
@@ -1155,5 +1160,9 @@ public class BalcaoControll implements Serializable {
 
     public void setJustificativa(String justificativa) {
         this.justificativa = justificativa;
+    }
+
+    public boolean isPodeAlterarPreco() {
+        return podeAlterarPreco;
     }
 }

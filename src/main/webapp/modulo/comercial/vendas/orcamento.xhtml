@@ -227,7 +227,13 @@
                                         <!-- small box -->
                                         <div class="small-box bg-gray">
                                             <div class="inner">
-                                                <h3>R$<span>#{vendaOrcamentoCabecalhoControll.objeto.valorTotalFormatado()}</span>
+                                                <h3>R$
+                                                    <span>
+                                                        <h:outputText
+                                                                value="#{vendaOrcamentoCabecalhoControll.objeto.valorTotal}">
+                                                            <f:convertNumber pattern="#,##0.00"/>
+                                                        </h:outputText>
+                                                    </span>
                                                 </h3>
 
                                                 <p>Valor Total</p>
@@ -241,7 +247,13 @@
                                         <!-- small box -->
                                         <div class="small-box bg-gray">
                                             <div class="inner">
-                                                <h3>R$<span>#{vendaOrcamentoCabecalhoControll.objeto.valorSubTotalFormatado()}</span>
+                                                <h3>R$
+                                                    <span>
+                                                        <h:outputText
+                                                                value="#{vendaOrcamentoCabecalhoControll.objeto.valorSubtotal}">
+                                                            <f:convertNumber pattern="#,##0.00"/>
+                                                        </h:outputText>
+                                                    </span>
                                                 </h3>
 
                                                 <p>Valor Produtos</p>
@@ -257,8 +269,33 @@
                                         <!-- small box -->
                                         <div class="small-box bg-gray">
                                             <div class="inner">
-                                                <h3>R$<span>#{vendaOrcamentoCabecalhoControll.objeto.valorDescontoFormatado()}</span>
+
+                                                <h3>
+                                                    R$
+                                                    <span>
+                                                            <h:outputText
+                                                                    value="#{vendaOrcamentoCabecalhoControll.objeto.valorDesconto}">
+                                                                <f:convertNumber pattern="#,##0.00"/>
+                                                            </h:outputText>
+                                                        </span>
+                                                    <p:commandLink styleClass="btn btn-link"
+                                                                   title="Aplicar desconto no valor total"
+                                                                   update=":formOutrasTelas2:panelOutrasTelas2"
+                                                                   disabled="#{vendaOrcamentoCabecalhoControll.objeto.valorTotal.signum() eq 0}"
+                                                                   oncomplete="PF('dialogOutrasTelas2').show()">
+                                                        <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
+                                                    </p:commandLink>
+
+                                                    <p:commandLink styleClass="btn btn-link"
+                                                                   title="Remover Desconto"
+                                                                   action="#{vendaOrcamentoCabecalhoControll.removerDesconto}"
+                                                                   process="@this"
+                                                                   update=":formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento"
+                                                                   rendered="#{vendaOrcamentoCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
+                                                        <i class="fa fa-ban fa-2x" aria-hidden="true"></i>
+                                                    </p:commandLink>
                                                 </h3>
+
 
                                                 <p>Valor do Desconto</p>
                                             </div>
@@ -486,6 +523,7 @@
 
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
                                           idComponente="valorUnitario"
+                                          desabilitado="#{!vendaOrcamentoCabecalhoControll.podeAlterarPreco}"
                                           label="Valor"
                                           nomeAtributo="#{vendaOrcamentoCabecalhoControll.vendaOrcamentoDetalhe.valorUnitario}"/>
 
@@ -514,6 +552,64 @@
 
             </p:dialog>
         </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2" class="form-horizontal">
+
+            <p:dialog id="dialogOutrasTelas2"
+                      header="Desconto" responsive="true"
+                      widgetVar="dialogOutrasTelas2"
+                      resizable="false" draggable="false" modal="true"
+                      width="400"
+            >
+
+                <p:outputPanel id="panelOutrasTelas2">
+                    <div class="form-group text-right">
+                        <div class="text-right">
+                            <label class="control-label col-sm-4">Desonto em</label>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <h:selectOneMenu id="tipo-desconto" styleClass="form-control"
+                                             value="#{ vendaOrcamentoCabecalhoControll.tipoDesconto}">
+                                <f:selectItem itemLabel="R$" itemValue="1"/>
+                                <f:selectItem itemLabel="%" itemValue="2"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="col-sm-5">
+                            <p:inputNumber id="valor-desconto" required="true"
+                                           value="#{ vendaOrcamentoCabecalhoControll.desconto}"/>
+                        </div>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             id="btnSalvarDesonto"
+                                             update="panelOutrasTelas2,:formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
+                                             action="#{vendaOrcamentoCabecalhoControll.aplicarDesconto}"/>
+
+
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas2').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+
     </ui:define>
 
 </ui:composition>

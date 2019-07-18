@@ -65,7 +65,7 @@
                          rendered="#{osAberturaControll.podeConsultar()}">
 
 
-                <p:column headerText="Numero" width="105" sortBy="#{row.numero}">
+                <p:column headerText="Numero" width="115" sortBy="#{row.numero}">
                     <h:outputLabel value="#{row.numero}"/>
                 </p:column>
 
@@ -74,7 +74,7 @@
                     <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
                 </p:column>
 
-                <p:column headerText="Data Inicio" width="125" sortBy="#{row.dataInicio}">
+                <p:column headerText="Data Inicio" width="135" styleClass="text-center" sortBy="#{row.dataInicio}">
                     <h:outputLabel value="#{row.dataInicio}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputLabel>
@@ -84,7 +84,7 @@
                         <f:convertNumber pattern="#,##0.00"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Status" width="240">
+                <p:column headerText="Status" width="200" styleClass="text-center">
                     <h:outputLabel value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"/>
                 </p:column>
                 <p:column headerText="Ações" width="160" styleClass="text-center">
@@ -120,6 +120,7 @@
                         <p:menuitem value="Imprimir OS"
                                     icon="fa fa-print"
                                     action="#{osRelatorioControll.imprimirOS(row.id)}"
+                                    target="_blank"
                                     ajax="false">
 
                         </p:menuitem>
@@ -351,6 +352,7 @@
                                           nomeAtributo="#{osAberturaControll.osProdutoServico.quantidade}"/>
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="valorUnitario" label="Valor"
+                                          desabilitado="#{!osAberturaControll.podeAlterarPreco}"
                                           nomeAtributo="#{osAberturaControll.osProdutoServico.valorUnitario}"
                                           id="campoDecimalValorUnitario"/>
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"

@@ -8,8 +8,6 @@ import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.*;
 
 @Entity
@@ -86,6 +84,12 @@ public class VendaOrcamentoCabecalho implements Serializable {
 
 
     public VendaOrcamentoCabecalho() {
+
+        this.valorComissao = BigDecimal.ZERO;
+        this.valorDesconto = BigDecimal.ZERO;
+        this.valorFrete = BigDecimal.ZERO;
+        this.valorSubtotal = BigDecimal.ZERO;
+        this.valorTotal = BigDecimal.ZERO;
     }
 
     public Integer getId() {
@@ -95,30 +99,38 @@ public class VendaOrcamentoCabecalho implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
     /**
      * O=Orçamento | P=Pedido
-     * @return 
+     *
+     * @return
      */
     public String getTipo() {
         return tipo;
     }
+
     /**
      * O=Orçamento | P=Pedido
-     * @param tipo 
+     *
+     * @param tipo
      */
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
+
     /**
      * Código atribuído pelo usuário
-     * @return 
+     *
+     * @return
      */
     public String getCodigo() {
         return codigo;
     }
+
     /**
      * Código atribuído pelo usuário
-     * @param codigo 
+     *
+     * @param codigo
      */
     public void setCodigo(String codigo) {
         this.codigo = codigo;
@@ -147,16 +159,20 @@ public class VendaOrcamentoCabecalho implements Serializable {
     public void setValidade(Date validade) {
         this.validade = validade;
     }
+
     /**
      * C=CIF | F=FOB
-     * @return 
+     *
+     * @return
      */
     public String getTipoFrete() {
         return tipoFrete;
     }
+
     /**
      * C=CIF | F=FOB
-     * @param tipoFrete 
+     *
+     * @param tipoFrete
      */
     public void setTipoFrete(String tipoFrete) {
         this.tipoFrete = tipoFrete;
@@ -173,11 +189,11 @@ public class VendaOrcamentoCabecalho implements Serializable {
     public BigDecimal getValorFrete() {
         return valorFrete;
     }
-   
+
     public void setValorFrete(BigDecimal valorFrete) {
         this.valorFrete = valorFrete;
     }
-   
+
     public BigDecimal getTaxaComissao() {
         return taxaComissao;
     }
@@ -225,16 +241,20 @@ public class VendaOrcamentoCabecalho implements Serializable {
     public void setObservacao(String observacao) {
         this.observacao = observacao;
     }
+
     /**
      * D=Digitacao | P=Producao | X=Expedicao | F=Faturado | E=Entregue
-     * @return 
+     *
+     * @return
      */
     public String getSituacao() {
         return situacao;
     }
+
     /**
      * D=Digitacao | P=Producao | X=Expedicao | F=Faturado | E=Entregue
-     * @param situacao 
+     *
+     * @param situacao
      */
     public void setSituacao(String situacao) {
         this.situacao = situacao;
@@ -288,23 +308,6 @@ public class VendaOrcamentoCabecalho implements Serializable {
         this.empresa = empresa;
     }
 
-    public BigDecimal calcularValorTotal(){
-        valorTotal = getListaVendaOrcamentoDetalhe().stream()
-                          .map(VendaOrcamentoDetalhe::getValorTotal)
-                          .reduce(BigDecimal::add)
-                          .orElse(BigDecimal.ZERO);
-
-        return  valorTotal;
-    }
-
-    public BigDecimal calcularValorProdutos(){
-        valorSubtotal = getListaVendaOrcamentoDetalhe().stream()
-                .map(VendaOrcamentoDetalhe::getValorSubtotal)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
-        return valorSubtotal;
-    }
-
     public BigDecimal calcularTotalDesconto() {
         valorDesconto = getListaVendaOrcamentoDetalhe().stream()
                 .map(VendaOrcamentoDetalhe::getValorDesconto)
@@ -313,24 +316,21 @@ public class VendaOrcamentoCabecalho implements Serializable {
         return valorDesconto;
     }
 
-    public String valorSubTotalFormatado(){
-        return formatarValor(calcularValorProdutos());
+
+    public BigDecimal calcularValorProdutos() {
+        valorSubtotal = getListaVendaOrcamentoDetalhe().stream()
+                .map(VendaOrcamentoDetalhe::getValorSubtotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        return valorSubtotal;
     }
 
-    public String valorDescontoFormatado() {
-        return formatarValor(calcularTotalDesconto());
-    }
-
-    public String valorTotalFormatado(){
-        return formatarValor(calcularValorTotal());
-    }
-
-    private String formatarValor(BigDecimal valor) {
-        DecimalFormatSymbols simboloDecimal = DecimalFormatSymbols.getInstance();
-        simboloDecimal.setDecimalSeparator('.');
-        DecimalFormat formatar = new DecimalFormat("0.00", simboloDecimal);
-
-        return formatar.format(Optional.ofNullable(valor).orElse(BigDecimal.ZERO));
+    public BigDecimal calcularValorTotal() {
+        valorTotal = calcularValorProdutos();
+        valorTotal = valorTotal.add(getValorFrete())
+                .subtract(calcularTotalDesconto());
+        return valorTotal;
     }
 
 

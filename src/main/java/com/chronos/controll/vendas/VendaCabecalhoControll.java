@@ -20,6 +20,7 @@ import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.jpa.Transactional;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -101,6 +102,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     private int tipoDesconto;
     private BigDecimal desconto;
+    private boolean podeAlterarPreco = true;
 
     @PostConstruct
     @Override
@@ -112,6 +114,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         status.put("Faturada", "F");
         status.put("Encerrada", "E");
         status.put("Cancelada", "C");
+
+        this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
+                || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
 
     }
 
@@ -559,6 +564,11 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     }
 
+    public void removerDesconto() {
+        vendaService.removerDesconto(getObjeto());
+        desconto = BigDecimal.ZERO;
+    }
+
 
     @Override
     protected Class<VendaCabecalho> getClazz() {
@@ -683,4 +693,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         this.desconto = desconto;
     }
 
+    public boolean isPodeAlterarPreco() {
+        return podeAlterarPreco;
+    }
 }

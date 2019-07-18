@@ -16,6 +16,7 @@ import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -84,6 +85,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private int numeroNfe;
     private Date dataInicial;
     private Date dataFinal;
+    private int status;
+    private String cliente;
 
     private List<Veiculo> veiculos;
     private List<NfeEvento> cartas;
@@ -91,31 +94,70 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private Veiculo veiculo;
     private ViewPessoaTransportadora transportadora;
 
+    private boolean podeAlterarPreco = true;
+
     @PostConstruct
     @Override
     public void init() {
         super.init();
 
+        this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
+                || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
+
     }
 
     @Override
     public ERPLazyDataModel<NfeCabecalho> getDataModel() {
+
         if (dataModel == null) {
             dataModel = new ERPLazyDataModel<>();
             dataModel.setDao(dao);
             dataModel.setClazz(NfeCabecalho.class);
         }
+
         dataModel.setAtributos(new Object[]{"destinatario.nome", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
-        dataModel.getFiltros().clear();
-        dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
-        dataModel.addFiltro("codigoModelo", "55", Filtro.IGUAL);
-        dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
+
+        if (dataModel.getFiltros().isEmpty()) {
+            dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
+            dataModel.addFiltro("codigoModelo", "55", Filtro.IGUAL);
+            dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
+        }
 
         dataModel.setSortOrder(SortOrder.DESCENDING);
         dataModel.setOrdernarPor("numero");
 
         return dataModel;
     }
+
+
+    public void pesquisar() {
+
+        dataModel.getFiltros().clear();
+
+
+        if (numeroNfe > 0) {
+            dataModel.getFiltros().add(new Filtro("numero", Filtro.LIKE, numeroNfe + ""));
+        }
+
+        if (dataInicial != null) {
+            dataModel.getFiltros().add(new Filtro("dataHoraEmissao", Filtro.MAIOR_OU_IGUAL, dataInicial));
+        }
+
+        if (dataFinal != null) {
+            dataModel.getFiltros().add(new Filtro("dataHoraEmissao", Filtro.MENOR_OU_IGUAL, dataFinal));
+        }
+
+        if (status > -1) {
+            dataModel.getFiltros().add(new Filtro("statusNota", Filtro.MENOR_OU_IGUAL, status));
+        }
+
+        if (!StringUtils.isEmpty(cliente)) {
+            dataModel.getFiltros().add(new Filtro("destinatario.nome", Filtro.LIKE, cliente));
+        }
+
+    }
+
+
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Crud NFe">
 
     @Override
@@ -945,7 +987,27 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         this.dataFinal = dataFinal;
     }
 
-// </editor-fold>
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
+    }
+
+    public boolean isPodeAlterarPreco() {
+        return podeAlterarPreco;
+    }
+
+    // </editor-fold>
 
 
 }
