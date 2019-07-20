@@ -106,6 +106,12 @@ public class VendaCabecalho implements Serializable {
         this.dataVenda = new Date();
         this.situacao = SituacaoVenda.Digitacao.getCodigo();
         this.tipoFrete = TipoFrete.CIF.getCodigo();
+        this.valorComissao = BigDecimal.ZERO;
+        this.valorDesconto = BigDecimal.ZERO;
+        this.valorFrete = BigDecimal.ZERO;
+        this.valorSeguro = BigDecimal.ZERO;
+        this.valorSubtotal = BigDecimal.ZERO;
+        this.valorTotal = BigDecimal.ZERO;
     }
 
     public VendaCabecalho(Integer id) {

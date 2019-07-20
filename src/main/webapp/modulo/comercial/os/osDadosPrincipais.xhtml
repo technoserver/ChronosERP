@@ -9,19 +9,12 @@
 
     <div class="row">
 
-        <div class="col-xs-12 col-sm-4 col-md-4">
-            <p:outputLabel value="Os Status" for="osAberturaOsStatus"/>
-            <br/>
-            <p:autoComplete id="osAberturaOsStatus"
-                            value="#{osAberturaControll.objeto.osStatus}"
-                            completeMethod="#{osAberturaControll.getListaOsStatus}"
-                            var="osStatus" itemLabel="#{osStatus.nome}"
-                            itemValue="#{osStatus}"
-                            converter="defaultConverter"
-                            forceSelection="true" minQueryLength="3" maxResults="10"
-                            required="true" style="width: 100%"
-                            emptyMessage="Nenhum registro encontrado"/>
-        </div>
+        <erp:campoSelect styleClass="col-xs-12 col-sm-4 col-md-4"
+                         idComponente="status"
+                         nomeAtributo="#{osAberturaControll.objeto.status}"
+                         label="Status" itens="#{osAberturaControll.status}"/>
+
+
         <div class="col-xs-12 col-sm-4 col-md-4">
             <p:outputLabel value="Colaborador" for="osAberturaColaborador"/>
             <br/>
@@ -124,20 +117,21 @@
                                  rendered="#{empty osAberturaControll.objeto.id}">
 
                 </p:commandButton>
-                <c:if test="#{osAberturaControll.temProduto and !osAberturaControll.objeto.emitidoOrFaturado}">
+                <c:if test="#{osAberturaControll.temProduto and !(osAberturaControll.objeto.status eq '12' or osAberturaControll.objeto.status eq '13')}">
                     <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar()}" icon="ui-icon-disk">
                         <p:menuitem value="Encerrar" actionListener="#{osAberturaControll.encerrar}"
+                                    update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     icon="ui-icon-arrowrefresh-1-w"/>
                         <p:menuitem value="Faturar - NFe"
-                                    actionListener="#{osAberturaControll.faturar('55')}"
-                        />
+                                    update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                    action="#{osAberturaControll.faturar('55')}"/>
                         <p:menuitem value="Faturar - NFCe"
-                                    actionListener="#{osAberturaControll.faturar('65')}"
-                        />
+                                    update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                    action="#{osAberturaControll.faturar('65')}"/>
                     </p:splitButton>
                 </c:if>
             </div>
-            <div class="#{osAberturaControll.objeto.emitidoOrFaturado?'col-xs-12 col-sm-12 col-md-12':'col-xs-6 col-sm-6 col-md-6'} text-center">
+            <div class="#{(osAberturaControll.objeto.status eq 12 or osAberturaControll.objeto.status eq 13)? 'col-xs-12 col-sm-12 col-md-12':'col-xs-6 col-sm-6 col-md-6'} text-center">
                 <p:commandButton value="Cancelar" styleClass="default-btn"
                                  immediate="true"
                                  action="#{osAberturaControll.voltar}"

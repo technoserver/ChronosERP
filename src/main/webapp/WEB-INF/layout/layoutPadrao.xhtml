@@ -9,7 +9,7 @@
     <h:head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <title>ChronosERP -
             <ui:insert name="title"></ui:insert>
@@ -204,6 +204,16 @@
             PrimeFaces.locales['pt_BR'] = configLocal;
             PrimeFaces.locales['pt'] = configLocal;
 
+        </script>
+        <script type="text/javascript">
+            window.$mysuite || function (t, e) {
+                var c = $mysuite = function (t) {
+                    c._.push(t)
+                }, s = c.s = t.createElement(e), a = t.getElementsByTagName(e)[0];
+                c.set = function (t) {
+                    c.set._.push(t)
+                }, c._ = [], c.set._ = [], s.async = !0, s.setAttribute("charset", "utf-8"), s.src = "http://technoserver.mysuite2.com.br/client/cf/?h=1dfdb73b3fd93cbbf68b0367907849da", c.t = +new Date, s.type = "text/javascript", a.parentNode.insertBefore(s, a)
+            }(document, "script");
         </script>
         <ui:insert name="javaScript"/>
 

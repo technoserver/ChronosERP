@@ -71,7 +71,7 @@ public class OsService extends AbstractService<OsAbertura> {
 
         if (itemOptional.isPresent()) {
             item = itemOptional.get();
-            item.setQuantidade(item.getQuantidade().add(quantidade));
+            item.setQuantidade(quantidade);
         } else {
             item.setQuantidade(quantidade);
             itens.add(item);
@@ -99,8 +99,7 @@ public class OsService extends AbstractService<OsAbertura> {
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
         if (status == StatusTransmissao.AUTORIZADA) {
-            String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";
-            Mensagem.addInfoMessage(msg);
+            Mensagem.addInfoMessage("OS Faturada com sucesso");
         }
 
 
@@ -108,7 +107,7 @@ public class OsService extends AbstractService<OsAbertura> {
 
     @Transactional
     public void encerrar(OsAbertura os) throws ChronosException {
-        os.setOsStatus(Constantes.OS.STATUS_FATURADO);
+        os.setStatus(12);
 
         List<ProdutoVendaDTO> produtos = new ArrayList<>();
         os.getListaOsProdutoServico()
@@ -125,11 +124,12 @@ public class OsService extends AbstractService<OsAbertura> {
     }
 
     @Transactional
-    public void cancelarOs(OsAbertura os, boolean estoque) throws Exception {
+    public void cancelarOs(OsAbertura os, boolean estoque, String justificativa) throws Exception {
         boolean cancelado = true;
-        if (os.getOsStatus().getId() == 6) {
+
+        if (os.getStatus().equals(13)) {
             NfeCabecalho nfe = nfeRepository.get(os.getIdnfeCabecalho(), NfeCabecalho.class);
-            nfe.setJustificativaCancelamento("Cancelamento de por informação de valores invalido");
+            nfe.setJustificativaCancelamento(justificativa);
 
 
             cancelado = nfeService.cancelarNFe(nfe, estoque);
@@ -148,7 +148,7 @@ public class OsService extends AbstractService<OsAbertura> {
 
             }
         }
-        os.setOsStatus(Constantes.OS.STATUS_CANCELADO);
+        os.setStatus(11);
         salvar(os);
         Mensagem.addInfoMessage("OS cancelada com sucesso");
     }

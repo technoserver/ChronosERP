@@ -144,6 +144,11 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
                 setObjeto(colaborador);
 
             } else {
+
+                if (getObjeto().getId() == null) {
+                    service.validarColaborador(getObjeto());
+                }
+
                 Pessoa pessoa = pessoas.getJoinFetch(getObjeto().getPessoa().getId(), Pessoa.class);
                 pessoa.setColaborador("S");
 

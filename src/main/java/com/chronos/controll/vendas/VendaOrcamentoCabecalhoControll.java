@@ -10,11 +10,13 @@ import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.VendaOrcamentoService;
 import com.chronos.service.comercial.VendedorService;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.SelectEvent;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -61,6 +63,11 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     private Map<String, Integer> listaVendedor;
     private Map<String, String> situacoes;
 
+    private int tipoDesconto;
+    private BigDecimal desconto;
+
+    private boolean podeAlterarPreco = true;
+
     @PostConstruct
     @Override
     public void init() {
@@ -71,6 +78,9 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         situacoes = new LinkedHashMap<>();
         situacoes.put("Todos", "");
         situacoes.putAll(getOrcamentoSituacao());
+
+        this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
+                || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
 
     }
 
@@ -284,6 +294,27 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         return listaProduto;
     }
 
+    public void aplicarDesconto() {
+
+        try {
+            service.aplicarDesconto(getObjeto(), tipoDesconto, desconto);
+            desconto = BigDecimal.ZERO;
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+                FacesContext.getCurrentInstance().validationFailed();
+            } else {
+                throw new RuntimeException("erro ao aplicar desconto", ex);
+            }
+        }
+
+    }
+
+    public void removerDesconto() {
+        service.removerDesconto(getObjeto());
+        desconto = BigDecimal.ZERO;
+    }
+
 
     @Override
     protected Class<VendaOrcamentoCabecalho> getClazz() {
@@ -379,4 +410,28 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
+
+    public int getTipoDesconto() {
+        return tipoDesconto;
+    }
+
+    public void setTipoDesconto(int tipoDesconto) {
+        this.tipoDesconto = tipoDesconto;
+    }
+
+    public BigDecimal getDesconto() {
+        return desconto;
+    }
+
+    public void setDesconto(BigDecimal desconto) {
+        this.desconto = desconto;
+    }
+
+    public boolean isPodeAlterarPreco() {
+        return podeAlterarPreco;
+    }
+
+
+
+
 }

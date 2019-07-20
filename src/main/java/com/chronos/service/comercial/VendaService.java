@@ -664,6 +664,20 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         venda.calcularValorTotal();
     }
 
+    public void removerDesconto(VendaCabecalho venda) {
+
+        venda.setValorDesconto(BigDecimal.ZERO);
+        venda.setTaxaDesconto(BigDecimal.ZERO);
+
+        venda.getListaVendaDetalhe().forEach(i -> {
+            i.setTaxaDesconto(BigDecimal.ZERO);
+            i.setValorDesconto(BigDecimal.ZERO);
+            i.setValorTotal(i.getValorSubtotal());
+        });
+
+        venda.calcularValorTotal();
+    }
+
 
     @Override
     protected Class<VendaCabecalho> getClazz() {

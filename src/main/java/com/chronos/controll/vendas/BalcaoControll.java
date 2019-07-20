@@ -39,6 +39,7 @@ import java.math.MathContext;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -142,6 +143,16 @@ public class BalcaoControll implements Serializable {
     private String usuarioSupervisor;
     private String senhaSupervisor;
 
+    private String filtro;
+    private List<ProdutoDTO> listaProduto;
+    private int tipoPesquisa;
+
+    private boolean exibirDetalheProduto = true;
+    private String msgListaProduto = "";
+
+    private String justificativa;
+
+    private boolean podeAlterarPreco = true;
 
     @PostConstruct
     private void init() {
@@ -149,6 +160,16 @@ public class BalcaoControll implements Serializable {
         empresa = FacesUtil.getEmpresaUsuario();
         usuario = FacesUtil.getUsuarioSessao();
 
+        this.podeAlterarPreco = usuario.getAdministrador().equals("S")
+                || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
+
+    }
+
+    public void definirTipoPesquisa() {
+        Map<String, String> parameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String tipoPesquiaPDV = parameterMap.get("tipoPesquiaPDV");
+        tipoPesquisa = StringUtils.isEmpty(tipoPesquiaPDV) || tipoPesquiaPDV.equals("1") ? 1 : 2;
+        msgListaProduto = "";
     }
 
 
@@ -193,6 +214,7 @@ public class BalcaoControll implements Serializable {
                 exibirCondicoes = false;
                 instanciarParametro();
                 parcelas = new ArrayList<>();
+                msgListaProduto = "";
             }
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -229,10 +251,6 @@ public class BalcaoControll implements Serializable {
             Mensagem.addErrorMessage("", ex);
             return null;
         }
-
-    }
-
-    public void cancelarVenda() {
 
     }
 
@@ -285,14 +303,66 @@ public class BalcaoControll implements Serializable {
         }
     }
 
+    public void cancelarVenda() {
+        try {
+
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            if (venda.getStatusVenda().equals("F")) {
+                justificativa = "";
+                PrimeFaces.current().executeScript("PF('dialogOutrasTelas4').show();");
+            } else {
+                service.cancelar(venda.getId(), estoque, null);
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao cancelar Cupom \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao cancelar Cupom", ex);
+            }
+        }
+    }
+
+    public void cancelarVendaNFCe() {
+        try {
+
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            service.cancelar(venda.getId(), estoque, justificativa);
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao cancelar Cupom \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao cancelar Cupom", ex);
+            }
+        }
+    }
+
+
+
 
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Produto">
+
+
+    public void pesquisarProduto() {
+
+        getListProduto(filtro);
+        if (tipoPesquisa == 2 && listaProduto.size() == 1) {
+            selecionarProduto(listaProduto.get(0));
+            PrimeFaces.current().ajax().update("formCentro:mostra-produto");
+        }
+
+    }
+
     public List<ProdutoDTO> getListProduto(String nome) {
-        List<ProdutoDTO> listaProduto = new ArrayList<>();
+        listaProduto = new ArrayList<>();
 
         try {
 
             listaProduto = produtoService.getListaProdutoDTO(empresa, nome, true);
+            exibirDetalheProduto = tipoPesquisa == 1 && !listaProduto.isEmpty();
+            msgListaProduto = tipoPesquisa == 2 && listaProduto.isEmpty() ? "Nenhum produto encontrado" : "";
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -301,6 +371,12 @@ public class BalcaoControll implements Serializable {
 
     public void selecionarProduto(SelectEvent event) {
         ProdutoDTO produtoSelecionado = (ProdutoDTO) event.getObject();
+
+        selecionarProduto(produtoSelecionado);
+
+    }
+
+    public void selecionarProduto(ProdutoDTO produtoSelecionado) {
         desconto = BigDecimal.ZERO;
 
         item = new PdvVendaDetalhe();
@@ -313,6 +389,11 @@ public class BalcaoControll implements Serializable {
         item.setValorDesconto(BigDecimal.ZERO);
 
         produto = produtoSelecionado;
+
+
+        exibirDetalheProduto = true;
+        listaProduto = new ArrayList<>();
+
     }
 
     public void calcularPrecoAtacado() {
@@ -421,7 +502,15 @@ public class BalcaoControll implements Serializable {
         List<Cliente> list = new ArrayList<>();
         try {
 
-            list = clientes.getEntitys(Cliente.class, "pessoa.nome", nome, new Object[]{"pessoa.nome"});
+            List<Filtro> filtros = new ArrayList<>();
+
+            filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
+
+            int id = org.apache.commons.lang3.StringUtils.isNumeric(nome) ? Integer.parseInt(nome) : 0;
+
+            filtros.add(new Filtro(Filtro.OR, "id", Filtro.IGUAL, id));
+
+            list = clientes.getEntitys(Cliente.class, filtros, new Object[]{"pessoa.nome"});
         } catch (Exception ex) {
 
         }
@@ -1035,5 +1124,45 @@ public class BalcaoControll implements Serializable {
 
     public void setParcelas(List<FinParcelaReceber> parcelas) {
         this.parcelas = parcelas;
+    }
+
+    public String getFiltro() {
+        return filtro;
+    }
+
+    public void setFiltro(String filtro) {
+        this.filtro = filtro;
+    }
+
+    public List<ProdutoDTO> getListaProduto() {
+        return listaProduto;
+    }
+
+    public int getTipoPesquisa() {
+        return tipoPesquisa;
+    }
+
+    public void setTipoPesquisa(int tipoPesquisa) {
+        this.tipoPesquisa = tipoPesquisa;
+    }
+
+    public boolean isExibirDetalheProduto() {
+        return exibirDetalheProduto;
+    }
+
+    public String getMsgListaProduto() {
+        return msgListaProduto;
+    }
+
+    public String getJustificativa() {
+        return justificativa;
+    }
+
+    public void setJustificativa(String justificativa) {
+        this.justificativa = justificativa;
+    }
+
+    public boolean isPodeAlterarPreco() {
+        return podeAlterarPreco;
     }
 }

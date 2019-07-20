@@ -58,7 +58,7 @@
                 <p:column headerText="Nome">
                     <h:outputLabel value="#{row.nome}"/>
                 </p:column>
-                <p:column headerText="CPF/CNPJ">
+                <p:column headerText="CPF/CNPJ" width="170">
                     <h:outputLabel value="#{row.cpfCnpj}" rendered="#{row.tipo eq 'F'}">
                         <f:converter converterId="cpfCnpjConverter"/>
                     </h:outputLabel>
@@ -68,11 +68,11 @@
                 </p:column>
                 <p:column headerText="Endereço">
                     <h:outputLabel value="#{row.logradouro}"/>
+                    <p>
+                        <small><h:outputText value="#{row.cidade} - #{row.uf}"/></small>
+                    </p>
                 </p:column>
-                <p:column headerText="Cidade">
-                    <h:outputLabel value="#{row.cidade} - #{row.uf}"/>
-                </p:column>
-                <p:column headerText="Fone">
+                <p:column headerText="Fone" width="130">
                     <h:outputLabel value="#{row.fone}"/>
                 </p:column>
 

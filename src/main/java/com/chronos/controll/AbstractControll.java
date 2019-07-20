@@ -23,9 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- *
- * @author john
  * @param <T>
+ * @author john
  */
 public abstract class AbstractControll<T> implements Serializable {
 
@@ -93,7 +92,6 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, String> tipoReajuste;
 
 
-
     //Tributacao
     private HashMap<String, String> origemMercadoria;
     private HashMap<String, String> issModalidadeBaseCalculo;
@@ -110,7 +108,6 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, String> compraSituacaoCotacao;
     private Map<String, String> compraFormaPagamento;
     private Map<String, String> compraTipoFrete;
-
 
 
     //vendas
@@ -145,6 +142,7 @@ public abstract class AbstractControll<T> implements Serializable {
     // OS
     private HashMap<String, Integer> osTipoCobertura;
     private HashMap<String, Integer> osTipoProdutoServico;
+    private HashMap<String, Integer> osStatus;
 
     //Agenda
     private HashMap<String, String> categoriaCompromissoCor;
@@ -154,7 +152,6 @@ public abstract class AbstractControll<T> implements Serializable {
     //pdv
     private HashMap<String, String> pdvCodigoTipoPagamento;
     private HashMap<String, String> pdvNivelAutorizacao;
-
 
 
     // CTe
@@ -560,6 +557,22 @@ public abstract class AbstractControll<T> implements Serializable {
         osTipoProdutoServico.put("PRODUTO", 0);
         osTipoProdutoServico.put("SERVIÇO", 1);
 
+        osStatus = new HashMap<>();
+
+        osStatus.put("PENDENTE", 1);
+        osStatus.put("EM ATENDIMENTO", 2);
+        osStatus.put("AGUARDANDO", 3);
+        osStatus.put("AGUARDANDO APROVAÇÃO", 4);
+        osStatus.put("APROVADO", 5);
+        osStatus.put("REPROVADO", 6);
+        osStatus.put("EM TRÂNSITO", 7);
+        osStatus.put("AGUARDANDO DIAGNÓSTICO", 8);
+        osStatus.put("DIAGNÓSTICO PRONTO", 9);
+        osStatus.put("SEM CONSERTO", 10);
+        osStatus.put("CANCELADA", 11);
+        osStatus.put("ENCERRADO", 12);
+        osStatus.put("FATURADO", 13);
+
 
         //Agenda
         categoriaCompromissoCor = new HashMap<>();
@@ -715,7 +728,6 @@ public abstract class AbstractControll<T> implements Serializable {
         proprietarioTipo.put("Outros", "2");
 
 
-
     }
 
     public void voltar() {
@@ -724,7 +736,7 @@ public abstract class AbstractControll<T> implements Serializable {
         titulo = "Consultar";
         telaGrid = true;
     }
-    
+
     public List<Estados> getEstado() {
         List<Estados> estados = new ArrayList<>();
         if (estados.isEmpty()) {
@@ -781,7 +793,7 @@ public abstract class AbstractControll<T> implements Serializable {
             necessarioAutorizacaoSupervisor = false;
             //verificaRestricao();
 
-            objeto = dao.atualizar (objeto);
+            objeto = dao.atualizar(objeto);
             telaGrid = true;
             Mensagem.addInfoMessage(mensagem != null ? mensagem : "Registro salvo com sucesso!");
         } catch (Exception e) {
@@ -1223,6 +1235,7 @@ public abstract class AbstractControll<T> implements Serializable {
     public HashMap<String, String> getOrigemMercadoria() {
         return origemMercadoria;
     }
+
     public HashMap<String, String> getIssModalidadeBaseCalculo() {
         return issModalidadeBaseCalculo;
     }
@@ -1407,5 +1420,9 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public Map<String, String> getVendaSituacao() {
         return vendaSituacao;
+    }
+
+    public HashMap<String, Integer> getOsStatus() {
+        return osStatus;
     }
 }

@@ -11,22 +11,21 @@ import com.chronos.service.comercial.OsProdutoServicoService;
 import com.chronos.service.comercial.OsService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.Constantes;
+import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by john on 28/09/17.
@@ -47,8 +46,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Inject
     private Repository<OsEquipamento> equipamentoRepository;
     @Inject
-    private Repository<Produto> produtoRepository;
-    @Inject
     private OsService osService;
     @Inject
     private OsProdutoServicoService produtoServicoService;
@@ -67,12 +64,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private OsEvolucao osEvolucao;
     private OsEvolucao osEvolucaoSelecionado;
 
-    private List<OsAbertura> osSelecionadas;
 
-    private TabelaProdutoServico tabelaProduto;
-
-
-    private BigDecimal quantidade;
     private boolean temProduto;
     private boolean emailValido;
 
@@ -80,8 +72,25 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private String cliente;
     private Date dataInicial;
     private Date dataFinal;
+    private String justificativa;
+
+    private Map<String, Integer> status;
+
+    private boolean podeAlterarPreco = true;
 
 
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+
+        status = getOsStatus().entrySet().stream()
+                .filter(x -> !x.getValue().equals(11) || !x.getValue().equals(12) || !x.getValue().equals(13))
+                .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
+
+        this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
+                || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
+    }
 
     @Override
     public ERPLazyDataModel<OsAbertura> getDataModel() {
@@ -90,7 +99,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             dataModel.setClazz(getClazz());
             dataModel.setDao(dao);
         }
-        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "valorTotal", "cliente.id", "cliente.pessoa.nome", "osStatus.id", "osStatus.nome", "idnfeCabecalho"});
+        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "valorTotal", "cliente.id", "cliente.pessoa.nome", "status", "idnfeCabecalho"});
 
         if (dataModel.getFiltros().isEmpty()) {
             dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
@@ -139,9 +148,9 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         getObjeto().setListaOsAberturaEquipamento(new HashSet<>());
         getObjeto().setListaOsProdutoServico(new HashSet<>());
         getObjeto().setListaOsEvolucao(new HashSet<>());
-        getObjeto().setOsStatus(Constantes.OS.STATUS_ABERTO);
+        getObjeto().setStatus(1);
         getObjeto().setEmpresa(empresa);
-        tabelaProduto = new TabelaProdutoServico(getObjeto());
+
         temProduto = false;
     }
 
@@ -150,7 +159,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         super.doEdit();
         OsAbertura os = getDataModel().getRowData(getObjeto().getId().toString());
         setObjeto(os);
-        tabelaProduto = new TabelaProdutoServico(getObjeto());
+
         temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
     }
 
@@ -169,13 +178,12 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void encerrar() {
         try {
-            OsAbertura os = dataModel.getRowData(getObjetoSelecionado().getId().toString());
-            if(os.getOsStatus().getId()>4){
-                Mensagem.addInfoMessage("Está OS não pode ser mais faturada");
-            }else{
-                osService.encerrar(os);
-                Mensagem.addInfoMessage("OS Faturada com sucesso");
-            }
+            OsAbertura os = isTelaGrid() ? dataModel.getRowData(getObjetoSelecionado().getId().toString()) : getObjeto();
+
+            osService.encerrar(os);
+            setTelaGrid(true);
+            Mensagem.addInfoMessage("OS Encerrada com sucesso");
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -191,7 +199,9 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
             ModeloDocumento modelo = codigoModelo.equals("65") ? ModeloDocumento.NFCE : ModeloDocumento.NFE;
 
-            gerarNFe(os, ModeloDocumento.NFE);
+            gerarNFe(os, modelo);
+
+            setTelaGrid(true);
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -222,11 +232,36 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
             boolean estoque = isTemAcesso("ESTOQUE");
             OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
-            osService.cancelarOs(os, estoque);
+
+
+            if (os.getStatus().equals(13)) {
+                justificativa = "";
+                PrimeFaces.current().executeScript("PF('dialogOutrasTelas4').show();");
+            } else {
+                osService.cancelarOs(os, estoque, "");
+            }
+
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("Erro ao cancelar servico", ex);
+        }
+    }
+
+    public void cancelarNFe() {
+        try {
+
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            OsAbertura os = dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class);
+            osService.cancelarOs(os, estoque, justificativa);
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao cancelar Cupom \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao cancelar Cupom", ex);
+            }
         }
     }
 
@@ -552,5 +587,21 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void setDataFinal(Date dataFinal) {
         this.dataFinal = dataFinal;
+    }
+
+    public Map<String, Integer> getStatus() {
+        return status;
+    }
+
+    public String getJustificativa() {
+        return justificativa;
+    }
+
+    public void setJustificativa(String justificativa) {
+        this.justificativa = justificativa;
+    }
+
+    public boolean isPodeAlterarPreco() {
+        return podeAlterarPreco;
     }
 }

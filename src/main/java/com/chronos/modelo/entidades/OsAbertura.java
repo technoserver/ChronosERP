@@ -65,14 +65,12 @@ public class OsAbertura implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private Cliente cliente;
+    @Column(name = "status")
+    private Integer status;
     @JoinColumn(name = "ID_COLABORADOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private Colaborador colaborador;
-    @JoinColumn(name = "ID_OS_STATUS", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    @NotNull
-    private OsStatus osStatus;
     @JoinColumn(name = "ID_VENDA_CONDICOES_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
@@ -90,14 +88,14 @@ public class OsAbertura implements Serializable {
     public OsAbertura() {
     }
 
-    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, BigDecimal valorTotal, int idcliente, String nome, Integer idstatus, String osStatus, Integer idnfeCabecalho) {
+    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, BigDecimal valorTotal, int idcliente, String nome, Integer status, Integer idnfeCabecalho) {
         this.id = id;
         this.numero = numero;
         this.dataInicio = dataInicio;
         this.dataPrevisao = dataPrevisao;
         this.dataFim = dataFim;
         this.cliente = new Cliente(idcliente, nome);
-        this.osStatus = new OsStatus(idstatus, osStatus);
+        this.status = status;
         this.idnfeCabecalho = idnfeCabecalho;
         this.valorTotal = valorTotal;
 
@@ -223,15 +221,14 @@ public class OsAbertura implements Serializable {
         this.colaborador = colaborador;
     }
 
-    public OsStatus getOsStatus() {
-        return osStatus;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setOsStatus(OsStatus osStatus) {
-        this.osStatus = osStatus;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
-  
     public Set<OsEvolucao> getListaOsEvolucao() {
         return listaOsEvolucao;
     }
@@ -376,25 +373,26 @@ public class OsAbertura implements Serializable {
     }
 
     public boolean isFaturado() {
-        return this.osStatus.getId() != null && this.osStatus.getId() == 5;
+        return this.status != null && this.status.equals(13);
     }
 
-    public boolean isEmitido() {
-        return this.osStatus.getId() != null && this.osStatus.getId() == 6;
-    }
-
-    public boolean isEmitidoOrFaturado() {
-        boolean teste = this.osStatus.getId() == 6 || this.osStatus.getId() == 5;
-        return teste;
+    public boolean isEncerrado() {
+        return this.status != null && this.status.equals(12);
     }
 
     public boolean isCancelado() {
-        return this.osStatus.getId() != null && this.osStatus.getId() == 7;
+        return this.status != null && this.status.equals(11);
     }
 
     public boolean isPodeExcluir() {
-        return (this.osStatus.getId() != 6 && this.osStatus.getId() != 5 && this.osStatus.getId() != 7);
+        return this.status != null && !(this.status.equals(12) || this.status.equals(13));
     }
+
+    public boolean isPodeCancelar() {
+        return this.status != null && (this.status.equals(12) || this.status.equals(13));
+    }
+
+
 
     @Override
     public int hashCode() {

@@ -4,133 +4,213 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:p="http://primefaces.org/ui">
+                xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
     <div class="col-sm-8 col-md-8 col-lg-8">
-        <label>
-            <h3 class="margin-top-0">LOCALIZE UM PRODUTO/SERVIÇO ABAIXO</h3>
-        </label>
-        <p:autoComplete value="#{balcaoControll.produto}"
-                        id="produto"
-                        converter="defaultConverter" minQueryLength="3"
-                        completeMethod="#{balcaoControll.getListProduto}"
-                        emptyMessage="Nenhum Produto localizado"
-                        itemLabel="#{objeto.produto.nome}" itemValue="#{objeto}" var="objeto"
-                        style="width: 100%;margin-bottom: 10px" onfocus="true">
-            <p:column headerText="Nome">
-                <p:outputLabel value="#{objeto.nome}"/>
-            </p:column>
-            <p:column headerText="Valor">
-                <p:outputLabel value="#{objeto.valorVenda}">
-                    <f:convertNumber pattern="#,##0.00"/>
-                </p:outputLabel>
-            </p:column>
-            <p:column headerText="Estoque">
-                <p:outputLabel value="#{objeto.estoqueVerificado}">
-                    <f:convertNumber pattern="#,##0.00"/>
-                </p:outputLabel>
-            </p:column>
-            <p:ajax event="itemSelect" listener="#{balcaoControll.selecionarProduto}"
-                    update="formCentro:mostra-produto"
-                    oncomplete="document.getElementById('formCentro:quantidade_input').focus(); document.getElementById('formCentro:quantidade_input').select();"/>
-        </p:autoComplete>
-        <br/>
+        <label> Tipo de pesquisa</label>
+        <p>
+            <p:selectOneRadio id="tipo-pesquisa" value="#{balcaoControll.tipoPesquisa}" unselectable="true"
+                              localStorage="prefix" onchange="setLocalStorage(this.value)">
+                <f:selectItem itemLabel="Automática" itemValue="1"/>
+                <f:selectItem itemLabel="Precionando enter" itemValue="2"/>
+                <p:ajax event="change" process="@this" update="formCentro:tipo-busca"/>
+            </p:selectOneRadio>
+        </p>
 
-        <h:panelGroup layout="block" id="mostra-produto" class="margin-top-20px row">
-            <div id="fotos" class="col-sm-3 col-md-3 col-lg-3">
-                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner" role="listbox">
-                        <div class="hidden-xs item active">
-                            <p:graphicImage value="/resources/images/produto-sem-foto.png" width="100%"
-                                            rendered="#{balcaoControll.item.produto.imagem==null}"/>
 
-                            <h:graphicImage id="imgProduto"
-                                            value="/image/produto?foto=#{balcaoControll.item.produto.imagem}"
-                                            rendered="#{balcaoControll.item.produto.imagem!=null}"/>
+    </div>
+    <div class="col-sm-8 col-md-8 col-lg-8">
 
+        <h:panelGroup id="tipo-busca">
+            <p:autoComplete value="#{balcaoControll.produto}"
+                            rendered="#{balcaoControll.tipoPesquisa eq 1}"
+                            id="produto"
+                            converter="defaultConverter" minQueryLength="3"
+                            completeMethod="#{balcaoControll.getListProduto}"
+                            emptyMessage="Nenhum Produto localizado"
+                            placeholder="LOCALIZE UM PRODUTO"
+                            itemLabel="#{objeto.produto.nome}" itemValue="#{objeto}" var="objeto"
+                            style="width: 100%;margin-bottom: 10px" onfocus="true">
+                <p:column headerText="Nome">
+                    <p:outputLabel value="#{objeto.nome}"/>
+                </p:column>
+                <p:column headerText="Valor">
+                    <p:outputLabel value="#{objeto.valorVenda}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </p:outputLabel>
+                </p:column>
+                <p:column headerText="Estoque">
+                    <p:outputLabel value="#{objeto.estoqueVerificado}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </p:outputLabel>
+                </p:column>
+                <p:ajax event="itemSelect" listener="#{balcaoControll.selecionarProduto}"
+                        update="formCentro:mostra-produto"
+                        oncomplete="document.getElementById('formCentro:quantidade_input').focus(); document.getElementById('formCentro:quantidade_input').select();"/>
+            </p:autoComplete>
+            <br/>
+
+            <h:panelGroup layout="block" styleClass="barra-busca" rendered="#{balcaoControll.tipoPesquisa eq 2}">
+                <h:inputText styleClass="search"
+                             value="#{balcaoControll.filtro}"
+                             onkeypress="if (event.keyCode === 13) {document.getElementById('formCentro:btn-pesquisar').click(); return false;}">
+                    <f:passThroughAttribute name="placeholder" value="LOCALIZE UM PRODUTO"></f:passThroughAttribute>
+                </h:inputText>
+                <p:commandButton id="btn-pesquisar" styleClass="btn-search" value=""
+                                 action="#{balcaoControll.pesquisarProduto}"
+                                 update="formCentro:lista-produtos,:formCentro:mostra-produto"/>
+            </h:panelGroup>
+        </h:panelGroup>
+
+        <h:panelGroup id="lista-produtos" layout="block">
+
+            <h:panelGroup rendered="#{balcaoControll.tipoPesquisa eq 2}">
+                <p>
+                    #{balcaoControll.msgListaProduto}
+                </p>
+            </h:panelGroup>
+
+            <h:panelGroup layout="block" styleClass="resultado-busca"
+                          rendered="#{balcaoControll.listaProduto.size()  > 0}">
+                <p>
+                    FORAM ENCONTRADOS
+                    <label>#{balcaoControll.listaProduto.size()}</label> produtos
+
+                </p>
+                <ul>
+                    <c:forEach var="row" items="#{balcaoControll.listaProduto}">
+                        <li>
+                       <span class="desc-produto">
+                        <span class="cod-item">#{row.id}</span>
+                        <span class="cod-item">#{row.unidade}</span>
+                        <span class="cod-item">
+                            <h:outputText value="#{row.estoqueVerificado}">
+                                 <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </span>
+                        <span class="nome-item">#{row.descricaoPdv}</span>
+                    </span>
+                            <span class="preco">
+                        <span>
+                            <h:outputText value="#{row.valorVenda}">
+                                 <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputText>
+                        </span>
+                    </span>
+                            <span class="add-item">
+                        <p:commandButton styleClass="btn-add-item" value=""
+                                         title="Adicionar produto"
+                                         action="#{balcaoControll.selecionarProduto(row)}"
+                                         oncomplete="document.getElementById('formCentro:quantidade_input').select();"
+                                         update=":formCentro:mostra-produto,formCentro:lista-produtos">
+
+                        </p:commandButton>
+                    </span>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </h:panelGroup>
+        </h:panelGroup>
+
+
+        <h:panelGroup layout="block" id="mostra-produto" styleClass="m-t">
+
+
+            <h:panelGroup layout="block" class="margin-top-20px row" rendered="#{balcaoControll.exibirDetalheProduto}">
+                <div id="fotos" class="col-sm-3 col-md-3 col-lg-3">
+                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner" role="listbox">
+                            <div class="hidden-xs item active">
+                                <p:graphicImage value="/resources/images/produto-sem-foto.png" width="100%"
+                                                rendered="#{balcaoControll.item.produto.imagem==null}"/>
+
+                                <h:graphicImage id="imgProduto"
+                                                value="/image/produto?foto=#{balcaoControll.item.produto.imagem}"
+                                                rendered="#{balcaoControll.item.produto.imagem!=null}"/>
+
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-sm-9 col-md-9 col-lg-9">
-                <table cellpadding="0" cellspacing="0" width="100%" border="0">
-                    <tbody>
-                    <tr>
-                        <th class="hidden-xs nowrap">
-                            <h4 class="margin-right-10px">CÓDIGO</h4>
-                        </th>
-                        <td class="padding-top-10px">
-                            <h:inputText disabled="true"
-                                         class="codigo col-sm-12 col-md-12 col-lg-12 form-control-table"
-                                         value="#{balcaoControll.item.produto.id}"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="hidden-xs nowrap">
-                            <h4 class="margin-right-10px">QUANTIDADE</h4>
-                        </th>
-                        <td class="padding-top-10px">
-                            <p:inputNumber id="quantidade"
-                                           decimalPlaces="4"
+                <div class="col-sm-9 col-md-9 col-lg-9">
+                    <table cellpadding="0" cellspacing="0" width="100%" border="0">
+                        <tbody>
+                        <tr>
+                            <th class="hidden-xs nowrap">
+                                <h4 class="margin-right-10px">CÓDIGO</h4>
+                            </th>
+                            <td class="padding-top-10px">
+                                <h:inputText disabled="true"
+                                             class="codigo col-sm-12 col-md-12 col-lg-12 form-control-table"
+                                             value="#{balcaoControll.item.produto.id}"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="hidden-xs nowrap">
+                                <h4 class="margin-right-10px">QUANTIDADE</h4>
+                            </th>
+                            <td class="padding-top-10px">
+                                <p:inputNumber id="quantidade"
+                                               decimalPlaces="4"
 
-                                           value="#{balcaoControll.item.quantidade}"
-                                           required="true"
-                                           requiredMessage="Informe a quantidade"
-                                           class="inputs"
-                                           disabled="#{empty balcaoControll.item.produto}"
-                                           onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:valorUnitario_input').focus(); return false;}"
-                                           style="width: 100%">
-                                <p:ajax event="blur"
-                                        listener="#{balcaoControll.calcularPrecoAtacado}"
-                                        update="formCentro:valorUnitario,formCentro:mostra-produto"
-                                        process="@this"/>
-                            </p:inputNumber>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="hidden-xs nowrap">
-                            <h4 class="margin-right-10px">VALOR UNITÁRIO</h4>
-                        </th>
-                        <td class="padding-top-10px">
-                            <label class="visible-xs">VALOR UNITÁRIO</label>
-                            <p:inputNumber id="valorUnitario"
-                                           decimalPlaces="2"
-                                           minValue="0.001"
-                                           maxValue="999"
-                                           value="#{balcaoControll.item.valorUnitario}"
-                                           required="true"
-                                           dir="rtl"
-                                           requiredMessage="Informe o valor"
-                                           class="inputs"
-                                           disabled="#{empty balcaoControll.item.produto}"
-                                           onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:desconto_input').focus(); return false;}"
-                                           style="width: 100%"/>
-
-
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="hidden-xs nowrap">
-                            <h4 class="margin-right-10px">DESCONTO</h4>
-                        </th>
-                        <td class="padding-top-10px">
-                            <div class="input-group">
-                                <p:inputNumber id="desconto"
-                                               decimalPlaces="2"
-                                               minValue="0.0"
-                                               value="#{balcaoControll.desconto}"
+                                               value="#{balcaoControll.item.quantidade}"
+                                               required="true"
+                                               requiredMessage="Informe a quantidade"
                                                class="inputs"
-                                               dir="rtl"
-                                               decimalSeparator="," thousandSeparator="."
                                                disabled="#{empty balcaoControll.item.produto}"
-                                               onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:salva-produto').focus(); return false;}"
+                                               onkeypress="if (event.keyCode === 13) {document.getElementById('formCentro:valorUnitario_input').focus(); return false;}"
                                                style="width: 100%">
-                                    <p:ajax event="blur" listener="#{balcaoControll.calcularDesconto}"
-                                            process="@form"
-                                            update="formCentro:mostra-produto,formCentro:growl"/>
+                                    <p:ajax event="blur"
+                                            listener="#{balcaoControll.calcularPrecoAtacado}"
+                                            update="formCentro:valorUnitario,formCentro:mostra-produto"
+                                            process="@this"/>
                                 </p:inputNumber>
-                                <span class="input-group-btn">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="hidden-xs nowrap">
+                                <h4 class="margin-right-10px">VALOR UNITÁRIO</h4>
+                            </th>
+                            <td class="padding-top-10px">
+                                <label class="visible-xs">VALOR UNITÁRIO</label>
+                                <p:inputNumber id="valorUnitario"
+                                               decimalPlaces="2"
+                                               minValue="0.001"
+                                               maxValue="999"
+                                               value="#{balcaoControll.item.valorUnitario}"
+                                               required="true"
+                                               dir="rtl"
+                                               requiredMessage="Informe o valor"
+                                               class="inputs"
+                                               disabled="#{empty balcaoControll.item.produto and !balcaoControll.podeAlterarPreco}
+                                               onkeypress=" if (event.keyCode == 13) {document.getElementById('formCentro:desconto_input').focus(); return false;}"
+                                               style="width: 100%"/>
+
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="hidden-xs nowrap">
+                                <h4 class="margin-right-10px">DESCONTO</h4>
+                            </th>
+                            <td class="padding-top-10px">
+                                <div class="input-group">
+                                    <p:inputNumber id="desconto"
+                                                   decimalPlaces="2"
+                                                   minValue="0.0"
+                                                   value="#{balcaoControll.desconto}"
+                                                   class="inputs"
+                                                   dir="rtl"
+                                                   decimalSeparator="," thousandSeparator="."
+                                                   disabled="#{empty balcaoControll.item.produto}"
+                                                   onkeypress="if (event.keyCode == 13) {document.getElementById('formCentro:salva-produto').focus(); return false;}"
+                                                   style="width: 100%">
+                                        <p:ajax event="blur" listener="#{balcaoControll.calcularDesconto}"
+                                                process="@form"
+                                                update="formCentro:mostra-produto,formCentro:growl"/>
+                                    </p:inputNumber>
+                                    <span class="input-group-btn">
                                     <h:selectOneMenu id="tipoDesconto"
                                                      value="#{balcaoControll.tipoDesconto}"
                                                      class="campo-desconto form-control-table ">
@@ -138,40 +218,43 @@
                                         <f:selectItem itemValue="P" itemLabel="%"/>
                                     </h:selectOneMenu>
                                 </span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="hidden-xs nowrap">
-                            <h4 class="margin-right-10px">VALOR TOTAL</h4>
-                        </th>
-                        <td class="padding-top-10px">
-                            <h:inputText value="#{balcaoControll.item.valorTotal}" disabled="true"
-                                         class="valor-total mascara-valor col-sm-12 col-md-12 col-lg-12 form-control-table">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:inputText>
-                        </td>
-                    </tr>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="hidden-xs nowrap">
+                                <h4 class="margin-right-10px">VALOR TOTAL</h4>
+                            </th>
+                            <td class="padding-top-10px">
+                                <h:inputText value="#{balcaoControll.item.valorTotal}" disabled="true"
+                                             class="valor-total mascara-valor col-sm-12 col-md-12 col-lg-12 form-control-table">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:inputText>
+                            </td>
+                        </tr>
 
-                    <tr>
-                        <th class="hidden-xs nowrap"/>
-                        <td class="padding-top-10px">
-                            <h:commandButton id="salva-produto" class="btn btn-primary btn-lg"
-                                             style="width:100%"
-                                             value="ADICIONAR PRODUTO"
-                                             disabled="#{empty balcaoControll.item.produto}"
-                                             action="#{balcaoControll.addProduto}">
-                                <p:ajax process="@form"
-                                        update=":formCentro:produtos-selecionados,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
-                                        oncomplete="document.getElementById('formCentro:produto_input').focus();"/>
-                            </h:commandButton>
+                        <tr>
+                            <th class="hidden-xs nowrap"/>
+                            <td class="padding-top-10px">
+                                <h:commandButton id="salva-produto" class="btn btn-primary btn-lg"
+                                                 style="width:100%"
+                                                 value="ADICIONAR PRODUTO"
+                                                 disabled="#{empty balcaoControll.item.produto}"
+                                                 action="#{balcaoControll.addProduto}">
+                                    <p:ajax process="@form"
+                                            update=":formCentro:produtos-selecionados,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
+                                    />
+                                </h:commandButton>
 
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </h:panelGroup>
+
         </h:panelGroup>
+
     </div>
 
 
