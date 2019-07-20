@@ -62,10 +62,11 @@ public class NotaFiscalService implements Serializable {
 
         }
 
+        Random random = new Random();
 
         mdfe.setSerie(serie);
         mdfe.setNumeroMdfe(FormatValor.getInstance().formatarNumeroDocFiscalToString(numero));
-        mdfe.setCodigoNumerico(FormatValor.getInstance().formatarCodigoNumeroDocFiscalToString(numero));
+        mdfe.setCodigoNumerico(String.valueOf(random.nextInt(99999999)));
         String str = mdfe.getCodigoNumerico();
 
         if (str.length() > 8) {
