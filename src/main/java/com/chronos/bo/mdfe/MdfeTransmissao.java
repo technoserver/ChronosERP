@@ -6,6 +6,7 @@ import br.com.samuelweb.certificado.CertificadoService;
 import br.inf.portalfiscal.mdfe.schema_300.consMDFeNaoEnc.TConsMDFeNaoEnc;
 import br.inf.portalfiscal.mdfe.schema_300.consReciMDFe.TConsReciMDFe;
 import br.inf.portalfiscal.mdfe.schema_300.enviMDFe.TEnviMDFe;
+import br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TRetEvento;
 import br.inf.portalfiscal.mdfe.schema_300.retConsReciMDFe.TRetConsReciMDFe;
 import br.inf.portalfiscal.mdfe.schema_300.retEnviMDFe.TRetEnviMDFe;
 import com.chronos.dto.ConfiguracaoMdfeDTO;
@@ -93,6 +94,18 @@ public class MdfeTransmissao {
         }
 
         return result;
+    }
+
+
+    public TRetEvento encerrar(String chave, String cnpj, String protocolo, String ibgeUF, String ibgeMunicipio) throws Exception {
+
+        instanciarConfiguracoes(configuracao);
+        GerarXmlEnvio geraXml = new GerarXmlEnvio();
+
+        TRetEvento retEvento = geraXml.encerrar(chave, cnpj, configuracao.getWebserviceAmbiente().toString(), configuracao.getWebserviceUf(), protocolo, ibgeUF, ibgeMunicipio);
+
+        return retEvento;
+
     }
 
 

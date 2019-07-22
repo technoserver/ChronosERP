@@ -1,6 +1,7 @@
 package com.chronos.service.comercial;
 
 import br.inf.portalfiscal.mdfe.schema_300.enviMDFe.TEnviMDFe;
+import br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TRetEvento;
 import br.inf.portalfiscal.mdfe.schema_300.retConsReciMDFe.TRetConsReciMDFe;
 import com.chronos.bo.mdfe.MdfeTransmissao;
 import com.chronos.dto.ConfiguracaoMdfeDTO;
@@ -213,6 +214,12 @@ public class MdfeService implements Serializable {
         }
         mdfe = repository.atualizar(mdfe);
         return mdfe;
+    }
+
+    public TRetEvento encerrar(String chave, String cnpj, String protocolo, String ibgeUF, String ibgeMunicipio) throws Exception {
+        MdfeTransmissao transmissao = new MdfeTransmissao(empresa, getConfiguracao());
+        TRetEvento retEvento = transmissao.encerrar(chave, cnpj, protocolo, ibgeUF, ibgeMunicipio);
+        return retEvento;
     }
 
     @Transactional
