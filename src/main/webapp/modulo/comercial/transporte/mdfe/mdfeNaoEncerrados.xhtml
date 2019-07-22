@@ -26,14 +26,14 @@
                 <div class="col-md-12">
                     <p:commandButton icon="fa fa-search"
                                      title="Consulta MDF-e não encerrados"
-                                     action="#{mdfeEnventosControll.localizarMdfeNaoEncerrados}"
+                                     action="#{mdfeNaoEncerradosControll.localizarMdfeNaoEncerrados}"
                                      update=":formCentro:mensagem,:formCentro:retorno"/>
                 </div>
             </div>
             <div class="row m-t">
                 <div class="col-md-12">
                     <h:inputTextarea styleClass="form-control" id="retorno" rows="5"
-                                     value="#{mdfeEnventosControll.retorno}">
+                                     value="#{mdfeNaoEncerradosControll.retorno}">
 
                     </h:inputTextarea>
                 </div>

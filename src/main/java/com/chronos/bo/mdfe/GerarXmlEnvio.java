@@ -135,8 +135,8 @@ public class GerarXmlEnvio {
         return consMDFeNaoEnc;
     }
 
-    public br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento encerrar(String chave, String cnpj, String ambiente, String codIbgeUf, String protocolo,
-                                                                          String codIbgeUfEnc, String codIbgeMunEnc) throws Exception {
+    public br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TRetEvento encerrar(String chave, String cnpj, String ambiente, String codIbgeUf, String protocolo,
+                                                                             String codIbgeUfEnc, String codIbgeMunEnc) throws Exception {
         br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento enviEvento = new br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento();
         br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento.InfEvento infoEvento = new br.inf.portalfiscal.mdfe.schema_300.evEncMDFe.TEvento.InfEvento();
 
@@ -185,7 +185,7 @@ public class GerarXmlEnvio {
         procEvento.setEventoMDFe(enviEvento);
         procEvento.setRetEventoMDFe(retorno);
 
-        return enviEvento;
+        return retorno;
 
     }
 
