@@ -15,7 +15,7 @@ import java.io.Serializable;
 
 @Named
 @ViewScoped
-public class MdfeEnventosControll implements Serializable {
+public class MdfeNaoEncerradosControll implements Serializable {
 
 
     private static final long serialVersionUID = 1L;

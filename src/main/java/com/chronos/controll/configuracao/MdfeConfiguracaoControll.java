@@ -49,6 +49,7 @@ public class MdfeConfiguracaoControll extends AbstractControll<MdfeConfiguracao>
         super.doCreate();
         getObjeto().setEmpresa(empresa);
         String schemas = context.getRealPath(Constantes.DIRETORIO_SCHEMA_MDFE);
+        getObjeto().setWebserviceUf(empresa.buscarEnderecoPrincipal().getMunicipioIbge().toString().substring(0, 2));
         getObjeto().setCaminhoSchemas(schemas);
     }
 
