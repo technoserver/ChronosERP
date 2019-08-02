@@ -366,7 +366,25 @@
                                          value="#{balcaoControll.venda.valorDesconto == null ?0:balcaoControll.venda.valorDesconto}">
                                             <f:convertNumber pattern="#,##0.00"/>
                                 </h:outputText>
+
                             </span>
+
+                            <p:commandLink styleClass="btn btn-link"
+                                           title="Aplicar desconto no valor total da venda"
+                                           update=":formOutrasTelas5:panelOutrasTelas5"
+                                           disabled="#{balcaoControll.venda.valorTotal.signum() eq 0}"
+                                           oncomplete="PF('dialogOutrasTelas5').show()">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </p:commandLink>
+
+                            <p:commandLink styleClass="btn btn-link"
+                                           title="Remover Desconto"
+                                           action="#{balcaoControll.removerDesconto}"
+                                           process="@this"
+                                           update=":formCentro:growl,:formCentro:totalPedido"
+                                           rendered="#{balcaoControll.venda.valorDesconto.signum() ne 0}">
+                                <i class="fa fa-ban" aria-hidden="true"></i>
+                            </p:commandLink>
                         </p>
 
 

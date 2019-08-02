@@ -74,9 +74,13 @@ public class FinParcelaRecebimento implements Serializable {
     @JoinColumn(name = "ID_CONTA_CAIXA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private ContaCaixa contaCaixa;
+    @JoinColumn(name = "ID_PDV_MOVIMENTO", referencedColumnName = "ID")
+    @ManyToOne
+    private PdvMovimento pdvMovimento;
     @JoinColumn(name = "ID_FIN_CHEQUE_RECEBIDO", referencedColumnName = "ID")
     @ManyToOne
     private FinChequeRecebido finChequeRecebido;
+
 
     public FinParcelaRecebimento() {
     }
@@ -197,6 +201,14 @@ public class FinParcelaRecebimento implements Serializable {
 
     public void setContaCaixa(ContaCaixa contaCaixa) {
         this.contaCaixa = contaCaixa;
+    }
+
+    public PdvMovimento getPdvMovimento() {
+        return pdvMovimento;
+    }
+
+    public void setPdvMovimento(PdvMovimento pdvMovimento) {
+        this.pdvMovimento = pdvMovimento;
     }
 
     public FinChequeRecebido getFinChequeRecebido() {

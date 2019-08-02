@@ -260,6 +260,27 @@ public class BalcaoControll implements Serializable {
         novaVenda();
     }
 
+    public void aplicarDesconto() {
+
+        try {
+            vendaService.aplicarDesconto(venda, tipoDesconto, desconto);
+            desconto = BigDecimal.ZERO;
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+                FacesContext.getCurrentInstance().validationFailed();
+            } else {
+                throw new RuntimeException("erro ao aplicar desconto", ex);
+            }
+        }
+
+    }
+
+    public void removerDesconto() {
+        vendaService.removerDesconto(venda);
+        desconto = BigDecimal.ZERO;
+    }
+
     public void gerarNfce() {
 
 
@@ -404,32 +425,38 @@ public class BalcaoControll implements Serializable {
     }
 
     public void calcularDesconto() {
-        desconto = desconto == null ? BigDecimal.ZERO : desconto;
-        if (tipoDesconto.equals("P")) {
 
-            if (desconto.compareTo(BigDecimal.valueOf(99.99)) >= 0) {
-                Mensagem.addErrorMessage("Desconto não permitido");
+        try {
+            desconto = desconto == null ? BigDecimal.ZERO : desconto;
+            if (tipoDesconto.equals("P")) {
+
+                if (desconto.compareTo(BigDecimal.valueOf(99.99)) >= 0) {
+                    Mensagem.addErrorMessage("Desconto não permitido");
+                } else {
+                    item.setTaxaDesconto(desconto);
+                    item.setValorDesconto(Biblioteca.calcularValorPercentual(item.getValorSubtotal(), desconto));
+                }
+
+
             } else {
-                item.setTaxaDesconto(desconto);
+                BigDecimal subTotal = item.getValorSubtotal();
+
+                if (desconto.compareTo(subTotal) >= 0) {
+                    Mensagem.addErrorMessage("Desconto não permitido");
+                } else {
+                    BigDecimal razao = subTotal.subtract(desconto);
+                    razao = razao.divide(subTotal, MathContext.DECIMAL64);
+                    razao = razao.multiply(BigDecimal.valueOf(100));
+                    BigDecimal cem = BigDecimal.valueOf(100);
+                    BigDecimal percentual = cem.subtract(razao);
+                    item.setValorDesconto(desconto);
+                    item.setTaxaDesconto(percentual);
+                }
+
+
             }
-
-
-        } else {
-            BigDecimal subTotal = item.getValorSubtotal();
-
-            if (desconto.compareTo(subTotal) >= 0) {
-                Mensagem.addErrorMessage("Desconto não permitido");
-            } else {
-                BigDecimal razao = subTotal.subtract(desconto);
-                razao = razao.divide(subTotal, MathContext.DECIMAL64);
-                razao = razao.multiply(BigDecimal.valueOf(100));
-                BigDecimal cem = BigDecimal.valueOf(100);
-                BigDecimal percentual = cem.subtract(razao);
-
-                item.setTaxaDesconto(percentual);
-            }
-
-
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

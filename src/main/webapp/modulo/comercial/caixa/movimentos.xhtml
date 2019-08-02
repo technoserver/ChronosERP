@@ -230,7 +230,7 @@
                                  var="row" id="dataTableMovimento" paginator="true"
                                  rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                  reflow="true" rendered="#{true}"
-                                 resizableColumns="true" lazy="true"
+                                 lazy="true"
                                  sortBy="#{row.dataAbertura}"
                                  sortOrder="DESCENDING"
                                  class="js-data-table">
@@ -252,12 +252,6 @@
                             </h:outputLabel>
                         </p:column>
 
-
-                        <p:column headerText="Supri." class="coluna-monetaria" width="90">
-                            <h:outputLabel value="#{row.totalSuprimento}">
-                                <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
-                        </p:column>
                         <p:column headerText="Sangria" class="coluna-monetaria" width="80">
                             <h:outputLabel value="#{row.totalSangria}">
                                 <f:convertNumber pattern="#,##0.00"/>

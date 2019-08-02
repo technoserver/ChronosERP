@@ -884,6 +884,64 @@
         </h:form>
     </ui:define>
 
+    <ui:define name="outrasTelas5">
+        <h:form id="formOutrasTelas5" class="form-horizontal">
+
+            <p:dialog id="dialogOutrasTelas5"
+                      header="Desconto" responsive="true"
+                      widgetVar="dialogOutrasTelas5"
+                      resizable="false" draggable="false" modal="true"
+                      width="400"
+            >
+
+                <p:outputPanel id="panelOutrasTelas5">
+                    <div class="form-group text-right">
+                        <div class="text-right">
+                            <label class="control-label col-sm-4">Desonto em</label>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <h:selectOneMenu id="tipo-desconto" styleClass="form-control"
+                                             value="#{ balcaoControll.tipoDesconto}">
+                                <f:selectItem itemLabel="R$" itemValue="D"/>
+                                <f:selectItem itemLabel="%" itemValue="P"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="col-sm-5">
+                            <p:inputNumber id="valor-desconto" required="true"
+                                           value="#{ balcaoControll.desconto}"/>
+                        </div>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             id="btnSalvarDesonto"
+                                             update="panelOutrasTelas5,:formCentro:growl,:formCentro:totalPedido"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
+                                             action="#{balcaoControll.aplicarDesconto}"/>
+
+
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas5').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+
 
     <ui:define name="javaScript">
         <h:outputScript library="js" name="pdv.js"/>

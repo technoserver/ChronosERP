@@ -11,6 +11,7 @@ import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.*;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -18,8 +19,10 @@ import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by john on 19/01/18.
@@ -207,5 +210,76 @@ public class VendaPdvService implements Serializable {
         venda.setStatusVenda("C");
         repository.atualizar(venda);
         Mensagem.addInfoMessage("Venda cancelada com sucesso");
+    }
+
+    public void aplicarDesconto(PdvVendaCabecalho venda, String tipoDesconto, BigDecimal desconto) throws ChronosException {
+        BigDecimal valorDesconto;
+
+
+        if (venda.getValorTotal() == null) {
+            throw new ChronosException("Valor total não informando");
+        }
+
+        if (venda.getListaPdvVendaDetalhe() == null || venda.getListaPdvVendaDetalhe().isEmpty()) {
+            throw new ChronosException("Não foram informado item(s) para está venda");
+        }
+
+        if (!tipoDesconto.equals("P")) {
+            valorDesconto = desconto;
+        } else {
+            valorDesconto = Biblioteca.calcularValorPercentual(venda.getValorTotal(), desconto);
+
+        }
+
+        BigDecimal fator = Biblioteca.divide(valorDesconto, venda.getValorSubtotal());
+        BigDecimal descAntecipado = venda.getListaPdvVendaDetalhe()
+                .stream()
+                .map(PdvVendaDetalhe::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        for (PdvVendaDetalhe i : venda.getListaPdvVendaDetalhe()) {
+            BigDecimal descItem = Biblioteca.multiplica(fator, i.getValorSubtotal());
+            BigDecimal vlrDesc = Biblioteca.soma(Optional.ofNullable(i.getValorDesconto()).orElse(BigDecimal.ZERO), descItem);
+            BigDecimal vlrTotal = Biblioteca.subtrai(i.getValorSubtotal(), vlrDesc);
+            BigDecimal txDesc = Biblioteca.calcularFator(i.getValorSubtotal(), vlrTotal);
+            i.setValorDesconto(vlrDesc);
+            i.setValorTotal(vlrTotal);
+            i.setTaxaDesconto(txDesc);
+
+        }
+
+        BigDecimal descItens = venda.getListaPdvVendaDetalhe()
+                .stream()
+                .map(PdvVendaDetalhe::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        BigDecimal sobra = Biblioteca.soma(valorDesconto, descAntecipado);
+        sobra = Biblioteca.subtrai(sobra, descItens);
+
+        if (sobra.signum() > 0) {
+            PdvVendaDetalhe item = venda.getListaPdvVendaDetalhe().get(0);
+            BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
+            BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);
+            BigDecimal txDesc = Biblioteca.calcularFator(item.getValorSubtotal(), vlrTotal);
+            item.setValorDesconto(vlrDesc);
+            item.setValorTotal(vlrTotal);
+        }
+
+        venda.calcularValorTotal();
+    }
+
+    public void removerDesconto(PdvVendaCabecalho venda) {
+        venda.setValorDesconto(BigDecimal.ZERO);
+        venda.setTaxaDesconto(BigDecimal.ZERO);
+
+        venda.getListaPdvVendaDetalhe().forEach(i -> {
+            i.setTaxaDesconto(BigDecimal.ZERO);
+            i.setValorDesconto(BigDecimal.ZERO);
+            i.setValorTotal(i.getValorSubtotal());
+        });
+
+        venda.calcularValorTotal();
     }
 }
