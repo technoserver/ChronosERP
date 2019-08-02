@@ -377,6 +377,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         venda.setValorTotal(orcamento.getValorTotal());
         venda.setObservacao(orcamento.getObservacao());
         venda.setEmpresa(orcamento.getEmpresa());
+        venda.setDataSaida(orcamento.getDataEntrega());
+
 
         String forma = venda.getCondicoesPagamento().getVistaPrazo().equals("V")
                 ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo();

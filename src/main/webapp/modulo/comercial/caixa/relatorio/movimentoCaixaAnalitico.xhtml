@@ -285,6 +285,45 @@
                 </table>
             </h:panelGroup>
 
+            <h:panelGroup layout="block" rendered="#{movimentoCaixaRelatorioControll.recebimentos.size() > 0 }"
+                          style="margin-bottom: 10px">
+                <label>Recebimentos</label>
+                <hr/>
+                <table id="movimento" class="totais" cellpadding="0" cellspacing="0" width="100%">
+                    <thead>
+                    <tr>
+                        <th>Codígo</th>
+                        <th>Descrição</th>
+                        <th>Data</th>
+                        <th>Operador</th>
+                        <th>Finalizadora</th>
+                        <th>Valor</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <ui:forEach var="row" items="#{movimentoCaixaRelatorioControll.recebimentos}">
+                        <tr>
+                            <td>#{row.idorigem}</td>
+                            <td>#{row.descricao}</td>
+                            <td>
+                                <h:outputText value="#{row.dataHora}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:MM"/>
+                                </h:outputText>
+                            </td>
+                            <td>#{row.operador}</td>
+                            <td>#{row.formaPagamento}</td>
+                            <td class="text-right">
+                                <h:outputText value="#{row.valor}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </td>
+                        </tr>
+
+                    </ui:forEach>
+                    </tbody>
+                </table>
+            </h:panelGroup>
+
         </div>
 
 

@@ -87,6 +87,10 @@ public class PdvVendaCabecalho implements Serializable {
         this.dataHoraVenda = new Date();
         this.sicronizado = "N";
         this.statusVenda = SituacaoVenda.Digitacao.getCodigo();
+        this.valorComissao = BigDecimal.ZERO;
+        this.valorDesconto = BigDecimal.ZERO;
+        this.valorSubtotal = BigDecimal.ZERO;
+        this.valorTotal = BigDecimal.ZERO;
     }
 
     public PdvVendaCabecalho(Integer id, Integer idnfe, Date dataHoraVenda, BigDecimal valorSubtotal, BigDecimal valorDesconto, BigDecimal valorTotal, String nomeCliente, String sicronizado, String statusVenda, String caixa) {
@@ -291,8 +295,7 @@ public class PdvVendaCabecalho implements Serializable {
 
     public BigDecimal calcularValorTotal() {
         valorTotal = calcularValorProdutos();
-        valorTotal = valorTotal
-                .subtract(calcularTotalDesconto());
+        valorTotal = valorTotal.subtract(calcularTotalDesconto());
         return valorTotal;
     }
 

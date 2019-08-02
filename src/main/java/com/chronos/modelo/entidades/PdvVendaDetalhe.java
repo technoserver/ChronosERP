@@ -8,7 +8,6 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Optional;
 
 /**
@@ -56,6 +55,13 @@ public class PdvVendaDetalhe implements Serializable {
     @NotNull
     private Produto produto;
 
+
+    public PdvVendaDetalhe() {
+        this.valorSubtotal = BigDecimal.ZERO;
+        this.valorDesconto = BigDecimal.ZERO;
+        this.valorTotal = BigDecimal.ZERO;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -98,7 +104,6 @@ public class PdvVendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorDesconto() {
-        valorDesconto = getTaxaDesconto().multiply(getValorSubtotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
         return valorDesconto;
     }
 

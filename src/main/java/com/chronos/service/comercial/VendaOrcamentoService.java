@@ -68,7 +68,7 @@ public class VendaOrcamentoService implements Serializable {
         venda = vendaRepository.atualizar(venda);
         venda = vendaService.faturarVenda(venda);
         orcamento = venda.getVendaOrcamentoCabecalho();
-        orcamento.setSituacao(SituacaoOrcamentoPedido.APROVADO.getCodigo());
+        orcamento.setSituacao(SituacaoOrcamentoPedido.FATURADO.getCodigo());
         orcamento = repository.saveAndFlush(orcamento);
 
         return orcamento;

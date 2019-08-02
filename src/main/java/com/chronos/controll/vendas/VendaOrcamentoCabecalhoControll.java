@@ -138,6 +138,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         getObjeto().setSituacao(SituacaoOrcamentoPedido.PENDENTE.getCodigo());
         getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
         getObjeto().setDataCadastro(new Date());
+        getObjeto().setDataEntrega(new Date());
         getObjeto().setTipo(Optional.ofNullable(tipo).orElse("O"));
     }
 
@@ -179,12 +180,29 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         dao.atualizar(orcamento);
     }
 
+    public void aprovarPedido() {
+
+        VendaOrcamentoCabecalho orcamento;
+
+        if (isTelaGrid()) {
+            orcamento = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        } else {
+            orcamento = getObjeto();
+        }
+
+        orcamento.setSituacao(SituacaoOrcamentoPedido.APROVADO.getCodigo());
+
+        dao.atualizar(orcamento);
+    }
+
     public void gerarVenda() {
         try {
             VendaOrcamentoCabecalho orc = getObjeto() != null ? getObjeto() : dataModel.getRowData(getObjetoSelecionado().getId().toString());
+
             if (orc.getListaVendaOrcamentoDetalhe() == null || orc.getListaVendaOrcamentoDetalhe().isEmpty()) {
                 throw new ChronosException("Itens do orcamento não definidos");
             }
+
             VendaOrcamentoCabecalho orcamento = service.conveterEmVenda(orc);
             setObjeto(orcamento);
             setTelaGrid(true);
