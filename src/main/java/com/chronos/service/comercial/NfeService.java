@@ -327,10 +327,15 @@ public class NfeService implements Serializable {
 
         Integer numero;
         String serie;
-        NotaFiscalTipo notaFiscalTipo = null;
+        NotaFiscalTipo notaFiscalTipo;
         ModeloDocumento modelo = nfe.getModeloDocumento();
+        notaFiscalTipo = modelo == ModeloDocumento.NFE ? getNotaFicalTipo(modelo, nfe.getEmpresa()) : getNotaFicalTipo(modelo, nfe.getSerie(), nfe.getEmpresa());
+
+        if (notaFiscalTipo == null) {
+            throw new ChronosException("Numero fiscal não encontrado");
+        }
+
         if (StringUtils.isEmpty(nfe.getNumero())) {
-            notaFiscalTipo = modelo == ModeloDocumento.NFE ? getNotaFicalTipo(modelo, nfe.getEmpresa()) : getNotaFicalTipo(modelo, nfe.getSerie(), nfe.getEmpresa());
             numero = notaFiscalTipo.proximoNumero();
             serie = notaFiscalTipo.getSerie();
         } else {

@@ -12,6 +12,8 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.ParcelaReceberRepository;
 import com.chronos.repository.Repository;
 import com.chronos.repository.VendaRepository;
+import com.chronos.service.ChronosException;
+import com.chronos.service.financeiro.MovimentoService;
 import com.chronos.util.Constantes;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
@@ -56,6 +58,9 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     @Inject
     private Repository<VendaDetalhe> vendaDetalheRepository;
 
+    @Inject
+    private MovimentoService movimentoService;
+
     private Cliente cliente;
 
     private List<ViewFinLancamentoReceber> parcelas;
@@ -93,16 +98,16 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         qtdParcelasAvencer = 0;
         parcelas.stream().forEach(p -> {
 
-          //  p.calcularValorJuros();
-          //  p.calcularValorTotal();
-          //  multa = multa.add(p.getValorMulta());
-          // juros = juros.add(p.getValorJuro());
+            //  p.calcularValorJuros();
+            //  p.calcularValorTotal();
+            //  multa = multa.add(p.getValorMulta());
+            // juros = juros.add(p.getValorJuro());
 
             if (p.isVencido()) {
                 temParcelaVencida = true;
                 totalVencidas = totalVencidas.add(p.getValorAPagar());
                 qtdParcelasVencida++;
-              //  parcelaReceberRepository.atualizarJuros(p.getIdParcelaReceber(), p.getValorJuro());
+                //  parcelaReceberRepository.atualizarJuros(p.getIdParcelaReceber(), p.getValorJuro());
                 if (p.getIdStatusParcela() != 4) {
                     parcelaReceberRepository.atualizarStatusParcela(p.getIdParcelaReceber(), 4);
                     p.setDescricaoSituacaoParcela("Vencido");
@@ -118,7 +123,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
 
     }
 
-    public void finalizaRecebimentoCheque() {
+    public void finalizaRecebimentoCheque() throws ChronosException {
 
         finChequeRecebido.setContaCaixa(tipoRecebimento.getContaCaixa());
         chequesRecebidos.salvar(finChequeRecebido);
@@ -127,25 +132,35 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
 
     public void baixaParcelas() {
 
-        if (parcelasSelecionadas == null || parcelasSelecionadas.isEmpty()) {
-            Mensagem.addInfoMessage("É preciso selecionar ao menos 1 parcela");
-        } else {
-            Collections.sort(parcelasSelecionadas);
 
-
-            if (tipoRecebimento.getTipo().equals("02")) {
-                temParcelaVencida = parcelasSelecionadas.stream().filter(p -> p.isVencido()).findAny().isPresent();
-                if (temParcelaVencida) {
-                    Mensagem.addInfoMessage("Não é possivel realizar pagamento de parcela vencidas com cheque");
-                } else {
-                    finChequeRecebido = new FinChequeRecebido();
-                    PrimeFaces.current().executeScript("PF('dialogFinChequeRecebido').show()");
-                    //RequestContext.getCurrentInstance().update("formOutrasTelas:dialogFinChequeRecebido");
-                }
+        try {
+            if (parcelasSelecionadas == null || parcelasSelecionadas.isEmpty()) {
+                Mensagem.addInfoMessage("É preciso selecionar ao menos 1 parcela");
             } else {
-                finalizarRecebimento(valorAPagar);
-            }
+                Collections.sort(parcelasSelecionadas);
 
+
+                if (tipoRecebimento.getTipo().equals("02")) {
+                    temParcelaVencida = parcelasSelecionadas.stream().filter(p -> p.isVencido()).findAny().isPresent();
+                    if (temParcelaVencida) {
+                        Mensagem.addInfoMessage("Não é possivel realizar pagamento de parcela vencidas com cheque");
+                    } else {
+                        finChequeRecebido = new FinChequeRecebido();
+                        PrimeFaces.current().executeScript("PF('dialogFinChequeRecebido').show()");
+                        //RequestContext.getCurrentInstance().update("formOutrasTelas:dialogFinChequeRecebido");
+                    }
+                } else {
+                    finalizarRecebimento(valorAPagar);
+                }
+
+
+            }
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage(ex.getMessage());
+            } else {
+                throw new RuntimeException("Erro ao baixa as parcelas", ex);
+            }
 
         }
     }
@@ -175,7 +190,6 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
                 });
 
 
-
             }
         } else if (numDoc.contains("M" + Modulo.PDV.getCodigo())) {
 
@@ -184,19 +198,24 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         }
     }
 
-    private void finalizarRecebimento(BigDecimal valorAPagar) {
+    private void finalizarRecebimento(BigDecimal valorAPagar) throws ChronosException {
 
         String documentos = "";
         int idcliente = 0;
         List<Integer> ids = new ArrayList<>();
         BigDecimal saldo = valorAPagar;
+
+
+        PdvMovimento movimento = movimentoService.verificarMovimento(empresa);
+
         for (ViewFinLancamentoReceber p : parcelasSelecionadas) {
+
             if (saldo.signum() > 0) {
                 if (p.getValorAPagar().compareTo(saldo) <= 0) {
-                    fazerLancamento(p, p.getValorAPagar(), false);
+                    fazerLancamento(p, p.getValorAPagar(), false, movimento);
                     saldo = saldo.subtract(p.getValorAPagar());
                 } else {
-                    fazerLancamento(p, saldo, true);
+                    fazerLancamento(p, saldo, true, movimento);
                     saldo = BigDecimal.ZERO;
                 }
 
@@ -208,6 +227,15 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
                 break;
             }
         }
+
+
+        if (movimento != null) {
+
+            movimentoService.lancaRecebimento(valorAPagar);
+
+        }
+
+
         gerarLog(AcaoLog.BAIXA_PARCELA, "Recebimento da(s) parcela(s) de Nº " + documentos, "Tela Recebimento");
         recibo = new ReciboPagamentoDTO();
         recibo.setIdcliente(idcliente);
@@ -220,13 +248,13 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     }
 
     @Transactional
-    private void fazerLancamento(ViewFinLancamentoReceber p, BigDecimal valorPagar, boolean parcial) {
+    private void fazerLancamento(ViewFinLancamentoReceber p, BigDecimal valorPagar, boolean parcial, PdvMovimento movimento) {
         FinParcelaRecebimento recebimento = new FinParcelaRecebimento();
         recebimento.setFinTipoRecebimento(tipoRecebimento);
         BigDecimal valorJuros = BigDecimal.ZERO;
 
         if (valorPagar.compareTo(p.getSaldo()) > 0) {
-        //    valorJuros = valorPagar.subtract(p.getValorJuro());
+            //    valorJuros = valorPagar.subtract(p.getValorJuro());
         }
 
         recebimento.setContaCaixa(tipoRecebimento.getContaCaixa());
@@ -239,6 +267,8 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         recebimento.setValorJuro(valorJuros);
         recebimento.setValorMulta(p.getValorMulta());
         recebimento.setValorRecebido(valorPagar);
+        recebimento.setPdvMovimento(movimento);
+
 
         FinStatusParcela status = parcial ? Constantes.FIN.STATUS_PARCIAL : Constantes.FIN.STATUS_QUITADO;
         FinParcelaReceber pr = new FinParcelaReceber(p.getIdParcelaReceber());
@@ -277,6 +307,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         }
         return listaPessoa;
     }
+
     public List<FinTipoRecebimento> getListaFinTipoRecebimento(String nome) {
         List<FinTipoRecebimento> listaFinTipoRecebimento = new ArrayList<>();
         try {
@@ -296,7 +327,6 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
             finChequeRecebido.setCpfCnpj(finChequeRecebido.getPessoa().getPessoaJuridica().getCnpj());
         }
     }
-
 
 
     public String formatarValor(BigDecimal valor) {

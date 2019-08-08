@@ -33,6 +33,8 @@ public class MovimentoCaixaRelatorioControll extends AbstractRelatorioControll i
     private List<PdvMovimentoDTO> vendas;
     private List<PdvMovimentoDTO> sangrias;
     private List<PdvMovimentoDTO> suprimentos;
+    private List<PdvMovimentoDTO> recebimentos;
+
     private PdvMovimento movimento;
 
     private int idmovimento;
@@ -98,7 +100,9 @@ public class MovimentoCaixaRelatorioControll extends AbstractRelatorioControll i
             vendas = new ArrayList<>();
             suprimentos = new ArrayList<>();
             sangrias = new ArrayList<>();
+            recebimentos = new ArrayList<>();
             for (PdvMovimentoDTO mov : movimentos) {
+
                 if (mov.getOrigem().equals("VENDA")) {
                     vendas.add(mov);
 
@@ -110,6 +114,10 @@ public class MovimentoCaixaRelatorioControll extends AbstractRelatorioControll i
 
                 if (mov.getOrigem().equals("Sangria")) {
                     sangrias.add(mov);
+                }
+
+                if (mov.getOrigem().equals("RECEBIMENTO")) {
+                    recebimentos.add(mov);
                 }
             }
         } catch (Exception ex) {
@@ -186,5 +194,13 @@ public class MovimentoCaixaRelatorioControll extends AbstractRelatorioControll i
 
     public List<PdvMovimentoDTO> getSuprimentos() {
         return suprimentos;
+    }
+
+    public List<PdvMovimentoDTO> getRecebimentos() {
+        return recebimentos;
+    }
+
+    public void setRecebimentos(List<PdvMovimentoDTO> recebimentos) {
+        this.recebimentos = recebimentos;
     }
 }

@@ -6,6 +6,7 @@ public enum SituacaoOrcamentoPedido {
     NAO_APROVADO("N"),
     PENDENTE("P"),
     APROVADO("A"),
+    FATURADO("F"),
     CANCELADO("C");
 
     private String codigo;

@@ -134,8 +134,7 @@
             FROM pdv_movimento m
             JOIN pdv_sangria s ON s.id_pdv_movimento = m.id
             JOIN pdv_operador o ON o.id = m.id_pdv_operador
-            WHERE (m.id = ?1)
-            and data_abertura BETWEEN ?2 and ?3
+            WHERE (m.id = ?1) and data_abertura BETWEEN ?2 and ?3
             UNION
             SELECT
             concat(m.id , s.id , 2) AS id,
@@ -150,13 +149,13 @@
             'E' AS tipo,
             'Suprimentos' AS origem,
             s.observacao
-            FROM
-            pdv_movimento m
+            FROM pdv_movimento m
             JOIN pdv_suprimento s ON s.id_pdv_movimento = m.id
             JOIN pdv_operador o ON o.id = m.id_pdv_operador
-            WHERE (m.id = ?1)
-            and data_abertura BETWEEN ?2 and ?3
+            WHERE (m.id = ?1) and data_abertura BETWEEN ?2 and ?3
+
             UNION
+
             SELECT
             concat(m.id , f.id , 3) AS id,
             o.login as operador,
@@ -175,9 +174,32 @@
             JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
             JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
             JOIN pdv_operador o ON o.id = m.id_pdv_operador
-            WHERE (m.id = ?1)
-            and data_abertura BETWEEN ?2 and ?3
-            and (v.status_venda = 'E' or v.status_venda = 'F')
+            WHERE (m.id = ?1) and data_abertura BETWEEN ?2 and ?3 and (v.status_venda = 'E' or v.status_venda = 'F')
+
+            union
+
+            select
+            concat(m.id , r.id , 4) AS id,
+            o.login as operador,
+            m.id AS idmovimento,
+            r.id AS idorigem,
+            r.data_recebimento AS data_hora,
+            ('Recebimento n°' || r.id) || ' de '|| ps.nome AS descricao,
+            r.valor_recebido,
+            '01' AS codigo_forma_pagamento,
+            'Dinheiro' AS forma_pagamento,
+            'E' AS tipo,
+            'RECEBIMENTO' AS origem,
+            '' AS observacao
+            from pdv_movimento m
+            inner join pdv_operador o ON o.id = m.id_pdv_operador
+            inner join fin_parcela_recebimento r on r.id_pdv_movimento = m.id
+            inner join fin_parcela_receber p on p.id = r.id_fin_parcela_receber
+            inner join fin_lancamento_receber l on l.id = p.id_fin_lancamento_receber
+            inner join cliente c on c.id = l.id_cliente
+            inner join pessoa ps on ps.id = c.id_pessoa
+            where m.id = ?1
+
             ORDER BY 5,8;
         </query>
 
