@@ -105,13 +105,15 @@
                                             <h:outputLabel
                                                     value="#{obj.viewFinMovimentoCaixaBanco.nomePessoa}"/>
                                         </p:column>
-                                        <p:column headerText="Lancamento" width="125" styleClass="text-center">
+                                        <p:column headerText="Lancamento" width="125" styleClass="text-center"
+                                                  sortBy="#{obj.viewFinMovimentoCaixaBanco.dataLancamento}">
                                             <h:outputLabel
                                                     value="#{obj.viewFinMovimentoCaixaBanco.dataLancamento}">
                                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Pago/Recebido" width="140" styleClass="text-center">
+                                        <p:column headerText="Pago/Recebido" width="140" styleClass="text-center"
+                                                  sortBy="#{obj.viewFinMovimentoCaixaBanco.dataPagoRecebido}">
                                             <h:outputLabel
                                                     value="#{obj.viewFinMovimentoCaixaBanco.dataPagoRecebido}">
                                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
