@@ -597,19 +597,19 @@ public abstract class AbstractControll<T> implements Serializable {
         //PDV
 
         pdvCodigoTipoPagamento = new LinkedHashMap<>();
-        pdvCodigoTipoPagamento.put("01", "DINHEIRO");
-        pdvCodigoTipoPagamento.put("02", "CHEQUE");
-        pdvCodigoTipoPagamento.put("03", "CARTAO DE CREDITO");
-        pdvCodigoTipoPagamento.put("04", "CARTAO DE DEBITO");
-        pdvCodigoTipoPagamento.put("05", "Credito Loja");
-        pdvCodigoTipoPagamento.put("10", "Vale Alimentacao");
-        pdvCodigoTipoPagamento.put("11", "Vale Refeicao");
-        pdvCodigoTipoPagamento.put("12", "Vale Presente");
-        pdvCodigoTipoPagamento.put("13", "CVale Combustivel");
-        pdvCodigoTipoPagamento.put("14", "Duplicata Mercantil");
-        pdvCodigoTipoPagamento.put("15", "Boleto Bancario");
-        pdvCodigoTipoPagamento.put("90", "Sem pagamento");
-        pdvCodigoTipoPagamento.put("99", "Outros");
+        pdvCodigoTipoPagamento.put("DINHEIRO", "01");
+        pdvCodigoTipoPagamento.put("CHEQUE", "012");
+        pdvCodigoTipoPagamento.put("CARTAO DE CREDITO", "03");
+        pdvCodigoTipoPagamento.put("CARTAO DE DEBITO", "04");
+        pdvCodigoTipoPagamento.put("Credito Loja", "05");
+        pdvCodigoTipoPagamento.put("Vale Alimentacao", "10");
+        pdvCodigoTipoPagamento.put("Vale Refeicao", "11");
+        pdvCodigoTipoPagamento.put("Vale Presente", "12");
+        pdvCodigoTipoPagamento.put("Vale Combustivel", "13");
+        pdvCodigoTipoPagamento.put("Duplicata Mercantil", "14");
+        pdvCodigoTipoPagamento.put("Boleto Bancario", "15");
+        pdvCodigoTipoPagamento.put("Sem pagamento", "90");
+        pdvCodigoTipoPagamento.put("Outros", "99");
 
 
         pdvNivelAutorizacao = new LinkedHashMap<>();
