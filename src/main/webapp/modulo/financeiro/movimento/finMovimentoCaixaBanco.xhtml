@@ -93,7 +93,8 @@
                                     <p:dataTable id="dataTableFinMovimentoCaixaBancoDetalhe" var="obj"
                                                  value="#{finMovimentoCaixaBancoControll.listaMovimentoCaixaBanco}"
                                                  paginator="true" rows="50" rowsPerPageTemplate="50,100,150,200"
-                                                 resizableColumns="true" paginatorPosition="bottom">
+                                                 paginatorPosition="bottom"
+                                                 sortBy="#{obj.viewFinMovimentoCaixaBanco.dataPagoRecebido}">
 
                                         <p:column headerText="Conta" width="150">
                                             <h:outputLabel
