@@ -445,13 +445,17 @@ public class GeraXMLEnvio {
                                 volume.setMarca(v.getMarca());
                                 volume.setPesoL(FormatValor.getInstance().formatarPeso(v.getPesoLiquido()));
                                 volume.setPesoB(FormatValor.getInstance().formatarPeso(v.getPesoBruto()));
-                                v.getListaTransporteVolumeLacre().stream()
-                                        .forEach(l -> {
-                                            TNFe.InfNFe.Transp.Vol.Lacres lacre = new TNFe.InfNFe.Transp.Vol.Lacres();
-                                            volume.getLacres().add(lacre);
 
-                                            lacre.setNLacre(l.getNumero());
-                                        });
+                                if (v.getListaTransporteVolumeLacre() != null) {
+                                    v.getListaTransporteVolumeLacre().stream()
+                                            .forEach(l -> {
+                                                TNFe.InfNFe.Transp.Vol.Lacres lacre = new TNFe.InfNFe.Transp.Vol.Lacres();
+                                                volume.getLacres().add(lacre);
+
+                                                lacre.setNLacre(l.getNumero());
+                                            });
+                                }
+
                                 transp.getVol().add(volume);
                             });
                 }
