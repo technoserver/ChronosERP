@@ -149,7 +149,7 @@ public class GeraXMLEnvio {
             String qrCode = NFCeUtil.getCodeQRCode(
                     infNfe.getId().substring(3),
                     nfeCabecalho.getAmbiente().toString(),
-                    "000001",
+                    nfeCabecalho.getTokenCsc(),
                     nfeCabecalho.getCsc(),
                     url);
             InfNFeSupl infNFeSupl = new InfNFeSupl();

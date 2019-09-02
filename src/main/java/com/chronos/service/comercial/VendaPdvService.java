@@ -158,6 +158,7 @@ public class VendaPdvService implements Serializable {
 
 
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
+        nfe.setTokenCsc(configuracaoEmissorDTO.getTokenCsc());
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
 

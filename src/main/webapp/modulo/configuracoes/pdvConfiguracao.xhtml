@@ -88,12 +88,17 @@
                                          nomeAtributo="#{pdvConfiguracaoControll.objeto.webserviceAmbiente}"
                                          itens="#{pdvConfiguracaoControll.webserviceAmbiente}"/>
 
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="token" label="Tolen" requerido="true"
+                                        nomeAtributo="#{pdvConfiguracaoControll.objeto.idTokenCsc}"
+                                        tamanhoMaximo="6"/>
+
                         <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                                         idComponente="csc" label="Csc" requerido="true"
                                         nomeAtributo="#{pdvConfiguracaoControll.objeto.codigoCsc}"
-                                        tamanhoMaximo="32"/>
+                                        tamanhoMaximo="36"/>
 
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                         idComponente="caminhoSchemas" label="Schemas"
                                         exibirInfo="true"
                                         somenteLeitura="true"
