@@ -1,6 +1,7 @@
 package com.chronos.service.cadastros;
 
 import com.chronos.modelo.entidades.*;
+import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.jpa.Transactional;
@@ -79,6 +80,16 @@ public class ProdutoFornecedorService implements Serializable {
         Produto produto = repository.get(FornecedorProduto.class, "codigoFornecedorProduto", codigo, new Object[]{"produto.id,produto.nome"}).getProduto();
 
         return produto;
+    }
+
+    public void removerProdutoFornecedor(Integer idproduto, Integer idforncedor) {
+
+        List<Filtro> filtros = new ArrayList<>();
+
+        filtros.add(new Filtro("produto.id", idproduto));
+        filtros.add(new Filtro("fornecedor.id", idforncedor));
+
+        repository.excluir(FornecedorProduto.class, filtros);
     }
 
 
