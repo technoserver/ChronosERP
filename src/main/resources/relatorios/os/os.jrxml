@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="os" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
+    <property name="ireport.zoom" value="4.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="1296"/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+    <style name="table">
+        <box>
+            <topPen lineWidth="1.0" lineColor="#000000"/>
+            <bottomPen lineWidth="1.0" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+        <box>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+        <box>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <subDataset name="equipamentoDTS" uuid="1b169113-e2e6-41fd-b0f3-39ad99acb70e"/>
+    <parameter name="logo" class="java.awt.Image"/>
+    <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression><![CDATA["E:\\projetos\\jasper\\MyReports\\MyReports\\"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="id_os" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+     os.numero,
+     os.data_inicio,
+     os.observacao_cliente,
+     os.observacao_abertura,
+     os.valor_total_produtos,
+     os.valor_total_servicos,
+     os.valor_total,
+     os.valor_total_desconto,
+     os.data_previsao,
+     os.hora_previsao,
+     os.status,
+     empresa.razao_social AS empresa_razao_social,
+     empresa.nome_fantasia AS empresa_nome_fantasia,
+     empresa.cnpj AS empresa_cnpj,
+     empresa.inscricao_estadual AS empresa_inscricao_estadual,
+     empresa_endereco.logradouro AS empresa_endereco_logradouro,
+     empresa_endereco.numero AS empresa_endereco_numero,
+     empresa_endereco.complemento AS empresa_endereco_complemento,
+     empresa_endereco.bairro AS empresa_endereco_bairro,
+     empresa_endereco.cidade AS empresa_endereco_cidade,
+     empresa_endereco.cep AS empresa_endereco_cep,
+     empresa_endereco.fone AS empresa_endereco_fone,
+     empresa_endereco.uf AS empresa_endereco_uf,
+     empresa.email AS empresa_email,
+     empresa.imagem_logotipo AS empresa_imagem_logotipo,
+     pessoa.nome AS pessoa_nome,
+     pessoa_endereco.logradouro AS pessoa_endereco_logradouro,
+     pessoa_endereco.numero AS pessoa_endereco_numero,
+     pessoa_endereco.complemento AS pessoa_endereco_complemento,
+     pessoa_endereco.bairro AS pessoa_endereco_bairro,
+     pessoa_endereco.cidade AS pessoa_endereco_cidade,
+     pessoa_endereco.uf AS pessoa_endereco_uf,
+     pessoa_endereco.cep AS pessoa_endereco_cep,
+     pessoa_endereco.fone AS pessoa_endereco_fone,
+     pessoa_endereco.principal AS pessoa_endereco_principal,
+     pessoa_colaborador.nome as tecnico
+
+FROM
+     os_abertura os
+     INNER JOIN cliente cliente on os.id_cliente = cliente.id
+     INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id
+     INNER JOIN pessoa_endereco pessoa_endereco ON pessoa.id = pessoa_endereco.id_pessoa
+     INNER JOIN colaborador colaborador on colaborador.id = os.id_colaborador
+     INNER JOIN pessoa pessoa_colaborador on pessoa_colaborador.id = colaborador.id_pessoa
+     INNER JOIN empresa empresa ON os.id_empresa = empresa.id
+     INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+WHERE
+     os.id = $P{id_os}  AND empresa_endereco.principal = 'S']]>
+    </queryString>
+    <field name="numero" class="java.lang.String"/>
+    <field name="data_inicio" class="java.sql.Date"/>
+    <field name="observacao_cliente" class="java.lang.String"/>
+    <field name="observacao_abertura" class="java.lang.String"/>
+    <field name="valor_total_produtos" class="java.math.BigDecimal"/>
+    <field name="valor_total_servicos" class="java.math.BigDecimal"/>
+    <field name="valor_total" class="java.math.BigDecimal"/>
+    <field name="valor_total_desconto" class="java.math.BigDecimal"/>
+    <field name="data_previsao" class="java.sql.Date"/>
+    <field name="hora_previsao" class="java.lang.String"/>
+    <field name="status" class="java.lang.Integer"/>
+    <field name="empresa_razao_social" class="java.lang.String"/>
+    <field name="empresa_nome_fantasia" class="java.lang.String"/>
+    <field name="empresa_cnpj" class="java.lang.String"/>
+    <field name="empresa_inscricao_estadual" class="java.lang.String"/>
+    <field name="empresa_endereco_logradouro" class="java.lang.String"/>
+    <field name="empresa_endereco_numero" class="java.lang.String"/>
+    <field name="empresa_endereco_complemento" class="java.lang.String"/>
+    <field name="empresa_endereco_bairro" class="java.lang.String"/>
+    <field name="empresa_endereco_cidade" class="java.lang.String"/>
+    <field name="empresa_endereco_cep" class="java.lang.String"/>
+    <field name="empresa_endereco_fone" class="java.lang.String"/>
+    <field name="empresa_endereco_uf" class="java.lang.String"/>
+    <field name="empresa_email" class="java.lang.String"/>
+    <field name="empresa_imagem_logotipo" class="java.lang.String"/>
+    <field name="pessoa_nome" class="java.lang.String"/>
+    <field name="pessoa_endereco_logradouro" class="java.lang.String"/>
+    <field name="pessoa_endereco_numero" class="java.lang.String"/>
+    <field name="pessoa_endereco_complemento" class="java.lang.String"/>
+    <field name="pessoa_endereco_bairro" class="java.lang.String"/>
+    <field name="pessoa_endereco_cidade" class="java.lang.String"/>
+    <field name="pessoa_endereco_uf" class="java.lang.String"/>
+    <field name="pessoa_endereco_cep" class="java.lang.String"/>
+    <field name="pessoa_endereco_fone" class="java.lang.String"/>
+    <field name="pessoa_endereco_principal" class="java.lang.String"/>
+    <field name="tecnico" class="java.lang.String"/>
+    <group name="evolucao">
+        <groupExpression><![CDATA[$F{numero}]]></groupExpression>
+        <groupHeader>
+            <band height="29">
+                <staticText>
+                    <reportElement x="0" y="0" width="61" height="13" uuid="ecfc85bb-3160-42a1-9d64-54112470577e"/>
+                    <textElement>
+                        <font fontName="Courier New" size="10" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Evolução:]]></text>
+                </staticText>
+                <subreport>
+                    <reportElement x="0" y="13" width="555" height="12" uuid="d4ead1b8-aac4-4f13-af48-1cc8dd827fa8"/>
+                    <subreportParameter name="id_os">
+                        <subreportParameterExpression><![CDATA[$P{id_os}]]></subreportParameterExpression>
+                    </subreportParameter>
+                    <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                    <subreportExpression>
+                        <![CDATA[$P{SUBREPORT_DIR} + "osDetalheEvolucao.jasper"]]></subreportExpression>
+                </subreport>
+                <line>
+                    <reportElement x="0" y="0" width="555" height="1" uuid="e5dd54bf-5f53-4d1b-9bf9-f81e842f922a"/>
+                </line>
+            </band>
+            <band height="16">
+                <subreport>
+                    <reportElement x="0" y="0" width="555" height="14" uuid="6175c397-ccb6-4f40-b349-e66d4ba17f24"/>
+                    <subreportParameter name="id_os">
+                        <subreportParameterExpression><![CDATA[$P{id_os}]]></subreportParameterExpression>
+                    </subreportParameter>
+                    <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                    <subreportExpression>
+                        <![CDATA[$P{SUBREPORT_DIR} + "osDetalheEquipamento.jasper"]]></subreportExpression>
+                </subreport>
+            </band>
+        </groupHeader>
+    </group>
+    <title>
+        <band height="223" splitType="Stretch">
+            <image isUsingCache="true" onErrorType="Blank">
+                <reportElement positionType="Float" mode="Transparent" x="2" y="0" width="208" height="80"
+                               uuid="39763776-99a0-40da-b698-701f2a065525"/>
+                <imageExpression><![CDATA[$F{empresa_imagem_logotipo}]]></imageExpression>
+            </image>
+            <line>
+                <reportElement x="0" y="108" width="555" height="1" uuid="84907098-40f5-401a-b232-5785f0e8faa0"/>
+            </line>
+            <textField>
+                <reportElement x="278" y="0" width="277" height="15" uuid="ef82db32-1726-4cac-9ee3-442ef2dd7348"/>
+                <textElement>
+                    <font fontName="Courier New" size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="278" y="14" width="277" height="13" uuid="14107320-d172-4d59-a268-5adef321104a"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_endereco_logradouro}+","+$F{empresa_endereco_numero}+"-"+$F{empresa_endereco_bairro}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="278" y="26" width="36" height="13" uuid="a149d8c6-723f-4357-9d21-645cb4198c1a"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <text><![CDATA[CNPJ:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="414" y="26" width="36" height="13" uuid="4317725a-a011-4efa-a747-33d0d6ac5668"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <text><![CDATA[IE:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="314" y="26" width="100" height="13" uuid="1c93043a-de2c-469a-b30f-97b358a0bef6"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_cnpj}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="450" y="26" width="105" height="13" uuid="28109b0f-511b-49bc-9be3-71e5f0970c7a"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_inscricao_estadual}==null?"":$F{empresa_inscricao_estadual}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="278" y="38" width="36" height="13" uuid="bc675e70-68e2-4869-a07a-a903455d3aad"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <text><![CDATA[FONE:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="314" y="38" width="100" height="13" uuid="e74f0bb5-464b-4151-ba79-52e5c583565c"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_endereco_fone}==null?"":$F{empresa_endereco_fone}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="278" y="50" width="36" height="13" uuid="97d8cc50-d1d9-4406-bef4-4f7e1bd328dd"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <text><![CDATA[EMAIL:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="314" y="50" width="241" height="13" uuid="fe6cdf0f-3001-4494-83a5-e61c65526513"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_email}==null?"":$F{empresa_email}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement x="479" y="81" width="75" height="14" uuid="08715cba-59c2-4071-9808-e2941dfdb4e0"/>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <textField pattern="HH:mm">
+                <reportElement x="479" y="94" width="75" height="14" uuid="68f116aa-e1ee-402f-a1fd-1aaa48fe9578"/>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="439" y="81" width="41" height="14" uuid="0308f1da-c227-4637-9e2d-eee1ab75dc1b"/>
+                <textElement>
+                    <font fontName="Courier New" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Data:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="439" y="94" width="41" height="14" uuid="39ef6df0-2e43-4ded-a70a-80d1aa833a79"/>
+                <textElement>
+                    <font fontName="Courier New" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Hora:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="79" width="439" height="29" uuid="8f005b14-0cd6-4980-9621-f58de4312734"/>
+                <textElement>
+                    <font fontName="Courier New" size="18" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Ordem de Serviço]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="129" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
+            </line>
+            <staticText>
+                <reportElement x="1" y="108" width="93" height="20" uuid="0f7d7814-df72-492f-9e12-7164cf55abd3"/>
+                <textElement>
+                    <font fontName="Courier New" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Data abertura:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="130" width="63" height="13" uuid="4e90a8aa-3628-41d3-9099-fcc6acc489f2"/>
+                <textElement>
+                    <font fontName="Courier New" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Cliente.:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="142" width="63" height="13" uuid="d8e3fcbe-d63d-463c-aac5-2ee9723b1747"/>
+                <textElement>
+                    <font fontName="Courier New" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Endereço:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="154" width="63" height="13" uuid="1c3e9be9-e60f-4bbc-9123-d23b2304bf69"/>
+                <textElement>
+                    <font fontName="Courier New" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Cidade..:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="166" width="63" height="13" uuid="37a69d0e-b742-41a9-9149-2be79b782288"/>
+                <textElement>
+                    <font fontName="Courier New" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[CNPJ/CPF:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="382" y="130" width="73" height="13" uuid="54002c96-4203-4a35-98b5-10f568f7bf3e"/>
+                <textElement>
+                    <font fontName="Courier New" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Telefone.:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="314" y="154" width="53" height="13" uuid="ce12983f-bc64-42a0-8b25-f1f1875ef8c4"/>
+                <textElement>
+                    <font fontName="Courier New" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Bairro:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="475" y="153" width="28" height="13" uuid="ce1f368f-fc5d-42c9-b1d3-488c5ab713e4"/>
+                <textElement>
+                    <font fontName="Courier New" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[CEP:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="186" y="166" width="24" height="13" uuid="16458db3-ace8-494d-8049-288279e3c1fd"/>
+                <textElement>
+                    <font fontName="Courier New" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[IE:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="63" y="130" width="319" height="13" uuid="b7101f4a-f169-4a2b-9498-3d3d6e2ab3fa"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pessoa_nome}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="63" y="142" width="491" height="13" uuid="152a775e-8241-4927-804f-f2b1ad14b5f3"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{pessoa_endereco_logradouro}+"-"+$F{pessoa_endereco_numero}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="63" y="154" width="251" height="12" uuid="9ee46477-fbf3-444f-9edb-2a7a553e7ad7"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{pessoa_endereco_cidade}+" - "+$F{empresa_endereco_uf}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="455" y="130" width="100" height="13" uuid="0dd0c4be-d97d-4e6b-a82b-be59d850a8df"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pessoa_endereco_fone}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="503" y="154" width="51" height="12" uuid="6d09f3d4-9018-4041-b6e8-ba25902e1fdd"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pessoa_endereco_cep}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="367" y="154" width="108" height="13" uuid="1437312e-89a0-4cfa-943e-077b42a06b81"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pessoa_endereco_bairro}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="179" width="555" height="1" uuid="1973b888-5217-4165-9a7d-1590cfd73963"/>
+            </line>
+            <textField>
+                <reportElement x="455" y="108" width="100" height="20" forecolor="#FF0000"
+                               uuid="ffe6a94b-fe72-490e-a15b-0df1e54d564b"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Courier New" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement x="94" y="108" width="100" height="20" uuid="5776fdc1-acda-4ae2-89fa-6781e9f5af34"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{data_inicio}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="2" y="180" width="113" height="13" uuid="4d41ae56-2605-4e41-b4f5-b24bb67ab573"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Problema relatado:]]></text>
+            </staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="3" y="192" width="552" height="29"
+                               uuid="38924542-a7c2-4391-915e-45be15540891"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{observacao_cliente}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <detail>
+        <band height="28" splitType="Stretch">
+            <subreport runToBottom="false">
+                <reportElement positionType="Float" x="0" y="0" width="554" height="25" isRemoveLineWhenBlank="true"
+                               uuid="1028ba7d-6c9e-4487-bc90-48b7a153faf9"/>
+                <subreportParameter name="id_os">
+                    <subreportParameterExpression><![CDATA[$P{id_os}]]></subreportParameterExpression>
+                </subreportParameter>
+                <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                <subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "osDetalhe.jasper"]]></subreportExpression>
+            </subreport>
+        </band>
+    </detail>
+    <pageFooter>
+        <band height="13">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="13" uuid="386fb171-7e84-4de5-aa72-892bbf493cff"/>
+                <textElement>
+                    <font fontName="Courier New" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[***ESTE DOCUMENTO NÃO VALE COMO RECIBO DE PAGAMENTO***]]></text>
+            </staticText>
+        </band>
+    </pageFooter>
+    <summary>
+        <band height="88">
+            <staticText>
+                <reportElement x="337" y="17" width="138" height="12" uuid="add42da5-5551-4a26-bab2-56335cfc5aeb"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Valor Total Itens..:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="337" y="29" width="138" height="12" uuid="f140b4a6-0a6b-4ff5-82b4-c70d77801e51"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Desconto...........:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="337" y="41" width="138" height="12" uuid="68a05415-1b33-4104-ad1f-5ddef2fd34fb"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Valor Total........:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="337" y="5" width="138" height="12" uuid="14f763ec-df44-4fcc-8e79-16cff6d2b99e"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Valor Total Serviço:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="63" width="76" height="13" uuid="f12b2eaf-e7ce-40dc-8d73-b73dbc329148"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Observações:]]></text>
+            </staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement stretchType="RelativeToBandHeight" x="0" y="75" width="555" height="12"
+                               uuid="93d488b7-600a-4e82-9273-50d81a9e8234"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{observacao_abertura}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="0" width="555" height="1" uuid="bb1a391f-341a-4b45-97b4-840587629823"/>
+            </line>
+            <staticText>
+                <reportElement x="0" y="4" width="85" height="13" uuid="2167c617-760c-44f7-b1fe-899ce70687a3"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Tecnico......:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="17" width="85" height="13" uuid="f650c7ad-30b3-414a-adcf-09d4ced29d84"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Data Previsão:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="1" y="30" width="84" height="13" uuid="884f4ecb-ef1e-4c58-9405-2a36e3b2ee71"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Hora previsão:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="43" width="85" height="12" uuid="f226769d-4c87-401f-bf68-ceec46e22770"/>
+                <textElement>
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Situação.....:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="88" y="4" width="234" height="13" uuid="34cfaf26-0ce0-47fb-b245-2cb116389867"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{tecnico}]]></textFieldExpression>
+            </textField>
+            <textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+                <reportElement x="475" y="5" width="79" height="12" uuid="727c8533-e9b3-4495-a84f-834a6cc7cfac"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{valor_total_servicos}]]></textFieldExpression>
+            </textField>
+            <textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+                <reportElement x="475" y="17" width="79" height="12" uuid="518f421a-cff2-4dc7-bd58-46170c6e49fc"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{valor_total_produtos}]]></textFieldExpression>
+            </textField>
+            <textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+                <reportElement x="475" y="29" width="79" height="12" uuid="955d8627-5519-440b-9bcc-d018d79ba4c2"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{valor_total_desconto}]]></textFieldExpression>
+            </textField>
+            <textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+                <reportElement x="475" y="41" width="79" height="12" uuid="8e07621b-a308-44c1-a78a-f7f59d76cbb7"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="88" y="30" width="96" height="12" uuid="58b449e7-2dbc-47e0-a4af-0273af0658f5"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{hora_previsao}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="88" y="17" width="100" height="12" uuid="2eb68d02-38b6-40b0-bebe-c8ae859f53b3"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{data_previsao}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="88" y="42" width="248" height="12" uuid="0ed5fe0f-fdbf-4a7e-9fa5-606c9be96e17"/>
+                <textElement>
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{status}.equals(1) ? "PENDENTE" :
+$F{status}.equals(2) ? "EM ATENDIMENTO":
+$F{status}.equals(3) ? "AGUARDANDO" :
+$F{status}.equals(4) ? "AGUARDANDO APROVAÇÃO" :
+$F{status}.equals(5) ? "APROVADO" :
+$F{status}.equals(6) ? "REPROVADO" :
+$F{status}.equals(7) ? "EM TRÂNSITO" :
+$F{status}.equals(8) ? "AGUARDANDO DIAGNÓSTICO" :
+$F{status}.equals(9) ? "DIAGNÓSTICO PRONTO" :
+$F{status}.equals(10) ? "SEM CONSERTO" :
+$F{status}.equals(11) ? "CANCELADA" :
+$F{status}.equals(12) ? "ENCERRADO" :
+$F{status}.equals(13) ? "FATURADO" : ""]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

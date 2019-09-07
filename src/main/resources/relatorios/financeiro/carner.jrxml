@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="carner" language="groovy" pageWidth="567" pageHeight="170" columnWidth="567" leftMargin="0"
+              rightMargin="0" topMargin="0" bottomMargin="0" uuid="bba4eaff-f0db-49dd-b679-85d6ea4e319b">
+    <property name="ireport.zoom" value="6.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <parameter name="id" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[select * from fin_lancamento_receber l
+inner join fin_parcela_receber p on  p.id_fin_lancamento_receber = l.id
+where l.id = $P{id}]]>
+    </queryString>
+    <field name="id" class="java.lang.Integer"/>
+    <field name="id_fin_documento_origem" class="java.lang.Integer"/>
+    <field name="id_empresa" class="java.lang.Integer"/>
+    <field name="id_cliente" class="java.lang.Integer"/>
+    <field name="quantidade_parcela" class="java.lang.Integer"/>
+    <field name="valor_total" class="java.math.BigDecimal"/>
+    <field name="valor_desconto_convenio" class="java.math.BigDecimal"/>
+    <field name="valor_a_receber" class="java.math.BigDecimal"/>
+    <field name="data_lancamento" class="java.sql.Date"/>
+    <field name="numero_documento" class="java.lang.String"/>
+    <field name="primeiro_vencimento" class="java.sql.Date"/>
+    <field name="taxa_comissao" class="java.math.BigDecimal"/>
+    <field name="valor_comissao" class="java.math.BigDecimal"/>
+    <field name="intervalo_entre_parcelas" class="java.lang.Integer"/>
+    <field name="codigo_modulo_lcto" class="java.lang.String"/>
+    <field name="mesclado_para" class="java.lang.Integer"/>
+    <field name="hash_modulo_lcto" class="java.lang.String"/>
+    <field name="id_conta_caixa" class="java.lang.Integer"/>
+    <field name="id_fin_lancamento_receber" class="java.lang.Integer"/>
+    <field name="id_fin_status_parcela" class="java.lang.Integer"/>
+    <field name="numero_parcela" class="java.lang.Integer"/>
+    <field name="data_emissao" class="java.sql.Date"/>
+    <field name="data_vencimento" class="java.sql.Date"/>
+    <field name="desconto_ate" class="java.sql.Date"/>
+    <field name="valor" class="java.math.BigDecimal"/>
+    <field name="taxa_juro" class="java.math.BigDecimal"/>
+    <field name="taxa_multa" class="java.math.BigDecimal"/>
+    <field name="taxa_desconto" class="java.math.BigDecimal"/>
+    <field name="valor_juro" class="java.math.BigDecimal"/>
+    <field name="valor_multa" class="java.math.BigDecimal"/>
+    <field name="valor_desconto" class="java.math.BigDecimal"/>
+    <field name="emitiu_boleto" class="java.lang.String"/>
+    <field name="boleto_nosso_numero" class="java.lang.String"/>
+    <detail>
+        <band height="125" splitType="Stretch">
+            <rectangle>
+                <reportElement x="0" y="0" width="567" height="125" uuid="d2e837ba-4a2b-4bec-9ff4-5bc9a0be327c"/>
+            </rectangle>
+            <line>
+                <reportElement x="112" y="0" width="1" height="125" uuid="434cffb4-8aa1-4507-aab3-e972f0788e7e"/>
+                <graphicElement>
+                    <pen lineStyle="Dashed"/>
+                </graphicElement>
+            </line>
+            <line>
+                <reportElement x="0" y="52" width="112" height="1" uuid="132035a6-e9b0-42e2-8f0a-d3c2c538861f"/>
+            </line>
+            <line>
+                <reportElement x="0" y="30" width="112" height="1" uuid="2f03786d-f5e2-4a51-b740-53b6675c1a50"/>
+            </line>
+            <staticText>
+                <reportElement x="64" y="0" width="20" height="9" uuid="a463b2fd-9569-4fed-a09b-b99b78e19c69"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="7"/>
+                </textElement>
+                <text><![CDATA[Parcela]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="74" y="8" width="20" height="9" uuid="8cd3575a-a4ce-4dec-89b3-b1c62032f86c"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="7"/>
+                </textElement>
+                <text><![CDATA[1/5]]></text>
+            </staticText>
+            <line>
+                <reportElement x="66" y="17" width="38" height="1" uuid="8fc894d2-a7bf-4942-a3b5-c65b67150a6e"/>
+            </line>
+            <image onErrorType="Blank">
+                <reportElement x="6" y="3" width="39" height="25" uuid="97aaddbd-3316-4f45-a7fe-d6e416399e53"/>
+            </image>
+        </band>
+    </detail>
+</jasperReport>

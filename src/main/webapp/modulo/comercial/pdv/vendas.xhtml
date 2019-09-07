@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+>
+
+
+    <ui:define name="title">
+        Vendas PDV
+    </ui:define>
+
+    <ui:define name="tela">
+        Vendas
+    </ui:define>
+    <ui:define name="controle">
+        PDV
+    </ui:define>
+
+    <ui:define name="gridDados">
+
+
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{balcaoControll.telaGrid}" id="telaGrid">
+                <div class="ibox-content">
+
+
+                    <p:dataTable
+                            value="#{balcaoControll.dataModel}"
+                            var="row" id="tableVenda" paginator="true"
+                            rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                            reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
+                            lazy="true" sortBy="#{row.id}" sortOrder="descending"
+                    >
+
+                        <p:column headerText="Caixa" width="90">
+                            <h:outputLabel value="#{row.caixa}"/>
+                        </p:column>
+
+                        <p:column headerText="Cliente" width="130">
+                            <h:outputLabel value="#{row.nomeCliente == null ? 'Não identificado': row.nomeCliente}"/>
+                        </p:column>
+                        <p:column headerText="Data Venda" width="130" sortBy="#{row.dataHoraVenda}"
+                                  styleClass="text-center">
+                            <h:outputLabel value="#{row.dataHoraVenda}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Subtotal" class="coluna-monetaria" width="130">
+                            <h:outputLabel value="#{row.valorSubtotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Desconto" class="coluna-monetaria" width="75">
+                            <h:outputLabel value="#{row.valorDesconto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
+                            <h:outputLabel value="#{row.valorTotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Situacao" sortBy="#{row.statusVenda}" width="85"
+                                  styleClass="text-center">
+
+                            <h:outputLabel value="Faturada" rendered="#{row.statusVenda eq 'F'}"
+                                           styleClass="label  label-info"/>
+
+                            <h:outputLabel value="Encerrada" rendered="#{row.statusVenda eq 'E'}"
+                                           styleClass="label  label-success"/>
+
+                            <h:outputLabel value="Cancelada" rendered="#{row.statusVenda eq 'C'}"
+                                           styleClass="label  label-danger"/>
+
+                        </p:column>
+
+                        <p:column headerText="Ações" width="60" class="text-center">
+
+                            <p:menuButton rendered="#{row.statusVenda ne 'C'}">
+                                <p:menuitem value="Cupom"
+                                            rendered="#{empty row.idnfe}"
+                                            target="blank"
+                                            outcome="/modulo/comercial/vendas/relatorios/cupomBalcao"
+                                            icon="fa fa-print" ajax="false">
+                                    <f:param name="idcupom" value="#{row.id}"/>
+                                </p:menuitem>
+                                <p:menuitem value="Cupom"
+                                            icon="fa fa-print" ajax="false"
+                                            rendered="#{not empty row.idnfe}"
+                                            action="#{balcaoControll.danfe}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{balcaoControll.venda}"/>
+                                </p:menuitem>
+                                <p:menuitem value="Emitir NFCe"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{empty row.idnfe and row.sicronizado eq 'N'}"
+                                            action="#{balcaoControll.gerarNfce}"
+                                >
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{balcaoControll.venda}"/>
+                                </p:menuitem>
+
+                                <p:menuitem value="Cencelar"
+                                            icon="fa fa-ban"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{row.statusVenda ne 'C' and row.sicronizado eq 'N'}"
+                                            action="#{balcaoControll.cancelarVenda}">
+                                    <p:confirm header="Confirmar" message="Deseja cancelar o cupom ?"/>
+
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{balcaoControll.venda}"/>
+                                </p:menuitem>
+
+
+                            </p:menuButton>
+                            <!--<p:menuitem value="Cupom"-->
+                            <!--target="blank"-->
+                            <!--outcome="/modulo/comercial/nfce/relatorios/cupom"-->
+                            <!--icon="fa fa-print" ajax="false">-->
+                            <!--</p:menuitem>-->
+
+
+                        </p:column>
+
+                    </p:dataTable>
+
+
+                </div>
+                <h:panelGroup class="ibox-footer" layout="block">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6  text-center">
+
+                            <p:commandButton value="Nova Venda"
+                                             action="#{balcaoControll.novaVenda}"
+                                             process="@this"
+                                             onclick="loadLocalStorage()">
+
+                            </p:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             id="btnCancelar"
+                                             action="/privado/index?faces-redirect=true" immediate="true"/>
+                        </div>
+                    </div>
+
+                </h:panelGroup>
+            </p:outputPanel>
+        </p:outputPanel>
+
+    </ui:define>
+
+</ui:composition>
