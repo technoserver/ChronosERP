@@ -124,15 +124,19 @@ public class PessoaService implements Serializable {
     private void validarPessoa(Pessoa pessoa) throws Exception {
 
         if (pessoa.getTipo().equals("F")) {
-            Object[] atributos = new Object[]{"pessoa.nome"};
-            PessoaFisica pf = pessoasFisica.get(PessoaFisica.class, "cpf", pessoa.getPessoaFisica().getCpf().replaceAll("\\D", ""), atributos);
 
-            if (pf != null && !pf.equals(pessoa.getPessoaFisica())) {
-                throw new ChronosException("CPF ja informado em :" + pf.getPessoa().getNome());
+            if (!StringUtils.isEmpty(pessoa.getPessoaFisica().getCpf())) {
+                Object[] atributos = new Object[]{"pessoa.nome"};
+                PessoaFisica pf = pessoasFisica.get(PessoaFisica.class, "cpf", pessoa.getPessoaFisica().getCpf().replaceAll("\\D", ""), atributos);
+
+                if (pf != null && !pf.equals(pessoa.getPessoaFisica())) {
+                    throw new ChronosException("CPF ja informado em :" + pf.getPessoa().getNome());
+                }
+                if (!Biblioteca.cpfValido(pessoa.getIdentificador())) {
+                    throw new ChronosException("CPF invalido");
+                }
             }
-            if (!Biblioteca.cpfValido(pessoa.getIdentificador())) {
-                throw new ChronosException("CPF invalido");
-            }
+
             pessoa.setPessoaJuridica(null);
         } else {
             Object[] atributos = new Object[]{"pessoa.nome"};

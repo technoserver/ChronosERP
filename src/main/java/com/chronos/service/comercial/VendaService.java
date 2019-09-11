@@ -654,7 +654,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         BigDecimal sobra = Biblioteca.soma(valorDesconto, descAntecipado);
         sobra = Biblioteca.subtrai(sobra, descItens);
 
-        if (sobra.signum() > 0) {
+        if (sobra.signum() > 0 || sobra.signum() < 0) {
             VendaDetalhe item = venda.getListaVendaDetalhe().get(0);
             BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
             BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);
