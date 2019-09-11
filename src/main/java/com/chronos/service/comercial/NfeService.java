@@ -370,7 +370,9 @@ public class NfeService implements Serializable {
 
     public NfeCabecalho atualizarTotais(NfeCabecalho nfe) throws Exception {
         NfeUtil nFeUtil = new NfeUtil();
-        return nFeUtil.calcularTotalNFe(nfe);
+        nfe = nFeUtil.calcularTotalNFe(nfe);
+        nFeUtil.definirTotaisTributos(nfe);
+        return nfe;
     }
 
     public List<Produto> getListaProduto(String descricao, Empresa empresa) {

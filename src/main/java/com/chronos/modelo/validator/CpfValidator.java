@@ -1,6 +1,7 @@
 package com.chronos.modelo.validator;
 
 import com.chronos.util.Biblioteca;
+import org.springframework.util.StringUtils;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -19,7 +20,7 @@ public class CpfValidator implements Validator {
     public void validate(FacesContext facesContext, UIComponent uiComponent, Object value) throws ValidatorException {
         String cpf = String.valueOf(value);
         cpf = cpf.replaceAll("\\D", "");
-        if (!Biblioteca.cpfValido(cpf)) {
+        if (!StringUtils.isEmpty(cpf) && !Biblioteca.cpfValido(cpf)) {
             throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "CPF inválido!", null));
         }
     }
