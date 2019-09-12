@@ -32,7 +32,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -549,7 +548,7 @@ public class BalcaoControll implements Serializable {
     }
 
     public void selecionarCliente() {
-        if (cliente.getId() != null) {
+        if (cliente != null && cliente.getId() != null) {
             venda.setCliente(cliente);
             venda.setNomeCliente(cliente.getPessoa().getNome());
 
@@ -883,7 +882,6 @@ public class BalcaoControll implements Serializable {
     }
 
 
-    @NotNull
     public Cliente getCliente() {
         return cliente;
     }

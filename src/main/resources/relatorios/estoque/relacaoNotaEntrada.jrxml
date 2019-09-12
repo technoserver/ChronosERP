@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="relacaoNotaEntrada" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20"
+              rightMargin="20" topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
+    <property name="ireport.zoom" value="3.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="546"/>
+    <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
+           isUnderline="false" isStrikeThrough="false"/>
+    <style name="dadosDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isBold="false"
+           isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+    <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression>
+            <![CDATA["/home/john/projetos/java/chronosnfe/src/main/resources/com/chronos/relatorio/comercial/"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="idempresa" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="peridoInicial" class="java.util.Date">
+        <defaultValueExpression>
+            <![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("1990-01-01")]]></defaultValueExpression>
+    </parameter>
+    <parameter name="peridoFinal" class="java.util.Date">
+        <defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="ordem" class="java.lang.String">
+        <defaultValueExpression><![CDATA["data_hora_entrada_saida"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="idfornecedor" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+     n.id,
+     n.numero,
+     o.cfop,
+     n.serie,
+     f.id as cod_fornecedor,
+     p.nome as fornecedor,
+     n.data_hora_emissao,
+     n.data_hora_entrada_saida,
+     (n.chave_acesso||n.digito_chave_acesso) as chave_acesso,
+     pe.cidade,
+     pe.uf,
+     pj.cnpj as cpf_cnpj,
+     pj.inscricao_estadual,
+     t.nome as transportadora,
+     n.valor_icms,
+     n.valor_icms_st,
+     n.valor_pis,
+     n.valor_cofins,
+     n.valor_ipi,
+     n.valor_frete,
+     n.valor_total_produtos,
+     n.valor_total,
+     empresa.razao_social AS empresa_razao_social,
+     empresa.nome_fantasia AS empresa_nome_fantasia,
+     empresa.cnpj AS empresa_cnpj,
+     empresa.inscricao_estadual AS empresa_inscricao_estadual
+
+FROM
+     nfe_cabecalho n
+     INNER JOIN fornecedor f ON n.id_fornecedor = f.id
+     INNER JOIN pessoa p ON f.id_pessoa = p.id
+     INNER JOIN pessoa_juridica pj ON pj.id_pessoa = p.id
+     INNER JOIN pessoa_endereco pe ON pe.id_pessoa = p.id
+     INNER JOIN tribut_operacao_fiscal o ON n.id_tribut_operacao_fiscal = o.id
+     INNER JOIN empresa empresa ON n.id_empresa = empresa.id
+     INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+     LEFT  JOIN nfe_transporte t ON t.id_nfe_cabecalho = n.id
+WHERE empresa.id = $P{idempresa} and n.tipo_operacao = 0 and pe.principal = 'S' and  n.data_hora_entrada_saida BETWEEN $P{peridoInicial} and $P{peridoFinal}  and (f.id = $P{idfornecedor} or $P{idfornecedor} is null)
+union
+SELECT
+     n.id,
+     n.numero,
+     o.cfop,
+     n.serie,
+     f.id as cod_fornecedor,
+     p.nome as fornecedor,
+     n.data_hora_emissao,
+     n.data_hora_entrada_saida,
+     (n.chave_acesso||n.digito_chave_acesso) as chave_acesso,
+     pe.cidade,
+     pe.uf,
+     pf.cpf as cpf_cnpj,
+     pf.rg,
+     t.nome as transportadora,
+     n.valor_icms,
+     n.valor_icms_st,
+     n.valor_pis,
+     n.valor_cofins,
+     n.valor_ipi,
+     n.valor_frete,
+     n.valor_total_produtos,
+     n.valor_total,
+     empresa.razao_social AS empresa_razao_social,
+     empresa.nome_fantasia AS empresa_nome_fantasia,
+     empresa.cnpj AS empresa_cnpj,
+     empresa.inscricao_estadual AS empresa_inscricao_estadual
+
+FROM
+     nfe_cabecalho n
+     INNER JOIN fornecedor f ON n.id_fornecedor = f.id
+     INNER JOIN pessoa p ON f.id_pessoa = p.id
+     INNER JOIN pessoa_fisica pf ON pf.id_pessoa = p.id
+     INNER JOIN pessoa_endereco pe ON pe.id_pessoa = p.id
+     INNER JOIN tribut_operacao_fiscal o ON n.id_tribut_operacao_fiscal = o.id
+     INNER JOIN empresa empresa ON n.id_empresa = empresa.id
+     INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+     LEFT  JOIN nfe_transporte t ON t.id_nfe_cabecalho = n.id
+WHERE empresa.id = $P{idempresa} and (f.id = $P{idfornecedor} or $P{idfornecedor} is null) and n.tipo_operacao = 0 and pe.principal = 'S' and  n.data_hora_entrada_saida BETWEEN $P{peridoInicial} and $P{peridoFinal}
+order by $P!{ordem}]]>
+    </queryString>
+    <field name="id" class="java.lang.Integer"/>
+    <field name="numero" class="java.lang.String"/>
+    <field name="cfop" class="java.lang.Integer"/>
+    <field name="serie" class="java.lang.String"/>
+    <field name="cod_fornecedor" class="java.lang.Integer"/>
+    <field name="fornecedor" class="java.lang.String"/>
+    <field name="data_hora_emissao" class="java.sql.Timestamp"/>
+    <field name="data_hora_entrada_saida" class="java.sql.Timestamp"/>
+    <field name="chave_acesso" class="java.lang.String"/>
+    <field name="cidade" class="java.lang.String"/>
+    <field name="uf" class="java.lang.String"/>
+    <field name="cpf_cnpj" class="java.lang.String"/>
+    <field name="inscricao_estadual" class="java.lang.String"/>
+    <field name="transportadora" class="java.lang.String"/>
+    <field name="valor_icms" class="java.math.BigDecimal"/>
+    <field name="valor_icms_st" class="java.math.BigDecimal"/>
+    <field name="valor_pis" class="java.math.BigDecimal"/>
+    <field name="valor_cofins" class="java.math.BigDecimal"/>
+    <field name="valor_ipi" class="java.math.BigDecimal"/>
+    <field name="valor_frete" class="java.math.BigDecimal"/>
+    <field name="valor_total_produtos" class="java.math.BigDecimal"/>
+    <field name="valor_total" class="java.math.BigDecimal"/>
+    <field name="empresa_razao_social" class="java.lang.String"/>
+    <field name="empresa_nome_fantasia" class="java.lang.String"/>
+    <field name="empresa_cnpj" class="java.lang.String"/>
+    <field name="empresa_inscricao_estadual" class="java.lang.String"/>
+    <variable name="valorTotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_total}]]></variableExpression>
+    </variable>
+    <variable name="valorTotalProdutos" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_total_produtos}]]></variableExpression>
+    </variable>
+    <variable name="valorIcms" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_icms_st}]]></variableExpression>
+    </variable>
+    <variable name="valorIcmsSt" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_icms_st}]]></variableExpression>
+    </variable>
+    <variable name="valorIpi" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_ipi}]]></variableExpression>
+    </variable>
+    <variable name="valorPis" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_pis}]]></variableExpression>
+    </variable>
+    <variable name="valorCofins" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_cofins}]]></variableExpression>
+    </variable>
+    <variable name="valorFrete" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_frete}]]></variableExpression>
+    </variable>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="113" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="112" width="555" height="1" uuid="84907098-40f5-401a-b232-5785f0e8faa0"/>
+            </line>
+            <textField>
+                <reportElement style="tituloDetail" x="1" y="0" width="277" height="14"
+                               uuid="ef82db32-1726-4cac-9ee3-442ef2dd7348"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="2" y="14" width="36" height="14"
+                               uuid="a149d8c6-723f-4357-9d21-645cb4198c1a"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[CNPJ:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="138" y="14" width="36" height="14"
+                               uuid="4317725a-a011-4efa-a747-33d0d6ac5668"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[I.E:]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="dadosDetail" x="38" y="14" width="100" height="14"
+                               uuid="1c93043a-de2c-469a-b30f-97b358a0bef6"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_cnpj}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="174" y="14" width="105" height="14"
+                               uuid="28109b0f-511b-49bc-9be3-71e5f0970c7a"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_inscricao_estadual}==null?"":$F{empresa_inscricao_estadual}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement style="dadosDetail" x="518" y="0" width="37" height="14"
+                               uuid="08715cba-59c2-4071-9808-e2941dfdb4e0"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <textField pattern="HH:mm">
+                <reportElement style="dadosDetail" x="518" y="14" width="37" height="14"
+                               uuid="68f116aa-e1ee-402f-a1fd-1aaa48fe9578"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="485" y="0" width="27" height="14" uuid="0308f1da-c227-4637-9e2d-eee1ab75dc1b"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Data:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="485" y="14" width="27" height="14" uuid="39ef6df0-2e43-4ded-a70a-80d1aa833a79"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Hora:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="45" width="555" height="19" uuid="8f005b14-0cd6-4980-9621-f58de4312734"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Notas Fiscais de Entrada]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="100" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
+            </line>
+            <staticText>
+                <reportElement style="tituloDetail" x="42" y="101" width="26" height="12"
+                               uuid="abced5c5-b994-49b4-9a17-3277c15ed63c"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[CFOP]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="69" y="101" width="30" height="12"
+                               uuid="a2c0b2fa-d7d4-46f5-bc87-3f3660977e23"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Série]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="123" y="101" width="288" height="12"
+                               uuid="3c2dd349-f275-4219-a25f-964b27cae822"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Fornecedor]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="508" y="101" width="47" height="12"
+                               uuid="9478002a-cc00-40f9-a76b-698e9893244d"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor Total]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="0" y="100" width="41" height="12"
+                               uuid="b81a598d-e978-4d34-b725-a6683f96eada"/>
+                <textElement textAlignment="Left">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Nº]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="411" y="101" width="55" height="12"
+                               uuid="79936264-c37c-4960-a9fa-14849cebe4a1"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Emissão]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="466" y="101" width="42" height="12"
+                               uuid="9589eb9c-fa4c-48b1-a77c-b5e490ead779"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Entrada]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="102" y="101" width="19" height="12"
+                               uuid="bd02ea33-f691-48b8-8e8f-07ae046a8a70"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Cod.]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="dadosDetail" x="518" y="28" width="37" height="14"
+                               uuid="56ad9f2d-e728-4d51-8002-f3bdfb87d53c"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="485" y="28" width="27" height="14" uuid="496cce1b-9f4b-4aa0-a151-966fcbae9890"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Pagina:]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="tituloDetail" x="0" y="64" width="555" height="14"
+                               uuid="326f4ed8-41c8-4eac-87b2-d99f86c73fa0"/>
+                <textElement textAlignment="Center">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Perido: " +
+new SimpleDateFormat("dd/MM/yyyy").format( $P{peridoInicial})+
+" até "+
+new SimpleDateFormat("dd/MM/yyyy").format( $P{peridoFinal})]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <detail>
+        <band height="60" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="59" width="555" height="1" uuid="1de7de8c-9996-40cf-b501-38eeca15df34"/>
+            </line>
+            <textField>
+                <reportElement style="dadosDetail" x="0" y="0" width="41" height="14"
+                               uuid="1c8b9cc0-316c-477e-b28c-06dafa27f101"/>
+                <textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="42" y="0" width="26" height="14"
+                               uuid="47addd39-8e22-40f7-b474-06d53573b12f"/>
+                <textFieldExpression><![CDATA[$F{cfop}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="69" y="0" width="30" height="14"
+                               uuid="ac7030f5-9c7a-4686-a569-edc90fc4e849"/>
+                <textFieldExpression><![CDATA[$F{serie}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="102" y="0" width="19" height="14"
+                               uuid="3b804783-6f91-4d1f-9abe-651858f0acea"/>
+                <textFieldExpression><![CDATA[$F{cod_fornecedor}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="123" y="0" width="288" height="14"
+                               uuid="f29255cb-02c9-408e-b7b1-2b3bef7a1073"/>
+                <textFieldExpression><![CDATA[$F{fornecedor}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="411" y="0" width="55" height="14"
+                               uuid="e5117e89-50c2-45d6-a300-79273206d21f"/>
+                <textFieldExpression><![CDATA[$F{data_hora_emissao}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="466" y="0" width="42" height="14"
+                               uuid="d9483b1d-943b-433e-aa4f-2c2929ce4914"/>
+                <textFieldExpression><![CDATA[$F{data_hora_entrada_saida}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="508" y="0" width="47" height="14"
+                               uuid="824dd8d9-c428-44e7-bf44-37c969cc0833"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="0" y="15" width="69" height="14"
+                               uuid="3ddb3a9b-ff31-4956-9ea5-448604f27b88"/>
+                <textElement>
+                    <font isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Chave de Acesso]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="69" y="15" width="342" height="14"
+                               uuid="47483adc-6e1d-485b-90e3-5e176c31bff8"/>
+                <textFieldExpression><![CDATA[$F{chave_acesso}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="0" y="29" width="69" height="14"
+                               uuid="dbbf6196-2416-45b5-8f8f-c4ce04399146"/>
+                <textElement>
+                    <font isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Cidade / UF]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="dadosDetail" x="69" y="29" width="210" height="14"
+                               uuid="757536a8-7d8c-4601-b5ff-f5a6bbf98779"/>
+                <textFieldExpression><![CDATA[$F{cidade}+" / "+$F{uf}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="0" y="43" width="69" height="14"
+                               uuid="e05a8cd1-70cc-45a3-9428-1fbe2d3a1832"/>
+                <textElement>
+                    <font isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Transportadora]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="69" y="43" width="342" height="14"
+                               uuid="eede3afc-d281-445d-85c3-35d0128a3259"/>
+                <textFieldExpression><![CDATA[$F{transportadora}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="285" y="29" width="53" height="14"
+                               uuid="08cdb690-1fa5-4418-8f70-d713705b148c"/>
+                <textElement>
+                    <font isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[CNPJ/CPF]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="338" y="29" width="100" height="14"
+                               uuid="5133f77f-ccaf-4985-bc9d-7ebf7d32b8e8"/>
+                <textFieldExpression><![CDATA[$F{cpf_cnpj}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="438" y="29" width="31" height="14"
+                               uuid="7df3cc7e-a41e-4a4b-b4e6-54d53628164c"/>
+                <textElement>
+                    <font isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[I.E]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="469" y="29" width="86" height="14"
+                               uuid="65e6c086-aba7-450d-9eaf-e78102c48574"/>
+                <textFieldExpression><![CDATA[$F{inscricao_estadual}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <summary>
+        <band height="112">
+            <staticText>
+                <reportElement style="tituloDetail" x="2" y="2" width="66" height="12"
+                               uuid="f9b4d3b4-927d-4b1b-9f97-0334357d67ae"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Total de Notas]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="8" width="56" height="12"
+                               uuid="f58f1e2f-1f4b-4f10-a91a-686afffed770"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor ICMS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="32" width="56" height="12"
+                               uuid="fb214e9f-f1c4-41e7-adf1-ab88e5e13ab3"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor IPI]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="dadosDetail" x="68" y="2" width="34" height="12"
+                               uuid="c2267788-6f4b-4a1e-a2fb-57edb38e9bb1"/>
+                <textFieldExpression><![CDATA[$V{COLUMN_NUMBER}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="92" width="56" height="12"
+                               uuid="17655a93-0f5a-4c8f-94e4-19b51aa67649"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor Total]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="20" width="56" height="12"
+                               uuid="1a28e4ba-0863-411e-8df9-4d4f4ac3a56a"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor ICMS ST]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="44" width="56" height="12"
+                               uuid="fd2a644a-905d-4942-bef8-86487a48e0df"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor PIS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="56" width="56" height="12"
+                               uuid="a4d5b376-4404-4542-af97-102eb3368efd"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor COFINS]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="68" width="56" height="12"
+                               uuid="02daf544-c264-4574-98a2-177173f1aa3f"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor Frete]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="392" y="80" width="78" height="12"
+                               uuid="f44ed207-1cff-447a-9b51-dd5d5277de3d"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor Total Produtos]]></text>
+            </staticText>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="470" y="8" width="85" height="12"
+                               uuid="068564fa-9ea0-4804-8c86-f5639a3894fb"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{valorIcms}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="470" y="20" width="85" height="12"
+                               uuid="d22029f2-ae15-4d0b-890e-ca67ec0c7fce"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{valorIcmsSt}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="470" y="32" width="85" height="12"
+                               uuid="3dd4c427-ab1f-42e3-850e-cfb54e57a050"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{valorIpi}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="470" y="44" width="85" height="12"
+                               uuid="6ed47995-04f5-4e65-9f3e-13f4a77270f6"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{valorPis}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="470" y="56" width="85" height="12"
+                               uuid="9e75b87f-7872-4f09-99d9-33a64e15fb0b"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{valorCofins}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="470" y="68" width="85" height="12"
+                               uuid="e2817880-ddcc-43e7-9e2a-8c3a4dfe800d"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{valorFrete}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="470" y="80" width="85" height="12"
+                               uuid="5161c53c-ffe3-4124-9086-04b91d198fb5"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{valorTotalProdutos}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="470" y="92" width="85" height="12"
+                               uuid="cf98793a-d490-4f58-8cd1-5822c916eca2"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$V{valorTotal}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

@@ -65,8 +65,7 @@ public class NfeTransporte implements Serializable {
     //@OneToMany(mappedBy = "nfeTransporte", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Transient
     private Set<NfeTransporteReboque> listaTransporteReboque;
-    //  @OneToMany(mappedBy = "nfeTransporte", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @Transient
+    @OneToMany(mappedBy = "nfeTransporte", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<NfeTransporteVolume> listaTransporteVolume;
 
     public NfeTransporte() {

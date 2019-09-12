@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="movimentoDetalhado" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20"
+              rightMargin="20" topMargin="20" bottomMargin="20" uuid="2cfba9f1-7bf2-4757-a73b-733d72c7a189">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ERP Light"/>
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="ireport.zoom" value="2.0"/>
+    <property name="ireport.x" value="205"/>
+    <property name="ireport.y" value="336"/>
+    <subDataset name="DatasetMovimento" uuid="b86a869f-40e0-4170-ba99-09baf455d021">
+        <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+        <property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+        <parameter name="idmovimento" class="java.lang.Integer"/>
+        <queryString language="SQL">
+            <![CDATA[SELECT
+	t.codigo,
+	t.descricao,
+	Sum(f.valor-f.troco) as total
+FROM pdv_movimento m
+JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
+JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
+JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
+WHERE m.id =  $P{idmovimento}
+group by codigo,descricao]]>
+        </queryString>
+        <field name="codigo" class="java.lang.String"/>
+        <field name="descricao" class="java.lang.String"/>
+        <field name="total" class="java.math.BigDecimal"/>
+        <group name="codigo">
+            <groupExpression><![CDATA[$F{codigo}]]></groupExpression>
+        </group>
+    </subDataset>
+    <parameter name="idmovimento" class="java.lang.Integer"/>
+    <parameter name="dataInicial" class="java.util.Date">
+        <parameterDescription><![CDATA[]]></parameterDescription>
+        <defaultValueExpression>
+            <![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("0001-01-01");]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dataFinal" class="java.util.Date">
+        <parameterDescription><![CDATA[]]></parameterDescription>
+        <defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+            concat(m.id , s.id , 1) AS id,
+            o.login as operador,
+            m.id AS idmovimento,
+            s.id AS idorigem,
+            s.data_sangria AS data_hora,
+            'Saída - Sangria' AS descricao,
+            s.valor,
+            '01' AS codigo_forma_pagamento,
+            'Dinheiro' AS forma_pagamento,
+            'S' AS tipo,
+            'Sangria' AS origem,
+            s.observacao,
+            empresa.razao_social AS empresa_razao_social,
+            empresa.nome_fantasia AS empresa_nome_fantasia,
+            empresa.cnpj AS empresa_cnpj,
+            empresa.inscricao_estadual AS empresa_inscricao_estadual
+            FROM pdv_movimento m
+            JOIN pdv_sangria s ON s.id_pdv_movimento = m.id
+            JOIN pdv_operador o ON o.id = m.id_pdv_operador
+            INNER JOIN empresa empresa ON m.id_empresa = empresa.id
+            INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+            WHERE (m.id =  $P{idmovimento} or  $P{idmovimento} is null)
+            and data_abertura BETWEEN   $P{dataInicial}  and  $P{dataFinal}
+            UNION
+            SELECT
+            concat(m.id , s.id , 2) AS id,
+            o.login as operador,
+            m.id AS idmovimento,
+            s.id AS idorigem,
+            s.data_suprimento AS data_hora,
+            'Entrada - Acrécimo' AS descricao,
+            s.valor,
+            '01' AS codigo_forma_pagamento,
+            'Dinheiro' AS forma_pagamento,
+            'E' AS tipo,
+            'Suprimentos' AS origem,
+            s.observacao,
+            empresa.razao_social AS empresa_razao_social,
+            empresa.nome_fantasia AS empresa_nome_fantasia,
+            empresa.cnpj AS empresa_cnpj,
+            empresa.inscricao_estadual AS empresa_inscricao_estadual
+            FROM
+            pdv_movimento m
+            JOIN pdv_suprimento s ON s.id_pdv_movimento = m.id
+            JOIN pdv_operador o ON o.id = m.id_pdv_operador
+            INNER JOIN empresa empresa ON m.id_empresa = empresa.id
+            INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+            WHERE (m.id =  $P{idmovimento} or  $P{idmovimento} is null)
+            and data_abertura BETWEEN   $P{dataInicial}  and  $P{dataFinal}
+            UNION
+            SELECT
+            concat(m.id , f.id , 3) AS id,
+            o.login as operador,
+            m.id AS idmovimento,
+            v.id AS idorigem,
+            v.data_hora_venda AS data_hora,
+            ('Venda n°' || v.id) || '(PDV)' AS descricao,
+            f.valor-f.troco,
+            t.codigo AS codigo_forma_pagamento,
+            t.descricao AS forma_pagamento,
+            'E' AS tipo,
+            'VENDA' AS origem,
+            '' AS observacao,
+            empresa.razao_social AS empresa_razao_social,
+            empresa.nome_fantasia AS empresa_nome_fantasia,
+            empresa.cnpj AS empresa_cnpj,
+            empresa.inscricao_estadual AS empresa_inscricao_estadual
+            FROM pdv_movimento m
+            JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
+            JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
+            JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
+            JOIN pdv_operador o ON o.id = m.id_pdv_operador
+            INNER JOIN empresa empresa ON m.id_empresa = empresa.id
+            INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+            WHERE (m.id =  $P{idmovimento} or  $P{idmovimento} is null)
+            and data_abertura BETWEEN   $P{dataInicial}  and  $P{dataFinal}
+            and (v.status_venda = 'E' or v.status_venda = 'F')
+	  union
+            select
+                concat(m.id , r.id , 4) AS id,
+                o.login as operador,
+                m.id AS idmovimento,
+                r.id AS idorigem,
+                r.data_recebimento AS data_hora,
+                ('Recebimento n°' || r.id) || ' de '|| ps.nome  AS descricao,
+                r.valor_recebido,
+                '01' AS codigo_forma_pagamento,
+                'Dinheiro' AS forma_pagamento,
+                'E' AS tipo,
+                'RECEBIMENTO' AS origem,
+                '' AS observacao,
+	  empresa.razao_social AS empresa_razao_social,
+            empresa.nome_fantasia AS empresa_nome_fantasia,
+            empresa.cnpj AS empresa_cnpj,
+            empresa.inscricao_estadual AS empresa_inscricao_estadual
+            from pdv_movimento m
+            inner join pdv_operador o ON o.id = m.id_pdv_operador
+            inner join fin_parcela_recebimento r on r.id_pdv_movimento = m.id
+            inner join fin_parcela_receber p on p.id = r.id_fin_parcela_receber
+            inner join fin_lancamento_receber l on l.id = p.id_fin_lancamento_receber
+            inner join cliente c on c.id = l.id_cliente
+            inner join pessoa ps on ps.id = c.id_pessoa
+	  INNER JOIN empresa empresa ON m.id_empresa = empresa.id
+            INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+	  WHERE m.id =  $P{idmovimento}
+            ORDER BY 11,8,5;]]>
+    </queryString>
+    <field name="id" class="java.lang.String"/>
+    <field name="operador" class="java.lang.String"/>
+    <field name="idmovimento" class="java.lang.Integer"/>
+    <field name="idorigem" class="java.lang.Integer"/>
+    <field name="data_hora" class="java.sql.Timestamp"/>
+    <field name="descricao" class="java.lang.String"/>
+    <field name="valor" class="java.math.BigDecimal"/>
+    <field name="codigo_forma_pagamento" class="java.lang.String"/>
+    <field name="forma_pagamento" class="java.lang.String"/>
+    <field name="tipo" class="java.lang.String"/>
+    <field name="origem" class="java.lang.String"/>
+    <field name="observacao" class="java.lang.String"/>
+    <field name="empresa_razao_social" class="java.lang.String"/>
+    <field name="empresa_nome_fantasia" class="java.lang.String"/>
+    <field name="empresa_cnpj" class="java.lang.String"/>
+    <field name="empresa_inscricao_estadual" class="java.lang.String"/>
+    <variable name="totalOrigem" class="java.math.BigDecimal">
+        <variableExpression>
+            <![CDATA[$V{totalEntradaOrigem}.subtract( $V{totalSaidaOrigem} == null?BigDecimal.ZERO :$V{totalSaidaOrigem})]]></variableExpression>
+    </variable>
+    <variable name="totalEntradaOrigem" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{tipo}.equals( "E" )?$F{valor}:BigDecimal.ZERO;]]></variableExpression>
+    </variable>
+    <variable name="totalSaidaOrigem" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{tipo}.equals( "S" )?$F{valor}:BigDecimal.ZERO;]]></variableExpression>
+    </variable>
+    <variable name="valor1" class="java.math.BigDecimal" resetType="Group" resetGroup="orgiem" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor}]]></variableExpression>
+    </variable>
+    <variable name="totalSuprimentos" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression>
+            <![CDATA[$F{origem}.equals( "Suprimentos" )?$F{valor}:BigDecimal.ZERO;]]></variableExpression>
+    </variable>
+    <variable name="totalsangrai" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{origem}.equals( "Sangria" )?$F{valor}:BigDecimal.ZERO;]]></variableExpression>
+    </variable>
+    <variable name="totalVendas" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{origem}.equals( "VENDA" )?$F{valor}:BigDecimal.ZERO;]]></variableExpression>
+    </variable>
+    <variable name="totalRecebido" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression>
+            <![CDATA[$F{origem}.equals( "RECEBIMENTO" )?$F{valor}:BigDecimal.ZERO;]]></variableExpression>
+    </variable>
+    <group name="orgiem">
+        <groupExpression><![CDATA[$F{origem}]]></groupExpression>
+        <groupHeader>
+            <band height="12">
+                <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                <textField>
+                    <reportElement x="0" y="0" width="78" height="12" uuid="81c05525-9cc1-4963-bd48-f9e6dba81135">
+                        <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                        <property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+                    </reportElement>
+                    <textElement>
+                        <font fontName="Times New Roman" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$F{origem}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupHeader>
+        <groupFooter>
+            <band height="12">
+                <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                <textField pattern="#,##0.00">
+                    <reportElement x="477" y="0" width="78" height="12" uuid="7a4d7bee-1a35-4f3c-b812-9293c09873fe">
+                        <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                    </reportElement>
+                    <textElement>
+                        <font fontName="Times New Roman" size="8" isBold="true"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$V{valor1}]]></textFieldExpression>
+                </textField>
+            </band>
+        </groupFooter>
+    </group>
+    <group name="forma"/>
+    <title>
+        <band height="79" splitType="Stretch">
+            <textField>
+                <reportElement x="1" y="0" width="277" height="14" uuid="e07572b9-ce6a-43a6-9598-9f3565923c54"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="2" y="14" width="36" height="14" uuid="6f31fe7e-9a4f-4212-a621-ac55adb533cc"/>
+                <textElement>
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[CNPJ:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="138" y="14" width="36" height="14" uuid="b8ece0c4-b879-43e4-9b03-94e60bd5c842"/>
+                <textElement>
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[I.E:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="38" y="14" width="100" height="14" uuid="f4bf8dd2-35a3-4260-84ad-cd973b49e787"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_cnpj}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="174" y="14" width="105" height="14" uuid="c38add28-6275-4d85-ba76-190e0adcc5c9"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_inscricao_estadual}==null?"":$F{empresa_inscricao_estadual}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement x="518" y="0" width="37" height="14" uuid="0b632677-9e13-4ec2-9aff-fc438ec98743"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <textField pattern="HH:mm">
+                <reportElement x="518" y="14" width="37" height="14" uuid="6162d850-08eb-42fc-9ec5-147fd13b2ac1"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="485" y="0" width="27" height="14" uuid="39d88fdb-cc37-4d7f-bb3b-8b5a3a26b577"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Data:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="485" y="14" width="27" height="14" uuid="9496c80e-712b-4f70-9675-0e637e017e11"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Hora:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="45" width="555" height="19" uuid="7fecc674-2164-47c1-9e22-b5f946705a6a"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Movimento de Caixa]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="518" y="28" width="37" height="14" uuid="2ba7ae07-153d-4eb2-ab9b-5a87b60555ee"/>
+                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="485" y="28" width="27" height="14" uuid="99bc785f-8364-4dbb-bfa1-dbe13a855c7e"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Pagina:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="0" y="64" width="555" height="14" uuid="f1a3750b-ba8e-41cd-bd95-aef70aed67ff"/>
+                <textElement>
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Perido: " +
+new SimpleDateFormat("dd/MM/yyyy").format( $P{dataInicial})+
+" até "+
+new SimpleDateFormat("dd/MM/yyyy").format( $P{dataFinal})]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="17" splitType="Stretch">
+            <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+            <staticText>
+                <reportElement x="0" y="0" width="48" height="12" uuid="2f2f534f-8248-4097-be6d-32e78c59a888">
+                    <property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Código]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="48" y="0" width="110" height="12" uuid="f03b24cd-a746-4a3e-8d58-f4c10cd7c5e6"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Descrição]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="158" y="0" width="78" height="12" uuid="045d61e3-9495-4999-991e-9b3bde94a06f"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Data]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="238" y="0" width="122" height="12" uuid="e58c320c-7d20-4c2a-88e7-bd237b89d222"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Operador]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="477" y="0" width="78" height="12" uuid="f1175562-6b6c-436c-b53f-3b5086b0d548"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="442" y="0" width="35" height="12" uuid="4ea3f32b-1305-4417-b53d-d03f4f61cd7a"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Tipo]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="360" y="0" width="82" height="12" uuid="8d61b15d-e2f7-44d3-af4e-6f0dd5f250d5">
+                    <property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Finalizadora]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="12" splitType="Stretch">
+            <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+            <textField>
+                <reportElement x="0" y="0" width="50" height="12" uuid="c3726723-7a8d-49e3-8d3b-9ea0b83dd506">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{idorigem}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="50" y="0" width="108" height="12" uuid="527d05b2-d641-44a0-950f-9cb01ef72277">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy HH:mm">
+                <reportElement x="158" y="0" width="78" height="12" uuid="1a0d21ba-2942-4ed5-9d15-71761d1e57ed"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{data_hora}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="238" y="0" width="122" height="12" uuid="c139ae74-164b-41c4-a67b-49b91abe25ee"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{operador}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="477" y="0" width="78" height="12" uuid="fafb5b72-881f-4663-9895-4bbaeb6c75b6">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="442" y="0" width="35" height="12" uuid="f3e8aa13-9f05-4592-b6b0-9d80ab51bc06">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="360" y="0" width="82" height="12" uuid="a4859c46-fbca-4dd9-8fe5-bdca5bf0b478">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{forma_pagamento}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <lastPageFooter>
+        <band height="8">
+            <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="8" uuid="92855a52-29c6-4710-90e7-f48dc8654808">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="6"/>
+                </textElement>
+                <text><![CDATA[Chronos Sistemas]]></text>
+            </staticText>
+        </band>
+    </lastPageFooter>
+    <summary>
+        <band height="219" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="19" uuid="5e9e5f34-8a1b-4721-80ea-2869ddd5b8b2">
+                    <property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Resumo Forma de pagamento]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="0" y="40" width="555" height="19"
+                               uuid="54e4e787-9c13-4fbe-996a-a3c6bfceb333">
+                    <property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Totalizador Geral]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="405" y="108" width="107" height="12"
+                               uuid="5d1e3c98-b064-437d-afee-e5a9fb00a909">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total de Entrada]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="405" y="120" width="107" height="12"
+                               uuid="ebb9703a-e5b1-4dc7-ba7f-2868f7124b4a">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total de Saídas]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="405" y="132" width="107" height="12"
+                               uuid="93fb5e57-bd95-4bd2-8f9d-6c4197dbb504">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Saldo]]></text>
+            </staticText>
+            <textField pattern="#,##0.00">
+                <reportElement positionType="Float" x="512" y="108" width="43" height="12"
+                               uuid="866e86cb-6b5f-4648-ba33-d0b175c4c352">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{totalEntradaOrigem}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement positionType="Float" x="512" y="120" width="43" height="12"
+                               uuid="7d6bf093-55f9-4b82-8c00-124ba586f39a">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{totalSaidaOrigem}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement positionType="Float" x="512" y="132" width="43" height="12"
+                               uuid="6d4c7ca8-aefb-421c-b109-7020af8b4e84">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$V{totalEntradaOrigem}.subtract( $V{totalSaidaOrigem})]]></textFieldExpression>
+            </textField>
+            <componentElement>
+                <reportElement x="405" y="20" width="150" height="15" uuid="2860d930-1f9d-4bda-aad9-167e32e39b2d">
+                    <property name="com.jaspersoft.studio.layout"
+                              value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                    <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                </reportElement>
+                <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                          xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+                    <datasetRun subDataset="DatasetMovimento" uuid="d7bdb80c-d3df-4746-bc45-a9d7a83b18cb">
+                        <datasetParameter name="idmovimento">
+                            <datasetParameterExpression><![CDATA[$F{idmovimento}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                    </datasetRun>
+                    <jr:column width="80" uuid="0c885c41-86c9-4c99-9523-18e55bb0747c">
+                        <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+                        <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                        <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+                        <jr:detailCell height="15">
+                            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                            <textField>
+                                <reportElement x="0" y="0" width="80" height="15"
+                                               uuid="f95a3609-df8e-4260-a527-70410c240d43"/>
+                                <textElement>
+                                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                                </textElement>
+                                <textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+                            </textField>
+                        </jr:detailCell>
+                    </jr:column>
+                    <jr:column width="70" uuid="d52b0ed2-3ecd-49d5-97a2-eb59024b9bb5">
+                        <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+                        <jr:detailCell height="15">
+                            <textField pattern="#,##0.00">
+                                <reportElement x="0" y="0" width="70" height="15"
+                                               uuid="6e3412b0-a0c7-45bd-8349-0386c6dea10c"/>
+                                <textElement>
+                                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                                </textElement>
+                                <textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+                            </textField>
+                        </jr:detailCell>
+                    </jr:column>
+                </jr:table>
+            </componentElement>
+            <staticText>
+                <reportElement positionType="Float" x="405" y="60" width="107" height="12"
+                               uuid="ffbcf741-4d7d-4df5-8c9e-ff8088865fb8">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total de Suprimentos]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="405" y="72" width="107" height="12"
+                               uuid="2acc529b-8d7e-4835-82a5-78bdbf845697">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total de Sangrias]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="405" y="84" width="107" height="12"
+                               uuid="59f0df87-4903-4e71-9483-4314a2dc603d">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total de Vendas]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="405" y="96" width="107" height="12"
+                               uuid="55342ec7-a36e-4f2d-b2cf-2a83f3de1c40">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement>
+                    <font fontName="Times New Roman" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total Recebido]]></text>
+            </staticText>
+            <textField pattern="#,##0.00">
+                <reportElement positionType="Float" x="512" y="60" width="43" height="12"
+                               uuid="db1863a0-8fc7-4875-bf84-70f2ab66f28d">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{totalSuprimentos}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement positionType="Float" x="512" y="72" width="43" height="12"
+                               uuid="f81fd9d0-0d67-41f1-bb22-7dfae88c9357">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{totalsangrai}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement positionType="Float" x="512" y="84" width="43" height="12"
+                               uuid="824b6b11-bd79-4b54-b6ff-4d9138fe8ec3">
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                </reportElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{totalVendas}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement x="512" y="96" width="43" height="12" uuid="f26a59a1-cdce-487f-be06-aab1ce4f55d4"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{totalRecebido}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

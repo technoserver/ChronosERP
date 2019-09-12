@@ -16,7 +16,6 @@ import com.chronos.util.Biblioteca;
 import com.chronos.util.cdi.ManualCDILookup;
 import org.springframework.util.StringUtils;
 
-import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -33,16 +32,14 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
     private IcmsRepository icmsRepository;
     private IcmsCustomRepository icmsCustomRepository;
     private IpiRepository ipiRepository;
-    private IbptRepository ibptRepository;
+
     private PisRepository pisRepository;
     private CofinsRepository cofinsRepository;
     private IssRepository issRepository;
 
-    @Inject
-    private Repository<NotaFiscalTipo> tiposNotaFiscal;
 
-    public NfeCabecalho calcularTotalNFe(NfeCabecalho nfe) throws Exception {
-        ibptRepository = getFacadeWithJNDI(IbptRepository.class);
+    public NfeCabecalho calcularTotalNFe(NfeCabecalho nfe) {
+
         boolean servico;
         //valores comuns
         BigDecimal totalProdutos = BigDecimal.ZERO;
@@ -50,37 +47,25 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         BigDecimal valorSeguro = BigDecimal.ZERO;
         BigDecimal valorOutrasDespesas = BigDecimal.ZERO;
         BigDecimal desconto = BigDecimal.ZERO;
-        BigDecimal valorTotalTributos = BigDecimal.ZERO;
+
         // valores ISSQN
         BigDecimal totalServicos = BigDecimal.ZERO;
         BigDecimal baseCalculoIssqn = BigDecimal.ZERO;
         BigDecimal valorIssqn = BigDecimal.ZERO;
         BigDecimal valorPisIssqn = BigDecimal.ZERO;
         BigDecimal valorCofinsIssqn = BigDecimal.ZERO;
-        BigDecimal baseCalculoPrevidencia = BigDecimal.ZERO;
         BigDecimal valorRetidoPrevidencia = BigDecimal.ZERO;
         // valores vendas
         BigDecimal baseCalculoIcms = BigDecimal.ZERO;
         BigDecimal valorIcms = BigDecimal.ZERO;
         BigDecimal baseCalculoIcmsSt = BigDecimal.ZERO;
         BigDecimal valorIcmsSt = BigDecimal.ZERO;
-        BigDecimal valorIcmsDesonerado = BigDecimal.ZERO;
+
         BigDecimal valorIpi = BigDecimal.ZERO;
         BigDecimal valorPis = BigDecimal.ZERO;
         BigDecimal valorCofins = BigDecimal.ZERO;
         BigDecimal valorNotaFiscal = BigDecimal.ZERO;
 
-        BigDecimal impostoFederal = BigDecimal.ZERO;
-        BigDecimal impostoEstadual = BigDecimal.ZERO;
-        BigDecimal impostoMunicipal = BigDecimal.ZERO;
-
-
-        BigDecimal impFederal = BigDecimal.ZERO;
-        BigDecimal impEstadual = BigDecimal.ZERO;
-        BigDecimal impMunicipal = BigDecimal.ZERO;
-
-
-        NfeCalculoControll calculo = new NfeCalculoControll();
         for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
             servico = !StringUtils.isEmpty(item.getProduto().getServico()) && item.getProduto().getServico().equals("S");
             valorFrete = valorFrete.add(item.getValorFrete());
@@ -88,6 +73,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
             valorOutrasDespesas = valorOutrasDespesas.add(item.getValorOutrasDespesas());
             desconto = desconto.add(item.getValorDesconto());
             item.calcularValorTotalProduto();
+
             if (servico) {
                 totalServicos = totalServicos.add(item.getValorBrutoProduto());
                 baseCalculoIssqn = baseCalculoIssqn.add(item.getNfeDetalheImpostoIssqn().getBaseCalculoIssqn());
@@ -96,46 +82,26 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 valorCofinsIssqn = item.getNfeDetalheImpostoCofins() == null ? BigDecimal.ZERO : valorCofinsIssqn.add(item.getNfeDetalheImpostoCofins().getValorCofins());
 
             } else {
-                totalProdutos = totalProdutos.add(item.getValorBrutoProduto());
-                baseCalculoIcms = baseCalculoIcms.add(item.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
-                valorIcms = valorIcms.add(item.getNfeDetalheImpostoIcms().getValorIcms());
-                baseCalculoIcmsSt = baseCalculoIcmsSt.add(item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
-                valorIcmsSt = valorIcmsSt.add(item.getNfeDetalheImpostoIcms().getValorIcmsSt());
+
+
+                totalProdutos = totalProdutos.add(item.getValorSubtotal());
+
+                if (item.getNfeDetalheImpostoIcms() != null) {
+                    baseCalculoIcms = baseCalculoIcms.add(item.getNfeDetalheImpostoIcms().getBaseCalculoIcms());
+                    valorIcms = valorIcms.add(item.getNfeDetalheImpostoIcms().getValorIcms());
+                    baseCalculoIcmsSt = baseCalculoIcmsSt.add(item.getNfeDetalheImpostoIcms().getValorBaseCalculoIcmsSt());
+                    valorIcmsSt = valorIcmsSt.add(item.getNfeDetalheImpostoIcms().getValorIcmsSt());
+                }
+
                 valorIpi = item.getNfeDetalheImpostoIpi() == null ? BigDecimal.ZERO : valorIpi.add(item.getNfeDetalheImpostoIpi().getValorIpi());
                 valorPis = item.getNfeDetalheImpostoPis() == null ? BigDecimal.ZERO : valorPis.add(item.getNfeDetalheImpostoPis().getValorPis());
                 valorCofins = item.getNfeDetalheImpostoCofins() == null ? BigDecimal.ZERO : valorCofins.add(item.getNfeDetalheImpostoCofins().getValorCofins());
             }
 
-
-            String ncm = servico ? item.getProduto().getCodigoLst() : item.getNcm();
-            List<Filtro> listaFiltro = new ArrayList<>();
-            listaFiltro.add(new Filtro("AND", "ncm", Filtro.IGUAL, ncm));
-            Ibpt tb = ibptRepository.get(Ibpt.class, listaFiltro);
-
-            if (tb != null) {
-                item = calculo.calculoIbpt(item, tb);
-
-                impFederal = Optional.ofNullable(item.getImpostoFederal()).orElse(BigDecimal.ZERO);
-                impEstadual = Optional.ofNullable(item.getImpostoEstadual()).orElse(BigDecimal.ZERO);
-                impMunicipal = Optional.ofNullable(item.getImpostoMunicipal()).orElse(BigDecimal.ZERO);
-
-                impostoFederal = Biblioteca.soma(impostoFederal, impFederal);
-                impostoEstadual = Biblioteca.soma(impostoEstadual, impEstadual);
-                impostoMunicipal = Biblioteca.soma(impostoMunicipal, impMunicipal);
-
-
-            }
-
-            item.setValorTotalTributosFederais(impFederal);
-            item.setValorTotalTributosEstaduais(impEstadual);
-            item.setValorTotalTributosMunicipais(impostoMunicipal);
-            item.setValorTotalTributos(impFederal.add(impEstadual).add(impMunicipal));
-
-            valorTotalTributos = Biblioteca.soma(valorTotalTributos, item.getValorTotalTributos());
-
         }
+
         valorNotaFiscal = valorNotaFiscal.add(valorIpi).add(valorIcmsSt).add(totalProdutos);
-        nfe.setValorFrete(valorFrete);
+
         nfe.setValorDespesasAcessorias(valorOutrasDespesas);
         nfe.setValorSeguro(valorSeguro);
         nfe.setValorDesconto(desconto);
@@ -149,8 +115,6 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setBaseCalculoPrevidencia(baseCalculoIssqn);
         nfe.setValorRetidoPrevidencia(valorRetidoPrevidencia);
 
-        nfe.setValorIcmsDesonerado(valorIcmsDesonerado);
-
         nfe.setValorTotalProdutos(totalProdutos);
         nfe.setBaseCalculoIcms(baseCalculoIcms);
         nfe.setValorIcms(valorIcms);
@@ -161,22 +125,67 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setValorCofins(valorCofins);
         nfe.calcularValorTotal();
 
-        String msg = "Trib. Aprox. Federal R$ " + new DecimalFormat("#,###,##0.00").format(impostoFederal)
-                + " e R$ " + new DecimalFormat("#,###,##0.00").format(impostoEstadual) + " Estadual "
-                + "e R$ " + new DecimalFormat("#,###,##0.00").format(impostoMunicipal) + " Municipal Fonte IBPT";
 
+        return nfe;
+    }
+
+    public void definirTotaisTributos(NfeCabecalho nfe) throws Exception {
+
+        IbptRepository ibptRepository;
+        ibptRepository = getFacadeWithJNDI(IbptRepository.class);
+
+        BigDecimal valorTotalTributos = BigDecimal.ZERO;
+
+        BigDecimal impostoFederal = BigDecimal.ZERO;
+        BigDecimal impostoEstadual = BigDecimal.ZERO;
+        BigDecimal impostoMunicipal = BigDecimal.ZERO;
+
+
+        BigDecimal impFederal;
+        BigDecimal impEstadual;
+        BigDecimal impMunicipal;
+
+
+        NfeCalculoControll calculo = new NfeCalculoControll();
+
+        for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
+            Boolean servico = !StringUtils.isEmpty(item.getProduto().getServico()) && item.getProduto().getServico().equals("S");
+            String ncm = servico ? item.getProduto().getCodigoLst() : item.getNcm();
+            List<Filtro> listaFiltro = new ArrayList<>();
+            listaFiltro.add(new Filtro("AND", "ncm", Filtro.IGUAL, ncm));
+            Ibpt tb = ibptRepository.get(Ibpt.class, listaFiltro);
+
+            if (tb != null) {
+                item = calculo.calculoIbpt(item, tb);
+                impFederal = Optional.ofNullable(item.getImpostoFederal()).orElse(BigDecimal.ZERO);
+                impEstadual = Optional.ofNullable(item.getImpostoEstadual()).orElse(BigDecimal.ZERO);
+                impMunicipal = Optional.ofNullable(item.getImpostoMunicipal()).orElse(BigDecimal.ZERO);
+
+                impostoFederal = Biblioteca.soma(impostoFederal, impFederal);
+                impostoEstadual = Biblioteca.soma(impostoEstadual, impEstadual);
+                impostoMunicipal = Biblioteca.soma(impostoMunicipal, impMunicipal);
+
+                item.setValorTotalTributosFederais(impFederal);
+                item.setValorTotalTributosEstaduais(impEstadual);
+                item.setValorTotalTributosMunicipais(impostoMunicipal);
+                item.setValorTotalTributos(impFederal.add(impEstadual).add(impMunicipal));
+
+                valorTotalTributos = Biblioteca.soma(valorTotalTributos, item.getValorTotalTributos());
+            }
+
+        }
 
         nfe.setValorTotalTributosFederais(impostoFederal);
         nfe.setValorTotalTributosEstaduais(impostoEstadual);
         nfe.setValorTotalTributosMunicipais(impostoMunicipal);
         nfe.setValorTotalTributos(valorTotalTributos);
 
+        String msg = "Trib. Aprox. Federal R$ " + new DecimalFormat("#,###,##0.00").format(impostoFederal)
+                + " e R$ " + new DecimalFormat("#,###,##0.00").format(impostoEstadual) + " Estadual "
+                + "e R$ " + new DecimalFormat("#,###,##0.00").format(impostoMunicipal) + " Municipal Fonte IBPT";
+
         nfe.setInformacoesAddContribuinte(msg);
-
-
-        return nfe;
     }
-
 
     public NfeEmitente getEmitente(Empresa empresa) {
         NfeEmitente emitente = new NfeEmitente();
@@ -302,7 +311,7 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                 if (iss == null) {
                     throw new ChronosException("Não existe tributação de ISS definida para o " + item.getProduto().getNome() + " informados. Operação não realizada.");
                 }
-                if(StringUtils.isEmpty(item.getProduto().getCodigoLst().trim()) || item.getProduto().getCodigoLst().trim().isEmpty()){
+                if (StringUtils.isEmpty(item.getProduto().getCodigoLst().trim()) || item.getProduto().getCodigoLst().trim().isEmpty()) {
                     throw new ChronosException("Não existe código de LST para o " + item.getProduto().getNome() + " informados. Operação não realizada.");
                 }
                 tributos.setPercentualIssqn(iss.getAliquotaPorcento());

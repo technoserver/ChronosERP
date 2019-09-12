@@ -54,11 +54,11 @@ public class EntradaNotaFiscalService implements Serializable {
     public void finalizar(NfeCabecalho nfe, ContaCaixa contaCaixa, NaturezaFinanceira naturezaFinanceira) throws Exception {
         boolean inclusao = false;
 
-        nfe.setStatusNota(StatusTransmissao.ENCERRADO.getCodigo());
+
         Integer idempresa = nfe.getEmpresa().getId();
         AdmParametro parametro = FacesUtil.getParamentos();
         nfe.setNaturezaOperacao(nfe.getTributOperacaoFiscal().getDescricaoNaNf());
-        if (nfe.getId() == null) {
+        if (nfe.getId() == null || !nfe.getStatusNota().equals(StatusTransmissao.ENCERRADO.getCodigo())) {
             inclusao = true;
             for (NfeDetalhe detalhe : nfe.getListaNfeDetalhe()) {
                 atualizarEstoque(nfe.getEmpresa(), nfe.getTributOperacaoFiscal(), detalhe);
@@ -85,6 +85,7 @@ public class EntradaNotaFiscalService implements Serializable {
             }
         }
         String descricao = "Entrada da NFe :" + nfe.getNumero() + " Fornecedor :" + nfe.getEmitente().getNome();
+        nfe.setStatusNota(StatusTransmissao.ENCERRADO.getCodigo());
         nfe = repository.atualizar(nfe);
         if (!nfe.getListaDuplicata().isEmpty()) {
             lancamentoPagarService.gerarLancamento(nfe, contaCaixa, naturezaFinanceira);

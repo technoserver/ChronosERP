@@ -213,6 +213,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
                 if (getObjeto().getTransporte().getListaTransporteVolume() != null && getObjeto().getTransporte().getListaTransporteVolume().size() > 0) {
                     volume = getObjeto().getTransporte().getListaTransporteVolume().iterator().next();
+                } else {
+                    volume = new NfeTransporteVolume();
+                    volume.setNfeTransporte(getObjeto().getTransporte());
+                    getObjeto().getTransporte().setListaTransporteVolume(new HashSet<>());
+
                 }
 
             }

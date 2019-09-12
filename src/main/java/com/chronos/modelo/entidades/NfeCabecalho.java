@@ -261,6 +261,8 @@ public class NfeCabecalho implements Serializable {
     @Transient
     private String csc;
     @Transient
+    private String tokenCsc;
+    @Transient
     private OsAbertura os;
     @Transient
     private PdvVendaCabecalho pdv;
@@ -1987,6 +1989,14 @@ public class NfeCabecalho implements Serializable {
 
     public void setCsc(String csc) {
         this.csc = csc;
+    }
+
+    public String getTokenCsc() {
+        return tokenCsc;
+    }
+
+    public void setTokenCsc(String tokenCsc) {
+        this.tokenCsc = tokenCsc;
     }
 
     public OsAbertura getOs() {

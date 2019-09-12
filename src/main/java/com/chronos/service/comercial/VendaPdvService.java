@@ -158,6 +158,7 @@ public class VendaPdvService implements Serializable {
 
 
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
+        nfe.setTokenCsc(configuracaoEmissorDTO.getTokenCsc());
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
 
@@ -258,7 +259,7 @@ public class VendaPdvService implements Serializable {
         BigDecimal sobra = Biblioteca.soma(valorDesconto, descAntecipado);
         sobra = Biblioteca.subtrai(sobra, descItens);
 
-        if (sobra.signum() > 0) {
+        if (sobra.signum() > 0 || sobra.signum() < 0) {
             PdvVendaDetalhe item = venda.getListaPdvVendaDetalhe().get(0);
             BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
             BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);

@@ -604,7 +604,6 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void vincularProduto() {
         try {
             salvarNovoProduto();
-            Mensagem.addInfoMessage("Produto vinculado com sucesso");
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
@@ -613,6 +612,30 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             }
 
 
+        }
+    }
+
+    public void disvincularProduto() {
+
+
+        try {
+            Produto prod = nfeDetalheSelecionado.getProduto();
+            Fornecedor fornecedor = getObjeto().getFornecedor();
+
+            if (fornecedor == null) {
+                throw new ChronosException("Fornecedor não informado");
+            }
+
+            produtoFornecedorService.removerProdutoFornecedor(prod.getId(), fornecedor.getId());
+            nfeDetalheSelecionado.setProdutoCadastrado(false);
+            nfeDetalheSelecionado.setProduto(null);
+            Mensagem.addInfoMessage("Produto: " + prod.getNome() + " removido o vinculo com o fornecedor ");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao disvincular produto", ex);
+            }
         }
     }
 

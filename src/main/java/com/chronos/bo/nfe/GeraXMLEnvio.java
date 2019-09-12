@@ -149,7 +149,7 @@ public class GeraXMLEnvio {
             String qrCode = NFCeUtil.getCodeQRCode(
                     infNfe.getId().substring(3),
                     nfeCabecalho.getAmbiente().toString(),
-                    "000001",
+                    nfeCabecalho.getTokenCsc(),
                     nfeCabecalho.getCsc(),
                     url);
             InfNFeSupl infNFeSupl = new InfNFeSupl();
@@ -445,13 +445,17 @@ public class GeraXMLEnvio {
                                 volume.setMarca(v.getMarca());
                                 volume.setPesoL(FormatValor.getInstance().formatarPeso(v.getPesoLiquido()));
                                 volume.setPesoB(FormatValor.getInstance().formatarPeso(v.getPesoBruto()));
-                                v.getListaTransporteVolumeLacre().stream()
-                                        .forEach(l -> {
-                                            TNFe.InfNFe.Transp.Vol.Lacres lacre = new TNFe.InfNFe.Transp.Vol.Lacres();
-                                            volume.getLacres().add(lacre);
 
-                                            lacre.setNLacre(l.getNumero());
-                                        });
+                                if (v.getListaTransporteVolumeLacre() != null) {
+                                    v.getListaTransporteVolumeLacre().stream()
+                                            .forEach(l -> {
+                                                TNFe.InfNFe.Transp.Vol.Lacres lacre = new TNFe.InfNFe.Transp.Vol.Lacres();
+                                                volume.getLacres().add(lacre);
+
+                                                lacre.setNLacre(l.getNumero());
+                                            });
+                                }
+
                                 transp.getVol().add(volume);
                             });
                 }

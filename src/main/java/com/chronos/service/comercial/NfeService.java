@@ -182,7 +182,7 @@ public class NfeService implements Serializable {
                 nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
             }
             nfe.setCsc(configuracao.getCsc());
-
+            nfe.setTokenCsc(configuracao.getTokenCsc());
         }
     }
 
@@ -370,7 +370,9 @@ public class NfeService implements Serializable {
 
     public NfeCabecalho atualizarTotais(NfeCabecalho nfe) throws Exception {
         NfeUtil nFeUtil = new NfeUtil();
-        return nFeUtil.calcularTotalNFe(nfe);
+        nfe = nFeUtil.calcularTotalNFe(nfe);
+        nFeUtil.definirTotaisTributos(nfe);
+        return nfe;
     }
 
     public List<Produto> getListaProduto(String descricao, Empresa empresa) {
@@ -910,9 +912,16 @@ public class NfeService implements Serializable {
             throw new ChronosException("Esta NF-e já foi autorizada. Operação não permitida ");
         }
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
+
         if (modelo == ModeloDocumento.NFCE && StringUtils.isEmpty(nfe.getCsc())) {
             throw new ChronosException("É Necessário informar o CSC!");
         }
+
+        if (modelo == ModeloDocumento.NFCE && StringUtils.isEmpty(nfe.getTokenCsc())) {
+            throw new ChronosException("É Necessário informar o token do CSC!");
+        }
+
+
         LocalDestino destino = LocalDestino.getByCodigo(nfe.getLocalDestino());
         int cfop = 0;
         int cfopAux = 0;

@@ -63,6 +63,7 @@ public class ConfiguracaoEmissorDTO {
     private String emailTexto;
 
     private String csc;
+    private String tokenCsc;
 
     private String observacaoPadrao;
 
@@ -121,6 +122,7 @@ public class ConfiguracaoEmissorDTO {
         this.csc = configuracao.getCsc();
         this.modelo = 65;
         this.serie = configuracao.getSerie();
+        this.tokenCsc = configuracao.getIdTokenCsc();
     }
 
 
@@ -354,6 +356,14 @@ public class ConfiguracaoEmissorDTO {
 
     public void setCsc(String csc) {
         this.csc = csc;
+    }
+
+    public String getTokenCsc() {
+        return tokenCsc;
+    }
+
+    public void setTokenCsc(String tokennCsc) {
+        this.tokenCsc = tokennCsc;
     }
 
     public int getModelo() {
