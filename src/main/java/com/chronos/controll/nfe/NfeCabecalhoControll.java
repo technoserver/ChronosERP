@@ -164,7 +164,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void doCreate() {
         try {
             super.doCreate();
-
+            pessoaCliente = null;
+            duplicidade = false;
             nfeService.instanciarConfNfe(empresa, ModeloDocumento.NFE);
             getObjeto().setDestinatario(new NfeDestinatario());
             getObjeto().getDestinatario().setNfeCabecalho(getObjeto());

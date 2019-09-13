@@ -149,7 +149,7 @@ public class VendaPdvService implements Serializable {
 
         ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
-
+        nfe.setInformacoesAddContribuinte(configuracaoEmissorDTO.getObservacaoPadrao());
         if (StringUtils.isEmpty(configuracaoEmissorDTO.getSerie())) {
             throw new ChronosException("Serie da NFCe não definida");
         }
