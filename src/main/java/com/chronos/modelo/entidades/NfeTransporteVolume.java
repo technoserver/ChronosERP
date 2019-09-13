@@ -32,7 +32,8 @@ public class NfeTransporteVolume implements Serializable {
     @JoinColumn(name = "ID_NFE_TRANSPORTE", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private NfeTransporte nfeTransporte;
-    @OneToMany(mappedBy = "nfeTransporteVolume", orphanRemoval = true, fetch = FetchType.EAGER)
+    //@OneToMany(mappedBy = "nfeTransporteVolume", orphanRemoval = true, fetch = FetchType.EAGER)
+    @Transient
     private Set<NfeTransporteVolumeLacre> listaTransporteVolumeLacre;
 
     public NfeTransporteVolume() {
