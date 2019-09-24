@@ -309,9 +309,6 @@ public class NfeService implements Serializable {
 
                 resultado = infRetorno.getXMotivo();
                 break;
-            case "241":
-                resultado = infRetorno.getXMotivo();
-                break;
             case "215":
                 String xml = XmlUtil.objectToXml(infRetorno);
                 String erroValidacao = ValidarNFe.validaXml(xml, "inutilizacao");

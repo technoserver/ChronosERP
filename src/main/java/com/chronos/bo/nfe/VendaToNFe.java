@@ -243,6 +243,7 @@ public class VendaToNFe extends ManualCDILookup {
 
 
         nfeUtil.calcularTotalNFe(nfe);
+        nfeUtil.definirTotaisTributos(nfe);
     }
 
     public void definirFormaPagamento() {
