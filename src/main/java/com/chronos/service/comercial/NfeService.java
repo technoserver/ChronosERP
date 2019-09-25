@@ -491,6 +491,11 @@ public class NfeService implements Serializable {
         validacaoNfe(nfe);
         nfe.setDataHoraEmissao(new Date());
 
+        if (nfe.getDataHoraEntradaSaida().getTime() < nfe.getDataHoraEmissao().getTime()) {
+            nfe.setDataHoraEntradaSaida(nfe.getDataHoraEmissao());
+        }
+
+
         if (StatusTransmissao.DUPLICIDADE == nfe.getStatusTransmissao()) {
             nfe.setNumero("");
             nfe.setChaveAcesso("");
