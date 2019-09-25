@@ -2,22 +2,21 @@
     <idLote>1</idLote>
     <indSinc>1</indSinc>
     <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe531909169253710001145501000000032418001431223">
+        <infNFe versao="4.00" Id="NFe53190916925371000114650010000007781766978160">
             <ide>
                 <cUF>53</cUF>
-                <cNF>800143122</cNF>
-                <natOp>VENDA A CONSUMIDOR FINAL</natOp>
-                <mod>55</mod>
-                <serie>10</serie>
-                <nNF>324</nNF>
-                <dhEmi>2019-09-19T11:48:05-03:00</dhEmi>
-                <dhSaiEnt>2019-09-19T11:43:32-03:00</dhSaiEnt>
+                <cNF>76697816</cNF>
+                <natOp>VENDA</natOp>
+                <mod>65</mod>
+                <serie>1</serie>
+                <nNF>778</nNF>
+                <dhEmi>2019-09-25T13:28:42-03:00</dhEmi>
                 <tpNF>1</tpNF>
                 <idDest>1</idDest>
                 <cMunFG>5300108</cMunFG>
-                <tpImp>1</tpImp>
+                <tpImp>4</tpImp>
                 <tpEmis>1</tpEmis>
-                <cDV>3</cDV>
+                <cDV>0</cDV>
                 <tpAmb>2</tpAmb>
                 <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
@@ -43,41 +42,25 @@
                 <IE>0762315200183</IE>
                 <CRT>1</CRT>
             </emit>
-            <dest>
-                <CPF>23117815880</CPF>
-                <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
-                <enderDest>
-                    <xLgr>LOGRADOURO</xLgr>
-                    <nro>1020</nro>
-                    <xBairro>CENTRO</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
-                    <CEP>99999999</CEP>
-                    <cPais>1058</cPais>
-                    <xPais>Brazil</xPais>
-                </enderDest>
-                <indIEDest>9</indIEDest>
-            </dest>
             <det nItem="1">
                 <prod>
                     <cProd>1</cProd>
-                    <cEAN>SEM GTIN</cEAN>
+                    <cEAN>12345670</cEAN>
                     <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
-                    <NCM>19053100</NCM>
+                    <NCM>01042090</NCM>
                     <CFOP>5102</CFOP>
                     <uCom>UN</uCom>
                     <qCom>1.0000</qCom>
-                    <vUnCom>10</vUnCom>
+                    <vUnCom>10.000000</vUnCom>
                     <vProd>10.00</vProd>
-                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <cEANTrib>12345670</cEANTrib>
                     <uTrib>UN</uTrib>
                     <qTrib>1.0000</qTrib>
-                    <vUnTrib>10</vUnTrib>
+                    <vUnTrib>10.000000</vUnTrib>
                     <indTot>1</indTot>
                 </prod>
                 <imposto>
-                    <vTotTrib>0.00</vTotTrib>
+                    <vTotTrib>2.22</vTotTrib>
                     <ICMS>
                         <ICMSSN102>
                             <orig>0</orig>
@@ -123,11 +106,11 @@
                     <vCOFINS>0.30</vCOFINS>
                     <vOutro>0.00</vOutro>
                     <vNF>10.00</vNF>
-                    <vTotTrib>0.00</vTotTrib>
+                    <vTotTrib>2.22</vTotTrib>
                 </ICMSTot>
             </total>
             <transp>
-                <modFrete>0</modFrete>
+                <modFrete>9</modFrete>
             </transp>
             <pag>
                 <detPag>
@@ -136,24 +119,29 @@
                 </detPag>
             </pag>
             <infAdic>
-                <infCpl>Trib. Aprox. Federal R$ 0,00 e R$ 0,00 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
+                <infCpl>Trib. Aprox. Federal R$ 0,42 e R$ 1,80 Estadual e R$ 0,00 Municipal Fonte IBPTteste obs</infCpl>
             </infAdic>
         </infNFe>
+        <infNFeSupl>
+            <qrCode>
+                <![CDATA[http://dec.fazenda.df.gov.br/ConsultarNFCe.aspx?p=53190916925371000114650010000007781766978160|2|2|3|A09023809EBB260DEA986C076018E5AE7FBB582D]]></qrCode>
+            <urlChave>http://dec.fazenda.df.gov.br/ConsultarNFCe.aspx</urlChave>
+        </infNFeSupl>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe531909169253710001145501000000032418001431223">
+                <Reference URI="#NFe53190916925371000114650010000007781766978160">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>qNozbC/jYPWs4IKHz9X8Zy+cdW0=</DigestValue>
+                    <DigestValue>cbQIl9erkoTugac6jc6XEu7RIpc=</DigestValue>
                 </Reference>
             </SignedInfo>
             <SignatureValue>
-                cVu3VikFUD1zEIzkXZusKca5FNdMyCYHYjvAQC1rOFJu1mS5B6SqbDJXObC2/F+HCkRlAw52XutuSoIeQOrM/CrzM436ul0kfMHwtdknRA/J7NE5UzKa/sPdX51ldAec9dBZgoIYV9p0/Y2Th2+igRbAf+lGP0DPme7fV0hMPUbKIe9bwC+XXxa0kgYJfTGEJ1JwXT1r+N2dJqeRTitlhKXozKpSq+khlVYGTHNm75DhaJ7c2v1cuPeaSBjT6zrra+HdbFEdnor/u8ARrqp+G689bwhPBkt/iNIOX943NwKq4BVWw885Ne6V7y2UsgbpfEL8xsujiGX3D1RwdQHwtw==
+                KjmPDbtobNalvZiCJcNuXJJ7oB0N6NSYPzsF3LKfqvOEYoa6sYfMmfC5duEtd7imi62UzhNu2Wn6wrT83/vjyypXiii8APKzxks7a4LNW796T/L35HsH8JPlFO6WW3CQyp3O5kljKp9rpon2/vLl4Tq0TUmp2/nDmpS3tVWiEla3cBqBwJBvTuOWKmF0lcbGJRNsxiC+cpNcOvP/oNlTh4wcTxxcPP6DCdL+ipIV906k494/4LDw6XFE15lp1TnM3Mp4KjbjKoku3vH6bgNhuRr292p/8nUG5nI1gYfVUbcx8htXfxNmyqDxxQ4riZMUzUFQxndlu8xpO5ktuLifRQ==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>
