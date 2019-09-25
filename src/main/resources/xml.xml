@@ -2,22 +2,22 @@
     <idLote>1</idLote>
     <indSinc>1</indSinc>
     <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe531909169253710001145501000000032418001431223">
+        <infNFe versao="4.00" Id="NFe53190916925371000114550100000003291524163938">
             <ide>
                 <cUF>53</cUF>
-                <cNF>800143122</cNF>
+                <cNF>52416393</cNF>
                 <natOp>VENDA A CONSUMIDOR FINAL</natOp>
                 <mod>55</mod>
                 <serie>10</serie>
-                <nNF>324</nNF>
-                <dhEmi>2019-09-19T11:48:05-03:00</dhEmi>
-                <dhSaiEnt>2019-09-19T11:43:32-03:00</dhSaiEnt>
+                <nNF>329</nNF>
+                <dhEmi>2019-09-25T15:30:01-03:00</dhEmi>
+                <dhSaiEnt>2019-09-25T15:30:01-03:00</dhSaiEnt>
                 <tpNF>1</tpNF>
                 <idDest>1</idDest>
                 <cMunFG>5300108</cMunFG>
                 <tpImp>1</tpImp>
                 <tpEmis>1</tpEmis>
-                <cDV>3</cDV>
+                <cDV>8</cDV>
                 <tpAmb>2</tpAmb>
                 <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
@@ -64,7 +64,7 @@
                     <cProd>1</cProd>
                     <cEAN>SEM GTIN</cEAN>
                     <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
-                    <NCM>19053100</NCM>
+                    <NCM>01042090</NCM>
                     <CFOP>5102</CFOP>
                     <uCom>UN</uCom>
                     <qCom>1.0000</qCom>
@@ -77,7 +77,7 @@
                     <indTot>1</indTot>
                 </prod>
                 <imposto>
-                    <vTotTrib>0.00</vTotTrib>
+                    <vTotTrib>2.22</vTotTrib>
                     <ICMS>
                         <ICMSSN102>
                             <orig>0</orig>
@@ -123,7 +123,7 @@
                     <vCOFINS>0.30</vCOFINS>
                     <vOutro>0.00</vOutro>
                     <vNF>10.00</vNF>
-                    <vTotTrib>0.00</vTotTrib>
+                    <vTotTrib>2.22</vTotTrib>
                 </ICMSTot>
             </total>
             <transp>
@@ -136,24 +136,24 @@
                 </detPag>
             </pag>
             <infAdic>
-                <infCpl>Trib. Aprox. Federal R$ 0,00 e R$ 0,00 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
+                <infCpl>Trib. Aprox. Federal R$ 0,42 e R$ 1,80 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
             </infAdic>
         </infNFe>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe531909169253710001145501000000032418001431223">
+                <Reference URI="#NFe53190916925371000114550100000003291524163938">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>qNozbC/jYPWs4IKHz9X8Zy+cdW0=</DigestValue>
+                    <DigestValue>m/gKXcxnCLM4tbatZwWSYOg2720=</DigestValue>
                 </Reference>
             </SignedInfo>
             <SignatureValue>
-                cVu3VikFUD1zEIzkXZusKca5FNdMyCYHYjvAQC1rOFJu1mS5B6SqbDJXObC2/F+HCkRlAw52XutuSoIeQOrM/CrzM436ul0kfMHwtdknRA/J7NE5UzKa/sPdX51ldAec9dBZgoIYV9p0/Y2Th2+igRbAf+lGP0DPme7fV0hMPUbKIe9bwC+XXxa0kgYJfTGEJ1JwXT1r+N2dJqeRTitlhKXozKpSq+khlVYGTHNm75DhaJ7c2v1cuPeaSBjT6zrra+HdbFEdnor/u8ARrqp+G689bwhPBkt/iNIOX943NwKq4BVWw885Ne6V7y2UsgbpfEL8xsujiGX3D1RwdQHwtw==
+                CdqjgxC/K8F65BP9QkdG3EYvPVkBxhGbFytgGIbqPHBXIktJ8XN2E0i1ZZrhNTPIvB/FI/CSZ/cwfdgBGC9BQi2qmHFiBdlZqoFS0k/cc9vTSY9haLPszvw7UuDZdotzofxBfNsLH6hYoKrBzzoFo6KChjZ92FjXO8xmxSt+6oaEQxLLOqWKYqN/KzmzMBgVKuhQpAglMjQV3oEyqP99Op/CYRSFRzPrV0xvquPdm8f/fFR7mlicrIUJ/IjCqWrmonmz/m3MNz0klwyLR5pb9yz+GrQhzvPCSMcZuzNJq1Ql9SO8gViIDkcStFzLxq3hDxSHJZIB5dTtwmNVP2ZDjA==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>

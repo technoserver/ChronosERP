@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="relacaoVendas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
+    <property name="ireport.zoom" value="2.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ERP Light"/>
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="786"/>
+    <property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="200"/>
+    <property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="341"/>
+    <property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="652"/>
+    <style name="tituloDetail" fontName="Times New Roman" fontSize="8" isItalic="false" isUnderline="false"
+           isStrikeThrough="false"/>
+    <style name="dadosDetail" fontName="Times New Roman" fontSize="8" isBold="false" isItalic="false"
+           isUnderline="false" isStrikeThrough="false"/>
+    <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression>
+            <![CDATA["/home/john/projetos/java/chronosnfe/src/main/resources/com/chronos/relatorio/comercial/"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="idempresa" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dataPedidoInicial" class="java.util.Date">
+        <defaultValueExpression>
+            <![CDATA[new SimpleDateFormat("yyyy-MM-dd").parse("1990-01-01")]]></defaultValueExpression>
+    </parameter>
+    <parameter name="idcliente" class="java.lang.Integer"/>
+    <parameter name="idvendedor" class="java.lang.Integer">
+        <parameterDescription><![CDATA[]]></parameterDescription>
+    </parameter>
+    <parameter name="situacao" class="java.lang.String">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="dataPedidoFinal" class="java.util.Date">
+        <defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="id" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="ordem" class="java.lang.String">
+        <defaultValueExpression><![CDATA["data_venda"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="status_os" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+     v.id,
+     p.nome as cliente,
+     pv.nome as vendedor,
+     v.situacao,
+     v.valor_subtotal,
+     v.valor_desconto,
+     v.valor_total,
+     v.valor_comissao,
+     v.data_venda,
+     n.numero,
+     empresa.razao_social AS empresa_razao_social,
+     empresa.nome_fantasia AS empresa_nome_fantasia,
+     empresa.cnpj AS empresa_cnpj,
+     empresa.inscricao_estadual AS empresa_inscricao_estadual,
+     empresa.imagem_logotipo AS empresa_imagem_logotipo,
+     empresa_endereco.logradouro AS empresa_endereco_logradouro,
+     empresa_endereco.numero AS empresa_endereco_numero,
+     empresa_endereco.complemento AS empresa_endereco_complemento,
+     empresa_endereco.bairro AS empresa_endereco_bairro,
+     empresa_endereco.cidade AS empresa_endereco_cidade,
+     empresa_endereco.cep AS empresa_endereco_cep,
+     empresa_endereco.fone AS empresa_endereco_fone,
+     empresa_endereco.uf AS empresa_endereco_uf,
+     empresa.email AS empresa_email
+FROM
+     venda_cabecalho v
+     INNER JOIN cliente c ON v.id_cliente = c.id
+     INNER JOIN pessoa p ON c.id_pessoa = p.id
+     INNER JOIN vendedor vd ON vd.id = v.id_vendedor
+     INNER JOIN colaborador cl ON vd.id_colaborador = cl.id
+     INNER JOIN pessoa pv ON cl.id_pessoa = pv.id
+     INNER JOIN empresa empresa ON v.id_empresa = empresa.id
+     INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+     LEFT JOIN nfe_cabecalho n ON n.id_venda_cabecalho = v.id
+WHERE empresa.id = $P{idempresa} and  empresa_endereco.principal = 'S' and (v.id_cliente =  $P{idcliente} or $P{idcliente} is null )
+and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null) and (v.situacao = $P{situacao} or $P{situacao} is null)
+ and v.data_venda BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal} and (v.id =$P{id} or $P{id} is null)
+union
+SELECT
+     os.id,
+     p.nome as cliente,
+     pv.nome as vendedor,
+     cast(os.status as text) as status,
+     (os.valor_total_servicos + os.valor_total_produtos - os.valor_total_desconto ) as valor_subtotal,
+     os.valor_total_desconto,
+     (os.valor_total_servicos + os.valor_total_produtos) as valor_total,
+     os.valor_comissao,
+     os.data_fim as data_venda,
+     n.numero,
+     empresa.razao_social AS empresa_razao_social,
+     empresa.nome_fantasia AS empresa_nome_fantasia,
+     empresa.cnpj AS empresa_cnpj,
+     empresa.inscricao_estadual AS empresa_inscricao_estadual,
+     empresa.imagem_logotipo AS empresa_imagem_logotipo,
+     empresa_endereco.logradouro AS empresa_endereco_logradouro,
+     empresa_endereco.numero AS empresa_endereco_numero,
+     empresa_endereco.complemento AS empresa_endereco_complemento,
+     empresa_endereco.bairro AS empresa_endereco_bairro,
+     empresa_endereco.cidade AS empresa_endereco_cidade,
+     empresa_endereco.cep AS empresa_endereco_cep,
+     empresa_endereco.fone AS empresa_endereco_fone,
+     empresa_endereco.uf AS empresa_endereco_uf,
+     empresa.email AS empresa_email
+FROM
+     os_abertura os
+     INNER JOIN cliente c ON os.id_cliente = c.id
+     INNER JOIN pessoa p ON c.id_pessoa = p.id
+     LEFT JOIN vendedor vd ON vd.id = os.id_vendedor
+     INNER JOIN colaborador cl ON vd.id_colaborador = cl.id
+     INNER JOIN pessoa pv ON cl.id_pessoa = pv.id
+     INNER JOIN empresa empresa ON os.id_empresa = empresa.id
+     INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+     LEFT JOIN nfe_cabecalho n ON n.id_venda_cabecalho = os.id
+WHERE empresa.id = $P{idempresa} and  empresa_endereco.principal = 'S'
+and (os.id_cliente =  $P{idcliente} or $P{idcliente} is null )
+and (os.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
+and (os.status = $P{status_os} or $P{status_os} is null)
+and os.data_fim BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal} and (os.id =$P{id} or $P{id} is null)
+union
+SELECT
+     v.id,
+     COALESCE(v.nome_cliente, 'Cliente não identificado') AS cliente,
+     pv.nome as vendedor,
+     v.status_venda,
+     v.valor_subtotal,
+     v.valor_desconto,
+     v.valor_total,
+     v.valor_comissao,
+     v.data_hora_venda as data_venda,
+     n.numero,
+     empresa.razao_social AS empresa_razao_social,
+     empresa.nome_fantasia AS empresa_nome_fantasia,
+     empresa.cnpj AS empresa_cnpj,
+     empresa.inscricao_estadual AS empresa_inscricao_estadual,
+     empresa.imagem_logotipo AS empresa_imagem_logotipo,
+     empresa_endereco.logradouro AS empresa_endereco_logradouro,
+     empresa_endereco.numero AS empresa_endereco_numero,
+     empresa_endereco.complemento AS empresa_endereco_complemento,
+     empresa_endereco.bairro AS empresa_endereco_bairro,
+     empresa_endereco.cidade AS empresa_endereco_cidade,
+     empresa_endereco.cep AS empresa_endereco_cep,
+     empresa_endereco.fone AS empresa_endereco_fone,
+     empresa_endereco.uf AS empresa_endereco_uf,
+     empresa.email AS empresa_email
+FROM pdv_venda_cabecalho v
+INNER JOIN vendedor vd ON vd.id = v.id_vendedor
+INNER JOIN colaborador cl ON vd.id_colaborador = cl.id
+INNER JOIN pessoa pv ON cl.id_pessoa = pv.id
+LEFT JOIN nfe_cabecalho n ON n.id = v.id_nfe_cabecalho
+INNER JOIN empresa empresa ON v.id_empresa = empresa.id
+INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+WHERE empresa.id = $P{idempresa}  and  empresa_endereco.principal = 'S'
+and (v.id_cliente  = $P{idcliente}  or $P{idcliente} is null )
+and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
+and (v.status_venda = $P{situacao} or $P{situacao} is null)
+and v.data_hora_venda BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal}
+and (v.id =$P{id} or $P{id} is null)
+order by $P!{ordem}]]>
+    </queryString>
+    <field name="id" class="java.lang.Integer"/>
+    <field name="cliente" class="java.lang.String"/>
+    <field name="vendedor" class="java.lang.String"/>
+    <field name="situacao" class="java.lang.String"/>
+    <field name="valor_subtotal" class="java.math.BigDecimal"/>
+    <field name="valor_desconto" class="java.math.BigDecimal"/>
+    <field name="valor_total" class="java.math.BigDecimal"/>
+    <field name="valor_comissao" class="java.math.BigDecimal"/>
+    <field name="data_venda" class="java.sql.Timestamp"/>
+    <field name="numero" class="java.lang.String"/>
+    <field name="empresa_razao_social" class="java.lang.String"/>
+    <field name="empresa_nome_fantasia" class="java.lang.String"/>
+    <field name="empresa_cnpj" class="java.lang.String"/>
+    <field name="empresa_inscricao_estadual" class="java.lang.String"/>
+    <field name="empresa_imagem_logotipo" class="java.lang.String"/>
+    <field name="empresa_endereco_logradouro" class="java.lang.String"/>
+    <field name="empresa_endereco_numero" class="java.lang.String"/>
+    <field name="empresa_endereco_complemento" class="java.lang.String"/>
+    <field name="empresa_endereco_bairro" class="java.lang.String"/>
+    <field name="empresa_endereco_cidade" class="java.lang.String"/>
+    <field name="empresa_endereco_cep" class="java.lang.String"/>
+    <field name="empresa_endereco_fone" class="java.lang.String"/>
+    <field name="empresa_endereco_uf" class="java.lang.String"/>
+    <field name="empresa_email" class="java.lang.String"/>
+    <variable name="total" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_total}]]></variableExpression>
+    </variable>
+    <variable name="subTotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_subtotal}]]></variableExpression>
+    </variable>
+    <variable name="desconto" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_desconto}]]></variableExpression>
+    </variable>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="113" splitType="Stretch">
+            <image isUsingCache="true" onErrorType="Blank">
+                <reportElement positionType="Float" mode="Transparent" x="2" y="0" width="150" height="79"
+                               uuid="39763776-99a0-40da-b698-701f2a065525"/>
+                <imageExpression><![CDATA[$F{empresa_imagem_logotipo}]]></imageExpression>
+            </image>
+            <line>
+                <reportElement x="0" y="112" width="555" height="1" uuid="84907098-40f5-401a-b232-5785f0e8faa0"/>
+            </line>
+            <textField>
+                <reportElement x="278" y="0" width="277" height="14" uuid="ef82db32-1726-4cac-9ee3-442ef2dd7348"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="278" y="13" width="277" height="14" uuid="14107320-d172-4d59-a268-5adef321104a"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_endereco_logradouro}+","+$F{empresa_endereco_numero}+"-"+$F{empresa_endereco_bairro}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="278" y="26" width="36" height="14" uuid="a149d8c6-723f-4357-9d21-645cb4198c1a"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <text><![CDATA[CNPJ:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="414" y="26" width="36" height="14" uuid="4317725a-a011-4efa-a747-33d0d6ac5668"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <text><![CDATA[IE:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="314" y="26" width="100" height="14" uuid="1c93043a-de2c-469a-b30f-97b358a0bef6"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_cnpj}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="450" y="26" width="105" height="14" uuid="28109b0f-511b-49bc-9be3-71e5f0970c7a"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_inscricao_estadual}==null?"":$F{empresa_inscricao_estadual}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="278" y="39" width="36" height="14" uuid="bc675e70-68e2-4869-a07a-a903455d3aad"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <text><![CDATA[FONE:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="314" y="39" width="100" height="14" uuid="e74f0bb5-464b-4151-ba79-52e5c583565c"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_endereco_fone}==null?"":$F{empresa_endereco_fone}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="278" y="52" width="36" height="14" uuid="97d8cc50-d1d9-4406-bef4-4f7e1bd328dd"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <text><![CDATA[EMAIL:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="314" y="52" width="241" height="14" uuid="fe6cdf0f-3001-4494-83a5-e61c65526513"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_email}==null?"":$F{empresa_email}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement x="460" y="65" width="37" height="14" uuid="08715cba-59c2-4071-9808-e2941dfdb4e0"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <textField pattern="HH:mm">
+                <reportElement x="523" y="65" width="32" height="14" uuid="68f116aa-e1ee-402f-a1fd-1aaa48fe9578"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="436" y="65" width="22" height="14" uuid="0308f1da-c227-4637-9e2d-eee1ab75dc1b"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Data:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="500" y="65" width="23" height="14" uuid="39ef6df0-2e43-4ded-a70a-80d1aa833a79"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Hora:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="81" width="555" height="19" uuid="8f005b14-0cd6-4980-9621-f58de4312734"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Relação de venda]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="100" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
+            </line>
+            <staticText>
+                <reportElement style="tituloDetail" x="43" y="101" width="171" height="12"
+                               uuid="abced5c5-b994-49b4-9a17-3277c15ed63c"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Cliente]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="216" y="101" width="109" height="12"
+                               uuid="a2c0b2fa-d7d4-46f5-bc87-3f3660977e23"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Vendedor]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="363" y="101" width="51" height="12"
+                               uuid="3c2dd349-f275-4219-a25f-964b27cae822"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Status]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="508" y="101" width="47" height="12"
+                               uuid="9478002a-cc00-40f9-a76b-698e9893244d"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor Total]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="0" y="100" width="41" height="12"
+                               uuid="b81a598d-e978-4d34-b725-a6683f96eada"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Nº Pedido]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="101" width="55" height="12"
+                               uuid="79936264-c37c-4960-a9fa-14849cebe4a1"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Subtotal]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="469" y="101" width="39" height="12"
+                               uuid="9589eb9c-fa4c-48b1-a77c-b5e490ead779"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Desconto]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="325" y="101" width="38" height="12"
+                               uuid="bd02ea33-f691-48b8-8e8f-07ae046a8a70"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Data]]></text>
+            </staticText>
+        </band>
+    </title>
+    <detail>
+        <band height="12" splitType="Stretch">
+            <textField>
+                <reportElement style="dadosDetail" x="43" y="0" width="171" height="12"
+                               uuid="98d4e1a1-5a62-48bb-b930-8b3969c0b4ac"/>
+                <textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="2" y="0" width="39" height="12"
+                               uuid="db2ea711-d020-4037-8e76-4fab7e8de16e"/>
+                <textFieldExpression><![CDATA[new DecimalFormat("000000").format($F{id})]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="216" y="0" width="109" height="12"
+                               uuid="794e9bd1-60cc-4531-aeff-ae75205e18fa"/>
+                <textFieldExpression><![CDATA[$F{vendedor}]]></textFieldExpression>
+            </textField>
+            <textField pattern="">
+                <reportElement style="dadosDetail" x="363" y="0" width="51" height="12"
+                               uuid="1633254b-731c-45c2-b525-35bedb41fef7"/>
+                <textFieldExpression><![CDATA[$F{situacao}.equals("D")?"Digitacao":
+$F{situacao}.equals("P")?"Producao":
+$F{situacao}.equals("X")?"Expedicao":
+$F{situacao}.equals("F")?"Faturado":
+$F{situacao}.equals("E")?"Entregue":
+$F{situacao}.equals("V")?"Devolução":
+$F{situacao}.equals("N")?"Nota Fiscal":""]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="508" y="0" width="47" height="12"
+                               uuid="bc63d15d-c606-46b0-a53e-99acb4ad9cd4"/>
+                <textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="469" y="0" width="39" height="12"
+                               uuid="3f544bb4-b00a-4b5f-824b-a7253969b692"/>
+                <textFieldExpression><![CDATA[$F{valor_desconto}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="414" y="0" width="55" height="12"
+                               uuid="67c84540-a494-4d34-ae07-067d1eabc7ec"/>
+                <textFieldExpression><![CDATA[$F{valor_subtotal}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="325" y="0" width="38" height="12"
+                               uuid="5fdfd4a2-9fea-4a50-9ad0-235d3e5fa0bc"/>
+                <textFieldExpression><![CDATA[$F{data_venda}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <summary>
+        <band height="66">
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="12" width="55" height="12"
+                               uuid="f9b4d3b4-927d-4b1b-9f97-0334357d67ae"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[SubTotal]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="413" y="24" width="56" height="12"
+                               uuid="f58f1e2f-1f4b-4f10-a91a-686afffed770"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Desconto]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="413" y="36" width="56" height="12"
+                               uuid="fb214e9f-f1c4-41e7-adf1-ab88e5e13ab3"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Total]]></text>
+            </staticText>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="469" y="24" width="86" height="12"
+                               uuid="69dc6c4a-7c64-4e46-8f7c-65b1113797b4"/>
+                <textFieldExpression><![CDATA[$V{desconto}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="469" y="36" width="86" height="12"
+                               uuid="befc6df8-89e3-4b1b-aeb8-2c62e859f52f"/>
+                <textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="469" y="12" width="86" height="12"
+                               uuid="514fba33-75f6-4161-9af7-ef5cfa42a7ee"/>
+                <textFieldExpression><![CDATA[$V{subTotal}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>
