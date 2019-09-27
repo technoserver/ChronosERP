@@ -136,6 +136,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
             nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
             nfe.setCsc(configuracaoEmissorDTO.getCsc());
+            nfe.setTokenCsc(configuracaoEmissorDTO.getTokenCsc());
             nfe.setSerie(configuracaoEmissorDTO.getSerie());
             String infAdd = nfe.getInformacoesAddContribuinte();
             infAdd += " " + venda.getObservacao();
