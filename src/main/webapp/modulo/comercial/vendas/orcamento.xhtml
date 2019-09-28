@@ -153,6 +153,12 @@
                                             icon="fa fa-print"
                                             ajax="false"/>
 
+                                <p:menuitem value="Gerar OS"
+                                            rendered="#{row.tipo eq 'O'}"
+                                            outcome="/modulo/comercial/os/osAbertura">
+                                    <f:param name="orcamento" value="#{row.id}"/>
+                                </p:menuitem>
+
 
                                 <p:menuitem value="Aprovar e Gerar Pedido"
                                             update=":formCentro:growl,tableOrcamento"

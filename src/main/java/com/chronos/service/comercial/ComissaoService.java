@@ -1,7 +1,8 @@
 package com.chronos.service.comercial;
 
-import com.chronos.modelo.entidades.VendaComissao;
-import com.chronos.modelo.entidades.Vendedor;
+import com.chronos.modelo.entidades.Colaborador;
+import com.chronos.modelo.entidades.Comissao;
+import com.chronos.modelo.enuns.Modulo;
 import com.chronos.repository.VendaComissaoRepository;
 import com.chronos.util.jpa.Transactional;
 
@@ -10,7 +11,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class VendaComissaoService implements Serializable {
+public class ComissaoService implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,15 +19,17 @@ public class VendaComissaoService implements Serializable {
     private VendaComissaoRepository repository;
 
     @Transactional
-    public void gerarComissao(String situacao, String tipoContabil, BigDecimal valorComissao, BigDecimal valorVenda, String numdoc, Vendedor vendedor) {
-        VendaComissao comissao = new VendaComissao();
+    public void gerarComissao(String situacao, String tipoContabil, BigDecimal valorComissao, BigDecimal valorVenda,
+                              String numdoc, Colaborador colaborador, Modulo modulo) {
+        Comissao comissao = new Comissao();
         comissao.setDataLancamento(new Date());
         comissao.setSituacao(situacao);
         comissao.setTipoContabil(tipoContabil);
         comissao.setValorComissao(valorComissao);
         comissao.setValorVenda(valorVenda);
         comissao.setNumeroDocumento(numdoc);
-        comissao.setVendedor(vendedor);
+        comissao.setColaborador(colaborador);
+        comissao.setCodigoModulo(modulo.getCodigo());
         repository.salvar(comissao);
     }
 }
