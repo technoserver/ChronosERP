@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="2.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="172"/>
+    <property name="ireport.y" value="316"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <style name="table">
         <box>
@@ -77,15 +77,20 @@
      pessoa_endereco.cep AS pessoa_endereco_cep,
      pessoa_endereco.fone AS pessoa_endereco_fone,
      pessoa_endereco.principal AS pessoa_endereco_principal,
-     pessoa_colaborador.nome as tecnico
+     pessoa_colaborador.nome as tecnico,
+     pv.nome as vendedor
 
 FROM
      os_abertura os
      INNER JOIN cliente cliente on os.id_cliente = cliente.id
      INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id
      INNER JOIN pessoa_endereco pessoa_endereco ON pessoa.id = pessoa_endereco.id_pessoa
-     INNER JOIN colaborador colaborador on colaborador.id = os.id_colaborador
+     INNER JOIN tecnico t on t.id = os.id_tecnico
+     INNER JOIN colaborador colaborador on colaborador.id = t.id_colaborador
      INNER JOIN pessoa pessoa_colaborador on pessoa_colaborador.id = colaborador.id_pessoa
+     LEFT JOIN vendedor v on v.id = os.id_vendedor
+     LEFT JOIN colaborador cv on cv.id = v.id_colaborador
+     LEFT JOIN pessoa pv on pv.id = cv.id_pessoa
      INNER JOIN empresa empresa ON os.id_empresa = empresa.id
      INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
 WHERE
@@ -127,6 +132,7 @@ WHERE
     <field name="pessoa_endereco_fone" class="java.lang.String"/>
     <field name="pessoa_endereco_principal" class="java.lang.String"/>
     <field name="tecnico" class="java.lang.String"/>
+    <field name="vendedor" class="java.lang.String"/>
     <group name="evolucao">
         <groupExpression><![CDATA[$F{numero}]]></groupExpression>
         <groupHeader>
@@ -448,28 +454,28 @@ WHERE
     <summary>
         <band height="113">
             <staticText>
-                <reportElement x="352" y="12" width="125" height="12" uuid="add42da5-5551-4a26-bab2-56335cfc5aeb"/>
+                <reportElement x="342" y="12" width="135" height="12" uuid="add42da5-5551-4a26-bab2-56335cfc5aeb"/>
                 <textElement>
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Valor Total Itens..:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="352" y="23" width="125" height="12" uuid="f140b4a6-0a6b-4ff5-82b4-c70d77801e51"/>
+                <reportElement x="342" y="23" width="135" height="12" uuid="f140b4a6-0a6b-4ff5-82b4-c70d77801e51"/>
                 <textElement>
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Desconto...........:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="352" y="34" width="125" height="12" uuid="68a05415-1b33-4104-ad1f-5ddef2fd34fb"/>
+                <reportElement x="342" y="34" width="135" height="12" uuid="68a05415-1b33-4104-ad1f-5ddef2fd34fb"/>
                 <textElement>
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Valor Total........:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="352" y="1" width="125" height="12" uuid="14f763ec-df44-4fcc-8e79-16cff6d2b99e"/>
+                <reportElement x="342" y="1" width="135" height="12" uuid="14f763ec-df44-4fcc-8e79-16cff6d2b99e"/>
                 <textElement>
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
@@ -494,35 +500,35 @@ WHERE
                 <reportElement x="0" y="0" width="555" height="1" uuid="bb1a391f-341a-4b45-97b4-840587629823"/>
             </line>
             <staticText>
-                <reportElement x="0" y="0" width="88" height="12" uuid="2167c617-760c-44f7-b1fe-899ce70687a3"/>
+                <reportElement x="0" y="0" width="94" height="12" uuid="2167c617-760c-44f7-b1fe-899ce70687a3"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Tecnico......:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="11" width="88" height="12" uuid="f650c7ad-30b3-414a-adcf-09d4ced29d84"/>
+                <reportElement x="0" y="11" width="94" height="12" uuid="f650c7ad-30b3-414a-adcf-09d4ced29d84"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Data Previsão:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="22" width="88" height="12" uuid="884f4ecb-ef1e-4c58-9405-2a36e3b2ee71"/>
+                <reportElement x="0" y="22" width="94" height="12" uuid="884f4ecb-ef1e-4c58-9405-2a36e3b2ee71"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Hora previsão:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="33" width="88" height="12" uuid="f226769d-4c87-401f-bf68-ceec46e22770"/>
+                <reportElement x="0" y="33" width="94" height="12" uuid="f226769d-4c87-401f-bf68-ceec46e22770"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Situação.....:]]></text>
             </staticText>
             <textField>
-                <reportElement x="87" y="0" width="248" height="12" uuid="34cfaf26-0ce0-47fb-b245-2cb116389867"/>
+                <reportElement x="94" y="0" width="241" height="12" uuid="34cfaf26-0ce0-47fb-b245-2cb116389867"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New"/>
                 </textElement>
@@ -557,21 +563,21 @@ WHERE
                 <textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
-                <reportElement x="87" y="22" width="248" height="12" uuid="58b449e7-2dbc-47e0-a4af-0273af0658f5"/>
+                <reportElement x="94" y="22" width="241" height="12" uuid="58b449e7-2dbc-47e0-a4af-0273af0658f5"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{hora_previsao}]]></textFieldExpression>
             </textField>
             <textField isBlankWhenNull="true">
-                <reportElement x="87" y="11" width="248" height="12" uuid="2eb68d02-38b6-40b0-bebe-c8ae859f53b3"/>
+                <reportElement x="94" y="11" width="241" height="12" uuid="2eb68d02-38b6-40b0-bebe-c8ae859f53b3"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{data_previsao}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="87" y="33" width="248" height="12" uuid="0ed5fe0f-fdbf-4a7e-9fa5-606c9be96e17"/>
+                <reportElement x="94" y="33" width="241" height="12" uuid="0ed5fe0f-fdbf-4a7e-9fa5-606c9be96e17"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New"/>
                 </textElement>

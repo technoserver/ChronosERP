@@ -9,8 +9,8 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "VENDA_COMISSAO")
-public class VendaComissao implements Serializable {
+@Table(name = "comissao")
+public class Comissao implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -31,11 +31,13 @@ public class VendaComissao implements Serializable {
     private Date dataLancamento;
     @Column(name = "numero_documento")
     private String numeroDocumento;
-    @JoinColumn(name = "ID_VENDEDOR", referencedColumnName = "ID")
+    @Column(name = "codigo_modulo")
+    private String codigoModulo;
+    @JoinColumn(name = "id_colaborador", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private Vendedor vendedor;
+    private Colaborador colaborador;
 
-    public VendaComissao() {
+    public Comissao() {
     }
 
     public Integer getId() {
@@ -114,20 +116,28 @@ public class VendaComissao implements Serializable {
         this.numeroDocumento = numeroDocumento;
     }
 
-    public Vendedor getVendedor() {
-        return vendedor;
+    public String getCodigoModulo() {
+        return codigoModulo;
     }
 
-    public void setVendedor(Vendedor vendedor) {
-        this.vendedor = vendedor;
+    public void setCodigoModulo(String codigoModulo) {
+        this.codigoModulo = codigoModulo;
+    }
+
+    public Colaborador getColaborador() {
+        return colaborador;
+    }
+
+    public void setColaborador(Colaborador colaborador) {
+        this.colaborador = colaborador;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof VendaComissao)) return false;
+        if (!(o instanceof Comissao)) return false;
 
-        VendaComissao that = (VendaComissao) o;
+        Comissao that = (Comissao) o;
 
         return getId().equals(that.getId());
     }

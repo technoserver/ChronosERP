@@ -101,30 +101,26 @@
                         <p:column style="width:32px">
                             <p:rowToggler/>
                         </p:column>
-
-                        <p:column headerText="Código." width="100">
-                            <h:outputLabel value="#{row.id}"/>
-                        </p:column>
-
-                        <p:column headerText="Cód. Barras" width="130">
-                            <h:outputLabel value="#{row.gtin}"/>
-                        </p:column>
                         <p:column headerText="Nome">
+                            <p>
+                                <strong>Código :</strong> #{row.id}
+                                <strong>Cód. Barras :</strong> #{row.gtin}
+                            </p>
                             <h:outputLabel value="#{row.nome}"/>
+                            <p>
+                                <strong>Valor de venda : </strong>
+                                <h:outputLabel value="#{row.valorVenda}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <strong>por </strong>
+                                <h:outputLabel value="#{row.sigla}"/>
+                            </p>
                         </p:column>
-                        <p:column headerText="Grupo">
+                        <p:column headerText="Grupo" width="125">
                             <h:outputLabel value="#{row.grupo}"/>
                         </p:column>
-                        <p:column headerText="SubGrupo">
+                        <p:column headerText="SubGrupo" width="180">
                             <h:outputLabel value="#{row.subgrupo}"/>
-                        </p:column>
-                        <p:column headerText="UN" width="50" styleClass="text-center">
-                            <h:outputLabel value="#{row.sigla}"/>
-                        </p:column>
-                        <p:column headerText="Valor Venda" width="123" class="coluna-monetaria">
-                            <h:outputLabel value="#{row.valorVenda}">
-                                <f:convertNumber pattern="#,###,##0.00"/>
-                            </h:outputLabel>
                         </p:column>
                         <p:column headerText="Estoque" width="100" class="text-right">
                             <h:outputLabel value="#{row.quantidade}">

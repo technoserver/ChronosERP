@@ -9,20 +9,31 @@
 
     <div class="row">
 
-        <erp:campoSelect styleClass="col-xs-12 col-sm-4 col-md-4"
-                         idComponente="status"
-                         nomeAtributo="#{osAberturaControll.objeto.status}"
-                         label="Status" itens="#{osAberturaControll.status}"/>
+
 
 
         <div class="col-xs-12 col-sm-4 col-md-4">
-            <p:outputLabel value="Colaborador" for="osAberturaColaborador"/>
+            <p:outputLabel value="Vendedor" for="vendedor"/>
             <br/>
-            <p:autoComplete id="osAberturaColaborador"
-                            value="#{osAberturaControll.objeto.colaborador}"
-                            completeMethod="#{osAberturaControll.getListaColaborador}"
-                            var="colaborador" itemLabel="#{colaborador.pessoa.nome}"
-                            itemValue="#{colaborador}"
+            <p:autoComplete id="vendedor"
+                            value="#{osAberturaControll.objeto.vendedor}"
+                            completeMethod="#{osAberturaControll.getListaVendedor}"
+                            var="vendedor" itemLabel="#{vendedor.nome}"
+                            itemValue="#{vendedor}"
+                            converter="defaultConverter"
+                            forceSelection="true" minQueryLength="3" maxResults="10"
+                            required="true" style="width: 100%"
+                            emptyMessage="Nenhum registro encontrado"/>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4">
+            <p:outputLabel value="Tecnico" for="tecnico"/>
+            <br/>
+            <p:autoComplete id="tecnico"
+                            value="#{osAberturaControll.objeto.tecnico}"
+                            completeMethod="#{osAberturaControll.getListaTecnico}"
+                            var="tecnico" itemLabel="#{tecnico.nome}"
+                            itemValue="#{tecnico}"
                             converter="defaultConverter"
                             forceSelection="true" minQueryLength="3" maxResults="10"
                             required="true" style="width: 100%"
@@ -41,6 +52,7 @@
                             required="true" style="width: 100%"
                             emptyMessage="Nenhum registro encontrado"/>
         </div>
+
     </div>
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-4">
@@ -57,23 +69,8 @@
                             minQueryLength="3" maxResults="10" required="true"
                             style="width: 100%" emptyMessage="Nenhum registro encontrado"/>
         </div>
-        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                        idComponente="osAberturaNumero" label="Numero"
-                        nomeAtributo="#{osAberturaControll.objeto.numero}"
-                        tamanhoMaximo="20"
-                        desabilitado="true"/>
 
 
-        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                        idComponente="osAberturaFoneContato" label="Fone Contato"
-                        nomeAtributo="#{osAberturaControll.objeto.foneContato}"
-                        tamanhoMaximo="15"/>
-        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-4"
-                        idComponente="osAberturaNomeContato" label="Nome Contato"
-                        nomeAtributo="#{osAberturaControll.objeto.nomeContato}"
-                        tamanhoMaximo="50"/>
-    </div>
-    <div class="row">
         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                        idComponente="osAberturaDataInicio" label="Data Inicio"
                        nomeAtributo="#{osAberturaControll.objeto.dataInicio}"/>
@@ -88,6 +85,34 @@
                           styleClass="col-xs-12 col-sm-2 col-md-2"
                           idComponente="osAberturaHoraPrevisao" label="Hora Previsao"
                           nomeAtributo="#{osAberturaControll.objeto.horaPrevisao}"/>
+
+
+    </div>
+    <div class="row">
+
+
+        <erp:campoSelect styleClass="col-xs-12 col-sm-4 col-md-4"
+                         idComponente="status"
+                         nomeAtributo="#{osAberturaControll.objeto.status}"
+                         label="Status" itens="#{osAberturaControll.status}"/>
+        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                        idComponente="osAberturaNumero" label="Numero"
+                        nomeAtributo="#{osAberturaControll.objeto.numero}"
+                        tamanhoMaximo="20"
+                        desabilitado="true"/>
+
+
+        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                        idComponente="osAberturaFoneContato" label="Fone Contato"
+                        nomeAtributo="#{osAberturaControll.objeto.foneContato}"
+                        tamanhoMaximo="15"/>
+
+        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-4"
+                        idComponente="osAberturaNomeContato" label="Nome Contato"
+                        nomeAtributo="#{osAberturaControll.objeto.nomeContato}"
+                        tamanhoMaximo="50"/>
+    </div>
+    <div class="row">
 
 
     </div>

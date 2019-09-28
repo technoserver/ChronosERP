@@ -20,6 +20,13 @@
         OS
     </ui:define>
 
+    <ui:define name="metadata">
+        <f:metadata>
+            <f:viewParam name="orcamento" value="#{osAberturaControll.idorcamento}"/>
+            <f:viewAction action="#{osAberturaControll.gerarOsDoOrcamento}"/>
+        </f:metadata>
+    </ui:define>
+
 
     <ui:define name="gridDados">
         <erp:formularioGrid controller="#{osAberturaControll}" id="telaGrid">
@@ -337,8 +344,13 @@
                                     <f:convertNumber pattern="#,###,##0.00"/>
                                 </p:outputLabel>
                             </p:column>
-                            <p:column headerText="Estoque Verificado" class="coluna-monetaria">
+                            <p:column headerText="Verificado" class="coluna-monetaria">
                                 <p:outputLabel value="#{objeto.controle}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Estoque" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.quantidadeEstoque}">
                                     <f:convertNumber pattern="#,###,##0.00"/>
                                 </p:outputLabel>
                             </p:column>

@@ -40,7 +40,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Inject
     private Repository<OsStatus> statusRepository;
     @Inject
-    private Repository<Colaborador> colaboradorRepository;
+    private Repository<Tecnico> tecnicoRepository;
     @Inject
     private Repository<Cliente> clienteRepository;
     @Inject
@@ -53,6 +53,11 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private ProdutoService produtoService;
     @Inject
     private Repository<VendaCondicoesPagamento> pagamentoRepository;
+    @Inject
+    private Repository<Vendedor> vendedorRepository;
+
+    @Inject
+    private Repository<VendaOrcamentoCabecalho> orcamentoRepository;
 
 
     private OsAberturaEquipamento osAberturaEquipamento;
@@ -78,6 +83,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     private boolean podeAlterarPreco = true;
 
+    private Integer idorcamento;
+
 
     @PostConstruct
     @Override
@@ -90,6 +97,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
         this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
+
+
     }
 
     @Override
@@ -143,7 +152,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         getObjeto().setDataInicio(new Date());
         getObjeto().setHoraInicio(new SimpleDateFormat("HH:mm:ss").format(new Date()));
 
-        getObjeto().setColaborador(usuario.getColaborador());
+
 
         getObjeto().setListaOsAberturaEquipamento(new HashSet<>());
         getObjeto().setListaOsProdutoServico(new HashSet<>());
@@ -158,9 +167,24 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public void doEdit() {
         super.doEdit();
         OsAbertura os = getDataModel().getRowData(getObjeto().getId().toString());
+        os.getTecnico().setNome(os.getTecnico().getColaborador().getPessoa().getNome());
+        os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
+
         setObjeto(os);
 
         temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
+    }
+
+    public void gerarOsDoOrcamento() {
+        if (idorcamento != null) {
+
+            VendaOrcamentoCabecalho orcamento = orcamentoRepository.getJoinFetch(idorcamento, VendaOrcamentoCabecalho.class);
+            if (orcamento != null) {
+                doCreate();
+                osService.gerarOSDoOrcamento(orcamento, getObjeto());
+            }
+
+        }
     }
 
     @Override
@@ -401,14 +425,24 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         return listaOsStatus;
     }
 
-    public List<Colaborador> getListaColaborador(String nome) {
-        List<Colaborador> listaColaborador = new ArrayList<>();
+    public List<Tecnico> getListaTecnico(String nome) {
+        List<Tecnico> tecnicos = new ArrayList<>();
         try {
-            listaColaborador = colaboradorRepository.getEntitys(Colaborador.class, "pessoa.nome", nome);
+            tecnicos = tecnicoRepository.getEntitys(Tecnico.class, "colaborador.pessoa.nome", nome, new Object[]{"colaborador.pessoa.nome", "comissao"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        return listaColaborador;
+        return tecnicos;
+    }
+
+    public List<Vendedor> getListaVendedor(String nome) {
+        List<Vendedor> listaVendedor = new ArrayList<>();
+        try {
+            listaVendedor = vendedorRepository.getEntitys(Vendedor.class, "colaborador.pessoa.nome", nome, new Object[]{"colaborador.pessoa.nome", "comissao"});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listaVendedor;
     }
 
     public List<Cliente> getListaCliente(String nome) {
@@ -603,5 +637,13 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public boolean isPodeAlterarPreco() {
         return podeAlterarPreco;
+    }
+
+    public Integer getIdorcamento() {
+        return idorcamento;
+    }
+
+    public void setIdorcamento(Integer idorcamento) {
+        this.idorcamento = idorcamento;
     }
 }
