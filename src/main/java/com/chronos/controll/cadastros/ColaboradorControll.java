@@ -78,7 +78,6 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         }
         dataModel.getFiltros().clear();
         dataModel.addFiltro("pessoa.id", 1, Filtro.DIFERENTE);
-        dataModel.addFiltro("pessoa.id", 2, Filtro.DIFERENTE);
         pesquisar();
         dataModel.setAtributos(new Object[]{"pessoa.id", "pessoa.nome", "matricula", "situacaoColaborador.nome", "cargo.nome", "setor.nome"});
         return dataModel;
