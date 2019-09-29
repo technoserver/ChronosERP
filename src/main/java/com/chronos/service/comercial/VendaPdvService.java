@@ -67,7 +67,7 @@ public class VendaPdvService implements Serializable {
     private AuditoriaService auditoriaService;
 
     @Inject
-    private VendaComissaoService vendaComissaoService;
+    private ComissaoService comissaoService;
 
     @Inject
     private Repository<NfeCabecalho> nfeRepository;
@@ -119,10 +119,9 @@ public class VendaPdvService implements Serializable {
         }
         movimentoService.lancaVenda(venda.getValorTotal(), venda.getValorDesconto(), venda.getTroco());
 
-        String doc = "M" + Modulo.PDV.getCodigo() + "V" + venda.getId();
 
-
-        vendaComissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(), doc, venda.getVendedor());
+        comissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(),
+                venda.getId().toString(), venda.getVendedor().getColaborador(), Modulo.PDV);
 
 
         auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "PDV");

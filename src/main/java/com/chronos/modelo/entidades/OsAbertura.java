@@ -61,20 +61,29 @@ public class OsAbertura implements Serializable {
     @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     @Column(name = "VALOR_TOTAL")
     private BigDecimal valorTotal;
+    @Column(name = "valor_comissao")
+    private BigDecimal valorComissao;
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private Cliente cliente;
     @Column(name = "status")
     private Integer status;
-    @JoinColumn(name = "ID_COLABORADOR", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_TECNICO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
-    private Colaborador colaborador;
+    private Tecnico tecnico;
+    @JoinColumn(name = "ID_VENDEDOR", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    @NotNull
+    private Vendedor vendedor;
     @JoinColumn(name = "ID_VENDA_CONDICOES_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private VendaCondicoesPagamento condicoesPagamento;
+    @JoinColumn(name = "ID_ORCAMENTO", referencedColumnName = "ID")
+    @ManyToOne
+    private VendaOrcamentoCabecalho vendaOrcamentoCabecalho;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Empresa empresa;
@@ -86,6 +95,7 @@ public class OsAbertura implements Serializable {
     private Set<OsAberturaEquipamento> listaOsAberturaEquipamento;
 
     public OsAbertura() {
+        this.valorComissao = BigDecimal.ZERO;
     }
 
     public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, BigDecimal valorTotal, int idcliente, String nome, Integer status, Integer idnfeCabecalho) {
@@ -213,12 +223,12 @@ public class OsAbertura implements Serializable {
         this.cliente = cliente;
     }
 
-    public Colaborador getColaborador() {
-        return colaborador;
+    public Tecnico getTecnico() {
+        return tecnico;
     }
 
-    public void setColaborador(Colaborador colaborador) {
-        this.colaborador = colaborador;
+    public void setTecnico(Tecnico tecnico) {
+        this.tecnico = tecnico;
     }
 
     public Integer getStatus() {
@@ -286,6 +296,14 @@ public class OsAbertura implements Serializable {
         this.valorTotal = valorTotal;
     }
 
+    public BigDecimal getValorComissao() {
+        return valorComissao;
+    }
+
+    public void setValorComissao(BigDecimal valorComissao) {
+        this.valorComissao = valorComissao;
+    }
+
     public Empresa getEmpresa() {
         return empresa;
     }
@@ -302,6 +320,21 @@ public class OsAbertura implements Serializable {
         this.condicoesPagamento = condicoesPagamento;
     }
 
+    public Vendedor getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(Vendedor vendedor) {
+        this.vendedor = vendedor;
+    }
+
+    public VendaOrcamentoCabecalho getVendaOrcamentoCabecalho() {
+        return vendaOrcamentoCabecalho;
+    }
+
+    public void setVendaOrcamentoCabecalho(VendaOrcamentoCabecalho vendaOrcamentoCabecalho) {
+        this.vendaOrcamentoCabecalho = vendaOrcamentoCabecalho;
+    }
 
     private String formatarValor(BigDecimal valor) {
         DecimalFormatSymbols simboloDecimal = DecimalFormatSymbols.getInstance();

@@ -59,7 +59,7 @@
 
 
                 <h:panelGroup layout="block" class="col-xs-12 col-sm-2 col-md-2"
-                              rendered="#{cc.attrs.controller.objeto.pessoa.colaborador eq 'N'}">
+                              rendered="#{cc.attrs.controller.objeto.pessoa.colaborador eq 'N' and empty cc.attrs.controller.objeto.pessoa.id }">
                     <h:outputLabel value="Tipo"
                                    for="pessoaTipo"/>
                     <h:selectOneMenu id="pessoaTipo"

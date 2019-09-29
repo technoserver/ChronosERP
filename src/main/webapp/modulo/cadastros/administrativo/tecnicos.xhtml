@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Tecnicos
+    </ui:define>
+
+    <ui:define name="tela">
+        #{tecnicoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Tecnicos
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{tecnicoControll}"
+                       idDataTable="dataTableVendendor"
+                       nomeFuncao="Vendedores"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Colaborador">
+                <h:outputLabel value="#{row.colaborador.pessoa.nome}"/>
+            </p:column>
+            <p:column headerText="Gerente">
+                <h:outputLabel value="#{tecnicoControll.keyFromValue(tecnicoControll.simNao ,row.gerente)}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{tecnicoControll}"
+                                   nomeFuncao="Vendedores"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-4"
+                                  label="Colaborador"
+                                  itemLabel="#{objeto.pessoa.nome}"
+                                  controller="#{tecnicoControll}"
+                                  completeMethod="getListColaborador"
+                                  nomeAtributo="#{tecnicoControll.objeto.colaborador}"
+                                  idComponente="colaborador"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="comissao"
+                                  label="% Comissão"
+                                  nomeAtributo="#{tecnicoControll.objeto.comissao}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="metaVendas"
+                                  label="Meta"
+                                  nomeAtributo="#{tecnicoControll.objeto.metaVendas}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="gerente"
+                                 label="Gerente"
+                                 nomeAtributo="#{tecnicoControll.objeto.gerente}"
+                                 itens="#{tecnicoControll.simNao}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="taxaGerente"
+                                  label="Taxa Gerente"
+                                  nomeAtributo="#{tecnicoControll.objeto.taxaGerente}"/>
+
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+</ui:composition>

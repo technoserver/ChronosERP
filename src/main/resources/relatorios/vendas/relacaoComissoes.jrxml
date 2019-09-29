@@ -5,7 +5,7 @@
               name="relacaoComissao" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="3.0"/>
-    <property name="ireport.x" value="671"/>
+    <property name="ireport.x" value="414"/>
     <property name="ireport.y" value="40"/>
     <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
@@ -31,11 +31,23 @@
     <queryString>
         <![CDATA[select
    c.id,
-   v.id as idvenda,
-   vd.id as idvendedor,
+   cl.id as idcolaborador,
+   cp.nome as colaborador,
+   c.numero_documento,
   (CASE
-	  WHEN (p.nome IS NOT NULL ) THEN p.nome
-	  WHEN (pdv.nome_cliente IS NOT NULL ) THEN pdv.nome_cliente
+	  WHEN (c.codigo_modulo = '200') THEN
+			(select p.nome from venda_cabecalho v
+			 inner join cliente cc on cc.id = v.id_cliente
+			 inner join pessoa p on p.id = cc.id_pessoa
+			 where v.id = c.numero_documento :: integer)
+      WHEN (c.codigo_modulo = '220') THEN
+   			(select p.nome from os_abertura o
+			 inner join cliente cc on cc.id = o.id_cliente
+			 inner join pessoa p on p.id = cc.id_pessoa
+			 where o.id = c.numero_documento ::integer)
+      WHEN (c.codigo_modulo = '210') THEN
+   			(select COALESCE( pdv.nome_cliente, 'CLIENTE NÂO IDENTIFICADO' ) from pdv_venda_cabecalho pdv
+			 where pdv.id = c.numero_documento :: integer)
       ELSE 'CLIENTE NÂO IDENTIFICADO'
    end
    ) as cliente,
@@ -43,42 +55,30 @@
    c.situacao,
    c.valor_venda,
    c.valor_comissao,
-   pc.nome as vendedor,
+   c.codigo_modulo,
    empresa.razao_social AS empresa_razao_social,
    empresa.nome_fantasia AS empresa_nome_fantasia,
    empresa.cnpj AS empresa_cnpj,
    empresa.inscricao_estadual AS empresa_inscricao_estadual
 
-from venda_comissao c
-
-inner join vendedor vd on vd.id = c.id_vendedor
-inner join colaborador co on co.id = vd.id_colaborador
-inner join pessoa pc on pc.id = co.id_pessoa
-
-left JOIN venda_cabecalho v on v.id = (select split_part(c.numero_documento, 'V', 2)  from venda_comissao  where id =  c.id) :: integer
-left JOIN pdv_venda_cabecalho pdv on pdv.id = (select split_part(c.numero_documento, 'V', 2)  from venda_comissao  where id =  c.id) :: integer
-left join cliente cl on  cl.id = (CASE
-   WHEN ((select split_part(c.numero_documento, 'V', 1)  from venda_comissao  where venda_comissao.id =  c.id) = 'M210')
-        THEN v.id_cliente
-        ELSE pdv.id_cliente
-        END)
-left join pessoa p on p.id = cl.id_pessoa
-INNER JOIN empresa empresa ON empresa.id =   (CASE WHEN v.id IS NOT NULL
-        THEN v.id_empresa
-        ELSE pdv.id_empresa
-        END)
-WHERE empresa.id = $P{idempresa} and (vd.id = $P{idvendedor} or $P{idvendedor} is null) and c.data_lancamento BETWEEN $P{peridoInicial} and $P{peridoFinal}
-order by idvendedor,data_lancamento]]>
+from comissao c
+inner join colaborador cl on cl.id = c.id_colaborador
+inner join pessoa cp on cp.id = cl.id_pessoa
+inner join empresa_pessoa ep on cp.id = ep.id_pessoa
+inner join empresa empresa on empresa.id = ep.id_empresa
+WHERE empresa.id = $P{idempresa} and (cl.id = $P{idvendedor} or $P{idvendedor} is null) and c.data_lancamento BETWEEN $P{peridoInicial} and $P{peridoFinal}
+order by cl.id,data_lancamento]]>
     </queryString>
     <field name="id" class="java.lang.Integer"/>
-    <field name="idvenda" class="java.lang.Integer"/>
-    <field name="idvendedor" class="java.lang.Integer"/>
+    <field name="idcolaborador" class="java.lang.Integer"/>
+    <field name="colaborador" class="java.lang.String"/>
+    <field name="numero_documento" class="java.lang.String"/>
     <field name="cliente" class="java.lang.String"/>
     <field name="data_lancamento" class="java.sql.Date"/>
     <field name="situacao" class="java.lang.String"/>
     <field name="valor_venda" class="java.math.BigDecimal"/>
     <field name="valor_comissao" class="java.math.BigDecimal"/>
-    <field name="vendedor" class="java.lang.String"/>
+    <field name="codigo_modulo" class="java.lang.String"/>
     <field name="empresa_razao_social" class="java.lang.String"/>
     <field name="empresa_nome_fantasia" class="java.lang.String"/>
     <field name="empresa_cnpj" class="java.lang.String"/>
@@ -91,7 +91,7 @@ order by idvendedor,data_lancamento]]>
         <variableExpression><![CDATA[$F{valor_venda}]]></variableExpression>
     </variable>
     <group name="vendedor">
-        <groupExpression><![CDATA[$F{idvendedor}]]></groupExpression>
+        <groupExpression><![CDATA[$F{idcolaborador}]]></groupExpression>
         <groupFooter>
             <band height="13">
                 <rectangle>
@@ -107,16 +107,16 @@ order by idvendedor,data_lancamento]]>
                 <textField>
                     <reportElement style="dadosDetail" x="0" y="1" width="208" height="12"
                                    uuid="58296289-179e-46da-808a-b052165e3f61"/>
-                    <textFieldExpression><![CDATA[$F{vendedor}]]></textFieldExpression>
+                    <textFieldExpression><![CDATA[$F{colaborador}]]></textFieldExpression>
                 </textField>
                 <textField pattern="#,##0.00">
-                    <reportElement style="dadosDetail" x="348" y="0" width="56" height="12"
+                    <reportElement style="dadosDetail" x="370" y="0" width="56" height="12"
                                    uuid="45f1da01-582b-426d-b2ab-5fa14b05ee4d"/>
                     <textElement textAlignment="Right"/>
                     <textFieldExpression><![CDATA[$V{totalComissao}]]></textFieldExpression>
                 </textField>
                 <textField pattern="#,##0.00">
-                    <reportElement style="dadosDetail" x="283" y="0" width="61" height="12"
+                    <reportElement style="dadosDetail" x="283" y="0" width="82" height="12"
                                    uuid="c0fa7637-4a38-439c-aafb-548b052d45e8"/>
                     <textElement textAlignment="Right"/>
                     <textFieldExpression><![CDATA[$V{totalVenda}]]></textFieldExpression>
@@ -211,7 +211,7 @@ order by idvendedor,data_lancamento]]>
                 <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="12" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Relatório de comissão de vendedores]]></text>
+                <text><![CDATA[Relatório de comissão]]></text>
             </staticText>
             <line>
                 <reportElement x="0" y="100" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
@@ -225,7 +225,7 @@ order by idvendedor,data_lancamento]]>
                 <text><![CDATA[Cliente]]></text>
             </staticText>
             <staticText>
-                <reportElement style="tituloDetail" x="348" y="101" width="56" height="12"
+                <reportElement style="tituloDetail" x="370" y="101" width="56" height="12"
                                uuid="9478002a-cc00-40f9-a76b-698e9893244d"/>
                 <textElement textAlignment="Right">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
@@ -241,12 +241,12 @@ order by idvendedor,data_lancamento]]>
                 <text><![CDATA[Data Lançamento]]></text>
             </staticText>
             <staticText>
-                <reportElement style="tituloDetail" x="283" y="101" width="61" height="12"
+                <reportElement style="tituloDetail" x="283" y="101" width="82" height="12"
                                uuid="9589eb9c-fa4c-48b1-a77c-b5e490ead779"/>
                 <textElement textAlignment="Right">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
-                <text><![CDATA[Valor de Venda]]></text>
+                <text><![CDATA[Valor de Venda/Serviço]]></text>
             </staticText>
             <textField>
                 <reportElement style="dadosDetail" x="518" y="28" width="37" height="14"
@@ -273,7 +273,7 @@ new SimpleDateFormat("dd/MM/yyyy").format( $P{peridoInicial})+
 new SimpleDateFormat("dd/MM/yyyy").format( $P{peridoFinal})]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement style="tituloDetail" x="415" y="100" width="56" height="12"
+                <reportElement style="tituloDetail" x="432" y="100" width="56" height="12"
                                uuid="a4841c9b-5b27-47e1-8b9f-5cb9103271a5"/>
                 <textElement textAlignment="Center">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
@@ -296,19 +296,19 @@ new SimpleDateFormat("dd/MM/yyyy").format( $P{peridoFinal})]]></textFieldExpress
                 <textFieldExpression><![CDATA[$F{data_lancamento}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00" isBlankWhenNull="true">
-                <reportElement style="dadosDetail" x="348" y="0" width="56" height="12"
+                <reportElement style="dadosDetail" x="370" y="0" width="56" height="12"
                                uuid="990c0875-672f-4f71-b54e-2553aaa643d7"/>
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$F{valor_comissao}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement style="dadosDetail" x="283" y="0" width="61" height="12"
+                <reportElement style="dadosDetail" x="283" y="0" width="82" height="12"
                                uuid="e84f3cf4-b370-4ef1-9a6a-89d04f48af73"/>
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$F{valor_venda}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="dadosDetail" x="415" y="0" width="56" height="12"
+                <reportElement style="dadosDetail" x="432" y="0" width="56" height="12"
                                uuid="e64a9369-8232-4def-8db6-6ea0a4236149"/>
                 <textElement textAlignment="Center"/>
                 <textFieldExpression><![CDATA[$F{situacao}.equals("A")?"ABERTO":"PAGO"]]></textFieldExpression>

@@ -233,6 +233,10 @@
                              exibir="#{seguranca.isTemAcesso('VENDEDOR')}"
                              funcao="vendedores"/>
 
+                <erp:subMenu caminho="/modulo/cadastros/administrativo/tecnicos"
+                             label="Tecnicos"
+                             exibir="#{seguranca.isTemAcesso('TECNICO')}"
+                             funcao="tecnicos"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/administrativo/papel"
                              label="Papel"

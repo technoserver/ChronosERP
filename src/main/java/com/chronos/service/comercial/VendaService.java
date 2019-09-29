@@ -51,7 +51,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     @Inject
     private AuditoriaService auditoriaService;
     @Inject
-    private VendaComissaoService vendaComissaoService;
+    private ComissaoService comissaoService;
     @Inject
     private Repository<NfeCabecalho> nfeCabecalhoRepository;
     @Inject
@@ -108,7 +108,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         String doc = "M" + Modulo.VENDA.getCodigo() + "V" + venda.getId();
         venda = repository.salvarFlush(venda);
 
-        vendaComissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(), doc, venda.getVendedor());
+        comissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(),
+                venda.getId().toString(), venda.getVendedor().getColaborador(), Modulo.VENDA);
 
         auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "VENDA");
 
@@ -136,6 +137,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
             nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
             nfe.setCsc(configuracaoEmissorDTO.getCsc());
+            nfe.setTokenCsc(configuracaoEmissorDTO.getTokenCsc());
             nfe.setSerie(configuracaoEmissorDTO.getSerie());
             String infAdd = nfe.getInformacoesAddContribuinte();
             infAdd += " " + venda.getObservacao();
@@ -143,10 +145,18 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
             if (status == StatusTransmissao.AUTORIZADA) {
+                String codigo = venda.getSituacao();
+
                 venda.getCondicoesPagamento().setParcelas(null);
                 venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
                 venda.setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
                 repository.atualizar(venda);
+
+                if (!codigo.equals(SituacaoVenda.Encerrado.getCodigo())) {
+                    comissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(),
+                            venda.getId().toString(), venda.getVendedor().getColaborador(), Modulo.VENDA);
+                }
+
                 String msg = modelo == ModeloDocumento.NFE ? "NFe transmitida com sucesso" : "NFCe transmitida com sucesso";
                 auditoriaService.gerarLog(AcaoLog.FATURAR_VENDA, "Faturamento do pedido de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
                 Mensagem.addInfoMessage(msg);

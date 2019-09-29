@@ -124,7 +124,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             getObjeto().setNumero("");
             getObjeto().setChaveAcesso("");
             getObjeto().setDigitoChaveAcesso("");
-            getObjeto().setSerie("");
+            getObjeto().setSerie(null);
             getObjeto().setCodigoNumerico("");
             getObjeto().setCodigoMunicipio(empresa.getCodigoIbgeCidade());
             getObjeto().setDataHoraEmissao(null);

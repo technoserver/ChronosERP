@@ -4,6 +4,7 @@ import com.chronos.bo.nfe.VendaToNFe;
 import com.chronos.dto.ConfiguracaoEmissorDTO;
 import com.chronos.dto.ProdutoVendaDTO;
 import com.chronos.modelo.entidades.*;
+import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.modelo.enuns.Modulo;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.EstoqueRepository;
@@ -11,7 +12,9 @@ import com.chronos.repository.Repository;
 import com.chronos.service.AbstractService;
 import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import com.chronos.util.Biblioteca;
 import com.chronos.util.Constantes;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
@@ -44,6 +47,12 @@ public class OsService extends AbstractService<OsAbertura> {
 
     @Inject
     private Repository<VendaCondicoesParcelas> parcelasRepository;
+
+    @Inject
+    private ComissaoService comissaoService;
+
+    @Inject
+    private AuditoriaService auditoriaService;
 
 
     public OsAbertura salvar(OsAbertura os) throws ChronosException {
@@ -96,10 +105,15 @@ public class OsService extends AbstractService<OsAbertura> {
         nfe.setSerie(configuracaoEmissorDTO.getSerie());
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
+        Integer statusOs = os.getStatus();
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
         if (status == StatusTransmissao.AUTORIZADA) {
             Mensagem.addInfoMessage("OS Faturada com sucesso");
+            if (!status.equals(12)) {
+                BigDecimal comissao = gerarComissoes(os);
+                repository.atualizar(os);
+            }
         }
 
 
@@ -121,6 +135,15 @@ public class OsService extends AbstractService<OsAbertura> {
         finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
                 os.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, os.getEmpresa());
         os = repository.saveAndFlush(os);
+
+        auditoriaService.gerarLog(AcaoLog.ENCERRAR_OS, "Encerrado OS " + os.getNumero(), "OS");
+
+        BigDecimal comissao = gerarComissoes(os);
+
+        os.setValorComissao(comissao);
+
+        repository.atualizar(os);
+
     }
 
     @Transactional
@@ -159,9 +182,66 @@ public class OsService extends AbstractService<OsAbertura> {
         nfeService.danfe(nfe);
     }
 
+    public void gerarOSDoOrcamento(VendaOrcamentoCabecalho orcamento, OsAbertura os) {
+
+
+        for (VendaOrcamentoDetalhe d : orcamento.getListaVendaOrcamentoDetalhe()) {
+            OsProdutoServico item = new OsProdutoServico();
+            item.setOsAbertura(os);
+            item.setProduto(d.getProduto());
+            item.setQuantidade(d.getQuantidade());
+            item.setTaxaDesconto(d.getTaxaDesconto());
+            item.setValorDesconto(d.getValorDesconto());
+            item.setValorSubtotal(d.getValorSubtotal());
+            item.setValorTotal(d.getValorTotal());
+            item.setValorUnitario(d.getValorUnitario());
+            item.setTipo(0);
+            os.getListaOsProdutoServico().add(item);
+        }
+
+
+        os.setCliente(orcamento.getCliente());
+        os.setCondicoesPagamento(orcamento.getCondicoesPagamento());
+        os.setVendedor(orcamento.getVendedor());
+        os.setValorComissao(orcamento.getValorComissao());
+        os.setValorTotal(orcamento.getValorTotal());
+        os.setEmpresa(orcamento.getEmpresa());
+        os.setVendaOrcamentoCabecalho(orcamento);
+        os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
+
+        os.calcularValores();
+
+
+    }
+
     private Optional<OsProdutoServico> buscarItem(Produto produto) {
         return itens.stream().filter(i -> i.getProduto().equals(produto))
                 .findAny();
+    }
+
+    private BigDecimal gerarComissoes(OsAbertura os) throws ChronosException {
+
+
+        BigDecimal comissaoTecnico = BigDecimal.ZERO;
+
+        BigDecimal comissaoVendedor = BigDecimal.ZERO;
+
+        if (os.getTecnico().getComissao() != null && os.getTecnico().getComissao().signum() > 0
+                && os.getValorTotalServico().signum() > 0) {
+            comissaoTecnico = Biblioteca.calcularValorPercentual(os.getValorTotalServico(), os.getTecnico().getComissao());
+            comissaoService.gerarComissao("A", "C", comissaoTecnico, os.getValorTotalServico(),
+                    os.getId().toString(), os.getTecnico().getColaborador(), Modulo.OS);
+        }
+
+        if (os.getVendedor() != null && os.getVendedor().getComissao() != null && os.getVendedor().getComissao().signum() > 0
+                && os.getValorTotalProduto().signum() > 0) {
+            comissaoVendedor = Biblioteca.calcularValorPercentual(os.getValorTotalProduto(), os.getVendedor().getComissao());
+
+            comissaoService.gerarComissao("A", "C", comissaoVendedor, os.getValorTotalProduto(),
+                    os.getId().toString(), os.getVendedor().getColaborador(), Modulo.OS);
+        }
+
+        return Biblioteca.soma(comissaoTecnico, comissaoVendedor);
     }
 
 
