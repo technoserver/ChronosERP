@@ -583,6 +583,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 //            confEmail.setSenha(configuracao.getEmailSenha());
 //            confEmail.setTsl(!configuracao.getEmailAutenticaSsl().equals("S"));
 //            EnvioEmail envio = new EnvioEmail();
+//
 //            envio.enviarNfeEmail(confEmail, getObjeto());
 //
 //            Mensagem.addInfoMessage("Email enviado com sucesso");

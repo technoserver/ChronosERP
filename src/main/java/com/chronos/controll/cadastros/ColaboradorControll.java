@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.chronos.controll.cadastros;
 
 import com.chronos.controll.ERPLazyDataModel;
@@ -129,7 +124,7 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     @Override
     public void salvar() {
 
-        Colaborador colaborador = null;
+        Colaborador colaborador;
         try {
 
             if (completo.equals("S")) {

@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Consiguinação
+    </ui:define>
+
+    <ui:define name="tela">
+        #{vendaConsignadaControll .titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Consiguinação
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{vendaConsignadaControll.telaGrid}">
+
+                <div class="ibox-content">
+                    <erp:msgPermissao permissao="#{vendaConsignadaControll.podeConsultar()}"/>
+
+
+                    <p:dataTable
+                            value="#{vendaConsignadaControll.dataModel}"
+                            var="row" id="tableVenda" paginator="true"
+                            rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                            reflow="true" rendered="#{vendaConsignadaControll.podeConsultar()}"
+                            lazy="true" sortBy="#{row.id}" sortOrder="descending">
+                        <p:column headerText="Código" width="100" class="text-center">
+                            <h:outputLabel value="#{row.id}"/>
+                        </p:column>
+                        <p:column headerText="Cliente">
+                            <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                        </p:column>
+                        <p:column headerText="Data Venda" width="130">
+                            <h:outputLabel value="#{row.dataVenda}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
+                            <h:outputLabel value="#{row.valorTotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Situacao" sortBy="#{row.situacao}" width="130">
+
+                            <h:outputLabel
+                                    value="#{vendaConsignadaControll.keyFromValue(vendaConsignadaControll.vendaSituacao, row.situacao)}"/>
+                        </p:column>
+
+                        <p:column headerText="Ações" width="160" class="text-center">
+
+
+                        </p:column>
+
+                    </p:dataTable>
+                </div><!-- /.box-body -->
+                <div class="ibox-footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
+                                             actionListener="#{vendaConsignadaControll.doCreate()}"
+                                             disabled="#{!vendaConsignadaControll.podeInserir()}"
+                            >
+                                <p:ajax process="@form"
+                                        oncomplete="addClass()"
+                                        update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             action="#{vendaConsignadaControll.doIndex()}" immediate="true"
+                            />
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </p:outputPanel>
+        </p:outputPanel>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+
+        <ui:include src="formVendaConsignada.xhtml"></ui:include>
+
+    </ui:define>
+
+
+</ui:composition>
