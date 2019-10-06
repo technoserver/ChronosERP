@@ -7,12 +7,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 
 @Entity
-@Table(name = "venda_consiguinada_cabecalho")
-@NamedQuery(name = "VendaConsignadaCabecalho.UpdateSituacao", query = "UPDATE VendaCabecalho v SET v.situacao = ?1 where v.id = ?2")
+@Table(name = "venda_consignada_cabecalho")
+@NamedQuery(name = "VendaConsignadaCabecalho.UpdateSituacao", query = "UPDATE VendaConsignadaCabecalho v SET v.status = ?1 where v.id = ?2")
 @DynamicUpdate
 public class VendaConsignadaCabecalho implements Serializable {
 
@@ -25,14 +24,15 @@ public class VendaConsignadaCabecalho implements Serializable {
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_SAIDA")
     private Date dataSaida;
+    @Temporal(TemporalType.DATE)
+    @Column(name = "data_devolucao")
+    private Date dataDevolucao;
     @Column(name = "LOCAL_ENTREGA")
     private String localEntrega;
     @Column(name = "VALOR_SUBTOTAL")
     private BigDecimal valorSubtotal;
     @Column(name = "TAXA_COMISSAO")
     private BigDecimal taxaComissao;
-    @Column(name = "VALOR_COMISSAO")
-    private BigDecimal valorComissao;
     @Column(name = "TAXA_DESCONTO")
     @TaxaMaior()
     private BigDecimal taxaDesconto;
@@ -48,20 +48,29 @@ public class VendaConsignadaCabecalho implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private Cliente cliente;
+    @JoinColumn(name = "ID_VENDEDOR", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    @NotNull
+    private Vendedor vendedor;
+    private StatusConsignacao status;
+    @JoinColumn(name = "ID_VENDA_CABECALHO", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private VendaCabecalho vendaCabecalho;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
-    @OneToMany(mappedBy = "vendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<VendaDetalhe> listaVendaDetalhe;
+    @OneToMany(mappedBy = "vendaConsignadaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VendaConsignadaDetalhe> listaVendaConsignadaDetalhe;
     @Transient
     private boolean excludoItem;
 
     public VendaConsignadaCabecalho() {
-        this.listaVendaDetalhe = new ArrayList<>();
-        this.valorComissao = BigDecimal.ZERO;
+        this.listaVendaConsignadaDetalhe = new ArrayList<>();
         this.valorDesconto = BigDecimal.ZERO;
         this.valorSubtotal = BigDecimal.ZERO;
         this.valorTotal = BigDecimal.ZERO;
+        this.dataSaida = new Date();
+        this.status = StatusConsignacao.EDICAO;
     }
 
     public VendaConsignadaCabecalho(Integer id) {
@@ -90,6 +99,14 @@ public class VendaConsignadaCabecalho implements Serializable {
         this.dataSaida = dataSaida;
     }
 
+    public Date getDataDevolucao() {
+        return dataDevolucao;
+    }
+
+    public void setDataDevolucao(Date dataDevolucao) {
+        this.dataDevolucao = dataDevolucao;
+    }
+
     public String getLocalEntrega() {
         return localEntrega;
     }
@@ -112,15 +129,6 @@ public class VendaConsignadaCabecalho implements Serializable {
 
     public void setTaxaComissao(BigDecimal taxaComissao) {
         this.taxaComissao = taxaComissao;
-    }
-
-    public BigDecimal getValorComissao() {
-        valorComissao = getTaxaComissao().multiply(getValorTotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
-        return valorComissao;
-    }
-
-    public void setValorComissao(BigDecimal valorComissao) {
-        this.valorComissao = valorComissao;
     }
 
     public BigDecimal getTaxaDesconto() {
@@ -163,12 +171,28 @@ public class VendaConsignadaCabecalho implements Serializable {
         this.cliente = cliente;
     }
 
-    public List<VendaDetalhe> getListaVendaDetalhe() {
-        return Optional.ofNullable(listaVendaDetalhe).orElse(new ArrayList<>());
+    public Vendedor getVendedor() {
+        return vendedor;
     }
 
-    public void setListaVendaDetalhe(List<VendaDetalhe> listaVendaDetalhe) {
-        this.listaVendaDetalhe = listaVendaDetalhe;
+    public void setVendedor(Vendedor vendedor) {
+        this.vendedor = vendedor;
+    }
+
+    public List<VendaConsignadaDetalhe> getListaVendaConsignadaDetalhe() {
+        return listaVendaConsignadaDetalhe;
+    }
+
+    public void setListaVendaConsignadaDetalhe(List<VendaConsignadaDetalhe> listaVendaConsignadaDetalhe) {
+        this.listaVendaConsignadaDetalhe = listaVendaConsignadaDetalhe;
+    }
+
+    public VendaCabecalho getVendaCabecalho() {
+        return vendaCabecalho;
+    }
+
+    public void setVendaCabecalho(VendaCabecalho vendaCabecalho) {
+        this.vendaCabecalho = vendaCabecalho;
     }
 
     public Empresa getEmpresa() {
@@ -177,6 +201,14 @@ public class VendaConsignadaCabecalho implements Serializable {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
+    }
+
+    public StatusConsignacao getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusConsignacao status) {
+        this.status = status;
     }
 
     public boolean isExcludoItem() {
@@ -189,8 +221,8 @@ public class VendaConsignadaCabecalho implements Serializable {
 
 
     public BigDecimal calcularTotalDesconto() {
-        valorDesconto = getListaVendaDetalhe().stream()
-                .map(VendaDetalhe::getValorDesconto)
+        valorDesconto = getListaVendaConsignadaDetalhe().stream()
+                .map(VendaConsignadaDetalhe::getValorDesconto)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
         return valorDesconto;
@@ -198,8 +230,8 @@ public class VendaConsignadaCabecalho implements Serializable {
 
 
     public BigDecimal calcularValorProdutos() {
-        valorSubtotal = getListaVendaDetalhe().stream()
-                .map(VendaDetalhe::getValorSubtotal)
+        valorSubtotal = getListaVendaConsignadaDetalhe().stream()
+                .map(VendaConsignadaDetalhe::getValorSubtotal)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
 
@@ -213,17 +245,13 @@ public class VendaConsignadaCabecalho implements Serializable {
         return valorTotal;
     }
 
-    public BigDecimal calcularValorDevolucao() {
-
-        return getListaVendaDetalhe().stream()
-                .map(VendaDetalhe::getValorTotalDevolvido)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO);
+    public boolean temProduto() {
+        return getListaVendaConsignadaDetalhe().size() > 0;
     }
 
 
-    public boolean temProduto() {
-        return getListaVendaDetalhe().size() > 0;
+    public boolean isEncerrado() {
+        return status == StatusConsignacao.ENCERRADO;
     }
 
 

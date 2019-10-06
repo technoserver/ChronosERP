@@ -1,6 +1,7 @@
 package com.chronos.modelo.entidades;
 
 import com.chronos.modelo.anotacoes.TaxaMaior;
+import com.chronos.util.Biblioteca;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
@@ -8,7 +9,6 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -26,6 +26,12 @@ public class VendaConsignadaDetalhe implements Serializable {
     @NotNull
     @DecimalMin(value = "0.01", message = "a quantidade deve ser maior que 0,01")
     private BigDecimal quantidade;
+    @Column(name = "quantidade_vendida")
+    private BigDecimal quantidadeVendida;
+    @Column(name = "quantidade_devolvida")
+    private BigDecimal quantidadeDevolvida;
+    @Column(name = "un")
+    private String un;
     @NotNull
     @Column(name = "VALOR_UNITARIO")
     @DecimalMin(value = "0.01", message = "O valor  deve ser maior que R$0,01")
@@ -40,28 +46,26 @@ public class VendaConsignadaDetalhe implements Serializable {
     private BigDecimal valorDesconto;
     @Column(name = "VALOR_TOTAL")
     private BigDecimal valorTotal;
-    @Column(name = "TAXA_COMISSAO")
-    @DecimalMax(value = "100.0", message = "O deve deve ser igual ou menor que 100")
-    private BigDecimal taxaComissao;
-    @Column(name = "VALOR_COMISSAO")
-    private BigDecimal valorComissao;
-    @JoinColumn(name = "ID_VENDA_CABECALHO", referencedColumnName = "ID")
+    @JoinColumn(name = "id_venda_consignada_cabecalho", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
-    private VendaCabecalho vendaCabecalho;
+    private VendaConsignadaCabecalho vendaConsignadaCabecalho;
     @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private Produto produto;
-    @Transient
-    private BigDecimal quantidadeDevolvida;
-    @Transient
-    private BigDecimal valorTotalDevolvido;
+
+    private StatusConsignacao status;
 
     public VendaConsignadaDetalhe() {
         this.valorSubtotal = BigDecimal.ZERO;
         this.valorDesconto = BigDecimal.ZERO;
-
+        this.quantidade = BigDecimal.ONE;
+        this.quantidadeDevolvida = BigDecimal.ZERO;
+        this.quantidadeVendida = BigDecimal.ZERO;
+        this.taxaDesconto = BigDecimal.ZERO;
+        this.valorDesconto = BigDecimal.ZERO;
+        this.status = StatusConsignacao.EDICAO;
     }
 
     public Integer getId() {
@@ -78,6 +82,30 @@ public class VendaConsignadaDetalhe implements Serializable {
 
     public void setQuantidade(BigDecimal quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public BigDecimal getQuantidadeVendida() {
+        return quantidadeVendida;
+    }
+
+    public void setQuantidadeVendida(BigDecimal quantidadeVendida) {
+        this.quantidadeVendida = quantidadeVendida;
+    }
+
+    public BigDecimal getQuantidadeDevolvida() {
+        return quantidadeDevolvida;
+    }
+
+    public void setQuantidadeDevolvida(BigDecimal quantidadeDevolvida) {
+        this.quantidadeDevolvida = quantidadeDevolvida;
+    }
+
+    public String getUn() {
+        return un;
+    }
+
+    public void setUn(String un) {
+        this.un = un;
     }
 
     public BigDecimal getValorUnitario() {
@@ -114,7 +142,6 @@ public class VendaConsignadaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorTotal() {
-        valorTotal = getValorSubtotal().subtract(getValorDesconto());
         return valorTotal;
     }
 
@@ -122,28 +149,12 @@ public class VendaConsignadaDetalhe implements Serializable {
         this.valorTotal = valorTotal;
     }
 
-    public BigDecimal getTaxaComissao() {
-        return taxaComissao;
+    public VendaConsignadaCabecalho getVendaConsignadaCabecalho() {
+        return vendaConsignadaCabecalho;
     }
 
-    public void setTaxaComissao(BigDecimal taxaComissao) {
-        this.taxaComissao = taxaComissao;
-    }
-
-    public BigDecimal getValorComissao() {
-        return valorComissao;
-    }
-
-    public void setValorComissao(BigDecimal valorComissao) {
-        this.valorComissao = valorComissao;
-    }
-
-    public VendaCabecalho getVendaCabecalho() {
-        return vendaCabecalho;
-    }
-
-    public void setVendaCabecalho(VendaCabecalho vendaCabecalho) {
-        this.vendaCabecalho = vendaCabecalho;
+    public void setVendaConsignadaCabecalho(VendaConsignadaCabecalho vendaConsignadaCabecalho) {
+        this.vendaConsignadaCabecalho = vendaConsignadaCabecalho;
     }
 
     public Produto getProduto() {
@@ -154,30 +165,21 @@ public class VendaConsignadaDetalhe implements Serializable {
         this.produto = produto;
     }
 
-    public BigDecimal getQuantidadeDevolvida() {
-        return Optional.ofNullable(quantidadeDevolvida).orElse(BigDecimal.ZERO);
+    public StatusConsignacao getStatus() {
+        return status;
     }
 
-    public void setQuantidadeDevolvida(BigDecimal quantidadeDevolvida) {
-        this.quantidadeDevolvida = quantidadeDevolvida;
+    public void setStatus(StatusConsignacao status) {
+        this.status = status;
     }
 
-    public BigDecimal getValorTotalDevolvido() {
-        valorTotalDevolvido = getQuantidadeDevolvida().multiply(getValorUnitario()).subtract(getValorDesconto());
-        return valorTotalDevolvido;
+    public void calcularValorSubtotal() {
+        valorSubtotal = Biblioteca.multiplica(quantidade, valorUnitario);
     }
 
-    public void setValorTotalDevolvido(BigDecimal valorTotalDevolvido) {
-        this.valorTotalDevolvido = valorTotalDevolvido;
-    }
-
-    public void calcularDesconto() {
-        valorDesconto = getTaxaDesconto().multiply(getValorSubtotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
-    }
 
     public void calcularValorTotal() {
-        valorSubtotal = quantidade.multiply(valorUnitario);
-        valorTotal = this.valorSubtotal.subtract(this.valorDesconto);
+        valorTotal = Biblioteca.subtrai(valorSubtotal, valorDesconto);
     }
 
 

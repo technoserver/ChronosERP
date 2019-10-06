@@ -102,10 +102,14 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             }
         });
         estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
+
+        if (venda.getId() == null) {
+            venda = salvar(venda);
+        }
+
         finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
                 venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
 
-        String doc = "M" + Modulo.VENDA.getCodigo() + "V" + venda.getId();
         venda = repository.salvarFlush(venda);
 
         comissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(),

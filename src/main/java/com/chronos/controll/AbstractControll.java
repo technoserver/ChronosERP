@@ -2,10 +2,7 @@
 package com.chronos.controll;
 
 import com.chronos.dto.UsuarioDTO;
-import com.chronos.modelo.entidades.Auditoria;
-import com.chronos.modelo.entidades.Empresa;
-import com.chronos.modelo.entidades.EmpresaEndereco;
-import com.chronos.modelo.entidades.Usuario;
+import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.modelo.enuns.Estados;
 import com.chronos.repository.Repository;
@@ -39,6 +36,9 @@ public abstract class AbstractControll<T> implements Serializable {
     protected Object[] joinFetch;
     protected String usuarioSupervisor;
     protected String senhaSupervisor;
+    protected AdmParametro parametro;
+    protected RestricaoSistema restricao;
+
     private T objetoSelecionado;
     private T objeto;
     private Auditoria log;
@@ -193,6 +193,9 @@ public abstract class AbstractControll<T> implements Serializable {
         dataModel.setDao(dao);
         usuario = FacesUtil.getUsuarioSessao();
         empresa = FacesUtil.getEmpresaUsuario();
+        parametro = FacesUtil.getParamentos();
+        restricao = FacesUtil.getRestricao();
+
         atributos = new Object[]{"nome"};
 
         //Cadastros
