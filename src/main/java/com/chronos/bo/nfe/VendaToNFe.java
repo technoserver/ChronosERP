@@ -266,15 +266,20 @@ public class VendaToNFe extends ManualCDILookup {
                 nfe.getListaNfeFormaPagamento().add(pagamento);
             });
         } else {
-            FinTipoRecebimento tipoRecebimento = tipoVenda == TipoVenda.VENDA ? venda.getCondicoesPagamento().getTipoRecebimento() : os.getCondicoesPagamento().getTipoRecebimento();
-            PdvTipoPagamento tipoPagamento = new PdvTipoPagamento();
-            tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
-            NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
-            nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
-            nfeFormaPagamento.setNfeCabecalho(nfe);
-            nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
-            nfeFormaPagamento.setValor(tipoVenda == TipoVenda.VENDA ? venda.getValorTotal() : os.getValorTotal());
-            nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
+            os.getListaFormaPagamento().stream().forEach(f -> {
+                NfeFormaPagamento pagamento = new NfeFormaPagamento();
+                pagamento.setTroco(f.getTroco());
+                pagamento.setBandeira(f.getBandeira());
+                pagamento.setCartaoTipoIntegracao(f.getCartaoTipoIntegracao());
+                pagamento.setCnpjOperadoraCartao(f.getCnpjOperadoraCartao());
+                pagamento.setEstorno(f.getEstorno());
+                pagamento.setForma(f.getForma());
+                pagamento.setNumeroAutorizacao(f.getNumeroAutorizacao());
+                pagamento.setPdvTipoPagamento(f.getPdvTipoPagamento());
+                pagamento.setNfeCabecalho(nfe);
+                pagamento.setValor(f.getValor());
+                nfe.getListaNfeFormaPagamento().add(pagamento);
+            });
         }
     }
 
@@ -294,7 +299,7 @@ public class VendaToNFe extends ManualCDILookup {
                 BigDecimal somaParcelas = BigDecimal.ZERO;
                 BigDecimal valorParcela;
                 int number = 0;
-                List<VendaCondicoesParcelas> parcelas = tipoVenda == TipoVenda.OS ? os.getCondicoesPagamento().getParcelas() : venda.getCondicoesPagamento().getParcelas();
+                List<VendaCondicoesParcelas> parcelas = venda.getCondicoesPagamento().getParcelas();
                 for (VendaCondicoesParcelas parcela : parcelas) {
                     NfeDuplicata duplicata = new NfeDuplicata();
                     duplicata.setNfeCabecalho(nfe);

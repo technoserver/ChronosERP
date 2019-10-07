@@ -58,7 +58,9 @@ public class OsService extends AbstractService<OsAbertura> {
     public OsAbertura salvar(OsAbertura os) throws ChronosException {
 
 
-        if (os.getCondicoesPagamento().getVistaPrazo().equals("1") && os.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
+        Optional<OsFormaPagamento> formaPagamento = os.getListaFormaPagamento().stream().filter(f -> f.equals("14")).findFirst();
+
+        if (formaPagamento.isPresent() && os.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
             throw new ChronosException("Cliente com restrinções de bloqueio");
         }
 
@@ -96,8 +98,7 @@ public class OsService extends AbstractService<OsAbertura> {
 
 
         NfeCabecalho nfe;
-        List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", os.getCondicoesPagamento().getId());
-        os.getCondicoesPagamento().setParcelas(parcelas);
+
         VendaToNFe vendaNfe = new VendaToNFe(modelo, os);
         nfe = vendaNfe.gerarNfe();
         nfe.setOs(os);
@@ -132,8 +133,16 @@ public class OsService extends AbstractService<OsAbertura> {
                 });
 
         estoqueRepositoy.atualizaEstoqueVerificado(os.getEmpresa().getId(), produtos);
-        finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
-                os.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, os.getEmpresa());
+
+        Optional<OsFormaPagamento> formaPagamento = os.getListaFormaPagamento().stream().filter(f -> f.equals("14")).findFirst();
+
+        if (formaPagamento.isPresent()) {
+            formaPagamento.get().getCondicao();
+            finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
+                    formaPagamento.get().getCondicao(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, os.getEmpresa());
+        }
+
+
         os = repository.saveAndFlush(os);
 
         auditoriaService.gerarLog(AcaoLog.ENCERRAR_OS, "Encerrado OS " + os.getNumero(), "OS");
@@ -201,7 +210,6 @@ public class OsService extends AbstractService<OsAbertura> {
 
 
         os.setCliente(orcamento.getCliente());
-        os.setCondicoesPagamento(orcamento.getCondicoesPagamento());
         os.setVendedor(orcamento.getVendedor());
         os.setValorComissao(orcamento.getValorComissao());
         os.setValorTotal(orcamento.getValorTotal());

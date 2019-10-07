@@ -77,10 +77,6 @@ public class OsAbertura implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private Vendedor vendedor;
-    @JoinColumn(name = "ID_VENDA_CONDICOES_PAGAMENTO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    @NotNull
-    private VendaCondicoesPagamento condicoesPagamento;
     @JoinColumn(name = "ID_ORCAMENTO", referencedColumnName = "ID")
     @ManyToOne
     private VendaOrcamentoCabecalho vendaOrcamentoCabecalho;
@@ -93,6 +89,8 @@ public class OsAbertura implements Serializable {
     private Set<OsProdutoServico> listaOsProdutoServico;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OsAberturaEquipamento> listaOsAberturaEquipamento;
+    @OneToMany(mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<OsFormaPagamento> listaFormaPagamento;
 
     public OsAbertura() {
         this.valorComissao = BigDecimal.ZERO;
@@ -312,13 +310,6 @@ public class OsAbertura implements Serializable {
         this.empresa = empresa;
     }
 
-    public VendaCondicoesPagamento getCondicoesPagamento() {
-        return condicoesPagamento;
-    }
-
-    public void setCondicoesPagamento(VendaCondicoesPagamento condicoesPagamento) {
-        this.condicoesPagamento = condicoesPagamento;
-    }
 
     public Vendedor getVendedor() {
         return vendedor;
@@ -334,6 +325,14 @@ public class OsAbertura implements Serializable {
 
     public void setVendaOrcamentoCabecalho(VendaOrcamentoCabecalho vendaOrcamentoCabecalho) {
         this.vendaOrcamentoCabecalho = vendaOrcamentoCabecalho;
+    }
+
+    public Set<OsFormaPagamento> getListaFormaPagamento() {
+        return listaFormaPagamento;
+    }
+
+    public void setListaFormaPagamento(Set<OsFormaPagamento> listaFormaPagamento) {
+        this.listaFormaPagamento = listaFormaPagamento;
     }
 
     private String formatarValor(BigDecimal valor) {
