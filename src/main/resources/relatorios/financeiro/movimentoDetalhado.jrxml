@@ -7,23 +7,40 @@
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ERP Light"/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="ireport.zoom" value="2.0"/>
-    <property name="ireport.x" value="205"/>
-    <property name="ireport.y" value="336"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="221"/>
     <subDataset name="DatasetMovimento" uuid="b86a869f-40e0-4170-ba99-09baf455d021">
         <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
         <property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
         <parameter name="idmovimento" class="java.lang.Integer"/>
         <queryString language="SQL">
             <![CDATA[SELECT
+    codigo,
+    descricao,
+    Sum(total) as total
+FROM
+    (
+    SELECT
 	t.codigo,
 	t.descricao,
-	Sum(f.valor-f.troco) as total
-FROM pdv_movimento m
-JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
-JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
-JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
-WHERE m.id =  $P{idmovimento}
-group by codigo,descricao]]>
+	(f.valor-f.troco) as total
+	FROM pdv_movimento m
+	INNER JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
+	INNER JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
+	INNER JOIN tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
+	WHERE m.id =   $P{idmovimento}
+
+    UNION ALL
+		SELECT
+			t.codigo,
+			t.descricao,
+			(f.valor-f.troco) as total
+		FROM pdv_movimento m
+		JOIN os_abertura o ON o.id_movimento = m.id
+		JOIN os_forma_pagamento f ON f.id_os_abertura = o.id
+		JOIN tipo_pagamento t ON f.id_tipo_pagamento = t.id
+		WHERE m.id =   $P{idmovimento})  pagamentos
+GROUP BY codigo, descricao;]]>
         </queryString>
         <field name="codigo" class="java.lang.String"/>
         <field name="descricao" class="java.lang.String"/>
@@ -112,15 +129,41 @@ group by codigo,descricao]]>
             empresa.cnpj AS empresa_cnpj,
             empresa.inscricao_estadual AS empresa_inscricao_estadual
             FROM pdv_movimento m
-            JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
-            JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
-            JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
-            JOIN pdv_operador o ON o.id = m.id_pdv_operador
+            INNER JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
+            INNER JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
+            INNER JOIN tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
+            INNER JOIN pdv_operador o ON o.id = m.id_pdv_operador
             INNER JOIN empresa empresa ON m.id_empresa = empresa.id
             INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
             WHERE (m.id =  $P{idmovimento} or  $P{idmovimento} is null)
             and data_abertura BETWEEN   $P{dataInicial}  and  $P{dataFinal}
             and (v.status_venda = 'E' or v.status_venda = 'F')
+UNION
+            SELECT
+            concat(m.id , f.id , 3) AS id,
+            '',
+            m.id AS idmovimento,
+            o.id AS idorigem,
+            o.data_fim AS data_hora,
+            ('OS n°' || o.id) || '(OS)' AS descricao,
+            f.valor-f.troco,
+            t.codigo AS codigo_forma_pagamento,
+            t.descricao AS forma_pagamento,
+            'E' AS tipo,
+            'OS' AS origem,
+            '' AS observacao,
+            empresa.razao_social AS empresa_razao_social,
+            empresa.nome_fantasia AS empresa_nome_fantasia,
+            empresa.cnpj AS empresa_cnpj,
+            empresa.inscricao_estadual AS empresa_inscricao_estadual
+            FROM pdv_movimento m
+            INNER JOIN os_abertura o ON o.id_movimento = m.id
+            INNER JOIN os_forma_pagamento f ON f.id_os_abertura = o.id
+            INNER JOIN tipo_pagamento t ON f.id_tipo_pagamento = t.id
+            INNER JOIN empresa empresa ON m.id_empresa = empresa.id
+            INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+            WHERE (m.id =  $P{idmovimento} or  $P{idmovimento} is null)
+            and (o.status = 13 or o.status = 12)
 	  union
             select
                 concat(m.id , r.id , 4) AS id,

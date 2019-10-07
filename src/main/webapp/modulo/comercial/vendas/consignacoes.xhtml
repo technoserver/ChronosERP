@@ -1,0 +1,327 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <ui:define name="title">
+        Consiguinação
+    </ui:define>
+
+    <ui:define name="tela">
+        #{vendaConsignadaControll .titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Consiguinação
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{vendaConsignadaControll.telaGrid}">
+
+                <div class="ibox-content">
+                    <erp:msgPermissao permissao="#{vendaConsignadaControll.podeConsultar()}"/>
+
+
+                    <p:dataTable
+                            value="#{vendaConsignadaControll.dataModel}"
+                            var="row" id="tableVenda" paginator="true"
+                            rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                            reflow="true" rendered="#{vendaConsignadaControll.podeConsultar()}"
+                            lazy="true" sortBy="#{row.id}" sortOrder="descending">
+                        <p:column headerText="Código" width="100" class="text-center">
+                            <h:outputLabel value="#{row.id}"/>
+                        </p:column>
+                        <p:column headerText="Cliente">
+                            <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                        </p:column>
+                        <p:column headerText="Data Venda" width="130">
+                            <h:outputLabel value="#{row.dataSaida}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
+                            <h:outputLabel value="#{row.valorTotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Status" sortBy="#{row.situacao}" width="130">
+
+                            <h:outputLabel
+                                    value="#{row.status.descricao}"/>
+                        </p:column>
+
+                        <p:column headerText="Ações" width="80" class="text-center">
+                            <p:menuButton>
+
+                                <p:menuitem value="Imprimir"
+                                            target="blank"
+                                            outcome="/modulo/comercial/vendas/relatorios/cupomVendaConsignada"
+                                            icon="fa fa-print" ajax="false">
+                                    <f:param name="id" value="#{row.id}"/>
+                                </p:menuitem>
+                                <p:menuitem value="Encerar"
+                                            action="#{vendaConsignadaControll.buscarVenda}"
+                                            update=":formOutrasTelas2:panelOutrasTelas2"
+                                            oncomplete="PF('dialogOutrasTelas2').show();"
+                                >
+
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaConsignadaControll.objetoSelecionado}"/>
+                                </p:menuitem>
+                            </p:menuButton>
+
+                        </p:column>
+
+                    </p:dataTable>
+                </div><!-- /.box-body -->
+                <div class="ibox-footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
+                                             actionListener="#{vendaConsignadaControll.doCreate()}"
+                                             disabled="#{!vendaConsignadaControll.podeInserir()}"
+                            >
+                                <p:ajax process="@form"
+                                        oncomplete="addClass()"
+                                        update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
+                            </h:commandButton>
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             action="#{vendaConsignadaControll.doIndex()}" immediate="true"
+                            />
+
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </p:outputPanel>
+        </p:outputPanel>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+
+        <ui:include src="formVendaConsignada.xhtml"></ui:include>
+
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+
+            <p:dialog id="dialogOutrasTelas"
+                      header="Inclusão/Alteração de produtos"
+                      widgetVar="dialogOutrasTelas" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+
+                <p:outputPanel id="panelOutrasTelas">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Produto"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{vendaConsignadaControll}"
+                                          completeMethod="getListaProduto"
+                                          nomeAtributo="#{vendaConsignadaControll.produto}"
+                                          idComponente="produto">
+
+                            <p:column headerText="Nome">
+                                <p:outputLabel value="#{objeto.nome}"/>
+                            </p:column>
+                            <p:column headerText="UN">
+                                <p:outputLabel value="#{objeto.unidade}"/>
+                            </p:column>
+                            <p:column headerText="Valor Venda" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.valorVenda}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Verificado" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.estoqueVerificado}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:column headerText="Estoque" class="coluna-monetaria">
+                                <p:outputLabel value="#{objeto.quantidadeEstoque}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </p:outputLabel>
+                            </p:column>
+                            <p:ajax event="itemSelecionado" listener="#{vendaConsignadaControll.definirValorProduto}"
+                                    update="formOutrasTelas:campoValor:valorUnitario"/>
+                        </erp:autoComplete>
+
+
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <p:outputLabel value="Quantidade"
+                                           for="vendaDetalheQuantidade"/>
+
+                            <p:inputNumber id="vendaDetalheQuantidade"
+                                           value="#{vendaConsignadaControll.item.quantidade}"
+                                           required="true"
+                                           style="width: 100%;"
+                                           disabled="#{!vendaConsignadaControll.podeAlterarPreco}"
+                                           decimalPlaces="2"
+                                           minValue="-9999999999.99"
+                            >
+                                <p:ajax update="formOutrasTelas:campoValor:valorUnitario"
+                                        process="@this"
+                                        event="blur"
+                                        listener="#{vendaConsignadaControll.definirValorAtacado}"/>
+                            </p:inputNumber>
+                        </div>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="valorUnitario" label="Valor"
+                                          requerido="true" id="campoValor"
+                                          nomeAtributo="#{vendaConsignadaControll.item.valorUnitario}"/>
+
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <p:outputLabel value="Desconto" for="desconto"/>
+                            <div class="ui-inputgroup">
+
+
+                                <p:inputNumber id="desconto"
+                                               value="#{vendaConsignadaControll.desconto}"
+                                               required="true"
+                                               style="width: 100%;"
+                                               decimalPlaces="2"
+                                               minValue="0"/>
+
+
+                                <p:commandButton id="btnTipoDesconto"
+                                                 action="#{vendaConsignadaControll.alterarTipoDesconto}"
+                                                 process="@this"
+                                                 update="formOutrasTelas:btnTipoDesconto"
+                                                 value="#{vendaConsignadaControll.tipoDesconto}"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             actionListener="#{vendaConsignadaControll.SalvarItem}"
+                                             process="@form"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas').hide();}"
+                                             update=":formOutrasTelas:panelOutrasTelas,:formCentro:growl,:formCentro:dataTableItens"/>
+
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                            >
+                                <p:ajax oncomplete="PF('dialogOutrasTelas').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+            <p:dialog id="dialogOutrasTelas2"
+                      header="Encerrar venda consignada"
+                      widgetVar="dialogOutrasTelas2" showEffect="slide" hideEffect="slide"
+                      resizable="true" modal="true" closable="false" width="800">
+
+                <p:outputPanel id="panelOutrasTelas2">
+
+                    <div class="row m-b">
+                        <erp:campoData nomeAtributo="#{vendaConsignadaControll.objeto.dataDevolucao}"
+                                       styleClass="col-xs-12 col-sm-3 col-md-3"
+                                       label="Data Devolucao"
+                                       requerido="true"
+                                       idComponente="dataDevolucao"/>
+
+                    </div>
+
+                    <p:dataTable id="dataTableItemDevolucao" var="obj"
+                                 value="#{vendaConsignadaControll.objeto.listaVendaConsignadaDetalhe}"
+                                 reflow="true" editable="true" editMode="cell" widgetVar="itemDevolvido">
+
+                        <p:column headerText="Produto">
+                            <h:outputLabel value="#{obj.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="QTD" styleClass="text-center" width="100">
+                            <h:outputLabel value="#{obj.quantidade}">
+                                <f:convertNumber pattern="0.000"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Qtde vendida" width="150" styleClass="text-center">
+
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.quantidadeVendida}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.quantidadeVendida}"
+                                                   decimalPlaces="2"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                        <p:column headerText="Qtde devolvida" width="150" styleClass="text-center">
+
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{obj.quantidadeDevolvida}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{obj.quantidadeDevolvida}"
+                                                   decimalPlaces="2"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+
+                    </p:dataTable>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6 text-center">
+                            <p:commandButton value="Encerrar"
+                                             actionListener="#{vendaConsignadaControll.encerrar}"
+                                             process="@form"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
+                                             update=":formOutrasTelas2:panelOutrasTelas2,:formCentro:growl,:formCentro:outputPanelGrid"/>
+
+
+                        </div>
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                            >
+                                <p:ajax oncomplete="PF('dialogOutrasTelas2').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="telaSupervisor">
+        <erp:supervisor id="telaSupervisor"
+                        atualizar=",:formCentro:dataTableItens"
+                        controller="#{vendaConsignadaControll}"/>
+    </ui:define>
+
+
+</ui:composition>

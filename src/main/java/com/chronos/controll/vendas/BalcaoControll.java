@@ -99,8 +99,8 @@ public class BalcaoControll implements Serializable {
     private PdvVendaCabecalho venda;
     private PdvVendaDetalhe item;
     private PdvVendaDetalhe itemSelecionado;
-    private PdvTipoPagamento tipoPagamento;
-    private List<PdvTipoPagamento> listTipoPagamento;
+    private TipoPagamento tipoPagamento;
+    private List<TipoPagamento> listTipoPagamento;
     private PdvFormaPagamento formaPagamentoSelecionado;
     private PdvMovimento movimento;
     private Empresa empresa;
@@ -667,7 +667,7 @@ public class BalcaoControll implements Serializable {
 
     }
 
-    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
+    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
         Optional<PdvFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
         if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
             Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
@@ -677,7 +677,7 @@ public class BalcaoControll implements Serializable {
             } else {
                 PdvFormaPagamento formaPagamento = new PdvFormaPagamento();
                 formaPagamento.setPdvVendaCabecalho(venda);
-                formaPagamento.setPdvTipoPagamento(tipoPagamento);
+                formaPagamento.setTipoPagamento(tipoPagamento);
                 formaPagamento.setValor(valor);
                 formaPagamento.setForma(tipoPagamento.getCodigo());
                 formaPagamento.setEstorno("N");
@@ -713,10 +713,10 @@ public class BalcaoControll implements Serializable {
 
     }
 
-    private Optional<PdvFormaPagamento> bucarTipoPagamento(PdvTipoPagamento tipoPagamento) {
+    private Optional<PdvFormaPagamento> bucarTipoPagamento(TipoPagamento tipoPagamento) {
         return venda.getListaFormaPagamento()
                 .stream()
-                .filter(fp -> fp.getPdvTipoPagamento().equals(tipoPagamento))
+                .filter(fp -> fp.getTipoPagamento().equals(tipoPagamento))
                 .findAny();
     }
 
@@ -820,14 +820,14 @@ public class BalcaoControll implements Serializable {
     }
 
 
-    public List<PdvTipoPagamento> definirTipoPagament() {
-        List<PdvTipoPagamento> pagamentos = new ArrayList<>();
-        pagamentos.add(new PdvTipoPagamento(1, "01", "DINHEIRO", "S", "N"));
-        pagamentos.add(new PdvTipoPagamento(2, "02", "CHEQUE", "N", "N"));
-        pagamentos.add(new PdvTipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
-        pagamentos.add(new PdvTipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
-        pagamentos.add(new PdvTipoPagamento(5, "05", "CREDITO NA LOJA", "N", "N"));
-        pagamentos.add(new PdvTipoPagamento(6, "14", "DUPLICATA", "N", "S"));
+    public List<TipoPagamento> definirTipoPagament() {
+        List<TipoPagamento> pagamentos = new ArrayList<>();
+        pagamentos.add(new TipoPagamento(1, "01", "DINHEIRO", "S", "N"));
+        pagamentos.add(new TipoPagamento(2, "02", "CHEQUE", "N", "N"));
+        pagamentos.add(new TipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
+        pagamentos.add(new TipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
+        pagamentos.add(new TipoPagamento(5, "05", "CREDITO NA LOJA", "N", "N"));
+        pagamentos.add(new TipoPagamento(6, "14", "DUPLICATA", "N", "S"));
 
         return pagamentos;
     }
@@ -963,19 +963,19 @@ public class BalcaoControll implements Serializable {
         this.produto = produto;
     }
 
-    public PdvTipoPagamento getTipoPagamento() {
+    public TipoPagamento getTipoPagamento() {
         return tipoPagamento;
     }
 
-    public void setTipoPagamento(PdvTipoPagamento tipoPagamento) {
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
         this.tipoPagamento = tipoPagamento;
     }
 
-    public List<PdvTipoPagamento> getListTipoPagamento() {
+    public List<TipoPagamento> getListTipoPagamento() {
         return listTipoPagamento;
     }
 
-    public void setListTipoPagamento(List<PdvTipoPagamento> listTipoPagamento) {
+    public void setListTipoPagamento(List<TipoPagamento> listTipoPagamento) {
         this.listTipoPagamento = listTipoPagamento;
     }
 

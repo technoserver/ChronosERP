@@ -102,10 +102,14 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             }
         });
         estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
+
+        if (venda.getId() == null) {
+            venda = salvar(venda);
+        }
+
         finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
                 venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
 
-        String doc = "M" + Modulo.VENDA.getCodigo() + "V" + venda.getId();
         venda = repository.salvarFlush(venda);
 
         comissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(),
@@ -277,7 +281,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             NfeFormaPagamento forma = new NfeFormaPagamento();
             forma.setNfeCabecalho(nfe);
-            forma.setPdvTipoPagamento(new PdvTipoPagamento().buscarPorCodigo("90"));
+            forma.setTipoPagamento(new TipoPagamento().buscarPorCodigo("90"));
             forma.setForma("90");
 
             nfe.getListaNfeFormaPagamento().add(forma);

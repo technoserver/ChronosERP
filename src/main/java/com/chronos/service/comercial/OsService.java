@@ -12,6 +12,7 @@ import com.chronos.repository.Repository;
 import com.chronos.service.AbstractService;
 import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.FinLancamentoReceberService;
+import com.chronos.service.financeiro.MovimentoService;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
@@ -43,6 +44,8 @@ public class OsService extends AbstractService<OsAbertura> {
     @Inject
     private NfeService nfeService;
     @Inject
+    private MovimentoService movimentoService;
+    @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
 
     @Inject
@@ -58,9 +61,17 @@ public class OsService extends AbstractService<OsAbertura> {
     public OsAbertura salvar(OsAbertura os) throws ChronosException {
 
 
-        if (os.getCondicoesPagamento().getVistaPrazo().equals("1") && os.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
+        if (os.getListaOsProdutoServico() == null || os.getListaOsProdutoServico().isEmpty()) {
+            throw new ChronosException("Produtos ou serviço não informado !!!");
+        }
+
+
+        Optional<OsFormaPagamento> formaPagamento = os.getListaFormaPagamento().stream().filter(f -> f.equals("14")).findFirst();
+
+        if (formaPagamento.isPresent() && os.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
             throw new ChronosException("Cliente com restrinções de bloqueio");
         }
+
 
         if (os.isNovo()) {
             repository.salvar(os);
@@ -73,22 +84,36 @@ public class OsService extends AbstractService<OsAbertura> {
     }
 
 
-    public OsAbertura salvarItem(OsAbertura os, OsProdutoServico item) throws ChronosException {
+    public OsAbertura salvarItem(OsAbertura os, OsProdutoServico item, String tipoDesconto, BigDecimal desconto) throws ChronosException {
         itens = os.getListaOsProdutoServico();
+        item.setTipo(item.getProduto().getServico() != null && item.getProduto().getServico().equals("S") ? 1 : 0);
         Optional<OsProdutoServico> itemOptional = buscarItem(item.getProduto());
         BigDecimal quantidade = item.getQuantidade();
+
+
+        if (desconto.signum() > 0) {
+            if (tipoDesconto.equals("%")) {
+                BigDecimal valorDesconto = Biblioteca.calcularValorPercentual(item.getValorSubtotal(), desconto);
+                item.setTaxaDesconto(desconto);
+                item.setValorDesconto(valorDesconto);
+            } else {
+                item.setValorDesconto(desconto);
+                BigDecimal taxDesc = Biblioteca.calcularPercentual(item.getValorSubtotal(), item.getValorTotal());
+                item.setTaxaDesconto(taxDesc);
+            }
+        }
 
         if (itemOptional.isPresent()) {
             item = itemOptional.get();
             item.setQuantidade(quantidade);
         } else {
             item.setQuantidade(quantidade);
-            itens.add(item);
+            os.getListaOsProdutoServico().add(item);
         }
 
-        item.setTipo(item.getProduto().getServico() != null && item.getProduto().getServico().equals("S") ? 1 : 0);
         os.calcularValores();
-        return salvar(os);
+
+        return os;
     }
 
     @Transactional
@@ -96,8 +121,7 @@ public class OsService extends AbstractService<OsAbertura> {
 
 
         NfeCabecalho nfe;
-        List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", os.getCondicoesPagamento().getId());
-        os.getCondicoesPagamento().setParcelas(parcelas);
+
         VendaToNFe vendaNfe = new VendaToNFe(modelo, os);
         nfe = vendaNfe.gerarNfe();
         nfe.setOs(os);
@@ -121,19 +145,45 @@ public class OsService extends AbstractService<OsAbertura> {
 
     @Transactional
     public void encerrar(OsAbertura os) throws ChronosException {
-        os.setStatus(12);
+
+
+        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
+
+        if (os.getListaFormaPagamento() == null | os.getListaFormaPagamento().isEmpty()) {
+            throw new ChronosException("Forma de pagamento não definidas");
+        }
+
+        for (OsFormaPagamento p : os.getListaFormaPagamento()) {
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+        }
+
+        if (os.getValorTotal().compareTo(recebidoAteAgora) != 0) {
+            throw new ChronosException("Valores informado nos pagamento não estão consolidado !!!");
+        }
+
+        if (os.getListaOsProdutoServico() == null || os.getListaOsProdutoServico().isEmpty()) {
+            throw new ChronosException("Produtos ou serviço não informado !!!");
+        }
 
         List<ProdutoVendaDTO> produtos = new ArrayList<>();
         os.getListaOsProdutoServico()
                 .stream()
                 .filter(p -> p.getProduto().getServico().equalsIgnoreCase("N"))
                 .forEach(p -> {
-                    produtos.add(new ProdutoVendaDTO(p.getId(), p.getQuantidade()));
+                    produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
                 });
 
         estoqueRepositoy.atualizaEstoqueVerificado(os.getEmpresa().getId(), produtos);
-        finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
-                os.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, os.getEmpresa());
+
+        Optional<OsFormaPagamento> formaPagamento = os.getListaFormaPagamento().stream().filter(f -> f.equals("14")).findFirst();
+
+        if (formaPagamento.isPresent()) {
+            formaPagamento.get().getCondicao();
+            finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
+                    formaPagamento.get().getCondicao(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, os.getEmpresa());
+        }
+
+
         os = repository.saveAndFlush(os);
 
         auditoriaService.gerarLog(AcaoLog.ENCERRAR_OS, "Encerrado OS " + os.getNumero(), "OS");
@@ -141,6 +191,11 @@ public class OsService extends AbstractService<OsAbertura> {
         BigDecimal comissao = gerarComissoes(os);
 
         os.setValorComissao(comissao);
+        os.setStatus(12);
+
+        if (os.getMovimento() != null) {
+            movimentoService.lancaVenda(os.getValorTotal(), os.getValorTotalDesconto(), BigDecimal.ZERO);
+        }
 
         repository.atualizar(os);
 
@@ -201,7 +256,6 @@ public class OsService extends AbstractService<OsAbertura> {
 
 
         os.setCliente(orcamento.getCliente());
-        os.setCondicoesPagamento(orcamento.getCondicoesPagamento());
         os.setVendedor(orcamento.getVendedor());
         os.setValorComissao(orcamento.getValorComissao());
         os.setValorTotal(orcamento.getValorTotal());

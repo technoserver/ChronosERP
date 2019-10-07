@@ -4,6 +4,7 @@ import com.chronos.controll.AbstractRelatorioControll;
 import com.chronos.modelo.entidades.PdvMovimento;
 import com.chronos.modelo.entidades.PdvVendaCabecalho;
 import com.chronos.modelo.entidades.ProdutoGrupo;
+import com.chronos.modelo.entidades.VendaConsignadaCabecalho;
 import com.chronos.modelo.view.PessoaCliente;
 import com.chronos.repository.Repository;
 import com.chronos.service.comercial.VendedorService;
@@ -33,6 +34,9 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     private Repository<PdvMovimento> movimentoRepository;
 
     @Inject
+    private Repository<VendaConsignadaCabecalho> vendaConsignadaRepository;
+
+    @Inject
     private Repository<ProdutoGrupo> produtoGrupoRepository;
 
     @Inject
@@ -42,8 +46,10 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     private Date dataFinal;
     private Integer idvendedor;
     private int idcupom;
+    private int idvendaConsignada;
     private int idgrupo;
     private PdvVendaCabecalho vendaCupom;
+    private VendaConsignadaCabecalho vendaConsignada;
     private PessoaCliente cliente;
     private Map<String, Integer> listaVendedor;
     private String statusVendas;
@@ -95,6 +101,19 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         }
 
     }
+
+    public void buscarVendaConsignada() {
+        try {
+            if (idvendaConsignada > 0) {
+                vendaConsignada = vendaConsignadaRepository.get(idvendaConsignada, VendaConsignadaCabecalho.class);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+
     public void imprimirPedido(int id) {
         parametros = new HashMap<>();
         parametros.put("idvenda", id);
@@ -343,5 +362,17 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     public void setIdgrupo(int idgrupo) {
         this.idgrupo = idgrupo;
+    }
+
+    public int getIdvendaConsignada() {
+        return idvendaConsignada;
+    }
+
+    public void setIdvendaConsignada(int idvendaConsignada) {
+        this.idvendaConsignada = idvendaConsignada;
+    }
+
+    public VendaConsignadaCabecalho getVendaConsignada() {
+        return vendaConsignada;
     }
 }

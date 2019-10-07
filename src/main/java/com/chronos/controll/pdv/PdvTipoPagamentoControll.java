@@ -1,7 +1,7 @@
 package com.chronos.controll.pdv;
 
 import com.chronos.controll.AbstractControll;
-import com.chronos.modelo.entidades.PdvTipoPagamento;
+import com.chronos.modelo.entidades.TipoPagamento;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -11,12 +11,12 @@ import javax.inject.Named;
  */
 @Named
 @ViewScoped
-public class PdvTipoPagamentoControll extends AbstractControll<PdvTipoPagamento> {
+public class PdvTipoPagamentoControll extends AbstractControll<TipoPagamento> {
 
 
     @Override
-    protected Class<PdvTipoPagamento> getClazz() {
-        return PdvTipoPagamento.class;
+    protected Class<TipoPagamento> getClazz() {
+        return TipoPagamento.class;
     }
 
     @Override

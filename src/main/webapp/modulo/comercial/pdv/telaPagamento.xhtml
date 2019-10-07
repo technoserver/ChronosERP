@@ -271,7 +271,7 @@
                 <h:dataTable id="tablePagamentos" var="pag" value="#{balcaoControll.venda.listaFormaPagamento}"
                              width="100%" cellpadding="5" cellspacing="5">
                     <h:column>
-                        #{pag.pdvTipoPagamento.descricao}
+                        #{pag.tipoPagamento.descricao}
                         <small><i class="text-muted">(#{pag.qtdParcelas}x)</i></small>
                     </h:column>
                     <h:column class="nowrap" width="1">

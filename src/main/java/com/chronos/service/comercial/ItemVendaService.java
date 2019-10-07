@@ -11,7 +11,6 @@ public class ItemVendaService extends AbstractService<VendaDetalhe> {
         return verificarRestricao();
     }
 
-
     @Override
     protected Class<VendaDetalhe> getClazz() {
         return VendaDetalhe.class;
