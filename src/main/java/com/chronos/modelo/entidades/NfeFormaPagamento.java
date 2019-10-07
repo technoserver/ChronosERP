@@ -37,7 +37,7 @@ public class NfeFormaPagamento implements Serializable {
     private NfeCabecalho nfeCabecalho;
     @JoinColumn(name = "ID_PDV_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private PdvTipoPagamento pdvTipoPagamento;
+    private TipoPagamento tipoPagamento;
 
     public NfeFormaPagamento() {
         this.valor = BigDecimal.ZERO;
@@ -123,12 +123,12 @@ public class NfeFormaPagamento implements Serializable {
         this.nfeCabecalho = nfeCabecalho;
     }
 
-    public PdvTipoPagamento getPdvTipoPagamento() {
-        return pdvTipoPagamento;
+    public TipoPagamento getTipoPagamento() {
+        return tipoPagamento;
     }
 
-    public void setPdvTipoPagamento(PdvTipoPagamento pdvTipoPagamento) {
-        this.pdvTipoPagamento = pdvTipoPagamento;
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
     }
 
 

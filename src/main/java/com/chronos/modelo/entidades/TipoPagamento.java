@@ -7,8 +7,8 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "PDV_TIPO_PAGAMENTO")
-public class PdvTipoPagamento implements Serializable {
+@Table(name = "TIPO_PAGAMENTO")
+public class TipoPagamento implements Serializable {
 
     private static final long serialVersionUID = 2L;
     @Id
@@ -27,19 +27,19 @@ public class PdvTipoPagamento implements Serializable {
     @Transient
     private String identificador;
 
-    public PdvTipoPagamento() {
+    public TipoPagamento() {
     }
 
-    public PdvTipoPagamento(Integer id) {
+    public TipoPagamento(Integer id) {
         this.id = id;
     }
 
-    public PdvTipoPagamento(Integer id, String codigo) {
+    public TipoPagamento(Integer id, String codigo) {
         this.id = id;
         this.codigo = codigo;
     }
 
-    public PdvTipoPagamento(Integer id, String codigo, String descricao, String permiteTroco, String geraParcelas) {
+    public TipoPagamento(Integer id, String codigo, String descricao, String permiteTroco, String geraParcelas) {
         this.id = id;
         this.codigo = codigo;
         this.descricao = descricao;
@@ -96,54 +96,54 @@ public class PdvTipoPagamento implements Serializable {
     }
 
     @Transient
-    public PdvTipoPagamento buscarPorCodigo(String codigo) {
-        PdvTipoPagamento tipo;
+    public TipoPagamento buscarPorCodigo(String codigo) {
+        TipoPagamento tipo;
         switch (codigo) {
             case "01":
-                tipo = new PdvTipoPagamento(1, "01");
+                tipo = new TipoPagamento(1, "01");
                 break;
             case "02":
-                tipo = new PdvTipoPagamento(2, "02");
+                tipo = new TipoPagamento(2, "02");
                 break;
             case "03":
-                tipo = new PdvTipoPagamento(3, "03");
+                tipo = new TipoPagamento(3, "03");
                 break;
             case "04":
-                tipo = new PdvTipoPagamento(4, "04");
+                tipo = new TipoPagamento(4, "04");
                 break;
 
             case "05":
-                tipo = new PdvTipoPagamento(5, "05");
+                tipo = new TipoPagamento(5, "05");
                 break;
 
             case "14":
-                tipo = new PdvTipoPagamento(6, "14");
+                tipo = new TipoPagamento(6, "14");
                 break;
             case "10":
-                tipo = new PdvTipoPagamento(7, "10");
+                tipo = new TipoPagamento(7, "10");
                 break;
             case "11":
-                tipo = new PdvTipoPagamento(8, "11");
+                tipo = new TipoPagamento(8, "11");
                 break;
             case "12":
-                tipo = new PdvTipoPagamento(9, "12");
+                tipo = new TipoPagamento(9, "12");
                 break;
             case "13":
-                tipo = new PdvTipoPagamento(10, "13");
+                tipo = new TipoPagamento(10, "13");
                 break;
             case "15":
-                tipo = new PdvTipoPagamento(11, "15");
+                tipo = new TipoPagamento(11, "15");
                 break;
             case "90":
-                tipo = new PdvTipoPagamento(12, "90");
+                tipo = new TipoPagamento(12, "90");
                 break;
 
             case "99":
-                tipo = new PdvTipoPagamento(13, "99");
+                tipo = new TipoPagamento(13, "99");
                 break;
 
             default:
-                tipo = new PdvTipoPagamento(1, "01");
+                tipo = new TipoPagamento(1, "01");
 
         }
 
@@ -165,7 +165,7 @@ public class PdvTipoPagamento implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final PdvTipoPagamento other = (PdvTipoPagamento) obj;
+        final TipoPagamento other = (TipoPagamento) obj;
         return Objects.equals(this.id, other.id);
     }
 

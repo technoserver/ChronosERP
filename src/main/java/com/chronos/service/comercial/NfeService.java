@@ -167,7 +167,7 @@ public class NfeService implements Serializable {
 
         definirEmitente(nfe);
 
-        definirFormaPagamento(nfe, new PdvTipoPagamento().buscarPorCodigo("01"));
+        definirFormaPagamento(nfe, new TipoPagamento().buscarPorCodigo("01"));
 
 
         instanciarDadosConfiguracoes(nfe);
@@ -190,7 +190,7 @@ public class NfeService implements Serializable {
     }
 
     @Transactional
-    public NfeCabecalho salvar(NfeCabecalho nfe, PdvTipoPagamento tipoPagamento) throws ChronosException {
+    public NfeCabecalho salvar(NfeCabecalho nfe, TipoPagamento tipoPagamento) throws ChronosException {
 
 
         validacaoNfe(nfe);
@@ -931,33 +931,31 @@ public class NfeService implements Serializable {
     }
 
 
-
-
-    public List<PdvTipoPagamento> getTipoPagamentos() {
-        List<PdvTipoPagamento> tipos = new ArrayList<>();
-        tipos.add(new PdvTipoPagamento(1, "01", "Dinheiro", "S", "N"));
-        tipos.add(new PdvTipoPagamento(2, "02", "Cheque", "N", "S"));
-        tipos.add(new PdvTipoPagamento(3, "03", "Cartão de Credito", "N", "S"));
-        tipos.add(new PdvTipoPagamento(4, "04", "Cartão de Debito", "N", "N"));
-        tipos.add(new PdvTipoPagamento(5, "05", "Credito Loja", "N", "N"));
-        tipos.add(new PdvTipoPagamento(6, "14", "Duplicata Mercantil", "N", "S"));
-        tipos.add(new PdvTipoPagamento(7, "10", "Vale Alimentacao", "N", "N"));
-        tipos.add(new PdvTipoPagamento(8, "11", "Vale Refeicao", "N", "N"));
-        tipos.add(new PdvTipoPagamento(9, "12", "Vale Presente", "N", "N"));
-        tipos.add(new PdvTipoPagamento(10, "13", "Vale Combustivel", "N", "N"));
-        tipos.add(new PdvTipoPagamento(11, "15", "Boleto Bancario", "N", "N"));
-        tipos.add(new PdvTipoPagamento(12, "90", "Sem pagamento", "N", "S"));
-        tipos.add(new PdvTipoPagamento(13, "99", "Outros", "N", "N"));
+    public List<TipoPagamento> getTipoPagamentos() {
+        List<TipoPagamento> tipos = new ArrayList<>();
+        tipos.add(new TipoPagamento(1, "01", "Dinheiro", "S", "N"));
+        tipos.add(new TipoPagamento(2, "02", "Cheque", "N", "S"));
+        tipos.add(new TipoPagamento(3, "03", "Cartão de Credito", "N", "S"));
+        tipos.add(new TipoPagamento(4, "04", "Cartão de Debito", "N", "N"));
+        tipos.add(new TipoPagamento(5, "05", "Credito Loja", "N", "N"));
+        tipos.add(new TipoPagamento(6, "14", "Duplicata Mercantil", "N", "S"));
+        tipos.add(new TipoPagamento(7, "10", "Vale Alimentacao", "N", "N"));
+        tipos.add(new TipoPagamento(8, "11", "Vale Refeicao", "N", "N"));
+        tipos.add(new TipoPagamento(9, "12", "Vale Presente", "N", "N"));
+        tipos.add(new TipoPagamento(10, "13", "Vale Combustivel", "N", "N"));
+        tipos.add(new TipoPagamento(11, "15", "Boleto Bancario", "N", "N"));
+        tipos.add(new TipoPagamento(12, "90", "Sem pagamento", "N", "S"));
+        tipos.add(new TipoPagamento(13, "99", "Outros", "N", "N"));
 
         return tipos;
     }
 
-    public PdvTipoPagamento instanciarFormaPagamento(NfeCabecalho nfe) {
+    public TipoPagamento instanciarFormaPagamento(NfeCabecalho nfe) {
         Optional<NfeFormaPagamento> formaPagOpt = nfe.getListaNfeFormaPagamento().stream().findFirst();
-        PdvTipoPagamento tipoPagamento = null;
+        TipoPagamento tipoPagamento = null;
         if (formaPagOpt.isPresent()) {
             NfeFormaPagamento forma = formaPagOpt.get();
-            Optional<PdvTipoPagamento> tipoPagOpt = getTipoPagamentos()
+            Optional<TipoPagamento> tipoPagOpt = getTipoPagamentos()
                     .stream()
                     .filter(p -> p.getCodigo().equals(forma.getForma()))
                     .findFirst();
@@ -1052,9 +1050,9 @@ public class NfeService implements Serializable {
         nfe.setEmitente(emitente);
     }
 
-    private void definirFormaPagamento(NfeCabecalho nfe, PdvTipoPagamento tipoPagamento) {
+    private void definirFormaPagamento(NfeCabecalho nfe, TipoPagamento tipoPagamento) {
         NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
-        nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
+        nfeFormaPagamento.setTipoPagamento(tipoPagamento);
         nfeFormaPagamento.setNfeCabecalho(nfe);
         nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
         nfeFormaPagamento.setValor(nfe.getValorTotal());

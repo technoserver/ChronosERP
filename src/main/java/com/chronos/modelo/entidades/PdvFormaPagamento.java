@@ -38,7 +38,7 @@ public class PdvFormaPagamento implements Serializable {
     private PdvVendaCabecalho pdvVendaCabecalho;
     @JoinColumn(name = "ID_PDV_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private PdvTipoPagamento pdvTipoPagamento;
+    private TipoPagamento tipoPagamento;
     @Transient
     private int qtdParcelas;
     @Transient
@@ -130,12 +130,12 @@ public class PdvFormaPagamento implements Serializable {
         this.pdvVendaCabecalho = pdvVendaCabecalho;
     }
 
-    public PdvTipoPagamento getPdvTipoPagamento() {
-        return pdvTipoPagamento;
+    public TipoPagamento getTipoPagamento() {
+        return tipoPagamento;
     }
 
-    public void setPdvTipoPagamento(PdvTipoPagamento pdvTipoPagamento) {
-        this.pdvTipoPagamento = pdvTipoPagamento;
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
     }
 
     public VendaCondicoesPagamento getCondicao() {

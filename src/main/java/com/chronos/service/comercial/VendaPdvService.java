@@ -90,7 +90,7 @@ public class VendaPdvService implements Serializable {
         });
         estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
         for (PdvFormaPagamento p : pagamentos) {
-            if (p.getPdvTipoPagamento().getGeraParcelas().equals("S") && p.getPdvTipoPagamento().getCodigo().equals("14")) {
+            if (p.getTipoPagamento().getGeraParcelas().equals("S") && p.getTipoPagamento().getCodigo().equals("14")) {
 
                 if (venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
                     throw new ChronosException("Cliente com restrinções de bloqueio");
@@ -100,7 +100,7 @@ public class VendaPdvService implements Serializable {
                 finLancamentoReceberService.gerarContasReceber(venda, parcelas);
             }
 
-            if (p.getPdvTipoPagamento().getCodigo().equals("05")) {
+            if (p.getTipoPagamento().getCodigo().equals("05")) {
                 ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
 
                 if (conta == null || conta.getSaldo().compareTo(p.getValor()) < 0) {
@@ -109,10 +109,10 @@ public class VendaPdvService implements Serializable {
                     contaPessoaService.lancaMovimento(conta, p.getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), venda.getId().toString());
                 }
             }
-            if (p.getPdvTipoPagamento().getCodigo().equals("03")) {
+            if (p.getTipoPagamento().getCodigo().equals("03")) {
 
                 OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(new ArrayList<>(p.getOperadoraCartao().getListaOperadoraCartaoTaxas()), p.getQtdParcelas());
-                FinLancamentoReceberCartao finLancamentoReceberCartao = finLancamentoReceberCartaoService.gerarLancamento(venda.getId(), p.getValor(), p.getOperadoraCartao(), operadoraCartaoTaxa, p.getQtdParcelas(), Modulo.VENDA.getCodigo(), venda.getEmpresa(), p.getPdvTipoPagamento().getIdentificador());
+                FinLancamentoReceberCartao finLancamentoReceberCartao = finLancamentoReceberCartaoService.gerarLancamento(venda.getId(), p.getValor(), p.getOperadoraCartao(), operadoraCartaoTaxa, p.getQtdParcelas(), Modulo.VENDA.getCodigo(), venda.getEmpresa(), p.getTipoPagamento().getIdentificador());
                 finLancamentoReceberCartaoRepository.salvar(finLancamentoReceberCartao);
             }
 

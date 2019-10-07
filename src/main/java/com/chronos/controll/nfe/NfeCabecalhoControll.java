@@ -72,7 +72,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeReferenciada nfeReferenciada;
     private NfeReferenciada nfeReferenciadaSelecionado;
     private NfeTransporteVolume volume;
-    private PdvTipoPagamento tipoPagamento;
+    private TipoPagamento tipoPagamento;
     private VendaCondicoesPagamento condicoesPagamento;
     private int qtdParcelas;
     private int intervaloParcelas;
@@ -196,7 +196,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         try {
             super.doEdit();
             NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
-            tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getPdvTipoPagamento();
+            tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getTipoPagamento();
             setObjeto(nfe);
             nfeService.instanciarConfNfe(empresa, ModeloDocumento.NFE);
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
@@ -763,16 +763,16 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         nfeDetalhe.setValorUnitarioComercial(Optional.ofNullable(produto.getValorVenda()).orElse(BigDecimal.ZERO));
     }
 
-    public List<PdvTipoPagamento> getListaNfceTipoPagamento(String nome) {
-        List<PdvTipoPagamento> listaPdvTipoPagamento = new ArrayList<>();
+    public List<TipoPagamento> getListaNfceTipoPagamento(String nome) {
+        List<TipoPagamento> listaTipoPagamento = new ArrayList<>();
         try {
 
-            listaPdvTipoPagamento = StringUtils.isEmpty(nome) ? nfeService.getTipoPagamentos() : nfeService.getTipoPagamentos()
+            listaTipoPagamento = StringUtils.isEmpty(nome) ? nfeService.getTipoPagamentos() : nfeService.getTipoPagamentos()
                     .stream().filter(p -> p.getDescricao().toLowerCase().contains(nome)).collect(Collectors.toList());
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        return listaPdvTipoPagamento;
+        return listaTipoPagamento;
     }
 
 //    private PdvConfiguracao getConfiguraNfce() throws Exception {
@@ -962,11 +962,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         this.justificativa = justificativa;
     }
 
-    public PdvTipoPagamento getTipoPagamento() {
+    public TipoPagamento getTipoPagamento() {
         return tipoPagamento;
     }
 
-    public void setTipoPagamento(PdvTipoPagamento tipoPagamento) {
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
         this.tipoPagamento = tipoPagamento;
     }
 

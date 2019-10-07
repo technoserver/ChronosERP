@@ -55,20 +55,6 @@
 
     </div>
     <div class="row">
-        <div class="col-xs-12 col-sm-4 col-md-4">
-            <p:outputLabel value="Condições Pagamento"
-                           for="condicoesPagamento"/>
-            <br/>
-            <p:autoComplete id="condicoesPagamento"
-                            value="#{osAberturaControll.objeto.condicoesPagamento}"
-                            completeMethod="#{osAberturaControll.getListaVendaCondicoesPagamento}"
-                            var="condicoesPagamento"
-                            itemLabel="#{condicoesPagamento.nome}"
-                            itemValue="#{condicoesPagamento}"
-                            converter="defaultConverter" forceSelection="true"
-                            minQueryLength="3" maxResults="10" required="true"
-                            style="width: 100%" emptyMessage="Nenhum registro encontrado"/>
-        </div>
 
 
         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -142,7 +128,7 @@
                                  rendered="#{empty osAberturaControll.objeto.id}">
 
                 </p:commandButton>
-                <c:if test="#{osAberturaControll.temProduto and !(osAberturaControll.objeto.status eq '12' or osAberturaControll.objeto.status eq '13')}">
+                <c:if test="#{not empty osAberturaControll.objeto.id and !(osAberturaControll.objeto.status eq '12' or osAberturaControll.objeto.status eq '13')}">
                     <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar()}" icon="ui-icon-disk">
                         <p:menuitem value="Encerrar" actionListener="#{osAberturaControll.encerrar}"
                                     update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"

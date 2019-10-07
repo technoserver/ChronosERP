@@ -38,7 +38,7 @@ public class OsFormaPagamento implements Serializable {
     private OsAbertura osAbertura;
     @JoinColumn(name = "ID_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private PdvTipoPagamento pdvTipoPagamento;
+    private TipoPagamento tipoPagamento;
     @Transient
     private int qtdParcelas;
     @Transient
@@ -130,12 +130,12 @@ public class OsFormaPagamento implements Serializable {
         this.osAbertura = osAbertura;
     }
 
-    public PdvTipoPagamento getPdvTipoPagamento() {
-        return pdvTipoPagamento;
+    public TipoPagamento getTipoPagamento() {
+        return tipoPagamento;
     }
 
-    public void setPdvTipoPagamento(PdvTipoPagamento pdvTipoPagamento) {
-        this.pdvTipoPagamento = pdvTipoPagamento;
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
     }
 
     public VendaCondicoesPagamento getCondicao() {

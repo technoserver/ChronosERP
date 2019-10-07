@@ -281,7 +281,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             NfeFormaPagamento forma = new NfeFormaPagamento();
             forma.setNfeCabecalho(nfe);
-            forma.setPdvTipoPagamento(new PdvTipoPagamento().buscarPorCodigo("90"));
+            forma.setTipoPagamento(new TipoPagamento().buscarPorCodigo("90"));
             forma.setForma("90");
 
             nfe.getListaNfeFormaPagamento().add(forma);

@@ -260,7 +260,7 @@ public class VendaToNFe extends ManualCDILookup {
                 pagamento.setEstorno(f.getEstorno());
                 pagamento.setForma(f.getForma());
                 pagamento.setNumeroAutorizacao(f.getNumeroAutorizacao());
-                pagamento.setPdvTipoPagamento(f.getPdvTipoPagamento());
+                pagamento.setTipoPagamento(f.getTipoPagamento());
                 pagamento.setNfeCabecalho(nfe);
                 pagamento.setValor(f.getValor());
                 nfe.getListaNfeFormaPagamento().add(pagamento);
@@ -275,7 +275,7 @@ public class VendaToNFe extends ManualCDILookup {
                 pagamento.setEstorno(f.getEstorno());
                 pagamento.setForma(f.getForma());
                 pagamento.setNumeroAutorizacao(f.getNumeroAutorizacao());
-                pagamento.setPdvTipoPagamento(f.getPdvTipoPagamento());
+                pagamento.setTipoPagamento(f.getTipoPagamento());
                 pagamento.setNfeCabecalho(nfe);
                 pagamento.setValor(f.getValor());
                 nfe.getListaNfeFormaPagamento().add(pagamento);

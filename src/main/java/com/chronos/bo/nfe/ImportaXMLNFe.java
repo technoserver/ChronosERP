@@ -208,11 +208,11 @@ public class ImportaXMLNFe {
             Set<NfeFormaPagamento> pagamentos = new HashSet<>();
 
 
-            PdvTipoPagamento tipo = new PdvTipoPagamento().buscarPorCodigo("90");
+            TipoPagamento tipo = new TipoPagamento().buscarPorCodigo("90");
             NfeFormaPagamento forma = new NfeFormaPagamento();
             forma.setValor(BigDecimal.ZERO);
             forma.setForma("90");
-            forma.setPdvTipoPagamento(tipo);
+            forma.setTipoPagamento(tipo);
             forma.setNfeCabecalho(nfeCabecalho);
             pagamentos.add(forma);
 

@@ -83,6 +83,9 @@ public class OsAbertura implements Serializable {
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Empresa empresa;
+    @JoinColumn(name = "ID_MOVIMENTO", referencedColumnName = "ID")
+    @ManyToOne
+    private PdvMovimento movimento;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OsEvolucao> listaOsEvolucao;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)     
@@ -325,6 +328,14 @@ public class OsAbertura implements Serializable {
 
     public void setVendaOrcamentoCabecalho(VendaOrcamentoCabecalho vendaOrcamentoCabecalho) {
         this.vendaOrcamentoCabecalho = vendaOrcamentoCabecalho;
+    }
+
+    public PdvMovimento getMovimento() {
+        return movimento;
+    }
+
+    public void setMovimento(PdvMovimento movimento) {
+        this.movimento = movimento;
     }
 
     public Set<OsFormaPagamento> getListaFormaPagamento() {
