@@ -66,6 +66,15 @@ public class VendaConsignadaControll extends AbstractControll<VendaConsignadaCab
     }
 
     @Override
+    public void doEdit() {
+        super.doEdit();
+        VendaConsignadaCabecalho venda = dataModel.getRowData(getObjeto().getId().toString());
+        setObjeto(venda);
+        pessoaCliente = new PessoaCliente();
+        pessoaCliente.setNome(getObjeto().getCliente().getPessoa().getNome());
+    }
+
+    @Override
     public void salvar() {
         try {
             VendaConsignadaCabecalho venda = service.salvar(getObjeto());

@@ -60,6 +60,14 @@
                         <p:column headerText="Ações" width="80" class="text-center">
                             <p:menuButton>
 
+                                <p:menuitem value="Alterar"
+                                            action="#{vendaConsignadaControll.doEdit}"
+                                            update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
+
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaConsignadaControll.objetoSelecionado}"/>
+                                </p:menuitem>
+
                                 <p:menuitem value="Imprimir"
                                             target="blank"
                                             outcome="/modulo/comercial/vendas/relatorios/cupomVendaConsignada"
