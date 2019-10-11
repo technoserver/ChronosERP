@@ -174,7 +174,7 @@ public class OsFormaPagamento implements Serializable {
 
         OsFormaPagamento that = (OsFormaPagamento) o;
 
-        return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
+        return getId() != null ? getId().equals(that.getId()) : that.getId() != null;
     }
 
     @Override

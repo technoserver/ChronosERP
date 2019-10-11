@@ -1,90 +1,416 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xmlns="http://jasperreports.sourceforge.net/jasperreports"
               xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="carner" language="groovy" pageWidth="567" pageHeight="170" columnWidth="567" leftMargin="0"
-              rightMargin="0" topMargin="0" bottomMargin="0" uuid="bba4eaff-f0db-49dd-b679-85d6ea4e319b">
-    <property name="ireport.zoom" value="6.0"/>
-    <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="0"/>
-    <parameter name="id" class="java.lang.Integer">
-        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
-    </parameter>
-    <queryString>
+              name="carner" language="groovy" pageWidth="595" pageHeight="842" columnWidth="589" leftMargin="3"
+              rightMargin="3" topMargin="10" bottomMargin="10" uuid="47fc0ab4-aa28-408f-b5f4-154cfe903ff8">
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ChornosERP"/>
+    <parameter name="id" class="java.lang.Integer"/>
+    <queryString language="SQL">
         <![CDATA[select * from fin_lancamento_receber l
-inner join fin_parcela_receber p on  p.id_fin_lancamento_receber = l.id
-where l.id = $P{id}]]>
+inner join fin_parcela_receber p on p.id_fin_lancamento_receber = l.id
+where l.id =  $P{id} ]]>
     </queryString>
-    <field name="id" class="java.lang.Integer"/>
-    <field name="id_fin_documento_origem" class="java.lang.Integer"/>
-    <field name="id_empresa" class="java.lang.Integer"/>
-    <field name="id_cliente" class="java.lang.Integer"/>
-    <field name="quantidade_parcela" class="java.lang.Integer"/>
-    <field name="valor_total" class="java.math.BigDecimal"/>
-    <field name="valor_desconto_convenio" class="java.math.BigDecimal"/>
-    <field name="valor_a_receber" class="java.math.BigDecimal"/>
-    <field name="data_lancamento" class="java.sql.Date"/>
-    <field name="numero_documento" class="java.lang.String"/>
-    <field name="primeiro_vencimento" class="java.sql.Date"/>
-    <field name="taxa_comissao" class="java.math.BigDecimal"/>
-    <field name="valor_comissao" class="java.math.BigDecimal"/>
-    <field name="intervalo_entre_parcelas" class="java.lang.Integer"/>
-    <field name="codigo_modulo_lcto" class="java.lang.String"/>
-    <field name="mesclado_para" class="java.lang.Integer"/>
-    <field name="hash_modulo_lcto" class="java.lang.String"/>
-    <field name="id_conta_caixa" class="java.lang.Integer"/>
-    <field name="id_fin_lancamento_receber" class="java.lang.Integer"/>
-    <field name="id_fin_status_parcela" class="java.lang.Integer"/>
-    <field name="numero_parcela" class="java.lang.Integer"/>
-    <field name="data_emissao" class="java.sql.Date"/>
-    <field name="data_vencimento" class="java.sql.Date"/>
-    <field name="desconto_ate" class="java.sql.Date"/>
-    <field name="valor" class="java.math.BigDecimal"/>
-    <field name="taxa_juro" class="java.math.BigDecimal"/>
-    <field name="taxa_multa" class="java.math.BigDecimal"/>
-    <field name="taxa_desconto" class="java.math.BigDecimal"/>
-    <field name="valor_juro" class="java.math.BigDecimal"/>
-    <field name="valor_multa" class="java.math.BigDecimal"/>
-    <field name="valor_desconto" class="java.math.BigDecimal"/>
-    <field name="emitiu_boleto" class="java.lang.String"/>
-    <field name="boleto_nosso_numero" class="java.lang.String"/>
+    <field name="id" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="id"/>
+    </field>
+    <field name="id_fin_documento_origem" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="id_fin_documento_origem"/>
+    </field>
+    <field name="id_empresa" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="id_empresa"/>
+    </field>
+    <field name="id_cliente" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="id_cliente"/>
+    </field>
+    <field name="quantidade_parcela" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="quantidade_parcela"/>
+    </field>
+    <field name="valor_total" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="valor_total"/>
+    </field>
+    <field name="valor_desconto_convenio" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="valor_desconto_convenio"/>
+    </field>
+    <field name="valor_a_receber" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="valor_a_receber"/>
+    </field>
+    <field name="data_lancamento" class="java.sql.Date">
+        <property name="com.jaspersoft.studio.field.label" value="data_lancamento"/>
+    </field>
+    <field name="numero_documento" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="numero_documento"/>
+    </field>
+    <field name="primeiro_vencimento" class="java.sql.Date">
+        <property name="com.jaspersoft.studio.field.label" value="primeiro_vencimento"/>
+    </field>
+    <field name="taxa_comissao" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="taxa_comissao"/>
+    </field>
+    <field name="valor_comissao" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="valor_comissao"/>
+    </field>
+    <field name="intervalo_entre_parcelas" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="intervalo_entre_parcelas"/>
+    </field>
+    <field name="codigo_modulo_lcto" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="codigo_modulo_lcto"/>
+    </field>
+    <field name="mesclado_para" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="mesclado_para"/>
+    </field>
+    <field name="hash_modulo_lcto" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="hash_modulo_lcto"/>
+    </field>
+    <field name="COLUMN_18" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="id"/>
+    </field>
+    <field name="id_conta_caixa" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="id_conta_caixa"/>
+    </field>
+    <field name="id_fin_lancamento_receber" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="id_fin_lancamento_receber"/>
+    </field>
+    <field name="id_fin_status_parcela" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="id_fin_status_parcela"/>
+    </field>
+    <field name="numero_parcela" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="numero_parcela"/>
+    </field>
+    <field name="data_emissao" class="java.sql.Date">
+        <property name="com.jaspersoft.studio.field.label" value="data_emissao"/>
+    </field>
+    <field name="data_vencimento" class="java.sql.Date">
+        <property name="com.jaspersoft.studio.field.label" value="data_vencimento"/>
+    </field>
+    <field name="desconto_ate" class="java.sql.Date">
+        <property name="com.jaspersoft.studio.field.label" value="desconto_ate"/>
+    </field>
+    <field name="valor" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="valor"/>
+    </field>
+    <field name="taxa_juro" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="taxa_juro"/>
+    </field>
+    <field name="taxa_multa" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="taxa_multa"/>
+    </field>
+    <field name="taxa_desconto" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="taxa_desconto"/>
+    </field>
+    <field name="valor_juro" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="valor_juro"/>
+    </field>
+    <field name="valor_multa" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="valor_multa"/>
+    </field>
+    <field name="valor_desconto" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.label" value="valor_desconto"/>
+    </field>
+    <field name="emitiu_boleto" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="emitiu_boleto"/>
+    </field>
+    <field name="boleto_nosso_numero" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="boleto_nosso_numero"/>
+    </field>
     <detail>
-        <band height="125" splitType="Stretch">
+        <band height="138" splitType="Stretch">
             <rectangle>
-                <reportElement x="0" y="0" width="567" height="125" uuid="d2e837ba-4a2b-4bec-9ff4-5bc9a0be327c"/>
+                <reportElement x="0" y="0" width="589" height="125" uuid="ec5dff47-e531-4b19-8e24-573d4787f9de"/>
+                <graphicElement>
+                    <pen lineWidth="0.5"/>
+                </graphicElement>
             </rectangle>
             <line>
-                <reportElement x="112" y="0" width="1" height="125" uuid="434cffb4-8aa1-4507-aab3-e972f0788e7e"/>
+                <reportElement x="131" y="0" width="1" height="124" uuid="943ca2d9-aadc-4d03-b09f-a71bf75806c3"/>
                 <graphicElement>
                     <pen lineStyle="Dashed"/>
                 </graphicElement>
             </line>
             <line>
-                <reportElement x="0" y="52" width="112" height="1" uuid="132035a6-e9b0-42e2-8f0a-d3c2c538861f"/>
+                <reportElement x="0" y="48" width="131" height="1" uuid="560ca978-84c4-448e-a286-34e8045db647"/>
             </line>
-            <line>
-                <reportElement x="0" y="30" width="112" height="1" uuid="2f03786d-f5e2-4a51-b740-53b6675c1a50"/>
-            </line>
+            <image onErrorType="Blank">
+                <reportElement x="3" y="4" width="57" height="37" uuid="dd291425-a9e3-4051-9de9-d5d2773b17ec"/>
+                <imageExpression><![CDATA["C:/Users/Usuario/Pictures/imagens/padrao2.png"]]></imageExpression>
+            </image>
             <staticText>
-                <reportElement x="64" y="0" width="20" height="9" uuid="a463b2fd-9569-4fed-a09b-b99b78e19c69"/>
+                <reportElement positionType="Float" x="66" y="3" width="32" height="9"
+                               uuid="44b27220-570c-4139-a8d7-51d00deae094"/>
                 <textElement>
-                    <font fontName="Ubuntu Condensed" size="7"/>
+                    <font size="7"/>
                 </textElement>
                 <text><![CDATA[Parcela]]></text>
             </staticText>
             <staticText>
-                <reportElement x="74" y="8" width="20" height="9" uuid="8cd3575a-a4ce-4dec-89b3-b1c62032f86c"/>
+                <reportElement positionType="Float" x="87" y="12" width="16" height="9"
+                               uuid="e9a0077c-a12d-4fd9-8dcb-826560f69980"/>
                 <textElement>
-                    <font fontName="Ubuntu Condensed" size="7"/>
+                    <font size="7"/>
                 </textElement>
-                <text><![CDATA[1/5]]></text>
+                <text><![CDATA[1/10]]></text>
             </staticText>
             <line>
-                <reportElement x="66" y="17" width="38" height="1" uuid="8fc894d2-a7bf-4942-a3b5-c65b67150a6e"/>
+                <reportElement x="66" y="21" width="60" height="1" uuid="8823a078-6ba7-45e5-9da0-94896249d3c5"/>
             </line>
+            <staticText>
+                <reportElement positionType="Float" x="75" y="22" width="41" height="9"
+                               uuid="81c2d275-c096-486e-bd5e-d9614cb66082"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Vencimento]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="75" y="32" width="41" height="9"
+                               uuid="d0b0063b-b407-4ae4-8a76-a8dba57b2060"/>
+                <textElement>
+                    <font size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[01/01/2019]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="3" y="50" width="47" height="9"
+                               uuid="08069d0b-0e4a-4388-b85e-c57e7bcb2065"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Documento]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="70" width="478" height="1" uuid="95c206e1-1e18-4d0d-bdf4-41af30cb953a"/>
+            </line>
+            <staticText>
+                <reportElement positionType="Float" x="3" y="59" width="47" height="9"
+                               uuid="c4d402aa-28de-4c25-b3ce-8749a068bd23"/>
+                <textElement>
+                    <font size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[2346345]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="3" y="70" width="123" height="9"
+                               uuid="f4d74cb3-0251-4d05-a505-456e73098e3e"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Valor do Documento]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="50" y="79" width="76" height="9"
+                               uuid="f8ae0022-80f1-4e27-bf67-4e9126c416c6"/>
+                <textElement textAlignment="Right">
+                    <font size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[300,00]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="91" width="131" height="1" uuid="8677c0ad-6bf7-4f2e-9195-effb39a36dd1"/>
+            </line>
+            <staticText>
+                <reportElement positionType="Float" x="3" y="92" width="63" height="9"
+                               uuid="8aa8fac5-04e1-4ec4-b818-61294d5bbce6"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Data Pagamento]]></text>
+            </staticText>
             <image onErrorType="Blank">
-                <reportElement x="6" y="3" width="39" height="25" uuid="97aaddbd-3316-4f45-a7fe-d6e416399e53"/>
+                <reportElement x="137" y="3" width="57" height="37" uuid="f762b1b1-262d-4700-b92b-d5d61d851963"/>
+                <imageExpression><![CDATA["C:/Users/Usuario/Pictures/imagens/padrao2.png"]]></imageExpression>
             </image>
+            <line>
+                <reportElement x="132" y="48" width="346" height="1" uuid="9624b560-2a47-4881-9990-881ee02a31ac"/>
+            </line>
+            <line>
+                <reportElement x="478" y="32" width="110" height="1" uuid="54706a7c-82ad-48df-8bec-6fd9fb95d3bd"/>
+            </line>
+            <line>
+                <reportElement x="478" y="0" width="1" height="93" uuid="9eb3e1cd-c245-4f00-8897-7bb715f17c4d"/>
+                <graphicElement>
+                    <pen lineStyle="Solid"/>
+                </graphicElement>
+            </line>
+            <staticText>
+                <reportElement positionType="Float" x="480" y="3" width="32" height="9"
+                               uuid="b76b2590-2539-4a52-b44b-baeb3c5df715"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Parcela]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="480" y="18" width="107" height="9"
+                               uuid="8a5c03db-01eb-4e02-918b-5c95b8660ef4"/>
+                <textElement textAlignment="Center">
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[1/10]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="480" y="35" width="70" height="9"
+                               uuid="869becec-28e2-4eea-9c32-dd4fd82fc66b"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Valor do Documento]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="510" y="46" width="76" height="9"
+                               uuid="1c8a2612-eff0-4f93-8856-2f20df05271f"/>
+                <textElement textAlignment="Right">
+                    <font size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[300,00]]></text>
+            </staticText>
+            <line>
+                <reportElement x="478" y="63" width="110" height="1" uuid="8005d703-7323-4aaa-9efe-755d20a47e49"/>
+            </line>
+            <staticText>
+                <reportElement positionType="Float" x="480" y="65" width="70" height="9"
+                               uuid="21ea6dd1-37ad-431d-906d-be797b7b4588"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Data Pagamento]]></text>
+            </staticText>
+            <line>
+                <reportElement x="132" y="91" width="456" height="2" uuid="ffd30cff-5614-407f-906c-25c986de58f5"/>
+            </line>
+            <staticText>
+                <reportElement positionType="Float" x="137" y="92" width="32" height="9"
+                               uuid="29bbe5e4-6a4c-41c7-90fb-92669add4a4e"/>
+                <textElement>
+                    <font size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Sacado]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="137" y="101" width="440" height="9"
+                               uuid="5f9dc13c-9f20-4b90-a7cf-c43ac5714b17"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Nome do Meu Cliente -  CPF 111.111.111-11]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="137" y="111" width="440" height="9"
+                               uuid="85985c0f-c843-4ee3-a099-6963196e34bb"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Rua do Cliente, 4321 - Casa Bairro Cliente  - centro/SE CEP49500-000]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="137" y="50" width="83" height="9"
+                               uuid="a8cd31eb-ae89-49f9-bed3-f4ee2a3a8f76"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Documento]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="137" y="59" width="83" height="9"
+                               uuid="c4300129-c5df-4254-b823-594110db630d"/>
+                <textElement>
+                    <font size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[2346345]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="232" y="50" width="128" height="9"
+                               uuid="94c388ec-12b7-411d-891d-d00f6fa3135a"/>
+                <textElement textAlignment="Center">
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Espécie]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="361" y="51" width="117" height="9"
+                               uuid="5f30fcde-d5f8-468a-bdd2-a93fed3cb7c0"/>
+                <textElement textAlignment="Center">
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Processamento]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="232" y="59" width="128" height="9"
+                               uuid="abdd954b-1d48-4fdc-b768-f46dc89d62f7"/>
+                <textElement textAlignment="Center">
+                    <font size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[R$]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="361" y="60" width="117" height="9"
+                               uuid="63314807-0c62-4d84-b6f6-843022304341"/>
+                <textElement textAlignment="Center">
+                    <font size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[01/01/2019]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="137" y="73" width="333" height="9"
+                               uuid="eeb016c3-aa42-4a4a-8618-fce1504a6b33"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Observaçoes gerais da venda]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="200" y="3" width="47" height="9"
+                               uuid="b68c548f-da07-41db-ae2a-0eef7548058a"/>
+                <textElement>
+                    <font size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Cedente]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="200" y="12" width="270" height="9"
+                               uuid="8f48787f-9cee-495a-beb1-af2054c4d4d9"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Empresa X]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="200" y="21" width="270" height="9"
+                               uuid="0e607c95-1071-4ee2-80e6-93423b3ed0cd"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[CNPJ: 11.111.111/1111-11]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="200" y="30" width="440" height="9"
+                               uuid="ec64ac59-21de-44e1-85e5-278203d3c169"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[Rua da Empresa, 4321 - Casa Bairro Cliente  - centro/SE CEP49500-000]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="200" y="39" width="270" height="9"
+                               uuid="ade9ce06-d1d2-4907-b192-21826a4b3662"/>
+                <textElement>
+                    <font size="7"/>
+                </textElement>
+                <text><![CDATA[79 99647 1910]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="131" width="589" height="1" uuid="cbcc7646-666f-4d41-9a79-efcd79d6590c"/>
+                <graphicElement>
+                    <pen lineWidth="1.0" lineStyle="Dotted"/>
+                </graphicElement>
+            </line>
+            <line>
+                <reportElement x="231" y="48" width="1" height="22" uuid="8649162f-81d4-49f5-9e18-69bb109b0e6f"/>
+            </line>
+            <line>
+                <reportElement x="360" y="48" width="1" height="22" uuid="0dd9726f-71bf-4c13-b4ba-8cfff539b1e7"/>
+            </line>
         </band>
     </detail>
 </jasperReport>

@@ -26,7 +26,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Created by john on 13/12/17.
@@ -40,7 +39,7 @@ public class OsService extends AbstractService<OsAbertura> {
     @Inject
     private EstoqueRepository estoqueRepositoy;
 
-    private Set<OsProdutoServico> itens;
+    private List<OsProdutoServico> itens;
     @Inject
     private NfeService nfeService;
     @Inject

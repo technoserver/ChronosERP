@@ -5,15 +5,15 @@ import com.chronos.modelo.entidades.OsProdutoServico;
 import com.chronos.modelo.entidades.Produto;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Created by john on 28/09/17.
  */
 public class TabelaProdutoServico {
 
-    private final Set<OsProdutoServico> itens;
+    private final List<OsProdutoServico> itens;
     private final OsAbertura os;
 
     public TabelaProdutoServico(OsAbertura os) {

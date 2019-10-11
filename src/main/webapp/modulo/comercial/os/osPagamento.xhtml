@@ -42,7 +42,8 @@
                                value="#{osAberturaControll.valorPago}"/>
                 <p:commandButton class="input-group-addon btn btn-lg btn-primary"
                                  action="#{osAberturaControll.lancaPagamento}"
-                                 update=":formCentro:telaDetalhe:tabViewDetalhes:valo-pago,dataTableOsPagamento"
+                                 process="@this,:formCentro:telaDetalhe:tabViewDetalhes:tipo-pagamento"
+                                 update=":formCentro:telaDetalhe:tabViewDetalhes:valo-pago,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsPagamento"
                                  disabled="#{osAberturaControll.podeLancaPagamento}"
                                  id="botao-confirma-pagamento"
                                  icon="fa fa-plus">
