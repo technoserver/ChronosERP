@@ -21,6 +21,8 @@ public class VendaConsignadaCabecalho implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "ID_VENDA_CABECALHO")
+    private Integer idvendaCebecalho;
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_SAIDA")
     private Date dataSaida;
@@ -53,9 +55,6 @@ public class VendaConsignadaCabecalho implements Serializable {
     @NotNull
     private Vendedor vendedor;
     private StatusConsignacao status;
-    @JoinColumn(name = "ID_VENDA_CABECALHO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private VendaCabecalho vendaCabecalho;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -89,6 +88,14 @@ public class VendaConsignadaCabecalho implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdvendaCebecalho() {
+        return idvendaCebecalho;
+    }
+
+    public void setIdvendaCebecalho(Integer idvendaCebecalho) {
+        this.idvendaCebecalho = idvendaCebecalho;
     }
 
     public Date getDataSaida() {
@@ -185,14 +192,6 @@ public class VendaConsignadaCabecalho implements Serializable {
 
     public void setListaVendaConsignadaDetalhe(List<VendaConsignadaDetalhe> listaVendaConsignadaDetalhe) {
         this.listaVendaConsignadaDetalhe = listaVendaConsignadaDetalhe;
-    }
-
-    public VendaCabecalho getVendaCabecalho() {
-        return vendaCabecalho;
-    }
-
-    public void setVendaCabecalho(VendaCabecalho vendaCabecalho) {
-        this.vendaCabecalho = vendaCabecalho;
     }
 
     public Empresa getEmpresa() {

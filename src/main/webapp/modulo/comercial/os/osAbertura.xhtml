@@ -249,11 +249,11 @@
                 <p:tab title="Serviço/Produto" id="tabProduto">
                     <ui:include src="osServicoProduto.xhtml"/>
                 </p:tab>
-                <p:tab title="Evolução" id="tabEvolucao">
+                <p:tab title="Evolução" id="tabEvolucao" disabled="#{empty osAberturaControll.objeto.id}">
                     <ui:include src="osEvolucao.xhtml"/>
                 </p:tab>
 
-                <p:tab title="Equipamento" id="tabEquipamento">
+                <p:tab title="Equipamento" id="tabEquipamento" disabled="#{empty osAberturaControll.objeto.id}">
                     <ui:include src="osEquipamento.xhtml"/>
                 </p:tab>
                 <p:tab title="Pagamentos" id="tabPagamento">
@@ -414,7 +414,7 @@
                             <p:commandButton value="Salvar"
                                              actionListener="#{osAberturaControll.salvarOsProdutoServico}"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOsProdutoServico').hide();}"
-                                             update=":formOutrasTelas2:panelOsProdutoServico,:formCentro:growl,:formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:valo-pago"
+                                             update=":formOutrasTelas2:panelOsProdutoServico,:formCentro:growl,:formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:valo-pago,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico"
                                              id="btnSalvarProdutoServico">
 
                             </p:commandButton>

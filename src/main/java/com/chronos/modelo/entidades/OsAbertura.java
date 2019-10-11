@@ -88,8 +88,8 @@ public class OsAbertura implements Serializable {
     private PdvMovimento movimento;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OsEvolucao> listaOsEvolucao;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)     
-    private Set<OsProdutoServico> listaOsProdutoServico;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OsProdutoServico> listaOsProdutoServico;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OsAberturaEquipamento> listaOsAberturaEquipamento;
     @OneToMany(mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -248,11 +248,11 @@ public class OsAbertura implements Serializable {
         this.listaOsEvolucao = listaOsEvolucao;
     }
 
-    public Set<OsProdutoServico> getListaOsProdutoServico() {
-        return Optional.ofNullable(listaOsProdutoServico).orElse(new HashSet<>());
+    public List<OsProdutoServico> getListaOsProdutoServico() {
+        return listaOsProdutoServico;
     }
 
-    public void setListaOsProdutoServico(Set<OsProdutoServico> listaOsProdutoServico) {
+    public void setListaOsProdutoServico(List<OsProdutoServico> listaOsProdutoServico) {
         this.listaOsProdutoServico = listaOsProdutoServico;
     }
 
@@ -263,7 +263,6 @@ public class OsAbertura implements Serializable {
     public void setListaOsAberturaEquipamento(Set<OsAberturaEquipamento> listaOsAberturaEquipamento) {
         this.listaOsAberturaEquipamento = listaOsAberturaEquipamento;
     }
-
 
     public BigDecimal getValorTotalProduto() {
         return valorTotalProduto;

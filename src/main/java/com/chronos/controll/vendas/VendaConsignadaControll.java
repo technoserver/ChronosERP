@@ -162,6 +162,14 @@ public class VendaConsignadaControll extends AbstractControll<VendaConsignadaCab
 
     }
 
+    public void excluirItem() {
+
+        getObjeto().getListaVendaConsignadaDetalhe().remove(itemSelecionado);
+        getObjeto().calcularValorTotal();
+        getObjeto().setExcludoItem(true);
+
+    }
+
 
     public List<ProdutoDTO> getListaProduto(String nome) {
         List<ProdutoDTO> listaProduto = new ArrayList<>();

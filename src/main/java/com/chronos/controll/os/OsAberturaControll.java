@@ -200,7 +200,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
 
                 getObjeto().setListaOsAberturaEquipamento(new HashSet<>());
-                getObjeto().setListaOsProdutoServico(new HashSet<>());
+                getObjeto().setListaOsProdutoServico(new ArrayList<>());
                 getObjeto().setListaOsEvolucao(new HashSet<>());
                 getObjeto().setListaFormaPagamento(new HashSet<>());
                 getObjeto().setStatus(1);

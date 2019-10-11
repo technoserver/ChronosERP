@@ -110,7 +110,7 @@ public class VendaConsignadaService extends AbstractService<VendaConsignadaCabec
 
             vendaCabecalho = vendaService.faturarVenda(vendaCabecalho);
 
-            venda.setVendaCabecalho(vendaCabecalho);
+            venda.setIdvendaCebecalho(vendaCabecalho.getId());
             venda.setStatus(StatusConsignacao.ENCERRADO);
 
         }
