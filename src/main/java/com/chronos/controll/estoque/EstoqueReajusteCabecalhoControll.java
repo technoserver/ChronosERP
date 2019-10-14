@@ -148,7 +148,10 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
             } else {
                 String tipo = getObjeto().getTipoReajuste();
                 getObjeto().getListaEstoqueReajusteDetalhe().stream().forEach(r -> {
-                    r.setValorReajuste(calcularReajuste(r.getValorOriginal(), tipo));
+                    if (getObjeto().getPorcentagem() != null && getObjeto().getPorcentagem().signum() > 0) {
+                        r.setValorReajuste(calcularReajuste(r.getValorOriginal(), tipo));
+                    }
+
                 });
             }
         } catch (Exception e) {

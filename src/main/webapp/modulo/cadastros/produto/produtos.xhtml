@@ -232,6 +232,14 @@
             <p:tabView id="tabProduto" activeIndex="#{produtoControll.activeTabIndex}">
                 <p:tab title="Dados Principais" id="dadosPrincipais">
                     <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="id" label="Código"
+                                        nomeAtributo="#{produtoControll.objeto.id}"
+                                        tamanhoMaximo="9"
+                                        rendered="#{not empty produtoControll.objeto.id}"
+                                        somenteLeitura="true"/>
+                    </div>
+                    <div class="row">
 
                         <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                         idComponente="produtoNome" label="Nome"
