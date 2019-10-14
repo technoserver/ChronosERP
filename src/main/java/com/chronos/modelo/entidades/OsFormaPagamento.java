@@ -4,13 +4,14 @@ package com.chronos.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 
 @Entity
-@Table(name = "NFE_FORMA_PAGAMENTO")
-public class NfeFormaPagamento implements Serializable {
+@Table(name = "os_forma_pagamento")
+public class OsFormaPagamento implements Serializable {
 
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -32,15 +33,21 @@ public class NfeFormaPagamento implements Serializable {
     private String estorno;
     @Column(name = "TROCO")
     private BigDecimal troco;
-    @JoinColumn(name = "ID_NFE_CABECALHO", referencedColumnName = "ID")
+    @JoinColumn(name = "id_os_abertura", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NfeCabecalho nfeCabecalho;
-    @JoinColumn(name = "ID_PDV_TIPO_PAGAMENTO", referencedColumnName = "ID")
+    private OsAbertura osAbertura;
+    @JoinColumn(name = "ID_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private TipoPagamento tipoPagamento;
+    @Transient
+    private int qtdParcelas;
+    @Transient
+    private VendaCondicoesPagamento condicao;
+    @Transient
+    private OperadoraCartao operadoraCartao;
 
-    public NfeFormaPagamento() {
-        this.valor = BigDecimal.ZERO;
+    public OsFormaPagamento() {
+        this.qtdParcelas = 1;
     }
 
     public Integer getId() {
@@ -115,12 +122,12 @@ public class NfeFormaPagamento implements Serializable {
         this.troco = troco;
     }
 
-    public NfeCabecalho getNfeCabecalho() {
-        return nfeCabecalho;
+    public OsAbertura getOsAbertura() {
+        return osAbertura;
     }
 
-    public void setNfeCabecalho(NfeCabecalho nfeCabecalho) {
-        this.nfeCabecalho = nfeCabecalho;
+    public void setOsAbertura(OsAbertura osAbertura) {
+        this.osAbertura = osAbertura;
     }
 
     public TipoPagamento getTipoPagamento() {
@@ -131,5 +138,47 @@ public class NfeFormaPagamento implements Serializable {
         this.tipoPagamento = tipoPagamento;
     }
 
+    public VendaCondicoesPagamento getCondicao() {
+        return condicao;
+    }
 
+    public void setCondicao(VendaCondicoesPagamento condicao) {
+        this.condicao = condicao;
+    }
+
+    public int getQtdParcelas() {
+        return qtdParcelas;
+    }
+
+    public void setQtdParcelas(int qtdParcelas) {
+        this.qtdParcelas = qtdParcelas;
+    }
+
+    public OperadoraCartao getOperadoraCartao() {
+        return operadoraCartao;
+    }
+
+    public void setOperadoraCartao(OperadoraCartao operadoraCartao) {
+        this.operadoraCartao = operadoraCartao;
+    }
+
+
+    public BigDecimal getValorTotal() {
+        return this.valor.subtract(Optional.ofNullable(this.troco).orElse(BigDecimal.ZERO));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OsFormaPagamento)) return false;
+
+        OsFormaPagamento that = (OsFormaPagamento) o;
+
+        return getId() != null ? getId().equals(that.getId()) : that.getId() != null;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId() != null ? getId().hashCode() : 0;
+    }
 }

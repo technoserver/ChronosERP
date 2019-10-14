@@ -3,6 +3,7 @@ package com.chronos.security;
 
 import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.AdmModulo;
+import com.chronos.modelo.entidades.AdmParametro;
 import com.chronos.modelo.entidades.Papel;
 import com.chronos.modelo.entidades.RestricaoSistema;
 import com.chronos.modelo.tenant.Tenant;
@@ -30,6 +31,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 
     private UsuarioSistema user;
     private RestricaoSistema restricaoSistema;
+    private AdmParametro parametro;
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         try {
@@ -39,6 +41,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
             UsuarioDTO usuarioDTO = definirPermissoes(user);
             request.getSession().setAttribute("userChronosERP", usuarioDTO);
             request.getSession().setAttribute("restricoes", restricaoSistema);
+            request.getSession().setAttribute("paramChronosERP", parametro);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,8 +101,11 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 
             RestricaoSistema restricao = restricaoSistemaRepository.get(RestricaoSistema.class, "usuario.id", user.getId());
 
-
             restricaoSistema = restricao != null ? restricao : new RestricaoSistema();
+
+            Repository<AdmParametro> parametroRepository = CDIServiceLocator.getBean(Repository.class);
+
+            parametro = parametroRepository.getEntitys(AdmParametro.class).stream().findFirst().orElse(null);
 
             Authentication authentication = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getSenha(), authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);

@@ -68,7 +68,7 @@ public class NfceControll implements Serializable {
     @Inject
     private Repository<Vendedor> vendedores;
     @Inject
-    private Repository<PdvTipoPagamento> nfceTipoPagamentoRepository;
+    private Repository<TipoPagamento> nfceTipoPagamentoRepository;
     @Inject
     private Repository<PdvFechamento> nfceFechamentoRepository;
     @Inject
@@ -93,8 +93,8 @@ public class NfceControll implements Serializable {
 
     private NfeDetalhe item;
     private NfeDetalhe itemSelecionado;
-    private PdvTipoPagamento tipoPagamento;
-    private List<PdvTipoPagamento> listTipoPagamento;
+    private TipoPagamento tipoPagamento;
+    private List<TipoPagamento> listTipoPagamento;
     private NfeFormaPagamento formaPagamentoSelecionado;
 
     private NfeCabecalho venda;
@@ -237,7 +237,7 @@ public class NfceControll implements Serializable {
             telaImpressao = false;
             telaCaixa = false;
             telaPagamentos = true;
-            listTipoPagamento = nfceTipoPagamentoRepository.getAll(PdvTipoPagamento.class);
+            listTipoPagamento = nfceTipoPagamentoRepository.getAll(TipoPagamento.class);
         }
 
         totalVenda = BigDecimal.ZERO;
@@ -281,14 +281,14 @@ public class NfceControll implements Serializable {
 
     }
 
-    private void incluiPagamento(PdvTipoPagamento tipoPagamento, BigDecimal valor) {
+    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) {
         Optional<NfeFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
         if (formaPagamentoOpt.isPresent()) {
             Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
         } else {
             NfeFormaPagamento formaPagamento = new NfeFormaPagamento();
             formaPagamento.setNfeCabecalho(venda);
-            formaPagamento.setPdvTipoPagamento(tipoPagamento);
+            formaPagamento.setTipoPagamento(tipoPagamento);
             formaPagamento.setValor(valor);
             formaPagamento.setForma(tipoPagamento.getCodigo());
             formaPagamento.setEstorno("N");
@@ -306,10 +306,10 @@ public class NfceControll implements Serializable {
 
     }
 
-    private Optional<NfeFormaPagamento> bucarTipoPagamento(PdvTipoPagamento tipoPagamento) {
+    private Optional<NfeFormaPagamento> bucarTipoPagamento(TipoPagamento tipoPagamento) {
         Optional<NfeFormaPagamento> formaPagamentoOpt = venda.getListaNfeFormaPagamento()
                 .stream()
-                .filter(fp -> fp.getPdvTipoPagamento().equals(tipoPagamento))
+                .filter(fp -> fp.getTipoPagamento().equals(tipoPagamento))
                 .findAny();
         return formaPagamentoOpt;
     }
@@ -339,7 +339,7 @@ public class NfceControll implements Serializable {
                 .forEach(p -> {
                     PdvFechamento fechamento = new PdvFechamento();
                     fechamento.setPdvMovimento(movimento);
-                    fechamento.setTipoPagamento(p.getPdvTipoPagamento().getDescricao());
+                    fechamento.setTipoPagamento(p.getTipoPagamento().getDescricao());
                     fechamento.setValor(p.getValor());
                     nfceFechamentoRepository.salvar(fechamento);
 
@@ -847,19 +847,19 @@ public class NfceControll implements Serializable {
     }
 
 
-    public List<PdvTipoPagamento> getListTipoPagamento() {
+    public List<TipoPagamento> getListTipoPagamento() {
         return listTipoPagamento;
     }
 
-    public void setListTipoPagamento(List<PdvTipoPagamento> listTipoPagamento) {
+    public void setListTipoPagamento(List<TipoPagamento> listTipoPagamento) {
         this.listTipoPagamento = listTipoPagamento;
     }
 
-    public PdvTipoPagamento getTipoPagamento() {
+    public TipoPagamento getTipoPagamento() {
         return tipoPagamento;
     }
 
-    public void setTipoPagamento(PdvTipoPagamento tipoPagamento) {
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
         this.tipoPagamento = tipoPagamento;
     }
 

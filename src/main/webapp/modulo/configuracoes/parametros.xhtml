@@ -60,6 +60,16 @@
                                     </h:selectOneMenu>
                                 </div>
 
+                                <div class="col-xs-12 col-sm-3 col-md-3">
+                                    <h:outputLabel value="Controla Movimento na OS"/>
+                                    <h:selectOneMenu id="osGerarMovimentoCaixa"
+                                                     value="#{admParametrosControll.objeto.osGerarMovimentoCaixa}"
+                                                     styleClass="form-control">
+                                        <f:selectItem itemLabel="NAO" itemValue="N"/>
+                                        <f:selectItem itemLabel="SIM" itemValue="S"/>
+                                    </h:selectOneMenu>
+                                </div>
+
 
                             </div>
 

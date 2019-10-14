@@ -33,6 +33,19 @@
 
             <div class="row m-b">
 
+
+                <erp:campoTexto nomeAtributo="#{osAberturaControll.cliente}"
+                                styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="cliente"
+                                label="Cliente"
+                                tamanhoMaximo="100"/>
+
+                <erp:campoTexto nomeAtributo="#{osAberturaControll.numero}"
+                                styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="numero"
+                                label="Número"
+                                tamanhoMaximo="9"/>
+
                 <erp:campoData nomeAtributo="#{osAberturaControll.dataInicial}"
                                label="Data inicial"
                                idComponente="dataInicial"
@@ -43,19 +56,20 @@
                                idComponente="dataFinal"
                                styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
-                <erp:campoTexto nomeAtributo="#{osAberturaControll.numero}"
-                                styleClass="col-xs-12 col-sm-2 col-md-2"
-                                idComponente="numero"
-                                label="Número"
-                                tamanhoMaximo="9"/>
+
 
                 <div class="col-xs-12 col-sm-6 col-md-6">
-                    <h:outputLabel value="Cliente" for="cliente"/>
+                    <h:outputLabel value="Status" for="status"/>
 
                     <div class="field-action">
-                        <h:inputText value="#{osAberturaControll.cliente}"
-                                     id="cliente"
-                                     styleClass="form-control"/>
+                        <h:selectOneMenu id="status"
+                                         value="#{osAberturaControll.statusOs}"
+                                         class="form-control"
+                        >
+                            <f:selectItem itemValue="#{0}" itemLabel="Todos"/>
+                            <f:selectItems value="#{osAberturaControll.status}"/>
+                        </h:selectOneMenu>
+
                         <p:commandButton value="Pesquisar"
                                          action="#{osAberturaControll.pesquisar}"
                                          update="formCentro:telaGrid:outputPanelGrid"
@@ -92,7 +106,12 @@
                     </h:outputLabel>
                 </p:column>
                 <p:column headerText="Status" width="200" styleClass="text-center">
-                    <h:outputLabel value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"/>
+                    <h:outputLabel value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"
+                                   rendered="#{row.status eq 13}" styleClass="label  label-primary"/>
+                    <h:outputLabel value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"
+                                   rendered="#{row.status eq 12}" styleClass="label  label-success"/>
+                    <h:outputLabel value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"
+                                   rendered="#{row.status ne 13 and row.status ne 12}" styleClass="label  label-info"/>
                 </p:column>
                 <p:column headerText="Ações" width="160" styleClass="text-center">
                     <p:commandLink title="Alterar" id="btnEditar" action="#{osAberturaControll.doEdit()}"
@@ -142,7 +161,7 @@
                                     action="#{osAberturaControll.faturar('55')}"
                                     update=":formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     rendered="#{osAberturaControll.isTemAcesso('NFE') and empty row.idnfeCabecalho}"
-                                   >
+                        >
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
@@ -222,12 +241,12 @@
             </h:panelGroup>
 
 
-            <p:tabView id="tabViewDetalhes" style="border: 0px;" activeIndex="#{osAberturaControll.activeTabIndex}">
-                <p:tab title="Dados Principais">
+            <p:tabView id="tabViewDetalhes" style="border: 0px;">
+                <p:tab title="Dados Principais" id="tabDadosPrincipais">
                     <ui:include src="osDadosPrincipais.xhtml"/>
 
                 </p:tab>
-                <p:tab title="Serviço/Produto" id="tabProduto" disabled="#{empty osAberturaControll.objeto.id}">
+                <p:tab title="Serviço/Produto" id="tabProduto">
                     <ui:include src="osServicoProduto.xhtml"/>
                 </p:tab>
                 <p:tab title="Evolução" id="tabEvolucao" disabled="#{empty osAberturaControll.objeto.id}">
@@ -237,14 +256,11 @@
                 <p:tab title="Equipamento" id="tabEquipamento" disabled="#{empty osAberturaControll.objeto.id}">
                     <ui:include src="osEquipamento.xhtml"/>
                 </p:tab>
-
+                <p:tab title="Pagamentos" id="tabPagamento">
+                    <ui:include src="osPagamento.xhtml"/>
+                </p:tab>
 
             </p:tabView>
-            <div class="row ">
-
-
-            </div>
-
 
         </erp:telaInclusaoAlteracao>
     </ui:define>
@@ -367,9 +383,28 @@
                                           desabilitado="#{!osAberturaControll.podeAlterarPreco}"
                                           nomeAtributo="#{osAberturaControll.osProdutoServico.valorUnitario}"
                                           id="campoDecimalValorUnitario"/>
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          idComponente="osProdutoServicoTaxaDesconto" label="Taxa Desconto"
-                                          nomeAtributo="#{osAberturaControll.osProdutoServico.taxaDesconto}"/>
+
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <p:outputLabel value="Desconto" for="desconto"/>
+                            <div class="ui-inputgroup">
+
+                                <p:inputNumber id="desconto"
+                                               value="#{osAberturaControll.desconto}"
+                                               required="true"
+                                               style="width: 100%;"
+                                               decimalPlaces="2"
+                                               minValue="0"/>
+
+
+                                <p:commandButton id="btnTipoDesconto"
+                                                 action="#{osAberturaControll.alterarTipoDesconto}"
+                                                 process="@this"
+                                                 update="formOutrasTelas2:btnTipoDesconto"
+                                                 value="#{osAberturaControll.tipoDesconto}"/>
+                            </div>
+                        </div>
+
+
                     </div>
 
                 </p:outputPanel>
@@ -379,7 +414,7 @@
                             <p:commandButton value="Salvar"
                                              actionListener="#{osAberturaControll.salvarOsProdutoServico}"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOsProdutoServico').hide();}"
-                                             update=":formOutrasTelas2:panelOsProdutoServico,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                             update=":formOutrasTelas2:panelOsProdutoServico,:formCentro:growl,:formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:valo-pago,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico"
                                              id="btnSalvarProdutoServico">
 
                             </p:commandButton>
@@ -438,7 +473,7 @@
                                              id="btnSalvarEvolucao">
                                 <p:ajax process="@form"
                                         oncomplete="if (!args.validationFailed) {PF('dialogOsEvolucao').hide();}"
-                                        update=":formOutrasTelas3:panelOsEvolucao,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"/>
+                                        update=":formOutrasTelas3:panelOsEvolucao,:formCentro:growl"/>
                             </h:commandButton>
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6 text-center">

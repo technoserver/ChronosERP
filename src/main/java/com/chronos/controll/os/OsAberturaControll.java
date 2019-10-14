@@ -9,6 +9,7 @@ import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.comercial.OsProdutoServicoService;
 import com.chronos.service.comercial.OsService;
+import com.chronos.service.financeiro.MovimentoService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.FacesUtil;
@@ -18,6 +19,8 @@ import org.primefaces.event.SelectEvent;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,18 +49,19 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Inject
     private Repository<OsEquipamento> equipamentoRepository;
     @Inject
+    private Repository<VendaCondicoesPagamento> pagamentoRepository;
+    @Inject
+    private Repository<Vendedor> vendedorRepository;
+    @Inject
+    private Repository<VendaOrcamentoCabecalho> orcamentoRepository;
+    @Inject
     private OsService osService;
     @Inject
     private OsProdutoServicoService produtoServicoService;
     @Inject
     private ProdutoService produtoService;
     @Inject
-    private Repository<VendaCondicoesPagamento> pagamentoRepository;
-    @Inject
-    private Repository<Vendedor> vendedorRepository;
-
-    @Inject
-    private Repository<VendaOrcamentoCabecalho> orcamentoRepository;
+    private MovimentoService movimentoService;
 
 
     private OsAberturaEquipamento osAberturaEquipamento;
@@ -69,21 +73,40 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private OsEvolucao osEvolucao;
     private OsEvolucao osEvolucaoSelecionado;
 
+    private TipoPagamento tipoPagamento;
+    private List<TipoPagamento> listTipoPagamento;
+    private VendaCondicoesPagamento condicaoPagamento;
+    private List<VendaCondicoesPagamento> condicoesPagamentos;
+    private OsFormaPagamento formaPagamentoSelecionado;
+
+
+    private PdvMovimento movimento;
 
     private boolean temProduto;
     private boolean emailValido;
+    private boolean exibirCondicoes;
 
     private String numero;
     private String cliente;
     private Date dataInicial;
     private Date dataFinal;
     private String justificativa;
+    private int statusOs;
 
     private Map<String, Integer> status;
 
     private boolean podeAlterarPreco = true;
 
     private Integer idorcamento;
+
+    private BigDecimal valorPago;
+    private BigDecimal saldoRestante;
+    private BigDecimal totalRecebido;
+    private BigDecimal totalReceber;
+    private BigDecimal troco;
+    private BigDecimal desconto = BigDecimal.ZERO;
+
+    private String tipoDesconto = "RS";
 
 
     @PostConstruct
@@ -98,7 +121,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
 
-
+        listTipoPagamento = definirTipoPagament();
     }
 
     @Override
@@ -141,38 +164,93 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             dataModel.addFiltro("dataInicio", dataFinal, Filtro.MENOR_OU_IGUAL);
         }
 
+        if (statusOs > 0) {
+            dataModel.addFiltro("status", statusOs, Filtro.IGUAL);
+        }
+
+
+    }
+
+    public PdvMovimento verificarMovimento() {
+        try {
+            movimento = movimentoService.verificarMovimento(empresa);
+            return movimento;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Mensagem.addErrorMessage("", ex);
+            return null;
+        }
 
     }
 
 
     @Override
     public void doCreate() {
-        super.doCreate();
+        try {
+            PdvMovimento movimento = verificarMovimento();
+            if (parametro.getOsGerarMovimentoCaixa().equals("S") && movimento == null) {
+                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+                context.redirect(context.getRequestContextPath() + "/modulo/comercial/caixa/movimentos.xhtml");
+                return;
+            } else {
+                super.doCreate();
+                iniciarValoresPagamento();
+                getObjeto().setDataInicio(new Date());
+                getObjeto().setHoraInicio(new SimpleDateFormat("HH:mm:ss").format(new Date()));
 
-        getObjeto().setDataInicio(new Date());
-        getObjeto().setHoraInicio(new SimpleDateFormat("HH:mm:ss").format(new Date()));
+
+                getObjeto().setListaOsAberturaEquipamento(new HashSet<>());
+                getObjeto().setListaOsProdutoServico(new ArrayList<>());
+                getObjeto().setListaOsEvolucao(new HashSet<>());
+                getObjeto().setListaFormaPagamento(new HashSet<>());
+                getObjeto().setStatus(1);
+                getObjeto().setEmpresa(empresa);
+
+                if (parametro.getOsGerarMovimentoCaixa().equals("S")) {
+                    getObjeto().setMovimento(movimento);
+                }
+
+                temProduto = false;
+            }
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao iniciar uma nova os", ex);
+            } else {
+                throw new RuntimeException("Erro ao iniciar uma nova os", ex);
+            }
+        }
 
 
-
-        getObjeto().setListaOsAberturaEquipamento(new HashSet<>());
-        getObjeto().setListaOsProdutoServico(new HashSet<>());
-        getObjeto().setListaOsEvolucao(new HashSet<>());
-        getObjeto().setStatus(1);
-        getObjeto().setEmpresa(empresa);
-
-        temProduto = false;
     }
 
     @Override
     public void doEdit() {
-        super.doEdit();
-        OsAbertura os = getDataModel().getRowData(getObjeto().getId().toString());
-        os.getTecnico().setNome(os.getTecnico().getColaborador().getPessoa().getNome());
-        os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
+        try {
+            PdvMovimento movimento = verificarMovimento();
+            if (parametro.getOsGerarMovimentoCaixa().equals("S") && movimento == null) {
+                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+                context.redirect(context.getRequestContextPath() + "/modulo/comercial/caixa/movimentos.xhtml");
+                return;
+            } else {
+                super.doEdit();
+                OsAbertura os = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+                os.getTecnico().setNome(os.getTecnico().getColaborador().getPessoa().getNome());
+                os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
 
-        setObjeto(os);
+                setObjeto(os);
+                totalReceber = os.getValorTotal();
+                verificaSaldoRestante();
+                temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
+            }
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao iniciar uma nova os", ex);
+            } else {
+                throw new RuntimeException("Erro ao iniciar uma nova os", ex);
+            }
+        }
 
-        temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
+
     }
 
     public void gerarOsDoOrcamento() {
@@ -266,7 +344,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             }
 
 
-
         } catch (Exception ex) {
             ex.printStackTrace();
             Mensagem.addErrorMessage("Erro ao cancelar servico", ex);
@@ -294,6 +371,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         osProdutoServico = new OsProdutoServico();
         osProdutoServico.setOsAbertura(getObjeto());
         osProdutoServico.setQuantidade(BigDecimal.ONE);
+        desconto = BigDecimal.ZERO;
 
     }
 
@@ -310,13 +388,13 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 PrimeFaces.current().executeScript("PF('dialogOsProdutoServico').hide();");
                 PrimeFaces.current().executeScript("PF('dialogSupervisor').show();");
             } else {
-                setObjeto(osService.salvarItem(getObjeto(), osProdutoServico));
-                Mensagem.addInfoMessage("Produto " + osProdutoServico.getProduto().getNome() + " add com sucesso !");
 
+                setObjeto(osService.salvarItem(getObjeto(), osProdutoServico, tipoDesconto, desconto));
                 temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
                 setActiveTabIndex(1);
             }
-
+            totalReceber = getObjeto().getValorTotal();
+            verificaSaldoRestante();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -325,12 +403,17 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         }
     }
 
+    public void alterarTipoDesconto() {
+        tipoDesconto = tipoDesconto.equals("%") ? "R$" : "%";
+    }
+
+
     @Override
     public boolean autorizacaoSupervisor() {
 
         try {
             if (osService.liberarRestricao(usuarioSupervisor, senhaSupervisor)) {
-                setObjeto(osService.salvarItem(getObjeto(), osProdutoServico));
+                setObjeto(osService.salvarItem(getObjeto(), osProdutoServico, tipoDesconto, desconto));
                 Mensagem.addInfoMessage("Produto " + osProdutoServico.getProduto().getNome() + " add com sucesso !");
 
                 temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
@@ -352,6 +435,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         getObjeto().getListaOsProdutoServico().remove(osProdutoServicoSelecionado);
         getObjeto().calcularValores();
         setObjeto(dao.atualizar(getObjeto()));
+        totalReceber = getObjeto().getValorTotal();
+        verificaSaldoRestante();
         Mensagem.addInfoMessage("Servi/Produto excluído com sucesso!");
         temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
 
@@ -412,6 +497,80 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         setObjeto(dao.atualizar(getObjeto()));
         Mensagem.addInfoMessage("Evolução excluído com sucesso!");
 
+    }
+
+    public void lancaPagamento() {
+        try {
+            boolean update = true;
+
+            if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
+                Mensagem.addErrorMessage("Todos os valores já foram recebidos. Finalize a venda.");
+            } else {
+
+                incluiPagamento(tipoPagamento, valorPago);
+
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao lança os pagamentos", ex);
+            } else {
+                throw new RuntimeException("Erro ao lança os pagamentos", ex);
+            }
+        }
+
+
+    }
+
+    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
+        Optional<OsFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
+        if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
+            Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
+        } else {
+            if (totalReceber.compareTo(valorPago) < 0 && tipoPagamento.getPermiteTroco().equals("N")) {
+                Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " não permite troco");
+            } else {
+                OsFormaPagamento formaPagamento = new OsFormaPagamento();
+                formaPagamento.setOsAbertura(getObjeto());
+                formaPagamento.setTipoPagamento(tipoPagamento);
+                formaPagamento.setValor(valor);
+                formaPagamento.setForma(tipoPagamento.getCodigo());
+                formaPagamento.setEstorno("N");
+
+                if (tipoPagamento.getGeraParcelas().equals("S")) {
+                    formaPagamento.setCondicao(condicaoPagamento);
+                }
+
+                totalRecebido = Biblioteca.soma(totalRecebido, valor);
+                troco = Biblioteca.subtrai(totalRecebido, totalReceber);
+                if (troco.compareTo(BigDecimal.ZERO) == -1) {
+                    troco = BigDecimal.ZERO;
+                }
+                formaPagamento.setTroco(troco);
+                getObjeto().getListaFormaPagamento().add(formaPagamento);
+                verificaSaldoRestante();
+
+
+            }
+
+        }
+
+    }
+
+    public void excluirPagamento() {
+        if (formaPagamentoSelecionado != null) {
+            getObjeto().getListaFormaPagamento().remove(formaPagamentoSelecionado);
+
+            verificaSaldoRestante();
+        }
+    }
+
+    private Optional<OsFormaPagamento> bucarTipoPagamento(TipoPagamento tipoPagamento) {
+        return getObjeto().getListaFormaPagamento()
+                .stream()
+                .filter(fp -> fp.getTipoPagamento().equals(tipoPagamento))
+                .findAny();
     }
 
 
@@ -495,6 +654,32 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         osProdutoServico.setValorUnitario(produto.getValorVenda());
     }
 
+    public void definirCondicoess() {
+        exibirCondicoes = tipoPagamento.getGeraParcelas().equals("S") && !tipoPagamento.getCodigo().equals("02");
+
+
+        if (exibirCondicoes) {
+            condicoesPagamentos = pagamentoRepository.getEntitys(VendaCondicoesPagamento.class, "vistaPrazo", "1", new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
+        }
+
+    }
+
+    private void verificaSaldoRestante() {
+        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
+        for (OsFormaPagamento p : getObjeto().getListaFormaPagamento()) {
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+        }
+
+        saldoRestante = Biblioteca.subtrai(totalReceber, recebidoAteAgora);
+        totalRecebido = recebidoAteAgora;
+        valorPago = saldoRestante;
+        if (valorPago.compareTo(BigDecimal.ZERO) < 0) {
+            valorPago = BigDecimal.ZERO;
+        }
+        if (saldoRestante.compareTo(BigDecimal.ZERO) < 0) {
+            saldoRestante = BigDecimal.ZERO;
+        }
+    }
 
     private void enviarEmail(String emailEnvio, String msg) {
         try {
@@ -502,6 +687,26 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private List<TipoPagamento> definirTipoPagament() {
+        List<TipoPagamento> pagamentos = new ArrayList<>();
+        pagamentos.add(new TipoPagamento(1, "01", "DINHEIRO", "S", "N"));
+        pagamentos.add(new TipoPagamento(2, "02", "CHEQUE", "N", "N"));
+        pagamentos.add(new TipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
+        pagamentos.add(new TipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
+        pagamentos.add(new TipoPagamento(5, "05", "CREDITO NA LOJA", "N", "N"));
+        pagamentos.add(new TipoPagamento(6, "14", "DUPLICATA", "N", "S"));
+
+        return pagamentos;
+    }
+
+    private void iniciarValoresPagamento() {
+        totalReceber = BigDecimal.ZERO;
+        troco = BigDecimal.ZERO;
+        totalRecebido = BigDecimal.ZERO;
+        saldoRestante = BigDecimal.ZERO;
+        valorPago = BigDecimal.ZERO;
     }
 
     @Override
@@ -645,5 +850,77 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void setIdorcamento(Integer idorcamento) {
         this.idorcamento = idorcamento;
+    }
+
+    public TipoPagamento getTipoPagamento() {
+        return tipoPagamento;
+    }
+
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
+    }
+
+    public List<TipoPagamento> getListTipoPagamento() {
+        return listTipoPagamento;
+    }
+
+    public boolean isExibirCondicoes() {
+        return exibirCondicoes;
+    }
+
+    public List<VendaCondicoesPagamento> getCondicoesPagamentos() {
+        return condicoesPagamentos;
+    }
+
+    public VendaCondicoesPagamento getCondicaoPagamento() {
+        return condicaoPagamento;
+    }
+
+    public void setCondicaoPagamento(VendaCondicoesPagamento condicaoPagamento) {
+        this.condicaoPagamento = condicaoPagamento;
+    }
+
+    public BigDecimal getValorPago() {
+        return valorPago;
+    }
+
+    public void setValorPago(BigDecimal valorPago) {
+        this.valorPago = valorPago;
+    }
+
+    public boolean isPodeLancaPagamento() {
+        return valorPago.signum() == 0;
+    }
+
+    public OsFormaPagamento getFormaPagamentoSelecionado() {
+        return formaPagamentoSelecionado;
+    }
+
+    public void setFormaPagamentoSelecionado(OsFormaPagamento formaPagamentoSelecionado) {
+        this.formaPagamentoSelecionado = formaPagamentoSelecionado;
+    }
+
+    public BigDecimal getDesconto() {
+        return desconto;
+    }
+
+    public void setDesconto(BigDecimal desconto) {
+        this.desconto = desconto;
+    }
+
+    public String getTipoDesconto() {
+        return tipoDesconto;
+    }
+
+    public void setTipoDesconto(String tipoDesconto) {
+        this.tipoDesconto = tipoDesconto;
+    }
+
+    public int getStatusOs() {
+        return statusOs;
+    }
+
+    public void setStatusOs(int statusOs) {
+        this.statusOs = statusOs;
     }
 }

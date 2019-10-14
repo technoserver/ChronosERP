@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components" xmlns:f="http://java.sun.com/jsf/core">
+
+
+    <h:panelGroup layout="block" id="outputPanelDetalhe">
+        <h:panelGroup layout="block" rendered="#{!vendaConsignadaControll.telaGrid}">
+            <h:panelGroup layout="block" id="panelCentroDetalhe">
+                <div class="ibox-content">
+                    <div class="row">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                          label="Cliente"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{vendaConsignadaControll}"
+                                          completeMethod="getListaCliente"
+                                          nomeAtributo="#{vendaConsignadaControll.pessoaCliente}"
+                                          idComponente="pessoaCliente">
+                            <p:ajax event="itemSelecionado"
+                                    listener="#{vendaConsignadaControll.definirEnderecoEntrega}"
+                            />
+
+                        </erp:autoComplete>
+
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                          label="Vendedor"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{vendaConsignadaControll}"
+                                          completeMethod="getListaVendedor"
+                                          nomeAtributo="#{vendaConsignadaControll.objeto.vendedor}"
+                                          idComponente="vendaCabecalhoVendedor">
+                            <p:ajax event="itemSelecionado"
+                                    listener="#{vendaConsignadaControll.definirTaxaComissao}"
+                                    update="formOutrasTelas:campoValor:valorUnitario"/>
+
+                        </erp:autoComplete>
+
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                          label="Condicoes Pagamento"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{vendaConsignadaControll}"
+                                          completeMethod="getListaCondicoesPagamento"
+                                          nomeAtributo="#{vendaConsignadaControll.objeto.condicoesPagamento}"
+                                          idComponente="condicoesPagamento"
+                        />
+
+                    </div>
+                    <erp:separador label="Produtos"/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h:commandLink title="Novo" class="btn btn-default"
+                                           actionListener="#{vendaConsignadaControll.addItem}"
+                                           type="button"
+                            >
+                                <p:resetInput target=":formOutrasTelas"/>
+                                <i class="glyphicon glyphicon-plus"/>
+                                <p:ajax update=":formOutrasTelas:panelOutrasTelas,dataTableItens"
+                                        oncomplete="PF('dialogOutrasTelas').show()"
+                                        process="@this"/>
+                            </h:commandLink>
+                        </div>
+                    </div>
+                    <p:dataTable id="dataTableItens" var="obj"
+                                 value="#{vendaConsignadaControll.objeto.listaVendaConsignadaDetalhe}"
+                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                 reflow="true"
+                                 rowIndexVar="index" rowKey="index" paginatorPosition="bottom">
+
+                        <p:column headerText="Produto">
+                            <h:outputLabel value="#{obj.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="Quantidade" styleClass="coluna-quantidade" width="120">
+                            <h:outputLabel value="#{obj.quantidade}">
+                                <f:convertNumber pattern="0.000"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor UN" class="coluna-monetaria" width="100">
+                            <h:outputLabel value="#{obj.valorUnitario}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Subtotal" class="coluna-monetaria" width="115">
+                            <h:outputLabel value="#{obj.valorSubtotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="DESC." class="coluna-monetaria" width="100">
+                            <h:outputLabel value="#{obj.valorDesconto}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor Total" class="coluna-monetaria" width="150">
+                            <h:outputLabel value="#{obj.valorTotal}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Ações" width="120">
+                            <p:commandLink title="Excluir"
+                                           action="#{vendaConsignadaControll.excluirItem}"
+                                           style="position: relative; right: 7px"
+                                           update=":formCentro:growl,dataTableItens"
+                                           process="dataTableItens"
+                                           oncomplete="atualizarMsg();"
+                                           class="btn btn-default"
+                            >
+                                <i class="fa fa-times"></i>
+                                <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                                <f:setPropertyActionListener value="#{obj}"
+                                                             target="#{vendaConsignadaControll.itemSelecionado}"/>
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+                </div>
+                <div class="ibox-footer">
+                    <h:panelGroup layout="block" rendered="#{not empty vendaConsignadaControll.objeto}">
+                        <div class="row">
+                            <div class="col-xs-6 col-lg-6 text-center">
+
+                                <p:splitButton value="Salvar"
+                                               rendered="#{!vendaConsignadaControll.objeto.encerrado}"
+                                               action="#{vendaConsignadaControll.salvar()}"
+                                               update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                                               icon="ui-icon-disk">
+
+                                    <p:menuitem value="Imprimir"
+                                                rendered="#{not empty vendaConsignadaControll.objeto.id}"
+                                                target="blank"
+                                                outcome="/modulo/comercial/vendas/relatorios/cupomVendaConsignada"
+                                                icon="fa fa-print" ajax="false">
+                                        <f:param name="id" value="#{vendaConsignadaControll.objeto.id}"/>
+                                    </p:menuitem>
+
+                                    <p:menuitem value="Gerar venda"
+                                                action="#{vendaConsignadaControll.gerarVenda}"
+                                                update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                                                icon="ui-icon-arrowrefresh-1-w"/>
+
+                                    <p:menuitem value="Encerrar"
+                                                action="#{vendaConsignadaControll.encerrar}"
+                                                update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
+                                                icon="ui-icon-arrowrefresh-1-w"/>
+                                </p:splitButton>
+
+                            </div>
+                            <div class="#{vendaConsignadaControll.objeto.encerrado} ? 'col-xs-12 col-lg-12' : 'col-xs-6 col-lg-6'">
+                                <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
+                                                 actionListener="#{vendaConsignadaControll.voltar()}"
+                                >
+                                    <p:ajax update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                            process="@this"/>
+                                </h:commandButton>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </h:panelGroup>
+        </h:panelGroup>
+    </h:panelGroup>
+
+</ui:composition>

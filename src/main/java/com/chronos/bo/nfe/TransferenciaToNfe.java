@@ -131,10 +131,10 @@ public class TransferenciaToNfe {
     private void definirFormaPagamento() {
 
 
-        PdvTipoPagamento tipoPagamento = new PdvTipoPagamento();
+        TipoPagamento tipoPagamento = new TipoPagamento();
         tipoPagamento = tipoPagamento.buscarPorCodigo("99");
         NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
-        nfeFormaPagamento.setPdvTipoPagamento(tipoPagamento);
+        nfeFormaPagamento.setTipoPagamento(tipoPagamento);
         nfeFormaPagamento.setNfeCabecalho(nfe);
         nfeFormaPagamento.setForma("99");
         nfeFormaPagamento.setValor(BigDecimal.ZERO);
