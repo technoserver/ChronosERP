@@ -1,120 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xmlns="http://jasperreports.sourceforge.net/jasperreports"
               xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-              name="carner" language="groovy" pageWidth="595" pageHeight="842" columnWidth="589" leftMargin="3"
-              rightMargin="3" topMargin="10" bottomMargin="10" uuid="47fc0ab4-aa28-408f-b5f4-154cfe903ff8">
+              name="carner" pageWidth="595" pageHeight="842" columnWidth="589" leftMargin="3" rightMargin="3"
+              topMargin="10" bottomMargin="10" uuid="47fc0ab4-aa28-408f-b5f4-154cfe903ff8">
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ChornosERP"/>
+    <property name="ireport.zoom" value="4.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
     <parameter name="id" class="java.lang.Integer"/>
-    <queryString language="SQL">
-        <![CDATA[select * from fin_lancamento_receber l
+    <queryString>
+        <![CDATA[select
+   l.numero_documento,
+   l.data_lancamento,
+   l.quantidade_parcela,
+   p.numero_parcela,
+   p.data_vencimento as vecimento,
+   p.valor as valor_parcela,
+
+   pessoa.nome AS pessoa_nome,
+   pessoa_endereco.logradouro AS pessoa_endereco_logradouro,
+   pessoa_endereco.numero AS pessoa_endereco_numero,
+   pessoa_endereco.complemento AS pessoa_endereco_complemento,
+   pessoa_endereco.bairro AS pessoa_endereco_bairro,
+   pessoa_endereco.cidade AS pessoa_endereco_cidade,
+   pessoa_endereco.uf AS pessoa_endereco_uf,
+   pessoa_endereco.cep AS pessoa_endereco_cep,
+   pessoa_endereco.fone AS pessoa_endereco_fone,
+   pessoa_endereco.principal AS pessoa_endereco_principal,
+
+   empresa.razao_social AS empresa_razao_social,
+   empresa.nome_fantasia AS empresa_nome_fantasia,
+   empresa.cnpj AS empresa_cnpj,
+   empresa.inscricao_estadual AS empresa_inscricao_estadual,
+   empresa.imagem_logotipo AS empresa_imagem_logotipo,
+   empresa_endereco.logradouro AS empresa_endereco_logradouro,
+   empresa_endereco.numero AS empresa_endereco_numero,
+   empresa_endereco.complemento AS empresa_endereco_complemento,
+   empresa_endereco.bairro AS empresa_endereco_bairro,
+   empresa_endereco.cidade AS empresa_endereco_cidade,
+   empresa_endereco.cep AS empresa_endereco_cep,
+   empresa_endereco.fone AS empresa_endereco_fone,
+   empresa_endereco.uf AS empresa_endereco_uf,
+   empresa.email AS empresa_email
+from fin_lancamento_receber l
 inner join fin_parcela_receber p on p.id_fin_lancamento_receber = l.id
-where l.id =  $P{id} ]]>
+INNER JOIN cliente cliente on l.id_cliente = cliente.id
+INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id
+INNER JOIN pessoa_endereco pessoa_endereco ON pessoa.id = pessoa_endereco.id_pessoa
+INNER JOIN empresa empresa ON l.id_empresa = empresa.id
+INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+where l.id =  $P{id}
+order by p.data_vencimento asc]]>
     </queryString>
-    <field name="id" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="id"/>
-    </field>
-    <field name="id_fin_documento_origem" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="id_fin_documento_origem"/>
-    </field>
-    <field name="id_empresa" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="id_empresa"/>
-    </field>
-    <field name="id_cliente" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="id_cliente"/>
-    </field>
-    <field name="quantidade_parcela" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="quantidade_parcela"/>
-    </field>
-    <field name="valor_total" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="valor_total"/>
-    </field>
-    <field name="valor_desconto_convenio" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="valor_desconto_convenio"/>
-    </field>
-    <field name="valor_a_receber" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="valor_a_receber"/>
-    </field>
-    <field name="data_lancamento" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="data_lancamento"/>
-    </field>
     <field name="numero_documento" class="java.lang.String">
         <property name="com.jaspersoft.studio.field.label" value="numero_documento"/>
     </field>
-    <field name="primeiro_vencimento" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="primeiro_vencimento"/>
-    </field>
-    <field name="taxa_comissao" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="taxa_comissao"/>
-    </field>
-    <field name="valor_comissao" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="valor_comissao"/>
-    </field>
-    <field name="intervalo_entre_parcelas" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="intervalo_entre_parcelas"/>
-    </field>
-    <field name="codigo_modulo_lcto" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="codigo_modulo_lcto"/>
-    </field>
-    <field name="mesclado_para" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="mesclado_para"/>
-    </field>
-    <field name="hash_modulo_lcto" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="hash_modulo_lcto"/>
-    </field>
-    <field name="COLUMN_18" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="id"/>
-    </field>
-    <field name="id_conta_caixa" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="id_conta_caixa"/>
-    </field>
-    <field name="id_fin_lancamento_receber" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="id_fin_lancamento_receber"/>
-    </field>
-    <field name="id_fin_status_parcela" class="java.lang.Integer">
-        <property name="com.jaspersoft.studio.field.label" value="id_fin_status_parcela"/>
+    <field name="data_lancamento" class="java.sql.Date"/>
+    <field name="quantidade_parcela" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.label" value="quantidade_parcela"/>
     </field>
     <field name="numero_parcela" class="java.lang.Integer">
         <property name="com.jaspersoft.studio.field.label" value="numero_parcela"/>
     </field>
-    <field name="data_emissao" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="data_emissao"/>
-    </field>
-    <field name="data_vencimento" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="data_vencimento"/>
-    </field>
-    <field name="desconto_ate" class="java.sql.Date">
-        <property name="com.jaspersoft.studio.field.label" value="desconto_ate"/>
-    </field>
-    <field name="valor" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="valor"/>
-    </field>
-    <field name="taxa_juro" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="taxa_juro"/>
-    </field>
-    <field name="taxa_multa" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="taxa_multa"/>
-    </field>
-    <field name="taxa_desconto" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="taxa_desconto"/>
-    </field>
-    <field name="valor_juro" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="valor_juro"/>
-    </field>
-    <field name="valor_multa" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="valor_multa"/>
-    </field>
-    <field name="valor_desconto" class="java.math.BigDecimal">
-        <property name="com.jaspersoft.studio.field.label" value="valor_desconto"/>
-    </field>
-    <field name="emitiu_boleto" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="emitiu_boleto"/>
-    </field>
-    <field name="boleto_nosso_numero" class="java.lang.String">
-        <property name="com.jaspersoft.studio.field.label" value="boleto_nosso_numero"/>
-    </field>
+    <field name="vecimento" class="java.sql.Date"/>
+    <field name="valor_parcela" class="java.math.BigDecimal"/>
+    <field name="pessoa_nome" class="java.lang.String"/>
+    <field name="pessoa_endereco_logradouro" class="java.lang.String"/>
+    <field name="pessoa_endereco_numero" class="java.lang.String"/>
+    <field name="pessoa_endereco_complemento" class="java.lang.String"/>
+    <field name="pessoa_endereco_bairro" class="java.lang.String"/>
+    <field name="pessoa_endereco_cidade" class="java.lang.String"/>
+    <field name="pessoa_endereco_uf" class="java.lang.String"/>
+    <field name="pessoa_endereco_cep" class="java.lang.String"/>
+    <field name="pessoa_endereco_fone" class="java.lang.String"/>
+    <field name="pessoa_endereco_principal" class="java.lang.String"/>
+    <field name="empresa_razao_social" class="java.lang.String"/>
+    <field name="empresa_nome_fantasia" class="java.lang.String"/>
+    <field name="empresa_cnpj" class="java.lang.String"/>
+    <field name="empresa_inscricao_estadual" class="java.lang.String"/>
+    <field name="empresa_imagem_logotipo" class="java.lang.String"/>
+    <field name="empresa_endereco_logradouro" class="java.lang.String"/>
+    <field name="empresa_endereco_numero" class="java.lang.String"/>
+    <field name="empresa_endereco_complemento" class="java.lang.String"/>
+    <field name="empresa_endereco_bairro" class="java.lang.String"/>
+    <field name="empresa_endereco_cidade" class="java.lang.String"/>
+    <field name="empresa_endereco_cep" class="java.lang.String"/>
+    <field name="empresa_endereco_fone" class="java.lang.String"/>
+    <field name="empresa_endereco_uf" class="java.lang.String"/>
+    <field name="empresa_email" class="java.lang.String"/>
     <detail>
         <band height="138" splitType="Stretch">
             <rectangle>
@@ -134,7 +109,7 @@ where l.id =  $P{id} ]]>
             </line>
             <image onErrorType="Blank">
                 <reportElement x="3" y="4" width="57" height="37" uuid="dd291425-a9e3-4051-9de9-d5d2773b17ec"/>
-                <imageExpression><![CDATA["C:/Users/Usuario/Pictures/imagens/padrao2.png"]]></imageExpression>
+                <imageExpression><![CDATA[$F{empresa_imagem_logotipo}]]></imageExpression>
             </image>
             <staticText>
                 <reportElement positionType="Float" x="66" y="3" width="32" height="9"
@@ -144,33 +119,33 @@ where l.id =  $P{id} ]]>
                 </textElement>
                 <text><![CDATA[Parcela]]></text>
             </staticText>
-            <staticText>
-                <reportElement positionType="Float" x="87" y="12" width="16" height="9"
-                               uuid="e9a0077c-a12d-4fd9-8dcb-826560f69980"/>
-                <textElement>
+            <textField>
+                <reportElement positionType="Float" x="66" y="12" width="60" height="9"
+                               uuid="49ed252b-8ac4-40d3-959b-dae161c0a1c7"/>
+                <textElement textAlignment="Center" markup="none">
                     <font size="7"/>
                 </textElement>
-                <text><![CDATA[1/10]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[$F{numero_parcela}+"/"+$F{quantidade_parcela}]]></textFieldExpression>
+            </textField>
             <line>
                 <reportElement x="66" y="21" width="60" height="1" uuid="8823a078-6ba7-45e5-9da0-94896249d3c5"/>
             </line>
             <staticText>
-                <reportElement positionType="Float" x="75" y="22" width="41" height="9"
+                <reportElement positionType="Float" x="75" y="22" width="45" height="9"
                                uuid="81c2d275-c096-486e-bd5e-d9614cb66082"/>
                 <textElement>
                     <font size="7"/>
                 </textElement>
                 <text><![CDATA[Vencimento]]></text>
             </staticText>
-            <staticText>
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement positionType="Float" x="75" y="32" width="41" height="9"
-                               uuid="d0b0063b-b407-4ae4-8a76-a8dba57b2060"/>
-                <textElement>
+                               uuid="d104d8e1-184e-411a-a229-8a7669b0fada"/>
+                <textElement markup="none">
                     <font size="7" isBold="true"/>
                 </textElement>
-                <text><![CDATA[01/01/2019]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[$F{vecimento}]]></textFieldExpression>
+            </textField>
             <staticText>
                 <reportElement positionType="Float" x="3" y="50" width="47" height="9"
                                uuid="08069d0b-0e4a-4388-b85e-c57e7bcb2065"/>
@@ -182,14 +157,14 @@ where l.id =  $P{id} ]]>
             <line>
                 <reportElement x="0" y="70" width="478" height="1" uuid="95c206e1-1e18-4d0d-bdf4-41af30cb953a"/>
             </line>
-            <staticText>
+            <textField>
                 <reportElement positionType="Float" x="3" y="59" width="47" height="9"
-                               uuid="c4d402aa-28de-4c25-b3ce-8749a068bd23"/>
-                <textElement>
+                               uuid="ed420877-de0a-4fed-ba1c-8e9542eba712"/>
+                <textElement markup="none">
                     <font size="7" isBold="true"/>
                 </textElement>
-                <text><![CDATA[2346345]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[$F{numero_documento}]]></textFieldExpression>
+            </textField>
             <staticText>
                 <reportElement positionType="Float" x="3" y="70" width="123" height="9"
                                uuid="f4d74cb3-0251-4d05-a505-456e73098e3e"/>
@@ -198,14 +173,14 @@ where l.id =  $P{id} ]]>
                 </textElement>
                 <text><![CDATA[Valor do Documento]]></text>
             </staticText>
-            <staticText>
+            <textField pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement positionType="Float" x="50" y="79" width="76" height="9"
-                               uuid="f8ae0022-80f1-4e27-bf67-4e9126c416c6"/>
-                <textElement textAlignment="Right">
+                               uuid="95fcf406-ef96-47ba-879a-20e189c23322"/>
+                <textElement textAlignment="Right" markup="none">
                     <font size="7" isBold="true"/>
                 </textElement>
-                <text><![CDATA[300,00]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[$F{valor_parcela}]]></textFieldExpression>
+            </textField>
             <line>
                 <reportElement x="0" y="91" width="131" height="1" uuid="8677c0ad-6bf7-4f2e-9195-effb39a36dd1"/>
             </line>
@@ -219,7 +194,7 @@ where l.id =  $P{id} ]]>
             </staticText>
             <image onErrorType="Blank">
                 <reportElement x="137" y="3" width="57" height="37" uuid="f762b1b1-262d-4700-b92b-d5d61d851963"/>
-                <imageExpression><![CDATA["C:/Users/Usuario/Pictures/imagens/padrao2.png"]]></imageExpression>
+                <imageExpression><![CDATA[$F{empresa_imagem_logotipo}]]></imageExpression>
             </image>
             <line>
                 <reportElement x="132" y="48" width="346" height="1" uuid="9624b560-2a47-4881-9990-881ee02a31ac"/>
@@ -241,30 +216,30 @@ where l.id =  $P{id} ]]>
                 </textElement>
                 <text><![CDATA[Parcela]]></text>
             </staticText>
-            <staticText>
+            <textField>
                 <reportElement positionType="Float" x="480" y="18" width="107" height="9"
-                               uuid="8a5c03db-01eb-4e02-918b-5c95b8660ef4"/>
-                <textElement textAlignment="Center">
+                               uuid="d8072edd-a45a-4326-9f19-2b12ff19e55e"/>
+                <textElement textAlignment="Center" markup="none">
                     <font size="7"/>
                 </textElement>
-                <text><![CDATA[1/10]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[$F{numero_parcela}+"/"+$F{quantidade_parcela}]]></textFieldExpression>
+            </textField>
             <staticText>
-                <reportElement positionType="Float" x="480" y="35" width="70" height="9"
+                <reportElement positionType="Float" x="480" y="35" width="106" height="9"
                                uuid="869becec-28e2-4eea-9c32-dd4fd82fc66b"/>
                 <textElement>
                     <font size="7"/>
                 </textElement>
                 <text><![CDATA[Valor do Documento]]></text>
             </staticText>
-            <staticText>
+            <textField pattern="#,##0.00" isBlankWhenNull="true">
                 <reportElement positionType="Float" x="510" y="46" width="76" height="9"
-                               uuid="1c8a2612-eff0-4f93-8856-2f20df05271f"/>
-                <textElement textAlignment="Right">
+                               uuid="52680da6-6188-4e2d-9cca-b4807ceb5011"/>
+                <textElement textAlignment="Right" markup="none">
                     <font size="7" isBold="true"/>
                 </textElement>
-                <text><![CDATA[300,00]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[$F{valor_parcela}]]></textFieldExpression>
+            </textField>
             <line>
                 <reportElement x="478" y="63" width="110" height="1" uuid="8005d703-7323-4aaa-9efe-755d20a47e49"/>
             </line>
@@ -287,22 +262,23 @@ where l.id =  $P{id} ]]>
                 </textElement>
                 <text><![CDATA[Sacado]]></text>
             </staticText>
-            <staticText>
+            <textField>
                 <reportElement positionType="Float" x="137" y="101" width="440" height="9"
-                               uuid="5f9dc13c-9f20-4b90-a7cf-c43ac5714b17"/>
-                <textElement>
+                               uuid="b228f496-4df6-4172-947f-78497ac9b860"/>
+                <textElement markup="none">
                     <font size="7"/>
                 </textElement>
-                <text><![CDATA[Nome do Meu Cliente -  CPF 111.111.111-11]]></text>
-            </staticText>
-            <staticText>
+                <textFieldExpression><![CDATA[$F{pessoa_nome}]]></textFieldExpression>
+            </textField>
+            <textField>
                 <reportElement positionType="Float" x="137" y="111" width="440" height="9"
-                               uuid="85985c0f-c843-4ee3-a099-6963196e34bb"/>
-                <textElement>
+                               uuid="336ea86c-f712-4adc-b5e0-65165177c0c2"/>
+                <textElement markup="none">
                     <font size="7"/>
                 </textElement>
-                <text><![CDATA[Rua do Cliente, 4321 - Casa Bairro Cliente  - centro/SE CEP49500-000]]></text>
-            </staticText>
+                <textFieldExpression>
+                    <![CDATA[$F{pessoa_endereco_logradouro}+","+$F{pessoa_endereco_numero}+" - "+$F{pessoa_endereco_bairro}+" "+$F{pessoa_endereco_cidade}+"/"+$F{pessoa_endereco_uf}+" CEP: "+$F{pessoa_endereco_cep}]]></textFieldExpression>
+            </textField>
             <staticText>
                 <reportElement positionType="Float" x="137" y="50" width="83" height="9"
                                uuid="a8cd31eb-ae89-49f9-bed3-f4ee2a3a8f76"/>
@@ -311,14 +287,14 @@ where l.id =  $P{id} ]]>
                 </textElement>
                 <text><![CDATA[Documento]]></text>
             </staticText>
-            <staticText>
+            <textField>
                 <reportElement positionType="Float" x="137" y="59" width="83" height="9"
-                               uuid="c4300129-c5df-4254-b823-594110db630d"/>
-                <textElement>
+                               uuid="74176647-3759-43bf-a746-e48203d57786"/>
+                <textElement markup="none">
                     <font size="7" isBold="true"/>
                 </textElement>
-                <text><![CDATA[2346345]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[$F{numero_documento}]]></textFieldExpression>
+            </textField>
             <staticText>
                 <reportElement positionType="Float" x="232" y="50" width="128" height="9"
                                uuid="94c388ec-12b7-411d-891d-d00f6fa3135a"/>
@@ -328,7 +304,7 @@ where l.id =  $P{id} ]]>
                 <text><![CDATA[Espécie]]></text>
             </staticText>
             <staticText>
-                <reportElement positionType="Float" x="361" y="51" width="117" height="9"
+                <reportElement positionType="Float" x="361" y="50" width="117" height="9"
                                uuid="5f30fcde-d5f8-468a-bdd2-a93fed3cb7c0"/>
                 <textElement textAlignment="Center">
                     <font size="7"/>
@@ -343,14 +319,14 @@ where l.id =  $P{id} ]]>
                 </textElement>
                 <text><![CDATA[R$]]></text>
             </staticText>
-            <staticText>
-                <reportElement positionType="Float" x="361" y="60" width="117" height="9"
-                               uuid="63314807-0c62-4d84-b6f6-843022304341"/>
-                <textElement textAlignment="Center">
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement positionType="Float" x="361" y="59" width="117" height="9"
+                               uuid="515b82fc-7e84-419d-822c-b6cae0b790ae"/>
+                <textElement textAlignment="Center" markup="none">
                     <font size="7" isBold="true"/>
                 </textElement>
-                <text><![CDATA[01/01/2019]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[$F{data_lancamento}]]></textFieldExpression>
+            </textField>
             <staticText>
                 <reportElement positionType="Float" x="137" y="73" width="333" height="9"
                                uuid="eeb016c3-aa42-4a4a-8618-fce1504a6b33"/>
@@ -367,38 +343,39 @@ where l.id =  $P{id} ]]>
                 </textElement>
                 <text><![CDATA[Cedente]]></text>
             </staticText>
-            <staticText>
+            <textField>
                 <reportElement positionType="Float" x="200" y="12" width="270" height="9"
-                               uuid="8f48787f-9cee-495a-beb1-af2054c4d4d9"/>
-                <textElement>
+                               uuid="e6e12ae7-494a-43a9-9952-5a1401201ec3"/>
+                <textElement markup="none">
                     <font size="7"/>
                 </textElement>
-                <text><![CDATA[Empresa X]]></text>
-            </staticText>
-            <staticText>
+                <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
+            </textField>
+            <textField>
                 <reportElement positionType="Float" x="200" y="21" width="270" height="9"
-                               uuid="0e607c95-1071-4ee2-80e6-93423b3ed0cd"/>
-                <textElement>
+                               uuid="5fb191db-49fe-4558-a396-2570c77f79fd"/>
+                <textElement markup="none">
                     <font size="7"/>
                 </textElement>
-                <text><![CDATA[CNPJ: 11.111.111/1111-11]]></text>
-            </staticText>
-            <staticText>
-                <reportElement positionType="Float" x="200" y="30" width="440" height="9"
-                               uuid="ec64ac59-21de-44e1-85e5-278203d3c169"/>
-                <textElement>
+                <textFieldExpression><![CDATA["CNPJ: "+$F{empresa_cnpj}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement positionType="Float" x="200" y="30" width="278" height="9"
+                               uuid="a6857899-871d-4bbb-9035-9128fcb90fe5"/>
+                <textElement markup="none">
                     <font size="7"/>
                 </textElement>
-                <text><![CDATA[Rua da Empresa, 4321 - Casa Bairro Cliente  - centro/SE CEP49500-000]]></text>
-            </staticText>
-            <staticText>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_endereco_logradouro}+","+$F{empresa_endereco_numero}+" - "+$F{empresa_endereco_bairro} +" - "+ $F{empresa_endereco_cidade}+"/"+$F{empresa_endereco_uf}+" CEP "+$F{empresa_endereco_cep}]]></textFieldExpression>
+            </textField>
+            <textField>
                 <reportElement positionType="Float" x="200" y="39" width="270" height="9"
-                               uuid="ade9ce06-d1d2-4907-b192-21826a4b3662"/>
-                <textElement>
+                               uuid="9a1443ad-f68b-4fc9-81b0-6e1ea9b00587"/>
+                <textElement markup="none">
                     <font size="7"/>
                 </textElement>
-                <text><![CDATA[79 99647 1910]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[$F{empresa_endereco_fone}]]></textFieldExpression>
+            </textField>
             <line>
                 <reportElement x="0" y="131" width="589" height="1" uuid="cbcc7646-666f-4d41-9a79-efcd79d6590c"/>
                 <graphicElement>

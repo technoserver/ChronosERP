@@ -70,6 +70,17 @@ public class ContasReceberRelatorioControll extends AbstractRelatorioControll im
 
     }
 
+    public void gerarCarner(int id) {
+
+        parametros = new HashMap<>();
+        parametros.put("id", id);
+
+        String caminhoRelatorio = "/relatorios/financeiro";
+        String nomeRelatorio = "carner.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "carner.pdf");
+    }
+
 
     public Date getVencimentoDe() {
         return vencimentoDe;
