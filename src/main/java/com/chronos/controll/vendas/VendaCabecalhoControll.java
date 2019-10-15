@@ -503,6 +503,13 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         return listaCliente;
     }
 
+    public void clienteSelecionado(SelectEvent event) {
+        Cliente cliente = (Cliente) event.getObject();
+        getObjeto().setCliente(cliente);
+        pessoaCliente = new PessoaCliente();
+        pessoaCliente.setNome(cliente.getPessoa().getNome());
+    }
+
     public List<Vendedor> getListaVendedor(String nome) {
         List<Vendedor> listaVendedor = new ArrayList<>();
         try {

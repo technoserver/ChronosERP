@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:erp="http://java.sun.com/jsf/composite/components"
+      xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>Cadastro rápido de cliente</title>
+
+    <h:outputScript library="primefaces" name="jquery/jquery.js"/>
+    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+</h:head>
+<h:body>
+    <h:form>
+        <div class="ui-fluid">
+            <div class="ui-g">
+                <erp:campoTexto idComponente="nome"
+                                styleClass="ui-g-10"
+                                label="Nome"
+                                tamanhoMaximo="100"
+                                requerido="true"
+                                nomeAtributo="#{cadastroRapidoClienteControll.cliente.nome}"/>
+
+                <h:panelGroup layout="block" class="ui-g-2"
+                >
+                    <h:outputLabel value="Tipo"
+                                   for="pessoaTipo"/>
+                    <h:selectOneMenu id="pessoaTipo"
+                                     class="form-control"
+                                     value="#{cadastroRapidoClienteControll.cliente.tipo}">
+                        <f:selectItems value="#{cadastroRapidoClienteControll.tipoPessoa}"/>
+                        <p:ajax event="change"
+                                process="@this"
+                        />
+
+                    </h:selectOneMenu>
+                </h:panelGroup>
+            </div>
+            <p:outputPanel id="panelPessoaEndereco">
+                <div class="ui-g">
+                    <erp:campoTexto styleClass="col-xs-10 col-sm-8 col-md-10"
+                                    idComponente="pessoaEnderecoLogradouro" label="Logradouro"
+                                    nomeAtributo="#{cadastroRapidoClienteControll.cliente.logradouro}"
+                                    tamanhoMaximo="60"
+                                    requerido="true"/>
+                    <erp:campoTexto styleClass="col-xs-2 col-sm-2 col-md-2"
+                                    idComponente="pessoaEnderecoNumero" label="Número"
+                                    nomeAtributo="#{cadastroRapidoClienteControll.cliente.numero}"
+                                    tamanhoMaximo="10"
+                                    requerido="true"/>
+                </div>
+                <div class="ui-g">
+                    <erp:campoTexto styleClass="col-xs-4 col-sm-5 col-md-5"
+                                    idComponente="pessoaEnderecoComplemento" label="Complemento"
+                                    nomeAtributo="#{cadastroRapidoClienteControll.cliente.complemento}"
+                                    tamanhoMaximo="60"/>
+                    <erp:campoTexto styleClass="col-xs-4 col-sm-5 col-md-5"
+                                    idComponente="pessoaEnderecoBairro" label="Bairro"
+                                    nomeAtributo="#{cadastroRapidoClienteControll.cliente.bairro}"
+                                    tamanhoMaximo="60"
+                                    requerido="true"/>
+
+                    <erp:campoMascara styleClass="col-xs-4 col-sm-2 col-md-2"
+                                      idComponente="pessoaEnderecoCep" label="CEP"
+                                      nomeAtributo="#{cadastroRapidoClienteControll.cliente.cep}"
+                                      mascara="99.999-999"
+                                      requerido="true"/>
+
+                </div>
+                <div class="ui-g">
+
+
+                    <div class="col-xs-2 col-sm-2 col-md-2">
+                        <h:outputLabel value="UF :" for="pessoaEnderecoUf"/>
+                        <h:selectOneMenu value="#{cadastroRapidoClienteControll.cliente.uf}"
+                                         required="true"
+                                         class="form-control" id="pessoaEnderecoUf">
+
+                            <f:selectItems var="uf" value="#{cadastroRapidoClienteControll.estado}"/>
+                            <p:ajax event="valueChange"
+                                    process="@this" update="municipio"
+                                    listener="#{cadastroRapidoClienteControll.instanciaCidade()}"
+                            />
+                        </h:selectOneMenu>
+                    </div>
+                    <div class="col-xs-10 col-sm-10 col-md-10">
+                        <p:outputLabel value="Municipio" for="municipio"/>
+                        <br/>
+                        <p:autoComplete id="municipio" value="#{cadastroRapidoClienteControll.cidade}"
+                                        completeMethod="#{cadastroRapidoClienteControll.getMunicipios}"
+                                        var="municipio" itemLabel="#{municipio.getNome()}"
+                                        itemValue="#{municipio}" converter="defaultConverter"
+                                        forceSelection="true" minQueryLength="3" maxResults="10"
+                                        emptyMessage="Nenhum registro encontrado" style="width: 100%"
+                                        required="true">
+                            <p:ajax event="itemSelect" process="@this"
+                                    listener="#{cadastroRapidoClienteControll.atualizarCodIbge()}"/>
+                        </p:autoComplete>
+                    </div>
+
+
+                </div>
+            </p:outputPanel>
+            <hr/>
+
+        </div>
+        <div class="ui-g">
+            <div class="col-xs-12 text-center">
+                <p:commandButton value="Salvar" action="#{cadastroRapidoClienteControll.salvar}"/>
+            </div>
+
+        </div>
+    </h:form>
+</h:body>
+</html>

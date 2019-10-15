@@ -57,6 +57,10 @@ public class SituacaoForCli implements Serializable {
     public SituacaoForCli() {
     }
 
+    public SituacaoForCli(Integer id) {
+        this.id = id;
+    }
+
     public SituacaoForCli(Integer id, String nome, String descricao) {
         this.id = id;
         this.nome = nome;

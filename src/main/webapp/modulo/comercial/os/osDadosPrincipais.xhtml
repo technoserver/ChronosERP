@@ -40,17 +40,34 @@
                             emptyMessage="Nenhum registro encontrado"/>
         </div>
         <div class="col-xs-12 col-sm-4 col-md-4">
-            <p:outputLabel value="Cliente" for="osAberturaCliente"/>
-            <br/>
-            <p:autoComplete id="osAberturaCliente"
-                            value="#{osAberturaControll.objeto.cliente}"
-                            completeMethod="#{osAberturaControll.getListaCliente}"
-                            var="cliente" itemLabel="#{cliente.pessoa.nome}"
-                            itemValue="#{cliente}"
-                            converter="defaultConverter"
-                            forceSelection="true" minQueryLength="3" maxResults="10"
-                            required="true" style="width: 100%"
-                            emptyMessage="Nenhum registro encontrado"/>
+
+            <p:outputLabel value="Cliente" for="cliente"/>
+            <div class="field-action">
+                <p:autoComplete id="cliente"
+                                value="#{osAberturaControll.objeto.cliente}"
+                                completeMethod="#{osAberturaControll.getListaCliente}"
+                                var="objeto" itemLabel="#{objeto.pessoa.nome}" itemValue="#{objeto}"
+                                queryDelay="500"
+                                style="width: 100%"
+                                converter="defaultConverter" forceSelection="true"
+                                minQueryLength="3" maxResults="10" required="true"
+                                emptyMessage="Nenhum registro encontrado">
+                </p:autoComplete>
+                <div class="field-action__icon">
+                    <p:commandLink title="Add novo cliente" style="font-size: 20px;color: #00acac"
+                                   action="#{cadastroRapidoClienteControll.abrirDialog}"
+                                   process="@this" update="@none"
+                    >
+                        <p:ajax event="dialogReturn" listener="#{osAberturaControll.clienteSelecionado}"
+                                process="@this" update="cliente"/>
+                        <i class="fa fa-plus-circle"></i>
+                    </p:commandLink>
+                </div>
+
+
+            </div>
+
+
         </div>
 
     </div>

@@ -95,18 +95,38 @@
                     </h:panelGroup>
 
                     <div class="row">
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                                          label="Cliente"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{vendaCabecalhoControll}"
-                                          completeMethod="getListaCliente"
-                                          nomeAtributo="#{vendaCabecalhoControll.pessoaCliente}"
-                                          idComponente="vendaCabecalhoCliente">
-                            <p:ajax event="itemSelecionado"
-                                    listener="#{vendaCabecalhoControll.definirEnderecoEntrega}"
-                            />
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <p:outputLabel value="Cliente" for="cliente"/>
+                            <div class="field-action">
+                                <p:autoComplete id="cliente"
+                                                value="#{vendaCabecalhoControll.pessoaCliente}"
+                                                completeMethod="#{vendaCabecalhoControll.getListaCliente}"
+                                                var="objeto" itemLabel="#{objeto.nome}" itemValue="#{objeto}"
+                                                queryDelay="500"
+                                                style="width: 100%"
+                                                converter="defaultConverter" forceSelection="true"
+                                                minQueryLength="3" maxResults="10" required="true"
+                                                emptyMessage="Nenhum registro encontrado">>
+                                    <p:ajax event="itemSelect"
+                                            listener="#{vendaCabecalhoControll.definirEnderecoEntrega}"/>
 
-                        </erp:autoComplete>
+                                </p:autoComplete>
+                                <div class="field-action__icon">
+                                    <p:commandLink title="Add novo cliente" style="font-size: 20px;color: #00acac"
+                                                   action="#{cadastroRapidoClienteControll.abrirDialog}"
+                                                   process="@this" update="@none"
+                                    >
+                                        <p:ajax event="dialogReturn"
+                                                listener="#{vendaCabecalhoControll.clienteSelecionado}"
+                                                process="@this" update="cliente"/>
+                                        <i class="fa fa-plus-circle"></i>
+                                    </p:commandLink>
+                                </div>
+
+
+                            </div>
+
+                        </div>
 
                         <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
                                           label="Vendedor"
