@@ -302,6 +302,11 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         return listaCliente;
     }
 
+    public void clienteSelecionado(SelectEvent event) {
+        Cliente cliente = (Cliente) event.getObject();
+        getObjeto().setCliente(cliente);
+    }
+
     public List<Produto> getListaProduto(String nome) {
         List<Produto> listaProduto = new ArrayList<>();
         try {
