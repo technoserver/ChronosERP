@@ -235,7 +235,10 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 super.doEdit();
                 OsAbertura os = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
                 os.getTecnico().setNome(os.getTecnico().getColaborador().getPessoa().getNome());
-                os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
+                if (os.getVendedor() != null) {
+                    os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
+                }
+
 
                 setObjeto(os);
                 totalReceber = os.getValorTotal();
@@ -282,6 +285,9 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         try {
             OsAbertura os = isTelaGrid() ? dataModel.getRowData(getObjetoSelecionado().getId().toString()) : getObjeto();
 
+            if (os.getListaOsProdutoServico().isEmpty()) {
+                throw new ChronosException("Não foram informado produtos ou serviço para a OS");
+            }
             osService.encerrar(os);
             setTelaGrid(true);
             Mensagem.addInfoMessage("OS Encerrada com sucesso");
@@ -298,6 +304,10 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         try {
 
             OsAbertura os = isTelaGrid() ? dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class) : getObjeto();
+
+            if (os.getListaOsProdutoServico().isEmpty()) {
+                throw new ChronosException("Não foram informado produtos ou serviço para a OS");
+            }
 
             ModeloDocumento modelo = codigoModelo.equals("65") ? ModeloDocumento.NFCE : ModeloDocumento.NFE;
 
