@@ -69,7 +69,10 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
                 efetuarCalculos();
                 for (EstoqueReajusteDetalhe e : getObjeto().getListaEstoqueReajusteDetalhe()) {
                     estoqueRepository.ajustarEstoqueAndVerificadoEmpresa(empresa.getId(), e.getProduto().getId(), e.getQuantidadeReajuste());
-                    estoqueRepository.atualizarPrecoProduto(e.getProduto().getId(), e.getValorReajuste());
+                    if (e.getValorReajuste() != null && e.getValorReajuste().signum() > 0) {
+                        estoqueRepository.atualizarPrecoProduto(e.getProduto().getId(), e.getValorReajuste());
+                    }
+
                 }
                 super.salvar();
             }
@@ -143,17 +146,17 @@ public class EstoqueReajusteCabecalhoControll extends AbstractControll<EstoqueRe
                 throw new Exception("Nenhum item para calcular.");
 
             }
-            if (getObjeto().getPorcentagem() == null) {
-                throw new Exception("Percentual de reajuste não definido.");
-            } else {
+
                 String tipo = getObjeto().getTipoReajuste();
                 getObjeto().getListaEstoqueReajusteDetalhe().stream().forEach(r -> {
                     if (getObjeto().getPorcentagem() != null && getObjeto().getPorcentagem().signum() > 0) {
                         r.setValorReajuste(calcularReajuste(r.getValorOriginal(), tipo));
+                    } else {
+                        r.setValorReajuste(r.getValorOriginal());
                     }
 
                 });
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro.", e);
