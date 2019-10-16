@@ -179,6 +179,19 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoVendas.pdf");
     }
 
+    public void imprimirLucratividade() {
+        parametros = new HashMap<>();
+        parametros.put("peridoInicial", dataInicial);
+        parametros.put("periodoFinal", dataFinal);
+        parametros.put("idempresa", empresa.getId());
+
+
+        String caminhoRelatorio = "/relatorios/vendas";
+        String nomeRelatorio = "lucratividade.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "lucratividade.pdf");
+    }
+
     public void imprimirRanckProdutos() {
         parametros = new HashMap<>();
         parametros.put("dataInicial", dataInicial);
