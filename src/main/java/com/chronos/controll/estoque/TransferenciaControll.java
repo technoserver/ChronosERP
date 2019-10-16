@@ -62,7 +62,7 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
             listaEmpresas = new LinkedHashMap<>();
             listaEmpresas.putAll(empresas.stream()
                     .collect(Collectors.toMap((Empresa::getRazaoSocial), Empresa::getId)));
-            getObjeto().setColaborador(usuario.getColaborador());
+            getObjeto().setColaborador(new Colaborador(usuario.getIdcolaborador()));
             getObjeto().setEmpresaOrigem(empresa);
             setTelaGrid(false);
         } catch (Exception ex) {

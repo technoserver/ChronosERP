@@ -48,7 +48,9 @@ public class PdvMovimentoControll implements Serializable {
     private PdvMovimento movimento;
     private PdvOperador operador;
     private PdvTurno turno;
+    private PdvCaixa caixa;
     private List<PdvTurno> turnos;
+    private List<PdvCaixa> Caixas;
 
     private BigDecimal suprimentos;
     private BigDecimal sangria;
@@ -169,7 +171,7 @@ public class PdvMovimentoControll implements Serializable {
     public void confimarMovimento() {
 
         try {
-            service.iniciarMovimento(empresa, suprimentos, turno, userOperador, senhaOperador);
+            service.iniciarMovimento(empresa, suprimentos, turno, caixa);
             telaGrid = true;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -194,11 +196,11 @@ public class PdvMovimentoControll implements Serializable {
 
         movimento = service.verificarMovimento(empresa);
         turnos = pdvTurnoRepository.getAll(PdvTurno.class);
-
+        Caixas = caixaRepository.getEntitys(PdvCaixa.class, new Object[]{"codigo", "nome"});
 
         caixaDomain = new LinkedHashMap<>();
         caixaDomain.put("Todos", 0);
-        caixaDomain.putAll(caixaRepository.getEntitys(PdvCaixa.class, new Object[]{"codigo", "nome"}).stream()
+        caixaDomain.putAll(Caixas.stream()
                 .collect(Collectors.toMap(PdvCaixa::getNome, PdvCaixa::getId)));
 
         operadorDomain = new LinkedHashMap<>();
@@ -383,5 +385,21 @@ public class PdvMovimentoControll implements Serializable {
 
     public void setIdcaixa(int idcaixa) {
         this.idcaixa = idcaixa;
+    }
+
+    public PdvCaixa getCaixa() {
+        return caixa;
+    }
+
+    public void setCaixa(PdvCaixa caixa) {
+        this.caixa = caixa;
+    }
+
+    public List<PdvCaixa> getCaixas() {
+        return Caixas;
+    }
+
+    public void setCaixas(List<PdvCaixa> caixas) {
+        Caixas = caixas;
     }
 }

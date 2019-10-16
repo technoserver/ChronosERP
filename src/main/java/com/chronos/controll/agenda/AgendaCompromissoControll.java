@@ -3,6 +3,7 @@ package com.chronos.controll.agenda;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.AgendaCategoriaCompromisso;
 import com.chronos.modelo.entidades.AgendaCompromisso;
+import com.chronos.modelo.entidades.Colaborador;
 import com.chronos.repository.Repository;
 import com.chronos.service.cadastros.AgendaService;
 import org.primefaces.event.SelectEvent;
@@ -58,7 +59,7 @@ public class AgendaCompromissoControll extends AbstractControll<AgendaCompromiss
     public void doCreate() {
         super.doCreate();
         recorrente = 0;
-        getObjeto().setColaborador(usuario.getColaborador());
+        getObjeto().setColaborador(new Colaborador(usuario.getIdcolaborador()));
 
     }
 

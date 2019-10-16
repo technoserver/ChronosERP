@@ -1,5 +1,6 @@
 package com.chronos.service.financeiro;
 
+import com.chronos.dto.UsuarioDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
@@ -63,32 +64,28 @@ public class MovimentoService implements Serializable {
     }
 
     @Transactional
-    public void iniciarMovimento(Empresa empresa, BigDecimal valorSuprimento, PdvTurno turno, String operador, String senha) throws Exception {
+    public void iniciarMovimento(Empresa empresa, BigDecimal valorSuprimento, PdvTurno turno, PdvCaixa caixa) throws Exception {
+
+
+        UsuarioDTO user = FacesUtil.getUsuarioSessao();
+
+        if (user.getOperador() == null) {
+            throw new ChronosException("É preciso que o usuário esteja definido como operador de caixa");
+        }
+
+        PdvMovimento movimentoAberto = pesquisarMovimento(user.getOperador().getId());
+
+        if (movimentoAberto != null) {
+            throw new ChronosException("Já existe movimento aberto para esse operador");
+        }
 
         movimento = new PdvMovimento();
         movimento.setEmpresa(empresa);
 
 
-        PdvConfiguracao conf = repositoryConf.get(PdvConfiguracao.class, "empresa.id", empresa.getId(), new Object[]{"pdvCaixa"});
-
-        if (conf == null) {
-            throw new ChronosException("Configuracoes para o pdv não definidas");
-        } else if (conf.getPdvCaixa() == null) {
-            throw new ChronosException("Caixa não definido");
-        }
-
-        List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro("login", operador));
-        filtros.add(new Filtro("senha", senha));
-        PdvOperador pdvOperador = pdvOperadorRepository.get(PdvOperador.class, filtros);
-
-        if (pdvOperador == null) {
-            throw new ChronosException("Operador não localizado");
-        }
-
-        movimento.setPdvCaixa(conf.getPdvCaixa());
-        movimento.setPdvOperador(pdvOperador);
-        movimento.setIdGerenteSupervisor(pdvOperador.getId());
+        movimento.setPdvCaixa(caixa);
+        movimento.setPdvOperador(new PdvOperador(user.getOperador().getId()));
+        movimento.setIdGerenteSupervisor(user.getOperador().getId());
         movimento.setPdvTurno(turno);
         movimento.setDataAbertura(new Date());
         movimento.setHoraAbertura(FormatValor.getInstance().formatarHora(new Date()));
@@ -178,29 +175,32 @@ public class MovimentoService implements Serializable {
 
 
         if (movimento == null) {
-            conf = repositoryConf.get(PdvConfiguracao.class, "empresa.id", empresa.getId(), new Object[]{"pdvCaixa"});
 
-            if (conf == null) {
-                throw new ChronosException("Configuracoes para o pdv não definidas");
-            } else if (conf.getPdvCaixa() == null) {
-                throw new ChronosException("Caixa não definido");
+            UsuarioDTO user = FacesUtil.getUsuarioSessao();
+
+            if (user.getOperador() == null) {
+                return null;
             }
 
-            List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro("statusMovimento", "A"));
-            filtros.add(new Filtro("pdvCaixa.id", conf.getPdvCaixa().getId()));
-            Object[] atributos;
-            atributos = new Object[]{"idGerenteSupervisor", "dataAbertura", "horaAbertura", "dataFechamento",
-                    "horaFechamento", "totalSuprimento", "totalSangria", "totalVenda", "totalDesconto", "totalAcrescimo",
-                    "totalFinal", "totalRecebido", "totalTroco", "totalCancelado", "statusMovimento", "empresa.id",
-                    "pdvCaixa.id", "pdvCaixa.codigo", "pdvOperador.id", "pdvTurno.id"};
-            movimento = repository.get(PdvMovimento.class, filtros, atributos);
+            movimento = pesquisarMovimento(user.getOperador().getId());
 
             FacesUtil.setMovimento(movimento);
 
         }
 
         return movimento;
+    }
+
+    private PdvMovimento pesquisarMovimento(Integer idoperador) {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("statusMovimento", "A"));
+        filtros.add(new Filtro("pdvOperador.id", idoperador));
+        Object[] atributos;
+        atributos = new Object[]{"idGerenteSupervisor", "dataAbertura", "horaAbertura", "dataFechamento",
+                "horaFechamento", "totalSuprimento", "totalSangria", "totalVenda", "totalDesconto", "totalAcrescimo",
+                "totalFinal", "totalRecebido", "totalTroco", "totalCancelado", "statusMovimento", "empresa.id",
+                "pdvCaixa.id", "pdvCaixa.codigo", "pdvOperador.id", "pdvTurno.id"};
+        return repository.get(PdvMovimento.class, filtros, atributos);
     }
 
 

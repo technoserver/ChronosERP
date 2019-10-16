@@ -198,7 +198,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         if (usuario.getAdministrador().equals("S")) {
             List<Empresa> empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
 
-            if (empresas.isEmpty() && empresas.size() > 2) {
+            if (!empresas.isEmpty() && empresas.size() > 1) {
                 empresas.forEach(e -> {
                     listaEmpresas.add(e);
                 });
@@ -208,7 +208,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         } else {
             List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
 
-            if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 2) {
+            if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 1) {
 
                 for (EmpresaPessoa emp : empresaPessoas) {
                     listaEmpresas.add(emp.getEmpresa());
