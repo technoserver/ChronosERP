@@ -79,6 +79,9 @@ public class ProdutoService implements Serializable {
                 if (produto.getId() == null) {
 
                     produto = produtoRepository.atualizar(produto);
+                    if (empresas.isEmpty()) {
+                        empresas.add(FacesUtil.getEmpresaUsuario());
+                    }
                     gerarEmpresaProduto(produto, empresas);
 
                 } else {

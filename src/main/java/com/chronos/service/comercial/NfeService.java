@@ -1050,6 +1050,15 @@ public class NfeService implements Serializable {
         nfe.setEmitente(emitente);
     }
 
+    @Transactional
+    public void duplicarNfe(NfeCabecalho nfe) throws ChronosException {
+        if (nfe.getVendaCabecalho() != null) {
+            throw new ChronosException("Está NF-e possui vinculo com uma venda");
+        }
+
+
+    }
+
     private void definirFormaPagamento(NfeCabecalho nfe, TipoPagamento tipoPagamento) {
         NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
         nfeFormaPagamento.setTipoPagamento(tipoPagamento);
