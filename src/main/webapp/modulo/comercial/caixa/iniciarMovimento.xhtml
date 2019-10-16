@@ -21,11 +21,15 @@
             </div>
         </div>
         <div class="text-center  row">
-            <div class="col-sm-offset-1 col-md-offset-1 col-lg-offset-1 col-sm-4 col-md-4 col-lg-4">
+            <div class="col-sm-4 col-md-4 col-lg-4">
 
                 <h3 class="margin-top-0">DISPONÍVEL EM CAIXA</h3>
                 <p:focus context="CaixaValor"/>
                 <p:inputNumber id="CaixaValor" value="#{pdvMovimentoControll.suprimentos}"/>
+
+
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
                 <h3 class="margin-top-0">Turno</h3>
                 <h:selectOneMenu class="form-control"
                                  required="true"
@@ -35,34 +39,22 @@
                     <f:selectItems value="#{pdvMovimentoControll.turnos}" var="obj" itemValue="#{obj}"
                                    itemLabel="#{obj.descricao}"/>
                 </h:selectOneMenu>
-
             </div>
-            <div class="col-xs-12 col-sm-6 col-md-6">
-                <div class="row">
-                    <div class="col-xs-12 col-sm-6 col-md-6">
-                        <p:outputLabel value="OPERADOR" for="operador" style="font-size: 24px"/>
-                        <p:inputText placeholder="usuario"
-                                     id="operador"
-                                     required="true"
-                                     value="#{pdvMovimentoControll.userOperador}"/>
-                    </div>
-                    <div class="col-xs-12 col-sm-6 col-md-6">
-                        <p:outputLabel value="SENHA" for="senhaOperador" style="font-size: 24px"/>
-                        <p:password placeholder="senha"
-                                    id="senhaOperador"
-                                    required="true"
-                                    value="#{pdvMovimentoControll.senhaOperador}"/>
-                    </div>
-                </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+
+                <h3 class="margin-top-0">Caixa</h3>
+                <h:selectOneMenu class="form-control"
+                                 required="true"
+                                 value="#{pdvMovimentoControll.caixa}"
+                                 converter="defaultConverter"
+                                 id="caixa">
+                    <f:selectItems value="#{pdvMovimentoControll.caixas}" var="obj" itemValue="#{obj}"
+                                   itemLabel="#{obj.nome}"/>
+                </h:selectOneMenu>
             </div>
 
-
-            <div class="margin-top-5px margin-bottom-10px col-sm-12 col-md-12 col-lg-12">
-
-
-            </div>
         </div>
-        <div class="text-center  row">
+        <div class="text-center  row m-t">
             <div class="col-sm-offset-4 col-md-offset-4 col-lg-offset-4 col-sm-4 col-md-4 col-lg-4">
                 <h:commandLink class="btn btn-lg btn-success"
                                action="#{pdvMovimentoControll.confimarMovimento}"

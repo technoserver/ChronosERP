@@ -235,17 +235,17 @@
                                  sortOrder="DESCENDING"
                                  class="js-data-table">
 
-                        <p:column headerText="Caixa" width="80" sortBy="#{row.pdvCaixa.codigo}">
+                        <p:column headerText="Caixa" width="100" sortBy="#{row.pdvCaixa.codigo}">
                             <h:outputLabel value="#{row.pdvCaixa.codigo}"/>
                         </p:column>
 
-                        <p:column headerText="Abertura" width="110" sortBy="#{row.dataAbertura}"
+                        <p:column headerText="Abertura" width="120" sortBy="#{row.dataAbertura}"
                                   styleClass="text-center">
                             <h:outputLabel value="#{row.dataAbertura}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Fechamento" width="135" sortBy="#{row.dataFechamento}"
+                        <p:column headerText="Fechamento" width="160" sortBy="#{row.dataFechamento}"
                                   styleClass="text-center">
                             <h:outputLabel value="#{row.dataFechamento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
