@@ -77,7 +77,7 @@ public class ProdutoService implements Serializable {
                 }
 
                 if (produto.getId() == null) {
-
+                    BigDecimal controle = produto.getControle();
                     produto = produtoRepository.atualizar(produto);
 
                     if (empresas == null) {
@@ -88,7 +88,7 @@ public class ProdutoService implements Serializable {
                     if (empresas.isEmpty()) {
                         empresas.add(FacesUtil.getEmpresaUsuario());
                     }
-
+                    produto.setControle(controle);
                     gerarEmpresaProduto(produto, empresas);
 
                 } else {
