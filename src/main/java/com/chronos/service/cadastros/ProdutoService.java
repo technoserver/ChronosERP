@@ -79,9 +79,16 @@ public class ProdutoService implements Serializable {
                 if (produto.getId() == null) {
 
                     produto = produtoRepository.atualizar(produto);
+
+                    if (empresas == null) {
+                        empresas = new ArrayList<>();
+                        empresas.add(FacesUtil.getEmpresaUsuario());
+                    }
+
                     if (empresas.isEmpty()) {
                         empresas.add(FacesUtil.getEmpresaUsuario());
                     }
+
                     gerarEmpresaProduto(produto, empresas);
 
                 } else {
@@ -407,7 +414,7 @@ public class ProdutoService implements Serializable {
             EmpresaProduto produtoEmpresa = new EmpresaProduto();
             produtoEmpresa.setEmpresa(emp);
             produtoEmpresa.setProduto(produto);
-
+            produtoEmpresa.setEstoqueVerificado(produto.getControle());
             empresaProdutoRepository.salvar(produtoEmpresa);
 
         }
