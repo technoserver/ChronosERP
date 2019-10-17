@@ -574,6 +574,11 @@
                                           idComponente="produtoGrade"
                                           requerido="false"
                                           id="campoprodutoGrade"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                          idComponente="controle"
+                                          label="Qtde Est. Verificado"
+                                          rendered="#{empty produtoControll.objeto.id}"
+                                          nomeAtributo="#{produtoControll.objeto.controle}"/>
                     </div>
                     <div class="row">
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
