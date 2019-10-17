@@ -88,7 +88,7 @@ public class OsAbertura implements Serializable {
     private PdvMovimento movimento;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OsEvolucao> listaOsEvolucao;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OsProdutoServico> listaOsProdutoServico;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OsAberturaEquipamento> listaOsAberturaEquipamento;

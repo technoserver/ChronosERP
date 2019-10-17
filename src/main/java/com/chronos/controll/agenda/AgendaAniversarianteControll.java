@@ -75,7 +75,7 @@ public class AgendaAniversarianteControll extends AbstractControll<Colaborador> 
             }
             calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
-        service.definirEventoColaborador(usuario.getColaborador().getId()).forEach(e -> {
+        service.definirEventoColaborador(usuario.getIdcolaborador()).forEach(e -> {
             eventModel.addEvent(e);
         });
 

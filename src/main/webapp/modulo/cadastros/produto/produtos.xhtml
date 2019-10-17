@@ -232,6 +232,14 @@
             <p:tabView id="tabProduto" activeIndex="#{produtoControll.activeTabIndex}">
                 <p:tab title="Dados Principais" id="dadosPrincipais">
                     <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="id" label="Código"
+                                        nomeAtributo="#{produtoControll.objeto.id}"
+                                        tamanhoMaximo="9"
+                                        rendered="#{not empty produtoControll.objeto.id}"
+                                        somenteLeitura="true"/>
+                    </div>
+                    <div class="row">
 
                         <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                         idComponente="produtoNome" label="Nome"
@@ -398,15 +406,25 @@
                             </h:selectOneMenu>
                         </div>
 
-                        <erp:campoSelect itens="#{produtoControll.listaEmpresas}"
-                                         styleClass="col-xs-12 col-sm-6 col-md-6"
-                                         idComponente="empresas"
-                                         label="Selecione a empresa no qual pretende cadastra o produto"
-                                         rendered="#{produtoControll.listaEmpresas.size() gt 1}"
-                                         nomeAtributo="#{produtoControll.idempresa}"/>
-
 
                     </div>
+
+
+                    <h:panelGroup layout="block" id="panelEmpresas">
+                        <h:panelGroup layout="block" styleClass="m-t" rendered="#{!produtoControll.listaEmpresaEmpty}">
+                            <erp:separador label="Selecione as empresas nos quais o produto será cadastrado"/>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p:selectManyCheckbox id="empresas" value="#{produtoControll.empresasSelecionada}"
+                                                          layout="responsive" columns="3">
+                                        <f:selectItems value="#{produtoControll.listaEmpresas}" var="obj"
+                                                       itemLabel="#{obj.razaoSocial}" itemValue="#{obj}"/>
+                                    </p:selectManyCheckbox>
+                                </div>
+                            </div>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
                     <div class="row">
 
                         <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"

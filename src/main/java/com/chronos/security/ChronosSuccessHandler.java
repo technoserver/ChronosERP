@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -57,17 +58,27 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
             Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
             UsuarioRepository dao = CDIServiceLocator.getBean(UsuarioRepository.class);
-            assert dao != null;
-            UsuarioDTO user = dao.getUsuarioDTO(usuarioSistema.getUsername());
-            Papel papel = dao.getPapelFuncao(user.getId());
 
-            if (papel.getAcessoCompleto().equals("S") || user.getAdministrador().equals("S")) {
+            UsuarioDTO usr = dao.getUsuarioDTO(usuarioSistema.getUsername());
+
+            if (usr == null) {
+                throw new UsernameNotFoundException("Usuário e/ou senha incorretos");
+            }
+
+            usr.setStatusTenant(usuarioSistema.getUsuario().getStatus());
+            usr.setTenant(usuarioSistema.getUsuario().getNomeTenant());
+            usr.setIdtenant(usr.getIdtenant());
+
+
+            Papel papel = dao.getPapelFuncao(usr.getId());
+
+            if (papel.getAcessoCompleto().equals("S") || usr.getAdministrador().equals("S")) {
 
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
             }
 
 
-            if (!usuarioSistema.getUsuario().getStatus().equals("A")) {
+            if (!usr.getStatusTenant().equals("A")) {
                 authorities.add(new SimpleGrantedAuthority("ROLE_INADIPLENTE"));
             } else {
                 authorities.add(new SimpleGrantedAuthority("ROLE_ADIMPLENTE"));
@@ -99,7 +110,7 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 
             Repository<RestricaoSistema> restricaoSistemaRepository = CDIServiceLocator.getBean(Repository.class);
 
-            RestricaoSistema restricao = restricaoSistemaRepository.get(RestricaoSistema.class, "usuario.id", user.getId());
+            RestricaoSistema restricao = restricaoSistemaRepository.get(RestricaoSistema.class, "usuario.id", usr.getId());
 
             restricaoSistema = restricao != null ? restricao : new RestricaoSistema();
 
@@ -107,11 +118,11 @@ public class ChronosSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 
             parametro = parametroRepository.getEntitys(AdmParametro.class).stream().findFirst().orElse(null);
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(user.getLogin(), user.getSenha(), authorities);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(usr.getLogin(), usr.getSenha(), authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
 
-            return user;
+            return usr;
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new RuntimeException("erro ao definir as permissões");

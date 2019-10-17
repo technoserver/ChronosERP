@@ -30,7 +30,9 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author john
@@ -78,6 +80,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Inject
     private Repository<EmpresaPessoa> empresaPessoaRepository;
 
+    @Inject
+    private Repository<Empresa> empresaRepository;
+
     private ProdutoGrupo grupo;
     private ProdutoEmpresaDataModel produtoDataModel;
     private List<EmpresaProduto> listProdutoEmpresa;
@@ -112,7 +117,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private BigDecimal fator;
 
     private int idempresa;
-    private Map<String, Integer> listaEmpresas;
+    private List<Empresa> listaEmpresas;
+    private List<Empresa> empresasSelecionada;
 
     private PdvConfiguracaoBalanca configuracaoBalanca;
 
@@ -187,23 +193,37 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
 
-        listaEmpresas = new LinkedHashMap<>();
+        listaEmpresas = new ArrayList<>();
 
-        List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
+        if (usuario.getAdministrador().equals("S")) {
+            List<Empresa> empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
 
-        if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 1) {
-
-            listaEmpresas.put("Todas", 0);
-            for (EmpresaPessoa emp : empresaPessoas) {
-                listaEmpresas.put(emp.getEmpresa().getRazaoSocial(), emp.getEmpresa().getId());
+            if (!empresas.isEmpty() && empresas.size() > 1) {
+                empresas.forEach(e -> {
+                    listaEmpresas.add(e);
+                });
             }
 
+
+        } else {
+            List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
+
+            if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 1) {
+
+                for (EmpresaPessoa emp : empresaPessoas) {
+                    listaEmpresas.add(emp.getEmpresa());
+                }
+
+            }
         }
+
+
     }
 
     @Override
     public void doEdit() {
         super.doEdit();
+        listaEmpresas = new ArrayList<>();
         Produto produto = dao.getJoinFetch(produtoSelecionado.getId(), Produto.class);
         setObjeto(produto);
         grupo = getObjeto().getProdutoSubGrupo().getProdutoGrupo();
@@ -234,23 +254,11 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     public void salvar() {
         try {
             getObjeto().setImagem(nomeFoto);
-            empresas = new ArrayList<>();
-            if (getObjeto().getId() == null) {
-                if (idempresa == 0 && listaEmpresas.size() > 1) {
-                    for (Integer id : listaEmpresas.values()) {
-                        if (id > 0) {
-                            empresas.add(new Empresa(id));
-                        }
-
-                    }
-                } else {
-                    empresas.add(empresa);
-                }
-            } else {
-                empresas.add(empresa);
+            if (getObjeto().getId() != null) {
+                empresasSelecionada = new ArrayList<>();
             }
 
-            setObjeto(service.salvar(getObjeto(), empresas));
+            setObjeto(service.salvar(getObjeto(), empresasSelecionada));
             Mensagem.addInfoMessage("Registro salvo com sucesso");
         } catch (Exception ex) {
 
@@ -271,7 +279,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             Produto produto = new Produto();
             doEdit();
             BeanUtils.copyProperties(getObjeto(), produto, "id", "gtin");
-            listaEmpresas = new HashMap<>();
+            listaEmpresas = new ArrayList<>();
             setObjeto(produto);
             nomeFoto = produto.getImagem();
             Mensagem.addInfoMessage("Produto copiado com sucesso");
@@ -720,10 +728,6 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         this.idempresa = idempresa;
     }
 
-    public Map<String, Integer> getListaEmpresas() {
-        return listaEmpresas;
-    }
-
     public List<Ncm> getNcms() {
         return ncms;
     }
@@ -774,5 +778,21 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setGtin(String gtin) {
         this.gtin = gtin;
+    }
+
+    public List<Empresa> getEmpresasSelecionada() {
+        return empresasSelecionada;
+    }
+
+    public void setEmpresasSelecionada(List<Empresa> empresasSelecionada) {
+        this.empresasSelecionada = empresasSelecionada;
+    }
+
+    public List<Empresa> getListaEmpresas() {
+        return listaEmpresas;
+    }
+
+    public boolean isListaEmpresaEmpty() {
+        return listaEmpresas.isEmpty();
     }
 }

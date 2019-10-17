@@ -29,6 +29,10 @@ public class EstadoCivil implements Serializable {
     public EstadoCivil() {
     }
 
+    public EstadoCivil(Integer id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns="http://www.w3.org/1999/xhtml"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
@@ -20,42 +21,76 @@
     </ui:define>
 
 
-
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{finLancamentoReceberControll}"
-                       idDataTable="dataTableFinLancamentoReceber"
-                       nomeFuncao=" Lancamento de contas Receber"
-                       id="telaGrid"
-                        >
+        <erp:formularioGrid controller="#{finLancamentoReceberControll}"
+                            id="telaGrid">
 
-            <p:column headerText="Documento" width="120">
-                <h:outputLabel value="#{row.numeroDocumento}"/>
-            </p:column>
-            <p:column headerText="Cliente">
-                <h:outputLabel value="#{row.cliente.pessoa.nome}" />
-            </p:column>
-            <p:column headerText="Qtde Parcela" width="120" styleClass="text-center">
-                <h:outputLabel value="#{row.quantidadeParcela}" />
-            </p:column>
-            <p:column headerText="Valor A Receber" styleClass="text-right" width="140">
-                <h:outputLabel value="#{row.valorAReceber}">
-                    <f:convertNumber pattern="#,##0.00" />
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="Data Lancamento" styleClass="text-center" width="150">
-                <h:outputLabel value="#{row.dataLancamento}">
-                    <f:convertDateTime pattern="dd/MM/yyyy" />
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="1º Vencimento" styleClass="text-center" width="140">
-                <h:outputLabel value="#{row.primeiroVencimento}">
-                    <f:convertDateTime pattern="dd/MM/yyyy" />
-                </h:outputLabel>
-            </p:column>
+            <p:dataTable
+                    value="#{finLancamentoReceberControll.dataModel}"
+                    var="row" id="dataTabelLacanemtos" paginator="true"
+                    emptyMessage="Nenhum registro encontrado"
+                    rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                    reflow="true" rendered="#{finLancamentoReceberControll.podeConsultar()}"
+                    lazy="true">
+
+                <p:column headerText="Documento" width="120">
+                    <h:outputLabel value="#{row.numeroDocumento}"/>
+                </p:column>
+                <p:column headerText="Cliente">
+                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                </p:column>
+                <p:column headerText="Qtde Parcela" width="120" styleClass="text-center">
+                    <h:outputLabel value="#{row.quantidadeParcela}"/>
+                </p:column>
+                <p:column headerText="Valor A Receber" styleClass="text-right" width="140">
+                    <h:outputLabel value="#{row.valorAReceber}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Lancamento" styleClass="text-center" width="150">
+                    <h:outputLabel value="#{row.dataLancamento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="1º Vencimento" styleClass="text-center" width="140">
+                    <h:outputLabel value="#{row.primeiroVencimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
 
 
-        </erp:gridDados>
+                <p:column headerText="Ações" width="70" styleClass="text-center">
+
+                    <p:menuButton>
+
+                        <p:menuitem value="Editar"
+                                    update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                    action="#{finLancamentoReceberControll.doEdit}">
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{finLancamentoReceberControll.objetoSelecionado}"/>
+                        </p:menuitem>
+                        <p:menuitem value="Excluir"
+                                    update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid"
+                                    rendered="#{finLancamentoReceberControll.podeExcluir()}"
+                                    process="dataTabelLacanemtos"
+                                    action="#{finLancamentoReceberControll.remover}">
+                            <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{finLancamentoReceberControll.objetoSelecionado}"/>
+                        </p:menuitem>
+                        <p:menuitem value="Carner"
+                                    target="_blank"
+                                    icon="fa fa-print" ajax="false"
+                                    action="#{contasReceberRelatorioControll.gerarCarner(row.id)}">
+                        </p:menuitem>
+                    </p:menuButton>
+
+                </p:column>
+
+            </p:dataTable>
+
+        </erp:formularioGrid>
     </ui:define>
 
 
@@ -63,8 +98,7 @@
         <erp:telaInclusaoAlteracao controller="#{finLancamentoReceberControll}"
                                    nomeFuncao=" Lancamento de contas Receber"
                                    id="telaDetalhe"
-                                   >
-
+        >
 
 
             <p:tabView id="tabViewDetalhes" style="border: 0px;">
@@ -84,37 +118,37 @@
                                           controller="#{finLancamentoReceberControll}"
                                           completeMethod="getListaFinDocumentoOrigem"
                                           nomeAtributo="#{finLancamentoReceberControll.objeto.finDocumentoOrigem}"
-                                          idComponente="finLancamentoReceberFinDocumentoOrigem" />
+                                          idComponente="finLancamentoReceberFinDocumentoOrigem"/>
                     </div>
                     <div class="row">
                         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
                                         idComponente="finLancamentoReceberNumeroDocumento"
                                         label="Numero Documento"
                                         nomeAtributo="#{finLancamentoReceberControll.objeto.numeroDocumento}"
-                                        tamanhoMaximo="50" requerido="true" />
+                                        tamanhoMaximo="50" requerido="true"/>
 
 
                         <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="finLancamentoReceberQuantidadeParcela"
                                           label="Qtde Parcela" requerido="true"
-                                          nomeAtributo="#{finLancamentoReceberControll.objeto.quantidadeParcela}" />
+                                          nomeAtributo="#{finLancamentoReceberControll.objeto.quantidadeParcela}"/>
                         <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="finLancamentoReceberIntervaloEntreParcelas"
                                           label="Intervalo Entre Parcelas" requerido="true"
-                                          nomeAtributo="#{finLancamentoReceberControll.objeto.intervaloEntreParcelas}" />
+                                          nomeAtributo="#{finLancamentoReceberControll.objeto.intervaloEntreParcelas}"/>
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="finLancamentoReceberValorTotal"
                                           label="Valor Total" requerido="true"
-                                          nomeAtributo="#{finLancamentoReceberControll.objeto.valorTotal}" />
+                                          nomeAtributo="#{finLancamentoReceberControll.objeto.valorTotal}"/>
 
                         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                                        idComponente="finLancamentoReceberPrimeiroVencimento"
                                        label="1º Vencimento" requerido="true"
-                                       nomeAtributo="#{finLancamentoReceberControll.objeto.primeiroVencimento}" />
+                                       nomeAtributo="#{finLancamentoReceberControll.objeto.primeiroVencimento}"/>
 
                     </div>
 
-                    <erp:separador label="Dados para geração das parcelas" />
+                    <erp:separador label="Dados para geração das parcelas"/>
                     <div class="row">
                         <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                           label="Conta Caixa"
@@ -135,8 +169,6 @@
                     </div>
 
 
-
-
                 </p:tab>
 
                 <p:tab title="Parcelas"
@@ -149,32 +181,31 @@
                     >
 
 
-
                         <p:column headerText="Numero Parcela">
-                            <h:outputLabel value="#{obj.numeroParcela}" />
+                            <h:outputLabel value="#{obj.numeroParcela}"/>
                         </p:column>
                         <p:column headerText="Data Emissao">
                             <h:outputLabel value="#{obj.dataEmissao}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
                         <p:column headerText="Data Vencimento" sortBy="#{obj.dataVencimento}">
                             <h:outputLabel value="#{obj.dataVencimento}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
                         <p:column headerText="Desconto Ate">
                             <h:outputLabel value="#{obj.descontoAte}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
                         <p:column headerText="Valor">
                             <h:outputLabel value="#{obj.valor}">
-                                <f:convertNumber pattern="#,##0.00" />
+                                <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
                         <p:column headerText="Status">
-                            <h:outputLabel value="#{obj.finStatusParcela.descricao}" />
+                            <h:outputLabel value="#{obj.finStatusParcela.descricao}"/>
                         </p:column>
                     </p:dataTable>
                 </p:tab>
@@ -186,21 +217,20 @@
                                  paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
                                  paginatorPosition="bottom"
                                  resizableColumns="true"
-                                 >
-
+                    >
 
 
                         <p:column headerText="Natureza Financeira">
-                            <h:outputLabel value="#{obj.naturezaFinanceira.descricao}" />
+                            <h:outputLabel value="#{obj.naturezaFinanceira.descricao}"/>
                         </p:column>
                         <p:column headerText="Data Inclusao">
                             <h:outputLabel value="#{obj.dataInclusao}">
-                                <f:convertDateTime pattern="dd/MM/yyyy" />
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
                         <p:column headerText="Valor">
                             <h:outputLabel value="#{obj.valor}">
-                                <f:convertNumber pattern="#,##0.00" />
+                                <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
                     </p:dataTable>
@@ -221,74 +251,74 @@
                 <p:outputPanel id="panelFinParcelaReceber">
 
                     <erp:campoInteiro styleClass="erp-campo-20"
-                                       idComponente="finParcelaReceberNumeroParcela" label="Nr Parcela"
-                                       somenteLeitura="true"
-                                       nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.numeroParcela}" />
+                                      idComponente="finParcelaReceberNumeroParcela" label="Nr Parcela"
+                                      somenteLeitura="true"
+                                      nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.numeroParcela}"/>
                     <erp:campoData styleClass="erp-campo-20"
-                                    idComponente="finParcelaReceberDataEmissao" label="Data Emissao"
-                                    somenteLeitura="true"
-                                    nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.dataEmissao}" />
+                                   idComponente="finParcelaReceberDataEmissao" label="Data Emissao"
+                                   somenteLeitura="true"
+                                   nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.dataEmissao}"/>
                     <erp:campoData styleClass="erp-campo-20"
-                                    idComponente="finParcelaReceberDataVencimento"
-                                    label="Data Vencimento"
-                                    nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.dataVencimento}" />
+                                   idComponente="finParcelaReceberDataVencimento"
+                                   label="Data Vencimento"
+                                   nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.dataVencimento}"/>
                     <erp:campoData styleClass="erp-campo-20"
-                                    idComponente="finParcelaReceberDescontoAte" label="Desconto Ate"
-                                    nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.descontoAte}" />
+                                   idComponente="finParcelaReceberDescontoAte" label="Desconto Ate"
+                                   nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.descontoAte}"/>
                     <erp:campoDecimal styleClass="erp-campo-20"
-                                       idComponente="finParcelaReceberValor" label="Valor"
-                                       nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.valor}" />
+                                      idComponente="finParcelaReceberValor" label="Valor"
+                                      nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.valor}"/>
 
-                    <div class="erp-campo-100" />
-
-                    <erp:campoDecimal styleClass="erp-campo-20"
-                                       idComponente="finParcelaReceberTaxaJuro" label="Taxa Juro"
-                                       somenteLeitura="true"
-                                       nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.taxaJuro}" />
-                    <erp:campoDecimal styleClass="erp-campo-20"
-                                       idComponente="finParcelaReceberTaxaMulta" label="Taxa Multa"
-                                       somenteLeitura="true"
-                                       nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.taxaMulta}" />
-                    <erp:campoDecimal styleClass="erp-campo-20"
-                                       idComponente="finParcelaReceberTaxaDesconto" label="Taxa Desconto"
-                                       somenteLeitura="true"
-                                       nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.taxaDesconto}" />
-                    <erp:campoDecimal styleClass="erp-campo-20"
-                                       idComponente="finParcelaReceberValorJuro" label="Valor Juro"
-                                       somenteLeitura="true"
-                                       nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.valorJuro}" />
-                    <erp:campoDecimal styleClass="erp-campo-20"
-                                       idComponente="finParcelaReceberValorMulta" label="Valor Multa"
-                                       somenteLeitura="true"
-                                       nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.valorMulta}" />
+                    <div class="erp-campo-100"/>
 
                     <erp:campoDecimal styleClass="erp-campo-20"
-                                       idComponente="finParcelaReceberValorDesconto"
-                                       label="Valor Desconto"
-                                       nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.valorDesconto}" />
+                                      idComponente="finParcelaReceberTaxaJuro" label="Taxa Juro"
+                                      somenteLeitura="true"
+                                      nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.taxaJuro}"/>
+                    <erp:campoDecimal styleClass="erp-campo-20"
+                                      idComponente="finParcelaReceberTaxaMulta" label="Taxa Multa"
+                                      somenteLeitura="true"
+                                      nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.taxaMulta}"/>
+                    <erp:campoDecimal styleClass="erp-campo-20"
+                                      idComponente="finParcelaReceberTaxaDesconto" label="Taxa Desconto"
+                                      somenteLeitura="true"
+                                      nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.taxaDesconto}"/>
+                    <erp:campoDecimal styleClass="erp-campo-20"
+                                      idComponente="finParcelaReceberValorJuro" label="Valor Juro"
+                                      somenteLeitura="true"
+                                      nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.valorJuro}"/>
+                    <erp:campoDecimal styleClass="erp-campo-20"
+                                      idComponente="finParcelaReceberValorMulta" label="Valor Multa"
+                                      somenteLeitura="true"
+                                      nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.valorMulta}"/>
+
+                    <erp:campoDecimal styleClass="erp-campo-20"
+                                      idComponente="finParcelaReceberValorDesconto"
+                                      label="Valor Desconto"
+                                      nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.valorDesconto}"/>
                     <erp:campoSelect styleClass="erp-campo-20"
-                                      idComponente="finParcelaReceberEmitiuBoleto" label="Emitiu Boleto"
-                                      nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.emitiuBoleto}"
-                                      itens="#{finLancamentoReceberController.simNao}" />
+                                     idComponente="finParcelaReceberEmitiuBoleto" label="Emitiu Boleto"
+                                     nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.emitiuBoleto}"
+                                     itens="#{finLancamentoReceberController.simNao}"/>
                     <erp:campoTexto styleClass="erp-campo-40"
-                                     idComponente="finParcelaReceberBoletoNossoNumero"
-                                     label="Boleto Nosso Numero"
-                                     nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.boletoNossoNumero}"
-                                     tamanhoMaximo="50" />
+                                    idComponente="finParcelaReceberBoletoNossoNumero"
+                                    label="Boleto Nosso Numero"
+                                    nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.boletoNossoNumero}"
+                                    tamanhoMaximo="50"/>
                     <erp:campoTexto styleClass="erp-campo-20"
-                                     idComponente="finParcelaReceberFinStatusParcela"
-                                     label="Status Parcela"
-                                     nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.finStatusParcela.descricao}"
-                                     somenteLeitura="true" tamanhoMaximo="10"/>
+                                    idComponente="finParcelaReceberFinStatusParcela"
+                                    label="Status Parcela"
+                                    nomeAtributo="#{finLancamentoReceberController.finParcelaReceber.finStatusParcela.descricao}"
+                                    somenteLeitura="true" tamanhoMaximo="10"/>
 
                 </p:outputPanel>
                 <f:facet name="footer">
                     <p:commandButton value="Salvar"
                                      actionListener="#{finLancamentoReceberController.salvarFinParcelaReceber}"
                                      update=":formOutrasTelas:panelFinParcelaReceber,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
-                                     oncomplete="if (!args.validationFailed) {PF('dialogFinParcelaReceber').hide();}" />
+                                     oncomplete="if (!args.validationFailed) {PF('dialogFinParcelaReceber').hide();}"/>
                     <p:commandButton value="Cancelar"
-                                     oncomplete="PF('dialogFinParcelaReceber').hide();" />
+                                     oncomplete="PF('dialogFinParcelaReceber').hide();"/>
                 </f:facet>
 
             </p:dialog>
@@ -305,27 +335,27 @@
                 <p:outputPanel id="panelFinLctoReceberNtFinanceira">
 
                     <erp:autoComplete styleClass="erp-campo-60"
-                                            label="Natureza Financeira"
-                                            itemLabel="#{objeto.descricao}"
-                                            controller="#{finLancamentoReceberController}"
-                                            completeMethod="getListaNaturezaFinanceira"
-                                            nomeAtributo="#{finLancamentoReceberController.finLctoReceberNtFinanceira.naturezaFinanceira}"
-                                            idComponente="finLctoReceberNtFinanceiraNaturezaFinanceira" />
+                                      label="Natureza Financeira"
+                                      itemLabel="#{objeto.descricao}"
+                                      controller="#{finLancamentoReceberController}"
+                                      completeMethod="getListaNaturezaFinanceira"
+                                      nomeAtributo="#{finLancamentoReceberController.finLctoReceberNtFinanceira.naturezaFinanceira}"
+                                      idComponente="finLctoReceberNtFinanceiraNaturezaFinanceira"/>
 
                     <erp:campoData styleClass="erp-campo-20"
-                                    idComponente="finLctoReceberNtFinanceiraDataInclusao" label="Data Inclusao"
-                                    nomeAtributo="#{finLancamentoReceberController.finLctoReceberNtFinanceira.dataInclusao}" />
+                                   idComponente="finLctoReceberNtFinanceiraDataInclusao" label="Data Inclusao"
+                                   nomeAtributo="#{finLancamentoReceberController.finLctoReceberNtFinanceira.dataInclusao}"/>
                     <erp:campoDecimal styleClass="erp-campo-20"
-                                       idComponente="finLctoReceberNtFinanceiraValor" label="Valor"
-                                       nomeAtributo="#{finLancamentoReceberController.finLctoReceberNtFinanceira.valor}" />
+                                      idComponente="finLctoReceberNtFinanceiraValor" label="Valor"
+                                      nomeAtributo="#{finLancamentoReceberController.finLctoReceberNtFinanceira.valor}"/>
                 </p:outputPanel>
                 <f:facet name="footer">
                     <p:commandButton value="Salvar"
                                      actionListener="#{finLancamentoReceberController.salvarFinLctoReceberNtFinanceira}"
                                      update=":formOutrasTelas2:panelFinLctoReceberNtFinanceira,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
-                                     oncomplete="if (!args.validationFailed) {PF('dialogFinLctoReceberNtFinanceira').hide();}" />
+                                     oncomplete="if (!args.validationFailed) {PF('dialogFinLctoReceberNtFinanceira').hide();}"/>
                     <p:commandButton value="Cancelar"
-                                     oncomplete="PF('dialogFinLctoReceberNtFinanceira').hide();" />
+                                     oncomplete="PF('dialogFinLctoReceberNtFinanceira').hide();"/>
                 </f:facet>
 
             </p:dialog>
