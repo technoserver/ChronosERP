@@ -54,7 +54,7 @@ public class OsAbertura implements Serializable {
     private BigDecimal valorTotalProduto;
     @Column(name = "VALOR_TOTAL_SERVICOS")
     private BigDecimal valorTotalServico;
-    @DecimalMin(value = "0.01", message = "O valor  do desconto deve ser maior que R$0,01")
+    @DecimalMin(value = "0.00", message = "O valor  do desconto deve ser maior que R$0,01")
     @DecimalMax(value = "9999999.99", message = "O valor  deve ser menor que R$9.999.999,99")
     @Column(name = "VALOR_TOTAL_DESCONTO")
     private BigDecimal valorTotalDesconto;
@@ -96,6 +96,11 @@ public class OsAbertura implements Serializable {
     private Set<OsFormaPagamento> listaFormaPagamento;
 
     public OsAbertura() {
+        this.valorComissao = BigDecimal.ZERO;
+        this.valorTotal = BigDecimal.ZERO;
+        this.valorTotalProduto = BigDecimal.ZERO;
+        this.valorTotalServico = BigDecimal.ZERO;
+        this.valorTotalDesconto = BigDecimal.ZERO;
         this.valorComissao = BigDecimal.ZERO;
     }
 

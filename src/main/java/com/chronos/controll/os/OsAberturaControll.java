@@ -205,6 +205,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 getObjeto().setListaFormaPagamento(new HashSet<>());
                 getObjeto().setStatus(1);
                 getObjeto().setEmpresa(empresa);
+                getObjeto().setValorTotal(BigDecimal.ZERO);
 
                 if (parametro.getOsGerarMovimentoCaixa().equals("S")) {
                     getObjeto().setMovimento(movimento);

@@ -1,7 +1,9 @@
 package com.chronos.controll.tributacao;
 
 import com.chronos.controll.AbstractControll;
+import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.modelo.entidades.TributGrupoTributario;
+import com.chronos.repository.Filtro;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -15,6 +17,22 @@ import java.io.Serializable;
 public class TributGrupoTributarioControll extends AbstractControll<TributGrupoTributario> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+
+    @Override
+    public ERPLazyDataModel<TributGrupoTributario> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setDao(dao);
+            dataModel.setClazz(TributGrupoTributario.class);
+        }
+
+        if (dataModel.getFiltros().isEmpty()) {
+            dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
+        }
+
+        return dataModel;
+    }
 
     @Override
     public void doCreate() {

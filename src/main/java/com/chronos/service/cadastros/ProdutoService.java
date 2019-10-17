@@ -415,6 +415,7 @@ public class ProdutoService implements Serializable {
             produtoEmpresa.setEmpresa(emp);
             produtoEmpresa.setProduto(produto);
             produtoEmpresa.setEstoqueVerificado(produto.getControle());
+            produtoEmpresa.setQuantidadeEstoque(BigDecimal.ZERO);
             empresaProdutoRepository.salvar(produtoEmpresa);
 
         }
