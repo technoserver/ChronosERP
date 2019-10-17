@@ -194,7 +194,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         conversoes = new ArrayList<>();
 
         listaEmpresas = new ArrayList<>();
-
+        empresasSelecionada = new ArrayList<>();
         if (usuario.getAdministrador().equals("S")) {
             List<Empresa> empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
 
