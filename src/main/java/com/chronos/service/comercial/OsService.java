@@ -60,9 +60,7 @@ public class OsService extends AbstractService<OsAbertura> {
     public OsAbertura salvar(OsAbertura os) throws ChronosException {
 
 
-        if (os.getListaOsProdutoServico() == null || os.getListaOsProdutoServico().isEmpty()) {
-            throw new ChronosException("Produtos ou serviço não informado !!!");
-        }
+
 
 
         Optional<OsFormaPagamento> formaPagamento = os.getListaFormaPagamento().stream().filter(f -> f.equals("14")).findFirst();
@@ -118,6 +116,9 @@ public class OsService extends AbstractService<OsAbertura> {
     @Transactional
     public void transmitirNFe(OsAbertura os, ModeloDocumento modelo, boolean atualizarEstoque) throws Exception {
 
+        if (os.getListaOsProdutoServico() == null || os.getListaOsProdutoServico().isEmpty()) {
+            throw new ChronosException("Produtos ou serviço não informado !!!");
+        }
 
         NfeCabecalho nfe;
 
@@ -145,6 +146,9 @@ public class OsService extends AbstractService<OsAbertura> {
     @Transactional
     public void encerrar(OsAbertura os) throws ChronosException {
 
+        if (os.getListaOsProdutoServico() == null || os.getListaOsProdutoServico().isEmpty()) {
+            throw new ChronosException("Produtos ou serviço não informado !!!");
+        }
 
         BigDecimal recebidoAteAgora = BigDecimal.ZERO;
 

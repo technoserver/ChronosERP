@@ -190,6 +190,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         getObjeto().setInativo("N");
         getObjeto().setPossuiGrade(false);
         getObjeto().setDataCadastro(new Date());
+        getObjeto().setControle(BigDecimal.ZERO);
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
 
