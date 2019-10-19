@@ -23,6 +23,7 @@ import org.primefaces.model.Visibility;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -124,6 +125,42 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     private List<PdvConfiguracaoBalanca> configuracoesBalanca;
 
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        pesquisarEmpresas();
+    }
+
+    public void pesquisarEmpresas() {
+
+
+        listaEmpresas = new ArrayList<>();
+        empresasSelecionada = new ArrayList<>();
+        if (usuario.getAdministrador().equals("S")) {
+            List<Empresa> empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
+
+            if (!empresas.isEmpty() && empresas.size() > 1) {
+                empresas.forEach(e -> {
+                    listaEmpresas.add(e);
+                });
+            }
+
+
+        } else {
+            List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
+
+            if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 1) {
+
+                for (EmpresaPessoa emp : empresaPessoas) {
+                    listaEmpresas.add(emp.getEmpresa());
+                }
+
+            }
+        }
+    }
+
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
         if (!StringUtils.isEmpty(produto)) {
@@ -147,9 +184,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         if (!StringUtils.isEmpty(gtin)) {
             produtoDataModel.addFiltro("gtin", gtin, Filtro.IGUAL);
         }
-
+        idempresa = idempresa == 0 ? empresa.getId() : idempresa;
         produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
-        produtoDataModel.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
+        produtoDataModel.addFiltro("idempresa", idempresa, Filtro.IGUAL);
     }
 
     @Override
@@ -194,29 +231,6 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
 
-        listaEmpresas = new ArrayList<>();
-        empresasSelecionada = new ArrayList<>();
-        if (usuario.getAdministrador().equals("S")) {
-            List<Empresa> empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
-
-            if (!empresas.isEmpty() && empresas.size() > 1) {
-                empresas.forEach(e -> {
-                    listaEmpresas.add(e);
-                });
-            }
-
-
-        } else {
-            List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
-
-            if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 1) {
-
-                for (EmpresaPessoa emp : empresaPessoas) {
-                    listaEmpresas.add(emp.getEmpresa());
-                }
-
-            }
-        }
 
 
     }

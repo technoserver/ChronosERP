@@ -4,7 +4,10 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
+import com.chronos.service.financeiro.MovimentoService;
 import com.chronos.util.Constantes;
+import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 
@@ -43,14 +46,23 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     private Repository<FinConfiguracaoBoleto> configuracoes;
     @Inject
     private Repository<Pessoa> pessoas;
+    @Inject
+    private Repository<PdvMovimento> pdvMovimentoRepository;
+    @Inject
+    private Repository<FinParcelaRecebimento> recebimentoRepository;
+    @Inject
+    private MovimentoService movimentoService;
 
     private List<FinLancamentoReceber> lancamentosSelecionados;
     private List<FinLancamentoReceber> lancamentosFiltrados;
 
+    private List<FinParcelaRecebimento> recebimentos;
+    private FinParcelaRecebimento recebimentoSelecionado;
     private FinParcelaReceber finParcelaReceber;
     private FinParcelaReceber finParcelaReceberSelecionado;
     private FinLctoReceberNtFinanceira finLctoReceberNtFinanceira;
     private FinLctoReceberNtFinanceira finLctoReceberNtFinanceiraSelecionado;
+
 
     //atributos utilizados para geração das parcelas
     private ContaCaixa contaCaixa;
@@ -73,6 +85,16 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
         super.doEdit();
         FinLancamentoReceber lancamento = dataModel.getRowData(getObjeto().getId().toString());
         setObjeto(lancamento);
+
+        recebimentos = new ArrayList<>();
+
+        lancamento.getListaFinParcelaReceber().forEach(p -> {
+            if (p.getListaFinParcelaRecebimento() != null) {
+                p.getListaFinParcelaRecebimento().forEach(r -> {
+                    recebimentos.add(r);
+                });
+            }
+        });
     }
 
     @Override
@@ -154,6 +176,61 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
         finLctoReceberNaturezaFinancaeira.setValor(getObjeto().getValorAReceber());
 
         getObjeto().getListaFinLctoReceberNtFinanceira().add(finLctoReceberNaturezaFinancaeira);
+    }
+
+    @Transactional
+    public void excluirRecebimento() {
+
+        try {
+
+            if (recebimentoSelecionado == null) {
+                throw new ChronosException("É preciso selecionar um recebimento");
+            }
+
+            if (recebimentoSelecionado.getPdvMovimento() != null) {
+
+                PdvMovimento movimento = pdvMovimentoRepository.get(recebimentoSelecionado.getPdvMovimento().getId(), PdvMovimento.class);
+
+                if (movimento != null && movimento.getStatusMovimento().equals("F")) {
+                    throw new ChronosException("O movimento para este recebimento já foi encerrado");
+                }
+
+
+                if (usuario.getOperador() != null) {
+                    PdvMovimento movimentoAberto = movimentoService.verificarMovimento(empresa);
+
+                    if (movimento.getId().equals(movimentoAberto.getId())) {
+                        movimentoService.lancaRecebimento(recebimentoSelecionado.getValorRecebido().negate());
+                    } else {
+                        movimento.setTotalRecebido(movimento.getTotalRecebido().subtract(recebimentoSelecionado.getValorRecebido()));
+                        pdvMovimentoRepository.atualizar(movimento);
+                    }
+
+                } else {
+                    movimento.setTotalRecebido(movimento.getTotalRecebido().subtract(recebimentoSelecionado.getValorRecebido()));
+                    pdvMovimentoRepository.atualizar(movimento);
+                }
+
+            }
+
+
+            if (recebimentoSelecionado.getFinParcelaReceber().getFinStatusParcela().getSituacao().equals("02")) {
+                recebimentoSelecionado.getFinParcelaReceber().setFinStatusParcela(new FinStatusParcela(1));
+                parcelas.atualizar(recebimentoSelecionado.getFinParcelaReceber());
+            }
+
+            recebimentoRepository.excluir(recebimentoSelecionado);
+
+            Mensagem.addInfoMessage("Estorno realizado com sucesso");
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro qo estorna o recebimento", ex);
+            }
+        }
     }
 
     public void mesclarLancamentos() {
@@ -408,4 +485,15 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
         this.lancamentosFiltrados = lancamentosFiltrados;
     }
 
+    public List<FinParcelaRecebimento> getRecebimentos() {
+        return recebimentos;
+    }
+
+    public FinParcelaRecebimento getRecebimentoSelecionado() {
+        return recebimentoSelecionado;
+    }
+
+    public void setRecebimentoSelecionado(FinParcelaRecebimento recebimentoSelecionado) {
+        this.recebimentoSelecionado = recebimentoSelecionado;
+    }
 }

@@ -60,6 +60,15 @@
                                         label="Produto"
                                         tamanhoMaximo="100"
                                         nomeAtributo="#{produtoControll.produto}"/>
+
+                        <erp:campoSelect
+                                label="Empresa"
+                                styleClass="col-xs-12 col-sm-4 col-md-4"
+                                nomeAtributo="#{produtoControll.idempresa}"
+                                itens="#{produtoControll.listaEmpresas}"
+                                rendered="#{ produtoControll.listaEmpresas.size() gt 1}"
+                                idComponente="idempresa"/>
+
                         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                                         idComponente="produto"
                                         label="Grupo"
@@ -221,6 +230,7 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
+
         <erp:telaInclusaoAlteracao controller="#{produtoControll}"
                                    nomeFuncao="Produto"
                                    id="telaDetalhe"
@@ -253,6 +263,7 @@
                         />
                     </div>
                     <div class="row">
+
 
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <p:outputLabel value="Grupo" for="grupo"/>
