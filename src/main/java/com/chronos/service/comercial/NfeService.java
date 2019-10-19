@@ -49,6 +49,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.qrcode.QRCodeWriter;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
+import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -1052,9 +1053,140 @@ public class NfeService implements Serializable {
 
     @Transactional
     public void duplicarNfe(NfeCabecalho nfe) throws ChronosException {
+
         if (nfe.getVendaCabecalho() != null) {
             throw new ChronosException("Está NF-e possui vinculo com uma venda");
         }
+
+        NfeCabecalho copia = new NfeCabecalho();
+        BeanUtils.copyProperties(nfe, copia, "id", "listaNfeDetalhe", "listaCupomFiscalReferenciado", "listaDuplicata", "listaNfeReferenciada", "listaNfReferenciada", "listaCteReferenciado", "listaProdRuralReferenciada", "listaNfeFormaPagamento", "transporte.listaTransporteReboque");
+
+        copia.setDataHoraEmissao(new Date());
+        copia.setDataHoraEntradaSaida(new Date());
+        copia.setNumeroProtocolo("");
+        copia.setStatusNota(0);
+        copia.setQrcode(null);
+        copia.setJustificativaCancelamento(null);
+        copia.setChaveAcesso(null);
+        copia.setDigestValue(null);
+        copia.setNumero(null);
+        copia.setSerie(null);
+        copia.setCodigoNumerico(null);
+        copia.setCodigoStatusResposta(null);
+        copia.setDataHoraProcessamento(null);
+        copia.setDigitoChaveAcesso(null);
+
+        if (copia.getDestinatario() != null) {
+            copia.getDestinatario().setNfeCabecalho(copia);
+            copia.getDestinatario().setId(null);
+        }
+        if (copia.getEmitente() != null) {
+            copia.getEmitente().setNfeCabecalho(copia);
+            copia.getEmitente().setId(null);
+        }
+        if (copia.getLocalEntrega() != null) {
+            copia.getLocalEntrega().setNfeCabecalho(copia);
+            copia.getLocalEntrega().setId(null);
+        }
+        if (copia.getLocalRetirada() != null) {
+            copia.getLocalRetirada().setNfeCabecalho(copia);
+            copia.getLocalRetirada().setId(null);
+        }
+
+        if (copia.getFatura() != null) {
+            copia.getFatura().setNfeCabecalho(copia);
+            copia.getFatura().setId(null);
+        }
+
+        if (copia.getTransporte() != null) {
+            copia.getTransporte().setId(null);
+            copia.getTransporte().setNfeCabecalho(copia);
+            copia.getTransporte().setListaTransporteReboque(null);
+            copia.getTransporte().setListaTransporteVolume(null);
+
+        }
+
+        if (nfe.getListaCupomFiscalReferenciado() != null) {
+            nfe.getListaCupomFiscalReferenciado().stream().forEach(o -> {
+                o.setId(null);
+                o.setNfeCabecalho(copia);
+                copia.getListaCupomFiscalReferenciado().add(o);
+            });
+        }
+
+        if (nfe.getListaNfReferenciada() != null) {
+            nfe.getListaNfReferenciada().stream().forEach(o -> {
+                o.setId(null);
+                o.setNfeCabecalho(copia);
+                copia.getListaNfReferenciada().add(o);
+            });
+        } else {
+
+        }
+
+        if (nfe.getListaCteReferenciado() != null && !nfe.getListaCteReferenciado().isEmpty()) {
+            copia.getListaCteReferenciado().forEach(o -> {
+                o.setId(null);
+                o.setNfeCabecalho(copia);
+                copia.getListaCteReferenciado().add(o);
+            });
+        }
+
+        if (nfe.getListaDuplicata() != null) {
+            nfe.getListaDuplicata().stream().forEach(o -> {
+                o.setId(null);
+                o.setNfeCabecalho(copia);
+                copia.getListaDuplicata().add(o);
+            });
+
+        }
+
+        if (nfe.getListaNfeFormaPagamento() != null) {
+            nfe.getListaNfeFormaPagamento().stream().forEach(o -> {
+                o.setId(null);
+                o.setNfeCabecalho(copia);
+                copia.getListaNfeFormaPagamento().add(o);
+            });
+        }
+
+        if (nfe.getListaNfeDetalhe() != null) {
+
+            nfe.getListaNfeDetalhe().stream().forEach(i -> {
+                i.setId(null);
+                i.setNfeCabecalho(copia);
+
+                if (i.getNfeDetalheImpostoCofins() != null) {
+                    i.getNfeDetalheImpostoCofins().setNfeDetalhe(i);
+                    i.getNfeDetalheImpostoCofins().setId(null);
+                }
+                if (i.getNfeDetalheImpostoIcms() != null) {
+                    i.getNfeDetalheImpostoIcms().setNfeDetalhe(i);
+                    i.getNfeDetalheImpostoIcms().setId(null);
+                }
+                if (i.getNfeDetalheImpostoIi() != null) {
+                    i.getNfeDetalheImpostoIi().setNfeDetalhe(i);
+                    i.getNfeDetalheImpostoIi().setId(null);
+                }
+                if (i.getNfeDetalheImpostoIpi() != null) {
+                    i.getNfeDetalheImpostoIpi().setNfeDetalhe(i);
+                    i.getNfeDetalheImpostoIpi().setId(null);
+                }
+                if (i.getNfeDetalheImpostoIssqn() != null) {
+                    i.getNfeDetalheImpostoIssqn().setNfeDetalhe(i);
+                    i.getNfeDetalheImpostoIssqn().setId(null);
+                }
+                if (i.getNfeDetalheImpostoPis() != null) {
+                    i.getNfeDetalheImpostoPis().setNfeDetalhe(i);
+                    i.getNfeDetalheImpostoPis().setId(null);
+                }
+
+                copia.getListaNfeDetalhe().add(i);
+            });
+
+        }
+
+        repository.salvar(copia);
+
 
 
     }

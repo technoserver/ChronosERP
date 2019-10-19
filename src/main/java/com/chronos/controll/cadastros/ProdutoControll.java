@@ -23,6 +23,7 @@ import org.primefaces.model.Visibility;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -90,6 +91,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private ViewProdutoEmpresa produtoSelecionado;
 
     private Integer codigo;
+    private Integer idmepresaFiltro;
     private String gtin;
     private String produto;
     private String strGrupo;
@@ -124,75 +126,16 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     private List<PdvConfiguracaoBalanca> configuracoesBalanca;
 
-    public void pesquisar() {
-        produtoDataModel.getFiltros().clear();
-        if (!StringUtils.isEmpty(produto)) {
-            produtoDataModel.addFiltro("nome", produto);
-        }
-        if (!StringUtils.isEmpty(strSubGrupo)) {
-            produtoDataModel.addFiltro("subgrupo", strSubGrupo);
-        }
-        if (!StringUtils.isEmpty(strGrupo)) {
-            produtoDataModel.addFiltro("grupo", strGrupo);
-        }
 
-        if (!StringUtils.isEmpty(inativo)) {
-            produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
-        }
-
-        if (!StringUtils.isEmpty(codigo)) {
-            produtoDataModel.addFiltro("id", codigo, Filtro.IGUAL);
-        }
-
-        if (!StringUtils.isEmpty(gtin)) {
-            produtoDataModel.addFiltro("gtin", gtin, Filtro.IGUAL);
-        }
-
-        produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
-        produtoDataModel.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
-    }
-
+    @PostConstruct
     @Override
-    public ERPLazyDataModel<Produto> getDataModel() {
-        if (dataModel == null) {
-            dataModel = new ERPLazyDataModel<>();
-            dataModel.setClazz(getClazz());
-            dataModel.setDao(dao);
-            joinFetch = new Object[]{"produtoMarca"};
-            Object[] atribs = new Object[]{"nome", "valorVenda", "quantidadeEstoque", "unidadeProduto"};
-            dataModel.setAtributos(atribs);
-            dataModel.setJoinFetch(joinFetch);
-
-        }
-        dataModel.addFiltro("excluido", "N", Filtro.IGUAL);
-        if (dataModel.getFiltros().isEmpty()) {
-            dataModel.addFiltro("inativo", "N", Filtro.IGUAL);
-        }
-
-        return dataModel;
+    public void init() {
+        super.init();
+        pesquisarEmpresas();
     }
 
-    public ProdutoEmpresaDataModel getProdutoDataModel() {
-        if (produtoDataModel == null) {
-            produtoDataModel = new ProdutoEmpresaDataModel();
-            produtoDataModel.setClazz(ViewProdutoEmpresa.class);
-            produtoDataModel.setDao(produtos);
-        }
+    public void pesquisarEmpresas() {
 
-        pesquisar();
-        return produtoDataModel;
-    }
-
-    @Override
-    public void doCreate() {
-        super.doCreate(); //To change body of generated methods, choose Tools | Templates.
-        getObjeto().setExcluido("N");
-        getObjeto().setInativo("N");
-        getObjeto().setPossuiGrade(false);
-        getObjeto().setDataCadastro(new Date());
-        getObjeto().setControle(BigDecimal.ZERO);
-        grupo = new ProdutoGrupo();
-        conversoes = new ArrayList<>();
 
         listaEmpresas = new ArrayList<>();
         empresasSelecionada = new ArrayList<>();
@@ -217,6 +160,79 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
             }
         }
+    }
+
+    public void pesquisar() {
+        produtoDataModel.getFiltros().clear();
+        if (!StringUtils.isEmpty(produto)) {
+            produtoDataModel.addFiltro("nome", produto);
+        }
+        if (!StringUtils.isEmpty(strSubGrupo)) {
+            produtoDataModel.addFiltro("subgrupo", strSubGrupo);
+        }
+        if (!StringUtils.isEmpty(strGrupo)) {
+            produtoDataModel.addFiltro("grupo", strGrupo);
+        }
+
+        if (!StringUtils.isEmpty(inativo)) {
+            produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
+        }
+
+        if (!StringUtils.isEmpty(codigo)) {
+            produtoDataModel.addFiltro("id", codigo, Filtro.IGUAL);
+        }
+
+        if (!StringUtils.isEmpty(gtin)) {
+            produtoDataModel.addFiltro("gtin", gtin, Filtro.IGUAL);
+        }
+        idmepresaFiltro = idmepresaFiltro != null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
+        produtoDataModel.addFiltro("idempresa", idmepresaFiltro, Filtro.IGUAL);
+    }
+
+    @Override
+    public ERPLazyDataModel<Produto> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(getClazz());
+            dataModel.setDao(dao);
+            joinFetch = new Object[]{"produtoMarca"};
+            Object[] atribs = new Object[]{"nome", "valorVenda", "quantidadeEstoque", "unidadeProduto"};
+            dataModel.setAtributos(atribs);
+            dataModel.setJoinFetch(joinFetch);
+
+        }
+        dataModel.addFiltro("excluido", "N", Filtro.IGUAL);
+        if (dataModel.getFiltros().isEmpty()) {
+            dataModel.addFiltro("inativo", "N", Filtro.IGUAL);
+        }
+
+        return dataModel;
+    }
+
+    public ProdutoEmpresaDataModel getProdutoDataModel() {
+
+        if (produtoDataModel == null) {
+            produtoDataModel = new ProdutoEmpresaDataModel();
+            produtoDataModel.setClazz(ViewProdutoEmpresa.class);
+            produtoDataModel.setDao(produtos);
+        }
+
+
+        return produtoDataModel;
+    }
+
+    @Override
+    public void doCreate() {
+        super.doCreate(); //To change body of generated methods, choose Tools | Templates.
+        getObjeto().setExcluido("N");
+        getObjeto().setInativo("N");
+        getObjeto().setPossuiGrade(false);
+        getObjeto().setDataCadastro(new Date());
+        getObjeto().setControle(BigDecimal.ZERO);
+        grupo = new ProdutoGrupo();
+        conversoes = new ArrayList<>();
+
 
 
     }
@@ -780,6 +796,14 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setGtin(String gtin) {
         this.gtin = gtin;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
     }
 
     public List<Empresa> getEmpresasSelecionada() {

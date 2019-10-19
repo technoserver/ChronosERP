@@ -154,7 +154,7 @@
                                    gridPadrao="false"
                                    id="telaDetalhe">
 
-            <div class="row">
+            <h:panelGroup class="row" layout="block" rendered="#{empty clienteControll.objeto.id}">
 
                 <div class="col-xs-12 col-sm-2 col-md-2">
                     <h:outputLabel value="Cadastro completo"
@@ -169,7 +169,7 @@
                     </h:selectOneMenu>
                 </div>
 
-            </div>
+            </h:panelGroup>
             <br/>
             <h:panelGroup layout="block" id="tipoCadastro">
                 <h:panelGroup layout="block" rendered="#{clienteControll.completo eq 'N'}">
