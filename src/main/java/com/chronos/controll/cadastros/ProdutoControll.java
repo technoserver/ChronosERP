@@ -91,6 +91,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private ViewProdutoEmpresa produtoSelecionado;
 
     private Integer codigo;
+    private Integer idmepresaFiltro;
     private String gtin;
     private String produto;
     private String strGrupo;
@@ -184,9 +185,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         if (!StringUtils.isEmpty(gtin)) {
             produtoDataModel.addFiltro("gtin", gtin, Filtro.IGUAL);
         }
-        idempresa = idempresa == 0 ? empresa.getId() : idempresa;
+        idmepresaFiltro = idmepresaFiltro != null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
         produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
-        produtoDataModel.addFiltro("idempresa", idempresa, Filtro.IGUAL);
+        produtoDataModel.addFiltro("idempresa", idmepresaFiltro, Filtro.IGUAL);
     }
 
     @Override
@@ -210,13 +211,14 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     }
 
     public ProdutoEmpresaDataModel getProdutoDataModel() {
+
         if (produtoDataModel == null) {
             produtoDataModel = new ProdutoEmpresaDataModel();
             produtoDataModel.setClazz(ViewProdutoEmpresa.class);
             produtoDataModel.setDao(produtos);
         }
 
-        pesquisar();
+
         return produtoDataModel;
     }
 
@@ -794,6 +796,14 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setGtin(String gtin) {
         this.gtin = gtin;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
     }
 
     public List<Empresa> getEmpresasSelecionada() {

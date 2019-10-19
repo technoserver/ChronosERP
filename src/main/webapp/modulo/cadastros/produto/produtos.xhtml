@@ -31,71 +31,87 @@
 
                 <!--</p:contextMenu>-->
                 <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <p:commandButton
-                                    value="Gerar Integracao com a balança"
-                                    action="#{produtoControll.buscarConfiguracoesBalanca}"
-                                    oncomplete="PF('dialogOutrasTelas7').show();"
-                                    update=":formOutrasTelas7:panelOutrasTelas7"
-                            />
 
 
+                    <p:outputPanel id="panel-filtros">
+
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <p:commandButton
+                                        value="Gerar Integracao com a balança"
+                                        action="#{produtoControll.buscarConfiguracoesBalanca}"
+                                        oncomplete="PF('dialogOutrasTelas7').show();"
+                                        update=":formOutrasTelas7:panelOutrasTelas7"
+                                />
+
+
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <erp:campoInteiro idComponente="codigo"
-                                          styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          nomeAtributo="#{produtoControll.codigo}"
-                                          label="Código"/>
+                        <div class="row">
+                            <erp:campoInteiro idComponente="codigo"
+                                              id="cmp-codigo"
+                                              styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              nomeAtributo="#{produtoControll.codigo}"
+                                              label="Código"/>
 
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="produto"
-                                        label="GTIN"
-                                        tamanhoMaximo="14"
-                                        nomeAtributo="#{produtoControll.gtin}"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                            id="cmp-gtin"
+                                            idComponente="gtin"
+                                            label="GTIN"
+                                            tamanhoMaximo="14"
+                                            nomeAtributo="#{produtoControll.gtin}"/>
 
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
-                                        idComponente="produto"
-                                        label="Produto"
-                                        tamanhoMaximo="100"
-                                        nomeAtributo="#{produtoControll.produto}"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                            idComponente="produto"
+                                            id="cmp-produto"
+                                            label="Produto"
+                                            tamanhoMaximo="100"
+                                            nomeAtributo="#{produtoControll.produto}"/>
 
-                        <erp:campoSelect
-                                label="Empresa"
-                                styleClass="col-xs-12 col-sm-4 col-md-4"
-                                nomeAtributo="#{produtoControll.idempresa}"
-                                itens="#{produtoControll.listaEmpresas}"
-                                rendered="#{ produtoControll.listaEmpresas.size() gt 1}"
-                                idComponente="idempresa"/>
 
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
-                                        idComponente="produto"
-                                        label="Grupo"
-                                        tamanhoMaximo="100"
-                                        nomeAtributo="#{produtoControll.strGrupo}"/>
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
-                                        idComponente="produto"
-                                        label="SubGrupo"
-                                        tamanhoMaximo="100"
-                                        nomeAtributo="#{produtoControll.strSubGrupo}"/>
-                        <div class="col-xs-12 col-sm-2 col-md-2">
-                            <h:outputLabel value="Inativo"/>
-                            <div class="field-action">
-                                <h:selectOneMenu value="#{produtoControll.inativo}" styleClass="form-control">
-                                    <f:selectItems value="#{produtoControll.naoSim}"/>
+                            <h:panelGroup class="col-xs-12 col-sm-4 col-md-4" layout="block"
+                                          rendered="#{produtoControll.listaEmpresas.size() gt 1}">
+                                <h:outputLabel value="Empresa"/>
+                                <h:selectOneMenu value="#{produtoControll.idmepresaFiltro}" styleClass="form-control">
+                                    <f:selectItems value="#{produtoControll.listaEmpresas}" itemValue="#{obj.id}"
+                                                   var="obj"/>
                                 </h:selectOneMenu>
-                                <div class="field-action__icon">
-                                    <p:commandLink title="Pesquisar" styleClass="btn btn-default"
-                                                   update="dataTableProduto"
-                                    >
+                            </h:panelGroup>
 
-                                        <i class="glyphicon glyphicon-retweet"></i>
-                                    </p:commandLink>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                            idComponente="grupo"
+                                            id="cmp-grupo"
+                                            label="Grupo"
+                                            tamanhoMaximo="100"
+                                            nomeAtributo="#{produtoControll.strGrupo}"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                            id="cmp-subgrupo"
+                                            idComponente="subgrupo"
+                                            label="SubGrupo"
+                                            tamanhoMaximo="100"
+                                            nomeAtributo="#{produtoControll.strSubGrupo}"/>
+                            <div class="col-xs-12 col-sm-2 col-md-2">
+                                <h:outputLabel value="Inativo"/>
+                                <div class="field-action">
+                                    <h:selectOneMenu value="#{produtoControll.inativo}" styleClass="form-control"
+                                                     id="inativo">
+                                        <f:selectItems value="#{produtoControll.naoSim}"/>
+                                    </h:selectOneMenu>
+                                    <div class="field-action__icon">
+                                        <p:commandButton title="Pesquisar"
+                                                         id="btn-pesquisar"
+                                                         process="@form"
+                                                         action="#{produtoControll.pesquisar}"
+                                                         icon="fa fa-retweet"
+                                                         update=":formCentro:outputPanelGrid">
+
+                                        </p:commandButton>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </p:outputPanel>
                     <br/>
                     <p:dataTable value="#{produtoControll.produtoDataModel}"
                                  var="row" id="dataTableProduto" paginator="true"

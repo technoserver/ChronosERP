@@ -85,7 +85,7 @@ public class EmpresaControll extends AbstractControll<Empresa> implements Serial
         endereco.setCep(cep);
         endereco.setFone(fone);
 
-        if (getObjeto().getTipo().equals("F")) {
+        if (matriz != null && getObjeto().getTipo().equals("F")) {
             getObjeto().setIdempresa(matriz.getIdempresa());
         }
         super.salvar();
