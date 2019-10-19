@@ -92,6 +92,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private String justificativa;
 
     private Date dataInicial, dataFinal;
+    private Date dataEntregaInicial, dataEntregaFinal;
     private String nome;
     private String situacao;
     private Map<String, String> status;
@@ -142,6 +143,13 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         }
         if (dataFinal != null) {
             dataModel.getFiltros().add(new Filtro(Filtro.AND, "dataVenda", Filtro.MENOR_OU_IGUAL, dataFinal));
+        }
+
+        if (dataEntregaInicial != null) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "vendaOrcamentoCabecalho.dataEntrega", Filtro.MAIOR_OU_IGUAL, dataEntregaInicial));
+        }
+        if (dataEntregaFinal != null) {
+            dataModel.getFiltros().add(new Filtro(Filtro.AND, "vendaOrcamentoCabecalho.dataEntrega", Filtro.MENOR_OU_IGUAL, dataEntregaFinal));
         }
 
         if (!StringUtils.isEmpty(nome)) {
@@ -702,5 +710,21 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public boolean isPodeAlterarPreco() {
         return podeAlterarPreco;
+    }
+
+    public Date getDataEntregaInicial() {
+        return dataEntregaInicial;
+    }
+
+    public void setDataEntregaInicial(Date dataEntregaInicial) {
+        this.dataEntregaInicial = dataEntregaInicial;
+    }
+
+    public Date getDataEntregaFinal() {
+        return dataEntregaFinal;
+    }
+
+    public void setDataEntregaFinal(Date dataEntregaFinal) {
+        this.dataEntregaFinal = dataEntregaFinal;
     }
 }
