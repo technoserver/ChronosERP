@@ -98,14 +98,25 @@
                     <h:outputLabel
                             value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
-                <p:column headerText="Ações" width="120" styleClass="text-center">
+                <p:column headerText="Ações" width="180" styleClass="text-right">
                     <p:commandLink title="Alterar"
+                                   style="margin-right: 5px"
                                    action="#{nfeCabecalhoControll.doEdit()}"
                                    class=" btn btn-default"
                                    oncomplete="addClass()"
                                    update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                     >
                         <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{nfeCabecalhoControll.objetoSelecionado}"/>
+                    </p:commandLink>
+
+                    <p:commandLink title="Duplicar" action="#{nfeCabecalhoControll.duplicar}"
+                                   class=" btn btn-default"
+
+                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                    >
+                        <i class="fa fa-files-o"></i>
                         <f:setPropertyActionListener value="#{row}"
                                                      target="#{nfeCabecalhoControll.objetoSelecionado}"/>
                     </p:commandLink>
@@ -123,6 +134,8 @@
                         <f:setPropertyActionListener value="#{row}"
                                                      target="#{nfeCabecalhoControll.objetoSelecionado}"/>
                     </p:commandLink>
+
+
                 </p:column>
             </erp:gridDadosSemForm>
         </erp:formularioGrid>

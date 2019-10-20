@@ -266,6 +266,22 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         }
     }
 
+    public void duplicar() {
+        try {
+            NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+
+            nfeService.duplicarNfe(nfe);
+            Mensagem.addInfoMessage("NFe duplicada com sucesso");
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao duplicar a nfe", ex);
+            }
+        }
+    }
+
     // </editor-fold>
 
 

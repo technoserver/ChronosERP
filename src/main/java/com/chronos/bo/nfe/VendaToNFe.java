@@ -102,12 +102,13 @@ public class VendaToNFe extends ManualCDILookup {
                 pessoa.setTipo("F");
             }
             cliente.setPessoa(pessoa);
-            TributOperacaoFiscal operacaoFiscal = null;
+
             AdmParametro parametro = FacesUtil.getParamentos();
             if (parametro != null && parametro.getTributOperacaoFiscalPadrao() != null) {
-                operacaoFiscal = parametro.getOperacaoFiscal();
+                TributOperacaoFiscal operacaoFiscal = getOperacaoFiscalPadrao(parametro.getTributOperacaoFiscalPadrao());
+                cliente.setTributOperacaoFiscal(operacaoFiscal);
             }
-            cliente.setTributOperacaoFiscal(operacaoFiscal);
+
         }
 
         return cliente;
@@ -118,7 +119,7 @@ public class VendaToNFe extends ManualCDILookup {
         if (cliente != null && cliente.getTributOperacaoFiscal() == null) {
             throw new Exception("Operação tributaria do Cliente " + cliente.getPessoa().getNome() + " não definida");
         }
-        operacaoFiscal = cliente == null ? getOperacaoFiscalPadrao() : cliente.getTributOperacaoFiscal();
+        operacaoFiscal = cliente.getTributOperacaoFiscal();
         nfe.setTributOperacaoFiscal(operacaoFiscal);
         nfe.setNaturezaOperacao(StringUtils.isEmpty(operacaoFiscal.getDescricaoNaNf()) ? operacaoFiscal.getDescricao() : operacaoFiscal.getDescricaoNaNf());
     }
@@ -265,7 +266,7 @@ public class VendaToNFe extends ManualCDILookup {
                 pagamento.setValor(f.getValor());
                 nfe.getListaNfeFormaPagamento().add(pagamento);
             });
-        } else {
+        } else if (tipoVenda == TipoVenda.OS) {
             os.getListaFormaPagamento().stream().forEach(f -> {
                 NfeFormaPagamento pagamento = new NfeFormaPagamento();
                 pagamento.setTroco(f.getTroco());
@@ -280,6 +281,18 @@ public class VendaToNFe extends ManualCDILookup {
                 pagamento.setValor(f.getValor());
                 nfe.getListaNfeFormaPagamento().add(pagamento);
             });
+        } else {
+
+            FinTipoRecebimento tipoRecebimento = venda.getCondicoesPagamento().getTipoRecebimento();
+            TipoPagamento tipoPagamento = new TipoPagamento();
+            tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
+            NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
+            nfeFormaPagamento.setTipoPagamento(tipoPagamento);
+            nfeFormaPagamento.setNfeCabecalho(nfe);
+            nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
+            nfeFormaPagamento.setValor(tipoVenda == TipoVenda.VENDA ? venda.getValorTotal() : os.getValorTotal());
+            nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
+
         }
     }
 
@@ -340,10 +353,10 @@ public class VendaToNFe extends ManualCDILookup {
         return uf.equals(ufDestino) ? LocalDestino.INTERNA : LocalDestino.INTERESTADUAL;
     }
 
-    private TributOperacaoFiscal getOperacaoFiscalPadrao() {
+    private TributOperacaoFiscal getOperacaoFiscalPadrao(int id) {
         Repository<TributOperacaoFiscal> operacaoRepository = getFacadeWithJNDI(Repository.class);
 
-        return operacaoRepository.get(1, TributOperacaoFiscal.class);
+        return operacaoRepository.get(id, TributOperacaoFiscal.class);
     }
 
 

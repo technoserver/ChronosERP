@@ -34,26 +34,26 @@
                     reflow="true" rendered="#{finLancamentoReceberControll.podeConsultar()}"
                     lazy="true">
 
-                <p:column headerText="Documento" width="120">
-                    <h:outputLabel value="#{row.numeroDocumento}"/>
-                </p:column>
                 <p:column headerText="Cliente">
-                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                    <p>
+                        <h:outputLabel value="Documento Nº "/> &nbsp; #{row.numeroDocumento}
+                    </p>
+                    #{row.cliente.pessoa.nome}
                 </p:column>
-                <p:column headerText="Qtde Parcela" width="120" styleClass="text-center">
+                <p:column headerText="Qte Parcelas" width="140" styleClass="text-center">
                     <h:outputLabel value="#{row.quantidadeParcela}"/>
                 </p:column>
-                <p:column headerText="Valor A Receber" styleClass="text-right" width="140">
+                <p:column headerText="Valor A Receber" styleClass="text-right" width="155">
                     <h:outputLabel value="#{row.valorAReceber}">
                         <f:convertNumber pattern="#,##0.00"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Data Lancamento" styleClass="text-center" width="150">
+                <p:column headerText="Lancamento" styleClass="text-center" width="150">
                     <h:outputLabel value="#{row.dataLancamento}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="1º Vencimento" styleClass="text-center" width="140">
+                <p:column headerText="1º Vencimento" styleClass="text-center" width="145">
                     <h:outputLabel value="#{row.primeiroVencimento}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputLabel>
@@ -232,6 +232,40 @@
                             <h:outputLabel value="#{obj.valor}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Recebimento" id="tabRecebimento"
+                       disabled="#{finLancamentoReceberControll.recebimentos.size() eq 0}">
+                    <p:dataTable id="dataTableRecebimento" var="obj"
+                                 value="#{finLancamentoReceberControll.recebimentos}"
+                                 resizableColumns="true">
+
+                        <p:column headerText="Pagamento em " styleClass="text-center">
+                            <h:outputLabel value="#{obj.dataRecebimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Valor" styleClass="text-right">
+                            <h:outputLabel value="#{obj.valorRecebido}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Açoes" styleClass="text-center">
+                            <p:commandLink title="Estornar"
+                                           action="#{finLancamentoReceberControll.excluirRecebimento}"
+                                           update=":formCentro:growl,:formCentro:telaDetalhe:tabViewDetalhes"
+                                           process="@this,:formCentro:telaDetalhe:tabViewDetalhes:dataTableRecebimento"
+                                           id="btn-estornar"
+                                           class="btn btn-default"
+                                           rendered="#{seguranca.administrador}"
+                            >
+                                <i class="fa fa-ban"></i>
+                                <p:confirm header="Confirmar" message="Deseja estornar o recebimento ?"/>
+
+                                <f:setPropertyActionListener value="#{obj}"
+                                                             target="#{finLancamentoReceberControll.recebimentoSelecionado}"/>
+                            </p:commandLink>
                         </p:column>
                     </p:dataTable>
                 </p:tab>

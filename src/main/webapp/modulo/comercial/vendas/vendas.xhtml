@@ -36,20 +36,36 @@
 
                     <div class="row m-b">
 
-                        <erp:campoTexto idComponente="nome"
+                        <erp:campoTexto idComponente="Cliente"
                                         nomeAtributo="#{vendaCabecalhoControll.nome}"
-                                        styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        styleClass="col-xs-12 col-sm-6 col-md-6"
                                         tamanhoMaximo="60" label="Nome"/>
 
 
                         <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataInicial}"
-                                       label="Data inicial"
-                                       idComponente="vencimentoDe"
+                                       label="Data da Venda inicial"
+                                       idComponente="dataInicial"
                                        styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
                         <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataFinal}"
-                                       label="Data Final"
-                                       idComponente="vencimentoAte"
+                                       label="Data da venda Final"
+                                       idComponente="dataFinal"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                        <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataEntregaInicial}"
+                                       label="Data da entrega inicial"
+                                       idComponente="dataInicial"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+
+
+
+                    </div>
+
+                    <div class="row">
+                        <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataEntregaFinal}"
+                                       label="Data da entrega Final"
+                                       idComponente="dataFinal"
                                        styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
 
@@ -70,8 +86,6 @@
                             </p:commandLink>
 
                         </div>
-
-
                     </div>
 
                     <p:dataTable
