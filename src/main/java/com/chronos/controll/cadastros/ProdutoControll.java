@@ -185,7 +185,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         if (!StringUtils.isEmpty(gtin)) {
             produtoDataModel.addFiltro("gtin", gtin, Filtro.IGUAL);
         }
-        idmepresaFiltro = idmepresaFiltro != null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
         produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
         produtoDataModel.addFiltro("idempresa", idmepresaFiltro, Filtro.IGUAL);
     }
