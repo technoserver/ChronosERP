@@ -19,6 +19,7 @@ import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.StringUtils;
 
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -144,7 +145,14 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             nfe.setTokenCsc(configuracaoEmissorDTO.getTokenCsc());
             nfe.setSerie(configuracaoEmissorDTO.getSerie());
             String infAdd = nfe.getInformacoesAddContribuinte();
-            infAdd += " " + venda.getObservacao();
+
+
+            if (!StringUtils.isEmpty(infAdd)) {
+                infAdd += "\n" + configuracaoEmissorDTO.getObservacaoPadrao();
+            }
+
+            infAdd += "\n" + venda.getObservacao();
+
             nfe.setInformacoesAddContribuinte(infAdd);
             StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
