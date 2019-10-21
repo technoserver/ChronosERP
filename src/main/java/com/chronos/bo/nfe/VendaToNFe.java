@@ -54,7 +54,7 @@ public class VendaToNFe extends ManualCDILookup {
 
     }
 
-    public VendaToNFe(ModeloDocumento modelo, PdvVendaCabecalho pdvVenda) {
+    public VendaToNFe(ModeloDocumento modelo, PdvVendaCabecalho pdvVenda) throws Exception {
         this.modelo = modelo;
         this.pdvVenda = pdvVenda;
         cliente = instanciaCliente(pdvVenda);
@@ -82,7 +82,7 @@ public class VendaToNFe extends ManualCDILookup {
         return nfe;
     }
 
-    private Cliente instanciaCliente(PdvVendaCabecalho pdvVenda) {
+    private Cliente instanciaCliente(PdvVendaCabecalho pdvVenda) throws Exception {
         Cliente cliente = pdvVenda.getCliente();
 
         if (cliente == null && !StringUtils.isEmpty(pdvVenda.getCpfCnpjCliente()) && !StringUtils.isEmpty(pdvVenda.getNomeCliente())) {
@@ -103,11 +103,9 @@ public class VendaToNFe extends ManualCDILookup {
             }
             cliente.setPessoa(pessoa);
 
-            AdmParametro parametro = FacesUtil.getParamentos();
-            if (parametro != null && parametro.getTributOperacaoFiscalPadrao() != null) {
-                TributOperacaoFiscal operacaoFiscal = getOperacaoFiscalPadrao(parametro.getTributOperacaoFiscalPadrao());
-                cliente.setTributOperacaoFiscal(operacaoFiscal);
-            }
+            TributOperacaoFiscal operacaoFiscalPadrao = getOperacaoFiscalPadrao();
+
+            cliente.setTributOperacaoFiscal(operacaoFiscalPadrao);
 
         }
 
@@ -119,7 +117,7 @@ public class VendaToNFe extends ManualCDILookup {
         if (cliente != null && cliente.getTributOperacaoFiscal() == null) {
             throw new Exception("Operação tributaria do Cliente " + cliente.getPessoa().getNome() + " não definida");
         }
-        operacaoFiscal = cliente.getTributOperacaoFiscal();
+        operacaoFiscal = cliente == null ? getOperacaoFiscalPadrao() : cliente.getTributOperacaoFiscal();
         nfe.setTributOperacaoFiscal(operacaoFiscal);
         nfe.setNaturezaOperacao(StringUtils.isEmpty(operacaoFiscal.getDescricaoNaNf()) ? operacaoFiscal.getDescricao() : operacaoFiscal.getDescricaoNaNf());
     }
@@ -353,10 +351,17 @@ public class VendaToNFe extends ManualCDILookup {
         return uf.equals(ufDestino) ? LocalDestino.INTERNA : LocalDestino.INTERESTADUAL;
     }
 
-    private TributOperacaoFiscal getOperacaoFiscalPadrao(int id) {
+    private TributOperacaoFiscal getOperacaoFiscalPadrao() throws Exception {
+
+        AdmParametro parametro = FacesUtil.getParamentos();
+
+        if (parametro == null || parametro.getTributOperacaoFiscalPadrao() == null) {
+            throw new Exception("Operação tributaria padrão não definida");
+        }
+
         Repository<TributOperacaoFiscal> operacaoRepository = getFacadeWithJNDI(Repository.class);
 
-        return operacaoRepository.get(id, TributOperacaoFiscal.class);
+        return operacaoRepository.get(parametro.getTributOperacaoFiscalPadrao(), TributOperacaoFiscal.class);
     }
 
 
