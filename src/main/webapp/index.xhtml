@@ -89,6 +89,10 @@
                 text-align: right;
             }
 
+            .not-show {
+                display: none;
+            }
+
         </style>
     </ui:define>
     <ui:define name="title">
@@ -230,7 +234,7 @@
         </div>
 
 
-        <h:panelGroup layout="block" styleClass="row">
+        <h:panelGroup layout="block" styleClass="row" rendered="#{seguranca.isTemAcesso('VENDA')}">
 
             <div class="col-xs-12 col-md-4">
                 <div class="box">
@@ -308,36 +312,40 @@
             </div>
         </h:panelGroup>
 
+        <div class="row">
+            <div class="col-md-12">
+                <div class="ibox">
+                    <div class="ibox-content">
+                        <h3 style="font-weight: bold;margin-bottom: 20px">Compromissos</h3>
+                        <p:dataTable id="dataTableCompromisso" var="obj"
+                                     value="#{homeControll.compromissos}"
+                                     paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
+                                     resizableColumns="true" paginatorPosition="bottom">
 
-    </ui:define>
 
-    <ui:define name="telaInclusaoAlteracao">
-        <div class="ibox-content">
-            <h3 style="font-weight: bold;margin-bottom: 20px">Compromissos</h3>
-            <p:dataTable id="dataTableCompromisso" var="obj"
-                         value="#{homeControll.compromissos}"
-                         paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
-                         resizableColumns="true" paginatorPosition="bottom">
+                            <p:column headerText="Data" width="100">
+                                <h:outputLabel value="#{obj.dataCompromisso}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputLabel>
+                            </p:column>
+                            <p:column headerText="Hora" width="80">
+                                <h:outputLabel value="#{obj.hora}"/>
+                            </p:column>
+                            <p:column headerText="Descrição">
+                                <h:outputLabel value="#{obj.descricao}"/>
+                            </p:column>
+                            <p:column headerText="Local">
+                                <h:outputLabel value="#{obj.onde}"/>
+                            </p:column>
 
-
-                <p:column headerText="Data" width="100">
-                    <h:outputLabel value="#{obj.dataCompromisso}">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputLabel>
-                </p:column>
-                <p:column headerText="Hora" width="80">
-                    <h:outputLabel value="#{obj.hora}"/>
-                </p:column>
-                <p:column headerText="Descrição">
-                    <h:outputLabel value="#{obj.descricao}"/>
-                </p:column>
-                <p:column headerText="Local">
-                    <h:outputLabel value="#{obj.onde}"/>
-                </p:column>
-
-            </p:dataTable>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </ui:define>
+
 
     <ui:define name="outrasTelas">
         <h:form id="formOutrasTelas">

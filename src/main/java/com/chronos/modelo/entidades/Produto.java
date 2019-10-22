@@ -664,7 +664,7 @@ public class Produto implements Serializable {
     }
 
     public BigDecimal getControle() {
-        return Optional.of(controle).orElse(BigDecimal.ZERO);
+        return Optional.ofNullable(controle).orElse(BigDecimal.ZERO);
     }
 
     public void setControle(BigDecimal controle) {

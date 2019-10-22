@@ -59,6 +59,9 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     private Repository<VendaDetalhe> vendaDetalheRepository;
 
     @Inject
+    private Repository<PdvVendaCabecalho> pdvVendaCabecalhoRepository;
+
+    @Inject
     private MovimentoService movimentoService;
 
     private Cliente cliente;
@@ -174,9 +177,10 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         Integer id;
 
         String idempresa = "E" + empresa.getId();
+        String str = numDoc.substring(6 + 1, numDoc.lastIndexOf("C"));
         if (numDoc.contains(idempresa + "M" + Modulo.VENDA.getCodigo())) {
 
-            String str = numDoc.substring(6 + 1, numDoc.lastIndexOf("C"));
+
             boolean isNumber = str.chars().allMatch(Character::isDigit);
             if (isNumber) {
                 id = Integer.parseInt(str);
@@ -192,7 +196,25 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
 
             }
         } else if (numDoc.contains("M" + Modulo.PDV.getCodigo())) {
+            boolean isNumber = str.chars().allMatch(Character::isDigit);
+            if (isNumber) {
+                id = Integer.parseInt(str);
+                PdvVendaCabecalho venda = pdvVendaCabecalhoRepository.get(id, PdvVendaCabecalho.class);
 
+                if (venda != null) {
+                    fatorGerador = new FatorGeradorDTO(venda.getId(), venda.getDataHoraVenda(),
+                            venda.getValorTotal(), venda.getVendedor().getColaborador().getPessoa().getNome(), "", null);
+                    fatorGerador.setDoc(numDoc);
+                    fatorGerador.setItens(new ArrayList<>());
+
+
+                    venda.getListaPdvVendaDetalhe().forEach(i -> {
+                        fatorGerador.addItem(i.getProduto().getNome(), i.getQuantidade(), i.getValorTotal());
+                    });
+                }
+
+
+            }
         } else if (numDoc.contains("M" + Modulo.OS.getCodigo())) {
 
         }

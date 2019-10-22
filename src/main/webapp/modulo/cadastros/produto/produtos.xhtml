@@ -592,22 +592,6 @@
                 </p:tab>
                 <p:tab title="Estoque">
                     <div class="row">
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                          label="Grade"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{produtoControll}"
-                                          completeMethod="getListaProdutoGrade"
-                                          nomeAtributo="#{produtoControll.objeto.produtoGrade}"
-                                          idComponente="produtoGrade"
-                                          requerido="false"
-                                          id="campoprodutoGrade"/>
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
-                                          idComponente="controle"
-                                          label="Qtde Est. Verificado"
-                                          rendered="#{empty produtoControll.objeto.id}"
-                                          nomeAtributo="#{produtoControll.objeto.controle}"/>
-                    </div>
-                    <div class="row">
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
                                           idComponente="produtoQuantidadeEstoqueAnterior"
                                           label="Qtde Est. Anterior"

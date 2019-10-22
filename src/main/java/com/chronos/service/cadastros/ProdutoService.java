@@ -33,16 +33,19 @@ public class ProdutoService implements Serializable {
 
     private static final long serialVersionUID = 8349487869365747547L;
 
-    @Inject
-    private EstoqueRepository repository;
-    @Inject
-    private Repository<Produto> produtoRepository;
 
-    @Inject
+    private EstoqueRepository repository;
+    private Repository<Produto> produtoRepository;
     private Repository<EmpresaProduto> empresaProdutoRepository;
-    @Inject
     private Repository<ProdutoGrade> gradeRepository;
 
+    @Inject
+    public ProdutoService(EstoqueRepository repository, Repository<Produto> produtoRepository, Repository<EmpresaProduto> empresaProdutoRepository, Repository<ProdutoGrade> gradeRepository) {
+        this.repository = repository;
+        this.produtoRepository = produtoRepository;
+        this.empresaProdutoRepository = empresaProdutoRepository;
+        this.gradeRepository = gradeRepository;
+    }
 
     @Transactional
     public Produto salvar(Produto produto, List<Empresa> empresas) throws ChronosException {
@@ -50,6 +53,10 @@ public class ProdutoService implements Serializable {
         if (produto.getValorVendaAtacado() != null && produto.getValorVendaAtacado().signum() > 0
                 && (produto.getQuantidadeVendaAtacado() == null || produto.getQuantidadeVendaAtacado().signum() <= 0)) {
             throw new ChronosException("Para informar valor de venda no atacado  é preciso informar a quantidade para atacado");
+        }
+
+        if (StringUtils.isEmpty(produto.getTipo())) {
+            throw new ChronosException("Tipo do produto não definido");
         }
 
         if (produto.getTipo().equals("V") && produto.getTributGrupoTributario() == null) {
@@ -88,6 +95,7 @@ public class ProdutoService implements Serializable {
                     if (empresas.isEmpty()) {
                         empresas.add(FacesUtil.getEmpresaUsuario());
                     }
+
                     produto.setControle(controle);
                     gerarEmpresaProduto(produto, empresas);
 
