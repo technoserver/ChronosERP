@@ -41,13 +41,13 @@ public class produtoServiceTest {
 
     @Test(expected = ChronosException.class)
     public void devemos_garantir_que_seja_informado_o_tipo_no_produto() throws ChronosException {
-        service.salvar(produto, empresas);
+        service.salvar(produto, empresas, null);
     }
 
     @Test(expected = ChronosException.class)
     public void devemos_garantir_para_produto_do_tipo_venda_seja_obrigatorio_informa_a_tributacao() throws ChronosException {
         produto.setTipo("V");
-        service.salvar(produto, empresas);
+        service.salvar(produto, empresas, null);
     }
 
     @Test
@@ -58,6 +58,6 @@ public class produtoServiceTest {
         produto.setTipo("V");
         produto.setNome("PRODUTO TEste");
         produto.setTributGrupoTributario(new TributGrupoTributario(1));
-        service.salvar(produto, empresas);
+        service.salvar(produto, empresas, null);
     }
 }

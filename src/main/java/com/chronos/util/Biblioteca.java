@@ -33,16 +33,29 @@ import java.util.regex.Pattern;
 public class Biblioteca {
 
 
-    public static BigDecimal calcularPercentual(BigDecimal subTotal, BigDecimal total) throws ChronosException {
+    public static BigDecimal descDinheiroToPercentual(BigDecimal subTotal, BigDecimal descontoAplicado) throws ChronosException {
 
 
-        BigDecimal desconto = subtrai(subTotal, total);
+        BigDecimal desconto = subtrai(subTotal, descontoAplicado);
 
 
         desconto = divide(desconto, subTotal);
         desconto = multiplica(desconto, BigDecimal.valueOf(100));
         BigDecimal cem = BigDecimal.valueOf(100);
         BigDecimal percentual = cem.subtract(desconto);
+
+        return percentual;
+
+    }
+
+    public static BigDecimal calcularDescontoEmPercentual(BigDecimal subTotal, BigDecimal total) throws ChronosException {
+
+
+        BigDecimal desconto = subtrai(subTotal, total);
+
+
+        desconto = divide(desconto, subTotal);
+        BigDecimal percentual = multiplica(desconto, BigDecimal.valueOf(100));
 
         return percentual;
 

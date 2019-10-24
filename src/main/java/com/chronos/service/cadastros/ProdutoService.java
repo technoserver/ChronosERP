@@ -1,6 +1,5 @@
 package com.chronos.service.cadastros;
 
-import com.chronos.dto.GradeDTO;
 import com.chronos.dto.ProdutoDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.enuns.ModeloBalanca;
@@ -10,11 +9,9 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.ArquivoUtil;
-import com.chronos.util.Biblioteca;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
-import org.springframework.beans.BeanUtils;
 import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
@@ -37,18 +34,19 @@ public class ProdutoService implements Serializable {
     private EstoqueRepository repository;
     private Repository<Produto> produtoRepository;
     private Repository<EmpresaProduto> empresaProdutoRepository;
-    private Repository<ProdutoGrade> gradeRepository;
+
+    private Repository<EstoqueGrade> estoqueGradeRepository;
 
     @Inject
-    public ProdutoService(EstoqueRepository repository, Repository<Produto> produtoRepository, Repository<EmpresaProduto> empresaProdutoRepository, Repository<ProdutoGrade> gradeRepository) {
+    public ProdutoService(EstoqueRepository repository, Repository<Produto> produtoRepository, Repository<EmpresaProduto> empresaProdutoRepository, Repository<EstoqueGrade> estoqueGradeRepository) {
         this.repository = repository;
         this.produtoRepository = produtoRepository;
         this.empresaProdutoRepository = empresaProdutoRepository;
-        this.gradeRepository = gradeRepository;
+        this.estoqueGradeRepository = estoqueGradeRepository;
     }
 
     @Transactional
-    public Produto salvar(Produto produto, List<Empresa> empresas) throws ChronosException {
+    public Produto salvar(Produto produto, List<Empresa> empresas, List<EstoqueGrade> grades) throws ChronosException {
 
         if (produto.getValorVendaAtacado() != null && produto.getValorVendaAtacado().signum() > 0
                 && (produto.getQuantidadeVendaAtacado() == null || produto.getQuantidadeVendaAtacado().signum() <= 0)) {
@@ -99,10 +97,26 @@ public class ProdutoService implements Serializable {
                     produto.setControle(controle);
                     gerarEmpresaProduto(produto, empresas);
 
+
                 } else {
                     produto.setDataAlteracao(new Date());
                     produto = produtoRepository.atualizar(produto);
                     //TODO verificar o fluxo de salva produt alterado.
+
+                }
+
+                if (grades != null && !grades.isEmpty()) {
+
+                    for (EstoqueGrade g : grades) {
+
+                        if (g.getId() == null) {
+                            String codigo = produto.getId() + g.getEstoqueCor().getCodigo() + g.getEstoqueTamanho().getCodigo();
+                            g.setCodigo(codigo);
+                            g.setIdproduto(produto.getId());
+                            estoqueGradeRepository.salvar(g);
+                        }
+                    }
+
 
                 }
 
@@ -146,63 +160,6 @@ public class ProdutoService implements Serializable {
         String servico = moduloVenda ? "N" : "S";
         descricao = descricao.trim();
         listaProduto = repository.getProdutoDTO(descricao, empresa, servico);
-        List<ProdutoDTO> newList;
-        boolean existeGrade = listaProduto.stream().filter(p -> p.getIdgrade() != null).count() > 0;
-
-        if (existeGrade) {
-            newList = listaProduto.stream().filter(p -> p.getIdgrade() == null).collect(Collectors.toList());
-
-            for (Iterator<ProdutoDTO> iterator = listaProduto.iterator(); iterator.hasNext(); ) {
-                ProdutoDTO value = iterator.next();
-
-                if (value.getIdgrade() != null) {
-                    ProdutoGrade grade = gradeRepository.getJoinFetchList(value.getIdgrade(), ProdutoGrade.class);
-
-//                    List<List<String>> listC = new ArrayList<>();
-                    List<List<GradeDTO>> listC = new ArrayList<>();
-//                    List<String> result = new ArrayList<>();
-                    List<GradeDTO> result = new ArrayList<>();
-                    String codigoGrade = "";
-
-                    for (ProdutoGradeDetalhe g : grade.getListaProdutoGradeDetalhe()) {
-
-//                        List<String> list = new ArrayList<>();
-                        List<GradeDTO> list = new ArrayList<>();
-
-                        for (ProdutoAtributoDetalhe a : g.getProdutoAtributo().getListaProdutoAtributoDetalhe()) {
-                            codigoGrade = value.getId() + "." + g.getProdutoAtributo().getId() + "." + a.getId();
-                            value.setCodigoGrade(codigoGrade);
-//                            list.add((a.getProdutoAtributo().getSigla() + "=" + a.getNome() + "; "));
-
-
-                            list.add(new GradeDTO("A" + a.getProdutoAtributo().getId() + "." + a.getId().toString(), a.getProdutoAtributo().getSigla() + "=" + a.getNome() + "; "));
-                        }
-
-
-                        listC.add(list);
-
-
-                    }
-
-                    Biblioteca.generateCombinations(listC, result, 0, new GradeDTO("", ""));
-
-
-                    for (GradeDTO g : result) {
-                        ProdutoDTO newProduct = new ProdutoDTO();
-                        newProduct.setCodigoGrade("G" + value.getIdgrade() + g.getCodigo());
-                        newProduct.setNome(value.getNome() + " " + g.getNome());
-                        BeanUtils.copyProperties(value, newProduct, "nome", "codigoGrade");
-                        newList.add(newProduct);
-
-                    }
-
-
-                }
-
-            }
-
-            return newList;
-        }
 
 
         return listaProduto;

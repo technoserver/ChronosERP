@@ -8,6 +8,7 @@ package com.chronos.controll.cadastros;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.controll.cadastros.datamodel.ProdutoEmpresaDataModel;
+import com.chronos.dto.ProdutoResumDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.view.ViewProdutoEmpresa;
 import com.chronos.repository.Filtro;
@@ -17,6 +18,7 @@ import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.model.Visibility;
@@ -57,6 +59,12 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Inject
     private Repository<TributGrupoTributario> gruposTributarios;
     @Inject
+    private Repository<EstoqueCor> estoqueCorRepository;
+    @Inject
+    private Repository<EstoqueTamanho> estoqueTamanhoRepository;
+    @Inject
+    private Repository<EstoqueGrade> estoqueGradeRepository;
+    @Inject
     private Repository<ViewProdutoEmpresa> produtos;
     @Inject
     private Repository<EmpresaProduto> produtosEmpresa;
@@ -78,17 +86,15 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     @Inject
     private ProdutoService service;
-    @Inject
-    private Repository<EmpresaPessoa> empresaPessoaRepository;
 
-    @Inject
-    private Repository<Empresa> empresaRepository;
 
     private ProdutoGrupo grupo;
     private ProdutoEmpresaDataModel produtoDataModel;
     private List<EmpresaProduto> listProdutoEmpresa;
     private List<Empresa> empresas;
+    private List<EstoqueGrade> grades;
     private ViewProdutoEmpresa produtoSelecionado;
+
 
     private Integer codigo;
     private Integer idmepresaFiltro;
@@ -104,6 +110,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private ProdutoMarca marca;
     private Almoxarifado almoxarifado;
     private ProdutoSubGrupo subGrupo;
+    private EstoqueCor cor;
+    private EstoqueTamanho tamanho;
 
     private UnidadeConversao unidadeConversao;
     private UnidadeConversao unidadeConversaoSelecionada;
@@ -119,8 +127,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private BigDecimal fator;
 
     private int idempresa;
-    private List<Empresa> listaEmpresas;
-    private List<Empresa> empresasSelecionada;
+
 
     private PdvConfiguracaoBalanca configuracaoBalanca;
 
@@ -134,34 +141,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         pesquisarEmpresas();
     }
 
-    public void pesquisarEmpresas() {
 
-
-        listaEmpresas = new ArrayList<>();
-        idmepresaFiltro = empresa.getId();
-        empresasSelecionada = new ArrayList<>();
-        if (usuario.getAdministrador().equals("S")) {
-            List<Empresa> empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
-
-            if (!empresas.isEmpty() && empresas.size() > 1) {
-                empresas.forEach(e -> {
-                    listaEmpresas.add(e);
-                });
-            }
-
-
-        } else {
-            List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
-
-            if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 1) {
-
-                for (EmpresaPessoa emp : empresaPessoas) {
-                    listaEmpresas.add(emp.getEmpresa());
-                }
-
-            }
-        }
-    }
 
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
@@ -233,7 +213,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         getObjeto().setControle(BigDecimal.ZERO);
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
-
+        grades = new ArrayList<>();
 
 
     }
@@ -248,6 +228,17 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         nomeProdutoOld = getObjeto().getNome();
         nomeFoto = getObjeto().getImagem();
         conversoes = unidadeConversaoRepository.getEntitys(UnidadeConversao.class, "produto.id", getObjeto().getId(), new Object[]{"sigla", "fatorConversao", "acao"});
+
+        if (getObjeto().getPossuiGrade()) {
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("idproduto", getObjeto().getId()));
+            filtros.add(new Filtro("idempresa", empresa.getId()));
+
+            grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+        } else {
+            grades = new ArrayList<>();
+        }
+
     }
 
     @Override
@@ -276,7 +267,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                 empresasSelecionada = new ArrayList<>();
             }
 
-            setObjeto(service.salvar(getObjeto(), empresasSelecionada));
+            setObjeto(service.salvar(getObjeto(), empresasSelecionada, grades));
             Mensagem.addInfoMessage("Registro salvo com sucesso");
         } catch (Exception ex) {
 
@@ -289,6 +280,16 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         }
 
 
+    }
+
+    public void salvarCadastroRapido(SelectEvent event) {
+        ProdutoResumDTO prod = (ProdutoResumDTO) event.getObject();
+
+        Produto produto = prod.gerarProduto();
+
+        setObjeto(produto);
+
+        salvar();
     }
 
     public void copiar() {
@@ -405,6 +406,29 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         return listaGrupoTributario;
     }
 
+    public List<EstoqueCor> getListaCor(String nome) {
+        List<EstoqueCor> cores = new ArrayList<>();
+        try {
+
+            cores = estoqueCorRepository.getEntitys(EstoqueCor.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return cores;
+    }
+
+    public List<EstoqueTamanho> getListaTamanho(String nome) {
+        List<EstoqueTamanho> tamanhos = new ArrayList<>();
+        try {
+
+            tamanhos = estoqueTamanhoRepository.getEntitys(EstoqueTamanho.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return tamanhos;
+    }
+
+
     public List<ProdutoMarca> getListaMarcaProduto(String nome) {
         List<ProdutoMarca> listaMarcaProduto = new ArrayList<>();
         try {
@@ -472,6 +496,47 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             }
         }
 
+    }
+
+    public void addGrade() {
+
+        if (cor == null) {
+            Mensagem.addErrorMessage("Cor obrigatoria");
+            return;
+        }
+
+        if (tamanho == null) {
+            Mensagem.addErrorMessage("Tamanho obrigatoria");
+            return;
+        }
+
+        boolean present = grades
+                .stream()
+                .filter(g -> g.getEstoqueCor().getId().equals(cor.getId())
+                        && g.getEstoqueTamanho().getId().equals(tamanho.getId()))
+                .findFirst().isPresent();
+
+
+        if (!present) {
+            EstoqueGrade grade = new EstoqueGrade();
+            grade.setEstoqueCor(cor);
+            grade.setEstoqueTamanho(tamanho);
+            grade.setIdempresa(empresa.getId());
+            grades.add(grade);
+        } else {
+            Mensagem.addErrorMessage("Grade já definida");
+        }
+
+
+    }
+
+    public void removerGrade(EstoqueGrade grade) {
+
+        if (grade.getId() != null) {
+            estoqueGradeRepository.excluir(grade);
+        }
+
+        grades.remove(grade);
     }
 
     public void addMarca() {
@@ -821,5 +886,25 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public boolean isListaEmpresaEmpty() {
         return listaEmpresas.isEmpty();
+    }
+
+    public EstoqueCor getCor() {
+        return cor;
+    }
+
+    public void setCor(EstoqueCor cor) {
+        this.cor = cor;
+    }
+
+    public EstoqueTamanho getTamanho() {
+        return tamanho;
+    }
+
+    public void setTamanho(EstoqueTamanho tamanho) {
+        this.tamanho = tamanho;
+    }
+
+    public List<EstoqueGrade> getGrades() {
+        return grades;
     }
 }

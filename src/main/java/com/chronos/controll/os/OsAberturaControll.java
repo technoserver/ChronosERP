@@ -122,6 +122,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
 
         listTipoPagamento = definirTipoPagament();
+
+        doCreate();
     }
 
     @Override
@@ -205,7 +207,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 getObjeto().setListaFormaPagamento(new HashSet<>());
                 getObjeto().setStatus(1);
                 getObjeto().setEmpresa(empresa);
-                getObjeto().setValorTotal(BigDecimal.ZERO);
 
                 if (parametro.getOsGerarMovimentoCaixa().equals("S")) {
                     getObjeto().setMovimento(movimento);
@@ -281,6 +282,27 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         }
     }
 
+    public void aplicarDesconto() {
+
+        try {
+            int tipo = tipoDesconto.equals("RS") ? 1 : 0;
+            osService.aplicarDesconto(getObjeto(), tipo, desconto);
+            desconto = BigDecimal.ZERO;
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+                FacesContext.getCurrentInstance().validationFailed();
+            } else {
+                throw new RuntimeException("erro ao aplicar desconto", ex);
+            }
+        }
+
+    }
+
+    public void removerDesconto() {
+        osService.removerDesconto(getObjeto());
+        desconto = BigDecimal.ZERO;
+    }
 
     public void encerrar() {
         try {
@@ -445,7 +467,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public void excluirOsProdutoServico() {
         getObjeto().getListaOsProdutoServico().remove(osProdutoServicoSelecionado);
         getObjeto().calcularValores();
-        setObjeto(dao.atualizar(getObjeto()));
         totalReceber = getObjeto().getValorTotal();
         verificaSaldoRestante();
         Mensagem.addInfoMessage("Servi/Produto excluído com sucesso!");

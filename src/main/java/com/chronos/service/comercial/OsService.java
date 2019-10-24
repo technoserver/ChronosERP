@@ -22,6 +22,7 @@ import com.chronos.util.jsf.Mensagem;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,11 @@ public class OsService extends AbstractService<OsAbertura> {
 
     public OsAbertura salvarItem(OsAbertura os, OsProdutoServico item, String tipoDesconto, BigDecimal desconto) throws ChronosException {
         itens = os.getListaOsProdutoServico();
+
+        if (item.getProduto() == null || item.getProduto().getServico() == null) {
+            throw new ChronosException("Tipo do produto não definido");
+        }
+
         item.setTipo(item.getProduto().getServico() != null && item.getProduto().getServico().equals("S") ? 1 : 0);
         Optional<OsProdutoServico> itemOptional = buscarItem(item.getProduto());
         BigDecimal quantidade = item.getQuantidade();
@@ -95,7 +101,7 @@ public class OsService extends AbstractService<OsAbertura> {
                 item.setValorDesconto(valorDesconto);
             } else {
                 item.setValorDesconto(desconto);
-                BigDecimal taxDesc = Biblioteca.calcularPercentual(item.getValorSubtotal(), item.getValorTotal());
+                BigDecimal taxDesc = Biblioteca.descDinheiroToPercentual(item.getValorSubtotal(), desconto);
                 item.setTaxaDesconto(taxDesc);
             }
         }
@@ -112,6 +118,80 @@ public class OsService extends AbstractService<OsAbertura> {
 
         return os;
     }
+
+    public void aplicarDesconto(OsAbertura os, int tipoDesconto, BigDecimal desconto) throws ChronosException {
+        BigDecimal valorDesconto;
+
+
+        if (os.getValorTotal() == null) {
+            throw new ChronosException("Valor total não informando");
+        }
+
+        if (os.getListaOsProdutoServico() == null || os.getListaOsProdutoServico().isEmpty()) {
+            throw new ChronosException("Não foram informado item(s) para está venda");
+        }
+
+        if (tipoDesconto == 1) {
+            valorDesconto = desconto;
+        } else {
+            valorDesconto = Biblioteca.calcularValorPercentual(os.getValorTotal(), desconto);
+
+        }
+
+        BigDecimal fator = valorDesconto.divide(os.getValorTotal(), MathContext.DECIMAL64);
+        BigDecimal descAntecipado = os.getListaOsProdutoServico()
+                .stream()
+                .map(OsProdutoServico::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        for (OsProdutoServico i : os.getListaOsProdutoServico()) {
+            BigDecimal descItem = Biblioteca.multiplica(fator, i.getValorSubtotal());
+            BigDecimal vlrDesc = Biblioteca.soma(Optional.ofNullable(i.getValorDesconto()).orElse(BigDecimal.ZERO), descItem);
+            BigDecimal vlrTotal = Biblioteca.subtrai(i.getValorSubtotal(), vlrDesc);
+            BigDecimal txDesc = Biblioteca.calcularFator(i.getValorSubtotal(), vlrTotal);
+            i.setValorDesconto(vlrDesc);
+            i.setValorTotal(vlrTotal);
+            i.setTaxaDesconto(txDesc);
+
+        }
+
+        BigDecimal descItens = os.getListaOsProdutoServico()
+                .stream()
+                .map(OsProdutoServico::getValorDesconto)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
+
+        BigDecimal sobra = Biblioteca.soma(valorDesconto, descAntecipado);
+        sobra = Biblioteca.subtrai(sobra, descItens);
+
+        if (sobra.signum() > 0 || sobra.signum() < 0) {
+            OsProdutoServico item = os.getListaOsProdutoServico().get(0);
+            BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
+            BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);
+            BigDecimal txDesc = Biblioteca.calcularFator(item.getValorSubtotal(), vlrTotal);
+            item.setValorDesconto(vlrDesc);
+            item.setValorTotal(vlrTotal);
+        }
+
+        os.calcularValores();
+    }
+
+
+    public void removerDesconto(OsAbertura os) {
+
+        os.setValorTotalDesconto(BigDecimal.ZERO);
+
+        os.getListaOsProdutoServico().forEach(i -> {
+            i.setTaxaDesconto(BigDecimal.ZERO);
+            i.setValorDesconto(BigDecimal.ZERO);
+            i.setValorTotal(i.getValorSubtotal());
+        });
+        os.calcularValorProduto();
+        os.calcularValorServico();
+        os.calcularValorTotal();
+    }
+
 
     @Transactional
     public void transmitirNFe(OsAbertura os, ModeloDocumento modelo, boolean atualizarEstoque) throws Exception {

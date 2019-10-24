@@ -75,6 +75,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private Repository<ContaCaixa> contaCaixaRepository;
     @Inject
     private Repository<UnidadeConversao> conversaoRepository;
+    @Inject
+    private Repository<EstoqueGrade> estoqueGradeRepository;
 
     @Inject
     private EntradaNotaFiscalService entradaService;
@@ -704,6 +706,14 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                         if (unidadeConversao != null) {
                             definirQuantidadeConvertida(d, unidadeConversao);
                         }
+
+                        List<Filtro> filtros = new ArrayList<>();
+                        filtros.add(new Filtro("idproduto", getObjeto().getId()));
+                        filtros.add(new Filtro("idempresa", empresa.getId()));
+
+                        List<EstoqueGrade> grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+
+                        d.setGrades(grades);
 
 
                     } else if (existeProdutoFornecedor) {

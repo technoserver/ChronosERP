@@ -102,6 +102,7 @@ public class OsAbertura implements Serializable {
         this.valorTotalServico = BigDecimal.ZERO;
         this.valorTotalDesconto = BigDecimal.ZERO;
         this.valorComissao = BigDecimal.ZERO;
+
     }
 
     public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, BigDecimal valorTotal, int idcliente, String nome, Integer status, Integer idnfeCabecalho) {
@@ -359,32 +360,32 @@ public class OsAbertura implements Serializable {
     }
 
     public BigDecimal calcularValorTotal() {
-        BigDecimal valor = getListaOsProdutoServico()
+        valorTotal = getListaOsProdutoServico()
                 .stream()
                 .map(OsProdutoServico::getValorTotal)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
-        return valor;
+        return valorTotal;
     }
 
     public BigDecimal calcularValorProduto() {
-        BigDecimal valor = getListaOsProdutoServico()
+        valorTotalProduto = getListaOsProdutoServico()
                 .stream()
                 .filter((p) -> p.getTipo() != null && p.getTipo() == 0)
                 .map(OsProdutoServico::getValorTotal)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
-        return valor;
+        return valorTotalProduto;
     }
 
     public BigDecimal calcularValorServico() {
-        BigDecimal valor = getListaOsProdutoServico()
+        valorTotalServico = getListaOsProdutoServico()
                 .stream()
                 .filter((p) -> p.getTipo() == 1)
                 .map(OsProdutoServico::getValorTotal)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
-        return valor;
+        return valorTotalServico;
     }
 
     public BigDecimal calcularTotalDesconto() {
@@ -400,7 +401,8 @@ public class OsAbertura implements Serializable {
     public void calcularValores() {
         this.valorTotalProduto = calcularValorProduto();
         this.valorTotalServico = calcularValorServico();
-        this.valorTotal = calcularValorTotal().subtract(calcularTotalDesconto());
+        calcularTotalDesconto();
+        this.valorTotal = calcularValorTotal();
     }
 
     public boolean isNovo() {
