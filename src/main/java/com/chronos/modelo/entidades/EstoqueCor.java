@@ -1,6 +1,7 @@
 package com.chronos.modelo.entidades;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Entity
@@ -13,9 +14,11 @@ public class EstoqueCor implements Serializable {
    @Basic(optional = false)
    @Column(name = "ID")
    private Integer id;
-   @Column(name = "CODIGO")
-   private String codigo;
+    @NotNull
+    @Column(name = "CODIGO")
+    private String codigo;
    @Column(name = "NOME")
+   @NotNull
    private String nome;
 
    public EstoqueCor() {

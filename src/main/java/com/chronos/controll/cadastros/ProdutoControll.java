@@ -57,6 +57,12 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Inject
     private Repository<TributGrupoTributario> gruposTributarios;
     @Inject
+    private Repository<EstoqueCor> estoqueCorRepository;
+    @Inject
+    private Repository<EstoqueTamanho> estoqueTamanhoRepository;
+    @Inject
+    private Repository<EstoqueGrade> estoqueGradeRepository;
+    @Inject
     private Repository<ViewProdutoEmpresa> produtos;
     @Inject
     private Repository<EmpresaProduto> produtosEmpresa;
@@ -88,7 +94,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private ProdutoEmpresaDataModel produtoDataModel;
     private List<EmpresaProduto> listProdutoEmpresa;
     private List<Empresa> empresas;
+    private List<EstoqueGrade> grades;
     private ViewProdutoEmpresa produtoSelecionado;
+
 
     private Integer codigo;
     private Integer idmepresaFiltro;
@@ -104,6 +112,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private ProdutoMarca marca;
     private Almoxarifado almoxarifado;
     private ProdutoSubGrupo subGrupo;
+    private EstoqueCor cor;
+    private EstoqueTamanho tamanho;
 
     private UnidadeConversao unidadeConversao;
     private UnidadeConversao unidadeConversaoSelecionada;
@@ -233,7 +243,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         getObjeto().setControle(BigDecimal.ZERO);
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
-
+        grades = new ArrayList<>();
 
 
     }
@@ -248,6 +258,17 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         nomeProdutoOld = getObjeto().getNome();
         nomeFoto = getObjeto().getImagem();
         conversoes = unidadeConversaoRepository.getEntitys(UnidadeConversao.class, "produto.id", getObjeto().getId(), new Object[]{"sigla", "fatorConversao", "acao"});
+
+        if (getObjeto().getPossuiGrade()) {
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("idproduto", getObjeto().getId()));
+            filtros.add(new Filtro("idempresa", empresa.getId()));
+
+            grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+        } else {
+            grades = new ArrayList<>();
+        }
+
     }
 
     @Override
@@ -276,7 +297,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                 empresasSelecionada = new ArrayList<>();
             }
 
-            setObjeto(service.salvar(getObjeto(), empresasSelecionada));
+            setObjeto(service.salvar(getObjeto(), empresasSelecionada, grades));
             Mensagem.addInfoMessage("Registro salvo com sucesso");
         } catch (Exception ex) {
 
@@ -405,6 +426,29 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         return listaGrupoTributario;
     }
 
+    public List<EstoqueCor> getListaCor(String nome) {
+        List<EstoqueCor> cores = new ArrayList<>();
+        try {
+
+            cores = estoqueCorRepository.getEntitys(EstoqueCor.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return cores;
+    }
+
+    public List<EstoqueTamanho> getListaTamanho(String nome) {
+        List<EstoqueTamanho> tamanhos = new ArrayList<>();
+        try {
+
+            tamanhos = estoqueTamanhoRepository.getEntitys(EstoqueTamanho.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return tamanhos;
+    }
+
+
     public List<ProdutoMarca> getListaMarcaProduto(String nome) {
         List<ProdutoMarca> listaMarcaProduto = new ArrayList<>();
         try {
@@ -472,6 +516,47 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             }
         }
 
+    }
+
+    public void addGrade() {
+
+        if (cor == null) {
+            Mensagem.addErrorMessage("Cor obrigatoria");
+            return;
+        }
+
+        if (tamanho == null) {
+            Mensagem.addErrorMessage("Tamanho obrigatoria");
+            return;
+        }
+
+        boolean present = grades
+                .stream()
+                .filter(g -> g.getEstoqueCor().getId().equals(cor.getId())
+                        && g.getEstoqueTamanho().getId().equals(tamanho.getId()))
+                .findFirst().isPresent();
+
+
+        if (!present) {
+            EstoqueGrade grade = new EstoqueGrade();
+            grade.setEstoqueCor(cor);
+            grade.setEstoqueTamanho(tamanho);
+            grade.setIdempresa(empresa.getId());
+            grades.add(grade);
+        } else {
+            Mensagem.addErrorMessage("Grade já definida");
+        }
+
+
+    }
+
+    public void removerGrade(EstoqueGrade grade) {
+
+        if (grade.getId() != null) {
+            estoqueGradeRepository.excluir(grade);
+        }
+
+        grades.remove(grade);
     }
 
     public void addMarca() {
@@ -821,5 +906,25 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public boolean isListaEmpresaEmpty() {
         return listaEmpresas.isEmpty();
+    }
+
+    public EstoqueCor getCor() {
+        return cor;
+    }
+
+    public void setCor(EstoqueCor cor) {
+        this.cor = cor;
+    }
+
+    public EstoqueTamanho getTamanho() {
+        return tamanho;
+    }
+
+    public void setTamanho(EstoqueTamanho tamanho) {
+        this.tamanho = tamanho;
+    }
+
+    public List<EstoqueGrade> getGrades() {
+        return grades;
     }
 }

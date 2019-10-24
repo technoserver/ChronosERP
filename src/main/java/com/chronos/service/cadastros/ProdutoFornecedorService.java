@@ -47,7 +47,7 @@ public class ProdutoFornecedorService implements Serializable {
             List<Empresa> empresas = new ArrayList<>();
             empresas.add(empresa);
 
-            produto = produtoService.salvar(produto, empresas);
+            produto = produtoService.salvar(produto, empresas, null);
         }
 
 
