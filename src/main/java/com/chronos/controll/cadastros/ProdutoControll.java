@@ -8,6 +8,7 @@ package com.chronos.controll.cadastros;
 import com.chronos.controll.AbstractControll;
 import com.chronos.controll.ERPLazyDataModel;
 import com.chronos.controll.cadastros.datamodel.ProdutoEmpresaDataModel;
+import com.chronos.dto.ProdutoResumDTO;
 import com.chronos.modelo.entidades.*;
 import com.chronos.modelo.view.ViewProdutoEmpresa;
 import com.chronos.repository.Filtro;
@@ -17,6 +18,7 @@ import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.UploadedFile;
 import org.primefaces.model.Visibility;
@@ -84,11 +86,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     @Inject
     private ProdutoService service;
-    @Inject
-    private Repository<EmpresaPessoa> empresaPessoaRepository;
 
-    @Inject
-    private Repository<Empresa> empresaRepository;
 
     private ProdutoGrupo grupo;
     private ProdutoEmpresaDataModel produtoDataModel;
@@ -129,8 +127,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private BigDecimal fator;
 
     private int idempresa;
-    private List<Empresa> listaEmpresas;
-    private List<Empresa> empresasSelecionada;
+
 
     private PdvConfiguracaoBalanca configuracaoBalanca;
 
@@ -144,34 +141,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         pesquisarEmpresas();
     }
 
-    public void pesquisarEmpresas() {
 
-
-        listaEmpresas = new ArrayList<>();
-        idmepresaFiltro = empresa.getId();
-        empresasSelecionada = new ArrayList<>();
-        if (usuario.getAdministrador().equals("S")) {
-            List<Empresa> empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
-
-            if (!empresas.isEmpty() && empresas.size() > 1) {
-                empresas.forEach(e -> {
-                    listaEmpresas.add(e);
-                });
-            }
-
-
-        } else {
-            List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
-
-            if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 1) {
-
-                for (EmpresaPessoa emp : empresaPessoas) {
-                    listaEmpresas.add(emp.getEmpresa());
-                }
-
-            }
-        }
-    }
 
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
@@ -310,6 +280,16 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         }
 
 
+    }
+
+    public void salvarCadastroRapido(SelectEvent event) {
+        ProdutoResumDTO prod = (ProdutoResumDTO) event.getObject();
+
+        Produto produto = prod.gerarProduto();
+
+        setObjeto(produto);
+
+        salvar();
     }
 
     public void copiar() {

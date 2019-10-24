@@ -65,14 +65,14 @@ public class ProdutoDTO implements Serializable {
     public ProdutoDTO(Integer id, Integer idgrade, String nome, String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda,
                       BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem,
                       Integer idgrupotributario, String unidade, String podeFracionar, BigDecimal precoPromocao,
-                      BigDecimal precoTabela, PrecoPrioritario precoPrioritario, BigDecimal quantidadeVendaAtacado, BigDecimal valorVendaAtacado) {
+                      PrecoPrioritario precoPrioritario, BigDecimal quantidadeVendaAtacado, BigDecimal valorVendaAtacado) {
         this.id = id;
         this.idgrade = idgrade;
         this.nome = nome;
         this.descricaoPdv = descricaoPdv;
         this.valorVenda = valorVenda;
         this.precoPromocao = precoPromocao;
-        this.precoTabela = precoTabela;
+        this.precoTabela = BigDecimal.ZERO;
         this.precoPrioritario = precoPrioritario;
         this.valorVendaAtacado = valorVendaAtacado;
         this.quantidadeVendaAtacado = quantidadeVendaAtacado;

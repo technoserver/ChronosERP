@@ -180,6 +180,36 @@ public class Produto implements Serializable {
     private PdvConfiguracaoBalanca balanca;
 
     public Produto() {
+        this.valorCompra = BigDecimal.ZERO;
+
+        this.precoLucroMaximo = BigDecimal.ZERO;
+        this.precoLucroMinimo = BigDecimal.ZERO;
+        this.precoLucroZero = BigDecimal.ZERO;
+        this.precoSugerido = BigDecimal.ZERO;
+        this.precoVendaMinimo = BigDecimal.ZERO;
+
+        this.custoMedioLiquido = BigDecimal.ZERO;
+        this.custoProducao = BigDecimal.ZERO;
+        this.custoUnitario = BigDecimal.ZERO;
+
+
+        this.estoqueIdeal = BigDecimal.ZERO;
+        this.estoqueMaximo = BigDecimal.ZERO;
+        this.estoqueMinimo = BigDecimal.ZERO;
+
+        this.quantidadeEstoqueAnterior = BigDecimal.ZERO;
+        this.estoqueIdeal = BigDecimal.ZERO;
+
+        this.servico = "N";
+        this.excluido = "N";
+        this.inativo = "N";
+        this.classeAbc = "A";
+        this.iat = "A";
+        this.ippt = "P";
+        this.tipoItemSped = "00";
+        this.tipo = "V";
+        this.possuiGrade = false;
+
     }
 
     public Produto(Integer id,String nome) {

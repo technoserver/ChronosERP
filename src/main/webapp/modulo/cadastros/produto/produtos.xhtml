@@ -37,7 +37,7 @@
 
 
                         <div class="row">
-                            <div class="col-xs-12">
+                            <div class="col-sm-12">
                                 <p:commandButton
                                         value="Gerar Integracao com a balança"
                                         action="#{produtoControll.buscarConfiguracoesBalanca}"
@@ -45,6 +45,16 @@
                                         update=":formOutrasTelas7:panelOutrasTelas7"
                                 />
 
+                                <p:commandButton
+                                        value="Cadastro rápido"
+                                        style="margin-left: 5px"
+                                        action="#{cadastroRapidoProdutoControll.abrirDialog}"
+                                        process="@this" update="@none">
+                                    <p:ajax event="dialogReturn"
+                                            listener="#{produtoControll.salvarCadastroRapido}"
+                                            process="@this"
+                                            update=":formCentro:growl,:formCentro:outputPanelGrid"/>
+                                </p:commandButton>
 
                             </div>
                         </div>
@@ -231,9 +241,13 @@
                             </h:commandButton>
                         </div>
                         <div class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                                             action="#{produtoControll.doIndex()}" immediate="true"
-                            />
+                            <p:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             action="#{produtoControll.doIndex()}" immediate="true"/>:
+
+
+
+
+
                         </div>
 
                     </div>

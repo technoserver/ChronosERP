@@ -63,6 +63,15 @@
                     </div>
 
                     <div class="row">
+                        <h:panelGroup class="col-xs-12 col-sm-6 col-md-6" layout="block"
+                                      rendered="#{vendaCabecalhoControll.listaEmpresas.size() gt 1}">
+                            <h:outputLabel value="Empresa"/>
+                            <h:selectOneMenu value="#{vendaCabecalhoControll.idmepresaFiltro}"
+                                             styleClass="form-control">
+                                <f:selectItems value="#{vendaCabecalhoControll.listaEmpresas}" itemValue="#{obj.id}"
+                                               var="obj"/>
+                            </h:selectOneMenu>
+                        </h:panelGroup>
                         <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataEntregaFinal}"
                                        label="Data da entrega Final"
                                        idComponente="dataFinal"
