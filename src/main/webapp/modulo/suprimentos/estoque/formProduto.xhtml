@@ -5,7 +5,7 @@
                 xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:erp="http://java.sun.com/jsf/composite/components" xmlns:f="http://java.sun.com/jsf/core"
 >
 
 
@@ -24,7 +24,10 @@
                                     forceSelection="true" minQueryLength="3" maxResults="20"
                                     required="true" style="width: 100%"
                                     emptyMessage="Nenhum registro encontrado" >
-
+                        <p:ajax event="itemSelect"
+                                update="formOutrasTelas:panelNfeDetalhe"
+                                process="@this"
+                                listener="#{entradaNotaFiscalControll.pesquisarGrade()}"/>
                     </p:autoComplete>
                 </div>
                 <erp:campoDecimal  styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -75,6 +78,34 @@
                                     nomeAtributo="#{entradaNotaFiscalControll.nfeDetalhe.informacoesAdicionais}"
                                     linhas="5"/>
             </div>
+        </p:tab>
+        <p:tab title="Grade" rendered="#{entradaNotaFiscalControll.nfeDetalhe.grades.size() gt 0}">
+            <p:dataTable var="row"
+                         id="table-grade"
+                         reflow="true" editable="true" editMode="cell"
+                         value="#{entradaNotaFiscalControll.nfeDetalhe.grades}">
+                <p:column headerText="Cor" styleClass="text-center">
+                    <h:outputLabel value="#{row.estoqueCor.nome}"/>
+                </p:column>
+                <p:column headerText="Tamanho" styleClass="text-center">
+                    <h:outputLabel value="#{row.estoqueTamanho.nome}"/>
+                </p:column>
+                <p:column headerText="Qtde" styleClass="text-center">
+
+                    <p:cellEditor>
+                        <f:facet name="output">
+                            <h:outputLabel value="#{row.quantidadeEntrada}">
+                                <f:convertNumber pattern="#,##0.00"/>
+                            </h:outputLabel>
+                        </f:facet>
+                        <f:facet name="input">
+                            <p:inputNumber value="#{row.quantidadeEntrada}"
+                                           decimalPlaces="2"
+                            />
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+            </p:dataTable>
         </p:tab>
         <p:tab title="ICMS" rendered="#{entradaNotaFiscalControll.objeto.tributOperacaoFiscal.obrigacaoFiscal}">
             <div class="row">

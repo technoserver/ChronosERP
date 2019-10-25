@@ -201,16 +201,15 @@
                 <f:facet name="footer">
 
                     <div class="row">
-                        <div class="col-xs-12 col-sm-6 col-md-6">
-                            <h:commandButton value="Salvar"
+                        <div class="col-xs-12 col-sm-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
                                              id="btnSalvarProduto"
                                              action="#{entradaNotaFiscalControll.salvaProduto}"
-                                             class="btn btn-primary center-block"
-                            >
-                                <p:ajax oncomplete="if (!args.validationFailed) {PF('dialogNfeDetalhe').hide();}"
-                                        process="@form"
-                                        update=":formOutrasTelas:panelNfeDetalhe,:formCentro:growl,formCentro:tabNfe:dataTableNfeDetalhe,:formCentro:btnFechamento,:formCentro:tabNfe:panel-dados-principais"/>
-                            </h:commandButton>
+                                             oncomplete="if (!args.validationFailed) {PF('dialogNfeDetalhe').hide();}"
+                                             process="@form"
+                                             update=":formOutrasTelas:panelNfeDetalhe,:formCentro:growl,formCentro:tabNfe:dataTableNfeDetalhe,:formCentro:btnFechamento,:formCentro:tabNfe:panel-dados-principais"
+                            />
+
 
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-6">

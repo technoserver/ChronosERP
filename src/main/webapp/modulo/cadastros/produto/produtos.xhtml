@@ -691,10 +691,14 @@
                                         <h:outputText value="#{row.estoqueTamanho.nome}"/>
                                     </p:column>
                                     <p:column headerText="Estoque" styleClass="text-right">
-                                        <h:outputText value="#{row.quantidade}"/>
+                                        <h:outputText value="#{row.quantidade}">
+                                            <f:convertNumber pattern="#,###,##0.00"/>
+                                        </h:outputText>
                                     </p:column>
-                                    <p:column headerText="Verificaado" styleClass="text-right">
-                                        <h:outputText value="#{row.verificado}"/>
+                                    <p:column headerText="Verificado" styleClass="text-right">
+                                        <h:outputText value="#{row.verificado}">
+                                            <f:convertNumber pattern="#,###,##0.00"/>
+                                        </h:outputText>
                                     </p:column>
                                     <p:column styleClass="text-center">
                                         <p:commandLink title="Excluir"

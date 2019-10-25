@@ -70,13 +70,19 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         }
     }
 
-
-    public void teste() {
-
+    public void atualizarGradeQuantidaAndVerificado(Integer idEmpresa, Integer idprduto, Integer idcor, Integer idtamanho, BigDecimal quantidade) {
+        execute("UPDATE EstoqueGrade g set g.quantidade  = g.quantidade +  ?1, g.verificado = g.verificado + ?1 " +
+                "where g.idempresa = ?2 and g.idproduto = ?3 and g.estoqueCor.id = ?4 and g.estoqueTamanho.id =?5", quantidade, idEmpresa, idprduto, idcor, idtamanho);
     }
 
-    public void teste(int id) {
+    public void atualizarGradeQuantidade(Integer idEmpresa, Integer idprduto, Integer idcor, Integer idtamanho, BigDecimal quantidade) {
+        execute("UPDATE EstoqueGrade g set g.quantidade  = g.quantidade +  ?1 " +
+                "where g.idempresa = ?2 and g.idproduto = ?3 and g.estoqueCor.id = ?4 and g.estoqueTamanho.id =?5", quantidade, idEmpresa, idprduto, idcor, idtamanho);
+    }
 
+    public void atualizarGradeVerificado(Integer idEmpresa, Integer idprduto, Integer idcor, Integer idtamanho, BigDecimal quantidade) {
+        execute("UPDATE EstoqueGrade g set g.verificado  = g.verificado +  ?1 " +
+                "where g.idempresa = ?2 and g.idproduto = ?3 and g.estoqueCor.id = ?4 and g.estoqueTamanho.id =?5", quantidade, idEmpresa, idprduto, idcor, idtamanho);
     }
 
 

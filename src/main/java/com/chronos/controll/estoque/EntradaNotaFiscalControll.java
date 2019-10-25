@@ -199,7 +199,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void doEdit() {
         super.doEdit();
         NfeCabecalho nfe = dataModel.getRowData(getObjeto().getId().toString());
-        nfe.getListaNfeDetalhe().forEach(i -> i.setProdutoCadastrado(true));
+        nfe.getListaNfeDetalhe().forEach(i -> {
+            i.setProdutoCadastrado(true);
+            pesquisarGrade(i, nfe.getEmpresa().getId(), i.getProduto().getId());
+        });
         setObjeto(nfe);
         duplicatas = getObjeto().getDuplicatas();
     }
@@ -211,6 +214,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             dao.atualizar(getObjeto());
             Mensagem.addInfoMessage("Registro salvo com sucesso");
             setTelaGrid(true);
+            importado = false;
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
@@ -226,6 +230,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             getObjeto().setListaDuplicata(new HashSet<>(duplicatas));
             entradaService.finalizar(getObjeto(), contaCaixa, naturezaFinanceira);
             setTelaGrid(true);
+            importado = false;
             Mensagem.addInfoMessage("NF fiscal finalizada não será mais possivel fazer a edição");
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -532,6 +537,20 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
             }
 
+            if (nfeDetalhe.getGrades() != null && !nfeDetalhe.getGrades().isEmpty()) {
+                BigDecimal qtd = nfeDetalhe.getGrades()
+                        .stream()
+                        .map(i -> i.getQuantidadeEntrada())
+                        .reduce(BigDecimal::add)
+                        .orElse(BigDecimal.ZERO);
+
+                if (qtd.compareTo(nfeDetalhe.getQuantidadeComercial()) != 0) {
+                    throw new ChronosException("Quantidade de estoque informada para grade invalida ");
+                }
+
+
+            }
+
             Optional<NfeDetalhe> itemNfeOptional = buscarItemPorProduto(nfeDetalhe.getProduto());
             if (!itemNfeOptional.isPresent()) {
                 nfeDetalhe.setValorSubtotal(nfeDetalhe.calcularSubTotalProduto());
@@ -567,6 +586,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         }
     }
+
 
     private Optional<NfeDetalhe> buscarItemPorProduto(Produto produto) {
         return getObjeto().getListaNfeDetalhe().stream()
@@ -707,19 +727,14 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                             definirQuantidadeConvertida(d, unidadeConversao);
                         }
 
-                        List<Filtro> filtros = new ArrayList<>();
-                        filtros.add(new Filtro("idproduto", getObjeto().getId()));
-                        filtros.add(new Filtro("idempresa", empresa.getId()));
-
-                        List<EstoqueGrade> grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
-
-                        d.setGrades(grades);
+                        pesquisarGrade(d, empresa.getId(), produto.getId());
 
 
                     } else if (existeProdutoFornecedor) {
                         Produto produto = produtoFornecedorService.getProduto(d.getCodigoProduto());
                         d.setProduto(produto);
                         d.setProdutoCadastrado(true);
+                        pesquisarGrade(d, empresa.getId(), produto.getId());
                     } else {
                         d.setProdutoCadastrado(false);
                     }
@@ -736,10 +751,35 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro ao buscar os dados do produto.", e);
+            if (e instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro ao buscar os dados do produto.", e);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao buscar os dados do produto.", e);
+            }
+
+
         }
         return produtoNaoCadastrado;
+    }
+
+    public void pesquisarGrade(NfeDetalhe item, Integer idempresa, Integer idprdduto) {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("idproduto", idprdduto));
+        filtros.add(new Filtro("idempresa", idempresa));
+
+        List<EstoqueGrade> grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+
+        item.setGrades(grades);
+    }
+
+    public void pesquisarGrade() {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("idproduto", nfeDetalhe.getProduto().getId()));
+        filtros.add(new Filtro("idempresa", empresa.getId()));
+
+        List<EstoqueGrade> grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+
+        nfeDetalhe.setGrades(grades);
     }
 
 

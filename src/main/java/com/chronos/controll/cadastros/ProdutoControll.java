@@ -229,7 +229,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         nomeFoto = getObjeto().getImagem();
         conversoes = unidadeConversaoRepository.getEntitys(UnidadeConversao.class, "produto.id", getObjeto().getId(), new Object[]{"sigla", "fatorConversao", "acao"});
 
-        if (getObjeto().getPossuiGrade()) {
+        if (getObjeto().getPossuiGrade() != null && getObjeto().getPossuiGrade()) {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("idproduto", getObjeto().getId()));
             filtros.add(new Filtro("idempresa", empresa.getId()));

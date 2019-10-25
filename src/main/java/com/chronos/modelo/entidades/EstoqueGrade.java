@@ -44,6 +44,7 @@ public class EstoqueGrade implements Serializable {
     public EstoqueGrade() {
         this.quantidade = BigDecimal.ZERO;
         this.verificado = BigDecimal.ZERO;
+        this.quantidadeEntrada = BigDecimal.ZERO;
     }
 
     public Integer getId() {
