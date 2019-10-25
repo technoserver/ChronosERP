@@ -94,6 +94,10 @@
                         <p:ajax event="rowToggle"
                                 listener="#{finRecebimentoControll.localizarFatorGerador(row.numeroDocumento)}"
                                 update=":formCentro:growl"/>
+                        <p:ajax event="rowSelect" listener="#{finRecebimentoControll.calcularValorAPagar}"
+                                update="formCentro:panel-valor-pagar"/>
+                        <p:ajax event="rowUnselect" listener="#{finRecebimentoControll.calcularValorAPagar}"
+                                update="formCentro:panel-valor-pagar"/>
                         <p:column style="width:3%">
                             <p:rowToggler/>
                         </p:column>
@@ -284,11 +288,13 @@
                                                       completeMethod="getListaFinTipoRecebimento"
                                                       nomeAtributo="#{finRecebimentoControll.tipoRecebimento}"
                                                       idComponente="tipoRecebimento"/>
+                                    <h:panelGroup id="panel-valor-pagar" layout="block">
+                                        <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
+                                                          idComponente="valorAPagar"
+                                                          label="Valor Parcela" requerido="true"
+                                                          nomeAtributo="#{finRecebimentoControll.valorAPagar}"/>
+                                    </h:panelGroup>
 
-                                    <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
-                                                      idComponente="valorAPagar"
-                                                      label="Valor Parcela" requerido="true"
-                                                      nomeAtributo="#{finRecebimentoControll.valorAPagar}"/>
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-1 col-sm-1 col-md-1">

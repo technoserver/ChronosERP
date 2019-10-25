@@ -168,6 +168,10 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         }
     }
 
+    public void calcularValorAPagar() {
+        valorAPagar = parcelasSelecionadas.stream().map(p -> p.getValorAPagar()).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+    }
+
     public void localizarFatorGerador(String numDoc) {
 
         if (fatorGerador != null && numDoc.equals(fatorGerador.getDoc())) {
@@ -312,7 +316,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
 
             filtros.add(new Filtro(Filtro.OR, "id", Filtro.IGUAL, id));
 
-            listaCliente = clientes.getEntitys(Cliente.class, filtros, new Object[]{"pessoa.nome"});
+            listaCliente = clientes.getEntitys(Cliente.class, filtros, new Object[]{"pessoa.id", "pessoa.nome"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -322,7 +326,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     public List<Pessoa> getListaPessoa(String nome) {
         List<Pessoa> listaPessoa = new ArrayList<>();
         try {
-            List<PessoaCliente> listaCliente = pessoaClienteRepository.getEntitys(PessoaCliente.class, "nome", nome, new Object[]{"nome", "cpfCnpj", "tipo"});
+            List<PessoaCliente> listaCliente = pessoaClienteRepository.getEntitys(PessoaCliente.class, "nome", nome, new Object[]{"idPessoa", "nome", "cpfCnpj", "tipo"});
             listaPessoa.addAll(listaCliente.stream().map(PessoaCliente::getPessoa).collect(Collectors.toList()));
         } catch (Exception e) {
             // e.printStackTrace();

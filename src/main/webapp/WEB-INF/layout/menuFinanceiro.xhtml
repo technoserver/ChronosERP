@@ -121,6 +121,24 @@
             </ul>
         </li>
 
+        <li class="${fn:contains(view.viewId,'modulo/financeiro/cheque/')?'active':''}">
+            <a href="#">Controle de Chq.
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-third-level">
+                <erp:subMenu caminho="/modulo/financeiro/cheque/emissaoCheque"
+                             label="Emissão"
+                             funcao="Emissão"/>
+
+                <erp:subMenu caminho="/modulo/financeiro/cheque/custodiaCheque"
+                             label="Custódia"
+                             funcao="custodiaCheque"/>
+
+                <erp:subMenu caminho="/modulo/financeiro/cheque/resumo"
+                             label="Resumo"
+                             funcao="resumo"/>
+            </ul>
+        </li>
 
         <!--
 

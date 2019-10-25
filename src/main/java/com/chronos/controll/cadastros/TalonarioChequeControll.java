@@ -38,9 +38,6 @@ public class TalonarioChequeControll extends AbstractControll<TalonarioCheque> i
         getObjeto().setEmpresa(empresa);
     }
 
-
-
-
     public List<ContaCaixa> getListaContaCaixa(String nome) {
         List<ContaCaixa> contas = new LinkedList<>();
         try {
