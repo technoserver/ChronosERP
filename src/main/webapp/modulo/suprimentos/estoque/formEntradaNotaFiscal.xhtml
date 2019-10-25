@@ -222,8 +222,7 @@
                         <f:convertNumber pattern="#,###,##0.00" />
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Ações" width="120" rendered="#{empty entradaNotaFiscalControll.objeto.id}"
-                          styleClass="text-center">
+                <p:column headerText="Ações" width="120" styleClass="text-center">
                     <p:commandLink process="dataTableNfeDetalhe" title="Alterar" style="margin-right: 5px"
                                    id="btnAlterarProduto"
                                    oncomplete="PF('dialogNfeDetalhe').show()" styleClass="btn btn-default"
@@ -261,7 +260,7 @@
                                    styleClass="btn btn-default"
                                    action="#{entradaNotaFiscalControll.disvincularProduto}"
                                    update=":formCentro:tabNfe:tabProdutos,:formCentro:mensagem"
-                                   rendered="#{ not empty obj.produto.id and obj.produtoCadastrado}">
+                                   rendered="#{ not empty obj.produto.id and obj.produtoCadastrado and empty entradaNotaFiscalControll.objeto.id and entradaNotaFiscalControll.importado}">
                         <i class="fa fa-chain-broken"></i>
                         <f:setPropertyActionListener value="#{obj}"
                                                      target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>

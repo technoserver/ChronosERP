@@ -5,6 +5,7 @@ import com.chronos.modelo.enuns.AcaoLog;
 import com.chronos.modelo.enuns.StatusTransmissao;
 import com.chronos.repository.EstoqueRepository;
 import com.chronos.repository.Repository;
+import com.chronos.service.ChronosException;
 import com.chronos.service.cadastros.FornecedorService;
 import com.chronos.service.comercial.SyncPendentesService;
 import com.chronos.service.financeiro.FinLancamentoPagarService;
@@ -55,6 +56,21 @@ public class EntradaNotaFiscalService implements Serializable {
         boolean inclusao = false;
 
 
+        for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
+
+            if (item.getGrades() != null && !item.getGrades().isEmpty()) {
+                BigDecimal qtd = item.getGrades()
+                        .stream()
+                        .map(i -> i.getQuantidadeEntrada())
+                        .reduce(BigDecimal::add)
+                        .orElse(BigDecimal.ZERO);
+
+                if (qtd.compareTo(item.getQuantidadeComercial()) != 0) {
+                    throw new ChronosException("Quantidade de estoque informada para grade invalida ");
+                }
+            }
+        }
+
         Integer idempresa = nfe.getEmpresa().getId();
         AdmParametro parametro = FacesUtil.getParamentos();
         nfe.setNaturezaOperacao(nfe.getTributOperacaoFiscal().getDescricaoNaNf());
@@ -64,6 +80,25 @@ public class EntradaNotaFiscalService implements Serializable {
                 atualizarEstoque(nfe.getEmpresa(), nfe.getTributOperacaoFiscal(), detalhe);
                 if (parametro != null && parametro.getFrenteCaixa()) {
                     syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, detalhe.getProduto().getId());
+                }
+
+                if (detalhe.getGrades() != null && !detalhe.getGrades().isEmpty()) {
+
+                    for (EstoqueGrade g : detalhe.getGrades()) {
+
+                        if (g.getQuantidadeEntrada() != null && g.getQuantidadeEntrada().signum() > 0) {
+                            if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
+                                estoqueRepository.atualizarGradeQuantidaAndVerificado(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), g.getQuantidadeEntrada());
+                            } else if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
+                                estoqueRepository.atualizarGradeVerificado(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), g.getQuantidadeEntrada());
+                            } else {
+                                estoqueRepository.atualizarGradeQuantidade(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), g.getQuantidadeEntrada());
+                            }
+                        }
+
+                    }
+
+
                 }
             }
 
@@ -75,6 +110,8 @@ public class EntradaNotaFiscalService implements Serializable {
                 if (parametro != null && parametro.getFrenteCaixa()) {
                     syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, detalhe.getProduto().getId());
                 }
+
+
             }
             if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
                 estoqueRepository.atualizaEstoqueEmpresaControleFiscal(idempresa, nfe.getListaNfeDetalhe());
@@ -83,6 +120,8 @@ public class EntradaNotaFiscalService implements Serializable {
             } else {
                 estoqueRepository.atualizaEstoqueEmpresa(idempresa, nfe.getListaNfeDetalhe());
             }
+
+
         }
         String descricao = "Entrada da NFe :" + nfe.getNumero() + " Fornecedor :" + nfe.getEmitente().getNome();
         nfe.setStatusNota(StatusTransmissao.ENCERRADO.getCodigo());
