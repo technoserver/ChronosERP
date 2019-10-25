@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Emissão de Cheque
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finChequeEmitidoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Emissão de Cheque
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{finChequeEmitidoControll}"
+                       idDataTable="dataTableGrupo"
+                       nomeFuncao="Grupo"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Emissão" styleClass="text-center" width="135">
+                <h:outputLabel value="#{row.dataEmissao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Bom para" styleClass="text-center" width="135">
+                <h:outputLabel value="#{row.bomPara}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Nominal">
+                <h:outputLabel value="#{row.nominalA}"/>
+            </p:column>
+            <p:column headerText="Valor" styleClass="text-right" width="125">
+                <h:outputLabel value="#{row.valor}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finChequeEmitidoControll}"
+                                   nomeFuncao="CFOP"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="nominalA" label="Nominal"
+                                nomeAtributo="#{finChequeEmitidoControll.objeto.nominalA}"
+                                tamanhoMaximo="100"
+                                requerido="true"/>
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  label="Cheque"
+                                  itemLabel="#{objeto.numero}"
+                                  controller="#{finChequeEmitidoControll}"
+                                  completeMethod="getListaCheque"
+                                  nomeAtributo="#{finChequeEmitidoControll.objeto.cheque}"
+                                  idComponente="vendaCabecalhoVendaCondicoesPagamento"
+                />
+
+                <erp:campoData
+                        idComponente="bomPara"
+                        nomeAtributo="#{finChequeEmitidoControll.objeto.bomPara}"
+                        styleClass="col-xs-12 col-sm-2 col-md-2"
+                        requerido="true"
+                        label="Bom para"/>
+
+                <erp:campoDecimal nomeAtributo="#{finChequeEmitidoControll.objeto.valor}"
+                                  styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  label="Valor"
+                                  requerido="true"
+                                  idComponente="valor"/>
+
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+</ui:composition>
