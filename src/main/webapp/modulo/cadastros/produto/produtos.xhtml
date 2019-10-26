@@ -49,12 +49,18 @@
                                         value="Cadastro rápido"
                                         style="margin-left: 5px"
                                         action="#{cadastroRapidoProdutoControll.abrirDialog}"
+                                        rendered="#{produtoControll.podeInserir()}"
                                         process="@this" update="@none">
                                     <p:ajax event="dialogReturn"
                                             listener="#{produtoControll.salvarCadastroRapido}"
                                             process="@this"
                                             update=":formCentro:growl,:formCentro:outputPanelGrid"/>
                                 </p:commandButton>
+
+                                <p:commandButton value="Cadastro completo"
+                                                 action="#{produtoControll.doCreate()}"
+                                                 update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                                 rendered="#{produtoControll.podeInserir()}"/>
 
                             </div>
                         </div>
@@ -278,6 +284,17 @@
                                         tamanhoMaximo="9"
                                         rendered="#{not empty produtoControll.objeto.id}"
                                         somenteLeitura="true"/>
+
+                        <div class="col-xs-6 col-sm-3 col-md-3">
+                            <p:commandButton value="Novo"
+                                             style="margin-top: 25px"
+                                             process="@this"
+                                             actionListener="#{produtoControll.doCreate()}"
+                                             update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                             rendered="#{not empty produtoControll.objeto.id}"/>
+                        </div>
+
+
                     </div>
                     <div class="row">
 

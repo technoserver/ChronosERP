@@ -183,9 +183,10 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             dataModel.setJoinFetch(joinFetch);
 
         }
-        dataModel.addFiltro("excluido", "N", Filtro.IGUAL);
+
         if (dataModel.getFiltros().isEmpty()) {
             dataModel.addFiltro("inativo", "N", Filtro.IGUAL);
+            dataModel.addFiltro("excluido", "N", Filtro.IGUAL);
         }
 
         return dataModel;
@@ -197,6 +198,11 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             produtoDataModel = new ProdutoEmpresaDataModel();
             produtoDataModel.setClazz(ViewProdutoEmpresa.class);
             produtoDataModel.setDao(produtos);
+        }
+
+        if (produtoDataModel.getFiltros().isEmpty()) {
+            produtoDataModel.addFiltro("inativo", "N", Filtro.IGUAL);
+            produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
         }
 
 
