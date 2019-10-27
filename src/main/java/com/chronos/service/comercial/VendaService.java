@@ -416,16 +416,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         vendaDetalhe.calcularDesconto();
         vendaDetalhe.calcularValorTotal();
 
-        Optional<VendaDetalhe> itemVenda = getItemVenda(venda, vendaDetalhe.getProduto());
-        BigDecimal quantidade = vendaDetalhe.getQuantidade();
-        BigDecimal valor = vendaDetalhe.getValorUnitario();
 
-        if (itemVenda.isPresent()) {
-            quantidade = itemVenda.get().getQuantidade().add(quantidade);
-            itemVenda.get().setQuantidade(quantidade);
-            itemVenda.get().setValorUnitario(valor);
-            itemVenda.get().setTaxaDesconto(vendaDetalhe.getTaxaDesconto());
-        } else {
+        if (!venda.getListaVendaDetalhe().contains(vendaDetalhe)) {
             venda.getListaVendaDetalhe().add(vendaDetalhe);
         }
 
