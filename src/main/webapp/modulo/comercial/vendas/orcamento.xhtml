@@ -573,16 +573,32 @@
                                           requerido="true"
                                           nomeAtributo="#{vendaOrcamentoCabecalhoControll.vendaOrcamentoDetalhe.quantidade}"/>
 
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          idComponente="vendaOrcamentoDetalheTaxaDesconto"
-                                          label="% Desc."
-                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.vendaOrcamentoDetalhe.taxaDesconto}"/>
 
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
                                           idComponente="valorUnitario"
                                           desabilitado="#{!vendaOrcamentoCabecalhoControll.podeAlterarPreco}"
                                           label="Valor"
                                           nomeAtributo="#{vendaOrcamentoCabecalhoControll.vendaOrcamentoDetalhe.valorUnitario}"/>
+
+                        <div class="col-xs-12 col-sm-2 col-md-2">
+                            <p:outputLabel value="Desconto" for="desconto"/>
+                            <div class="ui-inputgroup">
+
+                                <p:inputNumber id="desconto"
+                                               value="#{vendaOrcamentoCabecalhoControll.desconto}"
+                                               required="true"
+                                               style="width: 100%;"
+                                               decimalPlaces="2"
+                                               minValue="0"/>
+
+
+                                <p:commandButton id="btnTipoDesconto"
+                                                 action="#{vendaOrcamentoCabecalhoControll.alterarTipoDesconto}"
+                                                 process="@this"
+                                                 update="formOutrasTelas:btnTipoDesconto"
+                                                 value="#{vendaOrcamentoCabecalhoControll.tipoDesconto eq 0 ? '%' : 'R$' }"/>
+                            </div>
+                        </div>
 
                     </div>
 
