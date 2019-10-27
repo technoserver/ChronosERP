@@ -7,7 +7,7 @@ import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.repository.Filtro;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.util.ArquivoUtil;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -62,7 +62,7 @@ public class NfeConfiguracaoControll extends AbstractControll<NfeConfiguracao> i
 
     @Override
     public void salvar() {
-        String schema = context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE);
+        String schema = context.getRealPath(Constants.DIRETORIO_SCHEMA_NFE);
         getObjeto().setCaminhoSchemas(schema);
         getObjeto().setWebserviceUf(empresa.getCodigoIbgeUf().toString());
         nfeService.cleanConf();

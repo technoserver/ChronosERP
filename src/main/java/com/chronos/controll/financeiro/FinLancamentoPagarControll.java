@@ -4,7 +4,7 @@ import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
@@ -91,7 +91,7 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
 
     public void gerarParcelas() throws Exception {
 
-        FinStatusParcela statusParcela = Constantes.FIN.STATUS_ABERTO;
+        FinStatusParcela statusParcela = Constants.FIN.STATUS_ABERTO;
 
 
         if (contaCaixa == null || contaCaixa.getId() == null) {

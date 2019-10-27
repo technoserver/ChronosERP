@@ -170,7 +170,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Override
     public void doCreate() {
         super.doCreate();
-        if (listaEmpresas != null && listaEmpresas.size() == 1) {
+        if (listaEmpresas != null && listaEmpresas.size() <= 1) {
             getObjeto().setEmpresa(empresa);
         }
 

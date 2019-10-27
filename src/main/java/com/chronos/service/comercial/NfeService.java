@@ -39,7 +39,7 @@ import com.chronos.transmissor.util.WebServiceUtil;
 import com.chronos.transmissor.util.XmlUtil;
 import com.chronos.util.ArquivoUtil;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
@@ -608,7 +608,7 @@ public class NfeService implements Serializable {
         HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         JasperReportUtil report = new JasperReportUtil(response);
 
-        report.gerarRelatorioBaixa(parametrosRelatorio, Constantes.CAMINHODANFE, nomeRelatorioJasper, "CartaCorrecao.pdf");
+        report.gerarRelatorioBaixa(parametrosRelatorio, Constants.CAMINHODANFE, nomeRelatorioJasper, "CartaCorrecao.pdf");
 
 
     }
@@ -661,14 +661,14 @@ public class NfeService implements Serializable {
             }
 
             if (modelo == ModeloDocumento.NFE) {
-                nomeRelatorioJasper = Constantes.JASPERNFE;
+                nomeRelatorioJasper = Constants.JASPERNFE;
                 JRXmlDataSource faturaDataSource = new JRXmlDataSource(caminho, "//dup");
                 InputStream inFt = this.getClass().getResourceAsStream("/com/chronos/erplight/relatorios/comercial/nfe/DanfeRetratoFatura.jasper");
                 parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
                 parametrosRelatorio.put("danfeRetratoFatura", inFt);
             } else {
 
-                nomeRelatorioJasper = Constantes.JASPERNFCE;
+                nomeRelatorioJasper = Constants.JASPERNFCE;
 
                 String url = WebServiceUtil.getUrl(ConstantesNFe.NFCE, ConstantesNFe.SERVICOS.URL_CONSULTANFCE);
 
@@ -723,7 +723,7 @@ public class NfeService implements Serializable {
 
         JasperReportUtil report = new JasperReportUtil();
 
-        byte[] pdfFile = report.gerarRelatorio(new JRXmlDataSource(caminho, expressaoDataSource), parametrosRelatorio, Constantes.CAMINHODANFE, nomeRelatorioJasper);
+        byte[] pdfFile = report.gerarRelatorio(new JRXmlDataSource(caminho, expressaoDataSource), parametrosRelatorio, Constants.CAMINHODANFE, nomeRelatorioJasper);
         String caminhoPdf = null;
         if (modelo == ModeloDocumento.NFE) {
             caminhoPdf = ArquivoUtil.getInstance().escrever(TipoArquivo.NFe, nfe.getEmpresa().getCnpj(), pdfFile, nfe.getNomePdf());

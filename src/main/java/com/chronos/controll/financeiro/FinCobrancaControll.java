@@ -8,7 +8,7 @@ import com.chronos.modelo.entidades.FinParcelaReceber;
 import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.RowEditEvent;
 
@@ -87,7 +87,7 @@ public class FinCobrancaControll extends AbstractControll<FinCobranca> implement
 
 
             filtros = new ArrayList<>();
-            filtros.add(new Filtro(Filtro.AND, "finStatusParcela.id", Filtro.IGUAL, Constantes.FIN.STATUS_ABERTO.getId()));
+            filtros.add(new Filtro(Filtro.AND, "finStatusParcela.id", Filtro.IGUAL, Constants.FIN.STATUS_ABERTO.getId()));
 
             Cliente cliente = getObjeto().getCliente();
             filtros.add(new Filtro(Filtro.AND, "finLancamentoReceber.cliente", Filtro.IGUAL, cliente));

@@ -14,7 +14,7 @@ import com.chronos.repository.Repository;
 import com.chronos.repository.VendaRepository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.MovimentoService;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
@@ -296,7 +296,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         recebimento.setPdvMovimento(movimento);
 
 
-        FinStatusParcela status = parcial ? Constantes.FIN.STATUS_PARCIAL : Constantes.FIN.STATUS_QUITADO;
+        FinStatusParcela status = parcial ? Constants.FIN.STATUS_PARCIAL : Constants.FIN.STATUS_QUITADO;
         FinParcelaReceber pr = new FinParcelaReceber(p.getIdParcelaReceber());
         recebimento.setFinParcelaReceber(pr);
 

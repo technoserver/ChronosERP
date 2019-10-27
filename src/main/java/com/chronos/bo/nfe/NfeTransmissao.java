@@ -20,7 +20,7 @@ import com.chronos.transmissor.init.Configuracoes;
 import com.chronos.transmissor.nfe.Nfe;
 import com.chronos.transmissor.util.ConstantesNFe;
 import com.chronos.transmissor.util.XmlUtil;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.FormatValor;
 import com.chronos.util.jsf.FacesUtil;
 
@@ -162,7 +162,7 @@ public class NfeTransmissao {
             configuracoes = Configuracoes.iniciaConfiguracoes(Estados.getUFbyIbge(conf.getCodigoUf().toString()), conf.getWebserviceAmbiente().toString(),
                     certificado, conf.getCaminhoSchemas(), conf.getVersao());
 
-            configuracoes.setLog(Constantes.DESENVOLVIMENTO);
+        configuracoes.setLog(Constants.DESENVOLVIMENTO);
             FacesUtil.setConfEmissor(configuracoes);
 
         return configuracoes;
