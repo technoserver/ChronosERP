@@ -32,6 +32,7 @@ public class VendaOrcamentoDetalhe implements Serializable {
     @Column(name = "VALOR_UNITARIO")
     private BigDecimal valorUnitario;
     @Column(name = "VALOR_SUBTOTAL")
+    @NotNull
     private BigDecimal valorSubtotal;
     @Column(name = "TAXA_DESCONTO")
     @DecimalMax(value = "100.0", message = "O deve deve ser igual ou menor que 100")
@@ -39,6 +40,7 @@ public class VendaOrcamentoDetalhe implements Serializable {
     @Column(name = "VALOR_DESCONTO")
     private BigDecimal valorDesconto;
     @Column(name = "VALOR_TOTAL")
+    @NotNull
     private BigDecimal valorTotal;
     @JoinColumn(name = "ID_VENDA_ORCAMENTO_CABECALHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
@@ -77,7 +79,8 @@ public class VendaOrcamentoDetalhe implements Serializable {
     }
 
     public BigDecimal getValorSubtotal() {
-        return valorSubtotal  = getQuantidade().multiply(getValorUnitario());
+        valorSubtotal = getQuantidade().multiply(getValorUnitario());
+        return valorSubtotal;
     }
 
     public void setValorSubtotal(BigDecimal valorSubtotal) {
@@ -100,10 +103,9 @@ public class VendaOrcamentoDetalhe implements Serializable {
         this.valorDesconto = valorDesconto;
     }
 
+
     public BigDecimal getValorTotal() {
-
         valorTotal = getValorSubtotal().subtract(getValorDesconto());
-
         return valorTotal;
     }
 

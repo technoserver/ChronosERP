@@ -39,6 +39,7 @@ public class VendaOrcamentoCabecalho implements Serializable {
     @Column(name = "TIPO_FRETE")
     private String tipoFrete;
     @Column(name = "VALOR_SUBTOTAL")
+    @NotNull
     private BigDecimal valorSubtotal;
     @Column(name = "VALOR_FRETE")
     private BigDecimal valorFrete;
@@ -53,6 +54,7 @@ public class VendaOrcamentoCabecalho implements Serializable {
     @Column(name = "VALOR_DESCONTO")
     private BigDecimal valorDesconto;
     @Column(name = "VALOR_TOTAL")
+    @NotNull
     private BigDecimal valorTotal;
     @Column(name = "OBSERVACAO")
     private String observacao;
