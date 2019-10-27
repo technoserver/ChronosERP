@@ -16,7 +16,7 @@ import com.chronos.service.financeiro.MovimentoService;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.Mensagem;
 
@@ -263,7 +263,7 @@ public class OsService extends AbstractService<OsAbertura> {
         if (formaPagamento.isPresent()) {
             formaPagamento.get().getCondicao();
             finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
-                    formaPagamento.get().getCondicao(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, os.getEmpresa());
+                    formaPagamento.get().getCondicao(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, os.getEmpresa());
         }
 
 

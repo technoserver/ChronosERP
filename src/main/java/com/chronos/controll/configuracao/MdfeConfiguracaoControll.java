@@ -6,7 +6,7 @@ import com.chronos.modelo.entidades.MdfeConfiguracao;
 import com.chronos.modelo.enuns.TipoArquivo;
 import com.chronos.repository.Filtro;
 import com.chronos.util.ArquivoUtil;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -48,7 +48,7 @@ public class MdfeConfiguracaoControll extends AbstractControll<MdfeConfiguracao>
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
-        String schemas = context.getRealPath(Constantes.DIRETORIO_SCHEMA_MDFE);
+        String schemas = context.getRealPath(Constants.DIRETORIO_SCHEMA_MDFE);
         getObjeto().setWebserviceUf(empresa.buscarEnderecoPrincipal().getMunicipioIbge().toString().substring(0, 2));
         getObjeto().setCaminhoSchemas(schemas);
     }

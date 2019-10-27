@@ -14,7 +14,7 @@ import com.chronos.service.cadastros.ProdutoFornecedorService;
 import com.chronos.service.cadastros.ProdutoService;
 import com.chronos.service.estoque.EntradaNotaFiscalService;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jsf.Mensagem;
 import org.apache.commons.io.FileUtils;
 import org.primefaces.PrimeFaces;
@@ -383,7 +383,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 getObjeto().setEmpresa(empresa);
                 getObjeto().setEmitente((NfeEmitente) map.get("emitente"));
 
-                if (!getObjeto().getDestinatario().getCpfCnpj().equals(empresa.getCnpj()) && !Constantes.DESENVOLVIMENTO) {
+                if (!getObjeto().getDestinatario().getCpfCnpj().equals(empresa.getCnpj()) && !Constants.DESENVOLVIMENTO) {
                     throw new ChronosException("NF-e não emitida pra o cnpj da empresa");
                 }
 

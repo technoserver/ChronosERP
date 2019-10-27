@@ -3,7 +3,7 @@ package com.chronos.controll.financeiro;
 import com.chronos.controll.AbstractControll;
 import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
@@ -156,8 +156,7 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
                 recebimento.setValorRecebido(finParcelaRecebimento.getValorRecebido());
 
 
-
-                getObjeto().setFinStatusParcela(Constantes.FIN.STATUS_ABERTO);
+                getObjeto().setFinStatusParcela(Constants.FIN.STATUS_ABERTO);
                 getObjeto().getListaFinParcelaRecebimento().add(recebimento);
                 salvar("Recebimento incluído com sucesso!");
                 novoRecebimento();
@@ -179,7 +178,7 @@ public class FinParcelaRecebimentoControll extends AbstractControll<FinParcelaRe
                     recebimento.setHistorico(historico);
                     recebimento.setValorRecebido(p.getValor());
 
-                    p.setFinStatusParcela(Constantes.FIN.STATUS_QUITADO);
+                    p.setFinStatusParcela(Constants.FIN.STATUS_QUITADO);
                     p.getListaFinParcelaRecebimento().add(recebimento);
 
                     p = dao.atualizar(p);

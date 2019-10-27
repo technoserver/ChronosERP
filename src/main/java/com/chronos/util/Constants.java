@@ -5,7 +5,7 @@ import com.chronos.modelo.entidades.*;
 /**
  * Created by john on 20/08/17.
  */
-public interface Constantes {
+public interface Constants {
 
 
     String DIRETORIO_SCHEMA_NFE = "/modulo/comercial/nfe/schemas";
