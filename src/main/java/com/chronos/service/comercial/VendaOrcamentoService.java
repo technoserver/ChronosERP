@@ -61,6 +61,28 @@ public class VendaOrcamentoService implements Serializable {
         return orcamento;
     }
 
+    public void salvarItem(VendaOrcamentoCabecalho orcamento, VendaOrcamentoDetalhe item, BigDecimal desconto, int tipoDesconto) throws ChronosException {
+
+        if (desconto != null && desconto.signum() > 0) {
+            if (tipoDesconto == 0) {
+                BigDecimal valorDesconto = Biblioteca.calcularValorPercentual(item.getValorSubtotal(), desconto);
+                item.setTaxaDesconto(desconto);
+                item.setValorDesconto(valorDesconto);
+            } else {
+                item.setValorDesconto(desconto);
+                BigDecimal taxDesc = Biblioteca.descDinheiroToPercentual(item.getValorSubtotal(), desconto);
+                item.setTaxaDesconto(taxDesc);
+            }
+        }
+
+        if (!orcamento.getListaVendaOrcamentoDetalhe().contains(item)) {
+            orcamento.getListaVendaOrcamentoDetalhe().add(item);
+        }
+
+        orcamento.calcularValorTotal();
+
+    }
+
     @Transactional
     public VendaOrcamentoCabecalho conveterEmVenda(VendaOrcamentoCabecalho orcamento) throws ChronosException {
 
