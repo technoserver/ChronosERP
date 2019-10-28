@@ -184,11 +184,11 @@ public class FormatValor {
 
         String mascara = "#,##0.";
         if (tipo.equals("Q")) {
-            for (int i = 0; i < Constantes.DECIMAIS_QUANTIDADE; i++) {
+            for (int i = 0; i < Constants.DECIMAIS_QUANTIDADE; i++) {
                 mascara += "0";
             }
         } else if (tipo.equals("V")) {
-            for (int i = 0; i < Constantes.DECIMAIS_VALOR; i++) {
+            for (int i = 0; i < Constants.DECIMAIS_VALOR; i++) {
                 mascara += "0";
             }
         }
