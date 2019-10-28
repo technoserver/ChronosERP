@@ -24,7 +24,7 @@
         <renderer>
             <component-family>javax.faces.Messages</component-family>
             <renderer-type>javax.faces.Messages</renderer-type>
-            <renderer-class>com.chronos.util.jsf.BootstrapMessagesRenderer</renderer-class>
+            <renderer-class>com.chronos.erp.util.jsf.BootstrapMessagesRenderer</renderer-class>
         </renderer>
     </render-kit>
     
