@@ -44,7 +44,7 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
     private List<Empresa> empresas;
     private List<TributOperacaoFiscal> operacoesFiscais;
 
-    private Map<String, Integer> listaEmpresas;
+    private Map<String, Integer> listaEmps;
     private int idempresaDestino;
 
     private EstoqueTransferenciaDetalhe itemSelecionado;
@@ -59,8 +59,8 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
             super.doCreate();
             int id = empresa.getTipo().equals("M") ? empresa.getId() : empresa.getIdempresa();
             empresas = service.popularFiliais(empresa.getId(), id, empresa.getTipo());
-            listaEmpresas = new LinkedHashMap<>();
-            listaEmpresas.putAll(empresas.stream()
+            listaEmps = new LinkedHashMap<>();
+            listaEmps.putAll(empresas.stream()
                     .collect(Collectors.toMap((Empresa::getRazaoSocial), Empresa::getId)));
             getObjeto().setColaborador(new Colaborador(usuario.getIdcolaborador()));
             getObjeto().setEmpresaOrigem(empresa);
@@ -194,8 +194,12 @@ public class TransferenciaControll extends AbstractControll<EstoqueTransferencia
         return false;
     }
 
-    public Map<String, Integer> getListaEmpresas() {
-        return listaEmpresas;
+    public Map<String, Integer> getListaEmps() {
+        return listaEmps;
+    }
+
+    public void setListaEmps(Map<String, Integer> listaEmps) {
+        this.listaEmps = listaEmps;
     }
 
     public int getIdempresaDestino() {

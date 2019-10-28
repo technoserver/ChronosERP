@@ -92,7 +92,7 @@ public class ERPLazyDataModel<T> extends LazyDataModel<T> implements Serializabl
         if (filtros == null) {
             filtros = new ArrayList<>();
         }
-        if (valor.getClass() == String.class) {
+        if (valor.getClass() == String.class && operadorRelacional.equals(Filtro.LIKE)) {
             filtros.add(new Filtro(Filtro.AND, atributo, Filtro.LIKE, valor));
         } else {
             filtros.add(new Filtro(Filtro.AND, atributo, operadorRelacional, valor));

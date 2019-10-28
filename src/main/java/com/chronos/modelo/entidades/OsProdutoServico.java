@@ -54,6 +54,7 @@ public class OsProdutoServico implements Serializable {
     private Produto produto;
 
     public OsProdutoServico() {
+        this.valorDesconto = BigDecimal.ZERO;
     }
 
     public Integer getId() {
@@ -124,10 +125,6 @@ public class OsProdutoServico implements Serializable {
     }
 
     public BigDecimal getValorDesconto() {
-        this.valorDesconto = Optional.ofNullable(this.taxaDesconto).isPresent()
-                ? taxaDesconto.multiply(this.valorSubtotal).divide(BigDecimal.valueOf(100))
-                : BigDecimal.ZERO;
-        this.valorDesconto.setScale(2, BigDecimal.ROUND_HALF_DOWN);
         return valorDesconto;
     }
 

@@ -95,6 +95,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private Date dataEntregaInicial, dataEntregaFinal;
     private String nome;
     private String situacao;
+    private Integer idmepresaFiltro;
     private Map<String, String> status;
 
     private String tipoAutorizacao = "P";
@@ -118,6 +119,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
         this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
+
+        pesquisarEmpresas();
 
     }
 
@@ -159,14 +162,18 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         if (!StringUtils.isEmpty(situacao) && !situacao.equals("T")) {
             dataModel.getFiltros().add(new Filtro(Filtro.AND, "situacao", Filtro.IGUAL, situacao));
         }
-        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        dataModel.getFiltros().add(new Filtro("empresa.id", idmepresaFiltro));
 
     }
 
     @Override
     public void doCreate() {
         super.doCreate();
-        getObjeto().setEmpresa(empresa);
+        if (listaEmpresas != null && listaEmpresas.size() <= 1) {
+            getObjeto().setEmpresa(empresa);
+        }
+
         pessoaCliente = null;
 
     }
@@ -726,5 +733,13 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void setDataEntregaFinal(Date dataEntregaFinal) {
         this.dataEntregaFinal = dataEntregaFinal;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
     }
 }

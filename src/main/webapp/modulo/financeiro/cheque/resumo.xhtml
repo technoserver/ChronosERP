@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Resumo
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finResumoTesourariaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Resumo
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:formularioGrid controller="#{finResumoTesourariaControll}"
+                            id="telaGrid"
+        >
+            <div class="row m-b">
+                <erp:campoData
+                        idComponente="periodo"
+                        nomeAtributo="#{finResumoTesourariaControll.periodo}"
+                        styleClass="col-xs-6 col-sm-2 col-md-2"
+                        requerido="true"
+                        label="Perido"/>
+
+                <div class="col-xs-6">
+                    <p:commandButton
+                            style="margin-top: 25px"
+                            action="#{finResumoTesourariaControll.buscaDados()}"
+                            title="Pesquisar"
+                            value="Pesquisar"
+                            update=":formCentro:growl,:formCentro:telaGrid:dataTableFinResumoTesourariaDetalhe">
+
+                    </p:commandButton>
+                </div>
+            </div>
+
+            <p:dataTable id="dataTableFinResumoTesourariaDetalhe" var="obj" paginatorPosition="bottom"
+                         value="#{finResumoTesourariaControll.listaResumoTesouraria}"
+                         paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                         resizableColumns="true">
+
+                <p:column headerText="Operacao">
+                    <h:outputLabel value="#{obj.viewFinResumoTesouraria.operacao}"/>
+                </p:column>
+                <p:column headerText="Conta Caixa">
+                    <h:outputLabel
+                            value="#{obj.viewFinResumoTesouraria.nomeContaCaixa}"/>
+                </p:column>
+                <p:column headerText="Pessoa">
+                    <h:outputLabel value="#{obj.viewFinResumoTesouraria.nomePessoa}"/>
+                </p:column>
+                <p:column headerText="Data Lancamento">
+                    <h:outputLabel
+                            value="#{obj.viewFinResumoTesouraria.dataLancamento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Data Pago/Recebido">
+                    <h:outputLabel
+                            value="#{obj.viewFinResumoTesouraria.dataPagoRecebido}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Historico">
+                    <h:outputLabel value="#{obj.viewFinResumoTesouraria.historico}"/>
+                </p:column>
+                <p:column headerText="Valor">
+                    <h:outputLabel value="#{obj.viewFinResumoTesouraria.valor}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+            </p:dataTable>
+
+
+        </erp:formularioGrid>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finResumoTesourariaControll}"
+                                   nomeFuncao="CFOP"
+                                   id="telaDetalhe"
+        >
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+</ui:composition>

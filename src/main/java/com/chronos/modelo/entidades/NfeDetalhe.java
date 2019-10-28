@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -134,6 +135,8 @@ public class NfeDetalhe implements Serializable {
     @Transient
     @TaxaMaior
     private BigDecimal taxaDesconto;
+    @Transient
+    private List<EstoqueGrade> grades;
 
     public NfeDetalhe() {
         this.quantidadeComercial = BigDecimal.ZERO;
@@ -652,6 +655,13 @@ public class NfeDetalhe implements Serializable {
     }
 
 
+    public List<EstoqueGrade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(List<EstoqueGrade> grades) {
+        this.grades = grades;
+    }
 
     @Override
     public int hashCode() {

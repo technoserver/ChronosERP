@@ -35,7 +35,7 @@ public class VendaConsignadaService extends AbstractService<VendaConsignadaCabec
             } else {
                 item.setValorDesconto(desconto);
                 item.calcularValorTotal();
-                BigDecimal taxDesc = Biblioteca.calcularPercentual(item.getValorSubtotal(), item.getValorTotal());
+                BigDecimal taxDesc = Biblioteca.descDinheiroToPercentual(item.getValorSubtotal(), item.getValorTotal());
                 item.setTaxaDesconto(taxDesc);
             }
         }

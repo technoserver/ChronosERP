@@ -5,7 +5,7 @@ import com.chronos.modelo.entidades.*;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jpa.Transactional;
 
 import javax.inject.Inject;
@@ -40,7 +40,7 @@ public class FinLancamentoPagarService implements Serializable {
         lancamento.setDataLancamento(new Date());
         lancamento.setValorTotal(nfe.getValorTotal());
         lancamento.setId(nfe.getId());
-        lancamento.setCodigoModulo(Constantes.MODULO.NFE);
+        lancamento.setCodigoModulo(Constants.MODULO.NFE);
         lancamento.setEmpresa(nfe.getEmpresa());
         lancamento.setDuplicatas(nfe.getListaDuplicata());
 

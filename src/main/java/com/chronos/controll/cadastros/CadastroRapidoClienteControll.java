@@ -18,7 +18,7 @@ import java.util.*;
 
 @Named
 @ViewScoped
-public class cadastroRapidoClienteControll implements Serializable {
+public class CadastroRapidoClienteControll implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

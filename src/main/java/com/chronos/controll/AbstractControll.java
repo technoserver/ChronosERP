@@ -29,6 +29,13 @@ public abstract class AbstractControll<T> implements Serializable {
     protected ERPLazyDataModel<T> dataModel;
     @Inject
     protected Repository<T> dao;
+    protected List<Empresa> listaEmpresas;
+    protected List<Empresa> empresasSelecionada;
+    @Inject
+    private Repository<EmpresaPessoa> empresaPessoaRepository;
+    @Inject
+    private Repository<Empresa> empresaRepository;
+
     protected UsuarioDTO usuario;
     protected Empresa empresa;
     protected EmpresaEndereco enderecoEmpresa;
@@ -38,6 +45,10 @@ public abstract class AbstractControll<T> implements Serializable {
     protected String senhaSupervisor;
     protected AdmParametro parametro;
     protected RestricaoSistema restricao;
+    @Inject
+    private Repository<Auditoria> auditoriaRepository;
+    @Inject
+    private UsuarioRepository usuarioRepository;
 
     private T objetoSelecionado;
     private T objeto;
@@ -45,10 +56,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private boolean necessarioAutorizacaoSupervisor = false;
     private boolean restricaoLiberada = false;
     private boolean telaGrid = true;
-    @Inject
-    private Repository<Auditoria> auditoriaRepository;
-    @Inject
-    private UsuarioRepository usuarioRepository;
+
     private String titulo;
     private int activeTabIndex;
 
@@ -741,6 +749,35 @@ public abstract class AbstractControll<T> implements Serializable {
         telaGrid = true;
     }
 
+    public void pesquisarEmpresas() {
+
+
+        listaEmpresas = new ArrayList<>();
+
+        empresasSelecionada = new ArrayList<>();
+        if (usuario.getAdministrador().equals("S")) {
+            List<Empresa> empresas = empresaRepository.getEntitys(Empresa.class, new Object[]{"razaoSocial"});
+
+            if (!empresas.isEmpty() && empresas.size() > 1) {
+                empresas.forEach(e -> {
+                    listaEmpresas.add(e);
+                });
+            }
+
+
+        } else {
+            List<EmpresaPessoa> empresaPessoas = empresaPessoaRepository.getEntitys(EmpresaPessoa.class, "pessoa.id", usuario.getIdpessoa(), new Object[]{"empresa.id, empresa.razaoSocial"});
+
+            if (!empresaPessoas.isEmpty() && empresaPessoas.size() > 1) {
+
+                for (EmpresaPessoa emp : empresaPessoas) {
+                    listaEmpresas.add(emp.getEmpresa());
+                }
+
+            }
+        }
+    }
+
     public List<Estados> getEstado() {
         List<Estados> estados = new ArrayList<>();
         if (estados.isEmpty()) {
@@ -1428,5 +1465,17 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, Integer> getOsStatus() {
         return osStatus;
+    }
+
+    public List<Empresa> getListaEmpresas() {
+        return listaEmpresas;
+    }
+
+    public List<Empresa> getEmpresasSelecionada() {
+        return empresasSelecionada;
+    }
+
+    public void setEmpresasSelecionada(List<Empresa> empresasSelecionada) {
+        this.empresasSelecionada = empresasSelecionada;
     }
 }

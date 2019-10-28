@@ -6,7 +6,7 @@ import com.chronos.repository.Filtro;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.service.financeiro.MovimentoService;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -116,7 +116,7 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     public void gerarParcelas() throws Exception {
 
 
-        FinStatusParcela statusParcela = Constantes.FIN.STATUS_ABERTO;
+        FinStatusParcela statusParcela = Constants.FIN.STATUS_ABERTO;
 
 
         if (contaCaixa == null || contaCaixa.getId() == null) {

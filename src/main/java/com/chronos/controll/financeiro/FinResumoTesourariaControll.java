@@ -8,6 +8,7 @@ import com.chronos.util.Biblioteca;
 import com.chronos.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -25,7 +26,8 @@ public class FinResumoTesourariaControll extends AbstractControll<ViewFinResumoT
 
     private static final long serialVersionUID = 1L;
 
-    private Repository<ViewFinResumoTesourariaID> resumos;
+    @Inject
+    private Repository<ViewFinResumoTesourariaID> repository;
 
     private Date periodo;
     private List<ViewFinResumoTesourariaID> listaResumoTesouraria;
@@ -50,10 +52,10 @@ public class FinResumoTesourariaControll extends AbstractControll<ViewFinResumoT
                 filtros.add(new Filtro(Filtro.AND, "viewFinResumoTesouraria.dataLancamento", Filtro.MENOR_OU_IGUAL, Biblioteca.ultimoDiaMes(periodo)));
 
                 if (isTelaGrid()) {
-                    listaResumoTesouraria = resumos.getEntitys(ViewFinResumoTesourariaID.class, filtros);
+                    listaResumoTesouraria = repository.getEntitys(ViewFinResumoTesourariaID.class, filtros);
                 } else {
                     filtros.add(new Filtro(Filtro.AND, "viewFinResumoTesouraria.idContaCaixa", Filtro.IGUAL, getObjeto().getViewFinResumoTesouraria().getIdContaCaixa()));
-                    listaResumoTesourariaDetalhe = resumos.getEntitys(ViewFinResumoTesourariaID.class,filtros);
+                    listaResumoTesourariaDetalhe = repository.getEntitys(ViewFinResumoTesourariaID.class, filtros);
                 }
             }
         } catch (Exception e) {

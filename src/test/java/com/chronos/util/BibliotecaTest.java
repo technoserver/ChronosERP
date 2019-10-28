@@ -46,9 +46,11 @@ public class BibliotecaTest {
     @Test
     public void devemos_garaantir_que_seja_calculado_o_percentual_em_cima_de_um_valor_de_desonto() throws ChronosException {
 
-        BigDecimal percentual = Biblioteca.calcularPercentual(BigDecimal.valueOf(100), BigDecimal.valueOf(10));
-        BigDecimal percentual2 = Biblioteca.calcularPercentual(BigDecimal.valueOf(155), BigDecimal.valueOf(15.5));
-        BigDecimal percentual3 = Biblioteca.calcularPercentual(BigDecimal.valueOf(155), BigDecimal.valueOf(23.25));
+        BigDecimal percentual = Biblioteca.descDinheiroToPercentual(BigDecimal.valueOf(100), BigDecimal.valueOf(10));
+        BigDecimal percentual1 = Biblioteca.descDinheiroToPercentual(BigDecimal.valueOf(180), BigDecimal.valueOf(158.40));
+        BigDecimal percentual2 = Biblioteca.descDinheiroToPercentual(BigDecimal.valueOf(155), BigDecimal.valueOf(15.5));
+        BigDecimal percentual3 = Biblioteca.descDinheiroToPercentual(BigDecimal.valueOf(155), BigDecimal.valueOf(23.25));
+        BigDecimal percentual4 = Biblioteca.descDinheiroToPercentual(BigDecimal.valueOf(180), BigDecimal.valueOf(164));
 
         assertEquals(percentual, BigDecimal.valueOf(10).setScale(2));
         assertEquals(percentual2, BigDecimal.valueOf(10).setScale(2));

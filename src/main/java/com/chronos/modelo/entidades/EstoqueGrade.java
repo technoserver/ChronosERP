@@ -3,8 +3,10 @@ package com.chronos.modelo.entidades;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 
 @Entity
@@ -17,27 +19,32 @@ public class EstoqueGrade implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @NotNull
+    @Column(name = "id_produto")
+    private Integer idproduto;
+    @NotNull
+    @Column(name = "id_empresa")
+    private Integer idempresa;
     @Column(name = "CODIGO")
     private String codigo;
     @Column(name = "QUANTIDADE")
     private BigDecimal quantidade;
+    @Column(name = "verificado")
+    private BigDecimal verificado;
     @JoinColumn(name = "ID_ESTOQUE_COR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private EstoqueCor estoqueCor;
     @JoinColumn(name = "ID_ESTOQUE_TAMANHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private EstoqueTamanho estoqueTamanho;
-    @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private Produto produto;
-    @JoinColumn(name = "ID_ESTOQUE_SABOR", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private EstoqueSabor estoqueSabor;
-    @JoinColumn(name = "ID_ESTOQUE_MARCA", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private EstoqueMarca estoqueMarca;
+
+    @Transient
+    private BigDecimal quantidadeEntrada;
 
     public EstoqueGrade() {
+        this.quantidade = BigDecimal.ZERO;
+        this.verificado = BigDecimal.ZERO;
+        this.quantidadeEntrada = BigDecimal.ZERO;
     }
 
     public Integer getId() {
@@ -80,35 +87,60 @@ public class EstoqueGrade implements Serializable {
         this.estoqueTamanho = estoqueTamanho;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public Integer getIdproduto() {
+        return idproduto;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setIdproduto(Integer idproduto) {
+        this.idproduto = idproduto;
     }
 
-    public EstoqueSabor getEstoqueSabor() {
-        return estoqueSabor;
+    public Integer getIdempresa() {
+        return idempresa;
     }
 
-    public void setEstoqueSabor(EstoqueSabor estoqueSabor) {
-        this.estoqueSabor = estoqueSabor;
+    public void setIdempresa(Integer idempresa) {
+        this.idempresa = idempresa;
     }
 
-    public EstoqueMarca getEstoqueMarca() {
-        return estoqueMarca;
+    public BigDecimal getVerificado() {
+        return verificado;
     }
 
-    public void setEstoqueMarca(EstoqueMarca estoqueMarca) {
-        this.estoqueMarca = estoqueMarca;
+    public void setVerificado(BigDecimal verificado) {
+        this.verificado = verificado;
     }
 
-   @Override
+    public BigDecimal getQuantidadeEntrada() {
+        return quantidadeEntrada;
+    }
+
+    public void setQuantidadeEntrada(BigDecimal quantidadeEntrada) {
+        this.quantidadeEntrada = quantidadeEntrada;
+    }
+
+    public boolean isPodeRemover() {
+        return (this.quantidade != null && this.quantidade.signum() <= 0) || (this.verificado != null && this.verificado.signum() <= 0);
+    }
+
+    @Override
    public String toString() {
       return "EstoqueGrade{" + "id=" + id + '}';
    }
 
-   
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EstoqueGrade that = (EstoqueGrade) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(idproduto, that.idproduto) &&
+                Objects.equals(idempresa, that.idempresa) &&
+                Objects.equals(codigo, that.codigo);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, idproduto, idempresa, codigo);
+    }
 }

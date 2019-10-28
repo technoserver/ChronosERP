@@ -8,7 +8,7 @@ import com.chronos.repository.FinLancamentoReceberRepository;
 import com.chronos.repository.Repository;
 import com.chronos.service.ChronosException;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jpa.Transactional;
 
 import javax.inject.Inject;
@@ -72,7 +72,7 @@ public class FinLancamentoReceberService implements Serializable {
         lancamentoReceber.setQuantidadeParcela(parcelas.size());
         lancamentoReceber.setListaFinParcelaReceber(parcelas);
 
-        geraNaturezaFinanceira(lancamentoReceber, Constantes.FIN.NATUREZA_VENDA);
+        geraNaturezaFinanceira(lancamentoReceber, Constants.FIN.NATUREZA_VENDA);
         lancamentos.salvar(lancamentoReceber);
     }
 

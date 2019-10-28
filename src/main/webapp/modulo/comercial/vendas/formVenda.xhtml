@@ -113,7 +113,7 @@
                                 </p:autoComplete>
                                 <div class="field-action__icon">
                                     <p:commandLink title="Add novo cliente" style="font-size: 20px;color: #00acac"
-                                                   action="#{cadastroRapidoClienteControll.abrirDialog}"
+                                                   action="#{CadastroRapidoClienteControll.abrirDialog}"
                                                    process="@this" update="@none"
                                     >
                                         <p:ajax event="dialogReturn"
@@ -171,6 +171,15 @@
                                           mascara="99:99:99"
                         />
                     </div>
+                    <h:panelGroup class="row" layout="block"
+                                  rendered="#{vendaCabecalhoControll.listaEmpresas.size() gt 1}">
+                        <erp:campoSelectConverter idComponente="empresa"
+                                                  labelItens="#{obj.razaoSocial}"
+                                                  nomeAtributo="#{vendaCabecalhoControll.objeto.empresa}"
+                                                  itens="#{vendaCabecalhoControll.listaEmpresas}"
+                                                  styleClass="col-xs-12 col-sm-3 col-md-3"
+                                                  label="Empresa"/>
+                    </h:panelGroup>
                     <div class="row">
                         <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
                                             idComponente="vendaCabecalhoObservacao" label="Observacao"

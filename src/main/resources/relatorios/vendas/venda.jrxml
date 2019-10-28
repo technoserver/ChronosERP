@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="4.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="720"/>
+    <property name="ireport.y" value="1063"/>
     <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
     <style name="dadosDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isBold="false"
@@ -214,7 +214,7 @@ WHERE
     <field name="pessoa_endereco_principal" class="java.lang.String"/>
     <title>
         <band height="196" splitType="Stretch">
-            <image hAlign="Center" vAlign="Middle" isUsingCache="true">
+            <image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
                 <reportElement positionType="Float" mode="Transparent" x="2" y="0" width="208" height="80"
                                uuid="39763776-99a0-40da-b698-701f2a065525"/>
                 <imageExpression><![CDATA[$F{empresa_imagem_logotipo}]]></imageExpression>
@@ -774,7 +774,7 @@ WHERE
                                uuid="d156065d-74c8-43e9-9c1c-ecb3192ea010"/>
                 <textFieldExpression><![CDATA[$F{observacao}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement style="dadosDetail" x="0" y="68" width="291" height="20"
                                uuid="e290ebac-7117-4f73-8e96-2c8a59d8faa0"/>
                 <textFieldExpression><![CDATA[$F{local_entrega}]]></textFieldExpression>

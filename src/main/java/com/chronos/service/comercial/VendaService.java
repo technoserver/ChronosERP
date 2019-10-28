@@ -14,7 +14,7 @@ import com.chronos.service.financeiro.FinLancamentoReceberService;
 import com.chronos.service.gerencial.AuditoriaService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.chronos.util.Biblioteca;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jpa.Transactional;
 import com.chronos.util.jsf.FacesUtil;
 import com.chronos.util.jsf.Mensagem;
@@ -109,7 +109,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         }
 
         finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
-                venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constantes.FIN.NATUREZA_VENDA, venda.getEmpresa());
+                venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
 
         venda = repository.salvarFlush(venda);
 
@@ -416,16 +416,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         vendaDetalhe.calcularDesconto();
         vendaDetalhe.calcularValorTotal();
 
-        Optional<VendaDetalhe> itemVenda = getItemVenda(venda, vendaDetalhe.getProduto());
-        BigDecimal quantidade = vendaDetalhe.getQuantidade();
-        BigDecimal valor = vendaDetalhe.getValorUnitario();
 
-        if (itemVenda.isPresent()) {
-            quantidade = itemVenda.get().getQuantidade().add(quantidade);
-            itemVenda.get().setQuantidade(quantidade);
-            itemVenda.get().setValorUnitario(valor);
-            itemVenda.get().setTaxaDesconto(vendaDetalhe.getTaxaDesconto());
-        } else {
+        if (!venda.getListaVendaDetalhe().contains(vendaDetalhe)) {
             venda.getListaVendaDetalhe().add(vendaDetalhe);
         }
 

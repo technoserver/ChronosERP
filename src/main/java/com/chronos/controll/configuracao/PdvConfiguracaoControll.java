@@ -14,7 +14,7 @@ import com.chronos.service.ChronosException;
 import com.chronos.service.comercial.NfeService;
 import com.chronos.service.configuracao.PdvConfiguracaoService;
 import com.chronos.util.ArquivoUtil;
-import com.chronos.util.Constantes;
+import com.chronos.util.Constants;
 import com.chronos.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
@@ -113,7 +113,7 @@ public class PdvConfiguracaoControll extends AbstractControll<PdvConfiguracao> i
 
         try {
 
-            String schema = context.getRealPath(Constantes.DIRETORIO_SCHEMA_NFE);
+            String schema = context.getRealPath(Constants.DIRETORIO_SCHEMA_NFE);
             getObjeto().setCaminhoSchemas(schema);
             getObjeto().setWebserviceUf(empresa.getCodigoIbgeUf().toString());
             getObjeto().setPdvConfiguracaoBalanca(balanca);

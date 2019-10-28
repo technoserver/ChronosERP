@@ -221,6 +221,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         vendaOrcamentoDetalhe = new VendaOrcamentoDetalhe();
         vendaOrcamentoDetalhe.setVendaOrcamentoCabecalho(getObjeto());
         vendaOrcamentoDetalhe.setQuantidade(BigDecimal.ONE);
+        desconto = BigDecimal.ZERO;
     }
 
     public void alterarVendaOrcamentoDetalhe() {
@@ -229,13 +230,27 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
     public void salvarVendaOrcamentoDetalhe() {
 
-        if (vendaOrcamentoDetalhe.getId() == null) {
-            getObjeto().getListaVendaOrcamentoDetalhe().add(vendaOrcamentoDetalhe);
+        try {
+
+            service.salvarItem(getObjeto(), vendaOrcamentoDetalhe, desconto, tipoDesconto);
+            desconto = BigDecimal.ZERO;
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao salvar o item", ex);
+            }
         }
 
-        getObjeto().calcularValorTotal();
 
     }
+
+
+    public void alterarTipoDesconto() {
+        tipoDesconto = tipoDesconto == 0 ? 1 : 0;
+    }
+
 
     public void excluirVendaOrcamentoDetalhe() {
 

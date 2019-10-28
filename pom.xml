@@ -5,7 +5,7 @@
 
     <groupId>com.chronos</groupId>
     <artifactId>ERP</artifactId>
-    <version>5.1.3</version>
+    <version>5.7.6</version>
     <packaging>war</packaging>
 
     <name>ChronosERP</name>
@@ -19,7 +19,7 @@
         <!-- Logging -->
         <log4j.version>2.6</log4j.version>
         <!--        Chronos Emissor-->
-        <chronosNFe.version>4.0.9</chronosNFe.version>
+        <chronosNFe.version>4.2.0</chronosNFe.version>
         <jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
         <!--        FlyWay-->
         <flyway-maven-plugin.version>5.0.7</flyway-maven-plugin.version>
@@ -359,7 +359,7 @@
 
         <!--        Chronos Emissor-->
         <dependency>
-            <groupId>com.chronos.transmissor</groupId>
+            <groupId>com.chronos</groupId>
             <artifactId>transmissor</artifactId>
             <version>${chronosNFe.version}</version>
             <exclusions>

@@ -103,7 +103,7 @@ public class PessoaCliente implements Serializable {
         this.cpfCnpj = cpfCnpj;
         this.tipo = tipo;
 
-        this.pessoa = new Pessoa(id, nome);
+        this.pessoa = new Pessoa(idPessoa, nome);
 
     }
 
@@ -114,7 +114,20 @@ public class PessoaCliente implements Serializable {
         this.cpfCnpj = cpfCnpj;
 
 
-        this.pessoa = new Pessoa(id, nome);
+        this.pessoa = new Pessoa(idPessoa, nome);
+        instanciaTipoPessoa();
+
+    }
+
+    public PessoaCliente(Integer id, Integer idPessoa, String nome, String cpfCnpj, String tipo) {
+        this.id = id;
+        this.idPessoa = idPessoa;
+        this.tipo = tipo;
+        this.nome = nome;
+        this.cpfCnpj = cpfCnpj;
+
+
+        this.pessoa = new Pessoa(idPessoa, nome);
         instanciaTipoPessoa();
 
     }

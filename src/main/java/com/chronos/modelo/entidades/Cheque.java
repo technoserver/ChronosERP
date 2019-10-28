@@ -39,6 +39,11 @@ public class Cheque implements Serializable {
     public Cheque() {
     }
 
+    public Cheque(Integer id, Integer numero) {
+        this.id = id;
+        this.numero = numero;
+    }
+
     public Integer getId() {
         return id;
     }
