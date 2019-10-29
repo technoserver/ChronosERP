@@ -138,6 +138,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Override
     public void init() {
         super.init();
+        idmepresaFiltro = empresa.getId();
         pesquisarEmpresas();
     }
 
@@ -154,10 +155,6 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             produtoDataModel.addFiltro("grupo", strGrupo);
         }
 
-        if (!StringUtils.isEmpty(inativo)) {
-            produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
-        }
-
         if (!StringUtils.isEmpty(codigo)) {
             produtoDataModel.addFiltro("id", codigo, Filtro.IGUAL);
         }
@@ -165,7 +162,11 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         if (!StringUtils.isEmpty(gtin)) {
             produtoDataModel.addFiltro("gtin", gtin, Filtro.IGUAL);
         }
+
         idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        inativo = StringUtils.isEmpty(inativo) ? "N" : inativo;
+
+        produtoDataModel.addFiltro("inativo", inativo, Filtro.IGUAL);
         produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
         produtoDataModel.addFiltro("idempresa", idmepresaFiltro, Filtro.IGUAL);
     }
@@ -182,10 +183,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             dataModel.setJoinFetch(joinFetch);
 
         }
-
+        pesquisar();
         if (dataModel.getFiltros().isEmpty()) {
             dataModel.addFiltro("inativo", "N", Filtro.IGUAL);
-            dataModel.addFiltro("excluido", "N", Filtro.IGUAL);
         }
 
         return dataModel;
@@ -199,10 +199,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             produtoDataModel.setDao(produtos);
         }
 
-        if (produtoDataModel.getFiltros().isEmpty()) {
-            produtoDataModel.addFiltro("inativo", "N", Filtro.IGUAL);
-            produtoDataModel.addFiltro("excluido", "N", Filtro.IGUAL);
-        }
+        pesquisar();
 
 
         return produtoDataModel;

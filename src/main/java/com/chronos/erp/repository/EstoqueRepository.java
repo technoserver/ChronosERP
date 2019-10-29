@@ -124,7 +124,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         Root<ViewProdutoEmpresa> root = criteria.from(ViewProdutoEmpresa.class);
 
 
-        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla) From Produto p " +
+        String jpql = "select new com.chronos.erp.dto.ProdutoDTO(p.id,p.nome,p.valorVenda,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,p.tributIcmsCustomCab.id ,un.sigla) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
                 "where LOWER(p.nome)  like ?1 and ep.empresa.id = ?2 and (p.tributIcmsCustomCab is not null or p.tributGrupoTributario is not null)";
@@ -141,7 +141,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
         String filtro = servico.equals("S") ? "" : "and p.servico = '" + servico + "'";
         int id = StringUtils.isEmpty(nome) && nome.length() <= 9 && org.apache.commons.lang3.StringUtils.isNumeric(nome) ? Integer.parseInt(nome) : 0;
-        String jpql = "select DISTINCT new com.chronos.dto.ProdutoDTO(p.id,p.produtoGrade.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
+        String jpql = "select DISTINCT new com.chronos.erp.dto.ProdutoDTO(p.id,p.produtoGrade.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
                 "ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,un.sigla," +
                 "un.podeFracionar,pp.valor,p.precoPrioritario,p.quantidadeVendaAtacado,p.valorVendaAtacado) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
@@ -160,7 +160,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
 
     public List<ProdutoDTO> getProdutosTransferencia(int idempresaOrigem, Object filtro) {
-        String jpql = "select new com.chronos.dto.ProdutoDTO(p.id,p.nome,p.custoUnitario,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,un.sigla) From Produto p " +
+        String jpql = "select new com.chronos.erp.dto.ProdutoDTO(p.id,p.nome,p.custoUnitario,ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,un.sigla) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
                 "where ep.empresa.id = ?1 and p.tipo = 'V' and p.custoUnitario > 0 ";
@@ -176,7 +176,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     }
 
     public List<EstoqueIdealDTO> getItensCompraSugerida(Empresa empresa) {
-        String jpql = "select new com.chronos.dto.EstoqueIdealDTO(p.id,p.nome,p.valorCompra,ep.quantidadeEstoque,ep.estoqueVerificado,p.estoqueIdeal) From Produto p " +
+        String jpql = "select new com.chronos.erp.dto.EstoqueIdealDTO(p.id,p.nome,p.valorCompra,ep.quantidadeEstoque,ep.estoqueVerificado,p.estoqueIdeal) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "WHERE p.controle < p.estoqueMinimo and ep.empresa.id = ?1";
 

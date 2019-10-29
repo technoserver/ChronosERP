@@ -20,7 +20,7 @@ import java.util.List;
  * Created by john on 05/07/17.
  */
 @WebServlet("/image/*")
-public class ImageServet extends HttpServlet {
+public class ImageServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

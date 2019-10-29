@@ -123,7 +123,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
         listTipoPagamento = definirTipoPagament();
 
-        doCreate();
     }
 
     @Override
