@@ -5,7 +5,7 @@
        bean-discovery-mode="all">
 
     <interceptors>
-        <class>com.chronos.util.jpa.TransactionInterceptor</class>
+        <class>com.chronos.erp.util.jpa.TransactionInterceptor</class>
     </interceptors>
 
 </beans>

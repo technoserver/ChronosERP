@@ -216,7 +216,7 @@
 
 
     <sql-result-set-mapping name="produtoDTOMapping">
-        <constructor-result target-class="com.chronos.dto.ProdutoDTO">
+        <constructor-result target-class="com.chronos.erp.dto.ProdutoDTO">
             <column name="id" class="java.lang.Integer"/>
             <column name="nome" class="java.lang.String"/>
             <column name="descricao_pdv" class="java.lang.String"/>
@@ -241,7 +241,7 @@
 
 
     <sql-result-set-mapping name="loginUsuarioDTOMapping">
-        <constructor-result target-class="com.chronos.dto.UsuarioDTO">
+        <constructor-result target-class="com.chronos.erp.dto.UsuarioDTO">
             <column name="id" class="java.lang.Integer"/>
             <column name="idempresa" class="java.lang.Integer"/>
             <column name="idcolaborador" class="java.lang.Integer"/>
@@ -263,7 +263,7 @@
 
 
     <sql-result-set-mapping name="configuracaoNfeMapping">
-        <constructor-result target-class="com.chronos.dto.ConfiguracaoNfeDTO">
+        <constructor-result target-class="com.chronos.erp.dto.ConfiguracaoNfeDTO">
             <column name="caminho" class="java.lang.String"/>
             <column name="senha" class="java.lang.String"/>
             <column name="caminho_logomarca" class="java.lang.String"/>
@@ -275,7 +275,7 @@
     </sql-result-set-mapping>
 
     <sql-result-set-mapping name="configuracaoMdfeMapping">
-        <constructor-result target-class="com.chronos.dto.ConfiguracaoMdfeDTO">
+        <constructor-result target-class="com.chronos.erp.dto.ConfiguracaoMdfeDTO">
             <column name="caminho" class="java.lang.String"/>
             <column name="senha" class="java.lang.String"/>
             <column name="caminho_logomarca" class="java.lang.String"/>
@@ -288,7 +288,7 @@
     </sql-result-set-mapping>
 
     <sql-result-set-mapping name="configuracaoPdvMapping">
-        <constructor-result target-class="com.chronos.dto.ConfiguracaoPdvDTO">
+        <constructor-result target-class="com.chronos.erp.dto.ConfiguracaoPdvDTO">
             <column name="caminho" class="java.lang.String"/>
             <column name="senha" class="java.lang.String"/>
             <column name="caminho_logomarca" class="java.lang.String"/>
@@ -304,7 +304,7 @@
     </sql-result-set-mapping>
 
     <sql-result-set-mapping name="movimentoPdvMapping">
-        <constructor-result target-class="com.chronos.dto.PdvMovimentoDTO">
+        <constructor-result target-class="com.chronos.erp.dto.PdvMovimentoDTO">
             <column name="id" class="java.lang.Integer"/>
             <column name="operador" class="java.lang.String"/>
             <column name="idmovimento" class="java.lang.Integer"/>

@@ -4,13 +4,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:cc="http://java.sun.com/jsf/composite"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:erp="http://xmlns.jcp.org/jsf/composite/components"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+>
 
 <!-- INTERFACE -->
 <cc:interface>
-    <cc:attribute name="controller" type="com.chronos.controll.AbstractControll" required="true"/>
+    <cc:attribute name="controller" type="com.chronos.erp.controll.AbstractControll" required="true"/>
     <cc:attribute name="idDataTable" required="true"/>
     <cc:attribute name="somenteConsulta" default="false"/>
     <cc:attribute name="dataModel" default="#{cc.attrs.controller.dataModel}"/>
