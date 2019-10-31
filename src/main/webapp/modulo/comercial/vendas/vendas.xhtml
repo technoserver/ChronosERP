@@ -129,7 +129,7 @@
                                     value="#{vendaCabecalhoControll.keyFromValue(vendaCabecalhoControll.vendaSituacao, row.situacao)}"/>
                         </p:column>
 
-                        <p:column headerText="Ações" width="160" class="text-center">
+                        <p:column headerText="Ações" width="160" styleClass="text-right">
                             <p:commandLink title="Alterar" action="#{vendaCabecalhoControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
@@ -365,7 +365,7 @@
 
                                 <p:ajax process="@form"
                                         oncomplete="if (!args.validationFailed) {PF('dialogVendaDetalhe').hide();}"
-                                        update=":formOutrasTelas:panelVendaDetalhe,:formCentro:growl,:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe"
+                                        update=":formOutrasTelas:panelVendaDetalhe,:formCentro:growl,:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe,:formCentro:lista-empresa"
                                 />
                             </h:commandButton>
                         </div>

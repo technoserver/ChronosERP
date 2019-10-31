@@ -110,7 +110,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Override
     public void init() {
         super.init();
-
+        idmepresaFiltro = empresa.getId();
         status = new LinkedHashMap<>();
         status.put("Todos", "");
         status.put("Faturada", "F");
@@ -170,10 +170,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Override
     public void doCreate() {
         super.doCreate();
-        if (listaEmpresas != null && listaEmpresas.size() <= 1) {
-            getObjeto().setEmpresa(empresa);
-        }
-
+        getObjeto().setEmpresa(empresa);
         pessoaCliente = null;
 
     }
@@ -540,7 +537,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
         try {
 
-            listaProduto = produtoService.getListaProdutoDTO(empresa, nome, true);
+            listaProduto = produtoService.getListaProdutoDTO(getObjeto().getEmpresa(), nome, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

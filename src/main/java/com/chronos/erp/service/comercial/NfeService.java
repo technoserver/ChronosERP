@@ -653,7 +653,7 @@ public class NfeService implements Serializable {
             if (modelo == ModeloDocumento.NFE) {
                 nomeRelatorioJasper = Constants.JASPERNFE;
                 JRXmlDataSource faturaDataSource = new JRXmlDataSource(caminho, "//dup");
-                InputStream inFt = this.getClass().getResourceAsStream("/com/erp/erplight/relatorios/comercial/nfe/DanfeRetratoFatura.jasper");
+                InputStream inFt = this.getClass().getResourceAsStream("/relatorios/nfe/DanfeRetratoFatura.jasper");
                 parametrosRelatorio.put("Fatura_Datasource", faturaDataSource);
                 parametrosRelatorio.put("danfeRetratoFatura", inFt);
             } else {
