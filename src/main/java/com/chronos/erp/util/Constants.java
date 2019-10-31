@@ -13,7 +13,7 @@ public interface Constants {
     String DIRETORIO_SCHEMA_CTE = "/modulo/comercial/transporte/cte/schemas/";
     String JASPERNFE = "DanfeRetrato";
     String JASPERNFCE = "danfeNfce";
-    String CAMINHODANFE = "/com/chronos/erplight/relatorios/comercial/nfe";
+    String CAMINHODANFE = "/relatorios/nfe";
     int DECIMAIS_QUANTIDADE = 3;
     int DECIMAIS_VALOR = 2;
     boolean DESENVOLVIMENTO = false;
