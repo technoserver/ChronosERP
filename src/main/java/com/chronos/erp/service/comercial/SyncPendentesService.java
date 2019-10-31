@@ -43,10 +43,13 @@ public class SyncPendentesService implements Serializable {
 
         EmpresaProduto empresaProduto = produtoRepository.get(EmpresaProduto.class, filtros);
 
-        for (PdvCaixa caixa : caixas) {
-            SyncPendentes sync = new SyncPendentes(AcaoSync.ESTOQUE.getCodigo(), AcaoSync.ESTOQUE.getNome(), caixa.getId(), empresaProduto.getProduto().getId());
-            repository.salvar(sync);
+        if (empresaProduto != null) {
+            for (PdvCaixa caixa : caixas) {
+                SyncPendentes sync = new SyncPendentes(AcaoSync.ESTOQUE.getCodigo(), AcaoSync.ESTOQUE.getNome(), caixa.getId(), empresaProduto.getProduto().getId());
+                repository.salvar(sync);
+            }
         }
+
 
     }
 

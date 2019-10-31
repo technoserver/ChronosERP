@@ -53,7 +53,7 @@
                         <f:convertNumber pattern="#,###,##0.00"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Status" sortBy="#{row.statusNota}" width="120">
+                <p:column headerText="Status" sortBy="#{row.statusNota}" width="120" styleClass="text-center">
                     <h:outputLabel
                             value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
@@ -70,6 +70,7 @@
                         <p:menuitem value="Cupom"
                                     icon="fa fa-print" ajax="false"
                                     rendered="#{row.podeCancelar}"
+                                    target="_blank"
                                     action="#{nfceControll.danfe}">
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{nfceControll.vendaSelecionada}"/>
