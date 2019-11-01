@@ -889,11 +889,15 @@ public class NfeService implements Serializable {
             throw new ChronosException("Não foram definido itens para emissão da NFe");
         }
         for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
+
             if (item.getCfop() == null) {
                 throw new ChronosException("CFOP para " + item.getProduto().getNome() + " não definido");
             }
 
-            if (nfe.getFinalidadeEmissao().equals(FinalidadeEmissao.NORMAL.getCodigo()) && destino == LocalDestino.INTERESTADUAL && item.getCfop() < 6000) {
+            if (nfe.getFinalidadeEmissao().equals(FinalidadeEmissao.NORMAL.getCodigo())
+                    && destino == LocalDestino.INTERESTADUAL
+                    && nfe.getTipoOperacao() == 1
+                    && item.getCfop() < 6000) {
                 throw new ChronosException("CFOP :" + cfop + " inválido para operações Interestadual");
             }
         }
