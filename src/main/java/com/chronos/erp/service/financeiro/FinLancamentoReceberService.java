@@ -98,8 +98,8 @@ public class FinLancamentoReceberService implements Serializable {
         String identificador = "E" + lancamento.getEmrpesa().getId()
                 + "M" + lancamento.getCodigoModulo()
                 + "V" + lancamento.getId()
-                + "C" + lancamento.getCliente().getId()
-                + "Q";
+                + "C" + lancamento.getCliente().getId();
+
 
         FinLancamentoReceber lancamentoReceber = new FinLancamentoReceber();
         lancamentoReceber.setCliente(lancamento.getCliente());

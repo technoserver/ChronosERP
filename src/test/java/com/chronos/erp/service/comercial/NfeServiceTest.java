@@ -1,9 +1,8 @@
 package com.chronos.erp.service.comercial;
 
+import br.com.samuelweb.certificado.exception.CertificadoException;
 import com.chronos.erp.dto.ConfiguracaoEmissorDTO;
-import com.chronos.erp.modelo.entidades.Empresa;
-import com.chronos.erp.modelo.entidades.EmpresaEndereco;
-import com.chronos.erp.modelo.entidades.NfeCabecalho;
+import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.configuracao.NfeConfiguracaoService;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
@@ -36,6 +35,7 @@ public class NfeServiceTest {
 
         EmpresaEndereco end = new EmpresaEndereco();
         end.setPrincipal("S");
+        end.setUf("DF");
 
         empresa.getListaEndereco().add(end);
 
@@ -74,6 +74,31 @@ public class NfeServiceTest {
         assertNotNull(nfe.getTransporte());
         assertNotNull(nfe.getTransporte().getModalidadeFrete());
 
+    }
+
+    @Test
+    public void devemos_garantir_que_seja_informado_o_cfop_conforme_operacao() throws ChronosException, CertificadoException {
+        when(configuracaoService.instanciarConfNfe(empresa, ModeloDocumento.NFE)).thenReturn(configuracao);
+
+        NfeCabecalho nfe = service.dadosPadroes(empresa, ModeloDocumento.NFE);
+
+        nfe.setEmpresa(empresa);
+        // operacao interistadual
+        nfe.setLocalDestino(2);
+        // entrada
+        nfe.setTipoOperacao(0);
+        service.definirEmitente(nfe);
+
+        nfe.setDestinatario(new NfeDestinatario());
+        nfe.getDestinatario().setUf("SE");
+
+        NfeDetalhe item = new NfeDetalhe();
+
+        item.setProduto(new Produto());
+        item.setCfop(2914);
+
+        nfe.getListaNfeDetalhe().add(item);
+        service.validacaoNfe(nfe);
     }
 
 

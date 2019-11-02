@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="4.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="31"/>
+    <property name="ireport.y" value="607"/>
     <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
     <style name="dadosDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isBold="false"
@@ -76,7 +76,9 @@
         </box>
     </style>
     <subDataset name="itemVenda" uuid="fc810012-2a35-44ec-b99a-cad0d1f8d8bc">
-        <parameter name="idvenda" class="java.lang.Integer"/>
+        <parameter name="idvenda" class="java.lang.Integer">
+            <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+        </parameter>
         <queryString>
             <![CDATA[select
      p.id,
@@ -111,7 +113,7 @@ where i.id_venda_cabecalho = $P{idvenda}]]>
      pr.valor
 from fin_parcela_receber pr
 inner join fin_lancamento_receber lr on lr.id = pr.id_fin_lancamento_receber
-where lr.codigo_modulo_lcto = '210'  and lr.numero_documento = $P{numDoc}
+where lr.codigo_modulo_lcto = '210'  and lr.numero_documento like $P{numDoc}
 order by pr.data_vencimento]]>
         </queryString>
         <field name="numero_documento" class="java.lang.String"/>
@@ -125,6 +127,8 @@ order by pr.data_vencimento]]>
     <queryString>
         <![CDATA[SELECT
      v.id,
+     v.id_cliente as idcliente,
+     v.id_empresa as idempresa,
      v.numero_fatura,
      v.data_venda,
      v.local_entrega,
@@ -160,8 +164,8 @@ order by pr.data_vencimento]]>
      pessoa_endereco.uf AS pessoa_endereco_uf,
      pessoa_endereco.cep AS pessoa_endereco_cep,
      pessoa_endereco.fone AS pessoa_endereco_fone,
-     pessoa_endereco.principal AS pessoa_endereco_principal
-
+     pessoa_endereco.principal AS pessoa_endereco_principal,
+     (select sum(quantidade) from venda_detalhe i where i.id_venda_cabecalho = v.id) as quantidade_item
 
 FROM
      venda_cabecalho v
@@ -179,6 +183,8 @@ WHERE
      empresa_endereco.principal = 'S' and v.id = $P{idvenda}]]>
     </queryString>
     <field name="id" class="java.lang.Integer"/>
+    <field name="idcliente" class="java.lang.Integer"/>
+    <field name="idempresa" class="java.lang.Integer"/>
     <field name="numero_fatura" class="java.lang.Integer"/>
     <field name="data_venda" class="java.sql.Date"/>
     <field name="local_entrega" class="java.lang.String"/>
@@ -212,6 +218,7 @@ WHERE
     <field name="pessoa_endereco_cep" class="java.lang.String"/>
     <field name="pessoa_endereco_fone" class="java.lang.String"/>
     <field name="pessoa_endereco_principal" class="java.lang.String"/>
+    <field name="quantidade_item" class="java.math.BigDecimal"/>
     <title>
         <band height="196" splitType="Stretch">
             <image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
@@ -349,7 +356,7 @@ WHERE
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Cliente.:]]></text>
+                <text><![CDATA[Cliente]]></text>
             </staticText>
             <staticText>
                 <reportElement style="tituloDetail" x="0" y="142" width="63" height="13"
@@ -357,7 +364,7 @@ WHERE
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Endereço:]]></text>
+                <text><![CDATA[Endereço]]></text>
             </staticText>
             <staticText>
                 <reportElement style="tituloDetail" x="0" y="154" width="63" height="13"
@@ -365,7 +372,7 @@ WHERE
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="11" isBold="true" isUnderline="false"/>
                 </textElement>
-                <text><![CDATA[Cidade..:]]></text>
+                <text><![CDATA[Cidade]]></text>
             </staticText>
             <staticText>
                 <reportElement style="tituloDetail" x="0" y="166" width="63" height="13"
@@ -373,28 +380,28 @@ WHERE
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
-                <text><![CDATA[CNPJ/CPF:]]></text>
+                <text><![CDATA[CNPJ/CPF]]></text>
             </staticText>
             <staticText>
                 <reportElement x="382" y="130" width="73" height="13" uuid="54002c96-4203-4a35-98b5-10f568f7bf3e"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Telefone.:]]></text>
+                <text><![CDATA[Telefone]]></text>
             </staticText>
             <staticText>
                 <reportElement x="314" y="154" width="53" height="13" uuid="ce12983f-bc64-42a0-8b25-f1f1875ef8c4"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Bairro:]]></text>
+                <text><![CDATA[Bairro]]></text>
             </staticText>
             <staticText>
                 <reportElement x="475" y="154" width="28" height="13" uuid="ce1f368f-fc5d-42c9-b1d3-488c5ab713e4"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
-                <text><![CDATA[CEP:]]></text>
+                <text><![CDATA[CEP]]></text>
             </staticText>
             <staticText>
                 <reportElement x="186" y="166" width="43" height="13" uuid="16458db3-ace8-494d-8049-288279e3c1fd"/>
@@ -530,13 +537,13 @@ WHERE
     <detail>
         <band height="12" splitType="Stretch">
             <componentElement>
-                <reportElement key="tbItens" x="0" y="0" width="554" height="12"
-                               uuid="5c6d0bf6-af01-472e-b5cd-f8f77d782cfd"/>
+                <reportElement key="tbItens" isPrintRepeatedValues="false" x="0" y="0" width="554" height="12"
+                               isRemoveLineWhenBlank="true" uuid="5c6d0bf6-af01-472e-b5cd-f8f77d782cfd"/>
                 <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
                           xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-                    <datasetRun subDataset="itemVenda" uuid="7b8f0234-9cb2-4a54-a01c-38f5f8d68d60">
+                    <datasetRun subDataset="itemVenda" uuid="bb6bf709-c67d-4841-8357-b6cb9bed6fbb">
                         <datasetParameter name="idvenda">
-                            <datasetParameterExpression><![CDATA[$F{id}]]></datasetParameterExpression>
+                            <datasetParameterExpression><![CDATA[$P{idvenda}]]></datasetParameterExpression>
                         </datasetParameter>
                         <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
                     </datasetRun>
@@ -625,10 +632,10 @@ WHERE
                                isRemoveLineWhenBlank="true" uuid="c02bf09e-4887-4ac4-b79c-e8d617d3a006"/>
                 <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
                           xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-                    <datasetRun subDataset="pagamentos" uuid="52c99db2-c40e-4642-b5b9-afbea9175d80">
+                    <datasetRun subDataset="pagamentos" uuid="86b8c738-cd78-4a1c-b7dd-23badc66f438">
                         <datasetParameter name="numDoc">
                             <datasetParameterExpression>
-                                <![CDATA[new DecimalFormat("VD0000000").format($F{id})]]></datasetParameterExpression>
+                                <![CDATA["E"+$F{idempresa}+"M210"+"V"+$F{id}+"C"+$F{idcliente}+"%"]]></datasetParameterExpression>
                         </datasetParameter>
                         <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
                     </datasetRun>
@@ -672,6 +679,7 @@ WHERE
                                 <textField pattern="dd/MM/yyyy">
                                     <reportElement style="dadosDetail" x="0" y="0" width="90" height="12"
                                                    uuid="16e26ba0-1df0-4347-b7d7-06f58d9d1c2e"/>
+                                    <textElement textAlignment="Center"/>
                                     <textFieldExpression><![CDATA[$F{data_vencimento}]]></textFieldExpression>
                                 </textField>
                             </jr:detailCell>
@@ -689,6 +697,7 @@ WHERE
                                 <textField>
                                     <reportElement style="dadosDetail" x="0" y="0" width="90" height="12"
                                                    uuid="d0a8e3b1-53bc-447b-8c06-61e30566546a"/>
+                                    <textElement textAlignment="Center"/>
                                     <textFieldExpression><![CDATA[$F{parcela}]]></textFieldExpression>
                                 </textField>
                             </jr:detailCell>
@@ -732,32 +741,32 @@ WHERE
     <summary>
         <band height="88">
             <staticText>
-                <reportElement x="351" y="16" width="125" height="12" uuid="f140b4a6-0a6b-4ff5-82b4-c70d77801e51"/>
+                <reportElement x="350" y="29" width="125" height="12" uuid="f140b4a6-0a6b-4ff5-82b4-c70d77801e51"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Desconto...........:]]></text>
+                <text><![CDATA[Desconto]]></text>
             </staticText>
             <staticText>
-                <reportElement x="351" y="27" width="125" height="12" uuid="68a05415-1b33-4104-ad1f-5ddef2fd34fb"/>
+                <reportElement x="350" y="40" width="125" height="12" uuid="68a05415-1b33-4104-ad1f-5ddef2fd34fb"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Valor Total........:]]></text>
+                <text><![CDATA[Valor Total]]></text>
             </staticText>
             <staticText>
-                <reportElement x="351" y="5" width="125" height="12" uuid="14f763ec-df44-4fcc-8e79-16cff6d2b99e"/>
+                <reportElement x="350" y="18" width="125" height="12" uuid="14f763ec-df44-4fcc-8e79-16cff6d2b99e"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
-                <text><![CDATA[SubTotal...........:]]></text>
+                <text><![CDATA[SubTotal]]></text>
             </staticText>
             <staticText>
                 <reportElement x="308" y="56" width="75" height="13" uuid="f12b2eaf-e7ce-40dc-8d73-b73dbc329148"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Observações:]]></text>
+                <text><![CDATA[Observações]]></text>
             </staticText>
             <line>
                 <reportElement x="0" y="0" width="555" height="1" uuid="bb1a391f-341a-4b45-97b4-840587629823"/>
@@ -767,7 +776,7 @@ WHERE
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Vendedor :]]></text>
+                <text><![CDATA[Vendedor ]]></text>
             </staticText>
             <textField>
                 <reportElement style="dadosDetail" x="76" y="6" width="268" height="12"
@@ -789,25 +798,38 @@ WHERE
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Local de Entrega:]]></text>
+                <text><![CDATA[Local de Entrega]]></text>
             </staticText>
             <textField pattern="#,##0.00">
-                <reportElement style="dadosDetail" x="475" y="27" width="80" height="12"
+                <reportElement style="dadosDetail" x="474" y="40" width="80" height="12"
                                uuid="865cb57d-07cb-4a03-9a55-6960ca0227e4"/>
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement style="dadosDetail" x="475" y="5" width="80" height="12"
+                <reportElement style="dadosDetail" x="474" y="18" width="80" height="12"
                                uuid="f9d8fb8e-8a33-4ab6-bed9-655888c8233f"/>
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$F{valor_subtotal}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement style="dadosDetail" x="475" y="16" width="80" height="12"
+                <reportElement style="dadosDetail" x="474" y="29" width="80" height="12"
                                uuid="7d0f2855-4d09-4f3d-b130-7af72422ce27"/>
                 <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$F{valor_desconto}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="350" y="7" width="125" height="12" uuid="31c80e4e-4ad5-466b-a5d1-bb4ca2054dec"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Courier New" size="10" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total de produtos]]></text>
+            </staticText>
+            <textField pattern="#,##0.00" isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="474" y="7" width="80" height="12"
+                               uuid="a44cbe18-cfab-4660-b31e-1b10e9d92af1"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA[$F{quantidade_item}]]></textFieldExpression>
             </textField>
         </band>
     </summary>
