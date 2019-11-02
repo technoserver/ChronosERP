@@ -5,7 +5,7 @@
 
     <groupId>com.chronos</groupId>
     <artifactId>ERP</artifactId>
-    <version>5.7.7</version>
+    <version>5.7.8</version>
     <packaging>war</packaging>
 
     <name>ChronosERP</name>
