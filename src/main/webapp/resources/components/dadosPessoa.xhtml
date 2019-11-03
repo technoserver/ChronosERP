@@ -117,14 +117,13 @@
                                         nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.orgaoRg}"
                                         tamanhoMaximo="20"
                                         exibir="#{cc.attrs.controller.tela eq 'C'}"/>
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          label="Estado Civil"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{cc.attrs.controller}"
-                                          completeMethod="getListaEstadoCivil"
-                                          nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.estadoCivil}"
-                                          idComponente="pessoaFisicaEstadoCivil"
-                                          rendered="#{cc.attrs.controller.tela eq 'CL'}"/>
+                        <erp:campoSelectConverter styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                  label="Estado Civil"
+                                                  itens="#{cc.attrs.controller.listEstadoCivil}"
+                                                  labelItens="#{obj.nome}"
+                                                  nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.estadoCivil}"
+                                                  idComponente="pessoaFisicaEstadoCivil"
+                                                  rendered="#{cc.attrs.controller.tela eq 'CL'}"/>
                     </div>
 
 

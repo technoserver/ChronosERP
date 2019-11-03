@@ -4,7 +4,6 @@ import com.chronos.erp.controll.AbstractControll;
 import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.dto.UsuarioDTO;
 import com.chronos.erp.modelo.entidades.*;
-import com.chronos.erp.repository.ColaboradorRepository;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
@@ -31,7 +30,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     @Inject
     private Repository<Papel> papelRepository;
     @Inject
-    private ColaboradorRepository colaboradorRepository;
+    private Repository<Colaborador> colaboradorRepository;
 
     @Inject
     private Repository<EmpresaPessoa> empresaPessoaRepository;
@@ -143,8 +142,11 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
     public List<Colaborador> getListColaborador(String nome) {
         List<Colaborador> list = new ArrayList<>();
         try {
-
-            list = colaboradorRepository.getColaboradoresEmpresaByNome(nome);
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
+            filtros.add(new Filtro("pessoa.id", Filtro.DIFERENTE, 1));
+            filtros.add(new Filtro("pessoa.colaborador", "S"));
+            list = colaboradorRepository.getEntitys(Colaborador.class, filtros, new Object[]{"pessoa.id", "pessoa.nome"});
         } catch (Exception ex) {
             ex.printStackTrace();
         }
