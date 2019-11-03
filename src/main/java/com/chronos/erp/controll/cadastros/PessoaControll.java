@@ -11,6 +11,7 @@ import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.util.jsf.Mensagem;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     private PessoaTelefone pessoaTelefone;
     private Municipio cidade;
     private List<Municipio> cidades;
+    private List<EstadoCivil> listEstadoCivil;
     @Inject
     private Repository<Municipio> municipios;
     @Inject
@@ -46,6 +48,18 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     private String cpf;
     private String cnpj;
 
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        listEstadoCivil = new ArrayList<>();
+        listEstadoCivil.add(new EstadoCivil(1, "SOLTEIRO"));
+        listEstadoCivil.add(new EstadoCivil(2, "CASADO"));
+        listEstadoCivil.add(new EstadoCivil(3, "VIUVO"));
+        listEstadoCivil.add(new EstadoCivil(4, "SEPARADO JUDICIALMENTE"));
+        listEstadoCivil.add(new EstadoCivil(5, "DIVORCIADO"));
+    }
 
     @Override
     public void doCreate() {
@@ -165,17 +179,6 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         pessoas.atualizar(getPessoa());
         Mensagem.addInfoMessage("Telefone excluído com sucesso!");
 
-    }
-
-
-    public List<EstadoCivil> getListaEstadoCivil(String nome) {
-        List<EstadoCivil> listaEstadoCivil = new ArrayList<>();
-        try {
-            listaEstadoCivil = estadosCivis.getEntitys(EstadoCivil.class, "nome", nome);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return listaEstadoCivil;
     }
 
     public List<Empresa> getListaEmpresa(String nome) {
@@ -355,5 +358,7 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         this.emp = emp;
     }
 
-
+    public List<EstadoCivil> getListEstadoCivil() {
+        return listEstadoCivil;
+    }
 }

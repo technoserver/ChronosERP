@@ -57,7 +57,6 @@ public class VendedorControll extends AbstractControll<Vendedor> implements Seri
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
             filtros.add(new Filtro("pessoa.id", Filtro.DIFERENTE, 1));
-            filtros.add(new Filtro("pessoa.id", Filtro.DIFERENTE, 2));
             filtros.add(new Filtro("pessoa.colaborador", "S"));
             list = colaboradores.getEntitys(Colaborador.class, filtros, new Object[]{"pessoa.id", "pessoa.nome"});
         } catch (Exception ex) {
