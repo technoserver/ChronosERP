@@ -45,7 +45,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     private static final long serialVersionUID = 1L;
     @Inject
-    private Repository<VendaOrcamentoCabecalho> orcamentos;
+    private Repository<OrcamentoCabecalho> orcamentos;
     @Inject
     private Repository<VendaCondicoesPagamento> condicoes;
     @Inject
@@ -464,14 +464,14 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
 
-    public List<VendaOrcamentoCabecalho> getListaVendaOrcamentoCabecalho(String nome) {
-        List<VendaOrcamentoCabecalho> listaVendaOrcamentoCabecalho = new ArrayList<>();
+    public List<OrcamentoCabecalho> getListaVendaOrcamentoCabecalho(String nome) {
+        List<OrcamentoCabecalho> listaOrcamentoCabecalho = new ArrayList<>();
         try {
-            listaVendaOrcamentoCabecalho = orcamentos.getEntitys(VendaOrcamentoCabecalho.class, "codigo", nome);
+            listaOrcamentoCabecalho = orcamentos.getEntitys(OrcamentoCabecalho.class, "codigo", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        return listaVendaOrcamentoCabecalho;
+        return listaOrcamentoCabecalho;
     }
 
     public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {

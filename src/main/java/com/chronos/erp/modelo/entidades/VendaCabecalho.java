@@ -71,7 +71,7 @@ public class VendaCabecalho implements Serializable {
     private String situacao;
     @JoinColumn(name = "ID_VENDA_ORCAMENTO_CABECALHO", referencedColumnName = "ID")
     @ManyToOne
-    private VendaOrcamentoCabecalho vendaOrcamentoCabecalho;
+    private OrcamentoCabecalho orcamentoCabecalho;
     @JoinColumn(name = "ID_VENDA_CONDICOES_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
@@ -310,12 +310,12 @@ public class VendaCabecalho implements Serializable {
         this.situacao = situacao;
     }
 
-    public VendaOrcamentoCabecalho getVendaOrcamentoCabecalho() {
-        return vendaOrcamentoCabecalho;
+    public OrcamentoCabecalho getOrcamentoCabecalho() {
+        return orcamentoCabecalho;
     }
 
-    public void setVendaOrcamentoCabecalho(VendaOrcamentoCabecalho vendaOrcamentoCabecalho) {
-        this.vendaOrcamentoCabecalho = vendaOrcamentoCabecalho;
+    public void setOrcamentoCabecalho(OrcamentoCabecalho orcamentoCabecalho) {
+        this.orcamentoCabecalho = orcamentoCabecalho;
     }
 
     public VendaCondicoesPagamento getCondicoesPagamento() {

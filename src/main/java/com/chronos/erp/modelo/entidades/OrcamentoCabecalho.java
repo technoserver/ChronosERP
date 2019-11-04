@@ -11,9 +11,9 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Entity
-@Table(name = "VENDA_ORCAMENTO_CABECALHO")
+@Table(name = "ORCAMENTO_CABECALHO")
 @DynamicUpdate
-public class VendaOrcamentoCabecalho implements Serializable {
+public class OrcamentoCabecalho implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -78,14 +78,14 @@ public class VendaOrcamentoCabecalho implements Serializable {
     @NotNull
     private Vendedor vendedor;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendaOrcamentoCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<VendaOrcamentoDetalhe> listaVendaOrcamentoDetalhe;
+    private List<OrcamentoDetalhe> listaOrcamentoDetalhe;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private Empresa empresa;
 
 
-    public VendaOrcamentoCabecalho() {
+    public OrcamentoCabecalho() {
 
         this.valorComissao = BigDecimal.ZERO;
         this.valorDesconto = BigDecimal.ZERO;
@@ -294,12 +294,12 @@ public class VendaOrcamentoCabecalho implements Serializable {
         this.vendedor = vendedor;
     }
 
-    public List<VendaOrcamentoDetalhe> getListaVendaOrcamentoDetalhe() {
-        return Optional.ofNullable(listaVendaOrcamentoDetalhe).orElse(new ArrayList<>());
+    public List<OrcamentoDetalhe> getListaOrcamentoDetalhe() {
+        return Optional.ofNullable(listaOrcamentoDetalhe).orElse(new ArrayList<>());
     }
 
-    public void setListaVendaOrcamentoDetalhe(List<VendaOrcamentoDetalhe> listaVendaOrcamentoDetalhe) {
-        this.listaVendaOrcamentoDetalhe = listaVendaOrcamentoDetalhe;
+    public void setListaOrcamentoDetalhe(List<OrcamentoDetalhe> listaOrcamentoDetalhe) {
+        this.listaOrcamentoDetalhe = listaOrcamentoDetalhe;
     }
 
     public Empresa getEmpresa() {
@@ -311,8 +311,8 @@ public class VendaOrcamentoCabecalho implements Serializable {
     }
 
     public BigDecimal calcularTotalDesconto() {
-        valorDesconto = getListaVendaOrcamentoDetalhe().stream()
-                .map(VendaOrcamentoDetalhe::getValorDesconto)
+        valorDesconto = getListaOrcamentoDetalhe().stream()
+                .map(OrcamentoDetalhe::getValorDesconto)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
         return valorDesconto;
@@ -320,8 +320,8 @@ public class VendaOrcamentoCabecalho implements Serializable {
 
 
     public BigDecimal calcularValorProdutos() {
-        valorSubtotal = getListaVendaOrcamentoDetalhe().stream()
-                .map(VendaOrcamentoDetalhe::getValorSubtotal)
+        valorSubtotal = getListaOrcamentoDetalhe().stream()
+                .map(OrcamentoDetalhe::getValorSubtotal)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
 
@@ -354,7 +354,7 @@ public class VendaOrcamentoCabecalho implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final VendaOrcamentoCabecalho other = (VendaOrcamentoCabecalho) obj;
+        final OrcamentoCabecalho other = (OrcamentoCabecalho) obj;
         return Objects.equals(this.id, other.id);
     }
 

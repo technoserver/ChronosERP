@@ -407,7 +407,7 @@
                                     </div>
                                 </div>
                                 <p:dataTable id="dataTableVendaOrcamentoDetalhe" var="obj"
-                                             value="#{vendaOrcamentoCabecalhoControll.objeto.listaVendaOrcamentoDetalhe}"
+                                             value="#{vendaOrcamentoCabecalhoControll.objeto.listaOrcamentoDetalhe}"
                                              paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
                                              reflow="true"
                                              rowKey="#{obj.id}" paginatorPosition="bottom">
@@ -452,7 +452,7 @@
                                         >
                                             <i class="fa fa-file-text-o"></i>
                                             <f:setPropertyActionListener value="#{obj}"
-                                                                         target="#{vendaOrcamentoCabecalhoControll.vendaOrcamentoDetalheSelecionado}"/>
+                                                                         target="#{vendaOrcamentoCabecalhoControll.orcamentoDetalheSelecionado}"/>
                                         </p:commandLink>
                                         &nbsp;
                                         <p:commandLink title="Excluir"
@@ -468,7 +468,7 @@
                                             <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
                                             <f:setPropertyActionListener value="#{obj}"
-                                                                         target="#{vendaOrcamentoCabecalhoControll.vendaOrcamentoDetalheSelecionado}"/>
+                                                                         target="#{vendaOrcamentoCabecalhoControll.orcamentoDetalheSelecionado}"/>
                                         </p:commandLink>
                                     </p:column>
 
@@ -562,7 +562,7 @@
                                           itemLabel="#{objeto.nome}"
                                           controller="#{vendaOrcamentoCabecalhoControll}"
                                           completeMethod="getListaProduto"
-                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.vendaOrcamentoDetalhe.produto}"
+                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.orcamentoDetalhe.produto}"
                                           idComponente="vendaOrcamentoDetalheProduto">
                             <p:ajax event="itemSelecionado" process="@this"
                                     update="formOutrasTelas:panelVendaOrcamentoDetalhe"
@@ -571,14 +571,14 @@
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="vendaOrcamentoDetalheQuantidade" label="Quantidade"
                                           requerido="true"
-                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.vendaOrcamentoDetalhe.quantidade}"/>
+                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.orcamentoDetalhe.quantidade}"/>
 
 
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
                                           idComponente="valorUnitario"
                                           desabilitado="#{!vendaOrcamentoCabecalhoControll.podeAlterarPreco}"
                                           label="Valor"
-                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.vendaOrcamentoDetalhe.valorUnitario}"/>
+                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.orcamentoDetalhe.valorUnitario}"/>
 
                         <div class="col-xs-12 col-sm-2 col-md-2">
                             <p:outputLabel value="Desconto" for="desconto"/>
