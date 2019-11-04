@@ -33,6 +33,11 @@ public class EstadoCivil implements Serializable {
         this.id = id;
     }
 
+    public EstadoCivil(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public Integer getId() {
         return id;
     }

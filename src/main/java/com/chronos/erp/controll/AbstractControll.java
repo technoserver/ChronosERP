@@ -11,6 +11,7 @@ import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.primefaces.component.tabview.TabView;
 import org.primefaces.event.TabChangeEvent;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -859,6 +860,8 @@ public abstract class AbstractControll<T> implements Serializable {
                 Mensagem.addInfoMessage("Registro excluído com sucesso!");
             }
 
+        } catch (DataIntegrityViolationException ex) {
+            Mensagem.addErrorMessage("Ocorreu um erro ao excluir o registro! o mesmo já está em uso");
         } catch (Exception e) {
             if (e.getCause().getClass().getName().contains("PersistenceException")) {
                 Mensagem.addErrorMessage("Ocorreu um erro ao excluir o registro! o mesmo já possue movimento", e);

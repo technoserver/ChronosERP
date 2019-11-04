@@ -362,13 +362,13 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     }
 
 
-    public VendaCabecalho gerarVenaDoOrcamento(VendaOrcamentoCabecalho orcamento) {
+    public VendaCabecalho gerarVenaDoOrcamento(OrcamentoCabecalho orcamento) {
         VendaCabecalho venda = new VendaCabecalho();
         VendaDetalhe itemVenda;
         venda.setListaVendaDetalhe(new ArrayList<>());
-        venda.setVendaOrcamentoCabecalho(orcamento);
+        venda.setOrcamentoCabecalho(orcamento);
 
-        for (VendaOrcamentoDetalhe d : orcamento.getListaVendaOrcamentoDetalhe()) {
+        for (OrcamentoDetalhe d : orcamento.getListaOrcamentoDetalhe()) {
             itemVenda = new VendaDetalhe();
             itemVenda.setVendaCabecalho(venda);
             itemVenda.setProduto(d.getProduto());

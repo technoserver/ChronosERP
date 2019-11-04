@@ -3,36 +3,53 @@ package com.chronos.erp.modelo.entidades;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Entity
 @Table(name = "ORCAMENTO_DETALHE")
 public class OrcamentoDetalhe implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "PERIODO")
-    private String periodo;
-    @Column(name = "VALOR_ORCADO")
-    private BigDecimal valorOrcado;
-    @Column(name = "VALOR_REALIZADO")
-    private BigDecimal valorRealizado;
-    @Column(name = "TAXA_VARIACAO")
-    private BigDecimal taxaVariacao;
-    @Column(name = "VALOR_VARIACAO")
-    private BigDecimal valorVariacao;
-    @JoinColumn(name = "ID_ORCAMENTO_EMPRESARIAL", referencedColumnName = "ID")
+    @NotNull
+    @Column(name = "QUANTIDADE")
+    @DecimalMin(value = "0.01", message = "A quantidade do produto  deve ser maior que 0,01")
+    private BigDecimal quantidade;
+    @NotNull(message = "tste")
+    @DecimalMin(value = "0.01", message = "O valor unitario do produto  deve ser maior que R$0,01")
+    @DecimalMax(value = "9999999.99", message = "O valor unitario do produto  deve ser menor que R$9.999.999,99")
+    @Column(name = "VALOR_UNITARIO")
+    private BigDecimal valorUnitario;
+    @Column(name = "VALOR_SUBTOTAL")
+    @NotNull
+    private BigDecimal valorSubtotal;
+    @Column(name = "TAXA_DESCONTO")
+    @DecimalMax(value = "100.0", message = "O deve deve ser igual ou menor que 100")
+    private BigDecimal taxaDesconto;
+    @Column(name = "VALOR_DESCONTO")
+    private BigDecimal valorDesconto;
+    @Column(name = "VALOR_TOTAL")
+    @NotNull
+    private BigDecimal valorTotal;
+    @JoinColumn(name = "ID_VENDA_ORCAMENTO_CABECALHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private OrcamentoEmpresarial orcamentoEmpresarial;
-    @JoinColumn(name = "ID_NATUREZA_FINANCEIRA", referencedColumnName = "ID")
+    @NotNull
+    private OrcamentoCabecalho orcamentoCabecalho;
+    @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private NaturezaFinanceira naturezaFinanceira;
+    @NotNull
+    private Produto produto;
 
     public OrcamentoDetalhe() {
     }
@@ -45,65 +62,93 @@ public class OrcamentoDetalhe implements Serializable {
         this.id = id;
     }
 
-    public String getPeriodo() {
-        return periodo;
+    public BigDecimal getQuantidade() {
+        return Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO);
     }
 
-    public void setPeriodo(String periodo) {
-        this.periodo = periodo;
+    public void setQuantidade(BigDecimal quantidade) {
+        this.quantidade = quantidade;
     }
 
-    public BigDecimal getValorOrcado() {
-        return valorOrcado;
+    public BigDecimal getValorUnitario() {
+        return Optional.ofNullable(valorUnitario).orElse(BigDecimal.ZERO);
     }
 
-    public void setValorOrcado(BigDecimal valorOrcado) {
-        this.valorOrcado = valorOrcado;
+    public void setValorUnitario(BigDecimal valorUnitario) {
+        this.valorUnitario = valorUnitario;
     }
 
-    public BigDecimal getValorRealizado() {
-        return valorRealizado;
+    public BigDecimal getValorSubtotal() {
+        valorSubtotal = getQuantidade().multiply(getValorUnitario());
+        return valorSubtotal;
     }
 
-    public void setValorRealizado(BigDecimal valorRealizado) {
-        this.valorRealizado = valorRealizado;
+    public void setValorSubtotal(BigDecimal valorSubtotal) {
+        this.valorSubtotal = valorSubtotal;
     }
 
-    public BigDecimal getTaxaVariacao() {
-        return taxaVariacao;
+    public BigDecimal getTaxaDesconto() {
+        return Optional.ofNullable(taxaDesconto).orElse(BigDecimal.ZERO);
     }
 
-    public void setTaxaVariacao(BigDecimal taxaVariacao) {
-        this.taxaVariacao = taxaVariacao;
+    public void setTaxaDesconto(BigDecimal taxaDesconto) {
+        this.taxaDesconto = taxaDesconto;
     }
 
-    public BigDecimal getValorVariacao() {
-        return valorVariacao;
+    public BigDecimal getValorDesconto() {
+        return Optional.ofNullable(valorDesconto).orElse(BigDecimal.ZERO);
     }
 
-    public void setValorVariacao(BigDecimal valorVariacao) {
-        this.valorVariacao = valorVariacao;
+    public void setValorDesconto(BigDecimal valorDesconto) {
+        this.valorDesconto = valorDesconto;
     }
 
-    public OrcamentoEmpresarial getOrcamentoEmpresarial() {
-        return orcamentoEmpresarial;
+
+    public BigDecimal getValorTotal() {
+        valorTotal = getValorSubtotal().subtract(getValorDesconto());
+        return valorTotal;
     }
 
-    public void setOrcamentoEmpresarial(OrcamentoEmpresarial orcamentoEmpresarial) {
-        this.orcamentoEmpresarial = orcamentoEmpresarial;
+    public void setValorTotal(BigDecimal valorTotal) {
+        this.valorTotal = valorTotal;
     }
 
-    public NaturezaFinanceira getNaturezaFinanceira() {
-        return naturezaFinanceira;
+    public OrcamentoCabecalho getOrcamentoCabecalho() {
+        return orcamentoCabecalho;
     }
 
-    public void setNaturezaFinanceira(NaturezaFinanceira naturezaFinanceira) {
-        this.naturezaFinanceira = naturezaFinanceira;
+    public void setOrcamentoCabecalho(OrcamentoCabecalho orcamentoCabecalho) {
+        this.orcamentoCabecalho = orcamentoCabecalho;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
 
     @Override
-    public String toString() {
-        return "OrcamentoDetalhe{" + "id=" + id + '}';
+    public int hashCode() {
+        int hash = 5;
+        hash = 43 * hash + Objects.hashCode(this.produto);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final OrcamentoDetalhe other = (OrcamentoDetalhe) obj;
+        return Objects.equals(this.produto, other.produto);
     }
 
 
