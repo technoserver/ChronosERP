@@ -1,8 +1,8 @@
 package com.chronos.erp.service.comercial;
 
+import com.chronos.erp.modelo.entidades.OrcamentoCabecalho;
+import com.chronos.erp.modelo.entidades.OrcamentoDetalhe;
 import com.chronos.erp.modelo.entidades.VendaCabecalho;
-import com.chronos.erp.modelo.entidades.VendaOrcamentoCabecalho;
-import com.chronos.erp.modelo.entidades.VendaOrcamentoDetalhe;
 import com.chronos.erp.modelo.enuns.SituacaoOrcamentoPedido;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
@@ -21,7 +21,7 @@ public class VendaOrcamentoService implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private Repository<VendaOrcamentoCabecalho> repository;
+    private Repository<OrcamentoCabecalho> repository;
     @Inject
     private Repository<VendaCabecalho> vendaRepository;
 
@@ -30,10 +30,10 @@ public class VendaOrcamentoService implements Serializable {
 
 
     @Transactional
-    public VendaOrcamentoCabecalho salvar(VendaOrcamentoCabecalho orcamento) throws ChronosException {
+    public OrcamentoCabecalho salvar(OrcamentoCabecalho orcamento) throws ChronosException {
         String situacao = orcamento.getSituacao();
 
-        if (orcamento.getListaVendaOrcamentoDetalhe().isEmpty()) {
+        if (orcamento.getListaOrcamentoDetalhe().isEmpty()) {
             throw new ChronosException("Itens não informado");
         }
 
@@ -61,7 +61,7 @@ public class VendaOrcamentoService implements Serializable {
         return orcamento;
     }
 
-    public void salvarItem(VendaOrcamentoCabecalho orcamento, VendaOrcamentoDetalhe item, BigDecimal desconto, int tipoDesconto) throws ChronosException {
+    public void salvarItem(OrcamentoCabecalho orcamento, OrcamentoDetalhe item, BigDecimal desconto, int tipoDesconto) throws ChronosException {
 
         if (desconto != null && desconto.signum() > 0) {
             if (tipoDesconto == 0) {
@@ -75,8 +75,8 @@ public class VendaOrcamentoService implements Serializable {
             }
         }
 
-        if (!orcamento.getListaVendaOrcamentoDetalhe().contains(item)) {
-            orcamento.getListaVendaOrcamentoDetalhe().add(item);
+        if (!orcamento.getListaOrcamentoDetalhe().contains(item)) {
+            orcamento.getListaOrcamentoDetalhe().add(item);
         }
 
         orcamento.calcularValorTotal();
@@ -84,12 +84,12 @@ public class VendaOrcamentoService implements Serializable {
     }
 
     @Transactional
-    public VendaOrcamentoCabecalho conveterEmVenda(VendaOrcamentoCabecalho orcamento) throws ChronosException {
+    public OrcamentoCabecalho conveterEmVenda(OrcamentoCabecalho orcamento) throws ChronosException {
 
         VendaCabecalho venda = vendaService.gerarVenaDoOrcamento(orcamento);
         venda = vendaRepository.atualizar(venda);
         venda = vendaService.faturarVenda(venda);
-        orcamento = venda.getVendaOrcamentoCabecalho();
+        orcamento = venda.getOrcamentoCabecalho();
         orcamento.setSituacao(SituacaoOrcamentoPedido.FATURADO.getCodigo());
         orcamento = repository.saveAndFlush(orcamento);
 
@@ -97,7 +97,7 @@ public class VendaOrcamentoService implements Serializable {
     }
 
 
-    public void aplicarDesconto(VendaOrcamentoCabecalho orcamento, int tipoDesconto, BigDecimal desconto) throws ChronosException {
+    public void aplicarDesconto(OrcamentoCabecalho orcamento, int tipoDesconto, BigDecimal desconto) throws ChronosException {
         BigDecimal valorDesconto;
 
 
@@ -105,7 +105,7 @@ public class VendaOrcamentoService implements Serializable {
             throw new ChronosException("Valor total não informando");
         }
 
-        if (orcamento.getListaVendaOrcamentoDetalhe() == null || orcamento.getListaVendaOrcamentoDetalhe().isEmpty()) {
+        if (orcamento.getListaOrcamentoDetalhe() == null || orcamento.getListaOrcamentoDetalhe().isEmpty()) {
             throw new ChronosException("Não foram informado item(s)");
         }
 
@@ -117,13 +117,13 @@ public class VendaOrcamentoService implements Serializable {
         }
 
         BigDecimal fator = Biblioteca.divide(valorDesconto, orcamento.getValorSubtotal());
-        BigDecimal descAntecipado = orcamento.getListaVendaOrcamentoDetalhe()
+        BigDecimal descAntecipado = orcamento.getListaOrcamentoDetalhe()
                 .stream()
-                .map(VendaOrcamentoDetalhe::getValorDesconto)
+                .map(OrcamentoDetalhe::getValorDesconto)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
 
-        for (VendaOrcamentoDetalhe i : orcamento.getListaVendaOrcamentoDetalhe()) {
+        for (OrcamentoDetalhe i : orcamento.getListaOrcamentoDetalhe()) {
             BigDecimal descItem = Biblioteca.multiplica(fator, i.getValorSubtotal());
             BigDecimal vlrDesc = Biblioteca.soma(Optional.ofNullable(i.getValorDesconto()).orElse(BigDecimal.ZERO), descItem);
             BigDecimal vlrTotal = Biblioteca.subtrai(i.getValorSubtotal(), vlrDesc);
@@ -134,9 +134,9 @@ public class VendaOrcamentoService implements Serializable {
 
         }
 
-        BigDecimal descItens = orcamento.getListaVendaOrcamentoDetalhe()
+        BigDecimal descItens = orcamento.getListaOrcamentoDetalhe()
                 .stream()
-                .map(VendaOrcamentoDetalhe::getValorDesconto)
+                .map(OrcamentoDetalhe::getValorDesconto)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
 
@@ -144,7 +144,7 @@ public class VendaOrcamentoService implements Serializable {
         sobra = Biblioteca.subtrai(sobra, descItens);
 
         if (sobra.signum() > 0) {
-            VendaOrcamentoDetalhe item = orcamento.getListaVendaOrcamentoDetalhe().get(0);
+            OrcamentoDetalhe item = orcamento.getListaOrcamentoDetalhe().get(0);
             BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
             BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);
             BigDecimal txDesc = Biblioteca.calcularFator(item.getValorSubtotal(), vlrTotal);
@@ -155,12 +155,12 @@ public class VendaOrcamentoService implements Serializable {
         orcamento.calcularValorTotal();
     }
 
-    public void removerDesconto(VendaOrcamentoCabecalho orcamento) {
+    public void removerDesconto(OrcamentoCabecalho orcamento) {
 
         orcamento.setValorDesconto(BigDecimal.ZERO);
         orcamento.setTaxaDesconto(BigDecimal.ZERO);
 
-        orcamento.getListaVendaOrcamentoDetalhe().forEach(i -> {
+        orcamento.getListaOrcamentoDetalhe().forEach(i -> {
             i.setTaxaDesconto(BigDecimal.ZERO);
             i.setValorDesconto(BigDecimal.ZERO);
             i.setValorTotal(i.getValorSubtotal());
@@ -170,7 +170,7 @@ public class VendaOrcamentoService implements Serializable {
     }
 
     @Transactional
-    public void excluir(VendaOrcamentoCabecalho orcamento) {
+    public void excluir(OrcamentoCabecalho orcamento) {
 
     }
 }

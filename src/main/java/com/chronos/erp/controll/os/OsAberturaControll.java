@@ -53,7 +53,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Inject
     private Repository<Vendedor> vendedorRepository;
     @Inject
-    private Repository<VendaOrcamentoCabecalho> orcamentoRepository;
+    private Repository<OrcamentoCabecalho> orcamentoRepository;
     @Inject
     private OsService osService;
     @Inject
@@ -260,7 +260,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public void gerarOsDoOrcamento() {
         if (idorcamento != null) {
 
-            VendaOrcamentoCabecalho orcamento = orcamentoRepository.getJoinFetch(idorcamento, VendaOrcamentoCabecalho.class);
+            OrcamentoCabecalho orcamento = orcamentoRepository.getJoinFetch(idorcamento, OrcamentoCabecalho.class);
             if (orcamento != null) {
                 doCreate();
                 osService.gerarOSDoOrcamento(orcamento, getObjeto());

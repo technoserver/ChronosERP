@@ -79,7 +79,7 @@ public class OsAbertura implements Serializable {
     private Vendedor vendedor;
     @JoinColumn(name = "ID_ORCAMENTO", referencedColumnName = "ID")
     @ManyToOne
-    private VendaOrcamentoCabecalho vendaOrcamentoCabecalho;
+    private OrcamentoCabecalho orcamentoCabecalho;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Empresa empresa;
@@ -327,12 +327,12 @@ public class OsAbertura implements Serializable {
         this.vendedor = vendedor;
     }
 
-    public VendaOrcamentoCabecalho getVendaOrcamentoCabecalho() {
-        return vendaOrcamentoCabecalho;
+    public OrcamentoCabecalho getOrcamentoCabecalho() {
+        return orcamentoCabecalho;
     }
 
-    public void setVendaOrcamentoCabecalho(VendaOrcamentoCabecalho vendaOrcamentoCabecalho) {
-        this.vendaOrcamentoCabecalho = vendaOrcamentoCabecalho;
+    public void setOrcamentoCabecalho(OrcamentoCabecalho orcamentoCabecalho) {
+        this.orcamentoCabecalho = orcamentoCabecalho;
     }
 
     public PdvMovimento getMovimento() {

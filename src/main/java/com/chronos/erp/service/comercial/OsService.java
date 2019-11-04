@@ -317,10 +317,10 @@ public class OsService extends AbstractService<OsAbertura> {
         nfeService.danfe(nfe);
     }
 
-    public void gerarOSDoOrcamento(VendaOrcamentoCabecalho orcamento, OsAbertura os) {
+    public void gerarOSDoOrcamento(OrcamentoCabecalho orcamento, OsAbertura os) {
 
 
-        for (VendaOrcamentoDetalhe d : orcamento.getListaVendaOrcamentoDetalhe()) {
+        for (OrcamentoDetalhe d : orcamento.getListaOrcamentoDetalhe()) {
             OsProdutoServico item = new OsProdutoServico();
             item.setOsAbertura(os);
             item.setProduto(d.getProduto());
@@ -340,7 +340,7 @@ public class OsService extends AbstractService<OsAbertura> {
         os.setValorComissao(orcamento.getValorComissao());
         os.setValorTotal(orcamento.getValorTotal());
         os.setEmpresa(orcamento.getEmpresa());
-        os.setVendaOrcamentoCabecalho(orcamento);
+        os.setOrcamentoCabecalho(orcamento);
         os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
 
         os.calcularValores();

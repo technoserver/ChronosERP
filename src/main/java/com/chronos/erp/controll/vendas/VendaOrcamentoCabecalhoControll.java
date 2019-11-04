@@ -29,7 +29,7 @@ import java.util.*;
  */
 @Named
 @ViewScoped
-public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcamentoCabecalho> implements Serializable {
+public class VendaOrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabecalho> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -50,8 +50,8 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     @Inject
     private VendaOrcamentoService service;
 
-    private VendaOrcamentoDetalhe vendaOrcamentoDetalhe;
-    private VendaOrcamentoDetalhe vendaOrcamentoDetalheSelecionado;
+    private OrcamentoDetalhe orcamentoDetalhe;
+    private OrcamentoDetalhe orcamentoDetalheSelecionado;
     private String tipo;
 
     private Date dataInicial;
@@ -85,11 +85,11 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     }
 
     @Override
-    public ERPLazyDataModel<VendaOrcamentoCabecalho> getDataModel() {
+    public ERPLazyDataModel<OrcamentoCabecalho> getDataModel() {
 
         if (dataModel == null) {
             dataModel = new ERPLazyDataModel<>();
-            dataModel.setClazz(VendaOrcamentoCabecalho.class);
+            dataModel.setClazz(OrcamentoCabecalho.class);
             dataModel.setDao(dao);
         }
 
@@ -134,7 +134,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
-        getObjeto().setListaVendaOrcamentoDetalhe(new ArrayList<>());
+        getObjeto().setListaOrcamentoDetalhe(new ArrayList<>());
         getObjeto().setSituacao(SituacaoOrcamentoPedido.PENDENTE.getCodigo());
         getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
         getObjeto().setDataCadastro(new Date());
@@ -146,7 +146,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     public void doEdit() {
         super.doEdit();
 
-        VendaOrcamentoCabecalho orcamento = dataModel.getRowData(getObjeto().getId().toString());
+        OrcamentoCabecalho orcamento = dataModel.getRowData(getObjeto().getId().toString());
         setObjeto(orcamento);
 
     }
@@ -154,7 +154,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     @Override
     public void salvar() {
         try {
-            VendaOrcamentoCabecalho orcamento = service.salvar(getObjeto());
+            OrcamentoCabecalho orcamento = service.salvar(getObjeto());
             setObjeto(orcamento);
             Mensagem.addInfoMessage("Registro salvo com sucesso");
             setTelaGrid(false);
@@ -171,7 +171,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
 
     public void gerarPedido() {
-        VendaOrcamentoCabecalho orcamento = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        OrcamentoCabecalho orcamento = dataModel.getRowData(getObjetoSelecionado().getId().toString());
         orcamento.setTipo("P");
         orcamento.setSituacao("A");
         String codigo = orcamento.getTipo().equals("P") ? "#PE" : "#OE";
@@ -182,7 +182,7 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
     public void aprovarPedido() {
 
-        VendaOrcamentoCabecalho orcamento;
+        OrcamentoCabecalho orcamento;
 
         if (isTelaGrid()) {
             orcamento = dataModel.getRowData(getObjetoSelecionado().getId().toString());
@@ -197,13 +197,13 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
     public void gerarVenda() {
         try {
-            VendaOrcamentoCabecalho orc = getObjeto() != null ? getObjeto() : dataModel.getRowData(getObjetoSelecionado().getId().toString());
+            OrcamentoCabecalho orc = getObjeto() != null ? getObjeto() : dataModel.getRowData(getObjetoSelecionado().getId().toString());
 
-            if (orc.getListaVendaOrcamentoDetalhe() == null || orc.getListaVendaOrcamentoDetalhe().isEmpty()) {
+            if (orc.getListaOrcamentoDetalhe() == null || orc.getListaOrcamentoDetalhe().isEmpty()) {
                 throw new ChronosException("Itens do orcamento não definidos");
             }
 
-            VendaOrcamentoCabecalho orcamento = service.conveterEmVenda(orc);
+            OrcamentoCabecalho orcamento = service.conveterEmVenda(orc);
             setObjeto(orcamento);
             setTelaGrid(true);
             Mensagem.addInfoMessage("Venda gerada com sucesso");
@@ -218,21 +218,21 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
 
     public void incluirVendaOrcamentoDetalhe() {
-        vendaOrcamentoDetalhe = new VendaOrcamentoDetalhe();
-        vendaOrcamentoDetalhe.setVendaOrcamentoCabecalho(getObjeto());
-        vendaOrcamentoDetalhe.setQuantidade(BigDecimal.ONE);
+        orcamentoDetalhe = new OrcamentoDetalhe();
+        orcamentoDetalhe.setOrcamentoCabecalho(getObjeto());
+        orcamentoDetalhe.setQuantidade(BigDecimal.ONE);
         desconto = BigDecimal.ZERO;
     }
 
     public void alterarVendaOrcamentoDetalhe() {
-        vendaOrcamentoDetalhe = vendaOrcamentoDetalheSelecionado;
+        orcamentoDetalhe = orcamentoDetalheSelecionado;
     }
 
     public void salvarVendaOrcamentoDetalhe() {
 
         try {
 
-            service.salvarItem(getObjeto(), vendaOrcamentoDetalhe, desconto, tipoDesconto);
+            service.salvarItem(getObjeto(), orcamentoDetalhe, desconto, tipoDesconto);
             desconto = BigDecimal.ZERO;
 
         } catch (Exception ex) {
@@ -255,20 +255,20 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
     public void excluirVendaOrcamentoDetalhe() {
 
 
-        getObjeto().getListaVendaOrcamentoDetalhe().remove(vendaOrcamentoDetalheSelecionado);
+        getObjeto().getListaOrcamentoDetalhe().remove(orcamentoDetalheSelecionado);
         getObjeto().calcularValorTotal();
 
 
     }
 
     public void definirValorVenda() {
-        if (vendaOrcamentoDetalhe.getProduto() != null) {
+        if (orcamentoDetalhe.getProduto() != null) {
 
         }
 
-        BigDecimal valor = Optional.ofNullable(vendaOrcamentoDetalhe.getProduto())
+        BigDecimal valor = Optional.ofNullable(orcamentoDetalhe.getProduto())
                 .map(Produto::getValorVenda).orElse(null);
-        vendaOrcamentoDetalhe.setValorUnitario(valor);
+        orcamentoDetalhe.setValorUnitario(valor);
     }
 
     public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
@@ -355,8 +355,8 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
 
 
     @Override
-    protected Class<VendaOrcamentoCabecalho> getClazz() {
-        return VendaOrcamentoCabecalho.class;
+    protected Class<OrcamentoCabecalho> getClazz() {
+        return OrcamentoCabecalho.class;
     }
 
     @Override
@@ -369,20 +369,20 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<VendaOrcam
         return false;
     }
 
-    public VendaOrcamentoDetalhe getVendaOrcamentoDetalhe() {
-        return vendaOrcamentoDetalhe;
+    public OrcamentoDetalhe getOrcamentoDetalhe() {
+        return orcamentoDetalhe;
     }
 
-    public void setVendaOrcamentoDetalhe(VendaOrcamentoDetalhe vendaOrcamentoDetalhe) {
-        this.vendaOrcamentoDetalhe = vendaOrcamentoDetalhe;
+    public void setOrcamentoDetalhe(OrcamentoDetalhe orcamentoDetalhe) {
+        this.orcamentoDetalhe = orcamentoDetalhe;
     }
 
-    public VendaOrcamentoDetalhe getVendaOrcamentoDetalheSelecionado() {
-        return vendaOrcamentoDetalheSelecionado;
+    public OrcamentoDetalhe getOrcamentoDetalheSelecionado() {
+        return orcamentoDetalheSelecionado;
     }
 
-    public void setVendaOrcamentoDetalheSelecionado(VendaOrcamentoDetalhe vendaOrcamentoDetalheSelecionado) {
-        this.vendaOrcamentoDetalheSelecionado = vendaOrcamentoDetalheSelecionado;
+    public void setOrcamentoDetalheSelecionado(OrcamentoDetalhe orcamentoDetalheSelecionado) {
+        this.orcamentoDetalheSelecionado = orcamentoDetalheSelecionado;
     }
 
     public String getTipo() {
