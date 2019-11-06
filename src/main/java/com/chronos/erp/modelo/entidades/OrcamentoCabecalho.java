@@ -77,7 +77,7 @@ public class OrcamentoCabecalho implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private Vendedor vendedor;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendaOrcamentoCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "orcamentoCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrcamentoDetalhe> listaOrcamentoDetalhe;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
