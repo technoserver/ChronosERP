@@ -34,10 +34,19 @@
                 <h:outputLabel value="Qtd de parcelas" for="qtdParcelas"/>
                 <div class="field-action">
                     <h:inputText class="form-control" id="qtdParcelas" value="#{nfeCabecalhoControll.qtdParcelas}"/>
-                    <div class="field-action__icon">
+                    <div style="margin-left: 5px;">
                         <h:commandButton value="Gerar" class="btn btn-default"
                                          action="#{nfeCabecalhoControll.gerarDulicatas}"
+                                         rendered="#{nfeCabecalhoControll.objeto.listaDuplicata.size() eq 0}"
                                          id="btnGerarDuplicatas">
+                            <p:ajax process="@this,:formCentro:telaDetalhe:tabNfe:panelDuplicatas"
+                                    update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:panelDuplicatas,:formCentro:telaDetalhe:tabNfe:dataTableNfeDuplicatas"/>
+                        </h:commandButton>
+
+                        <h:commandButton value="Limpar duplicatas" class="btn btn-default"
+                                         action="#{nfeCabecalhoControll.apagarDuplicatas}"
+                                         id="btnLimparrDuplicatas"
+                                         rendered="#{nfeCabecalhoControll.objeto.listaDuplicata.size() gt 0}">
                             <p:ajax process="@this,:formCentro:telaDetalhe:tabNfe:panelDuplicatas"
                                     update=":formCentro:growl,navegacao,:formCentro:mensagem,:formCentro:telaDetalhe:tabNfe:panelDuplicatas,:formCentro:telaDetalhe:tabNfe:dataTableNfeDuplicatas"/>
                         </h:commandButton>
@@ -48,9 +57,9 @@
         <br/>
         <p:dataTable id="dataTableNfeDuplicatas" var="obj"
                      value="#{nfeCabecalhoControll.objeto.listaDuplicata}"
-                     paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                     paginator="true" rows="10"
                      reflow="true" paginatorPosition="bottom"
-                     resizableColumns="true">
+        >
 
             <p:column headerText="Número">
                 <h:outputLabel value="#{obj.numero}"/>
