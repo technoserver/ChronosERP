@@ -13,15 +13,21 @@
     <h:outputStylesheet library="css" name="bootstrap.min.css"/>
 </h:head>
 <h:body>
-    <h:form>
+    <h:form id="form-cad-cliente">
         <div class="ui-fluid">
+
+            <div class="ui-g">
+                <div class="col-xs-12">
+                    <p:messages id="msg" showSummary="true" closable="true"/>
+                </div>
+            </div>
             <div class="ui-g">
                 <erp:campoTexto idComponente="nome"
                                 styleClass="ui-g-10"
                                 label="Nome"
                                 tamanhoMaximo="100"
                                 requerido="true"
-                                nomeAtributo="#{CadastroRapidoClienteControll.cliente.nome}"/>
+                                nomeAtributo="#{cadastroRapidoClienteControll.cliente.nome}"/>
 
                 <h:panelGroup layout="block" class="ui-g-2"
                 >
@@ -29,8 +35,8 @@
                                    for="pessoaTipo"/>
                     <h:selectOneMenu id="pessoaTipo"
                                      class="form-control"
-                                     value="#{CadastroRapidoClienteControll.cliente.tipo}">
-                        <f:selectItems value="#{CadastroRapidoClienteControll.tipoPessoa}"/>
+                                     value="#{cadastroRapidoClienteControll.cliente.tipo}">
+                        <f:selectItems value="#{cadastroRapidoClienteControll.tipoPessoa}"/>
                         <p:ajax event="change"
                                 process="@this"
                         />
@@ -42,29 +48,29 @@
                 <div class="ui-g">
                     <erp:campoTexto styleClass="col-xs-10 col-sm-8 col-md-10"
                                     idComponente="pessoaEnderecoLogradouro" label="Logradouro"
-                                    nomeAtributo="#{CadastroRapidoClienteControll.cliente.logradouro}"
+                                    nomeAtributo="#{cadastroRapidoClienteControll.cliente.logradouro}"
                                     tamanhoMaximo="60"
                                     requerido="true"/>
                     <erp:campoTexto styleClass="col-xs-2 col-sm-2 col-md-2"
                                     idComponente="pessoaEnderecoNumero" label="Número"
-                                    nomeAtributo="#{CadastroRapidoClienteControll.cliente.numero}"
+                                    nomeAtributo="#{cadastroRapidoClienteControll.cliente.numero}"
                                     tamanhoMaximo="10"
                                     requerido="true"/>
                 </div>
                 <div class="ui-g">
                     <erp:campoTexto styleClass="col-xs-4 col-sm-5 col-md-5"
                                     idComponente="pessoaEnderecoComplemento" label="Complemento"
-                                    nomeAtributo="#{CadastroRapidoClienteControll.cliente.complemento}"
+                                    nomeAtributo="#{cadastroRapidoClienteControll.cliente.complemento}"
                                     tamanhoMaximo="60"/>
                     <erp:campoTexto styleClass="col-xs-4 col-sm-5 col-md-5"
                                     idComponente="pessoaEnderecoBairro" label="Bairro"
-                                    nomeAtributo="#{CadastroRapidoClienteControll.cliente.bairro}"
+                                    nomeAtributo="#{cadastroRapidoClienteControll.cliente.bairro}"
                                     tamanhoMaximo="60"
                                     requerido="true"/>
 
                     <erp:campoMascara styleClass="col-xs-4 col-sm-2 col-md-2"
                                       idComponente="pessoaEnderecoCep" label="CEP"
-                                      nomeAtributo="#{CadastroRapidoClienteControll.cliente.cep}"
+                                      nomeAtributo="#{cadastroRapidoClienteControll.cliente.cep}"
                                       mascara="99.999-999"
                                       requerido="true"/>
 
@@ -74,29 +80,29 @@
 
                     <div class="col-xs-2 col-sm-2 col-md-2">
                         <h:outputLabel value="UF :" for="pessoaEnderecoUf"/>
-                        <h:selectOneMenu value="#{CadastroRapidoClienteControll.cliente.uf}"
+                        <h:selectOneMenu value="#{cadastroRapidoClienteControll.cliente.uf}"
                                          required="true"
                                          class="form-control" id="pessoaEnderecoUf">
 
-                            <f:selectItems var="uf" value="#{CadastroRapidoClienteControll.estado}"/>
+                            <f:selectItems var="uf" value="#{cadastroRapidoClienteControll.estado}"/>
                             <p:ajax event="valueChange"
                                     process="@this" update="municipio"
-                                    listener="#{CadastroRapidoClienteControll.instanciaCidade()}"
+                                    listener="#{cadastroRapidoClienteControll.instanciaCidade()}"
                             />
                         </h:selectOneMenu>
                     </div>
                     <div class="col-xs-10 col-sm-10 col-md-10">
                         <p:outputLabel value="Municipio" for="municipio"/>
                         <br/>
-                        <p:autoComplete id="municipio" value="#{CadastroRapidoClienteControll.cidade}"
-                                        completeMethod="#{CadastroRapidoClienteControll.getMunicipios}"
+                        <p:autoComplete id="municipio" value="#{cadastroRapidoClienteControll.cidade}"
+                                        completeMethod="#{cadastroRapidoClienteControll.getMunicipios}"
                                         var="municipio" itemLabel="#{municipio.getNome()}"
                                         itemValue="#{municipio}" converter="defaultConverter"
                                         forceSelection="true" minQueryLength="3" maxResults="10"
                                         emptyMessage="Nenhum registro encontrado" style="width: 100%"
                                         required="true">
                             <p:ajax event="itemSelect" process="@this"
-                                    listener="#{CadastroRapidoClienteControll.atualizarCodIbge()}"/>
+                                    listener="#{cadastroRapidoClienteControll.atualizarCodIbge()}"/>
                         </p:autoComplete>
                     </div>
 
@@ -108,7 +114,9 @@
         </div>
         <div class="ui-g">
             <div class="col-xs-12 text-center">
-                <p:commandButton value="Salvar" action="#{CadastroRapidoClienteControll.salvar}"/>
+                <p:commandButton value="Salvar" process="@form"
+                                 update="form-cad-cliente,form-cad-cliente:msg"
+                                 action="#{cadastroRapidoClienteControll.salvar}"/>
             </div>
 
         </div>
