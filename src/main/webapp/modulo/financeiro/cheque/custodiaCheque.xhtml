@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Custodia de Cheque
+    </ui:define>
+
+    <ui:define name="tela">
+        #{finChequeRecebidoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Custodia de Cheque
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{finChequeRecebidoControll}"
+                       idDataTable="dataTableGrupo"
+                       somenteConsulta="true"
+                       nomeFuncao="Grupo"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Conta Caixa">
+                <h:outputLabel value="#{row.contaCaixa.nome}"/>
+            </p:column>
+            <p:column headerText="Cpf Cnpj">
+                <h:outputLabel value="#{row.cpfCnpj}"/>
+            </p:column>
+            <p:column headerText="Nome">
+                <h:outputLabel value="#{row.nome}"/>
+            </p:column>
+            <p:column headerText="Numero">
+                <h:outputLabel value="#{row.numero}"/>
+            </p:column>
+            <p:column headerText="Data Emissao">
+                <h:outputLabel value="#{row.dataEmissao}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Valor">
+                <h:outputLabel value="#{row.valor}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Valor Recebido">
+                <h:outputLabel value="#{row.valorRecebido}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputLabel>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{finChequeRecebidoControll}"
+                                   nomeFuncao="CFOP"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-lg-2"
+                                idComponente="finChequeRecebidoCpfCnpj" label="Cpf Cnpj"
+                                nomeAtributo="#{finChequeRecebidoControll.objeto.cpfCnpj}"
+                                tamanhoMaximo="14" somenteLeitura="true"/>
+                <erp:campoTexto styleClass="col-xs-12 col-lg-6"
+                                idComponente="finChequeRecebidoNome" label="Nome"
+                                nomeAtributo="#{finChequeRecebidoControll.objeto.nome}"
+                                tamanhoMaximo="100" somenteLeitura="true"/>
+                <erp:campoTexto styleClass="col-xs-12 col-lg-4"
+                                idComponente="finChequeRecebidoContaCaixa" label="Conta Caixa"
+                                nomeAtributo="#{finChequeRecebidoControll.objeto.contaCaixa.nome}"
+                                tamanhoMaximo="14" somenteLeitura="true"/>
+            </div>
+
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-lg-2"
+                                idComponente="finChequeRecebidoCodigoBanco" label="Codigo Banco"
+                                nomeAtributo="#{finChequeRecebidoControll.objeto.codigoBanco}"
+                                tamanhoMaximo="10" somenteLeitura="true"/>
+                <erp:campoTexto styleClass="col-xs-12 col-lg-2"
+                                idComponente="finChequeRecebidoCodigoAgencia"
+                                label="Codigo Agencia"
+                                nomeAtributo="#{finChequeRecebidoControll.objeto.codigoAgencia}"
+                                tamanhoMaximo="10" somenteLeitura="true"/>
+                <erp:campoTexto styleClass="col-xs-12 col-lg-2"
+                                idComponente="finChequeRecebidoConta" label="Conta"
+                                nomeAtributo="#{finChequeRecebidoControll.objeto.conta}"
+                                tamanhoMaximo="20" somenteLeitura="true"/>
+                <erp:campoInteiro styleClass="col-xs-12 col-lg-2"
+                                  idComponente="finChequeRecebidoNumero" label="Numero"
+                                  nomeAtributo="#{finChequeRecebidoControll.objeto.numero}"
+                                  somenteLeitura="true"/>
+                <erp:campoData styleClass="col-xs-12 col-lg-2"
+                               idComponente="finChequeRecebidoDataEmissao" label="Data Emissao"
+                               nomeAtributo="#{finChequeRecebidoControll.objeto.dataEmissao}"
+                               somenteLeitura="true"/>
+
+
+                <erp:campoDecimal styleClass="col-xs-12 col-lg-2"
+                                  idComponente="finChequeRecebidoValor" label="Valor"
+                                  nomeAtributo="#{finChequeRecebidoControll.objeto.valor}"/>
+            </div>
+            <div class="row">
+                <erp:campoData styleClass="col-xs-12 col-lg-2"
+                               idComponente="finChequeRecebidoBomPara" label="Bom Para"
+                               nomeAtributo="#{finChequeRecebidoControll.objeto.bomPara}"/>
+                <erp:campoData styleClass="col-xs-12 col-lg-2"
+                               idComponente="finChequeRecebidoDataCompensacao"
+                               label="Data Compensacao"
+                               nomeAtributo="#{finChequeRecebidoControll.objeto.dataCompensacao}"/>
+            </div>
+            <erp:separador label="Custódia"/>
+
+            <div class="row">
+                <erp:campoData styleClass="col-xs-12 col-lg-2"
+                               idComponente="finChequeRecebidoCustodiaData" label="Data"
+                               nomeAtributo="#{finChequeRecebidoControll.objeto.custodiaData}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-lg-2"
+                                  idComponente="finChequeRecebidoCustodiaTarifa" label="Tarifa"
+                                  nomeAtributo="#{finChequeRecebidoControll.objeto.custodiaTarifa}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-lg-2"
+                                  idComponente="finChequeRecebidoCustodiaComissao" label="Comissao"
+                                  nomeAtributo="#{finChequeRecebidoControll.objeto.custodiaComissao}"/>
+            </div>
+
+
+            <erp:separador label="Desconto"/>
+            <div class="row">
+                <erp:campoData styleClass="col-xs-12 col-lg-2"
+                               idComponente="finChequeRecebidoDescontoData" label="Data"
+                               nomeAtributo="#{finChequeRecebidoControll.objeto.descontoData}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-lg-2"
+                                  idComponente="finChequeRecebidoDescontoTarifa" label="Tarifa"
+                                  nomeAtributo="#{finChequeRecebidoControll.objeto.descontoTarifa}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-lg-2"
+                                  idComponente="finChequeRecebidoDescontoComissao" label="Comissao"
+                                  nomeAtributo="#{finChequeRecebidoControll.objeto.descontoComissao}"/>
+            </div>
+
+
+            <erp:separador label="Total Recebido"/>
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-lg-2"
+                                  idComponente="finChequeRecebidoValorRecebido"
+                                  label="Valor Recebido"
+                                  nomeAtributo="#{finChequeRecebidoControll.objeto.valorRecebido}"/>
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+
+</ui:composition>

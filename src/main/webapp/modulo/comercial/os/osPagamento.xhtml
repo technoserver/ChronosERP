@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+
+    <h:panelGroup id="tipo-pagamento" layout="block" styleClass="row m-b">
+        <div class="col-xs-12 col-sm-3 col-md-3">
+            <h:selectOneMenu id="PedidoFormaPagamentoId"
+                             value="#{osAberturaControll.tipoPagamento}"
+                             class="form-control"
+                             converter="defaultConverter">
+                <f:selectItems value="#{osAberturaControll.listTipoPagamento}" var="obj" itemValue="#{obj}"
+                               itemLabel="#{obj.descricao}"/>
+                <p:ajax process="@this" event="change"
+                        update="formCentro:telaDetalhe:tabViewDetalhes:tipo-pagamento"
+                        listener="#{osAberturaControll.definirCondicoess()}"/>
+            </h:selectOneMenu>
+        </div>
+
+        <h:panelGroup layout="block" styleClass="col-xs-12 col-sm-3 col-md-3"
+                      rendered="#{osAberturaControll.exibirCondicoes}">
+            <h:selectOneMenu id="condicoesPagamento"
+                             value="#{osAberturaControll.condicaoPagamento}"
+                             class="form-control"
+                             converter="defaultConverter">
+                <f:selectItems value="#{osAberturaControll.condicoesPagamentos}" var="obj" itemValue="#{obj}"
+                               itemLabel="#{obj.nome}"/>
+            </h:selectOneMenu>
+        </h:panelGroup>
+
+        <h:panelGroup layout="block" styleClass="col-xs-12 col-sm-3 col-md-3" id="valo-pago">
+            <div class="ui-inputgroup">
+
+
+                <p:inputNumber id="PedidoValorPago"
+                               styleClass="input-valor-pagar"
+                               value="#{osAberturaControll.valorPago}"/>
+                <p:commandButton class="input-group-addon btn btn-lg btn-primary"
+                                 action="#{osAberturaControll.lancaPagamento}"
+                                 process="@this,:formCentro:telaDetalhe:tabViewDetalhes:tipo-pagamento"
+                                 update=":formCentro:telaDetalhe:tabViewDetalhes:valo-pago,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsPagamento"
+                                 disabled="#{osAberturaControll.podeLancaPagamento}"
+                                 id="botao-confirma-pagamento"
+                                 icon="fa fa-plus">
+
+                </p:commandButton>
+
+            </div>
+        </h:panelGroup>
+
+    </h:panelGroup>
+
+    <p:dataTable id="dataTableOsPagamento" var="obj" reflow="true"
+                 value="#{osAberturaControll.objeto.listaFormaPagamento}">
+
+        <p:column headerText="Forma de pagamento">
+            <h:outputText value="#{obj.tipoPagamento.descricao}"/>
+        </p:column>
+
+        <p:column headerText="Valor" styleClass="text-right">
+            <h:outputText value="#{obj.valor}">
+                <f:convertNumber pattern="#,##0.00"/>
+            </h:outputText>
+        </p:column>
+        <p:column headerText="">
+            <p:commandButton
+                    icon="fa fa-remove"
+                    process="@this,dataTableOsPagamento"
+                    action="#{osAberturaControll.excluirPagamento}"
+                    update=":formCentro:telaDetalhe:tabViewDetalhes:valo-pago,dataTableOsPagamento"
+            >
+                <f:setPropertyActionListener value="#{obj}"
+                                             target="#{osAberturaControll.formaPagamentoSelecionado}"/>
+            </p:commandButton>
+
+        </p:column>
+
+    </p:dataTable>
+
+</ui:composition>

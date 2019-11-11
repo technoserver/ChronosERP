@@ -31,6 +31,11 @@
                                      label="Produtos Promocionais"
                                      exibir="#{true}"
                                      funcao="promocao"/>
+
+                        <erp:subMenu caminho="/modulo/comercial/vendas/condicoesPagamento"
+                                     label="Condições de Pagamento"
+                                     exibir="#{seguranca.isTemAcesso('CONDICOES_PAGAMENTO')}"
+                                     funcao="condicoesPagamento"/>
                     </li>
                 </ul>
             </li>
@@ -72,22 +77,26 @@
                 </a>
                 <ul class="nav nav-third-level">
                     <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/')?'active':''}">
-                        <erp:subMenu caminho="/modulo/comercial/vendas/condicoesPagamento"
-                                     label="Condições de Pagamento"
-                                     exibir="#{seguranca.isTemAcesso('CONDICOES_PAGAMENTO')}"
-                                     funcao="condicoesPagamento"/>
+
                         <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
                                      label="Orçamento"
                                      exibir="#{seguranca.isTemAcesso('VENDA_ORCAMENTO')}"
                                      funcao="tipo=O">
                             <f:param name="tipo" value="O"/>
                         </erp:subMenu>
+
                         <erp:subMenu caminho="/modulo/comercial/vendas/orcamento"
                                      label="Pedido"
                                      exibir="#{seguranca.isTemAcesso('VENDA_ORCAMENTO')}"
                                      funcao="tipo=P">
                             <f:param name="tipo" value="P"/>
                         </erp:subMenu>
+
+                        <erp:subMenu caminho="/modulo/comercial/vendas/consignacoes"
+                                     label="Consiguinação"
+                                     exibir="#{seguranca.isTemAcesso('VENDA_CONSIGNADA')}"
+                                     funcao="modulo/comercial/vendas/consignacoes"/>
+
                         <erp:subMenu caminho="/modulo/comercial/vendas/vendas"
                                      label="Vendas"
                                      exibir="#{seguranca.isTemAcesso('VENDA')}"
@@ -194,6 +203,10 @@
                     <erp:subMenu caminho="/modulo/comercial/transporte/mdfe/mdfeNaoEncerrados"
                                  label="Não Encerrados"
                                  funcao="mdfeNaoEncerrados"/>
+
+                    <erp:subMenu caminho="/modulo/comercial/transporte/mdfe/mdfeEncerrar"
+                                 label="Encerrar"
+                                 funcao="mdfeEncerrar"/>
 
 
                 </ul>

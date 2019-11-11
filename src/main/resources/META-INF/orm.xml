@@ -41,21 +41,30 @@
         <query>
             select
             u.id,
-            ep.id_empresa as idempresa,
+            e.id as idempresa,
             c.id as idcolaborador,
             p.id as idpessoa,
             u.login,
             u.senha,
-            u.administrador,
             p.nome,
             c.foto_34 as foto,
-            cg.nome as cargo
-            from Usuario u
+            u.administrador,
+            cg.nome as cargo,
+            e.razao_social,
+            pp.id as idpapel,
+            pp.acesso_completo,
+            o.id as idoperador,
+            o.login as operador,
+            o.nivel_autorizacao
+            from usuario u
             inner join colaborador c on c.id = u.id_colaborador
             inner join cargo cg on cg.id = c.id_cargo
             inner join pessoa p on p.id = c.id_pessoa
+            inner join papel pp on pp.id = u.id_papel
             inner join empresa_pessoa ep on ep.id_pessoa = p.id
-            where ep.empresa_principal = 'S' and u.login = :login
+            inner join empresa e on e.id = ep.id_empresa
+            left join pdv_operador o on o.id_colaborador = c.id
+            where u.login = :login limit 1
         </query>
 
     </named-native-query>
@@ -134,8 +143,7 @@
             FROM pdv_movimento m
             JOIN pdv_sangria s ON s.id_pdv_movimento = m.id
             JOIN pdv_operador o ON o.id = m.id_pdv_operador
-            WHERE (m.id = ?1)
-            and data_abertura BETWEEN ?2 and ?3
+            WHERE (m.id = ?1) and data_abertura BETWEEN ?2 and ?3
             UNION
             SELECT
             concat(m.id , s.id , 2) AS id,
@@ -150,13 +158,13 @@
             'E' AS tipo,
             'Suprimentos' AS origem,
             s.observacao
-            FROM
-            pdv_movimento m
+            FROM pdv_movimento m
             JOIN pdv_suprimento s ON s.id_pdv_movimento = m.id
             JOIN pdv_operador o ON o.id = m.id_pdv_operador
-            WHERE (m.id = ?1)
-            and data_abertura BETWEEN ?2 and ?3
+            WHERE (m.id = ?1) and data_abertura BETWEEN ?2 and ?3
+
             UNION
+
             SELECT
             concat(m.id , f.id , 3) AS id,
             o.login as operador,
@@ -175,9 +183,32 @@
             JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
             JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
             JOIN pdv_operador o ON o.id = m.id_pdv_operador
-            WHERE (m.id = ?1)
-            and data_abertura BETWEEN ?2 and ?3
-            and (v.status_venda = 'E' or v.status_venda = 'F')
+            WHERE (m.id = ?1) and data_abertura BETWEEN ?2 and ?3 and (v.status_venda = 'E' or v.status_venda = 'F')
+
+            union
+
+            select
+            concat(m.id , r.id , 4) AS id,
+            o.login as operador,
+            m.id AS idmovimento,
+            r.id AS idorigem,
+            r.data_recebimento AS data_hora,
+            ('Recebimento n°' || r.id) || ' de '|| ps.nome AS descricao,
+            r.valor_recebido,
+            '01' AS codigo_forma_pagamento,
+            'Dinheiro' AS forma_pagamento,
+            'E' AS tipo,
+            'RECEBIMENTO' AS origem,
+            '' AS observacao
+            from pdv_movimento m
+            inner join pdv_operador o ON o.id = m.id_pdv_operador
+            inner join fin_parcela_recebimento r on r.id_pdv_movimento = m.id
+            inner join fin_parcela_receber p on p.id = r.id_fin_parcela_receber
+            inner join fin_lancamento_receber l on l.id = p.id_fin_lancamento_receber
+            inner join cliente c on c.id = l.id_cliente
+            inner join pessoa ps on ps.id = c.id_pessoa
+            where m.id = ?1
+
             ORDER BY 5,8;
         </query>
 
@@ -185,7 +216,7 @@
 
 
     <sql-result-set-mapping name="produtoDTOMapping">
-        <constructor-result target-class="com.chronos.dto.ProdutoDTO">
+        <constructor-result target-class="com.chronos.erp.dto.ProdutoDTO">
             <column name="id" class="java.lang.Integer"/>
             <column name="nome" class="java.lang.String"/>
             <column name="descricao_pdv" class="java.lang.String"/>
@@ -210,23 +241,29 @@
 
 
     <sql-result-set-mapping name="loginUsuarioDTOMapping">
-        <constructor-result target-class="com.chronos.dto.UsuarioDTO">
+        <constructor-result target-class="com.chronos.erp.dto.UsuarioDTO">
             <column name="id" class="java.lang.Integer"/>
             <column name="idempresa" class="java.lang.Integer"/>
             <column name="idcolaborador" class="java.lang.Integer"/>
             <column name="idpessoa" class="java.lang.Integer"/>
             <column name="login" class="java.lang.String"/>
             <column name="senha" class="java.lang.String"/>
-            <column name="administrador" class="java.lang.String"/>
             <column name="nome" class="java.lang.String"/>
             <column name="foto" class="java.lang.String"/>
+            <column name="administrador" class="java.lang.String"/>
             <column name="cargo" class="java.lang.String"/>
+            <column name="razao_social" class="java.lang.String"/>
+            <column name="idpapel" class="java.lang.Integer"/>
+            <column name="acesso_completo" class="java.lang.String"/>
+            <column name="idoperador" class="java.lang.Integer"/>
+            <column name="operador" class="java.lang.String"/>
+            <column name="nivel_autorizacao" class="java.lang.String"/>
         </constructor-result>
     </sql-result-set-mapping>
 
 
     <sql-result-set-mapping name="configuracaoNfeMapping">
-        <constructor-result target-class="com.chronos.dto.ConfiguracaoNfeDTO">
+        <constructor-result target-class="com.chronos.erp.dto.ConfiguracaoNfeDTO">
             <column name="caminho" class="java.lang.String"/>
             <column name="senha" class="java.lang.String"/>
             <column name="caminho_logomarca" class="java.lang.String"/>
@@ -238,7 +275,7 @@
     </sql-result-set-mapping>
 
     <sql-result-set-mapping name="configuracaoMdfeMapping">
-        <constructor-result target-class="com.chronos.dto.ConfiguracaoMdfeDTO">
+        <constructor-result target-class="com.chronos.erp.dto.ConfiguracaoMdfeDTO">
             <column name="caminho" class="java.lang.String"/>
             <column name="senha" class="java.lang.String"/>
             <column name="caminho_logomarca" class="java.lang.String"/>
@@ -251,7 +288,7 @@
     </sql-result-set-mapping>
 
     <sql-result-set-mapping name="configuracaoPdvMapping">
-        <constructor-result target-class="com.chronos.dto.ConfiguracaoPdvDTO">
+        <constructor-result target-class="com.chronos.erp.dto.ConfiguracaoPdvDTO">
             <column name="caminho" class="java.lang.String"/>
             <column name="senha" class="java.lang.String"/>
             <column name="caminho_logomarca" class="java.lang.String"/>
@@ -267,7 +304,7 @@
     </sql-result-set-mapping>
 
     <sql-result-set-mapping name="movimentoPdvMapping">
-        <constructor-result target-class="com.chronos.dto.PdvMovimentoDTO">
+        <constructor-result target-class="com.chronos.erp.dto.PdvMovimentoDTO">
             <column name="id" class="java.lang.Integer"/>
             <column name="operador" class="java.lang.String"/>
             <column name="idmovimento" class="java.lang.Integer"/>

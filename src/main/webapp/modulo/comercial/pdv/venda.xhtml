@@ -1,0 +1,458 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <h:outputStylesheet library="css" name="bootstrap.min.css"/>
+    <h:outputScript library="primefaces" name="jquery/jquery.js"/>
+
+    <h:outputStylesheet library="css" name="pdv.css"/>
+
+    <style type="text/css">
+
+        #pdv {
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+
+        li.token-input-token p, li.token-input-token span {
+            padding-top: 12px
+        }
+
+        .padding-top-10px {
+            padding-top: 10px;
+        }
+
+        .margin-right-10px {
+            margin-right: 10px;
+        }
+
+        .margin-top-10px {
+            margin-top: 10px;
+        }
+
+        .margin-top-0 {
+            margin-top: 0 !important;
+        }
+
+        .margin-bottom-20px {
+            margin-bottom: 20px;
+        }
+
+        .margin-bottom-0 {
+            margin-bottom: 0;
+        }
+
+        .margin-bottom-10px {
+            margin-bottom: 10px;
+        }
+
+        .border-bottom-1px {
+            border-bottom: 1px solid #ccc;
+        }
+
+        .form-control-table {
+            min-width: 120px;
+            width: 100%;
+            display: block;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.428571429;
+            color: #555555;
+            vertical-align: middle;
+            background-color: #ffffff;
+            background-image: none;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+            transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+        }
+
+        .small-box {
+            position: relative;
+            display: block;
+            -webkit-border-radius: 2px;
+            -moz-border-radius: 2px;
+            border-radius: 2px;
+            margin-bottom: 1px;
+            cursor: pointer;
+        }
+
+        .bg-green {
+            background-color: #00a65a !important;
+            color: #fff;
+        }
+
+        .form-control-table[disabled], .form-control-table[readonly], fieldset[disabled] .form-control-table {
+            cursor: not-allowed;
+            background-color: #eeeeee;
+        }
+
+        .muted {
+            background-color: #F2F2F2 !important;
+        }
+
+        fieldset {
+            border: 1px solid #dddddd;
+            margin-bottom: 1em;
+            padding: 0 10px 10px 10px;
+            background: #FFFFFF;
+        }
+
+        fieldset legend {
+            color: #0C1B25;
+            font-family: arial;
+            width: inherit;
+            border-bottom: initial;
+        }
+
+        h3 {
+            font-size: 24px;
+        }
+
+        h4 {
+            font-size: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .nowrap {
+            white-space: nowrap;
+        }
+
+        .input-pdv {
+            font-size: 20px !important;
+            height: 60px !important;
+        }
+
+        .input-valor-pagar input {
+            font-weight: bold;
+            font-size: 20px !important;
+            height: 60px !important;
+        }
+
+        .table-striped > thead > tr:nth-child(odd) > td,
+        .table-striped > thead > tr:nth-child(odd) > th {
+            background-color: #dadada;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .total-pedido2 {
+            background-color: #0c1b25;
+            color: #fff;
+            border-bottom: 1px solid #8f8f90;
+            padding: 1%;
+            height: 108px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .total-pedido2 .sub {
+            float: left;
+            width: 202px;
+        }
+
+        .total-pedido2 .sub li .desc {
+            font-size: 10px;
+            opacity: .5;
+            display: inline-block;
+            vertical-align: middle;
+            width: 74px;
+        }
+
+        .total-pedido2 .sub li .value {
+            font-size: 15px;
+            font-weight: bold;
+            text-align: left;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .total-pedido2 .valueTotal .desc {
+            font-size: 16px;
+            font-weight: bold;
+            opacity: .5;
+            display: block;
+            line-height: 28px;
+        }
+
+        .valueTotal .value {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .total-pedido2 .valueTotal .value .mini {
+            font-size: 20px;
+        }
+
+        .total-pedido2 .valueTotal {
+            float: right;
+            width: 56%;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        .descricao-produto {
+            width: 100%;
+            margin-right: 8px;
+            overflow: hidden;
+        }
+
+        .descricao-produto .nome-item {
+            white-space: nowrap;
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            width: 80%;
+            overflow: hidden;
+            margin: 0 0 0 0;
+        }
+
+        .valor-total-item {
+            display: block;
+            font-size: 16px;
+            font-weight: bold
+        }
+
+        .caixa-preco {
+            width: 130px;
+            padding: 9px 55px 5px 10px;
+            position: absolute;
+            top: 0px;
+            right: 0;
+            z-index: 5;
+        }
+
+        .caixa-preco .preco {
+            text-align: right;
+        }
+
+        .caixa-preco .preco span {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .caixa-preco .preco span.preco-unitario {
+            font-size: 12px;
+        }
+
+        .lista {
+            display: inline-block;
+            position: relative;
+            border-top: 3px solid #4d4d4d;
+            height: 242px;
+            width: 100%;
+            overflow-y: auto;
+            background: #e8f0f2;
+        }
+
+        .lista .lista-produtos {
+            display: inline-block;
+            width: 100%;
+        }
+
+        .lista .lista-produtos > li {
+            border-top: 1.5px solid #8f8f90;
+            color: #000;
+            padding: 5px;
+            position: relative;
+        }
+
+        .lista .lista-produtos > li.item {
+            background-color: #e8f0f2;
+            height: 70px;
+        }
+
+        .lista .lista-produtos > li:first-child {
+            border-top: none;
+        }
+
+        .caixa-botoes {
+            float: left;
+        }
+
+        .caixa-botoes {
+            width: 45px;
+        }
+
+        .caixa-botoes input[type=button] {
+            border: none;
+            cursor: pointer;
+        }
+
+        .caixa-botoes .btn-excluir {
+            display: block;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 10;
+            margin: 15px;
+        }
+
+        .caixa-botoes .btn-excluir {
+            color: black;
+            font-size: 25px;
+            margin: 15px;
+            width: 22px;
+            height: 22px;
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 10;
+            background-size: cover;
+        }
+
+        .box-cliente {
+            width: 100%;
+            height: 77px;
+        }
+
+        .cliente {
+            float: left;
+            width: 220px;
+            position: relative;
+            margin: 13px 0 8px 0px;
+        }
+
+        .cliente .nome {
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: capitalize;
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 297px;
+            overflow: hidden;
+            float: left;
+            margin-right: 4px;
+        }
+
+        .vendedor {
+            position: absolute;
+            bottom: 0px;
+            left: 10px;
+            font-size: 12px;
+        }
+
+        .vendedor .nome {
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: capitalize;
+            -ms-text-overflow: ellipsis;
+            -o-text-overflow: ellipsis;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 297px;
+            overflow: hidden;
+            float: left;
+            margin-right: 4px;
+        }
+
+        body .ui-radiobutton .ui-radiobutton-box {
+            width: 22px !important;
+            height: 22px !important;
+        }
+    </style>
+
+</h:head>
+
+<h:body>
+
+    <h:form id="formCentro" style="margin: 0" role="form">
+        <p:focus context="formCentro:produto"/>
+        <h:panelGroup layout="block" id="mensagem-pdv">
+            <h:messages showSummary="true"/>
+        </h:panelGroup>
+        <h:panelGroup id="telaPdv" layout="block">
+            <div id="pdv" class="row">
+                <h:panelGroup layout="block" id="tela-inicial" class="etapa" style="overflow: hidden"
+                              rendered="#{balcaoControll.telaVenda}">
+                    <ui:include src="telaPrincipal.xhtml"/>
+                </h:panelGroup>
+
+                <h:panelGroup layout="block" id="tela-pagamento" class="etapa" style="overflow: hidden"
+                              rendered="#{balcaoControll.telaPagamentos}">
+                    <ui:include src="telaPagamento.xhtml"/>
+                    <div class="hidden-xs teclas">
+                        F5 = Mudar Forma de Pagamento | F6 = Confirmar Pagamento | F7 = Finalizar Venda | F8 = Cancelar
+                    </div>
+                </h:panelGroup>
+                <h:panelGroup layout="block" id="tela-impressao" class="etapa" style="overflow: hidden"
+                              rendered="#{balcaoControll.telaImpressao}">
+
+                    <div>
+                        <div class="text-center text-success" style="font-size:200px; line-height:1">
+                            <i class="fa icon-shopping"></i>
+                        </div>
+                        <h1 class="text-center text-success margin-top-10">VENDA FINALIZADA COM SUCESSO!</h1>
+                        <br/>
+                        <div class="text-center">
+                            <h:commandButton value="INICIAR NOVA VENDA"
+                                             id="nova-venda"
+                                             action="#{balcaoControll.novaVenda}"
+
+                                             class="btn btn-success btn-lg">
+                                <p:ajax update=":formCentro:tela-impressao,:formCentro:telaPdv"
+                                        oncomplete="$('.ibox-title').css({ display: 'none' });"/>
+                            </h:commandButton>
+                            &nbsp;
+                            <h:link id="imprimir-cupom"
+                                    value="IMPRIMIR CUPOM"
+                                    class="btn btn-primary btn-lg"
+                                    outcome="/modulo/comercial/vendas/relatorios/cupomBalcao"
+                                    target="blank"
+                                    rendered="#{empty balcaoControll.venda.idnfe}">
+                                <f:param name="idcupom" value="#{balcaoControll.venda.id}"/>
+                            </h:link>
+                            <h:commandButton value="IMPRIMIR CUPOM"
+                                             id="imprimir-nfce"
+                                             action="#{balcaoControll.danfe}"
+                                             rendered="#{not empty balcaoControll.venda.idnfe}"
+                                             class="btn btn-primary btn-lg">
+                                <p:ajax disabled="true"/>
+                            </h:commandButton>
+                            &nbsp;
+                            <h:commandButton value="EMITIR NFCe"
+                                             id="emitir-nfce"
+                                             action="#{balcaoControll.gerarNfce}"
+                                             rendered="#{empty balcaoControll.venda.idnfe}"
+                                             class="btn btn-warning btn-lg">
+                                <p:ajax update=":formCentro:growl,:formCentro:tela-impressao"
+                                />
+                            </h:commandButton>
+
+                        </div>
+                    </div>
+                    <div class="hidden-xs teclas">
+                        F5 = Imprimir Cupom | F6 = Emitir NFC | F7 = Nova Venda
+                    </div>
+
+                </h:panelGroup>
+
+
+            </div>
+        </h:panelGroup>
+    </h:form>
+
+
+    <h:outputScript library="js" name="bootstrap.min.js"/>
+</h:body>
+</html>

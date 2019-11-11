@@ -228,3 +228,115 @@ div.token-input-dropdown {
         font-size: 250px;
     }
 }
+
+
+#pdv .barra-busca {
+    width: 100%;
+    height: 68px;
+    position: relative;
+    background-color: #d0cbcb;
+}
+
+#pdv .barra-busca .search {
+
+    width: 90%;
+    float: left;
+    line-height: 30px;
+    margin: 4px 0 0 5px;
+    padding: 0 5px;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    font-size: 21px;
+    font-weight: bold;
+    font-family: Arial, 'DejaVu Sans', 'Liberation Sans', Freesans, sans-serif;
+    color: #fff;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    color: #000000;
+}
+
+#pdv .barra-busca .btn-search {
+    display: inline-block;
+    width: 39px;
+    height: 39px;
+    background: transparent url("../resources/images/enter-search.svg") no-repeat;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    margin: 18px 0 0 6px;
+}
+
+#pdv .resultado-busca {
+    position: relative;
+    margin-top: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    overflow-y: scroll;
+    height: 66%;
+}
+
+#pdv .resultado-busca ul {
+    opacity: 1;
+    -o-transition: opacity 300ms;
+    -moz-transition: opacity 300ms;
+    -webkit-transition: opacity 300ms;
+    transition: opacity 300ms;
+}
+
+#pdv .resultado-busca ul li {
+    border-bottom: 1px solid #d0cbcb;
+    height: 47px;
+    display: flex;
+}
+
+#pdv .resultado-busca ul li .desc-produto {
+    display: inline-block;
+    text-transform: uppercase;
+    color: #636363;
+    width: 65%;
+}
+
+#pdv .resultado-busca ul li .desc-produto .cod-item {
+    font-size: 11px
+}
+
+#pdv .resultado-busca ul li .desc-produto .nome-item {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+
+#pdv .resultado-busca ul li .preco {
+    display: inline-block;
+    width: 151px;
+    margin: 0 10px;
+    padding-top: 15px;
+}
+
+#pdv .resultado-busca ul li .preco span {
+    color: #000;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+#pdv .resultado-busca ul li .add-item {
+    color: #000;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+#pdv .resultado-busca ul li .add-item .btn-add-item {
+    width: 39px;
+    height: 39px;
+    background: transparent url("../resources/images/buy.png") no-repeat;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}

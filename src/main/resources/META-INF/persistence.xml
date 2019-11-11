@@ -27,9 +27,9 @@
 
             <property name="hibernate.multiTenancy" value="SCHEMA"/>
             <property name="hibernate.tenant_identifier_resolver"
-                      value="com.chronos.util.tenant.MultiTenantSchemaResolver"/>
+                      value="com.chronos.erp.util.tenant.MultiTenantSchemaResolver"/>
             <property name="hibernate.multi_tenant_connection_provider"
-                      value="com.chronos.util.tenant.MultiTenantConnectionProviderImpl"/>
+                      value="com.chronos.erp.util.tenant.MultiTenantConnectionProviderImpl"/>
 
 
             <property name="hibernate.show_sql" value="true"/>

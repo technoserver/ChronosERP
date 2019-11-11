@@ -31,62 +31,102 @@
 
                 <!--</p:contextMenu>-->
                 <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <p:commandButton
-                                    value="Gerar Integracao com a balança"
-                                    action="#{produtoControll.buscarConfiguracoesBalanca}"
-                                    oncomplete="PF('dialogOutrasTelas7').show();"
-                                    update=":formOutrasTelas7:panelOutrasTelas7"
-                            />
 
 
+                    <p:outputPanel id="panel-filtros">
+
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <p:commandButton
+                                        value="Gerar Integracao com a balança"
+                                        action="#{produtoControll.buscarConfiguracoesBalanca}"
+                                        oncomplete="PF('dialogOutrasTelas7').show();"
+                                        update=":formOutrasTelas7:panelOutrasTelas7"
+                                />
+
+                                <p:commandButton
+                                        value="Cadastro rápido"
+                                        style="margin-left: 5px"
+                                        action="#{cadastroRapidoProdutoControll.abrirDialog}"
+                                        rendered="#{produtoControll.podeInserir()}"
+                                        process="@this" update="@none">
+                                    <p:ajax event="dialogReturn"
+                                            listener="#{produtoControll.salvarCadastroRapido}"
+                                            process="@this"
+                                            update=":formCentro:growl,:formCentro:outputPanelGrid"/>
+                                </p:commandButton>
+
+                                <p:commandButton value="Cadastro completo"
+                                                 action="#{produtoControll.doCreate()}"
+                                                 update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                                 rendered="#{produtoControll.podeInserir()}"/>
+
+                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <erp:campoInteiro idComponente="codigo"
-                                          styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          nomeAtributo="#{produtoControll.codigo}"
-                                          label="Código"/>
+                        <div class="row">
+                            <erp:campoInteiro idComponente="codigo"
+                                              id="cmp-codigo"
+                                              styleClass="col-xs-12 col-sm-2 col-md-2"
+                                              nomeAtributo="#{produtoControll.codigo}"
+                                              label="Código"/>
 
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                        idComponente="produto"
-                                        label="GTIN"
-                                        tamanhoMaximo="14"
-                                        nomeAtributo="#{produtoControll.gtin}"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                            id="cmp-gtin"
+                                            idComponente="gtin"
+                                            label="GTIN"
+                                            tamanhoMaximo="14"
+                                            nomeAtributo="#{produtoControll.gtin}"/>
 
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
-                                        idComponente="produto"
-                                        label="Produto"
-                                        tamanhoMaximo="100"
-                                        nomeAtributo="#{produtoControll.produto}"/>
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
-                                        idComponente="produto"
-                                        label="Grupo"
-                                        tamanhoMaximo="100"
-                                        nomeAtributo="#{produtoControll.strGrupo}"/>
-                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
-                                        idComponente="produto"
-                                        label="SubGrupo"
-                                        tamanhoMaximo="100"
-                                        nomeAtributo="#{produtoControll.strSubGrupo}"/>
-                        <div class="col-xs-12 col-sm-2 col-md-2">
-                            <h:outputLabel value="Inativo"/>
-                            <div class="field-action">
-                                <h:selectOneMenu value="#{produtoControll.inativo}" styleClass="form-control">
-                                    <f:selectItems value="#{produtoControll.naoSim}"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
+                                            idComponente="produto"
+                                            id="cmp-produto"
+                                            label="Produto"
+                                            tamanhoMaximo="100"
+                                            nomeAtributo="#{produtoControll.produto}"/>
+
+
+                            <h:panelGroup class="col-xs-12 col-sm-4 col-md-4" layout="block"
+                                          rendered="#{produtoControll.listaEmpresas.size() gt 1}">
+                                <h:outputLabel value="Empresa"/>
+                                <h:selectOneMenu value="#{produtoControll.idmepresaFiltro}" styleClass="form-control">
+                                    <f:selectItems value="#{produtoControll.listaEmpresas}" itemValue="#{obj.id}"
+                                                   var="obj"/>
                                 </h:selectOneMenu>
-                                <div class="field-action__icon">
-                                    <p:commandLink title="Pesquisar" styleClass="btn btn-default"
-                                                   update="dataTableProduto"
-                                    >
+                            </h:panelGroup>
 
-                                        <i class="glyphicon glyphicon-retweet"></i>
-                                    </p:commandLink>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                            idComponente="grupo"
+                                            id="cmp-grupo"
+                                            label="Grupo"
+                                            tamanhoMaximo="100"
+                                            nomeAtributo="#{produtoControll.strGrupo}"/>
+                            <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                            id="cmp-subgrupo"
+                                            idComponente="subgrupo"
+                                            label="SubGrupo"
+                                            tamanhoMaximo="100"
+                                            nomeAtributo="#{produtoControll.strSubGrupo}"/>
+                            <div class="col-xs-12 col-sm-2 col-md-2">
+                                <h:outputLabel value="Inativo"/>
+                                <div class="field-action">
+                                    <h:selectOneMenu value="#{produtoControll.inativo}" styleClass="form-control"
+                                                     id="inativo">
+                                        <f:selectItems value="#{produtoControll.naoSim}"/>
+                                    </h:selectOneMenu>
+                                    <div class="field-action__icon">
+                                        <p:commandButton title="Pesquisar"
+                                                         id="btn-pesquisar"
+                                                         process="@form"
+                                                         icon="fa fa-retweet"
+                                                         update="formCentro:dataTableProduto">
+
+                                        </p:commandButton>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </p:outputPanel>
                     <br/>
                     <p:dataTable value="#{produtoControll.produtoDataModel}"
                                  var="row" id="dataTableProduto" paginator="true"
@@ -101,30 +141,26 @@
                         <p:column style="width:32px">
                             <p:rowToggler/>
                         </p:column>
-
-                        <p:column headerText="Código." width="100">
-                            <h:outputLabel value="#{row.id}"/>
-                        </p:column>
-
-                        <p:column headerText="Cód. Barras" width="130">
-                            <h:outputLabel value="#{row.gtin}"/>
-                        </p:column>
                         <p:column headerText="Nome">
+                            <p>
+                                <strong>Código :</strong> #{row.id}
+                                <strong>Cód. Barras :</strong> #{row.gtin}
+                            </p>
                             <h:outputLabel value="#{row.nome}"/>
+                            <p>
+                                <strong>Valor de venda : </strong>
+                                <h:outputLabel value="#{row.valorVenda}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputLabel>
+                                <strong>por </strong>
+                                <h:outputLabel value="#{row.sigla}"/>
+                            </p>
                         </p:column>
-                        <p:column headerText="Grupo">
+                        <p:column headerText="Grupo" width="125">
                             <h:outputLabel value="#{row.grupo}"/>
                         </p:column>
-                        <p:column headerText="SubGrupo">
+                        <p:column headerText="SubGrupo" width="180">
                             <h:outputLabel value="#{row.subgrupo}"/>
-                        </p:column>
-                        <p:column headerText="UN" width="50" styleClass="text-center">
-                            <h:outputLabel value="#{row.sigla}"/>
-                        </p:column>
-                        <p:column headerText="Valor Venda" width="123" class="coluna-monetaria">
-                            <h:outputLabel value="#{row.valorVenda}">
-                                <f:convertNumber pattern="#,###,##0.00"/>
-                            </h:outputLabel>
                         </p:column>
                         <p:column headerText="Estoque" width="100" class="text-right">
                             <h:outputLabel value="#{row.quantidade}">
@@ -198,16 +234,17 @@
                 </div>
                 <div class="ibox-footer">
                     <div class="row">
-                        <div class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
+                        <div class="col-xs-6 col-lg-6 text-center">
+
+                            <p:commandButton value="Cadastrar"
                                              actionListener="#{produtoControll.doCreate()}"
                                              disabled="#{!produtoControll.podeInserir()}"
+                                             process="@form"
+                                             oncomplete="addClass()"
+                                             update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
 
-                            >
-                                <p:ajax process="@form"
-                                        oncomplete="addClass()"
-                                        update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
-                            </h:commandButton>
+                            />
+
                         </div>
                         <div class="col-xs-6 col-lg-6">
                             <h:commandButton value="Cancelar" class="btn btn-default center-block"
@@ -225,16 +262,36 @@
 
 
     <ui:define name="telaInclusaoAlteracao">
+
         <erp:telaInclusaoAlteracao controller="#{produtoControll}"
                                    nomeFuncao="Produto"
                                    id="telaDetalhe"
                                    gridPadrao="false">
-            <p:importEnum type="com.chronos.modelo.enuns.PrecoPrioritario"
+            <p:importEnum type="com.chronos.erp.modelo.enuns.PrecoPrioritario"
                           var="precoPrioritario" allSuffix="ALL_ENUM_VALUES"/>
 
 
             <p:tabView id="tabProduto" activeIndex="#{produtoControll.activeTabIndex}">
                 <p:tab title="Dados Principais" id="dadosPrincipais">
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                        idComponente="id" label="Código"
+                                        nomeAtributo="#{produtoControll.objeto.id}"
+                                        tamanhoMaximo="9"
+                                        rendered="#{not empty produtoControll.objeto.id}"
+                                        somenteLeitura="true"/>
+
+                        <div class="col-xs-6 col-sm-3 col-md-3">
+                            <p:commandButton value="Novo"
+                                             style="margin-top: 25px"
+                                             process="@this"
+                                             actionListener="#{produtoControll.doCreate()}"
+                                             update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                             rendered="#{not empty produtoControll.objeto.id}"/>
+                        </div>
+
+
+                    </div>
                     <div class="row">
 
                         <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
@@ -249,6 +306,7 @@
                         />
                     </div>
                     <div class="row">
+
 
                         <div class="col-xs-12 col-sm-6 col-md-6">
                             <p:outputLabel value="Grupo" for="grupo"/>
@@ -402,15 +460,25 @@
                             </h:selectOneMenu>
                         </div>
 
-                        <erp:campoSelect itens="#{produtoControll.listaEmpresas}"
-                                         styleClass="col-xs-12 col-sm-4 col-md-4"
-                                         idComponente="empresas"
-                                         label="Selecione a empresa no qual pretende cadastra o produto"
-                                         rendered="#{produtoControll.listaEmpresas.size() gt 1}"
-                                         nomeAtributo="#{produtoControll.idempresa}"/>
-
 
                     </div>
+
+
+                    <h:panelGroup layout="block" id="panelEmpresas">
+                        <h:panelGroup layout="block" styleClass="m-t" rendered="#{!produtoControll.listaEmpresaEmpty}">
+                            <erp:separador label="Selecione as empresas nos quais o produto será cadastrado"/>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p:selectManyCheckbox id="empresas" value="#{produtoControll.empresasSelecionada}"
+                                                          layout="responsive" columns="3">
+                                        <f:selectItems value="#{produtoControll.listaEmpresas}" var="obj"
+                                                       itemLabel="#{obj.razaoSocial}" itemValue="#{obj}"/>
+                                    </p:selectManyCheckbox>
+                                </div>
+                            </div>
+                        </h:panelGroup>
+                    </h:panelGroup>
+
                     <div class="row">
 
                         <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
@@ -551,17 +619,6 @@
                 </p:tab>
                 <p:tab title="Estoque">
                     <div class="row">
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                          label="Grade"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{produtoControll}"
-                                          completeMethod="getListaProdutoGrade"
-                                          nomeAtributo="#{produtoControll.objeto.produtoGrade}"
-                                          idComponente="produtoGrade"
-                                          requerido="false"
-                                          id="campoprodutoGrade"/>
-                    </div>
-                    <div class="row">
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
                                           idComponente="produtoQuantidadeEstoqueAnterior"
                                           label="Qtde Est. Anterior"
@@ -578,6 +635,108 @@
                                           nomeAtributo="#{produtoControll.objeto.estoqueIdeal}"/>
 
                     </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-3 col-md-3">
+                            <h:outputLabel value="Tipo de estoque"
+                                           for="clienteBloqueado"/>
+                            <h:selectOneMenu id="clienteBloqueado"
+                                             class="form-control"
+                                             value="#{produtoControll.objeto.possuiGrade}">
+                                <f:selectItem itemLabel="Unico" itemValue="false"/>
+                                <f:selectItem itemLabel="Grade" itemValue="true"/>
+                                <p:ajax event="change" update="formCentro:telaDetalhe:tabProduto:grade"
+                                        process="@this"
+                                />
+                            </h:selectOneMenu>
+                        </div>
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="controle" label="Verificado"
+                                          rendered="#{empty produtoControll.objeto.id}"
+                                          nomeAtributo="#{produtoControll.objeto.controle}"/>
+                    </div>
+                    <h:panelGroup id="grade" layout="block">
+                        <h:panelGroup styleClass="row" layout="block" rendered="#{produtoControll.objeto.possuiGrade}">
+                            <erp:autoComplete styleClass="col-xs-5 col-sm-4 col-md-4"
+                                              label="Cor"
+                                              itemLabel="#{objeto.nome}"
+                                              controller="#{produtoControll}"
+                                              completeMethod="getListaCor"
+                                              nomeAtributo="#{produtoControll.cor}"
+                                              idComponente="cor"
+                                              id="cor"
+                                              requerido="false"
+                            />
+
+                            <erp:autoComplete styleClass="col-xs-5 col-sm-2 col-md-2"
+                                              label="Tamanho"
+                                              itemLabel="#{objeto.nome}"
+                                              controller="#{produtoControll}"
+                                              completeMethod="getListaTamanho"
+                                              nomeAtributo="#{produtoControll.tamanho}"
+                                              idComponente="tamanho"
+                                              id="tamanho"
+                                              requerido="false"
+                            />
+
+                            <div class="col-sm-2" style="margin-top: 22px;">
+
+                                <p:commandButton icon="fa fa-plus"
+                                                 update=":formCentro:telaDetalhe:tabProduto:grade,:formCentro:growl"
+                                                 process="@this,formCentro:telaDetalhe:tabProduto:cor:cor,formCentro:telaDetalhe:tabProduto:tamanho:tamanho"
+                                                 action="#{produtoControll.addGrade}"/>
+
+
+                            </div>
+
+                        </h:panelGroup>
+                        <h:panelGroup styleClass="row m-t" layout="block"
+                                      rendered="#{produtoControll.objeto.possuiGrade}">
+                            <div class="col-sm-12">
+                                <p:dataTable var="row"
+                                             id="table-grade"
+                                             value="#{produtoControll.grades}"
+                                             reflow="true"
+                                             emptyMessage="Nenhum registro encontrado">
+
+                                    <p:column headerText="Código">
+                                        <h:outputText value="#{row.codigo}"/>
+                                    </p:column>
+                                    <p:column headerText="Cor" styleClass="text-center">
+                                        <h:outputText value="#{row.estoqueCor.nome}"/>
+                                    </p:column>
+                                    <p:column headerText="Tamanho" styleClass="text-center">
+                                        <h:outputText value="#{row.estoqueTamanho.nome}"/>
+                                    </p:column>
+                                    <p:column headerText="Estoque" styleClass="text-right">
+                                        <h:outputText value="#{row.quantidade}">
+                                            <f:convertNumber pattern="#,###,##0.00"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column headerText="Verificado" styleClass="text-right">
+                                        <h:outputText value="#{row.verificado}">
+                                            <f:convertNumber pattern="#,###,##0.00"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    <p:column styleClass="text-center">
+                                        <p:commandLink title="Excluir"
+                                                       rendered="#{row.podeRemover}"
+                                                       action="#{produtoControll.removerGrade(row)}"
+                                                       update=":formCentro:telaDetalhe:tabProduto:grade"
+                                                       process="table-grade"
+                                                       class="btn btn-default"
+                                        >
+                                            <i class="fa fa-times"></i>
+
+
+                                        </p:commandLink>
+                                    </p:column>
+
+                                </p:dataTable>
+
+                            </div>
+
+                        </h:panelGroup>
+                    </h:panelGroup>
                 </p:tab>
                 <p:tab title="Fiscal">
                     <div class="row">

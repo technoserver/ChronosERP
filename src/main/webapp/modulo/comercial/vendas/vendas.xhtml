@@ -36,20 +36,45 @@
 
                     <div class="row m-b">
 
-                        <erp:campoTexto idComponente="nome"
+                        <erp:campoTexto idComponente="Cliente"
                                         nomeAtributo="#{vendaCabecalhoControll.nome}"
-                                        styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        styleClass="col-xs-12 col-sm-6 col-md-6"
                                         tamanhoMaximo="60" label="Nome"/>
 
 
                         <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataInicial}"
-                                       label="Data inicial"
-                                       idComponente="vencimentoDe"
+                                       label="Data da Venda inicial"
+                                       idComponente="dataInicial"
                                        styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
                         <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataFinal}"
-                                       label="Data Final"
-                                       idComponente="vencimentoAte"
+                                       label="Data da venda Final"
+                                       idComponente="dataFinal"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                        <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataEntregaInicial}"
+                                       label="Data da entrega inicial"
+                                       idComponente="dataInicial"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+
+
+
+                    </div>
+
+                    <div class="row">
+                        <h:panelGroup class="col-xs-12 col-sm-6 col-md-6" layout="block"
+                                      rendered="#{vendaCabecalhoControll.listaEmpresas.size() gt 1}">
+                            <h:outputLabel value="Empresa"/>
+                            <h:selectOneMenu value="#{vendaCabecalhoControll.idmepresaFiltro}"
+                                             styleClass="form-control">
+                                <f:selectItems value="#{vendaCabecalhoControll.listaEmpresas}" itemValue="#{obj.id}"
+                                               var="obj"/>
+                            </h:selectOneMenu>
+                        </h:panelGroup>
+                        <erp:campoData nomeAtributo="#{vendaCabecalhoControll.dataEntregaFinal}"
+                                       label="Data da entrega Final"
+                                       idComponente="dataFinal"
                                        styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
 
@@ -70,8 +95,6 @@
                             </p:commandLink>
 
                         </div>
-
-
                     </div>
 
                     <p:dataTable
@@ -92,7 +115,7 @@
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Numero Fatura" width="148">
+                        <p:column headerText="Num. Fatura" width="148">
                             <h:outputLabel value="#{row.numeroFatura}"/>
                         </p:column>
                         <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
@@ -106,7 +129,7 @@
                                     value="#{vendaCabecalhoControll.keyFromValue(vendaCabecalhoControll.vendaSituacao, row.situacao)}"/>
                         </p:column>
 
-                        <p:column headerText="Ações" width="160" class="text-center">
+                        <p:column headerText="Ações" width="160" styleClass="text-right">
                             <p:commandLink title="Alterar" action="#{vendaCabecalhoControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
@@ -116,11 +139,8 @@
                                 <f:setPropertyActionListener value="#{row}"
                                                              target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                             </p:commandLink>
-
-
                             &nbsp;
                             <p:commandLink title="Excluir" action="#{vendaCabecalhoControll.remover()}"
-                                           style="margin-right: 5px"
                                            update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                                            process="tableVenda"
                                            oncomplete="atualizarMsg();"
@@ -134,7 +154,7 @@
                                                              target="#{vendaCabecalhoControll.objetoSelecionado}"/>
                             </p:commandLink>
 
-                            <p:menuButton rendered="#{row.podeExcluir}">
+                            <p:menuButton rendered="#{row.podeExcluir}" style="margin-left: 5px">
                                 <p:menuitem value="Imprimir A4"
                                             target="_blank"
                                             actionListener="#{vendaRelatorioControll.imprimirPedido(row.id)}"
@@ -146,7 +166,7 @@
                                             ajax="false"/>
 
                             </p:menuButton>
-                            &nbsp;
+
                             <p:menuButton rendered="#{row.situacao eq 'E' or row.situacao eq 'F'}">
                                 <p:menuitem value="Imprimir A4"
                                             target="_blank"
@@ -316,6 +336,7 @@
                                            value="#{vendaCabecalhoControll.vendaDetalhe.quantidade}"
                                            required="true"
                                            style="width: 100%;"
+                                           disabled="#{!vendaCabecalhoControll.podeAlterarPreco}"
                                            decimalPlaces="2"
                                            minValue="-9999999999.99"
                             >
@@ -344,7 +365,7 @@
 
                                 <p:ajax process="@form"
                                         oncomplete="if (!args.validationFailed) {PF('dialogVendaDetalhe').hide();}"
-                                        update=":formOutrasTelas:panelVendaDetalhe,:formCentro:growl,:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe"
+                                        update=":formOutrasTelas:panelVendaDetalhe,:formCentro:growl,:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe,:formCentro:lista-empresa"
                                 />
                             </h:commandButton>
                         </div>

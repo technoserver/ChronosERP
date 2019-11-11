@@ -368,11 +368,19 @@
                 float: left;
                 margin-right: 4px;
             }
+
+            body .ui-radiobutton .ui-radiobutton-box {
+                width: 22px !important;
+                height: 22px !important;
+            }
         </style>
     </ui:define>
 
 
     <ui:define name="gridDados">
+
+        <p:remoteCommand name="definirTipoPesquisa" process="@this"
+                         actionListener="#{balcaoControll.definirTipoPesquisa}"/>
 
         <p:outputPanel id="outputPanelGrid">
             <p:outputPanel rendered="#{balcaoControll.telaGrid}" id="telaGrid">
@@ -418,13 +426,20 @@
                         <p:column headerText="Situacao" sortBy="#{row.statusVenda}" width="85"
                                   styleClass="text-center">
 
-                            <h:outputLabel value="#{row.statusVenda eq 'F'?'Faturada':'Encerrada'}"
-                                           styleClass="label  #{row.statusVenda eq 'E'?'label-success':'label-info'}"/>
+                            <h:outputLabel value="Faturada" rendered="#{row.statusVenda eq 'F'}"
+                                           styleClass="label  label-info"/>
+
+                            <h:outputLabel value="Encerrada" rendered="#{row.statusVenda eq 'E'}"
+                                           styleClass="label  label-success"/>
+
+                            <h:outputLabel value="Cancelada" rendered="#{row.statusVenda eq 'C'}"
+                                           styleClass="label  label-danger"/>
+
                         </p:column>
 
                         <p:column headerText="Ações" width="60" class="text-center">
 
-                            <p:menuButton>
+                            <p:menuButton rendered="#{row.statusVenda ne 'C'}">
                                 <p:menuitem value="Cupom"
                                             rendered="#{empty row.idnfe}"
                                             target="blank"
@@ -444,6 +459,17 @@
                                             rendered="#{empty row.idnfe and row.sicronizado eq 'N'}"
                                             action="#{balcaoControll.gerarNfce}"
                                             >
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{balcaoControll.venda}"/>
+                                </p:menuitem>
+
+                                <p:menuitem value="Cencelar"
+                                            icon="fa fa-ban"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{row.statusVenda ne 'C' and row.sicronizado eq 'N'}"
+                                            action="#{balcaoControll.cancelarVenda}">
+                                    <p:confirm header="Confirmar" message="Deseja cancelar o cupom ?"/>
+
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{balcaoControll.venda}"/>
                                 </p:menuitem>
@@ -470,6 +496,7 @@
                             <p:commandButton value="Nova Venda"
                                              actionListener="#{balcaoControll.novaVenda}"
                                              process="@this"
+                                             onclick="loadLocalStorage()"
                                              oncomplete="$('.navbar-minimalize').trigger('click');$('.ibox-title').css({ display: 'none' });"
                                              update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                             >
@@ -636,6 +663,7 @@
                                           controller="#{balcaoControll}"
                                           completeMethod="getListCliente"
                                           nomeAtributo="#{balcaoControll.cliente}"
+                                          requerido="false"
                                           idComponente="clienteSelecionado">
 
                         </erp:autoComplete>
@@ -811,8 +839,114 @@
     </ui:define>
 
 
+    <ui:define name="outrasTelas4">
+        <h:form id="formOutrasTelas4">
+            <p:dialog id="outrasTelas4"
+                      header="Justificativa Cancelamento" responsive="true"
+                      widgetVar="dialogOutrasTelas4" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="400">
+                <p:outputPanel id="panelOutrasTelas4">
+                    <div class="row">
+
+                        <erp:campoTexto idComponente="labelJustificativaCancelamento"
+                                        label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        nomeAtributo="#{balcaoControll.justificativa}"
+                                        tamanhoMaximo="255" requerido="true" tamanhoMinimo="15">
+
+                        </erp:campoTexto>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Enviar"
+                                             actionListener="#{balcaoControll.cancelarVendaNFCe}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas4').hide();}"
+                                        process="@form"
+                                        update="panelOutrasTelas4,:formCentro:growl,formCentro:tableVenda"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas4').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas5">
+        <h:form id="formOutrasTelas5" class="form-horizontal">
+
+            <p:dialog id="dialogOutrasTelas5"
+                      header="Desconto" responsive="true"
+                      widgetVar="dialogOutrasTelas5"
+                      resizable="false" draggable="false" modal="true"
+                      width="400"
+            >
+
+                <p:outputPanel id="panelOutrasTelas5">
+                    <div class="form-group text-right">
+                        <div class="text-right">
+                            <label class="control-label col-sm-4">Desonto em</label>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <h:selectOneMenu id="tipo-desconto" styleClass="form-control"
+                                             value="#{ balcaoControll.tipoDesconto}">
+                                <f:selectItem itemLabel="R$" itemValue="D"/>
+                                <f:selectItem itemLabel="%" itemValue="P"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="col-sm-5">
+                            <p:inputNumber id="valor-desconto" required="true"
+                                           value="#{ balcaoControll.desconto}"/>
+                        </div>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             id="btnSalvarDesonto"
+                                             update="panelOutrasTelas5,:formCentro:growl,:formCentro:totalPedido"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
+                                             action="#{balcaoControll.aplicarDesconto}"/>
+
+
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas5').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+
+    </ui:define>
+
+
     <ui:define name="javaScript">
         <h:outputScript library="js" name="pdv.js"/>
+
     </ui:define>
 
 </ui:composition>

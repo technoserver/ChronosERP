@@ -29,6 +29,12 @@
 
             </div>
             <div class="row m-b">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="cliente" label="Cliente"
+                                nomeAtributo="#{nfeCabecalhoControll.cliente}"
+                                tamanhoMaximo="100"/>
+
                 <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                                   idComponente="numeroNfe" label="Numero"
                                   nomeAtributo="#{nfeCabecalhoControll.numeroNfe}"/>
@@ -40,6 +46,26 @@
                 <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                                label="Data Final" idComponente="dataFinal"
                                nomeAtributo="#{nfeCabecalhoControll.dataFinal}"/>
+
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="Status" for="situacao"/>
+                    <h:selectOneMenu id="situacao" class="form-control"
+                                     value="#{nfeCabecalhoControll.status}">
+                        <f:selectItem itemLabel="Todos" itemValue="-1"/>
+                        <f:selectItem itemLabel="Ediçao" itemValue="0"/>
+                        <f:selectItem itemLabel="Autorizada" itemValue="5"/>
+                        <f:selectItem itemLabel="Cancelada" itemValue="6"/>
+                    </h:selectOneMenu>
+                </div>
+
+                <div class="col-md-1" style="margin-top: 20px">
+                    <p:commandButton value=""
+                                     title="Pesquisar"
+                                     icon="fa fa-refresh"
+                                     style="height: 30px"
+                                     action="#{nfeCabecalhoControll.pesquisar}"
+                                     update="formCentro:telaGrid:outputPanelGrid"/>
+                </div>
             </div>
 
             <erp:gridDadosSemForm idDataTable="dataTableNfe"
@@ -49,7 +75,7 @@
                 <p:column headerText="Destinatario" sortBy="#{row.destinatario.nome}">
                     <h:outputLabel value="#{row.destinatario.nome}"/>
                 </p:column>
-                <p:column headerText="Número" sortBy="#{row.numero}" width="100">
+                <p:column headerText="Número" sortBy="#{row.numero}" width="115">
                     <h:outputLabel value="#{row.numero}"/>
                 </p:column>
 
@@ -72,14 +98,25 @@
                     <h:outputLabel
                             value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
-                <p:column headerText="Ações" width="120" styleClass="text-center">
+                <p:column headerText="Ações" width="180" styleClass="text-right">
                     <p:commandLink title="Alterar"
+                                   style="margin-right: 5px"
                                    action="#{nfeCabecalhoControll.doEdit()}"
                                    class=" btn btn-default"
                                    oncomplete="addClass()"
                                    update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                     >
                         <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{nfeCabecalhoControll.objetoSelecionado}"/>
+                    </p:commandLink>
+
+                    <p:commandLink title="Duplicar" action="#{nfeCabecalhoControll.duplicar}"
+                                   class=" btn btn-default"
+
+                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                    >
+                        <i class="fa fa-files-o"></i>
                         <f:setPropertyActionListener value="#{row}"
                                                      target="#{nfeCabecalhoControll.objetoSelecionado}"/>
                     </p:commandLink>
@@ -97,6 +134,8 @@
                         <f:setPropertyActionListener value="#{row}"
                                                      target="#{nfeCabecalhoControll.objetoSelecionado}"/>
                     </p:commandLink>
+
+
                 </p:column>
             </erp:gridDadosSemForm>
         </erp:formularioGrid>
@@ -133,6 +172,7 @@
 
                     <h:commandLink class="btn btn-default"
                                    title="Gerar DANFE" style="margin-left: 5px;"
+                                   target="_blank"
                                    actionListener="#{nfeCabecalhoControll.danfe}"
                                    rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeImprimir}"
                                    id="btnGerardanfe">

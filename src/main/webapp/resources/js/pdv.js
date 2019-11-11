@@ -7,7 +7,7 @@
 $(document).bind('keydown', function (event) {
 
 
-    if($('#formCentro\\:tela-inicial').css('display') == 'block'){
+    if ($('#formCentro\\:tela-inicial').css('display') == 'block') {
 
         if (event.which == 27) {
             $('#formMenu\\:url-pdv')[0].click();
@@ -65,19 +65,19 @@ $(document).bind('keydown', function (event) {
         }
     }
 
-    if($('#formCentro\\:tela-pagamento').css('display') == 'block'){
-        if(event.which == 116){
-           var formarPagamento =  $('#formCentro\\:PedidoFormaPagamentoId');
-           var opcao = $('#formCentro\\:PedidoFormaPagamentoId > option:selected');
-           var primeiroRegistro = 1;
-           var proximoRegistro;
+    if ($('#formCentro\\:tela-pagamento').css('display') == 'block') {
+        if (event.which == 116) {
+            var formarPagamento = $('#formCentro\\:PedidoFormaPagamentoId');
+            var opcao = $('#formCentro\\:PedidoFormaPagamentoId > option:selected');
+            var primeiroRegistro = 1;
+            var proximoRegistro;
 
-           proximoRegistro = opcao.next().val();
-           if(proximoRegistro){
-               formarPagamento.focus().select().val(proximoRegistro).change();
-           }else{
-               formarPagamento.focus().select().val(primeiroRegistro).change();
-           }
+            proximoRegistro = opcao.next().val();
+            if (proximoRegistro) {
+                formarPagamento.focus().select().val(proximoRegistro).change();
+            } else {
+                formarPagamento.focus().select().val(primeiroRegistro).change();
+            }
 
             return false;
         }
@@ -120,10 +120,26 @@ $(document).bind('keydown', function (event) {
     }
 
 
-
-
 });
 $(document).ready(function () {
     //$('.navbar-minimalize').trigger('click');
     $('.inputs input').addClass('quantidade col-sm-12 col-md-12 col-lg-12 form-control-table');
 });
+
+
+function loadLocalStorage() {
+    var tipoPesquisa = localStorage.getItem("tipoPesquiaPDV");
+    tipoPesquisa = tipoPesquisa ? +tipoPesquisa : 1;
+    // var input = tipoPesquisa === 1 ? $('#formCentro\\:tipo-pesquisa\\:0') : $('#formCentro\\:tipo-pesquisa\\:1');
+    // input.val(tipoPesquisa)
+    // var radio = input.parent().parent().children(".ui-radiobutton-box");
+    // radio.trigger("click.selectOneRadio");
+    definirTipoPesquisa([{name: 'tipoPesquiaPDV', value: tipoPesquisa}])
+}
+
+
+function setLocalStorage(tipoPesquisa) {
+
+    localStorage.setItem("tipoPesquiaPDV", tipoPesquisa);
+}
+

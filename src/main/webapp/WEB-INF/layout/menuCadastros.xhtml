@@ -136,15 +136,18 @@
                              exibir="#{seguranca.isTemAcesso('TABELA_NUTRICIONAL')}"
                              funcao="tabelaNutricional"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/produto/atributos"
-                             label="Atributos"
-                             exibir="#{seguranca.isTemAcesso('PRODUTO_ATRIBUTO')}"
-                             funcao="atributos"/>
 
-                <erp:subMenu caminho="/modulo/cadastros/produto/grades"
-                             label="Grade"
-                             exibir="#{seguranca.isTemAcesso('PRODUTO_GRADE')}"
-                             funcao="grades"/>
+                <erp:subMenu caminho="/modulo/cadastros/produto/cor"
+                             label="Cor"
+                             exibir="#{seguranca.isTemAcesso('ESTQQUE_COR')}"
+                             funcao="cor"/>
+
+
+                <erp:subMenu caminho="/modulo/cadastros/produto/tamanho"
+                             label="Tamanho"
+                             exibir="#{seguranca.isTemAcesso('ESTQQUE_TAMANHO')}"
+                             funcao="tamanho"/>
+
 
                 <erp:subMenu caminho="/modulo/cadastros/produto/produtos"
                              label="Produto"
@@ -233,6 +236,10 @@
                              exibir="#{seguranca.isTemAcesso('VENDEDOR')}"
                              funcao="vendedores"/>
 
+                <erp:subMenu caminho="/modulo/cadastros/administrativo/tecnicos"
+                             label="Tecnicos"
+                             exibir="#{seguranca.isTemAcesso('TECNICO')}"
+                             funcao="tecnicos"/>
 
                 <erp:subMenu caminho="/modulo/cadastros/administrativo/papel"
                              label="Papel"

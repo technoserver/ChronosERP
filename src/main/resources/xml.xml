@@ -2,21 +2,22 @@
     <idLote>1</idLote>
     <indSinc>1</indSinc>
     <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe53190716925371000114650010000007521354689043">
+        <infNFe versao="4.00" Id="NFe53190916925371000114550100000003291524163938">
             <ide>
                 <cUF>53</cUF>
-                <cNF>35468904</cNF>
-                <natOp>VENDA</natOp>
-                <mod>65</mod>
-                <serie>1</serie>
-                <nNF>752</nNF>
-                <dhEmi>2019-07-07T17:41:59-03:00</dhEmi>
+                <cNF>52416393</cNF>
+                <natOp>VENDA A CONSUMIDOR FINAL</natOp>
+                <mod>55</mod>
+                <serie>10</serie>
+                <nNF>329</nNF>
+                <dhEmi>2019-09-25T15:30:01-03:00</dhEmi>
+                <dhSaiEnt>2019-09-25T15:30:01-03:00</dhSaiEnt>
                 <tpNF>1</tpNF>
                 <idDest>1</idDest>
                 <cMunFG>5300108</cMunFG>
-                <tpImp>4</tpImp>
+                <tpImp>1</tpImp>
                 <tpEmis>1</tpEmis>
-                <cDV>3</cDV>
+                <cDV>8</cDV>
                 <tpAmb>2</tpAmb>
                 <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
@@ -38,31 +39,45 @@
                     <CEP>49500970</CEP>
                     <cPais>1058</cPais>
                     <xPais>BRASIL</xPais>
-                    <fone>7934311020</fone>
                 </enderEmit>
                 <IE>0762315200183</IE>
-                <IM>12345678</IM>
                 <CRT>1</CRT>
             </emit>
+            <dest>
+                <CPF>23117815880</CPF>
+                <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
+                <enderDest>
+                    <xLgr>LOGRADOURO</xLgr>
+                    <nro>1020</nro>
+                    <xBairro>CENTRO</xBairro>
+                    <cMun>5300108</cMun>
+                    <xMun>BRASILIA</xMun>
+                    <UF>DF</UF>
+                    <CEP>99999999</CEP>
+                    <cPais>1058</cPais>
+                    <xPais>Brazil</xPais>
+                </enderDest>
+                <indIEDest>9</indIEDest>
+            </dest>
             <det nItem="1">
                 <prod>
                     <cProd>1</cProd>
-                    <cEAN>12345670</cEAN>
+                    <cEAN>SEM GTIN</cEAN>
                     <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
-                    <NCM>01022911</NCM>
+                    <NCM>01042090</NCM>
                     <CFOP>5102</CFOP>
                     <uCom>UN</uCom>
                     <qCom>1.0000</qCom>
-                    <vUnCom>15.000000</vUnCom>
-                    <vProd>15.00</vProd>
-                    <cEANTrib>12345670</cEANTrib>
+                    <vUnCom>10</vUnCom>
+                    <vProd>10.00</vProd>
+                    <cEANTrib>SEM GTIN</cEANTrib>
                     <uTrib>UN</uTrib>
                     <qTrib>1.0000</qTrib>
-                    <vUnTrib>15.000000</vUnTrib>
+                    <vUnTrib>10</vUnTrib>
                     <indTot>1</indTot>
                 </prod>
                 <imposto>
-                    <vTotTrib>3.33</vTotTrib>
+                    <vTotTrib>2.22</vTotTrib>
                     <ICMS>
                         <ICMSSN102>
                             <orig>0</orig>
@@ -72,17 +87,17 @@
                     <PIS>
                         <PISAliq>
                             <CST>01</CST>
-                            <vBC>15.00</vBC>
+                            <vBC>10.00</vBC>
                             <pPIS>1.65</pPIS>
-                            <vPIS>0.24</vPIS>
+                            <vPIS>0.16</vPIS>
                         </PISAliq>
                     </PIS>
                     <COFINS>
                         <COFINSAliq>
                             <CST>01</CST>
-                            <vBC>15.00</vBC>
+                            <vBC>10.00</vBC>
                             <pCOFINS>3.00</pCOFINS>
-                            <vCOFINS>0.45</vCOFINS>
+                            <vCOFINS>0.30</vCOFINS>
                         </COFINSAliq>
                     </COFINS>
                 </imposto>
@@ -97,53 +112,48 @@
                     <vST>0.00</vST>
                     <vFCPST>0.00</vFCPST>
                     <vFCPSTRet>0.00</vFCPSTRet>
-                    <vProd>15.00</vProd>
+                    <vProd>10.00</vProd>
                     <vFrete>0.00</vFrete>
                     <vSeg>0.00</vSeg>
                     <vDesc>0.00</vDesc>
                     <vII>0.00</vII>
                     <vIPI>0.00</vIPI>
                     <vIPIDevol>0.00</vIPIDevol>
-                    <vPIS>0.24</vPIS>
-                    <vCOFINS>0.45</vCOFINS>
+                    <vPIS>0.16</vPIS>
+                    <vCOFINS>0.30</vCOFINS>
                     <vOutro>0.00</vOutro>
-                    <vNF>15.00</vNF>
-                    <vTotTrib>3.33</vTotTrib>
+                    <vNF>10.00</vNF>
+                    <vTotTrib>2.22</vTotTrib>
                 </ICMSTot>
             </total>
             <transp>
-                <modFrete>9</modFrete>
+                <modFrete>0</modFrete>
             </transp>
             <pag>
                 <detPag>
                     <tPag>01</tPag>
-                    <vPag>15.00</vPag>
+                    <vPag>10.00</vPag>
                 </detPag>
             </pag>
             <infAdic>
-                <infCpl>Trib. Aprox. Federal R$ 0,63 e R$ 2,70 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
+                <infCpl>Trib. Aprox. Federal R$ 0,42 e R$ 1,80 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
             </infAdic>
         </infNFe>
-        <infNFeSupl>
-            <qrCode>
-                <![CDATA[http://dec.fazenda.df.gov.br/ConsultarNFCe.aspx?p=53190716925371000114650010000007521354689043|2|2|1|C95B8247DD4C3C9E71EB5B9E641EB1996C13E3B3]]></qrCode>
-            <urlChave>http://dec.fazenda.df.gov.br/ConsultarNFCe.aspx</urlChave>
-        </infNFeSupl>
         <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53190716925371000114650010000007521354689043">
+                <Reference URI="#NFe53190916925371000114550100000003291524163938">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>+4DrGvXOcYKyKHoIPByIlP0gGhk=</DigestValue>
+                    <DigestValue>m/gKXcxnCLM4tbatZwWSYOg2720=</DigestValue>
                 </Reference>
             </SignedInfo>
             <SignatureValue>
-                gsCqgqJ0ao5CNZKyRDSEtQoun/49ljorD0+wPB87nuWlaYRUGKEaTyo/sFLNrb4WmJTlft8IUWD4jsfyqIjhhe9e8xmA8T1J9o5seG8aly2a9EhCV8HQXd3MNKZRdT58M9O3uxd7TPMeRYdZJhTEj1Liam88OmBzmoHRlonl4HMyi44ZkWzaTtXL10XTVB5U0081oIL70Lq1/mOPTcrGgeFmqrPr32IZRhiD++5YmQJesWdVJNM4gneM9LnVpJgXeaMA6HwprjZ6SK9eccpIX7Zvn1ufSFUK/PX5L4bWG79p1CfZfjIfxNCJi+iQOFUqzMJIG9ZwCP6kdJWYJwUPew==
+                CdqjgxC/K8F65BP9QkdG3EYvPVkBxhGbFytgGIbqPHBXIktJ8XN2E0i1ZZrhNTPIvB/FI/CSZ/cwfdgBGC9BQi2qmHFiBdlZqoFS0k/cc9vTSY9haLPszvw7UuDZdotzofxBfNsLH6hYoKrBzzoFo6KChjZ92FjXO8xmxSt+6oaEQxLLOqWKYqN/KzmzMBgVKuhQpAglMjQV3oEyqP99Op/CYRSFRzPrV0xvquPdm8f/fFR7mlicrIUJ/IjCqWrmonmz/m3MNz0klwyLR5pb9yz+GrQhzvPCSMcZuzNJq1Ql9SO8gViIDkcStFzLxq3hDxSHJZIB5dTtwmNVP2ZDjA==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>

@@ -5,82 +5,75 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:c="http://java.sun.com/jsp/jstl/core">
+                xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:h="http://java.sun.com/jsf/html">
 
     <div class="row">
 
+
+
+
         <div class="col-xs-12 col-sm-4 col-md-4">
-            <p:outputLabel value="Os Status" for="osAberturaOsStatus"/>
+            <p:outputLabel value="Vendedor" for="vendedor"/>
             <br/>
-            <p:autoComplete id="osAberturaOsStatus"
-                            value="#{osAberturaControll.objeto.osStatus}"
-                            completeMethod="#{osAberturaControll.getListaOsStatus}"
-                            var="osStatus" itemLabel="#{osStatus.nome}"
-                            itemValue="#{osStatus}"
+            <p:autoComplete id="vendedor"
+                            value="#{osAberturaControll.objeto.vendedor}"
+                            completeMethod="#{osAberturaControll.getListaVendedor}"
+                            var="vendedor" itemLabel="#{vendedor.nome}"
+                            itemValue="#{vendedor}"
+                            converter="defaultConverter"
+                            forceSelection="true" minQueryLength="3" maxResults="10"
+                            required="true" style="width: 100%"
+                            emptyMessage="Nenhum registro encontrado"/>
+        </div>
+
+        <div class="col-xs-12 col-sm-4 col-md-4">
+            <p:outputLabel value="Tecnico" for="tecnico"/>
+            <br/>
+            <p:autoComplete id="tecnico"
+                            value="#{osAberturaControll.objeto.tecnico}"
+                            completeMethod="#{osAberturaControll.getListaTecnico}"
+                            var="tecnico" itemLabel="#{tecnico.nome}"
+                            itemValue="#{tecnico}"
                             converter="defaultConverter"
                             forceSelection="true" minQueryLength="3" maxResults="10"
                             required="true" style="width: 100%"
                             emptyMessage="Nenhum registro encontrado"/>
         </div>
         <div class="col-xs-12 col-sm-4 col-md-4">
-            <p:outputLabel value="Colaborador" for="osAberturaColaborador"/>
-            <br/>
-            <p:autoComplete id="osAberturaColaborador"
-                            value="#{osAberturaControll.objeto.colaborador}"
-                            completeMethod="#{osAberturaControll.getListaColaborador}"
-                            var="colaborador" itemLabel="#{colaborador.pessoa.nome}"
-                            itemValue="#{colaborador}"
-                            converter="defaultConverter"
-                            forceSelection="true" minQueryLength="3" maxResults="10"
-                            required="true" style="width: 100%"
-                            emptyMessage="Nenhum registro encontrado"/>
+
+            <p:outputLabel value="Cliente" for="cliente"/>
+            <div class="field-action">
+                <p:autoComplete id="cliente"
+                                value="#{osAberturaControll.objeto.cliente}"
+                                completeMethod="#{osAberturaControll.getListaCliente}"
+                                var="objeto" itemLabel="#{objeto.pessoa.nome}" itemValue="#{objeto}"
+                                queryDelay="500"
+                                style="width: 100%"
+                                converter="defaultConverter" forceSelection="true"
+                                minQueryLength="3" maxResults="10" required="true"
+                                emptyMessage="Nenhum registro encontrado">
+                </p:autoComplete>
+                <div class="field-action__icon">
+                    <p:commandLink title="Add novo cliente" style="font-size: 20px;color: #00acac"
+                                   action="#{cadastroRapidoClienteControll.abrirDialog}"
+                                   process="@this" update="@none"
+                    >
+                        <p:ajax event="dialogReturn" listener="#{osAberturaControll.clienteSelecionado}"
+                                process="@this" update="cliente"/>
+                        <i class="fa fa-plus-circle"></i>
+                    </p:commandLink>
+                </div>
+
+
+            </div>
+
+
         </div>
-        <div class="col-xs-12 col-sm-4 col-md-4">
-            <p:outputLabel value="Cliente" for="osAberturaCliente"/>
-            <br/>
-            <p:autoComplete id="osAberturaCliente"
-                            value="#{osAberturaControll.objeto.cliente}"
-                            completeMethod="#{osAberturaControll.getListaCliente}"
-                            var="cliente" itemLabel="#{cliente.pessoa.nome}"
-                            itemValue="#{cliente}"
-                            converter="defaultConverter"
-                            forceSelection="true" minQueryLength="3" maxResults="10"
-                            required="true" style="width: 100%"
-                            emptyMessage="Nenhum registro encontrado"/>
-        </div>
+
     </div>
     <div class="row">
-        <div class="col-xs-12 col-sm-4 col-md-4">
-            <p:outputLabel value="Condições Pagamento"
-                           for="condicoesPagamento"/>
-            <br/>
-            <p:autoComplete id="condicoesPagamento"
-                            value="#{osAberturaControll.objeto.condicoesPagamento}"
-                            completeMethod="#{osAberturaControll.getListaVendaCondicoesPagamento}"
-                            var="condicoesPagamento"
-                            itemLabel="#{condicoesPagamento.nome}"
-                            itemValue="#{condicoesPagamento}"
-                            converter="defaultConverter" forceSelection="true"
-                            minQueryLength="3" maxResults="10" required="true"
-                            style="width: 100%" emptyMessage="Nenhum registro encontrado"/>
-        </div>
-        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                        idComponente="osAberturaNumero" label="Numero"
-                        nomeAtributo="#{osAberturaControll.objeto.numero}"
-                        tamanhoMaximo="20"
-                        desabilitado="true"/>
 
 
-        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                        idComponente="osAberturaFoneContato" label="Fone Contato"
-                        nomeAtributo="#{osAberturaControll.objeto.foneContato}"
-                        tamanhoMaximo="15"/>
-        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-4"
-                        idComponente="osAberturaNomeContato" label="Nome Contato"
-                        nomeAtributo="#{osAberturaControll.objeto.nomeContato}"
-                        tamanhoMaximo="50"/>
-    </div>
-    <div class="row">
         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                        idComponente="osAberturaDataInicio" label="Data Inicio"
                        nomeAtributo="#{osAberturaControll.objeto.dataInicio}"/>
@@ -95,6 +88,72 @@
                           styleClass="col-xs-12 col-sm-2 col-md-2"
                           idComponente="osAberturaHoraPrevisao" label="Hora Previsao"
                           nomeAtributo="#{osAberturaControll.objeto.horaPrevisao}"/>
+
+
+        <div class="col-xs-12 col-sm-4 col-md-4">
+            <p:outputLabel value="Desonto total"
+                           for="valorTotalDesconto"/>
+
+            <h:panelGroup layout="block" id="panel-desconto" class="field-action">
+                <p:inputNumber id="valorTotalDesconto"
+                               value="#{osAberturaControll.objeto.valorTotalDesconto}"
+                               style="width: 100%;"
+                               disabled="true"
+                               readonly="true"
+                               decimalPlaces="2"
+
+                />
+                <div class="field-action__icon">
+                    <div style="display: flex">
+                        <p:commandLink style="font-size: 20px;color: #00acac"
+                                       rendered="#{osAberturaControll.objeto.valorTotal.signum() gt 0 }"
+                                       update=":formOutrasTelas5:panelOutrasTelas5"
+                                       oncomplete="PF('dialogOutrasTelas5').show()"
+                        >
+                            <i class="fa fa-plus-circle"></i>
+                        </p:commandLink>
+
+                        <p:commandLink style="margin-left:5px;font-size: 20px;color: #00acac"
+                                       action="#{osAberturaControll.removerDesconto}"
+                                       process="@this"
+                                       update=":formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:panel-desconto,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico"
+                                       rendered="#{osAberturaControll.objeto.valorTotalDesconto.signum() gt 0 }">
+                            <i class="fa fa-minus-circle"></i>
+                        </p:commandLink>
+                    </div>
+
+                </div>
+            </h:panelGroup>
+
+        </div>
+
+
+    </div>
+    <div class="row">
+
+
+        <erp:campoSelect styleClass="col-xs-12 col-sm-4 col-md-4"
+                         idComponente="status"
+                         nomeAtributo="#{osAberturaControll.objeto.status}"
+                         label="Status" itens="#{osAberturaControll.status}"/>
+        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                        idComponente="osAberturaNumero" label="Numero"
+                        nomeAtributo="#{osAberturaControll.objeto.numero}"
+                        tamanhoMaximo="20"
+                        desabilitado="true"/>
+
+
+        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                        idComponente="osAberturaFoneContato" label="Fone Contato"
+                        nomeAtributo="#{osAberturaControll.objeto.foneContato}"
+                        tamanhoMaximo="15"/>
+
+        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-4"
+                        idComponente="osAberturaNomeContato" label="Nome Contato"
+                        nomeAtributo="#{osAberturaControll.objeto.nomeContato}"
+                        tamanhoMaximo="50"/>
+    </div>
+    <div class="row">
 
 
     </div>
@@ -124,20 +183,21 @@
                                  rendered="#{empty osAberturaControll.objeto.id}">
 
                 </p:commandButton>
-                <c:if test="#{osAberturaControll.temProduto and !osAberturaControll.objeto.emitidoOrFaturado}">
+                <c:if test="#{not empty osAberturaControll.objeto.id and !(osAberturaControll.objeto.status eq '12' or osAberturaControll.objeto.status eq '13')}">
                     <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar()}" icon="ui-icon-disk">
                         <p:menuitem value="Encerrar" actionListener="#{osAberturaControll.encerrar}"
+                                    update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     icon="ui-icon-arrowrefresh-1-w"/>
                         <p:menuitem value="Faturar - NFe"
-                                    actionListener="#{osAberturaControll.faturar('55')}"
-                        />
+                                    update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                    action="#{osAberturaControll.faturar('55')}"/>
                         <p:menuitem value="Faturar - NFCe"
-                                    actionListener="#{osAberturaControll.faturar('65')}"
-                        />
+                                    update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                    action="#{osAberturaControll.faturar('65')}"/>
                     </p:splitButton>
                 </c:if>
             </div>
-            <div class="#{osAberturaControll.objeto.emitidoOrFaturado?'col-xs-12 col-sm-12 col-md-12':'col-xs-6 col-sm-6 col-md-6'} text-center">
+            <div class="#{(osAberturaControll.objeto.status eq 12 or osAberturaControll.objeto.status eq 13)? 'col-xs-12 col-sm-12 col-md-12':'col-xs-6 col-sm-6 col-md-6'} text-center">
                 <p:commandButton value="Cancelar" styleClass="default-btn"
                                  immediate="true"
                                  action="#{osAberturaControll.voltar}"

@@ -10,7 +10,7 @@
 
 <!-- INTERFACE -->
 <cc:interface>
-    <cc:attribute name="controller" type="com.chronos.controll.cadastros.PessoaControll" required="true"/>
+    <cc:attribute name="controller" type="com.chronos.erp.controll.cadastros.PessoaControll" required="true"/>
 </cc:interface>
 <cc:implementation>
     <p:tabView id="telaCadastroPessoa" activeIndex="#{cc.attrs.controller.activeTabIndex}">
@@ -59,7 +59,7 @@
 
 
                 <h:panelGroup layout="block" class="col-xs-12 col-sm-2 col-md-2"
-                              rendered="#{cc.attrs.controller.objeto.pessoa.colaborador eq 'N'}">
+                              rendered="#{cc.attrs.controller.objeto.pessoa.colaborador eq 'N' and empty cc.attrs.controller.objeto.pessoa.id }">
                     <h:outputLabel value="Tipo"
                                    for="pessoaTipo"/>
                     <h:selectOneMenu id="pessoaTipo"
@@ -86,7 +86,7 @@
                         <erp:campoCpf styleClass="col-xs-12 col-sm-2 col-md-2"
                                       idComponente="pessoaFisicaCpf" label="CPF"
                                       nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.cpf}"
-                                      requerido="true"
+
                         />
 
                         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -117,14 +117,13 @@
                                         nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.orgaoRg}"
                                         tamanhoMaximo="20"
                                         exibir="#{cc.attrs.controller.tela eq 'C'}"/>
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          label="Estado Civil"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{cc.attrs.controller}"
-                                          completeMethod="getListaEstadoCivil"
-                                          nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.estadoCivil}"
-                                          idComponente="pessoaFisicaEstadoCivil"
-                                          rendered="#{cc.attrs.controller.tela eq 'CL'}"/>
+                        <erp:campoSelectConverter styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                  label="Estado Civil"
+                                                  itens="#{cc.attrs.controller.listEstadoCivil}"
+                                                  labelItens="#{obj.nome}"
+                                                  nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaFisica.estadoCivil}"
+                                                  idComponente="pessoaFisicaEstadoCivil"
+                                                  rendered="#{cc.attrs.controller.tela eq 'CL'}"/>
                     </div>
 
 
@@ -344,6 +343,12 @@
                                    idComponente="pessoaEnderecoFone" label="Fone"
                                    nomeAtributo="#{cc.attrs.controller.endereco.fone}"
                                    tamanhoMaximo="14"/>
+            </div>
+            <div class="row">
+                <erp:campoAreaTexto label="Observação"
+                                    idComponente="observacao"
+                                    nomeAtributo="#{cc.attrs.controller.objeto.pessoa.observacao}"
+                                    styleClass="col-xs-12"/>
             </div>
         </p:tab>
 

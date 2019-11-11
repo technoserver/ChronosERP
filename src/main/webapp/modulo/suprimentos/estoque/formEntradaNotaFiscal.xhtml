@@ -174,8 +174,7 @@
         </p:tab>
 
 
-
-        <p:tab title="Produtos/Serviços">
+        <p:tab title="Produtos/Serviços" id="tabProdutos">
             <div class="row">
                 <div class="col-lg-12">
                     <h:commandLink title="Novo"
@@ -223,8 +222,7 @@
                         <f:convertNumber pattern="#,###,##0.00" />
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="Ações" width="120" rendered="#{empty entradaNotaFiscalControll.objeto.id}"
-                          styleClass="text-center">
+                <p:column headerText="Ações" width="120" styleClass="text-center">
                     <p:commandLink process="dataTableNfeDetalhe" title="Alterar" style="margin-right: 5px"
                                    id="btnAlterarProduto"
                                    oncomplete="PF('dialogNfeDetalhe').show()" styleClass="btn btn-default"
@@ -255,6 +253,17 @@
                                    rendered="#{ empty obj.produto.id}">
                         <i class="glyphicon glyphicon-check"></i>
                         <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                    </p:commandLink>
+
+                    <p:commandLink process="formCentro:tabNfe:tabProdutos" title="Desvincular Produto"
+                                   id="btnDisvincularProduto"
+                                   styleClass="btn btn-default"
+                                   action="#{entradaNotaFiscalControll.disvincularProduto}"
+                                   update=":formCentro:tabNfe:tabProdutos,:formCentro:mensagem"
+                                   rendered="#{ not empty obj.produto.id and obj.produtoCadastrado and empty entradaNotaFiscalControll.objeto.id and entradaNotaFiscalControll.importado}">
+                        <i class="fa fa-chain-broken"></i>
+                        <f:setPropertyActionListener value="#{obj}"
+                                                     target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
                     </p:commandLink>
 
                     <p:commandLink process="dataTableNfeDetalhe" title="Cadastrar Produto"

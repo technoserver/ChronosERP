@@ -9,7 +9,7 @@
     <h:head>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <title>ChronosERP -
             <ui:insert name="title"></ui:insert>
@@ -91,7 +91,7 @@
                         </p:confirmDialog>
                         <p:growl id="growl" life="3000" sticky="true"  />
                         <ui:insert name="telaVazia"/>
-                        <div class="ibox float-e-margins" id="box-principal">
+                        <div class="ibox float-e-margins not-show" id="box-principal">
 
                             <h:panelGroup layout="block" class="ibox-title" id="mensagem">
                                 <h5><ui:insert name="tela"></ui:insert></h5>
