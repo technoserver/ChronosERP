@@ -234,25 +234,22 @@
                 </div>
                 <div class="ibox-footer">
                     <div class="row">
-                        <div class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
+                        <div class="col-xs-6 col-lg-6 text-center">
+
+                            <p:commandButton value="Cadastrar"
                                              actionListener="#{produtoControll.doCreate()}"
                                              disabled="#{!produtoControll.podeInserir()}"
+                                             process="@form"
+                                             oncomplete="addClass()"
+                                             update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
 
-                            >
-                                <p:ajax process="@form"
-                                        oncomplete="addClass()"
-                                        update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
-                            </h:commandButton>
+                            />
+
                         </div>
                         <div class="col-xs-6 col-lg-6">
-                            <p:commandButton value="Cancelar" class="btn btn-default center-block"
-                                             action="#{produtoControll.doIndex()}" immediate="true"/>:
-
-
-
-
-
+                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
+                                             action="#{produtoControll.doIndex()}" immediate="true"
+                            />
                         </div>
 
                     </div>

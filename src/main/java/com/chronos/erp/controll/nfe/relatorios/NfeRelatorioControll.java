@@ -71,6 +71,8 @@ public class NfeRelatorioControll extends AbstractRelatorioControll implements S
         try {
             List<NfeCabecalho> nfes;
             List<Filtro> filtros = new LinkedList<>();
+            periodo = periodo == null ? new Date() : periodo;
+            dataFinal = dataFinal == null ? new Date() : dataFinal;
             String nomeArquivo = empresa.getCnpj() + new SimpleDateFormat("_MM_yyyy").format(periodo);
             filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MAIOR_OU_IGUAL, periodo));
             filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MENOR_OU_IGUAL,

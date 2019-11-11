@@ -449,7 +449,9 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     public void gerarDulicatas() {
 
         try {
-            condicoesPagamento = condicoes.getJoinFetch(condicoesPagamento.getId(), VendaCondicoesPagamento.class);
+            condicoesPagamento = condicoesPagamento != null
+                    ? condicoes.getJoinFetch(condicoesPagamento.getId(), VendaCondicoesPagamento.class)
+                    : null;
             nfeService.gerarDuplicatas(getObjeto(), condicoesPagamento, primeiroVencimento, intervaloParcelas, qtdParcelas);
             Mensagem.addInfoMessage("Duplicatas geradas com sucesso");
         } catch (Exception e) {
@@ -458,6 +460,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         }
 
 
+    }
+
+    public void apagarDuplicatas() {
+        getObjeto().setListaDuplicata(new HashSet<>());
     }
 
     // </editor-fold>

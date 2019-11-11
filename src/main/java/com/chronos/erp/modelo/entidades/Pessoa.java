@@ -40,6 +40,7 @@ public class Pessoa implements Serializable {
     private String colaborador;
     @Column(name = "TRANSPORTADORA")
     private String transportadora;
+    private String observacao;
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "pessoa", cascade = CascadeType.ALL)
     private PessoaFisica pessoaFisica;
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "pessoa", cascade = CascadeType.ALL)
@@ -166,6 +167,14 @@ public class Pessoa implements Serializable {
 
     public String getTransportadora() {
         return transportadora;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 
     public void setTransportadora(String transportadora) {
