@@ -1,5 +1,5 @@
 
-package com.chronos.modelo.entidades;
+package com.chronos.erp.modelo.entidades;
 
 import org.hibernate.validator.constraints.NotBlank;
 

@@ -1,4 +1,4 @@
-package com.chronos.modelo.entidades;
+package com.chronos.erp.modelo.entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;

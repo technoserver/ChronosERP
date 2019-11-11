@@ -1,6 +1,5 @@
 
-package com.chronos.modelo.entidades;
-
+package com.chronos.erp.modelo.entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,8 +7,8 @@ import java.util.Objects;
 
 
 @Entity
-@Table(name = "PCP_SERVICO_EQUIPAMENTO")
-public class PcpServicoEquipamento implements Serializable {
+@Table(name = "PCP_INSTRUCAO_OP")
+public class PcpInstrucaoOp implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -17,14 +16,14 @@ public class PcpServicoEquipamento implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @JoinColumn(name = "ID_PCP_SERVICO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PCP_OP_CABECALHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private PcpServico pcpServico;
-    @JoinColumn(name = "ID_PATRIM_BEM", referencedColumnName = "ID")
+    private PcpOpCabecalho pcpOpCabecalho;
+    @JoinColumn(name = "ID_PCP_INSTRUCAO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private PatrimBem patrimBem;
+    private PcpInstrucao pcpInstrucao;
 
-    public PcpServicoEquipamento() {
+    public PcpInstrucaoOp() {
     }
 
     public Integer getId() {
@@ -35,26 +34,26 @@ public class PcpServicoEquipamento implements Serializable {
         this.id = id;
     }
 
-    public PcpServico getPcpServico() {
-        return pcpServico;
+    public PcpOpCabecalho getPcpOpCabecalho() {
+        return pcpOpCabecalho;
     }
 
-    public void setPcpServico(PcpServico pcpServico) {
-        this.pcpServico = pcpServico;
+    public void setPcpOpCabecalho(PcpOpCabecalho pcpOpCabecalho) {
+        this.pcpOpCabecalho = pcpOpCabecalho;
     }
 
-    public PatrimBem getPatrimBem() {
-        return patrimBem;
+    public PcpInstrucao getPcpInstrucao() {
+        return pcpInstrucao;
     }
 
-    public void setPatrimBem(PatrimBem patrimBem) {
-        this.patrimBem = patrimBem;
+    public void setPcpInstrucao(PcpInstrucao pcpInstrucao) {
+        this.pcpInstrucao = pcpInstrucao;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 67 * hash + Objects.hashCode(this.id);
+        hash = 61 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
@@ -69,7 +68,7 @@ public class PcpServicoEquipamento implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final PcpServicoEquipamento other = (PcpServicoEquipamento) obj;
+        final PcpInstrucaoOp other = (PcpInstrucaoOp) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }

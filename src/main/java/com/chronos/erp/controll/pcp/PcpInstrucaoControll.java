@@ -1,7 +1,7 @@
-package com.chronos.controll.pcp;
+package com.chronos.erp.controll.pcp;
 
-import com.chronos.controll.AbstractControll;
-import com.chronos.modelo.entidades.PcpInstrucao;
+import com.chronos.erp.controll.AbstractControll;
+import com.chronos.erp.modelo.entidades.PcpInstrucao;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
