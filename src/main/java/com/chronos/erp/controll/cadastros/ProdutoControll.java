@@ -8,10 +8,12 @@ package com.chronos.erp.controll.cadastros;
 import com.chronos.erp.controll.AbstractControll;
 import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.controll.cadastros.datamodel.ProdutoEmpresaDataModel;
+import com.chronos.erp.dto.MapNomeIdDTO;
 import com.chronos.erp.dto.ProdutoResumDTO;
 import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.modelo.view.ViewProdutoEmpresa;
 import com.chronos.erp.repository.Filtro;
+import com.chronos.erp.repository.ProdutoRepository;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.cadastros.ProdutoService;
@@ -33,9 +35,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author john
@@ -83,6 +83,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private Repository<PdvConfiguracaoBalanca> pdvConfiguracaoBalancaRepository;
     @Inject
     private Repository<ProdutoGrade> gradeRepository;
+    @Inject
+    private ProdutoRepository repository;
 
     @Inject
     private ProdutoService service;
@@ -132,6 +134,10 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private PdvConfiguracaoBalanca configuracaoBalanca;
 
     private List<PdvConfiguracaoBalanca> configuracoesBalanca;
+
+    private FichaTecnica fichaTecnica;
+    private FichaTecnica fichaTecnicaSelecionado;
+    private MapNomeIdDTO produtoFichaTecnica;
 
 
     @PostConstruct
@@ -213,9 +219,12 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         getObjeto().setPossuiGrade(false);
         getObjeto().setDataCadastro(new Date());
         getObjeto().setControle(BigDecimal.ZERO);
+        getObjeto().setListaFichaTecnica(new HashSet<>());
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
         grades = new ArrayList<>();
+        fichaTecnica = new FichaTecnica();
+        fichaTecnica.setProduto(getObjeto());
 
 
     }
@@ -223,6 +232,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Override
     public void doEdit() {
         super.doEdit();
+        fichaTecnica = new FichaTecnica();
+        fichaTecnica.setProduto(getObjeto());
         listaEmpresas = new ArrayList<>();
         Produto produto = dao.getJoinFetch(produtoSelecionado.getId(), Produto.class);
         setObjeto(produto);
@@ -337,6 +348,75 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
             e.printStackTrace();
         }
     }
+
+
+    public void incluirFichaTecnica() {
+        fichaTecnica = new FichaTecnica();
+        fichaTecnica.setProduto(getObjeto());
+    }
+
+    public void removerFichaTecnica() {
+
+        getObjeto().getListaFichaTecnica().remove(fichaTecnicaSelecionado);
+
+
+    }
+
+    public void salvarFichaTecnica() {
+        if (produtoFichaTecnica == null) {
+            Mensagem.addErrorMessage("Composição obrigatoria");
+            return;
+        }
+
+        if (fichaTecnica.getQuantidade() == null || fichaTecnica.getQuantidade().signum() <= 0) {
+            Mensagem.addErrorMessage("Quanidade obrigatoria");
+            return;
+        }
+
+        if (fichaTecnica.getSequenciaProducao() == null || fichaTecnica.getSequenciaProducao().equals(0)) {
+            Mensagem.addErrorMessage("Sequência obrigatoria");
+            return;
+        }
+
+        Optional<FichaTecnica> optionalFichaTecnica = getObjeto().getListaFichaTecnica()
+                .stream()
+                .filter(f -> f.getSequenciaProducao().equals(fichaTecnica.getSequenciaProducao()))
+                .findFirst();
+
+        if (optionalFichaTecnica.isPresent()) {
+            Mensagem.addErrorMessage("Sequência já definida");
+            return;
+        }
+
+        optionalFichaTecnica = getObjeto().getListaFichaTecnica()
+                .stream()
+                .filter(f -> f.getIdProdutoFilho().equals(produtoFichaTecnica.getId()))
+                .findFirst();
+
+        if (optionalFichaTecnica.isPresent()) {
+            Mensagem.addErrorMessage("Composição já definida");
+            return;
+        }
+
+        fichaTecnica.setDescricao(produtoFichaTecnica.getNome());
+        fichaTecnica.setIdProdutoFilho(produtoFichaTecnica.getId());
+
+
+        getObjeto().getListaFichaTecnica().add(fichaTecnica);
+        fichaTecnica = new FichaTecnica();
+        fichaTecnica.setProduto(getObjeto());
+    }
+
+    public List<MapNomeIdDTO> getListaProdutoComposicao(String nome) {
+        List<MapNomeIdDTO> listaProduto = new ArrayList<>();
+        try {
+            listaProduto = repository.getProdutoComposicao(nome, empresa.getId());
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaProduto;
+    }
+
 
     public List<ProdutoSubGrupo> getListaSubgrupo(String nome) {
         List<ProdutoSubGrupo> listaSubgrupo = new ArrayList<>();
@@ -907,5 +987,29 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public List<EstoqueGrade> getGrades() {
         return grades;
+    }
+
+    public FichaTecnica getFichaTecnica() {
+        return fichaTecnica;
+    }
+
+    public void setFichaTecnica(FichaTecnica fichaTecnica) {
+        this.fichaTecnica = fichaTecnica;
+    }
+
+    public FichaTecnica getFichaTecnicaSelecionado() {
+        return fichaTecnicaSelecionado;
+    }
+
+    public void setFichaTecnicaSelecionado(FichaTecnica fichaTecnicaSelecionado) {
+        this.fichaTecnicaSelecionado = fichaTecnicaSelecionado;
+    }
+
+    public MapNomeIdDTO getProdutoFichaTecnica() {
+        return produtoFichaTecnica;
+    }
+
+    public void setProdutoFichaTecnica(MapNomeIdDTO produtoFichaTecnica) {
+        this.produtoFichaTecnica = produtoFichaTecnica;
     }
 }
