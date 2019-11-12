@@ -10,61 +10,61 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <ui:define name="title">
-        #{vendaOrcamentoCabecalhoControll.tipo eq 'O'?'Orçamento':'PEDIDO'}
+        #{orcamentoCabecalhoControll.tipo eq 'O'?'Orçamento':'PEDIDO'}
     </ui:define>
 
     <ui:define name="tela">
-        #{vendaOrcamentoCabecalhoControll.titulo}
+        #{orcamentoCabecalhoControll.titulo}
     </ui:define>
     <ui:define name="controle">
-        #{vendaOrcamentoCabecalhoControll.tipo eq 'O'?'Orçamento':'PEDIDO'}
+        #{orcamentoCabecalhoControll.tipo eq 'O'?'Orçamento':'PEDIDO'}
     </ui:define>
 
 
     <ui:define name="metadata">
         <f:metadata>
-            <f:viewParam name="tipo" value="#{vendaOrcamentoCabecalhoControll.tipo}"/>
+            <f:viewParam name="tipo" value="#{orcamentoCabecalhoControll.tipo}"/>
         </f:metadata>
     </ui:define>
     <ui:define name="gridDados">
 
         <p:outputPanel id="outputPanelGrid">
-            <p:outputPanel rendered="#{vendaOrcamentoCabecalhoControll.telaGrid}">
+            <p:outputPanel rendered="#{orcamentoCabecalhoControll.telaGrid}">
                 <div class="ibox-content">
-                    <erp:msgPermissao permissao="#{vendaOrcamentoCabecalhoControll.podeConsultar()}"/>
+                    <erp:msgPermissao permissao="#{orcamentoCabecalhoControll.podeConsultar()}"/>
                     <div class="row m-b">
 
-                        <erp:campoData nomeAtributo="#{vendaOrcamentoCabecalhoControll.dataInicial}"
+                        <erp:campoData nomeAtributo="#{orcamentoCabecalhoControll.dataInicial}"
                                        label="Data inicial"
                                        idComponente="dataInicial"
                                        styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
-                        <erp:campoData nomeAtributo="#{vendaOrcamentoCabecalhoControll.dataFinal}"
+                        <erp:campoData nomeAtributo="#{orcamentoCabecalhoControll.dataFinal}"
                                        label="Data Final"
                                        idComponente="dataFinal"
                                        styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
-                        <erp:campoSelect itens="#{vendaOrcamentoCabecalhoControll.listaVendedor}"
+                        <erp:campoSelect itens="#{orcamentoCabecalhoControll.listaVendedor}"
                                          styleClass="col-xs-12 col-sm-4 col-md-4"
                                          idComponente="vendedor"
                                          label="Vendedor"
 
-                                         nomeAtributo="#{vendaOrcamentoCabecalhoControll.idvendedor}"/>
+                                         nomeAtributo="#{orcamentoCabecalhoControll.idvendedor}"/>
 
-                        <erp:campoSelect itens="#{vendaOrcamentoCabecalhoControll.situacoes}"
+                        <erp:campoSelect itens="#{orcamentoCabecalhoControll.situacoes}"
                                          styleClass="col-xs-12 col-sm-2 col-md-2"
                                          idComponente="status"
                                          label="Status"
 
-                                         nomeAtributo="#{vendaOrcamentoCabecalhoControll.status}"/>
+                                         nomeAtributo="#{orcamentoCabecalhoControll.status}"/>
 
-                        <erp:campoTexto nomeAtributo="#{vendaOrcamentoCabecalhoControll.codigo}"
+                        <erp:campoTexto nomeAtributo="#{orcamentoCabecalhoControll.codigo}"
                                         styleClass="col-xs-12 col-sm-2 col-md-2"
                                         idComponente="codigo"
                                         label="Código"
                                         tamanhoMaximo="12"/>
 
-                        <erp:campoTexto nomeAtributo="#{vendaOrcamentoCabecalhoControll.cliente}"
+                        <erp:campoTexto nomeAtributo="#{orcamentoCabecalhoControll.cliente}"
                                         styleClass="col-xs-12 col-sm-12 col-md-12"
                                         idComponente="cliente"
                                         label="Cliente"
@@ -74,7 +74,7 @@
 
                             <p:commandButton title="Pesquisar"
                                              value="Pesquisar"
-                                             action="#{vendaOrcamentoCabecalhoControll.pesquisar}"
+                                             action="#{orcamentoCabecalhoControll.pesquisar}"
                                              update="tableOrcamento"
                             >
 
@@ -84,10 +84,10 @@
 
                     </div>
                     <p:dataTable
-                            value="#{vendaOrcamentoCabecalhoControll.dataModel}"
+                            value="#{orcamentoCabecalhoControll.dataModel}"
                             var="row" id="tableOrcamento" paginator="true"
                             rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
-                            reflow="true" rendered="#{vendaOrcamentoCabecalhoControll.podeConsultar()}"
+                            reflow="true" rendered="#{orcamentoCabecalhoControll.podeConsultar()}"
                             lazy="true" sortBy="#{row.id}" sortOrder="descending">
 
 
@@ -112,21 +112,21 @@
                         </p:column>
                         <p:column headerText="Status" width="120" styleClass="text-center">
                             <h:outputLabel
-                                    value="#{vendaOrcamentoCabecalhoControll.keyFromValue(vendaOrcamentoCabecalhoControll.orcamentoSituacao,row.situacao)}"/>
+                                    value="#{orcamentoCabecalhoControll.keyFromValue(orcamentoCabecalhoControll.orcamentoSituacao,row.situacao)}"/>
                         </p:column>
                         <p:column headerText="Ações" width="170" class="text-center">
-                            <p:commandLink title="Alterar" action="#{vendaOrcamentoCabecalhoControll.doEdit()}"
+                            <p:commandLink title="Alterar" action="#{orcamentoCabecalhoControll.doEdit()}"
                                            class=" btn btn-default"
                                            oncomplete="addClass()"
                                            update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                                            rendered="#{row.situacao eq 'P'}">
                                 <i class="fa fa-file-text-o"></i>
                                 <f:setPropertyActionListener value="#{row}"
-                                                             target="#{vendaOrcamentoCabecalhoControll.objetoSelecionado}"/>
+                                                             target="#{orcamentoCabecalhoControll.objetoSelecionado}"/>
                             </p:commandLink>
 
                             &nbsp;
-                            <p:commandLink title="Excluir" action="#{vendaOrcamentoCabecalhoControll.remover()}"
+                            <p:commandLink title="Excluir" action="#{orcamentoCabecalhoControll.remover()}"
 
                                            update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
                                            process="tableOrcamento"
@@ -138,7 +138,7 @@
                                 <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
                                 <f:setPropertyActionListener value="#{row}"
-                                                             target="#{vendaOrcamentoCabecalhoControll.objetoSelecionado}"/>
+                                                             target="#{orcamentoCabecalhoControll.objetoSelecionado}"/>
                             </p:commandLink>
                             &nbsp;
                             <p:menuButton>
@@ -163,26 +163,26 @@
                                 <p:menuitem value="Aprovar e Gerar Pedido"
                                             update=":formCentro:growl,tableOrcamento"
                                             rendered="#{row.tipo eq 'O'}"
-                                            action="#{vendaOrcamentoCabecalhoControll.gerarPedido}">
+                                            action="#{orcamentoCabecalhoControll.gerarPedido}">
                                     <f:setPropertyActionListener value="#{row}"
-                                                                 target="#{vendaOrcamentoCabecalhoControll.objetoSelecionado}"/>
+                                                                 target="#{orcamentoCabecalhoControll.objetoSelecionado}"/>
                                 </p:menuitem>
 
                                 <p:menuitem value="Aprovar"
                                             update=":formCentro:growl,tableOrcamento"
                                             rendered="#{row.tipo eq 'P' and (row.situacao eq 'P') }"
-                                            action="#{vendaOrcamentoCabecalhoControll.aprovarPedido}">
+                                            action="#{orcamentoCabecalhoControll.aprovarPedido}">
                                     <f:setPropertyActionListener value="#{row}"
-                                                                 target="#{vendaOrcamentoCabecalhoControll.objetoSelecionado}"/>
+                                                                 target="#{orcamentoCabecalhoControll.objetoSelecionado}"/>
                                 </p:menuitem>
 
 
                                 <p:menuitem value="Faturar"
                                             update=":formCentro:growl,tableOrcamento"
                                             rendered="#{row.tipo eq 'P' and (row.situacao eq 'A') }"
-                                            action="#{vendaOrcamentoCabecalhoControll.gerarVenda}">
+                                            action="#{orcamentoCabecalhoControll.gerarVenda}">
                                     <f:setPropertyActionListener value="#{row}"
-                                                                 target="#{vendaOrcamentoCabecalhoControll.objetoSelecionado}"/>
+                                                                 target="#{orcamentoCabecalhoControll.objetoSelecionado}"/>
                                 </p:menuitem>
 
                             </p:menuButton>
@@ -198,8 +198,8 @@
                     <div class="row">
                         <div class="col-xs-6 col-lg-6">
                             <h:commandButton value="Cadastrar" class="btn btn-primary center-block"
-                                             actionListener="#{vendaOrcamentoCabecalhoControll.doCreate()}"
-                                             disabled="#{!vendaOrcamentoCabecalhoControll.podeInserir()}"
+                                             actionListener="#{orcamentoCabecalhoControll.doCreate()}"
+                                             disabled="#{!orcamentoCabecalhoControll.podeInserir()}"
                             >
                                 <p:ajax process="@form"
                                         oncomplete="addClass()"
@@ -208,7 +208,7 @@
                         </div>
                         <div class="col-xs-6 col-lg-6">
                             <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                                             action="#{vendaOrcamentoCabecalhoControll.doIndex()}" immediate="true"
+                                             action="#{orcamentoCabecalhoControll.doIndex()}" immediate="true"
                             />
 
                         </div>
@@ -228,7 +228,7 @@
     <ui:define name="telaInclusaoAlteracao">
 
         <h:panelGroup layout="block" id="outputPanelDetalhe">
-            <h:panelGroup layout="block" rendered="#{!vendaOrcamentoCabecalhoControll.telaGrid}">
+            <h:panelGroup layout="block" rendered="#{!orcamentoCabecalhoControll.telaGrid}">
 
                 <h:panelGroup layout="block" id="panelCentroDetalhe">
                     <div class="ibox-content">
@@ -244,7 +244,7 @@
                                                 <h3>R$
                                                     <span>
                                                         <h:outputText
-                                                                value="#{vendaOrcamentoCabecalhoControll.objeto.valorTotal}">
+                                                                value="#{orcamentoCabecalhoControll.objeto.valorTotal}">
                                                             <f:convertNumber pattern="#,##0.00"/>
                                                         </h:outputText>
                                                     </span>
@@ -264,7 +264,7 @@
                                                 <h3>R$
                                                     <span>
                                                         <h:outputText
-                                                                value="#{vendaOrcamentoCabecalhoControll.objeto.valorSubtotal}">
+                                                                value="#{orcamentoCabecalhoControll.objeto.valorSubtotal}">
                                                             <f:convertNumber pattern="#,##0.00"/>
                                                         </h:outputText>
                                                     </span>
@@ -288,24 +288,24 @@
                                                     R$
                                                     <span>
                                                             <h:outputText
-                                                                    value="#{vendaOrcamentoCabecalhoControll.objeto.valorDesconto}">
+                                                                    value="#{orcamentoCabecalhoControll.objeto.valorDesconto}">
                                                                 <f:convertNumber pattern="#,##0.00"/>
                                                             </h:outputText>
                                                         </span>
                                                     <p:commandLink styleClass="btn btn-link"
                                                                    title="Aplicar desconto no valor total"
                                                                    update=":formOutrasTelas2:panelOutrasTelas2"
-                                                                   disabled="#{vendaOrcamentoCabecalhoControll.objeto.valorTotal.signum() eq 0}"
+                                                                   disabled="#{orcamentoCabecalhoControll.objeto.valorTotal.signum() eq 0}"
                                                                    oncomplete="PF('dialogOutrasTelas2').show()">
                                                         <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
                                                     </p:commandLink>
 
                                                     <p:commandLink styleClass="btn btn-link"
                                                                    title="Remover Desconto"
-                                                                   action="#{vendaOrcamentoCabecalhoControll.removerDesconto}"
+                                                                   action="#{orcamentoCabecalhoControll.removerDesconto}"
                                                                    process="@this"
                                                                    update=":formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento"
-                                                                   rendered="#{vendaOrcamentoCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
+                                                                   rendered="#{orcamentoCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
                                                         <i class="fa fa-ban fa-2x" aria-hidden="true"></i>
                                                     </p:commandLink>
                                                 </h3>
@@ -328,8 +328,8 @@
                                         <p:outputLabel value="Cliente" for="cliente"/>
                                         <div class="field-action">
                                             <p:autoComplete id="cliente"
-                                                            value="#{vendaOrcamentoCabecalhoControll.objeto.cliente}"
-                                                            completeMethod="#{vendaOrcamentoCabecalhoControll.getListaCliente}"
+                                                            value="#{orcamentoCabecalhoControll.objeto.cliente}"
+                                                            completeMethod="#{orcamentoCabecalhoControll.getListaCliente}"
                                                             var="objeto" itemLabel="#{objeto.pessoa.nome}"
                                                             itemValue="#{objeto}"
                                                             queryDelay="500"
@@ -347,7 +347,7 @@
                                                                process="@this" update="@none"
                                                 >
                                                     <p:ajax event="dialogReturn"
-                                                            listener="#{vendaOrcamentoCabecalhoControll.clienteSelecionado}"
+                                                            listener="#{orcamentoCabecalhoControll.clienteSelecionado}"
                                                             process="@this" update="cliente"/>
                                                     <i class="fa fa-plus-circle"></i>
                                                 </p:commandLink>
@@ -361,21 +361,21 @@
                                     <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
                                                       label="Vendedor"
                                                       itemLabel="#{objeto.colaborador.pessoa.nome}"
-                                                      controller="#{vendaOrcamentoCabecalhoControll}"
+                                                      controller="#{orcamentoCabecalhoControll}"
                                                       completeMethod="getListaVendedor"
-                                                      nomeAtributo="#{vendaOrcamentoCabecalhoControll.objeto.vendedor}"
+                                                      nomeAtributo="#{orcamentoCabecalhoControll.objeto.vendedor}"
                                                       idComponente="vendaOrcamentoCabecalhoVendedor">
                                         <p:ajax event="itemSelecionado"
-                                                listener="#{vendaOrcamentoCabecalhoControll.definirTaxaComissao}"
+                                                listener="#{orcamentoCabecalhoControll.definirTaxaComissao}"
                                         />
                                     </erp:autoComplete>
 
                                     <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
                                                       label="Condicoes Pagamento"
                                                       itemLabel="#{objeto.nome}"
-                                                      controller="#{vendaOrcamentoCabecalhoControll}"
+                                                      controller="#{orcamentoCabecalhoControll}"
                                                       completeMethod="getListaVendaCondicoesPagamento"
-                                                      nomeAtributo="#{vendaOrcamentoCabecalhoControll.objeto.condicoesPagamento}"
+                                                      nomeAtributo="#{orcamentoCabecalhoControll.objeto.condicoesPagamento}"
                                                       idComponente="vendaOrcamentoCabecalhoVendaCondicoesPagamento"/>
 
 
@@ -384,19 +384,19 @@
                                     <erp:campoData label="Entrega em"
                                                    styleClass="col-xs-12 col-sm-2 col-md-2"
                                                    idComponente="dataEntrega"
-                                                   nomeAtributo="#{vendaOrcamentoCabecalhoControll.objeto.dataEntrega}"/>
+                                                   nomeAtributo="#{orcamentoCabecalhoControll.objeto.dataEntrega}"/>
                                 </div>
                                 <div class="row">
                                     <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
                                                         idComponente="vendaOrcamentoCabecalhoObservacao"
                                                         label="Observacao"
-                                                        nomeAtributo="#{vendaOrcamentoCabecalhoControll.objeto.observacao}"/>
+                                                        nomeAtributo="#{orcamentoCabecalhoControll.objeto.observacao}"/>
                                 </div>
                                 <erp:separador label="Produtos"/>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <h:commandLink title="Novo" class="btn btn-default"
-                                                       actionListener="#{vendaOrcamentoCabecalhoControll.incluirVendaOrcamentoDetalhe}"
+                                                       actionListener="#{orcamentoCabecalhoControll.incluirVendaOrcamentoDetalhe}"
                                                        type="button"
                                         >
                                             <i class="glyphicon glyphicon-plus"/>
@@ -407,7 +407,7 @@
                                     </div>
                                 </div>
                                 <p:dataTable id="dataTableVendaOrcamentoDetalhe" var="obj"
-                                             value="#{vendaOrcamentoCabecalhoControll.objeto.listaOrcamentoDetalhe}"
+                                             value="#{orcamentoCabecalhoControll.objeto.listaOrcamentoDetalhe}"
                                              paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
                                              reflow="true"
                                              rowKey="#{obj.id}" paginatorPosition="bottom">
@@ -445,19 +445,19 @@
                                         <p:commandLink title="Alterar"
                                                        process="dataTableVendaOrcamentoDetalhe"
                                                        id="btnAlterarProduto"
-                                                       action="#{vendaOrcamentoCabecalhoControll.alterarVendaOrcamentoDetalhe}"
+                                                       action="#{orcamentoCabecalhoControll.alterarVendaOrcamentoDetalhe}"
                                                        class=" btn btn-default"
                                                        oncomplete="PF('dialogVendaOrcamentoDetalhe').show()"
                                                        update=":formOutrasTelas:panelVendaOrcamentoDetalhe,dataTableVendaOrcamentoDetalhe"
                                         >
                                             <i class="fa fa-file-text-o"></i>
                                             <f:setPropertyActionListener value="#{obj}"
-                                                                         target="#{vendaOrcamentoCabecalhoControll.orcamentoDetalheSelecionado}"/>
+                                                                         target="#{orcamentoCabecalhoControll.orcamentoDetalheSelecionado}"/>
                                         </p:commandLink>
                                         &nbsp;
                                         <p:commandLink title="Excluir"
                                                        id="btnExluirProduto"
-                                                       action="#{vendaOrcamentoCabecalhoControll.excluirVendaOrcamentoDetalhe}"
+                                                       action="#{orcamentoCabecalhoControll.excluirVendaOrcamentoDetalhe}"
                                                        style="position: relative; right: 7px"
                                                        update=":formCentro:growl,dataTableVendaOrcamentoDetalhe,,:formCentro:panelValores"
                                                        process="dataTableVendaOrcamentoDetalhe"
@@ -468,7 +468,7 @@
                                             <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
                                             <f:setPropertyActionListener value="#{obj}"
-                                                                         target="#{vendaOrcamentoCabecalhoControll.orcamentoDetalheSelecionado}"/>
+                                                                         target="#{orcamentoCabecalhoControll.orcamentoDetalheSelecionado}"/>
                                         </p:commandLink>
                                     </p:column>
 
@@ -480,19 +480,19 @@
                     </div>
 
                     <div class="ibox-footer">
-                        <h:panelGroup layout="block" rendered="#{not empty vendaOrcamentoCabecalhoControll.objeto}">
+                        <h:panelGroup layout="block" rendered="#{not empty orcamentoCabecalhoControll.objeto}">
 
 
                             <div class="row">
                                 <div class="col-xs-6 col-lg-6 text-center">
                                     <h:panelGroup layout="block" class="btn-group"
-                                                  rendered="#{ vendaOrcamentoCabecalhoControll.objeto.situacao ne 'F' and not vendaOrcamentoCabecalhoControll.objeto.situacao ne 'C'}">
+                                                  rendered="#{ orcamentoCabecalhoControll.objeto.situacao ne 'F' and not orcamentoCabecalhoControll.objeto.situacao ne 'C'}">
 
                                         <p:commandButton value="Salvar"
                                                          id="btnSalvar"
-                                                         rendered="#{empty vendaOrcamentoCabecalhoControll.objeto.id}"
-                                                         action="#{vendaOrcamentoCabecalhoControll.salvar()}"
-                                                         disabled="#{!vendaOrcamentoCabecalhoControll.podeInserir()}"
+                                                         rendered="#{empty orcamentoCabecalhoControll.objeto.id}"
+                                                         action="#{orcamentoCabecalhoControll.salvar()}"
+                                                         disabled="#{!orcamentoCabecalhoControll.podeInserir()}"
                                                          process="@form"
                                                          oncomplete="addClass()"
                                                          update=":formCentro:growl,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
@@ -501,22 +501,22 @@
 
 
                                         <p:splitButton value="Salvar"
-                                                       rendered="#{not empty vendaOrcamentoCabecalhoControll.objeto.id and
-                                                       vendaOrcamentoCabecalhoControll.objeto.situacao ne 'F'}"
-                                                       actionListener="#{vendaOrcamentoCabecalhoControll.salvar}"
+                                                       rendered="#{not empty orcamentoCabecalhoControll.objeto.id and
+                                                       orcamentoCabecalhoControll.objeto.situacao ne 'F'}"
+                                                       actionListener="#{orcamentoCabecalhoControll.salvar}"
                                                        icon="ui-icon-disk">
 
                                             <p:menuitem value="Aprovar"
-                                                        actionListener="#{vendaOrcamentoCabecalhoControll.aprovarPedido}"
+                                                        actionListener="#{orcamentoCabecalhoControll.aprovarPedido}"
                                                         update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
-                                                        rendered="#{vendaOrcamentoCabecalhoControll.objeto.tipo eq 'P' and vendaOrcamentoCabecalhoControll.objeto.situacao eq 'P'}"
+                                                        rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'P' and orcamentoCabecalhoControll.objeto.situacao eq 'P'}"
                                                         icon="ui-icon-arrowrefresh-1-w"/>
 
                                             <p:menuitem value="Faturar"
-                                                        actionListener="#{vendaOrcamentoCabecalhoControll.gerarVenda}"
+                                                        actionListener="#{orcamentoCabecalhoControll.gerarVenda}"
                                                         update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
-                                                        rendered="#{vendaOrcamentoCabecalhoControll.objeto.tipo eq 'P' and (vendaOrcamentoCabecalhoControll.objeto.situacao eq 'A'
-                                                         or vendaOrcamentoCabecalhoControll.objeto.situacao eq 'P')}"
+                                                        rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'P' and (orcamentoCabecalhoControll.objeto.situacao eq 'A'
+                                                         or orcamentoCabecalhoControll.objeto.situacao eq 'P')}"
                                                         icon="ui-icon-arrowrefresh-1-w"/>
 
                                         </p:splitButton>
@@ -525,9 +525,9 @@
                                     </h:panelGroup>
 
                                 </div>
-                                <div class="#{vendaOrcamentoCabecalhoControll.objeto.situacao eq 'A'} ? 'col-xs-12 col-lg-12' : 'col-xs-6 col-lg-6'">
+                                <div class="#{orcamentoCabecalhoControll.objeto.situacao eq 'A'} ? 'col-xs-12 col-lg-12' : 'col-xs-6 col-lg-6'">
                                     <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
-                                                     actionListener="#{vendaOrcamentoCabecalhoControll.voltar()}"
+                                                     actionListener="#{orcamentoCabecalhoControll.voltar()}"
                                     >
                                         <p:ajax update=":formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid,navegacao,:formCentro:mensagem"
                                                 process="@this"/>
@@ -560,32 +560,32 @@
                         <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
                                           label="Produto"
                                           itemLabel="#{objeto.nome}"
-                                          controller="#{vendaOrcamentoCabecalhoControll}"
+                                          controller="#{orcamentoCabecalhoControll}"
                                           completeMethod="getListaProduto"
-                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.orcamentoDetalhe.produto}"
+                                          nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.produto}"
                                           idComponente="vendaOrcamentoDetalheProduto">
                             <p:ajax event="itemSelecionado" process="@this"
                                     update="formOutrasTelas:panelVendaOrcamentoDetalhe"
-                                    listener="#{vendaOrcamentoCabecalhoControll.definirValorVenda}"/>
+                                    listener="#{orcamentoCabecalhoControll.definirValorVenda}"/>
                         </erp:autoComplete>
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="vendaOrcamentoDetalheQuantidade" label="Quantidade"
                                           requerido="true"
-                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.orcamentoDetalhe.quantidade}"/>
+                                          nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.quantidade}"/>
 
 
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
                                           idComponente="valorUnitario"
-                                          desabilitado="#{!vendaOrcamentoCabecalhoControll.podeAlterarPreco}"
+                                          desabilitado="#{!orcamentoCabecalhoControll.podeAlterarPreco}"
                                           label="Valor"
-                                          nomeAtributo="#{vendaOrcamentoCabecalhoControll.orcamentoDetalhe.valorUnitario}"/>
+                                          nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.valorUnitario}"/>
 
                         <div class="col-xs-12 col-sm-2 col-md-2">
                             <p:outputLabel value="Desconto" for="desconto"/>
                             <div class="ui-inputgroup">
 
                                 <p:inputNumber id="desconto"
-                                               value="#{vendaOrcamentoCabecalhoControll.desconto}"
+                                               value="#{orcamentoCabecalhoControll.desconto}"
                                                required="true"
                                                style="width: 100%;"
                                                decimalPlaces="2"
@@ -593,10 +593,10 @@
 
 
                                 <p:commandButton id="btnTipoDesconto"
-                                                 action="#{vendaOrcamentoCabecalhoControll.alterarTipoDesconto}"
+                                                 action="#{orcamentoCabecalhoControll.alterarTipoDesconto}"
                                                  process="@this"
                                                  update="formOutrasTelas:btnTipoDesconto"
-                                                 value="#{vendaOrcamentoCabecalhoControll.tipoDesconto eq 0 ? '%' : 'R$' }"/>
+                                                 value="#{orcamentoCabecalhoControll.tipoDesconto eq 0 ? '%' : 'R$' }"/>
                             </div>
                         </div>
 
@@ -609,7 +609,7 @@
                         <div class="col-md-6 text-center">
                             <p:commandButton value="Salvar"
                                              id="btnSalvarProduto"
-                                             actionListener="#{vendaOrcamentoCabecalhoControll.salvarVendaOrcamentoDetalhe}"
+                                             actionListener="#{orcamentoCabecalhoControll.salvarVendaOrcamentoDetalhe}"
                                              update=":formOutrasTelas:panelVendaOrcamentoDetalhe,:formCentro:growl,:formCentro:panelValores,:formCentro:dataTableVendaOrcamentoDetalhe"
                                              oncomplete="if (!args.validationFailed) {PF('dialogVendaOrcamentoDetalhe').hide();}"/>
                         </div>
@@ -645,7 +645,7 @@
 
                         <div class="col-sm-3">
                             <h:selectOneMenu id="tipo-desconto" styleClass="form-control"
-                                             value="#{ vendaOrcamentoCabecalhoControll.tipoDesconto}">
+                                             value="#{ orcamentoCabecalhoControll.tipoDesconto}">
                                 <f:selectItem itemLabel="R$" itemValue="1"/>
                                 <f:selectItem itemLabel="%" itemValue="2"/>
                             </h:selectOneMenu>
@@ -653,7 +653,7 @@
 
                         <div class="col-sm-5">
                             <p:inputNumber id="valor-desconto" required="true"
-                                           value="#{ vendaOrcamentoCabecalhoControll.desconto}"/>
+                                           value="#{ orcamentoCabecalhoControll.desconto}"/>
                         </div>
                     </div>
 
@@ -667,7 +667,7 @@
                                              id="btnSalvarDesonto"
                                              update="panelOutrasTelas2,:formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
-                                             action="#{vendaOrcamentoCabecalhoControll.aplicarDesconto}"/>
+                                             action="#{orcamentoCabecalhoControll.aplicarDesconto}"/>
 
 
                         </div>

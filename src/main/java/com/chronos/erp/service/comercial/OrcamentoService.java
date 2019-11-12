@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-public class VendaOrcamentoService implements Serializable {
+public class OrcamentoService implements Serializable {
 
 
     private static final long serialVersionUID = 1L;
@@ -47,6 +47,7 @@ public class VendaOrcamentoService implements Serializable {
             }
             throw new ChronosException(mensagem);
         }
+
         Integer id = orcamento.getId();
         orcamento = repository.atualizar(orcamento);
 
@@ -63,6 +64,8 @@ public class VendaOrcamentoService implements Serializable {
 
     public void salvarItem(OrcamentoCabecalho orcamento, OrcamentoDetalhe item, BigDecimal desconto, int tipoDesconto) throws ChronosException {
 
+        item.calcularSubTotal();
+
         if (desconto != null && desconto.signum() > 0) {
             if (tipoDesconto == 0) {
                 BigDecimal valorDesconto = Biblioteca.calcularValorPercentual(item.getValorSubtotal(), desconto);
@@ -74,6 +77,8 @@ public class VendaOrcamentoService implements Serializable {
                 item.setTaxaDesconto(taxDesc);
             }
         }
+
+        item.calcularValorTotal();
 
         if (!orcamento.getListaOrcamentoDetalhe().contains(item)) {
             orcamento.getListaOrcamentoDetalhe().add(item);

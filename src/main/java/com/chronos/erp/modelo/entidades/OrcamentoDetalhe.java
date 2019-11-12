@@ -79,7 +79,6 @@ public class OrcamentoDetalhe implements Serializable {
     }
 
     public BigDecimal getValorSubtotal() {
-        valorSubtotal = getQuantidade().multiply(getValorUnitario());
         return valorSubtotal;
     }
 
@@ -105,7 +104,6 @@ public class OrcamentoDetalhe implements Serializable {
 
 
     public BigDecimal getValorTotal() {
-        valorTotal = getValorSubtotal().subtract(getValorDesconto());
         return valorTotal;
     }
 
@@ -127,6 +125,14 @@ public class OrcamentoDetalhe implements Serializable {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public void calcularSubTotal() {
+        valorSubtotal = getQuantidade().multiply(getValorUnitario());
+    }
+
+    public void calcularValorTotal() {
+        valorTotal = getValorSubtotal().subtract(getValorDesconto());
     }
 
     @Override
