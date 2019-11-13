@@ -86,6 +86,24 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoProdutos.pdf");
     }
 
+    public void executarRelatorioGrade() {
+
+
+        boolean estoqueVerificado = grupo.getId() == 999;
+
+        parametros = new HashMap<>();
+        parametros.put("produto", retornaValorPadrao(produto));
+        parametros.put("idsubgrupo", subGrupo);
+        parametros.put("inativo", StringUtils.isEmpty(inativo) ? null : inativo);
+        parametros.put("tipoProduto", StringUtils.isEmpty(tipoProduto) ? null : tipoProduto);
+        parametros.put("idempresa", empresa.getId());
+
+        String caminhoRelatorio = "/relatorios/cadastros";
+        String nomeRelatorio = "relacaoProdutosGrade.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoProdutosGrade.pdf");
+    }
+
     public List<ProdutoGrupo> getGrupos() {
         List<ProdutoGrupo> list = new LinkedList<>();
         try {
