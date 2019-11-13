@@ -52,7 +52,7 @@
      pessoa_endereco.fone AS pessoa_endereco_fone,
      pessoa_endereco.principal AS pessoa_endereco_principal,
      pessoa_colaborador.nome as vendedor,
-     (select sum(quantidade) from venda_orcamento_detalhe where id_venda_orcamento_cabecalho= oc.id) as qtd_produto
+     (select sum(quantidade) from orcamento_detalhe where id_venda_orcamento_cabecalho= oc.id) as qtd_produto
 
 FROM
      orcamento_cabecalho oc
