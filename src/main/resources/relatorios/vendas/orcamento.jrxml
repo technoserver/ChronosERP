@@ -55,7 +55,7 @@
      (select sum(quantidade) from venda_orcamento_detalhe where id_venda_orcamento_cabecalho= oc.id) as qtd_produto
 
 FROM
-     venda_orcamento_cabecalho oc
+     orcamento_cabecalho oc
      INNER JOIN cliente cliente on oc.id_cliente = cliente.id
      INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id
      INNER JOIN pessoa_endereco pessoa_endereco ON pessoa.id = pessoa_endereco.id_pessoa
