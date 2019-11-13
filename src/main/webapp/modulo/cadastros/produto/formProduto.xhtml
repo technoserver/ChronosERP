@@ -1,0 +1,724 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <p:importEnum type="com.chronos.erp.modelo.enuns.PrecoPrioritario"
+                  var="precoPrioritario" allSuffix="ALL_ENUM_VALUES"/>
+
+
+    <p:tabView id="tabProduto" activeIndex="#{produtoControll.activeTabIndex}">
+        <p:tab title="Dados Principais" id="dadosPrincipais">
+            <div class="row">
+                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                                idComponente="id" label="Código"
+                                nomeAtributo="#{produtoControll.objeto.id}"
+                                tamanhoMaximo="9"
+                                rendered="#{not empty produtoControll.objeto.id}"
+                                somenteLeitura="true"/>
+
+                <div class="col-xs-6 col-sm-3 col-md-3">
+                    <p:commandButton value="Novo"
+                                     style="margin-top: 25px"
+                                     process="@this"
+                                     actionListener="#{produtoControll.doCreate()}"
+                                     update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                     rendered="#{not empty produtoControll.objeto.id}"/>
+                </div>
+
+
+            </div>
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="produtoNome" label="Nome"
+                                nomeAtributo="#{produtoControll.objeto.nome}"
+                                tamanhoMaximo="100"
+                                requerido="true"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="produtoDescricaoPdv" label="Descrição PDV"
+                                nomeAtributo="#{produtoControll.objeto.descricaoPdv}"
+                                tamanhoMaximo="30"
+                />
+            </div>
+            <div class="row">
+
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <p:outputLabel value="Grupo" for="grupo"/>
+                    <div class="field-action">
+                        <p:autoComplete id="grupo"
+                                        value="#{produtoControll.grupo}"
+                                        completeMethod="#{produtoControll.getListaGrupo}" var="objeto"
+                                        itemLabel="#{objeto.nome}" itemValue="#{objeto}"
+                                        queryDelay="500"
+                                        style="width: 100%"
+                                        converter="defaultConverter" forceSelection="true"
+                                        minQueryLength="3" maxResults="10" required="true"
+                                        emptyMessage="Nenhum registro encontrado">
+                            <p:ajax process="@this" event="itemSelect"/>
+
+                        </p:autoComplete>
+
+                        <div class="field-action__icon">
+                            <p:commandLink title="Add novo grupo" style="font-size: 20px;color: #00acac"
+                                           oncomplete="PF('dialogOutrasTelas4').show();"
+                                           update=":formOutrasTelas4:panelOutrasTelas4"
+                                           process="@this"
+                                           action="#{produtoControll.addGrupo}">
+
+                                <i class="fa fa-plus-circle"></i>
+                            </p:commandLink>
+                        </div>
+                    </div>
+                </div>
+
+                <erp:autoCompleteAcao styleClass="col-xs-12 col-sm-6 col-md-6"
+                                      label="Subgrupo"
+                                      itemLabel="#{objeto.nome}"
+                                      controller="#{produtoControll}"
+                                      completeMethod="getListaSubgrupo"
+                                      nomeAtributo="#{produtoControll.objeto.produtoSubGrupo}"
+                                      idComponente="produtoSubgrupo">
+
+
+                    <p:commandLink title="Add novo subGrupo" style="font-size: 20px;color: #00acac"
+                                   oncomplete="PF('dialogOutrasTelas5').show();"
+                                   update=":formOutrasTelas5:panelOutrasTelas5"
+                                   process="@this"
+                                   action="#{produtoControll.addSubGrupo}">
+
+                        <i class="fa fa-plus-circle"></i>
+                    </p:commandLink>
+
+                </erp:autoCompleteAcao>
+            </div>
+            <div class="row">
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  label="UN Produto"
+                                  itemLabel="#{objeto.sigla}"
+                                  controller="#{produtoControll}"
+                                  completeMethod="getListaUnidadeProduto"
+                                  nomeAtributo="#{produtoControll.objeto.unidadeProduto}"
+                                  tamanhoMinimo="2"
+                                  idComponente="produtoUnidadeProduto">
+
+                    <p:column headerText="Sigla">
+                        <p:outputLabel value="#{objeto.sigla}"/>
+                    </p:column>
+                    <p:column headerText="Descricao">
+                        <p:outputLabel value="#{objeto.descricao}"/>
+                    </p:column>
+                    <p:column headerText="Pode Fracionar">
+                        <p:outputLabel value="#{objeto.podeFracionar}"/>
+                    </p:column>
+
+                </erp:autoComplete>
+
+                <erp:autoCompleteAcao styleClass="col-xs-12 col-sm-4 col-md-4"
+                                      label="Marca"
+                                      itemLabel="#{objeto.nome}"
+                                      controller="#{produtoControll}"
+                                      completeMethod="getListaMarcaProduto"
+                                      nomeAtributo="#{produtoControll.objeto.produtoMarca}"
+
+                                      idComponente="produtoMarcaProduto"
+                                      requerido="false">
+                    <p:commandLink title="Add nova marca" style="font-size: 20px;color: #00acac"
+                                   oncomplete="PF('dialogOutrasTelas2').show();"
+                                   update=":formOutrasTelas2:panelOutrasTelas2"
+                                   process="@this"
+                                   action="#{produtoControll.addMarca}">
+
+                        <i class="fa fa-plus-circle"></i>
+                    </p:commandLink>
+                </erp:autoCompleteAcao>
+
+                <erp:autoCompleteAcao styleClass="col-xs-12 col-sm-6 col-md-6"
+                                      label="Almoxarifado"
+                                      itemLabel="#{objeto.nome}"
+                                      controller="#{produtoControll}"
+                                      completeMethod="getListaAlmoxarifado"
+                                      nomeAtributo="#{produtoControll.objeto.almoxarifado}"
+                                      idComponente="produtoAlmoxarifado"
+                                      requerido="false">
+
+                    <p:commandLink title="Add nova almoxarifado" style="font-size: 20px;color: #00acac"
+                                   oncomplete="PF('dialogOutrasTelas3').show();"
+                                   update=":formOutrasTelas3:panelOutrasTelas3"
+                                   process="@this"
+                                   action="#{produtoControll.addAlmoxarifado}">
+
+                        <i class="fa fa-plus-circle"></i>
+                    </p:commandLink>
+                </erp:autoCompleteAcao>
+            </div>
+
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <p:outputLabel for="produtoGtin" value="GTIN"/>
+                    <p:inputText id="produtoGtin"
+                                 maxlength="14"
+                                 styleClass="form-control"
+                                 validator="gtinValidator"
+                                 value="#{produtoControll.objeto.gtin}"/>
+
+
+                </div>
+                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-2"
+                                 idComponente="produtoServico" label="Servico"
+                                 nomeAtributo="#{produtoControll.objeto.servico}"
+                                 itens="#{produtoControll.naoSim}"/>
+
+
+                <div class="col-xs-12 col-sm-2 col-md-2">
+
+                    <h:outputLabel value="Tipo"
+                                   for="tipo"/>
+                    <h:selectOneMenu id="produtoTipo"
+                                     class="form-control"
+                                     value="#{produtoControll.objeto.tipo}"
+                                     required="true"
+                    >
+                        <f:selectItems value="#{produtoControll.produtoTipo}"/>
+                        <p:ajax update="formCentro:telaDetalhe:tabProduto" process="@this"/>
+
+                    </h:selectOneMenu>
+                </div>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="produtoInativo" label="Inativo"
+                                 nomeAtributo="#{produtoControll.objeto.inativo}"
+                                 itens="#{produtoControll.naoSim}"/>
+
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="Preço prioritário"
+                                   for="precoPrioritario"/>
+                    <i class="glyphicon glyphicon-info-sign" style="margin-left: 5px"
+                       title="Determina qual valor de venda será aplicado quando existe varios valores(preço promocional, tabela de preços, preço em atacado e etc."></i>
+
+                    <h:selectOneMenu id="precoPrioritario"
+                                     class="form-control"
+                                     value="#{produtoControll.objeto.precoPrioritario}"
+                    >
+                        <f:selectItems value="#{precoPrioritario.ALL_ENUM_VALUES}" var="obj"
+                                       itemValue="#{obj}" itemLabel="#{obj.descricao}"/>
+
+                    </h:selectOneMenu>
+                </div>
+
+
+            </div>
+
+
+            <h:panelGroup layout="block" id="panelEmpresas">
+                <h:panelGroup layout="block" styleClass="m-t" rendered="#{!produtoControll.listaEmpresaEmpty}">
+                    <erp:separador label="Selecione as empresas nos quais o produto será cadastrado"/>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p:selectManyCheckbox id="empresas" value="#{produtoControll.empresasSelecionada}"
+                                                  layout="responsive" columns="3">
+                                <f:selectItems value="#{produtoControll.listaEmpresas}" var="obj"
+                                               itemLabel="#{obj.razaoSocial}" itemValue="#{obj}"/>
+                            </p:selectManyCheckbox>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <div class="row">
+
+                <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="produtoDescricao" label="Descricao"
+                                    nomeAtributo="#{produtoControll.objeto.descricao}"/>
+            </div>
+
+        </p:tab>
+        <p:tab title="Detalhe" rendered="#{produtoControll.objeto.tipo eq 'V'}">
+
+            <div class="row">
+
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-2"
+                                 idComponente="produtoClasseAbc" label="Classe ABC"
+                                 nomeAtributo="#{produtoControll.objeto.classeAbc}"
+                                 itens="#{produtoControll.produtoClasse}"/>
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-3"
+                                idComponente="produtoCodigoInterno" label="Codigo Interno"
+                                nomeAtributo="#{produtoControll.objeto.codigoInterno}"
+                                tamanhoMaximo="60"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-3"
+                                 idComponente="produtoIppt" label="IPPT"
+                                 nomeAtributo="#{produtoControll.objeto.ippt}"
+                                 itens="#{produtoControll.produtoIppt}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-3"
+                                 idComponente="produtoIat" label="IAT"
+                                 nomeAtributo="#{produtoControll.objeto.iat}"
+                                 itens="#{produtoControll.produtoIat}"/>
+
+
+            </div>
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-5"
+                                 idComponente="produtoTipoItemSped" label="Tipo Item Sped"
+                                 nomeAtributo="#{produtoControll.objeto.tipoItemSped}"
+                                 itens="#{produtoControll.tipoItemSped}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="produtoPeso" label="Peso"
+                                  nomeAtributo="#{produtoControll.objeto.peso}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-2"
+                                  idComponente="produtoPorcentoComissao" label="% Comissao"
+                                  nomeAtributo="#{produtoControll.objeto.porcentoComissao}"/>
+
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="produtoCodigoBalanca" label="Codigo Balanca"
+                                  nomeAtributo="#{produtoControll.objeto.codigoBalanca}"/>
+
+
+            </div>
+
+
+            <erp:separador label="Imagem do Produto"/>
+            <div class="row">
+                <div class="col-xs-12 col-sm-5 col-md-3">
+                    <p:outputLabel value="Imagem"/>
+                    <p:commandButton title="Selecionar Imagem"
+                                     value="Selecionar Imagem" oncomplete="PF('dialogUpload').show()"
+                                     update=":formUpload:panelUpload"/>
+                    <br/> <br/>
+                    <p:outputLabel id="imagemProduto">
+
+                        <h:graphicImage id="imgPadrao" library="images" name="produto-sem-foto.png"
+                                        rendered="#{produtoControll.nomeFoto==null}"/>
+                        <h:graphicImage id="imgProdutoTemp"
+                                        value="/image/produtoTemp?foto=#{produtoControll.nomeFoto}"
+                                        class="img-circle"
+                                        rendered="#{produtoControll.objeto.imagem==null and produtoControll.nomeFoto!=null}"/>
+
+                        <h:graphicImage id="imgProduto"
+                                        value="/image/produto?foto=#{produtoControll.nomeFoto}"
+                                        class="img-circle"
+                                        rendered="#{produtoControll.objeto.imagem!=null}"/>
+
+                    </p:outputLabel>
+                </div>
+            </div>
+        </p:tab>
+        <p:tab title="Valores">
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="produtoValorCompra" label="Valor Compra"
+                                  nomeAtributo="#{produtoControll.objeto.valorCompra}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="produtoValorVenda" label="Valor Venda"
+                                  nomeAtributo="#{produtoControll.objeto.valorVenda}"
+                                  rendered="#{produtoControll.objeto.tipo eq 'V'}"
+                                  requerido="true"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="produtoMarkup" label="Markup"
+                                  rendered="#{produtoControll.objeto.tipo eq 'V'}"
+                                  nomeAtributo="#{produtoControll.objeto.markup}"/>
+
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="valorVendaAtacado" label="Valor Venda Atacado"
+                                  rendered="#{produtoControll.objeto.tipo eq 'V'}"
+                                  nomeAtributo="#{produtoControll.objeto.valorVendaAtacado}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="quantidadeVendaAtacado" label="Quant. Min para Venda Atacado"
+                                  rendered="#{produtoControll.objeto.tipo eq 'V'}"
+                                  nomeAtributo="#{produtoControll.objeto.quantidadeVendaAtacado}"
+                />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                  idComponente="produtoPrecoLucroMaximo" label="Preco Lucro Maximo"
+                                  rendered="#{produtoControll.objeto.tipo ne 'V'}"
+                                  nomeAtributo="#{produtoControll.objeto.precoLucroMaximo}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                  idComponente="produtoCustoUnitario" label="Custo Unitario"
+                                  nomeAtributo="#{produtoControll.objeto.custoUnitario}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                  idComponente="produtoCustoProducao" label="Custo Producao"
+                                  nomeAtributo="#{produtoControll.objeto.custoProducao}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                  idComponente="produtoCustoMedioLiquido" label="Custo Medio Liquido"
+                                  nomeAtributo="#{produtoControll.objeto.custoMedioLiquido}"/>
+
+                <h:panelGroup rendered="#{produtoControll.objeto.tipo eq 'V'}">
+
+
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                      idComponente="produtoPrecoVendaMinimo" label="Preco Venda Minimo"
+                                      nomeAtributo="#{produtoControll.objeto.precoVendaMinimo}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                      idComponente="produtoPrecoSugerido" label="Preco Sugerido"
+                                      nomeAtributo="#{produtoControll.objeto.precoSugerido}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                      idComponente="produtoPrecoLucroZero" label="Preco Lucro Zero"
+                                      nomeAtributo="#{produtoControll.objeto.precoLucroZero}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                      idComponente="produtoPrecoLucroMinimo" label="Preco Lucro Minimo"
+                                      nomeAtributo="#{produtoControll.objeto.precoLucroMinimo}"/>
+                </h:panelGroup>
+            </div>
+
+        </p:tab>
+        <p:tab title="Estoque">
+            <div class="row">
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                  idComponente="produtoQuantidadeEstoqueAnterior"
+                                  label="Qtde Est. Anterior"
+                                  nomeAtributo="#{produtoControll.objeto.quantidadeEstoqueAnterior}"/>
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                  idComponente="produtoEstoqueMinimo" label="Estoque Minimo"
+                                  nomeAtributo="#{produtoControll.objeto.estoqueMinimo}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                  idComponente="produtoEstoqueMaximo" label="Estoque Maximo"
+                                  nomeAtributo="#{produtoControll.objeto.estoqueMaximo}"/>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-6 col-md-3"
+                                  idComponente="produtoEstoqueIdeal" label="Estoque Ideal"
+                                  nomeAtributo="#{produtoControll.objeto.estoqueIdeal}"/>
+
+            </div>
+            <div class="row">
+                <h:panelGroup class="col-xs-12 col-sm-3 col-md-3" rendered="#{produtoControll.objeto.tipo eq 'V'}">
+                    <h:outputLabel value="Tipo de estoque"
+                                   for="clienteBloqueado"/>
+                    <h:selectOneMenu id="clienteBloqueado"
+                                     class="form-control"
+                                     value="#{produtoControll.objeto.possuiGrade}">
+                        <f:selectItem itemLabel="Unico" itemValue="false"/>
+                        <f:selectItem itemLabel="Grade" itemValue="true"/>
+                        <p:ajax event="change" update="formCentro:telaDetalhe:tabProduto:grade"
+                                process="@this"
+                        />
+                    </h:selectOneMenu>
+                </h:panelGroup>
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  idComponente="controle" label="Verificado"
+                                  rendered="#{empty produtoControll.objeto.id}"
+                                  nomeAtributo="#{produtoControll.objeto.controle}"/>
+            </div>
+            <h:panelGroup id="grade" layout="block" rendered="#{produtoControll.objeto.tipo eq 'V'}">
+                <h:panelGroup styleClass="row" layout="block" rendered="#{produtoControll.objeto.possuiGrade}">
+                    <erp:autoComplete styleClass="col-xs-5 col-sm-4 col-md-4"
+                                      label="Cor"
+                                      itemLabel="#{objeto.nome}"
+                                      controller="#{produtoControll}"
+                                      completeMethod="getListaCor"
+                                      nomeAtributo="#{produtoControll.cor}"
+                                      idComponente="cor"
+                                      id="cor"
+                                      requerido="false"
+                    />
+
+                    <erp:autoComplete styleClass="col-xs-5 col-sm-2 col-md-2"
+                                      label="Tamanho"
+                                      itemLabel="#{objeto.nome}"
+                                      controller="#{produtoControll}"
+                                      completeMethod="getListaTamanho"
+                                      nomeAtributo="#{produtoControll.tamanho}"
+                                      idComponente="tamanho"
+                                      id="tamanho"
+                                      requerido="false"
+                    />
+
+                    <div class="col-sm-2" style="margin-top: 22px;">
+
+                        <p:commandButton icon="fa fa-plus"
+                                         update=":formCentro:telaDetalhe:tabProduto:grade,:formCentro:growl"
+                                         process="@this,formCentro:telaDetalhe:tabProduto:cor:cor,formCentro:telaDetalhe:tabProduto:tamanho:tamanho"
+                                         action="#{produtoControll.addGrade}"/>
+
+
+                    </div>
+
+                </h:panelGroup>
+                <h:panelGroup styleClass="row m-t" layout="block"
+                              rendered="#{produtoControll.objeto.possuiGrade}">
+                    <div class="col-sm-12">
+                        <p:dataTable var="row"
+                                     id="table-grade"
+                                     value="#{produtoControll.grades}"
+                                     reflow="true"
+                                     emptyMessage="Nenhum registro encontrado">
+
+                            <p:column headerText="Código">
+                                <h:outputText value="#{row.codigo}"/>
+                            </p:column>
+                            <p:column headerText="Cor" styleClass="text-center">
+                                <h:outputText value="#{row.estoqueCor.nome}"/>
+                            </p:column>
+                            <p:column headerText="Tamanho" styleClass="text-center">
+                                <h:outputText value="#{row.estoqueTamanho.nome}"/>
+                            </p:column>
+                            <p:column headerText="Estoque" styleClass="text-right">
+                                <h:outputText value="#{row.quantidade}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Verificado" styleClass="text-right">
+                                <h:outputText value="#{row.verificado}">
+                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column styleClass="text-center">
+                                <p:commandLink title="Excluir"
+                                               rendered="#{row.podeRemover}"
+                                               action="#{produtoControll.removerGrade(row)}"
+                                               update=":formCentro:telaDetalhe:tabProduto:grade"
+                                               process="table-grade"
+                                               class="btn btn-default"
+                                >
+                                    <i class="fa fa-times"></i>
+
+
+                                </p:commandLink>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </div>
+
+                </h:panelGroup>
+            </h:panelGroup>
+        </p:tab>
+        <p:tab title="Fiscal">
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                  label="Grupo Tributario"
+                                  itemLabel="#{objeto.descricao}"
+                                  controller="#{produtoControll}"
+                                  completeMethod="getListaGrupoTributario"
+                                  nomeAtributo="#{produtoControll.objeto.tributGrupoTributario}"
+                                  idComponente="produtoGrupoTributario"
+                                  rendered="#{produtoControll.objeto.tipo eq 'V'}"
+                                  id="campoProdutoGrupoTributario">
+
+
+                </erp:autoComplete>
+
+
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <p:outputLabel value="NCM" for="ncm"/>
+                    <div class="field-action">
+                        <p:inputText id="ncm"
+                                     value="#{produtoControll.objeto.ncm}"
+                                     required="true"
+                                     maxlength="8"
+                        />
+                        <div class="field-action__icon">
+                            <p:commandLink title="Pesquisar NCM" style="font-size: 20px;color: #00acac"
+                                           oncomplete="PF('dialogOutrasTelas6').show();"
+                                           update=":formOutrasTelas6:panelOutrasTelas6"
+                                           process="@this"
+                                           action="#{produtoControll.exibirPesquisaNcm}">
+
+                                <i class="fa fa-search"></i>
+                            </p:commandLink>
+                        </div>
+                    </div>
+                </div>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="produtoCest" label="CEST"
+                                nomeAtributo="#{produtoControll.objeto.cest}"
+                                tamanhoMaximo="7"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="produtoCodigoLst" label="Codigo LST"
+                                nomeAtributo="#{produtoControll.objeto.codigoLst}"
+                                tamanhoMaximo="4"
+                                exibirInfo="true"
+                                mensangemInfo="Código do serviço conforme lista do Anexo I da Lei  Complementar Federal nº 116/03."/>
+
+            </div>
+
+        </p:tab>
+        <p:tab title="Conversões de UM" id="conversoes"
+               rendered="#{not empty produtoControll.objeto.id and produtoControll.objeto.tipo eq 'V'}">
+            <h:form id="formConversao">
+                <div class="row">
+                    <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      label="UN Conversão"
+                                      itemLabel="#{objeto.sigla}"
+                                      controller="#{produtoControll}"
+                                      completeMethod="getListaUnidadeProduto"
+                                      nomeAtributo="#{produtoControll.unidadeProduto}"
+                                      tamanhoMinimo="2"
+                                      idComponente="unidadeProduto"/>
+
+
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                      idComponente="fator"
+                                      nomeAtributo="#{produtoControll.fator}"
+                                      requerido="true"
+                                      label="Fator Conversão"/>
+
+                    <div class="col-xs-12 col-sm-4 col-md-3">
+                        <h:outputLabel value="Tipo" for="tipo"/>
+                        <div class="field-action">
+                            <h:selectOneMenu styleClass="form-control" id="tipo"
+                                             value="#{produtoControll.acao}">
+                                <f:selectItem itemValue="M" itemLabel="MULTIPLICAÇÂO"/>
+                                <f:selectItem itemValue="D" itemLabel="DIVISÃO"/>
+                            </h:selectOneMenu>
+
+                            <div class="field-action__icon">
+                                <p:commandButton title="Add nova conversão"
+                                                 icon="fa fa-plus"
+                                                 update="formCentro:telaDetalhe:tabProduto:formConversao,:formCentro:telaDetalhe:tabProduto:tableConversoes,:formCentro:growl"
+                                                 process="@form"
+                                                 action="#{produtoControll.addConversao}"/>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </h:form>
+
+
+            <p:dataTable id="tableConversoes" widgetVar="tableConversoes" var="row"
+                         rendered="#{produtoControll.objeto.tipo eq 'V'}"
+                         value="#{produtoControll.conversoes}"
+            >
+
+                <p:column headerText="UM">
+                    <h:outputText value="#{row.sigla}"/>
+                </p:column>
+                <p:column headerText="Tipo">
+                    <h:outputText value="#{row.acao eq 'D' ? 'DVISÂO':'MULTIPLICAÇÂO'}"/>
+                </p:column>
+                <p:column headerText="Fator">
+                    <h:outputText value="#{row.fatorConversao}"/>
+                </p:column>
+                <p:column headerText="Ações" styleClass="text-center">
+                    <p:commandLink title="Remover" action="#{produtoControll.removerUndiadeConversao}"
+                                   styleClass=" btn btn-default"
+                                   process="tableConversoes"
+                                   update="tableConversoes">
+                        <i class="fa fa-times"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{produtoControll.unidadeConversaoSelecionada}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+
+        </p:tab>
+
+        <p:tab title="Informações Nutricionais" rendered="#{produtoControll.objeto.tipo eq 'V'}">
+
+            <div class="row">
+                <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  label="Tabela nutricional"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{produtoControll}"
+                                  completeMethod="getListaTabelaNutricional"
+                                  nomeAtributo="#{produtoControll.objeto.tabelaNutricional}"
+                                  requerido="false"
+                                  idComponente="tabelaNutricional"/>
+
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  nomeAtributo="#{produtoControll.objeto.diasValidade}"
+                                  idComponente="diasValidade"
+                                  tamanhoMaximo="3"
+                                  label="Dias de validade"/>
+            </div>
+
+        </p:tab>
+
+        <p:tab id="composicao" title="Composição" rendered="#{produtoControll.objeto.tipo eq 'V'}">
+            <h:panelGroup id="panel-composicao" layout="block" class="row m-b">
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  label="Composicao"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{produtoControll}"
+                                  completeMethod="getListaProdutoComposicao"
+                                  nomeAtributo="#{produtoControll.produtoFichaTecnica}"
+                                  requerido="false"
+                                  id="cmp-produtoFichaTecnica"
+                                  idComponente="produtoFichaTecnica"/>
+
+
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  id="cmp-qtd"
+                                  idComponente="Quantidade"
+                                  nomeAtributo="#{produtoControll.fichaTecnica.quantidade}"
+                                  label="Quantidade"/>
+
+
+                <div class="col-xs-12 col-sm-4 col-md-3">
+                    <p:outputLabel value="Sequencia produção" for="sequenciaProducao"/>
+                    <div class="field-action">
+                        <p:inputText id="sequenciaProducao"
+                                     value="#{produtoControll.fichaTecnica.sequenciaProducao}"
+                                     maxlength="9"
+                                     style="text-align: left"
+                        >
+                            <p:keyFilter regEx="/[\d\-]/"/>
+                        </p:inputText>
+
+                        <div style="margin-left: 5px">
+                            <p:commandButton title="Incluir"
+                                             icon="fa fa-plus"
+                                             update=":formCentro:telaDetalhe:tabProduto:panel-composicao,:formCentro:telaDetalhe:tabProduto:table-composicao,:formCentro:growl"
+                                             process="@this,formCentro:telaDetalhe:tabProduto:sequenciaProducao,formCentro:telaDetalhe:tabProduto:cmp-qtd:Quantidade,formCentro:telaDetalhe:tabProduto:cmp-produtoFichaTecnica:produtoFichaTecnica"
+                                             action="#{produtoControll.salvarFichaTecnica}"/>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </h:panelGroup>
+            <p:dataTable id="table-composicao" widgetVar="tableComposicao" var="row"
+                         value="#{produtoControll.objeto.listaFichaTecnica}"
+            >
+
+                <p:column headerText="Seq.">
+                    <h:outputText value="#{row.sequenciaProducao}"/>
+                </p:column>
+                <p:column headerText="Descrição">
+                    <h:outputText value="#{row.descricao}"/>
+                </p:column>
+                <p:column headerText="Quantidade">
+                    <h:outputText value="#{row.quantidade}"/>
+                </p:column>
+                <p:column headerText="Ações" styleClass="text-center">
+                    <p:commandLink title="Remover" action="#{produtoControll.removerFichaTecnica}"
+                                   styleClass=" btn btn-default"
+                                   process="table-composicao"
+                                   update="table-composicao">
+                        <i class="fa fa-times"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{produtoControll.fichaTecnicaSelecionado}"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+
+        </p:tab>
+
+    </p:tabView>
+
+
+</ui:composition>

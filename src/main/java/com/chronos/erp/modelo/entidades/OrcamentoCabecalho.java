@@ -332,6 +332,9 @@ public class OrcamentoCabecalho implements Serializable {
         valorTotal = calcularValorProdutos();
         valorTotal = valorTotal.add(getValorFrete())
                 .subtract(calcularTotalDesconto());
+        if (valorTotal == null) {
+            System.out.println("");
+        }
         return valorTotal;
     }
 

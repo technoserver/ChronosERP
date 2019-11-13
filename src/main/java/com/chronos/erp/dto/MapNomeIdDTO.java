@@ -1,10 +1,17 @@
 package com.chronos.erp.dto;
 
-public class MapNomeIdDTO {
+import java.io.Serializable;
+
+public class MapNomeIdDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Integer id;
     private String nome;
     private String descricao;
+
+    public MapNomeIdDTO() {
+    }
 
     public MapNomeIdDTO(Integer id, String nome, String descricao) {
         this.id = id;
@@ -35,4 +42,6 @@ public class MapNomeIdDTO {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
+
 }

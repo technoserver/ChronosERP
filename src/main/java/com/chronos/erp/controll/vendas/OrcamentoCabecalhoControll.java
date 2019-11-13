@@ -2,13 +2,15 @@ package com.chronos.erp.controll.vendas;
 
 import com.chronos.erp.controll.AbstractControll;
 import com.chronos.erp.controll.ERPLazyDataModel;
+import com.chronos.erp.dto.ProdutoDTO;
 import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.modelo.enuns.SituacaoOrcamentoPedido;
 import com.chronos.erp.modelo.enuns.TipoFrete;
+import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
-import com.chronos.erp.service.comercial.VendaOrcamentoService;
+import com.chronos.erp.service.comercial.OrcamentoService;
 import com.chronos.erp.service.comercial.VendedorService;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
@@ -23,13 +25,14 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by john on 16/08/17.
  */
 @Named
 @ViewScoped
-public class VendaOrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabecalho> implements Serializable {
+public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabecalho> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -48,7 +51,9 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<OrcamentoC
     private VendedorService vendedorService;
 
     @Inject
-    private VendaOrcamentoService service;
+    private OrcamentoService service;
+    @Inject
+    private EstoqueRepository estoqueRepository;
 
     private OrcamentoDetalhe orcamentoDetalhe;
     private OrcamentoDetalhe orcamentoDetalheSelecionado;
@@ -325,7 +330,8 @@ public class VendaOrcamentoCabecalhoControll extends AbstractControll<OrcamentoC
     public List<Produto> getListaProduto(String nome) {
         List<Produto> listaProduto = new ArrayList<>();
         try {
-            listaProduto = produtos.getEntitys(Produto.class, "nome", nome);
+            List<ProdutoDTO> list = estoqueRepository.getProdutoDTO(nome, empresa, "N");
+            listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             // e.printStackTrace();
         }

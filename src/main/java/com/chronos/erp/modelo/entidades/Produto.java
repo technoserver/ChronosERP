@@ -170,6 +170,9 @@ public class Produto implements Serializable {
     private List<EmpresaProduto> produtosEmpresa;
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "produto", cascade = CascadeType.ALL)
     private UnidadeConversao unidadeConversao;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<FichaTecnica> listaFichaTecnica;
+
     @Transient
     private BigDecimal encargosVenda;
     @Transient
@@ -771,6 +774,14 @@ public class Produto implements Serializable {
 
     public void setBalanca(PdvConfiguracaoBalanca balanca) {
         this.balanca = balanca;
+    }
+
+    public Set<FichaTecnica> getListaFichaTecnica() {
+        return listaFichaTecnica;
+    }
+
+    public void setListaFichaTecnica(Set<FichaTecnica> listaFichaTecnica) {
+        this.listaFichaTecnica = listaFichaTecnica;
     }
 
     public String montarItemBalancaToledo() throws ChronosException {
