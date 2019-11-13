@@ -6,7 +6,7 @@
               topMargin="3" bottomMargin="3" isIgnorePagination="true" uuid="43e8f7d9-a4a8-4ac1-b35c-59d8ae725204">
     <property name="ireport.zoom" value="6.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="137"/>
+    <property name="ireport.y" value="329"/>
     <subDataset name="itensVenda" uuid="c04bf0ad-d6d4-4d5a-9e78-5f32d918d9c2">
         <queryString language="SQL">
             <![CDATA[select
@@ -82,7 +82,7 @@ inner join unidade_produto un on un.id = p.id_unidade_produto]]>
 
 
 FROM
-     venda_orcamento_cabecalho v
+     orcamento_cabecalho v
      INNER JOIN venda_condicoes_pagamento condicao ON condicao.id  = v.id_venda_condicoes_pagamento
      INNER JOIN cliente cliente on v.id_cliente = cliente.id
      INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id

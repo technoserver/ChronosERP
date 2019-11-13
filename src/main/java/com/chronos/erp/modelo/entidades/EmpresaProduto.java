@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "empresa_produto")
 @NamedQuery(name = "EmpresaProduto.atualizarEstoque"
-        , query = "UPDATE EmpresaProduto o SET o.quantidadeEstoque = ?1 ,o.estoqueVerificado = ?1 where o.id =?2")
+        , query = "UPDATE EmpresaProduto o SET o.quantidadeEstoque = ?1 ,o.estoqueVerificado = ?3 where o.id =?2")
 public class EmpresaProduto implements Serializable {
 
     private static final long serialVersionUID = 1L;
