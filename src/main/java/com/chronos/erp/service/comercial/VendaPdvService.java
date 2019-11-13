@@ -42,6 +42,9 @@ public class VendaPdvService implements Serializable {
     private Repository<PdvVendaCabecalho> repository;
 
     @Inject
+    private Repository<EstoqueGrade> estoqueGradeRepository;
+
+    @Inject
     private Repository<PdvVendaDetalhe> vendaDetalheRepository;
 
     @Inject
@@ -204,6 +207,10 @@ public class VendaPdvService implements Serializable {
             for (PdvVendaDetalhe item : itens) {
                 if (item.getProduto().getServico().equals("N")) {
                     estoqueRepositoy.atualizaEstoqueEmpresaControle(venda.getEmpresa().getId(), item.getProduto().getId(), item.getQuantidade());
+                    if (item.getIdgrade() != null) {
+                        EstoqueGrade grade = estoqueGradeRepository.get(item.getIdgrade(), EstoqueGrade.class);
+                        estoqueRepositoy.atualizarGradeVerificado(grade.getIdempresa(), grade.getIdproduto(), grade.getEstoqueCor().getId(), grade.getEstoqueTamanho().getId(), item.getQuantidade());
+                    }
                 }
 
             }
