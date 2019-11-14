@@ -15,6 +15,7 @@ import com.chronos.erp.service.cadastros.PessoaService;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -49,6 +50,8 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     private Repository<SituacaoForCli> situacoesCliente;
     @Inject
     private Repository<Pessoa> pessoas;
+    @Inject
+    private Repository<Empresa> empresaRepository;
 
     @Inject
     private PessoaService service;
@@ -56,11 +59,21 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     private String nome;
     private Integer codigo;
     private String cpfCnpj;
+    private Integer idmepresaFiltro;
 
 
     private PessoaCliente clienteSelecionado;
 
     private String completo;
+
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        idmepresaFiltro = empresa.getId();
+        pesquisarEmpresas();
+    }
 
     public ClienteDataModel getClienteDataModel() {
 
@@ -87,7 +100,10 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         if (codigo != null) {
             clienteDataModel.getFiltros().add(new Filtro("id", Filtro.IGUAL, codigo));
         }
+        idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        clienteDataModel.addFiltro("idempresa", idmepresaFiltro, Filtro.IGUAL);
     }
+
 
     @Override
     public void doCreate() {
@@ -305,5 +321,13 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
     public void setCodigo(Integer codigo) {
         this.codigo = codigo;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
     }
 }

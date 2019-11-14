@@ -19,6 +19,8 @@ public class PessoaCliente implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private int id;
+    @Column(name = "ID_EMPRESA")
+    private int idempresa;
     @Column(name = "ID_OPERACAO_FISCAL")
     private Integer idOperacaoFiscal;
     @Basic(optional = false)
@@ -139,6 +141,14 @@ public class PessoaCliente implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdempresa() {
+        return idempresa;
+    }
+
+    public void setIdempresa(int idempresa) {
+        this.idempresa = idempresa;
     }
 
     public Integer getIdOperacaoFiscal() {
