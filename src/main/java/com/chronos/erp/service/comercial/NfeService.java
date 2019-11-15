@@ -350,7 +350,7 @@ public class NfeService implements Serializable {
     }
 
 
-    public void gerarDuplicatas(NfeCabecalho nfe, VendaCondicoesPagamento condicoesPagamento, Date primeiroVencimento, int intervaloParcelas, int qtdParcelas) throws Exception {
+    public void gerarDuplicatas(NfeCabecalho nfe, CondicoesPagamento condicoesPagamento, Date primeiroVencimento, int intervaloParcelas, int qtdParcelas) throws Exception {
 
         if (nfe.getValorTotal() == null || nfe.getValorTotal().signum() == 0) {
             throw new ChronosException("O valor total da NFe deve ser maior que 0");
@@ -372,7 +372,7 @@ public class NfeService implements Serializable {
         if (condicoesPagamento != null) {
             int number = 0;
 
-            for (VendaCondicoesParcelas parcelas : condicoesPagamento.getParcelas()) {
+            for (CondicoesParcelas parcelas : condicoesPagamento.getParcelas()) {
 
                 NfeDuplicata duplicata = new NfeDuplicata();
                 duplicata.setNfeCabecalho(nfe);

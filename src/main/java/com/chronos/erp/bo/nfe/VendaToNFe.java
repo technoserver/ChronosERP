@@ -310,8 +310,8 @@ public class VendaToNFe extends ManualCDILookup {
                 BigDecimal somaParcelas = BigDecimal.ZERO;
                 BigDecimal valorParcela;
                 int number = 0;
-                List<VendaCondicoesParcelas> parcelas = venda.getCondicoesPagamento().getParcelas();
-                for (VendaCondicoesParcelas parcela : parcelas) {
+                List<CondicoesParcelas> parcelas = venda.getCondicoesPagamento().getParcelas();
+                for (CondicoesParcelas parcela : parcelas) {
                     NfeDuplicata duplicata = new NfeDuplicata();
                     duplicata.setNfeCabecalho(nfe);
                     valorParcela = Biblioteca.calcularValorPercentual(nfe.getValorTotal(), parcela.getTaxa());

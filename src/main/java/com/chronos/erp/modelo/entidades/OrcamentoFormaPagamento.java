@@ -8,8 +8,8 @@ import java.util.Optional;
 
 
 @Entity
-@Table(name = "os_forma_pagamento")
-public class OsFormaPagamento implements Serializable {
+@Table(name = "orcamento_forma_pagamento")
+public class OrcamentoFormaPagamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -33,9 +33,9 @@ public class OsFormaPagamento implements Serializable {
     private String estorno;
     @Column(name = "TROCO")
     private BigDecimal troco;
-    @JoinColumn(name = "id_os_abertura", referencedColumnName = "ID")
+    @JoinColumn(name = "id_orcamento_cabecalho", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private OsAbertura osAbertura;
+    private OrcamentoCabecalho orcamentoCabecalho;
     @JoinColumn(name = "ID_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private TipoPagamento tipoPagamento;
@@ -46,7 +46,7 @@ public class OsFormaPagamento implements Serializable {
     @Transient
     private OperadoraCartao operadoraCartao;
 
-    public OsFormaPagamento() {
+    public OrcamentoFormaPagamento() {
         this.qtdParcelas = 1;
     }
 
@@ -122,12 +122,12 @@ public class OsFormaPagamento implements Serializable {
         this.troco = troco;
     }
 
-    public OsAbertura getOsAbertura() {
-        return osAbertura;
+    public OrcamentoCabecalho getOrcamentoCabecalho() {
+        return orcamentoCabecalho;
     }
 
-    public void setOsAbertura(OsAbertura osAbertura) {
-        this.osAbertura = osAbertura;
+    public void setOrcamentoCabecalho(OrcamentoCabecalho orcamentoCabecalho) {
+        this.orcamentoCabecalho = orcamentoCabecalho;
     }
 
     public TipoPagamento getTipoPagamento() {
@@ -170,9 +170,9 @@ public class OsFormaPagamento implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OsFormaPagamento)) return false;
+        if (!(o instanceof OrcamentoFormaPagamento)) return false;
 
-        OsFormaPagamento that = (OsFormaPagamento) o;
+        OrcamentoFormaPagamento that = (OrcamentoFormaPagamento) o;
 
         return getId() != null ? getId().equals(that.getId()) : that.getId() != null;
     }

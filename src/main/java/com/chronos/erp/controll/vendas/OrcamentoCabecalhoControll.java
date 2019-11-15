@@ -12,6 +12,7 @@ import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.comercial.OrcamentoService;
 import com.chronos.erp.service.comercial.VendedorService;
+import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private Repository<VendaCondicoesPagamento> condicoes;
+    private Repository<CondicoesPagamento> condicoes;
     @Inject
     private Repository<Vendedor> vendedores;
     @Inject
@@ -73,6 +74,20 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
     private boolean podeAlterarPreco = true;
 
+    private TipoPagamento tipoPagamento;
+    private List<TipoPagamento> listTipoPagamento;
+    private CondicoesPagamento condicaoPagamento;
+    private List<CondicoesPagamento> condicoesPagamentos;
+    private OsFormaPagamento formaPagamentoSelecionado;
+    private boolean exibirCondicoes;
+
+    private BigDecimal valorPago;
+    private BigDecimal saldoRestante;
+    private BigDecimal totalRecebido;
+    private BigDecimal totalReceber;
+    private BigDecimal troco;
+
+
     @PostConstruct
     @Override
     public void init() {
@@ -86,6 +101,9 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
         this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
+
+
+        doCreate();
 
     }
 
@@ -276,14 +294,106 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         orcamentoDetalhe.setValorUnitario(valor);
     }
 
-    public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
-        List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
+    public void lancaPagamento() {
         try {
-            listaVendaCondicoesPagamento = condicoes.getEntitys(VendaCondicoesPagamento.class, "nome", nome);
+            boolean update = true;
+
+            if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
+                Mensagem.addErrorMessage("Todos os valores já foram recebidos. Finalize a venda.");
+            } else {
+
+                incluiPagamento(tipoPagamento, valorPago);
+
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao lança os pagamentos", ex);
+            } else {
+                throw new RuntimeException("Erro ao lança os pagamentos", ex);
+            }
+        }
+
+
+    }
+
+    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
+        Optional<OrcamentoFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
+        if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
+            Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
+        } else {
+            if (totalReceber.compareTo(valorPago) < 0 && tipoPagamento.getPermiteTroco().equals("N")) {
+                Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " não permite troco");
+            } else {
+                OrcamentoFormaPagamento formaPagamento = new OrcamentoFormaPagamento();
+                formaPagamento.setOrcamentoCabecalho(getObjeto());
+                formaPagamento.setTipoPagamento(tipoPagamento);
+                formaPagamento.setValor(valor);
+                formaPagamento.setForma(tipoPagamento.getCodigo());
+                formaPagamento.setEstorno("N");
+
+                if (tipoPagamento.getGeraParcelas().equals("S")) {
+                    formaPagamento.setCondicao(condicaoPagamento);
+                }
+
+                totalRecebido = Biblioteca.soma(totalRecebido, valor);
+                troco = Biblioteca.subtrai(totalRecebido, totalReceber);
+                if (troco.compareTo(BigDecimal.ZERO) == -1) {
+                    troco = BigDecimal.ZERO;
+                }
+                formaPagamento.setTroco(troco);
+                getObjeto().getListaFormaPagamento().add(formaPagamento);
+                verificaSaldoRestante();
+
+
+            }
+
+        }
+
+    }
+
+    private void verificaSaldoRestante() {
+        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
+        for (OrcamentoFormaPagamento p : getObjeto().getListaFormaPagamento()) {
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+        }
+
+        saldoRestante = Biblioteca.subtrai(totalReceber, recebidoAteAgora);
+        totalRecebido = recebidoAteAgora;
+        valorPago = saldoRestante;
+        if (valorPago.compareTo(BigDecimal.ZERO) < 0) {
+            valorPago = BigDecimal.ZERO;
+        }
+        if (saldoRestante.compareTo(BigDecimal.ZERO) < 0) {
+            saldoRestante = BigDecimal.ZERO;
+        }
+    }
+
+    private Optional<OrcamentoFormaPagamento> bucarTipoPagamento(TipoPagamento tipoPagamento) {
+        return getObjeto().getListaFormaPagamento()
+                .stream()
+                .filter(fp -> fp.getTipoPagamento().equals(tipoPagamento))
+                .findAny();
+    }
+
+    public void excluirPagamento() {
+        if (formaPagamentoSelecionado != null) {
+            getObjeto().getListaFormaPagamento().remove(formaPagamentoSelecionado);
+
+            verificaSaldoRestante();
+        }
+    }
+
+
+    public List<CondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
+        List<CondicoesPagamento> listaCondicoesPagamento = new ArrayList<>();
+        try {
+            listaCondicoesPagamento = condicoes.getEntitys(CondicoesPagamento.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        return listaVendaCondicoesPagamento;
+        return listaCondicoesPagamento;
     }
 
     public List<Vendedor> getListaVendedor(String nome) {
@@ -373,6 +483,10 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     @Override
     protected boolean auditar() {
         return false;
+    }
+
+    public boolean isPodeLancaPagamento() {
+        return valorPago.signum() == 0;
     }
 
     public OrcamentoDetalhe getOrcamentoDetalhe() {
@@ -475,5 +589,55 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         return podeAlterarPreco;
     }
 
+    public TipoPagamento getTipoPagamento() {
+        return tipoPagamento;
+    }
 
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
+    }
+
+    public List<TipoPagamento> getListTipoPagamento() {
+        return listTipoPagamento;
+    }
+
+    public void setListTipoPagamento(List<TipoPagamento> listTipoPagamento) {
+        this.listTipoPagamento = listTipoPagamento;
+    }
+
+    public CondicoesPagamento getCondicaoPagamento() {
+        return condicaoPagamento;
+    }
+
+    public void setCondicaoPagamento(CondicoesPagamento condicaoPagamento) {
+        this.condicaoPagamento = condicaoPagamento;
+    }
+
+    public List<CondicoesPagamento> getCondicoesPagamentos() {
+        return condicoesPagamentos;
+    }
+
+    public void setCondicoesPagamentos(List<CondicoesPagamento> condicoesPagamentos) {
+        this.condicoesPagamentos = condicoesPagamentos;
+    }
+
+    public BigDecimal getValorPago() {
+        return valorPago;
+    }
+
+    public void setValorPago(BigDecimal valorPago) {
+        this.valorPago = valorPago;
+    }
+
+    public OsFormaPagamento getFormaPagamentoSelecionado() {
+        return formaPagamentoSelecionado;
+    }
+
+    public void setFormaPagamentoSelecionado(OsFormaPagamento formaPagamentoSelecionado) {
+        this.formaPagamentoSelecionado = formaPagamentoSelecionado;
+    }
+
+    public boolean isExibirCondicoes() {
+        return exibirCondicoes;
+    }
 }

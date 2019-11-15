@@ -49,7 +49,7 @@ public class OsService extends AbstractService<OsAbertura> {
     private FinLancamentoReceberService finLancamentoReceberService;
 
     @Inject
-    private Repository<VendaCondicoesParcelas> parcelasRepository;
+    private Repository<CondicoesParcelas> parcelasRepository;
 
     @Inject
     private ComissaoService comissaoService;

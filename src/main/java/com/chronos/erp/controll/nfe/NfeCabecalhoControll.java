@@ -46,7 +46,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     @Inject
     private Repository<PessoaCliente> pessoas;
     @Inject
-    private Repository<VendaCondicoesPagamento> condicoes;
+    private Repository<CondicoesPagamento> condicoes;
     @Inject
     private Repository<ViewPessoaTransportadora> transportadoraRepository;
     @Inject
@@ -73,7 +73,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeReferenciada nfeReferenciadaSelecionado;
     private NfeTransporteVolume volume;
     private TipoPagamento tipoPagamento;
-    private VendaCondicoesPagamento condicoesPagamento;
+    private CondicoesPagamento condicoesPagamento;
     private int qtdParcelas;
     private int intervaloParcelas;
     private Date primeiroVencimento;
@@ -450,7 +450,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
         try {
             condicoesPagamento = condicoesPagamento != null
-                    ? condicoes.getJoinFetch(condicoesPagamento.getId(), VendaCondicoesPagamento.class)
+                    ? condicoes.getJoinFetch(condicoesPagamento.getId(), CondicoesPagamento.class)
                     : null;
             nfeService.gerarDuplicatas(getObjeto(), condicoesPagamento, primeiroVencimento, intervaloParcelas, qtdParcelas);
             Mensagem.addInfoMessage("Duplicatas geradas com sucesso");
@@ -705,14 +705,14 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     }
 
 
-    public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
-        List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
+    public List<CondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
+        List<CondicoesPagamento> listaCondicoesPagamento = new ArrayList<>();
         try {
-            listaVendaCondicoesPagamento = condicoes.getEntitys(VendaCondicoesPagamento.class, "nome", nome);
+            listaCondicoesPagamento = condicoes.getEntitys(CondicoesPagamento.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        return listaVendaCondicoesPagamento;
+        return listaCondicoesPagamento;
     }
 
     public List<TributOperacaoFiscal> getListaTributOperacaoFiscal(String descricao) {
@@ -871,11 +871,11 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         this.veiculo = veiculo;
     }
 
-    public VendaCondicoesPagamento getCondicoesPagamento() {
+    public CondicoesPagamento getCondicoesPagamento() {
         return condicoesPagamento;
     }
 
-    public void setCondicoesPagamento(VendaCondicoesPagamento condicoesPagamento) {
+    public void setCondicoesPagamento(CondicoesPagamento condicoesPagamento) {
         this.condicoesPagamento = condicoesPagamento;
     }
 

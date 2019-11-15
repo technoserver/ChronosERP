@@ -47,7 +47,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     @Inject
     private SyncPendentesService syncPendentesService;
     @Inject
-    private Repository<VendaCondicoesParcelas> parcelasRepository;
+    private Repository<CondicoesParcelas> parcelasRepository;
 
     @Inject
     private AuditoriaService auditoriaService;
@@ -133,7 +133,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
             NfeCabecalho nfe;
-            List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", venda.getCondicoesPagamento().getId());
+            List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "vendaCondicoesPagamento.id", venda.getCondicoesPagamento().getId());
             venda.getCondicoesPagamento().setParcelas(parcelas);
             VendaToNFe vendaNfe = new VendaToNFe(modelo, venda);
             nfe = vendaNfe.gerarNfe();
