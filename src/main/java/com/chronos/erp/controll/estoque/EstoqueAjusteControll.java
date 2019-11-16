@@ -2,17 +2,21 @@ package com.chronos.erp.controll.estoque;
 
 import com.chronos.erp.modelo.entidades.Empresa;
 import com.chronos.erp.modelo.entidades.EmpresaProduto;
+import com.chronos.erp.modelo.entidades.EstoqueGrade;
 import com.chronos.erp.modelo.entidades.Produto;
 import com.chronos.erp.modelo.enuns.AcaoLog;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
+import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.gerencial.AuditoriaService;
 import com.chronos.erp.util.FormatValor;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
+import org.primefaces.PrimeFaces;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,19 +40,29 @@ public class EstoqueAjusteControll implements Serializable {
     private Repository<Produto> produtoRepository;
     @Inject
     private AuditoriaService auditoriaService;
+    @Inject
+    private Repository<EstoqueGrade> estoqueGradeRepository;
+
 
     private Empresa empresa;
     private String codigo;
     private BigDecimal quantidade;
     private BigDecimal valorVenda;
+    private Integer tipoEstoque;
 
     private List<EmpresaProduto> produtos;
     private EmpresaProduto produtoSelecionado;
+    private List<EstoqueGrade> grades;
+    private List<EstoqueGrade> gradesUpdate;
+    private EmpresaProduto produtoGrade;
+
 
     @PostConstruct
     private void init() {
         empresa = FacesUtil.getEmpresaUsuario();
         produtos = new ArrayList<>();
+        tipoEstoque = 1;
+        gradesUpdate = new ArrayList<>();
     }
 
     public void addProduto() {
@@ -62,8 +76,8 @@ public class EstoqueAjusteControll implements Serializable {
                 int cod = Integer.valueOf(str);
                 filtros.add(new Filtro("produto.id", cod));
             }
-            Object[] atributos = new Object[]{"produto.id", "produto.nome", "produto.valorVenda"};
-            EmpresaProduto produto = repository.get(EmpresaProduto.class, filtros, atributos);
+
+            EmpresaProduto produto = repository.get(EmpresaProduto.class, filtros);
 
             if (produto == null) {
                 Mensagem.addErrorMessage("Produto não localizado");
@@ -71,10 +85,35 @@ public class EstoqueAjusteControll implements Serializable {
                 if (produtos.contains(produto)) {
                     Mensagem.addErrorMessage("Produto já informado");
                 } else {
-                    produto.setEstoqueVerificado(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
-                    produto.setQuantidadeEstoque(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
-                    produto.setValorVenda(valorVenda);
-                    produtos.add(produto);
+                    if (tipoEstoque == 1) {
+                        produto.setEstoqueVerificado(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
+                    } else {
+                        produto.setQuantidadeEstoque(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
+                    }
+
+
+                    produto.setValorVenda(Optional.ofNullable(valorVenda).orElse(produto.getProduto().getValorVenda()));
+
+                    if (produto.getProduto().getPossuiGrade()) {
+
+                        filtros = new ArrayList<>();
+                        filtros.add(new Filtro("idproduto", produto.getProduto().getId()));
+                        filtros.add(new Filtro("idempresa", empresa.getId()));
+
+                        grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+
+                        if (grades.isEmpty()) {
+                            produtos.add(produto);
+                        } else {
+
+                            PrimeFaces.current().executeScript("PF('dialogOutrasTelas').show();");
+                            produtoGrade = produto;
+                        }
+                    } else {
+                        produtos.add(produto);
+                    }
+
+
                 }
 
             }
@@ -88,6 +127,34 @@ public class EstoqueAjusteControll implements Serializable {
     }
 
 
+    public void confirmarEstoqueGrade() {
+
+
+        try {
+            BigDecimal qtd = grades
+                    .stream()
+                    .map(i -> i.getQuantidadeEntrada())
+                    .reduce(BigDecimal::add)
+                    .orElse(BigDecimal.ZERO);
+
+            if (quantidade == null || qtd.compareTo(quantidade) != 0) {
+                throw new ChronosException("Quantidade de estoque informada para grade invalida ");
+            }
+
+            gradesUpdate.addAll(grades);
+            produtos.add(produtoGrade);
+
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().validationFailed();
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao confirmar os valores da grade", ex);
+            }
+        }
+    }
+
+
     public void salvar() {
 
 
@@ -97,7 +164,7 @@ public class EstoqueAjusteControll implements Serializable {
             } else {
 
                 for (EmpresaProduto produto : produtos) {
-                    repository.atualizarNamedQuery("EmpresaProduto.atualizarEstoque", produto.getQuantidadeEstoque(), produto.getId());
+                    repository.atualizarNamedQuery("EmpresaProduto.atualizarEstoque", produto.getQuantidadeEstoque(), produto.getId(), produto.getEstoqueVerificado());
 
                     auditoriaService.gerarLog(AcaoLog.AJUSTE, "alterado a quantidade em estoque do produto " + produto.getProduto().getNome()
                             + " para " + FormatValor.getInstance().formatarValor(produto.getQuantidadeEstoque()), "Estoque Ajuste");
@@ -110,6 +177,15 @@ public class EstoqueAjusteControll implements Serializable {
                         auditoriaService.gerarLog(AcaoLog.AJUSTE, "alterado o valor de venda do produto " + produto.getProduto().getNome()
                                 + " para " + FormatValor.getInstance().formatarValor(produto.getValorVenda()), "Estoque Ajuste");
                     }
+                }
+
+                for (EstoqueGrade g : gradesUpdate) {
+                    if (tipoEstoque == 1) {
+                        g.setVerificado(g.getQuantidadeEntrada());
+                    } else {
+                        g.setQuantidade(g.getQuantidadeEntrada());
+                    }
+                    estoqueGradeRepository.atualizar(g);
                 }
 
                 Mensagem.addInfoMessage("Estoque Reajustado");
@@ -159,5 +235,21 @@ public class EstoqueAjusteControll implements Serializable {
 
     public void setValorVenda(BigDecimal valorVenda) {
         this.valorVenda = valorVenda;
+    }
+
+    public Integer getTipoEstoque() {
+        return tipoEstoque;
+    }
+
+    public void setTipoEstoque(Integer tipoEstoque) {
+        this.tipoEstoque = tipoEstoque;
+    }
+
+    public List<EstoqueGrade> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(List<EstoqueGrade> grades) {
+        this.grades = grades;
     }
 }

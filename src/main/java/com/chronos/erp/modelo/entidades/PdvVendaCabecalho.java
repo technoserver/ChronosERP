@@ -9,11 +9,8 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by john on 18/01/18.
@@ -147,7 +144,6 @@ public class PdvVendaCabecalho implements Serializable {
     }
 
     public BigDecimal getValorComissao() {
-        valorComissao = getTaxaComissao().multiply(getValorTotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
         return valorComissao;
     }
 
@@ -296,27 +292,14 @@ public class PdvVendaCabecalho implements Serializable {
     public BigDecimal calcularValorTotal() {
         valorTotal = calcularValorProdutos();
         valorTotal = valorTotal.subtract(calcularTotalDesconto());
+        calcularValorComissao();
         return valorTotal;
     }
 
-    public String valorSubTotalFormatado() {
-        return formatarValor(calcularValorProdutos());
-    }
-
-    public String valorDescontoFormatado() {
-        return formatarValor(calcularTotalDesconto());
-    }
-
-    public String valorTotalFormatado() {
-        return formatarValor(calcularValorTotal());
-    }
-
-    private String formatarValor(BigDecimal valor) {
-        DecimalFormatSymbols simboloDecimal = DecimalFormatSymbols.getInstance();
-        simboloDecimal.setDecimalSeparator('.');
-        DecimalFormat formatar = new DecimalFormat("0.00", simboloDecimal);
-
-        return formatar.format(Optional.ofNullable(valor).orElse(BigDecimal.ZERO));
+    public void calcularValorComissao() {
+        valorComissao = taxaComissao != null && taxaComissao.signum() > 0
+                ? getTaxaComissao().multiply(getValorTotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP)
+                : BigDecimal.ZERO;
     }
 
     @Override
