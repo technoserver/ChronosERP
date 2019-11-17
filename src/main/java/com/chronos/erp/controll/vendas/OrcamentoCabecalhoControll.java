@@ -231,6 +231,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         codigo += StringUtils.leftPad(orcamento.getId().toString(), 3, "0");
         orcamento.setCodigo(codigo);
         dao.atualizar(orcamento);
+        setTelaGrid(true);
     }
 
     public void aprovarPedido() {
