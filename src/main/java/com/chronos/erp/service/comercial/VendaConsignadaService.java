@@ -130,7 +130,7 @@ public class VendaConsignadaService extends AbstractService<VendaConsignadaCabec
         vendaCabecalho.setTaxaComissao(vendaConsignada.getTaxaComissao());
         vendaCabecalho.setDataSaida(new Date());
         vendaCabecalho.setLocalEntrega(vendaConsignada.getLocalEntrega());
-        vendaCabecalho.setCondicoesPagamento(vendaConsignada.getCondicoesPagamento());
+
         vendaCabecalho.setListaVendaDetalhe(itensVendenda);
 
         for (VendaConsignadaDetalhe item : itens) {

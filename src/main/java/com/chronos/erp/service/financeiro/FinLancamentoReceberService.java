@@ -30,7 +30,7 @@ public class FinLancamentoReceberService implements Serializable {
     @Inject
     private Repository<FinParcelaRecebimento> recebimentoRepository;
     @Inject
-    private Repository<VendaCondicoesParcelas> parcelasRepository;
+    private Repository<CondicoesParcelas> parcelasRepository;
     @Inject
     private Repository<FinLctoReceberNtFinanceira> parcelaNaturezaRepository;
     @Inject
@@ -76,7 +76,7 @@ public class FinLancamentoReceberService implements Serializable {
         lancamentos.salvar(lancamentoReceber);
     }
 
-    public void gerarLancamento(int id, BigDecimal valor, Cliente cliente, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws ChronosException {
+    public void gerarLancamento(int id, BigDecimal valor, Cliente cliente, CondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws ChronosException {
         LancamentoReceber lancamento = new LancamentoReceber();
         lancamento.setCliente(cliente);
         lancamento.setCondicoesPagamento(condicoesPagamento);
@@ -91,7 +91,7 @@ public class FinLancamentoReceberService implements Serializable {
 
     @Transactional
     public void gerarContasReceber(LancamentoReceber lancamento, NaturezaFinanceira naturezaFinanceira) throws ChronosException {
-        VendaCondicoesPagamento condicao = lancamento.getCondicoesPagamento();
+        CondicoesPagamento condicao = lancamento.getCondicoesPagamento();
         ContaCaixa conta = condicao.getTipoRecebimento().getContaCaixa();
 
 
@@ -168,14 +168,14 @@ public class FinLancamentoReceberService implements Serializable {
     }
 
 
-    public List<FinParcelaReceber> gerarParcelas(BigDecimal valor, Date dataEmissao, VendaCondicoesPagamento condicao) throws ChronosException {
+    public List<FinParcelaReceber> gerarParcelas(BigDecimal valor, Date dataEmissao, CondicoesPagamento condicao) throws ChronosException {
 
-        List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
+        List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
 
 
         int number = 1;
         List<FinParcelaReceber> parcelasReceber = new ArrayList<>();
-        for (VendaCondicoesParcelas parcela : parcelas) {
+        for (CondicoesParcelas parcela : parcelas) {
             FinParcelaReceber parcelaReceber = new FinParcelaReceber();
 
             parcelaReceber.setNumeroParcela(number++);

@@ -62,7 +62,7 @@ public class BalcaoControll implements Serializable {
     private Repository<Cliente> clientes;
 
     @Inject
-    private Repository<VendaCondicoesPagamento> condicoes;
+    private Repository<CondicoesPagamento> condicoes;
     @Inject
     private OperadoraCartaoRepository operadoraCartaoRepository;
     @Inject
@@ -109,9 +109,9 @@ public class BalcaoControll implements Serializable {
     private Cliente cliente;
     private ProdutoDTO produto;
     private List<Vendedor> listVendedores;
-    private VendaCondicoesPagamento condicaoPagamento;
+    private CondicoesPagamento condicaoPagamento;
     private OperadoraCartao operadoraCartao;
-    private List<VendaCondicoesPagamento> condicoesPagamentos;
+    private List<CondicoesPagamento> condicoesPagamentos;
     private List<OperadoraCartao> operadoras;
     private BigDecimal desconto;
     private List<FinParcelaReceber> parcelas;
@@ -794,7 +794,7 @@ public class BalcaoControll implements Serializable {
 
 
         if (exibirCondicoes) {
-            condicoesPagamentos = condicoes.getEntitys(VendaCondicoesPagamento.class, "vistaPrazo", "1", new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
+            condicoesPagamentos = condicoes.getEntitys(CondicoesPagamento.class, "vistaPrazo", "1", new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
         }
 
         if (exibirQtdParcelas) {
@@ -945,11 +945,11 @@ public class BalcaoControll implements Serializable {
         this.telaImpressao = telaImpressao;
     }
 
-    public List<VendaCondicoesPagamento> getCondicoesPagamentos() {
+    public List<CondicoesPagamento> getCondicoesPagamentos() {
         return condicoesPagamentos;
     }
 
-    public void setCondicoesPagamentos(List<VendaCondicoesPagamento> condicoesPagamentos) {
+    public void setCondicoesPagamentos(List<CondicoesPagamento> condicoesPagamentos) {
         this.condicoesPagamentos = condicoesPagamentos;
     }
 
@@ -1069,11 +1069,11 @@ public class BalcaoControll implements Serializable {
         return exibirQtdParcelas;
     }
 
-    public VendaCondicoesPagamento getCondicaoPagamento() {
+    public CondicoesPagamento getCondicaoPagamento() {
         return condicaoPagamento;
     }
 
-    public void setCondicaoPagamento(VendaCondicoesPagamento condicaoPagamento) {
+    public void setCondicaoPagamento(CondicoesPagamento condicaoPagamento) {
         this.condicaoPagamento = condicaoPagamento;
     }
 

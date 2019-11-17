@@ -47,7 +47,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Inject
     private Repository<OrcamentoCabecalho> orcamentos;
     @Inject
-    private Repository<VendaCondicoesPagamento> condicoes;
+    private Repository<CondicoesPagamento> condicoes;
     @Inject
     private Repository<Transportadora> transportadora;
     @Inject
@@ -474,15 +474,15 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         return listaOrcamentoCabecalho;
     }
 
-    public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
-        List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
+    public List<CondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
+        List<CondicoesPagamento> listaCondicoesPagamento = new ArrayList<>();
         try {
             Object[] join = new Object[]{""};
-            listaVendaCondicoesPagamento = condicoes.getEntitys(VendaCondicoesPagamento.class, "nome", nome, new Object[]{"nome", "vistaPrazo"});
+            listaCondicoesPagamento = condicoes.getEntitys(CondicoesPagamento.class, "nome", nome, new Object[]{"nome", "vistaPrazo"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        return listaVendaCondicoesPagamento;
+        return listaCondicoesPagamento;
     }
 
     public List<Transportadora> getListaTransportadora(String nome) {

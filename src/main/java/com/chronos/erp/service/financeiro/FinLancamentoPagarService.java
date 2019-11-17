@@ -25,7 +25,7 @@ public class FinLancamentoPagarService implements Serializable {
     private Repository<FinLancamentoPagar> repository;
 
     @Inject
-    private Repository<VendaCondicoesParcelas> condicoesParcelasRepository;
+    private Repository<CondicoesParcelas> condicoesParcelasRepository;
 
 
     public void gerarLancamento(NfeCabecalho nfe, ContaCaixa contaCaixa, NaturezaFinanceira naturezaFinanceira) throws Exception {
@@ -48,7 +48,7 @@ public class FinLancamentoPagarService implements Serializable {
 
     }
 
-    public void gerarLancamento(int id, BigDecimal valor, Fornecedor fornecedor, VendaCondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws Exception {
+    public void gerarLancamento(int id, BigDecimal valor, Fornecedor fornecedor, CondicoesPagamento condicoesPagamento, String codModulo, NaturezaFinanceira naturezaFinanceira, Empresa empresa) throws Exception {
         LancamentoPagar lancamento = new LancamentoPagar();
         lancamento.setFornecedor(fornecedor);
         lancamento.setCondicoesPagamento(condicoesPagamento);
@@ -128,17 +128,17 @@ public class FinLancamentoPagarService implements Serializable {
         return parcelas;
     }
 
-    private List<FinParcelaPagar> gerarParcelas(FinLancamentoPagar lancamentoPagar, VendaCondicoesPagamento condicoesPagamento) throws ChronosException {
+    private List<FinParcelaPagar> gerarParcelas(FinLancamentoPagar lancamentoPagar, CondicoesPagamento condicoesPagamento) throws ChronosException {
         List<FinParcelaPagar> parcelas = new ArrayList<>();
 
         if (condicoesPagamento.getVistaPrazo().equals("1")) {
-            condicoesPagamento.setParcelas(condicoesParcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesPagamento.getId()));
+            condicoesPagamento.setParcelas(condicoesParcelasRepository.getEntitys(CondicoesParcelas.class, "vendaCondicoesPagamento.id", condicoesPagamento.getId()));
         }
 
         FinParcelaPagar parcelaPagar;
         int number = 1;
 
-        for (VendaCondicoesParcelas p : condicoesPagamento.getParcelas()) {
+        for (CondicoesParcelas p : condicoesPagamento.getParcelas()) {
             parcelaPagar = new FinParcelaPagar();
             parcelaPagar.setFinLancamentoPagar(lancamentoPagar);
             parcelaPagar.setNumeroParcela(number++);

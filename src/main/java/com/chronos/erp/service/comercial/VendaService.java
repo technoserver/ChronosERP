@@ -13,7 +13,6 @@ import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.financeiro.FinLancamentoReceberService;
 import com.chronos.erp.service.gerencial.AuditoriaService;
 import com.chronos.erp.util.Biblioteca;
-import com.chronos.erp.util.Constants;
 import com.chronos.erp.util.jpa.Transactional;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
@@ -47,7 +46,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     @Inject
     private SyncPendentesService syncPendentesService;
     @Inject
-    private Repository<VendaCondicoesParcelas> parcelasRepository;
+    private Repository<CondicoesParcelas> parcelasRepository;
 
     @Inject
     private AuditoriaService auditoriaService;
@@ -62,10 +61,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     @Transactional
     public VendaCabecalho salvar(VendaCabecalho venda) throws ChronosException {
 
-        if (venda.getCondicoesPagamento() != null) {
-            venda.setFormaPagamento(venda.getCondicoesPagamento().getVistaPrazo().equals("V")
-                    ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
-        }
+
 
         if (venda.getSituacao().equals(SituacaoVenda.Digitacao.getCodigo()) && venda.getFormaPagamento().equals("1") && venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
             throw new ChronosException("Cliente com restrinções de bloqueio");
@@ -108,8 +104,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             venda = salvar(venda);
         }
 
-        finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
-                venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
+//        finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
+//                venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
 
         venda = repository.salvarFlush(venda);
 
@@ -133,8 +129,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
             NfeCabecalho nfe;
-            List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", venda.getCondicoesPagamento().getId());
-            venda.getCondicoesPagamento().setParcelas(parcelas);
+//            List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "vendaCondicoesPagamento.id", venda.getCondicoesPagamento().getId());
+//            venda.getCondicoesPagamento().setParcelas(parcelas);
             VendaToNFe vendaNfe = new VendaToNFe(modelo, venda);
             nfe = vendaNfe.gerarNfe();
 
@@ -159,7 +155,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             if (status == StatusTransmissao.AUTORIZADA) {
                 String codigo = venda.getSituacao();
 
-                venda.getCondicoesPagamento().setParcelas(null);
+                // venda.getCondicoesPagamento().setParcelas(null);
                 venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
                 venda.setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
                 repository.atualizar(venda);
@@ -384,7 +380,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
         venda.setCliente(orcamento.getCliente());
-        venda.setCondicoesPagamento(orcamento.getCondicoesPagamento());
+
         venda.setTransportadora(orcamento.getTransportadora());
         venda.setVendedor(orcamento.getVendedor());
         venda.setTipoFrete(orcamento.getTipoFrete());
@@ -399,9 +395,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         venda.setDataSaida(orcamento.getDataEntrega());
 
 
-        String forma = venda.getCondicoesPagamento().getVistaPrazo().equals("V")
-                ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo();
-        venda.setFormaPagamento(forma);
+//        String forma = venda.getCondicoesPagamento().getVistaPrazo().equals("V")
+//                ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo();
+        // venda.setFormaPagamento(forma);
 
         venda.calcularValorTotal();
 

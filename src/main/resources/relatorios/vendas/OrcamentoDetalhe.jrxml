@@ -14,7 +14,7 @@
     <parameter name="idorcamento" class="java.lang.Integer"/>
     <queryString>
         <![CDATA[SELECT
-
+     g.codigo,
      item.quantidade,
      item.valor_unitario,
      item.valor_subtotal,
@@ -22,14 +22,21 @@
      item.valor_total,
      produto.id AS produto_codigo,
      produto.codigo_interno AS produto_codigo_interno,
-     produto.nome AS produto_nome,
+       (CASE
+	WHEN g.id is not null THEN  produto.nome || (' ' ||c.nome || COALESCE(' TAM '||t.nome,''))
+	ELSE produto.nome
+     END) as produto_nome,
      un.sigla
 FROM
      orcamento_detalhe item
 INNER JOIN produto produto ON produto.id= item.id_produto
 INNER JOIN unidade_produto un ON un.id= produto.id_unidade_produto
+left join estoque_grade g on g.id = item.id_grade
+left join estoque_cor c on g.id_estoque_cor = c.id
+left join estoque_tamanho t on g.id_estoque_tamanho = t.id
 where item.id_venda_orcamento_cabecalho = $P{idorcamento}]]>
     </queryString>
+    <field name="codigo" class="java.lang.String"/>
     <field name="quantidade" class="java.math.BigDecimal"/>
     <field name="valor_unitario" class="java.math.BigDecimal"/>
     <field name="valor_subtotal" class="java.math.BigDecimal"/>
@@ -118,7 +125,8 @@ where item.id_venda_orcamento_cabecalho = $P{idorcamento}]]>
             <textField>
                 <reportElement style="dadosDetail" x="0" y="0" width="59" height="13"
                                uuid="dcbf04bb-0add-452e-8fde-c73feb998652"/>
-                <textFieldExpression><![CDATA[$F{produto_codigo}]]></textFieldExpression>
+                <textFieldExpression>
+                    <![CDATA[$F{codigo}!=null ? $F{codigo}:new DecimalFormat("000000").format(Double.valueOf($F{produto_codigo}))]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement style="dadosDetail" x="61" y="0" width="248" height="13"

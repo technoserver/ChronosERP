@@ -1,9 +1,9 @@
 package com.chronos.erp.controll.vendas;
 
 import com.chronos.erp.controll.AbstractControll;
+import com.chronos.erp.modelo.entidades.CondicoesPagamento;
+import com.chronos.erp.modelo.entidades.CondicoesParcelas;
 import com.chronos.erp.modelo.entidades.FinTipoRecebimento;
-import com.chronos.erp.modelo.entidades.VendaCondicoesPagamento;
-import com.chronos.erp.modelo.entidades.VendaCondicoesParcelas;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
@@ -21,13 +21,13 @@ import java.util.List;
  */
 @Named
 @ViewScoped
-public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondicoesPagamento> implements Serializable {
+public class VendaCondicoesPagamentoControll extends AbstractControll<CondicoesPagamento> implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Inject
     private Repository<FinTipoRecebimento> tipos;
 
-    private VendaCondicoesParcelas vendaCondicoesParcelas;
+    private CondicoesParcelas condicoesParcelas;
 
     private String nome;
 
@@ -50,7 +50,7 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
     @Override
     public void doEdit() {
         super.doEdit();
-        VendaCondicoesPagamento condicoes = dataModel.getRowData(getObjeto().getId().toString());
+        CondicoesPagamento condicoes = dataModel.getRowData(getObjeto().getId().toString());
         setObjeto(condicoes);
 
     }
@@ -70,12 +70,12 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
     }
 
     public void incluirVendaCondicoesParcelas() {
-        vendaCondicoesParcelas = new VendaCondicoesParcelas();
-        vendaCondicoesParcelas.setVendaCondicoesPagamento(getObjeto());
+        condicoesParcelas = new CondicoesParcelas();
+        condicoesParcelas.setCondicoesPagamento(getObjeto());
     }
 
     public void salvarVendaCondicoesParcelas() {
-        getObjeto().getParcelas().add(vendaCondicoesParcelas);
+        getObjeto().getParcelas().add(condicoesParcelas);
     }
 
     private void verificaParcelas() throws Exception {
@@ -110,8 +110,8 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
     }
 
     @Override
-    protected Class<VendaCondicoesPagamento> getClazz() {
-        return VendaCondicoesPagamento.class;
+    protected Class<CondicoesPagamento> getClazz() {
+        return CondicoesPagamento.class;
     }
 
     @Override
@@ -124,12 +124,12 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<VendaCondi
         return false;
     }
 
-    public VendaCondicoesParcelas getVendaCondicoesParcelas() {
-        return vendaCondicoesParcelas;
+    public CondicoesParcelas getCondicoesParcelas() {
+        return condicoesParcelas;
     }
 
-    public void setVendaCondicoesParcelas(VendaCondicoesParcelas vendaCondicoesParcelas) {
-        this.vendaCondicoesParcelas = vendaCondicoesParcelas;
+    public void setCondicoesParcelas(CondicoesParcelas condicoesParcelas) {
+        this.condicoesParcelas = condicoesParcelas;
     }
 
     public String getNome() {

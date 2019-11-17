@@ -1,9 +1,9 @@
 package com.chronos.erp.dto;
 
 import com.chronos.erp.modelo.entidades.Cliente;
+import com.chronos.erp.modelo.entidades.CondicoesPagamento;
 import com.chronos.erp.modelo.entidades.Empresa;
 import com.chronos.erp.modelo.entidades.Fornecedor;
-import com.chronos.erp.modelo.entidades.VendaCondicoesPagamento;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,7 +20,7 @@ public class LancamentoReceber {
     private Cliente cliente;
     private Fornecedor fornecedor;
     private String codigoModulo;
-    private VendaCondicoesPagamento condicoesPagamento;
+    private CondicoesPagamento condicoesPagamento;
     private Empresa emrpesa;
 
     public LancamentoReceber() {
@@ -67,11 +67,11 @@ public class LancamentoReceber {
         this.cliente = cliente;
     }
 
-    public VendaCondicoesPagamento getCondicoesPagamento() {
+    public CondicoesPagamento getCondicoesPagamento() {
         return condicoesPagamento;
     }
 
-    public void setCondicoesPagamento(VendaCondicoesPagamento condicoesPagamento) {
+    public void setCondicoesPagamento(CondicoesPagamento condicoesPagamento) {
         this.condicoesPagamento = condicoesPagamento;
     }
 

@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "VENDA_CONDICOES_PAGAMENTO")
-public class VendaCondicoesPagamento implements Serializable {
+@Table(name = "CONDICOES_PAGAMENTO")
+public class CondicoesPagamento implements Serializable {
 
     private static final long serialVersionUID = 2L;
     @Id
@@ -55,28 +55,28 @@ public class VendaCondicoesPagamento implements Serializable {
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vendaCondicoesPagamento", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<VendaCondicoesParcelas> parcelas;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "condicoesPagamento", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CondicoesParcelas> parcelas;
 
 
-    public VendaCondicoesPagamento() {
+    public CondicoesPagamento() {
 
     }
 
-    public VendaCondicoesPagamento(Integer id, String nome) {
+    public CondicoesPagamento(Integer id, String nome) {
         this.id = id;
         this.nome = nome;
 
     }
 
-    public VendaCondicoesPagamento(Integer id, String nome, String vistaPrazo) {
+    public CondicoesPagamento(Integer id, String nome, String vistaPrazo) {
         this.id = id;
         this.nome = nome;
         this.vistaPrazo = vistaPrazo;
 
     }
 
-    public VendaCondicoesPagamento(Integer id, String nome, String vistaPrazo, FinTipoRecebimento tipoRecebimento) {
+    public CondicoesPagamento(Integer id, String nome, String vistaPrazo, FinTipoRecebimento tipoRecebimento) {
         this.id = id;
         this.nome = nome;
         this.vistaPrazo = vistaPrazo;
@@ -255,11 +255,11 @@ public class VendaCondicoesPagamento implements Serializable {
         this.empresa = empresa;
     }
 
-    public List<VendaCondicoesParcelas> getParcelas() {
+    public List<CondicoesParcelas> getParcelas() {
         return parcelas;
     }
 
-    public void setParcelas(List<VendaCondicoesParcelas> parcelas) {
+    public void setParcelas(List<CondicoesParcelas> parcelas) {
         this.parcelas = parcelas;
     }
 
@@ -278,7 +278,7 @@ public class VendaCondicoesPagamento implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final VendaCondicoesPagamento other = (VendaCondicoesPagamento) obj;
+        final CondicoesPagamento other = (CondicoesPagamento) obj;
         return Objects.equals(this.id, other.id);
     }
 

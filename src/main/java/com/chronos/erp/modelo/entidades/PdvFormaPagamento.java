@@ -42,7 +42,7 @@ public class PdvFormaPagamento implements Serializable {
     @Transient
     private int qtdParcelas;
     @Transient
-    private VendaCondicoesPagamento condicao;
+    private CondicoesPagamento condicao;
     @Transient
     private OperadoraCartao operadoraCartao;
 
@@ -138,11 +138,11 @@ public class PdvFormaPagamento implements Serializable {
         this.tipoPagamento = tipoPagamento;
     }
 
-    public VendaCondicoesPagamento getCondicao() {
+    public CondicoesPagamento getCondicao() {
         return condicao;
     }
 
-    public void setCondicao(VendaCondicoesPagamento condicao) {
+    public void setCondicao(CondicoesPagamento condicao) {
         this.condicao = condicao;
     }
 

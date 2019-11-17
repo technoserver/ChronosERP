@@ -62,10 +62,6 @@ public class OrcamentoCabecalho implements Serializable {
     @NotBlank
     @Column(name = "SITUACAO")
     private String situacao;
-    @JoinColumn(name = "ID_VENDA_CONDICOES_PAGAMENTO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    @NotNull
-    private VendaCondicoesPagamento condicoesPagamento;
     @JoinColumn(name = "ID_TRANSPORTADORA", referencedColumnName = "ID")
     @ManyToOne
     private Transportadora transportadora;
@@ -79,11 +75,16 @@ public class OrcamentoCabecalho implements Serializable {
     private Vendedor vendedor;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "orcamentoCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrcamentoDetalhe> listaOrcamentoDetalhe;
+    @OneToMany(mappedBy = "orcamentoCabecalho", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<OrcamentoFormaPagamento> listaFormaPagamento;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
     private Empresa empresa;
 
+
+    @Transient
+    private CondicoesPagamento condicoesPagamento;
 
     public OrcamentoCabecalho() {
 
@@ -262,11 +263,11 @@ public class OrcamentoCabecalho implements Serializable {
         this.situacao = situacao;
     }
 
-    public VendaCondicoesPagamento getCondicoesPagamento() {
+    public CondicoesPagamento getCondicoesPagamento() {
         return condicoesPagamento;
     }
 
-    public void setCondicoesPagamento(VendaCondicoesPagamento condicoesPagamento) {
+    public void setCondicoesPagamento(CondicoesPagamento condicoesPagamento) {
         this.condicoesPagamento = condicoesPagamento;
     }
 
@@ -300,6 +301,14 @@ public class OrcamentoCabecalho implements Serializable {
 
     public void setListaOrcamentoDetalhe(List<OrcamentoDetalhe> listaOrcamentoDetalhe) {
         this.listaOrcamentoDetalhe = listaOrcamentoDetalhe;
+    }
+
+    public Set<OrcamentoFormaPagamento> getListaFormaPagamento() {
+        return listaFormaPagamento;
+    }
+
+    public void setListaFormaPagamento(Set<OrcamentoFormaPagamento> listaFormaPagamento) {
+        this.listaFormaPagamento = listaFormaPagamento;
     }
 
     public Empresa getEmpresa() {

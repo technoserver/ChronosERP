@@ -894,6 +894,19 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
 
+    protected List<TipoPagamento> definirTipoPagament() {
+        List<TipoPagamento> pagamentos = new ArrayList<>();
+        pagamentos.add(new TipoPagamento(1, "01", "DINHEIRO", "S", "N"));
+        pagamentos.add(new TipoPagamento(2, "02", "CHEQUE", "N", "N"));
+        pagamentos.add(new TipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
+        pagamentos.add(new TipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
+        pagamentos.add(new TipoPagamento(5, "05", "CREDITO NA LOJA", "N", "N"));
+        pagamentos.add(new TipoPagamento(6, "14", "DUPLICATA", "N", "S"));
+
+        return pagamentos;
+    }
+
+
     public HashMap getListaCsosnB() {
         HashMap<String, String> csosnb = new LinkedHashMap<>();
 
