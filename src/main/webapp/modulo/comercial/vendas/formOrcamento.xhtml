@@ -104,126 +104,188 @@
                             </h:panelGroup>
 
 
-                            <p:tabView id="tabViewDetalhes" style="border: 0px;">
+                            <p:tabView id="tab-view-orcamento" style="border: 0px;">
                                 <p:tab title="Dados Principais" id="dados-principais">
-                                    <div class="row">
+                                    <h:form id="form-dados-pripais">
+                                        <div class="row">
 
 
-                                        <div class="col-xs-12 col-sm-4 col-md-4">
-                                            <p:outputLabel value="Cliente" for="cliente"/>
-                                            <div class="field-action">
-                                                <p:autoComplete id="cliente"
-                                                                value="#{orcamentoCabecalhoControll.objeto.cliente}"
-                                                                completeMethod="#{orcamentoCabecalhoControll.getListaCliente}"
-                                                                var="objeto" itemLabel="#{objeto.pessoa.nome}"
-                                                                itemValue="#{objeto}"
-                                                                queryDelay="500"
-                                                                style="width: 100%"
-                                                                converter="defaultConverter" forceSelection="true"
-                                                                minQueryLength="3" maxResults="10" required="true"
-                                                                emptyMessage="Nenhum registro encontrado">>
+                                            <div class="col-xs-12 col-sm-4 col-md-4">
+                                                <p:outputLabel value="Cliente" for="cliente"/>
+                                                <div class="field-action">
+                                                    <p:autoComplete id="cliente"
+                                                                    value="#{orcamentoCabecalhoControll.objeto.cliente}"
+                                                                    completeMethod="#{orcamentoCabecalhoControll.getListaCliente}"
+                                                                    var="objeto" itemLabel="#{objeto.pessoa.nome}"
+                                                                    itemValue="#{objeto}"
+                                                                    queryDelay="500"
+                                                                    style="width: 100%"
+                                                                    converter="defaultConverter" forceSelection="true"
+                                                                    minQueryLength="3" maxResults="10" required="true"
+                                                                    emptyMessage="Nenhum registro encontrado">>
 
 
-                                                </p:autoComplete>
-                                                <div class="field-action__icon">
-                                                    <p:commandLink title="Add novo cliente"
-                                                                   style="font-size: 20px;color: #00acac"
-                                                                   action="#{cadastroRapidoClienteControll.abrirDialog}"
-                                                                   process="@this" update="@none"
-                                                    >
-                                                        <p:ajax event="dialogReturn"
-                                                                listener="#{orcamentoCabecalhoControll.clienteSelecionado}"
-                                                                process="@this" update="cliente"/>
-                                                        <i class="fa fa-plus-circle"></i>
-                                                    </p:commandLink>
+                                                    </p:autoComplete>
+                                                    <div class="field-action__icon">
+                                                        <p:commandLink title="Add novo cliente"
+                                                                       style="font-size: 20px;color: #00acac"
+                                                                       action="#{cadastroRapidoClienteControll.abrirDialog}"
+                                                                       process="@this" update="@none"
+                                                        >
+                                                            <p:ajax event="dialogReturn"
+                                                                    listener="#{orcamentoCabecalhoControll.clienteSelecionado}"
+                                                                    process="@this" update="cliente"/>
+                                                            <i class="fa fa-plus-circle"></i>
+                                                        </p:commandLink>
+                                                    </div>
+
+
                                                 </div>
-
-
                                             </div>
+
+
+                                            <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                                              label="Vendedor"
+                                                              itemLabel="#{objeto.colaborador.pessoa.nome}"
+                                                              controller="#{orcamentoCabecalhoControll}"
+                                                              completeMethod="getListaVendedor"
+                                                              nomeAtributo="#{orcamentoCabecalhoControll.objeto.vendedor}"
+                                                              idComponente="vendaOrcamentoCabecalhoVendedor">
+                                                <p:ajax event="itemSelecionado"
+                                                        listener="#{orcamentoCabecalhoControll.definirTaxaComissao}"
+                                                />
+                                            </erp:autoComplete>
+
+                                            <erp:campoData label="Entrega em"
+                                                           styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                           idComponente="dataEntrega"
+                                                           nomeAtributo="#{orcamentoCabecalhoControll.objeto.dataEntrega}"/>
+
+
                                         </div>
+                                        <div class="row">
+                                            <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                                                idComponente="vendaOrcamentoCabecalhoObservacao"
+                                                                label="Observacao"
+                                                                nomeAtributo="#{orcamentoCabecalhoControll.objeto.observacao}"/>
+                                        </div>
+                                    </h:form>
 
-
-                                        <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                                                          label="Vendedor"
-                                                          itemLabel="#{objeto.colaborador.pessoa.nome}"
-                                                          controller="#{orcamentoCabecalhoControll}"
-                                                          completeMethod="getListaVendedor"
-                                                          nomeAtributo="#{orcamentoCabecalhoControll.objeto.vendedor}"
-                                                          idComponente="vendaOrcamentoCabecalhoVendedor">
-                                            <p:ajax event="itemSelecionado"
-                                                    listener="#{orcamentoCabecalhoControll.definirTaxaComissao}"
-                                            />
-                                        </erp:autoComplete>
-
-                                        <erp:campoData label="Entrega em"
-                                                       styleClass="col-xs-12 col-sm-2 col-md-2"
-                                                       idComponente="dataEntrega"
-                                                       nomeAtributo="#{orcamentoCabecalhoControll.objeto.dataEntrega}"/>
-
-
-                                    </div>
-                                    <div class="row">
-                                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                                            idComponente="vendaOrcamentoCabecalhoObservacao"
-                                                            label="Observacao"
-                                                            nomeAtributo="#{orcamentoCabecalhoControll.objeto.observacao}"/>
-                                    </div>
 
                                 </p:tab>
 
                                 <p:tab title="Produtos" id="produtos">
 
-                                    <p:outputPanel id="panelVendaOrcamentoDetalhe">
-                                        <div class="row m-b">
-                                            <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
-                                                              label="Produto"
-                                                              itemLabel="#{objeto.nome}"
-                                                              controller="#{orcamentoCabecalhoControll}"
-                                                              completeMethod="getListaProduto"
-                                                              nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.produto}"
-                                                              idComponente="vendaOrcamentoDetalheProduto">
-                                                <p:ajax event="itemSelecionado" process="@this"
-                                                        listener="#{orcamentoCabecalhoControll.definirValorVenda}"/>
-                                            </erp:autoComplete>
-                                            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                                              idComponente="vendaOrcamentoDetalheQuantidade"
-                                                              label="Quantidade"
-                                                              requerido="true"
-                                                              nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.quantidade}"/>
+
+                                    <h:form id="form-produtos">
+
+                                        <h:panelGroup layout="block" id="container-item"
+                                                      style="height: 90px;background: #e0dfdf;display: flex;align-items: center;padding: 5px">
+                                            <div class="row" style="height: 100%">
+
+                                                <h:panelGroup layout="block" class="col-xs-12 col-sm-5 col-md-5"
+                                                              id="produto-selecionado">
+
+                                                    <div style="display: flex;align-items: center; height: 100%;">
+                                                        <p:autoComplete id="produto"
+                                                                        value="#{orcamentoCabecalhoControll.orcamentoDetalhe.produto}"
+                                                                        completeMethod="#{orcamentoCabecalhoControll.getListaProduto}"
+                                                                        var="objeto"
+                                                                        itemLabel="#{objeto.nome}" itemValue="#{objeto}"
+                                                                        queryDelay="500"
+                                                                        style="#{orcamentoCabecalhoControll.exibirGrade ? 'width: 77%':'width: 100%'}"
+                                                                        placeholder="Digite o nome ou código ou código interno do Prod."
+                                                                        converter="defaultConverter"
+                                                                        forceSelection="true"
+                                                                        minQueryLength="3"
+                                                                        emptyMessage="Nenhum produto encontrado">
+
+                                                            <p:ajax event="itemSelect" process="@this"
+                                                                    update="formCentro:tab-view-orcamento:form-produtos:container-item"
+                                                                    listener="#{orcamentoCabecalhoControll.definirValorVenda}"/>
+                                                        </p:autoComplete>
+                                                        <h:panelGroup layout="block" id="grade" style="margin-left: 5px"
+                                                                      rendered="#{orcamentoCabecalhoControll.exibirGrade}">
+                                                            <h:selectOneMenu styleClass="form-control grade"
+                                                                             id="cor"
+                                                                             value="#{orcamentoCabecalhoControll.cor}"
+                                                                             converter="defaultConverter"
+                                                                             required="true">
+                                                                <f:selectItem itemValue="#{null}" itemLabel="COR"/>
+                                                                <f:selectItems
+                                                                        value="#{orcamentoCabecalhoControll.cores}"
+                                                                        var="#{obj}" itemValue="#{obj}"
+                                                                        itemLabel="#{obj.nome}"/>
+                                                                <p:ajax process="@this" event="change"
+                                                                        update="formCentro:tab-view-orcamento:form-produtos:grade"
+                                                                        listener="#{orcamentoCabecalhoControll.definirTamanhos()}"/>
+                                                            </h:selectOneMenu>
+                                                            <h:selectOneMenu styleClass="form-control grade"
+                                                                             value="#{orcamentoCabecalhoControll.tamanho}"
+                                                                             converter="defaultConverter"
+                                                                             required="true"
+                                                                             id="tamanho">
+                                                                <f:selectItem itemValue="#{null}" itemLabel="Tamanho"/>
+                                                                <f:selectItems
+                                                                        value="#{orcamentoCabecalhoControll.tamanhos}"
+                                                                        var="#{obj}" itemValue="#{obj}"
+                                                                        itemLabel="#{obj.nome}"/>
+                                                            </h:selectOneMenu>
+                                                        </h:panelGroup>
+                                                    </div>
 
 
-                                            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
-                                                              idComponente="valorUnitario"
-                                                              desabilitado="#{!orcamentoCabecalhoControll.podeAlterarPreco}"
-                                                              label="Valor"
-                                                              nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.valorUnitario}"/>
+                                                </h:panelGroup>
 
-                                            <div class="col-xs-12 col-sm-2 col-md-2">
-                                                <p:outputLabel value="Desconto" for="desconto"/>
-                                                <div class="ui-inputgroup">
-
-                                                    <p:inputNumber id="desconto"
-                                                                   value="#{orcamentoCabecalhoControll.desconto}"
-                                                                   required="true"
-                                                                   style="width: 100%;"
-                                                                   decimalPlaces="2"
-                                                                   minValue="0"/>
+                                                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                                  idComponente="vendaOrcamentoDetalheQuantidade"
+                                                                  label="Quantidade"
+                                                                  requerido="true"
+                                                                  nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.quantidade}"/>
 
 
-                                                    <p:commandButton id="btnTipoDesconto"
-                                                                     action="#{orcamentoCabecalhoControll.alterarTipoDesconto}"
-                                                                     process="@this"
-                                                                     value="#{orcamentoCabecalhoControll.tipoDesconto eq 0 ? '%' : 'R$' }"/>
+                                                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                                  idComponente="valorUnitario"
+                                                                  desabilitado="#{!orcamentoCabecalhoControll.podeAlterarPreco}"
+                                                                  label="Valor"
+                                                                  requerido="true"
+                                                                  nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.valorUnitario}"/>
+
+                                                <div class="col-xs-12 col-sm-3 col-md-3">
+                                                    <p:outputLabel value="Desconto" for="desconto"/>
+                                                    <div class="ui-inputgroup">
+
+                                                        <p:inputNumber id="desconto"
+                                                                       value="#{orcamentoCabecalhoControll.desconto}"
+                                                                       style="width: 100%;"
+                                                                       decimalPlaces="2"
+                                                                       minValue="0"/>
+
+
+                                                        <p:commandButton id="btnTipoDesconto"
+                                                                         action="#{orcamentoCabecalhoControll.alterarTipoDesconto}"
+                                                                         process="@this"
+                                                                         update="formCentro:tab-view-orcamento:form-produtos:desconto"
+                                                                         value="#{orcamentoCabecalhoControll.tipoDesconto eq 0 ? '%' : 'R$' }"/>
+
+                                                        <p:commandButton id="btn-salvar"
+                                                                         style="margin-left: 5px"
+                                                                         value="Incluir"
+                                                                         update=":formCentro:growl,formCentro:panelValores,:formCentro:tab-view-orcamento:form-produtos:container-item,formCentro:tab-view-orcamento:itens,:formCentro:tab-view-orcamento:tipo-pagamento"
+                                                                         action="#{orcamentoCabecalhoControll.salvarVendaOrcamentoDetalhe}"
+                                                                         process="form-produtos"
+                                                        />
+                                                    </div>
                                                 </div>
+
                                             </div>
+                                        </h:panelGroup>
 
-                                        </div>
-
-
-                                    </p:outputPanel>
+                                    </h:form>
 
 
-                                    <p:dataTable id="dataTableVendaOrcamentoDetalhe" var="obj"
+                                    <p:dataTable id="itens" var="obj"
+                                                 styleClass="m-t"
                                                  value="#{orcamentoCabecalhoControll.objeto.listaOrcamentoDetalhe}"
                                                  paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
                                                  reflow="true"
@@ -264,8 +326,8 @@
                                                            id="btnExluirProduto"
                                                            action="#{orcamentoCabecalhoControll.excluirVendaOrcamentoDetalhe}"
                                                            style="position: relative; right: 7px"
-                                                           update=":formCentro:growl,dataTableVendaOrcamentoDetalhe,,:formCentro:panelValores"
-                                                           process="dataTableVendaOrcamentoDetalhe"
+                                                           update=":formCentro:growl,itens,:formCentro:panelValores"
+                                                           process="itens"
                                                            oncomplete="atualizarMsg();"
                                                            class="btn btn-default"
                                             >
@@ -293,6 +355,10 @@
                                                                var="obj" itemValue="#{obj}"
                                                                itemLabel="#{obj.descricao}"/>
 
+                                                <p:ajax process="@this" event="change"
+                                                        update="formCentro:tab-view-orcamento:tipo-pagamento"
+                                                        listener="#{orcamentoCabecalhoControll.definirCondicoess()}"/>
+
                                             </h:selectOneMenu>
                                         </div>
 
@@ -313,12 +379,13 @@
                                             <div class="ui-inputgroup">
 
 
-                                                <p:inputNumber id="PedidoValorPago"
+                                                <p:inputNumber id="valor-pago"
                                                                styleClass="input-valor-pagar"
                                                                value="#{orcamentoCabecalhoControll.valorPago}"/>
                                                 <p:commandButton class="input-group-addon btn btn-lg btn-primary"
                                                                  action="#{orcamentoCabecalhoControll.lancaPagamento}"
-                                                                 process="@this,:formCentro:telaDetalhe:tabViewDetalhes:tipo-pagamento"
+                                                                 process="@this,:formCentro:tab-view-orcamento:tipo-pagamento"
+                                                                 update="formCentro:growl,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos"
                                                                  disabled="#{orcamentoCabecalhoControll.podeLancaPagamento}"
                                                                  id="botao-confirma-pagamento"
                                                                  icon="fa fa-plus">
@@ -330,7 +397,7 @@
 
                                     </h:panelGroup>
 
-                                    <p:dataTable id="dataTableOsPagamento" var="obj" reflow="true"
+                                    <p:dataTable id="pagamentos" var="obj" reflow="true"
                                                  value="#{orcamentoCabecalhoControll.objeto.listaFormaPagamento}">
 
                                         <p:column headerText="Forma de pagamento">
@@ -345,7 +412,8 @@
                                         <p:column headerText="">
                                             <p:commandButton
                                                     icon="fa fa-remove"
-                                                    process="@this,dataTableOsPagamento"
+                                                    process="@this,pagamentos"
+                                                    update="formCentro:growl,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos"
                                                     action="#{orcamentoCabecalhoControll.excluirPagamento}"
 
                                             >
@@ -379,8 +447,7 @@
                                                      rendered="#{empty orcamentoCabecalhoControll.objeto.id}"
                                                      action="#{orcamentoCabecalhoControll.salvar()}"
                                                      disabled="#{!orcamentoCabecalhoControll.podeInserir()}"
-                                                     process="@form"
-                                                     oncomplete="addClass()"
+                                                     process="@this,:formCentro:tab-view-orcamento:form-dados-pripais"
                                                      update=":formCentro:growl,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
 
                                     </p:commandButton>

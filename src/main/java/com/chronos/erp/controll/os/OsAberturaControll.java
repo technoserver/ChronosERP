@@ -257,17 +257,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     }
 
-    public void gerarOsDoOrcamento() {
-        if (idorcamento != null) {
 
-            OrcamentoCabecalho orcamento = orcamentoRepository.getJoinFetch(idorcamento, OrcamentoCabecalho.class);
-            if (orcamento != null) {
-                doCreate();
-                osService.gerarOSDoOrcamento(orcamento, getObjeto());
-            }
-
-        }
-    }
 
     @Override
     public void salvar() {
@@ -278,6 +268,18 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Erro ao salvar o servico", e);
+        }
+    }
+
+    public void gerarOsDoOrcamento() {
+        if (idorcamento != null) {
+
+            OrcamentoCabecalho orcamento = orcamentoRepository.getJoinFetch(idorcamento, OrcamentoCabecalho.class);
+            if (orcamento != null) {
+                doCreate();
+                osService.gerarOSDoOrcamento(orcamento, getObjeto());
+            }
+
         }
     }
 
@@ -726,17 +728,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         }
     }
 
-    private List<TipoPagamento> definirTipoPagament() {
-        List<TipoPagamento> pagamentos = new ArrayList<>();
-        pagamentos.add(new TipoPagamento(1, "01", "DINHEIRO", "S", "N"));
-        pagamentos.add(new TipoPagamento(2, "02", "CHEQUE", "N", "N"));
-        pagamentos.add(new TipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
-        pagamentos.add(new TipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
-        pagamentos.add(new TipoPagamento(5, "05", "CREDITO NA LOJA", "N", "N"));
-        pagamentos.add(new TipoPagamento(6, "14", "DUPLICATA", "N", "S"));
 
-        return pagamentos;
-    }
 
     private void iniciarValoresPagamento() {
         totalReceber = BigDecimal.ZERO;

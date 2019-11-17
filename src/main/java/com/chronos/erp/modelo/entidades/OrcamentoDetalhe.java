@@ -22,6 +22,8 @@ public class OrcamentoDetalhe implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "ID_GRADE")
+    private Integer idgrade;
     @NotNull
     @Column(name = "QUANTIDADE")
     @DecimalMin(value = "0.01", message = "A quantidade do produto  deve ser maior que 0,01")
@@ -60,6 +62,14 @@ public class OrcamentoDetalhe implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdgrade() {
+        return idgrade;
+    }
+
+    public void setIdgrade(Integer idgrade) {
+        this.idgrade = idgrade;
     }
 
     public BigDecimal getQuantidade() {
