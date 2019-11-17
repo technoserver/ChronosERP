@@ -8,8 +8,8 @@ import java.util.Optional;
 
 
 @Entity
-@Table(name = "orcamento_forma_pagamento")
-public class OrcamentoFormaPagamento implements Serializable {
+@Table(name = "venda_forma_pagamento")
+public class VendaFormaPagamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -33,9 +33,9 @@ public class OrcamentoFormaPagamento implements Serializable {
     private String estorno;
     @Column(name = "TROCO")
     private BigDecimal troco;
-    @JoinColumn(name = "id_orcamento_cabecalho", referencedColumnName = "ID")
+    @JoinColumn(name = "id_venda_cabecalho", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private OrcamentoCabecalho orcamentoCabecalho;
+    private VendaCabecalho vendaCabecalho;
     @JoinColumn(name = "ID_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private TipoPagamento tipoPagamento;
@@ -44,11 +44,12 @@ public class OrcamentoFormaPagamento implements Serializable {
     private CondicoesPagamento condicoesPagamento;
     @Transient
     private int qtdParcelas;
-
+    @Transient
+    private CondicoesPagamento condicao;
     @Transient
     private OperadoraCartao operadoraCartao;
 
-    public OrcamentoFormaPagamento() {
+    public VendaFormaPagamento() {
         this.qtdParcelas = 1;
     }
 
@@ -124,12 +125,12 @@ public class OrcamentoFormaPagamento implements Serializable {
         this.troco = troco;
     }
 
-    public OrcamentoCabecalho getOrcamentoCabecalho() {
-        return orcamentoCabecalho;
+    public VendaCabecalho getVendaCabecalho() {
+        return vendaCabecalho;
     }
 
-    public void setOrcamentoCabecalho(OrcamentoCabecalho orcamentoCabecalho) {
-        this.orcamentoCabecalho = orcamentoCabecalho;
+    public void setVendaCabecalho(VendaCabecalho vendaCabecalho) {
+        this.vendaCabecalho = vendaCabecalho;
     }
 
     public TipoPagamento getTipoPagamento() {
@@ -172,9 +173,9 @@ public class OrcamentoFormaPagamento implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OrcamentoFormaPagamento)) return false;
+        if (!(o instanceof VendaFormaPagamento)) return false;
 
-        OrcamentoFormaPagamento that = (OrcamentoFormaPagamento) o;
+        VendaFormaPagamento that = (VendaFormaPagamento) o;
 
         return getId() != null ? getId().equals(that.getId()) : that.getId() != null;
     }

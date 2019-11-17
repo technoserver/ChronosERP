@@ -170,7 +170,7 @@ public class FinLancamentoReceberService implements Serializable {
 
     public List<FinParcelaReceber> gerarParcelas(BigDecimal valor, Date dataEmissao, CondicoesPagamento condicao) throws ChronosException {
 
-        List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
+        List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "condicoesPagamento.id", condicao.getId());
 
 
         int number = 1;

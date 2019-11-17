@@ -20,6 +20,16 @@
         Vendas
     </ui:define>
 
+    <ui:define name="css">
+        <style type="text/css">
+            .grade {
+                border: none;
+                background-color: transparent;
+                padding: 1px;
+            }
+        </style>
+    </ui:define>
+
 
     <ui:define name="gridDados">
         <style type="text/css">
@@ -289,98 +299,7 @@
 
     </ui:define>
 
-    <ui:define name="outrasTelas">
-        <h:form id="formOutrasTelas">
 
-            <p:dialog id="dialogVendaDetalhe"
-                      header="Inclusão/Alteração Venda Detalhe"
-                      widgetVar="dialogVendaDetalhe" showEffect="slide" hideEffect="slide"
-                      resizable="true" modal="true" closable="false" width="800">
-
-                <p:outputPanel id="panelVendaDetalhe">
-                    <div class="row">
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                          label="Produto"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{vendaCabecalhoControll}"
-                                          completeMethod="getListaProduto"
-                                          nomeAtributo="#{vendaCabecalhoControll.produto}"
-                                          idComponente="vendaDetalheProduto">
-
-                            <p:column headerText="Produto">
-                                <p:outputLabel value="#{objeto.nome}"/>
-                            </p:column>
-                            <p:column headerText="UN">
-                                <p:outputLabel value="#{objeto.unidade}"/>
-                            </p:column>
-                            <p:column headerText="Valor Venda" class="coluna-monetaria">
-                                <p:outputLabel value="#{objeto.valorVenda}">
-                                    <f:convertNumber pattern="#,###,##0.00"/>
-                                </p:outputLabel>
-                            </p:column>
-                            <p:column headerText="Estoque Verificado" class="coluna-monetaria">
-                                <p:outputLabel value="#{objeto.estoqueVerificado}">
-                                    <f:convertNumber pattern="#,###,##0.00"/>
-                                </p:outputLabel>
-                            </p:column>
-                            <p:ajax event="itemSelecionado" listener="#{vendaCabecalhoControll.definirValorProduto}"
-                                    update="formOutrasTelas:campoValor:valorUnitario"/>
-                        </erp:autoComplete>
-
-
-                        <div class="col-xs-12 col-sm-2 col-md-2">
-                            <p:outputLabel value="Quantidade"
-                                           for="vendaDetalheQuantidade"/>
-
-                            <p:inputNumber id="vendaDetalheQuantidade"
-                                           value="#{vendaCabecalhoControll.vendaDetalhe.quantidade}"
-                                           required="true"
-                                           style="width: 100%;"
-                                           disabled="#{!vendaCabecalhoControll.podeAlterarPreco}"
-                                           decimalPlaces="2"
-                                           minValue="-9999999999.99"
-                            >
-                                <p:ajax update="formOutrasTelas:campoValor:valorUnitario"
-                                        process="@this"
-                                        event="blur"
-                                        listener="#{vendaCabecalhoControll.definirValorAtacado}"/>
-                            </p:inputNumber>
-                        </div>
-
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          idComponente="valorUnitario" label="Valor"
-                                          requerido="true" id="campoValor"
-                                          nomeAtributo="#{vendaCabecalhoControll.vendaDetalhe.valorUnitario}"/>
-                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                          idComponente="vendaDetalheTaxaDesconto" label="Taxa Desconto"
-                                          nomeAtributo="#{vendaCabecalhoControll.vendaDetalhe.taxaDesconto}"/>
-                    </div>
-
-                </p:outputPanel>
-                <f:facet name="footer">
-                    <div class="row">
-                        <div class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Salvar" class="btn btn-primary center-block"
-                                             actionListener="#{vendaCabecalhoControll.salvarVendaDetalhe}">
-
-                                <p:ajax process="@form"
-                                        oncomplete="if (!args.validationFailed) {PF('dialogVendaDetalhe').hide();}"
-                                        update=":formOutrasTelas:panelVendaDetalhe,:formCentro:growl,:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe,:formCentro:lista-empresa"
-                                />
-                            </h:commandButton>
-                        </div>
-                        <div class="col-xs-6 col-lg-6">
-                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                            >
-                                <p:ajax oncomplete="PF('dialogVendaDetalhe').hide();" process="@this"/>
-                            </h:commandButton>
-                        </div>
-                    </div>
-                </f:facet>
-
-            </p:dialog>
-        </h:form>
-    </ui:define>
 
     <ui:define name="outrasTelas3">
         <h:form id="formJustificativaCancelamento">
@@ -592,7 +511,7 @@
                         <div class="col-xs-6 col-md-6 text-center">
                             <p:commandButton value="Salvar"
                                              id="btnSalvarDesonto"
-                                             update="panelOutrasTelas5,:formCentro:growl,:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe"
+                                             update="panelOutrasTelas5,:formCentro:growl,:formCentro:panel-valores,formCentro:tab-view-vendas:itens"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
                                              action="#{vendaCabecalhoControll.aplicarDesconto}"/>
 
@@ -614,7 +533,7 @@
 
     <ui:define name="telaSupervisor">
         <erp:supervisor id="telaSupervisor"
-                        atualizar=",:formCentro:panel-valores,:formCentro:dataTableVendaDetalhe"
+                        atualizar=",:formCentro:panel-valores,formCentro:tab-view-vendas:itens"
                         controller="#{vendaCabecalhoControll}"/>
     </ui:define>
 

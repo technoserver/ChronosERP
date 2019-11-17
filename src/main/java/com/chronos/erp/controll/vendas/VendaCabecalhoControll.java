@@ -18,6 +18,7 @@ import com.chronos.erp.service.comercial.NfeService;
 import com.chronos.erp.service.comercial.VendaService;
 import com.chronos.erp.service.financeiro.FinLancamentoReceberService;
 import com.chronos.erp.service.gerencial.AuditoriaService;
+import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jpa.Transactional;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
@@ -35,6 +36,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by john on 16/08/17.
@@ -77,6 +79,10 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private AuditoriaService auditoriaService;
     @Inject
     private Repository<SituacaoForCli> situacaoForCliRepository;
+    @Inject
+    private Repository<EstoqueGrade> estoqueGradeRepository;
+    @Inject
+    private Repository<CondicoesPagamento> pagamentoRepository;
 
     private ProdutoDTO produto;
 
@@ -105,6 +111,26 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     private int tipoDesconto;
     private BigDecimal desconto;
     private boolean podeAlterarPreco = true;
+
+    private EstoqueCor cor;
+    private EstoqueTamanho tamanho;
+    private List<EstoqueCor> cores;
+    private List<EstoqueTamanho> tamanhos;
+    private List<EstoqueGrade> grades;
+    private boolean exibirGrade = false;
+
+    private TipoPagamento tipoPagamento;
+    private List<TipoPagamento> listTipoPagamento;
+    private CondicoesPagamento condicaoPagamento;
+    private List<CondicoesPagamento> condicoesPagamentos;
+    private VendaFormaPagamento formaPagamentoSelecionado;
+    private boolean exibirCondicoes;
+
+    private BigDecimal valorPago;
+    private BigDecimal saldoRestante;
+    private BigDecimal totalRecebido;
+    private BigDecimal totalReceber;
+    private BigDecimal troco;
 
     @PostConstruct
     @Override
@@ -172,7 +198,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         super.doCreate();
         getObjeto().setEmpresa(empresa);
         pessoaCliente = null;
-
+        incluirVendaDetalhe();
+        listTipoPagamento = definirTipoPagament();
+        iniciarValoresPagamento();
     }
 
     @Override
@@ -182,6 +210,19 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         setObjeto(venda);
         pessoaCliente = new PessoaCliente();
         pessoaCliente.setNome(getObjeto().getCliente().getPessoa().getNome());
+        incluirVendaDetalhe();
+        listTipoPagamento = definirTipoPagament();
+
+        for (VendaDetalhe item : venda.getListaVendaDetalhe()) {
+            if (item.getIdgrade() != null) {
+                EstoqueGrade grade = estoqueGradeRepository.get(item.getIdgrade(), EstoqueGrade.class);
+
+                String nome = item.getProduto().getNome() + " COR " + grade.getEstoqueCor().getNome() + " TAM " + grade.getEstoqueTamanho().getNome();
+                item.getProduto().setNome(nome);
+
+
+            }
+        }
     }
 
     @Override
@@ -207,18 +248,46 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         vendaDetalhe.setVendaCabecalho(getObjeto());
         vendaDetalhe.setQuantidade(BigDecimal.ONE);
         produto = new ProdutoDTO();
+        exibirGrade = false;
     }
 
     public void definirValorProduto(SelectEvent event) {
         produto = (ProdutoDTO) event.getObject();
         BigDecimal precoVenda = produtoService.defnirPrecoVenda(produto);
         vendaDetalhe.setValorUnitario(precoVenda);
+
+        exibirGrade = false;
+        if (produto != null && produto.getPossuiGrade()) {
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("idproduto", produto.getId()));
+            filtros.add(new Filtro("idempresa", empresa.getId()));
+
+            grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+
+            if (!grades.isEmpty()) {
+                cores = grades.stream().map(g -> g.getEstoqueCor()).collect(Collectors.toList());
+                exibirGrade = true;
+            }
+
+        }
+    }
+
+    public void definirTamanhos() {
+        if (cor != null) {
+            tamanhos = grades.stream()
+                    .filter(g -> g.getEstoqueCor().getId().equals(cor.getId()))
+                    .map(t -> t.getEstoqueTamanho()).collect(Collectors.toList());
+        }
     }
 
     public void definirValorAtacado() {
         produto.setQuantidadeVenda(vendaDetalhe.getQuantidade());
         BigDecimal precoVenda = produtoService.defnirPrecoVenda(produto);
         vendaDetalhe.setValorUnitario(precoVenda);
+    }
+
+    public void alterarTipoDesconto() {
+        tipoDesconto = tipoDesconto == 0 ? 1 : 0;
     }
 
     public void alterarVendaDetalhe() {
@@ -231,13 +300,32 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         try {
             vendaDetalhe.setProduto(new Produto(produto.getId(), produto.getNome()));
 
+            if (exibirGrade) {
+                Optional<EstoqueGrade> first = grades.stream()
+                        .filter(g -> g.getEstoqueCor().getId().equals(cor.getId()) && g.getEstoqueTamanho().getId().equals(tamanho.getId()))
+                        .findFirst();
+
+                if (!first.isPresent()) {
+                    throw new ChronosException("Grade não localizada");
+                }
+
+                String nome = vendaDetalhe.getProduto().getNome() + " COR " + cor.getNome() + " TAM " + tamanho.getNome();
+                vendaDetalhe.getProduto().setNome(nome);
+                vendaDetalhe.setIdgrade(first.get().getId());
+            }
+
+
             itemService.verificarRestricao(vendaDetalhe);
 
             if (itemService.isNecessarioAutorizacaoSupervisor()) {
                 PrimeFaces.current().executeScript("PF('dialogVendaDetalhe').hide();");
                 PrimeFaces.current().executeScript("PF('dialogSupervisor').show();");
             } else {
-                vendaService.addItem(getObjeto(), vendaDetalhe);
+                vendaService.addItem(getObjeto(), vendaDetalhe, desconto, tipoDesconto);
+                incluirVendaDetalhe();
+                totalReceber = getObjeto().getValorTotal();
+                verificaSaldoRestante();
+                desconto = BigDecimal.ZERO;
             }
 
         } catch (Exception ex) {
@@ -258,6 +346,51 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     }
 
+
+    public void definirCondicoess() {
+        exibirCondicoes = tipoPagamento.getGeraParcelas().equals("S") && !tipoPagamento.getCodigo().equals("02");
+
+
+        if (exibirCondicoes) {
+            condicoesPagamentos = pagamentoRepository.getEntitys(CondicoesPagamento.class, "vistaPrazo", "1", new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
+        }
+
+    }
+
+    public void lancaPagamento() {
+        try {
+
+
+            if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
+                Mensagem.addErrorMessage("Todos os valores já foram recebidos. Finalize a venda.");
+            } else {
+
+                incluiPagamento(tipoPagamento, valorPago);
+
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao lança os pagamentos", ex);
+            } else {
+                throw new RuntimeException("Erro ao lança os pagamentos", ex);
+            }
+        }
+
+
+    }
+
+
+    public void excluirPagamento() {
+        if (formaPagamentoSelecionado != null) {
+            getObjeto().getListaFormaPagamento().remove(formaPagamentoSelecionado);
+
+            verificaSaldoRestante();
+        }
+    }
+
+
     @Override
     public boolean autorizacaoSupervisor() {
 
@@ -265,7 +398,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
             if (vendaService.liberarRestricao(usuarioSupervisor, senhaSupervisor)) {
                 switch (tipoAutorizacao) {
                     case "P":
-                        vendaService.addItem(getObjeto(), vendaDetalhe);
+                        vendaService.addItem(getObjeto(), vendaDetalhe, desconto, tipoDesconto);
                         break;
 
                     default:
@@ -328,6 +461,19 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void faturarVenda() {
         boolean estoque = isTemAcesso("ESTOQUE");
         if (!getObjeto().getListaVendaDetalhe().isEmpty()) {
+
+
+            for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
+                if (item.getIdgrade() != null) {
+                    EstoqueGrade grade = estoqueGradeRepository.get(item.getIdgrade(), EstoqueGrade.class);
+
+                    String nome = item.getProduto().getNome() + " COR " + grade.getEstoqueCor().getNome() + " TAM " + grade.getEstoqueTamanho().getNome();
+                    item.getProduto().setNome(nome);
+
+
+                }
+            }
+
             vendaService.transmitirNFe(getObjeto(), ModeloDocumento.NFE, estoque);
         }
     }
@@ -588,6 +734,73 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         desconto = BigDecimal.ZERO;
     }
 
+    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
+        Optional<VendaFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
+        if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
+            Mensagem.addErrorMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já inclusa");
+        } else {
+            if (totalReceber.compareTo(valorPago) < 0 && tipoPagamento.getPermiteTroco().equals("N")) {
+                Mensagem.addErrorMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " não permite troco");
+            } else {
+                VendaFormaPagamento formaPagamento = new VendaFormaPagamento();
+                formaPagamento.setVendaCabecalho(getObjeto());
+                formaPagamento.setTipoPagamento(tipoPagamento);
+                formaPagamento.setValor(valor);
+                formaPagamento.setForma(tipoPagamento.getCodigo());
+                formaPagamento.setEstorno("N");
+
+                if (formaPagamento.getForma().equals("14")) {
+                    formaPagamento.setCondicoesPagamento(condicaoPagamento);
+                }
+
+                totalRecebido = Biblioteca.soma(totalRecebido, valor);
+                troco = Biblioteca.subtrai(totalRecebido, totalReceber);
+                if (troco.compareTo(BigDecimal.ZERO) == -1) {
+                    troco = BigDecimal.ZERO;
+                }
+                formaPagamento.setTroco(troco);
+                getObjeto().getListaFormaPagamento().add(formaPagamento);
+                verificaSaldoRestante();
+
+
+            }
+
+        }
+
+    }
+
+    private Optional<VendaFormaPagamento> bucarTipoPagamento(TipoPagamento tipoPagamento) {
+        return getObjeto().getListaFormaPagamento()
+                .stream()
+                .filter(fp -> fp.getTipoPagamento().equals(tipoPagamento))
+                .findAny();
+    }
+
+    private void verificaSaldoRestante() {
+        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
+        for (VendaFormaPagamento p : getObjeto().getListaFormaPagamento()) {
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+        }
+
+        saldoRestante = Biblioteca.subtrai(totalReceber, recebidoAteAgora);
+        totalRecebido = recebidoAteAgora;
+        valorPago = saldoRestante;
+        if (valorPago.compareTo(BigDecimal.ZERO) < 0) {
+            valorPago = BigDecimal.ZERO;
+        }
+        if (saldoRestante.compareTo(BigDecimal.ZERO) < 0) {
+            saldoRestante = BigDecimal.ZERO;
+        }
+    }
+
+    private void iniciarValoresPagamento() {
+        totalReceber = BigDecimal.ZERO;
+        troco = BigDecimal.ZERO;
+        totalRecebido = BigDecimal.ZERO;
+        saldoRestante = BigDecimal.ZERO;
+        valorPago = BigDecimal.ZERO;
+    }
+
 
     @Override
     protected Class<VendaCabecalho> getClazz() {
@@ -738,5 +951,81 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
     public void setIdmepresaFiltro(Integer idmepresaFiltro) {
         this.idmepresaFiltro = idmepresaFiltro;
+    }
+
+    public EstoqueCor getCor() {
+        return cor;
+    }
+
+    public void setCor(EstoqueCor cor) {
+        this.cor = cor;
+    }
+
+    public EstoqueTamanho getTamanho() {
+        return tamanho;
+    }
+
+    public void setTamanho(EstoqueTamanho tamanho) {
+        this.tamanho = tamanho;
+    }
+
+    public List<EstoqueCor> getCores() {
+        return cores;
+    }
+
+    public List<EstoqueTamanho> getTamanhos() {
+        return tamanhos;
+    }
+
+    public boolean isExibirGrade() {
+        return exibirGrade;
+    }
+
+    public TipoPagamento getTipoPagamento() {
+        return tipoPagamento;
+    }
+
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
+    }
+
+    public List<TipoPagamento> getListTipoPagamento() {
+        return listTipoPagamento;
+    }
+
+    public boolean isExibirCondicoes() {
+        return exibirCondicoes;
+    }
+
+    public CondicoesPagamento getCondicaoPagamento() {
+        return condicaoPagamento;
+    }
+
+    public void setCondicaoPagamento(CondicoesPagamento condicaoPagamento) {
+        this.condicaoPagamento = condicaoPagamento;
+    }
+
+    public List<CondicoesPagamento> getCondicoesPagamentos() {
+        return condicoesPagamentos;
+    }
+
+    public BigDecimal getValorPago() {
+        return valorPago;
+    }
+
+    public void setValorPago(BigDecimal valorPago) {
+        this.valorPago = valorPago;
+    }
+
+    public boolean isPodeLancaPagamento() {
+        return valorPago.signum() == 0;
+    }
+
+    public VendaFormaPagamento getFormaPagamentoSelecionado() {
+        return formaPagamentoSelecionado;
+    }
+
+    public void setFormaPagamentoSelecionado(VendaFormaPagamento formaPagamentoSelecionado) {
+        this.formaPagamentoSelecionado = formaPagamentoSelecionado;
     }
 }
