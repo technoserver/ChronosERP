@@ -223,6 +223,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
             }
         }
+
+        totalReceber = venda.getValorTotal();
+        verificaSaldoRestante();
     }
 
     @Override
