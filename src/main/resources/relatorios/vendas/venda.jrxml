@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="4.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="607"/>
+    <property name="ireport.y" value="703"/>
     <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
     <style name="dadosDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isBold="false"
@@ -82,7 +82,11 @@
         <queryString>
             <![CDATA[select
      p.id,
-     p.nome,
+     g.codigo,
+       (CASE
+	WHEN g.id is not null THEN  p.nome || (' ' ||c.nome || COALESCE(' TAM '||t.nome,''))
+	ELSE p.nome
+     END) as nome,
      un.sigla,
      i.quantidade,
      i.valor_unitario,
@@ -92,9 +96,13 @@
 from venda_detalhe i
 inner join produto p on i.id_produto = p.id
 inner join unidade_produto un on un.id = p.id_unidade_produto
+left join estoque_grade g on g.id = i.id_grade
+left join estoque_cor c on g.id_estoque_cor = c.id
+left join estoque_tamanho t on g.id_estoque_tamanho = t.id
 where i.id_venda_cabecalho = $P{idvenda}]]>
         </queryString>
         <field name="id" class="java.lang.Integer"/>
+        <field name="codigo" class="java.lang.String"/>
         <field name="nome" class="java.lang.String"/>
         <field name="sigla" class="java.lang.String"/>
         <field name="quantidade" class="java.math.BigDecimal"/>
@@ -560,7 +568,7 @@ WHERE
                                 <reportElement style="dadosDetail" x="0" y="0" width="59" height="12"
                                                uuid="f5756907-a2ed-4175-8ef3-35a33262b2cc"/>
                                 <textFieldExpression>
-                                    <![CDATA[new DecimalFormat("000000").format(Double.valueOf($F{id}))]]></textFieldExpression>
+                                    <![CDATA[$F{codigo}!=null ? $F{codigo}:new DecimalFormat("000000").format(Double.valueOf($F{id}))]]></textFieldExpression>
                             </textField>
                         </jr:detailCell>
                     </jr:column>

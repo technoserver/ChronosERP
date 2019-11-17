@@ -22,6 +22,8 @@ public class VendaDetalhe implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "ID_GRADE")
+    private Integer idgrade;
     @Column(name = "QUANTIDADE")
     @NotNull
     @DecimalMin(value = "0.01", message = "a quantidade deve ser maior que 0,01")
@@ -70,6 +72,14 @@ public class VendaDetalhe implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdgrade() {
+        return idgrade;
+    }
+
+    public void setIdgrade(Integer idgrade) {
+        this.idgrade = idgrade;
     }
 
     public BigDecimal getQuantidade() {

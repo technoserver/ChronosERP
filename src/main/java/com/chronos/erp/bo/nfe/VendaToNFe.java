@@ -14,10 +14,7 @@ import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by john on 18/09/17.
@@ -284,15 +281,21 @@ public class VendaToNFe extends ManualCDILookup {
             });
         } else {
 
+            venda.getListaFormaPagamento().stream().forEach(f -> {
+                NfeFormaPagamento pagamento = new NfeFormaPagamento();
+                pagamento.setTroco(f.getTroco());
+                pagamento.setBandeira(f.getBandeira());
+                pagamento.setCartaoTipoIntegracao(f.getCartaoTipoIntegracao());
+                pagamento.setCnpjOperadoraCartao(f.getCnpjOperadoraCartao());
+                pagamento.setEstorno(f.getEstorno());
+                pagamento.setForma(f.getForma());
+                pagamento.setNumeroAutorizacao(f.getNumeroAutorizacao());
+                pagamento.setTipoPagamento(f.getTipoPagamento());
+                pagamento.setNfeCabecalho(nfe);
+                pagamento.setValor(f.getValor());
+                nfe.getListaNfeFormaPagamento().add(pagamento);
+            });
 
-            TipoPagamento tipoPagamento = new TipoPagamento();
-            // tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
-            NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
-            nfeFormaPagamento.setTipoPagamento(tipoPagamento);
-            nfeFormaPagamento.setNfeCabecalho(nfe);
-            nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
-            nfeFormaPagamento.setValor(tipoVenda == TipoVenda.VENDA ? venda.getValorTotal() : os.getValorTotal());
-            nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
 
         }
     }
@@ -313,22 +316,29 @@ public class VendaToNFe extends ManualCDILookup {
                 BigDecimal somaParcelas = BigDecimal.ZERO;
                 BigDecimal valorParcela;
                 int number = 0;
-//                List<CondicoesParcelas> parcelas = venda.getCondicoesPagamento().getParcelas();
-//                for (CondicoesParcelas parcela : parcelas) {
-//                    NfeDuplicata duplicata = new NfeDuplicata();
-//                    duplicata.setNfeCabecalho(nfe);
-//                    valorParcela = Biblioteca.calcularValorPercentual(nfe.getValorTotal(), parcela.getTaxa());
-//                    duplicata.setDataVencimento(Biblioteca.addDay(new Date(), parcela.getDias()));
-//                    duplicata.setValor(valorParcela);
-//                    somaParcelas = somaParcelas.add(valorParcela);
-//                    if (number == (parcelas.size() - 1)) {
-//                        residuo = nfe.getValorTotal().subtract(somaParcelas);
-//                        valorParcela = valorParcela.add(residuo);
-//                        duplicata.setValor(valorParcela);
-//                    }
-//                    duplicata.setNumero(String.format("%3s", String.valueOf(number++ + 1)));
-//                    nfe.getListaDuplicata().add(duplicata);
-//                }
+
+                CondicoesPagamento condicao = tipoVenda == TipoVenda.OS
+                        ? os.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst().get().getCondicao()
+                        : venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst().get().getCondicoesPagamento();
+
+
+                List<CondicoesParcelas> parcelas = condicao.getParcelas();
+
+                for (CondicoesParcelas parcela : parcelas) {
+                    NfeDuplicata duplicata = new NfeDuplicata();
+                    duplicata.setNfeCabecalho(nfe);
+                    valorParcela = Biblioteca.calcularValorPercentual(nfe.getValorTotal(), parcela.getTaxa());
+                    duplicata.setDataVencimento(Biblioteca.addDay(new Date(), parcela.getDias()));
+                    duplicata.setValor(valorParcela);
+                    somaParcelas = somaParcelas.add(valorParcela);
+                    if (number == (parcelas.size() - 1)) {
+                        residuo = nfe.getValorTotal().subtract(somaParcelas);
+                        valorParcela = valorParcela.add(residuo);
+                        duplicata.setValor(valorParcela);
+                    }
+                    duplicata.setNumero(String.format("%3s", String.valueOf(number++ + 1)));
+                    nfe.getListaDuplicata().add(duplicata);
+                }
 
                 NfeFatura fatura = new NfeFatura();
                 fatura.setNfeCabecalho(nfe);

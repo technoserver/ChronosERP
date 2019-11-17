@@ -269,4 +269,12 @@ public class ProdutoDTO implements Serializable {
     public void setQuantidadeVenda(BigDecimal quantidadeVenda) {
         this.quantidadeVenda = quantidadeVenda;
     }
+
+    public Boolean getPossuiGrade() {
+        return possuiGrade;
+    }
+
+    public void setPossuiGrade(Boolean possuiGrade) {
+        this.possuiGrade = possuiGrade;
+    }
 }

@@ -104,7 +104,7 @@
                             </h:panelGroup>
 
 
-                            <p:tabView id="tab-view-orcamento" style="border: 0px;">
+                            <p:tabView id="tab-view-orcamento" style="border: 0px;" scrollable="true">
                                 <p:tab title="Dados Principais" id="dados-principais">
                                     <h:form id="form-dados-pripais">
                                         <div class="row">
@@ -262,10 +262,10 @@
                                                                        minValue="0"/>
 
 
-                                                        <p:commandButton id="btnTipoDesconto"
+                                                        <p:commandButton id="btn-tipo-desconto"
                                                                          action="#{orcamentoCabecalhoControll.alterarTipoDesconto}"
                                                                          process="@this"
-                                                                         update="formCentro:tab-view-orcamento:form-produtos:desconto"
+                                                                         update="formCentro:tab-view-orcamento:form-produtos:btn-tipo-desconto"
                                                                          value="#{orcamentoCabecalhoControll.tipoDesconto eq 0 ? '%' : 'R$' }"/>
 
                                                         <p:commandButton id="btn-salvar"
@@ -461,12 +461,14 @@
 
                                         <p:menuitem value="Aprovar"
                                                     actionListener="#{orcamentoCabecalhoControll.aprovarPedido}"
+                                                    process="@this,:formCentro:tab-view-orcamento:form-dados-pripais"
                                                     update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
                                                     rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'P' and orcamentoCabecalhoControll.objeto.situacao eq 'P'}"
                                                     icon="ui-icon-arrowrefresh-1-w"/>
 
                                         <p:menuitem value="Faturar"
                                                     actionListener="#{orcamentoCabecalhoControll.gerarVenda}"
+                                                    process="@this,:formCentro:tab-view-orcamento:form-dados-pripais"
                                                     update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
                                                     rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'P' and (orcamentoCabecalhoControll.objeto.situacao eq 'A'
                                                          or orcamentoCabecalhoControll.objeto.situacao eq 'P')}"

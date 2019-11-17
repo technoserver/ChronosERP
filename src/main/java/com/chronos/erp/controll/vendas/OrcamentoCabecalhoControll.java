@@ -371,7 +371,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
 
             if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
-                Mensagem.addErrorMessage("Todos os valores já foram recebidos. Finalize a venda.");
+                Mensagem.addErrorMessage("Todos os valores já foram recebidos. Finalize o orçamento.");
             } else {
 
                 incluiPagamento(tipoPagamento, valorPago);
@@ -415,8 +415,8 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
                 formaPagamento.setForma(tipoPagamento.getCodigo());
                 formaPagamento.setEstorno("N");
 
-                if (tipoPagamento.getGeraParcelas().equals("S")) {
-                    formaPagamento.setCondicao(condicaoPagamento);
+                if (formaPagamento.getForma().equals("14")) {
+                    formaPagamento.setCondicoesPagamento(condicaoPagamento);
                 }
 
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);

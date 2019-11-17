@@ -40,7 +40,7 @@ public class OrcamentoService implements Serializable {
 
         BigDecimal recebidoAteAgora = BigDecimal.ZERO;
 
-        if (orcamento.getListaFormaPagamento() == null | orcamento.getListaFormaPagamento().isEmpty()) {
+        if (orcamento.getListaFormaPagamento() == null || orcamento.getListaFormaPagamento().isEmpty()) {
             throw new ChronosException("Forma de pagamento não definidas");
         }
 
