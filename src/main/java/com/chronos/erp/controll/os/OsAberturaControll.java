@@ -49,7 +49,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Inject
     private Repository<OsEquipamento> equipamentoRepository;
     @Inject
-    private Repository<VendaCondicoesPagamento> pagamentoRepository;
+    private Repository<CondicoesPagamento> pagamentoRepository;
     @Inject
     private Repository<Vendedor> vendedorRepository;
     @Inject
@@ -75,8 +75,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     private TipoPagamento tipoPagamento;
     private List<TipoPagamento> listTipoPagamento;
-    private VendaCondicoesPagamento condicaoPagamento;
-    private List<VendaCondicoesPagamento> condicoesPagamentos;
+    private CondicoesPagamento condicaoPagamento;
+    private List<CondicoesPagamento> condicoesPagamentos;
     private OsFormaPagamento formaPagamentoSelecionado;
 
 
@@ -257,17 +257,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     }
 
-    public void gerarOsDoOrcamento() {
-        if (idorcamento != null) {
 
-            OrcamentoCabecalho orcamento = orcamentoRepository.getJoinFetch(idorcamento, OrcamentoCabecalho.class);
-            if (orcamento != null) {
-                doCreate();
-                osService.gerarOSDoOrcamento(orcamento, getObjeto());
-            }
-
-        }
-    }
 
     @Override
     public void salvar() {
@@ -278,6 +268,18 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Erro ao salvar o servico", e);
+        }
+    }
+
+    public void gerarOsDoOrcamento() {
+        if (idorcamento != null) {
+
+            OrcamentoCabecalho orcamento = orcamentoRepository.getJoinFetch(idorcamento, OrcamentoCabecalho.class);
+            if (orcamento != null) {
+                doCreate();
+                osService.gerarOSDoOrcamento(orcamento, getObjeto());
+            }
+
         }
     }
 
@@ -675,15 +677,15 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         return listaProduto;
     }
 
-    public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
-        List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
+    public List<CondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
+        List<CondicoesPagamento> listaCondicoesPagamento = new ArrayList<>();
         try {
-            listaVendaCondicoesPagamento = pagamentoRepository.getEntitys(VendaCondicoesPagamento.class, "nome", nome);
+            listaCondicoesPagamento = pagamentoRepository.getEntitys(CondicoesPagamento.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
 
         }
-        return listaVendaCondicoesPagamento;
+        return listaCondicoesPagamento;
     }
 
     public void selecionaValorProduto(SelectEvent event) {
@@ -696,7 +698,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
 
         if (exibirCondicoes) {
-            condicoesPagamentos = pagamentoRepository.getEntitys(VendaCondicoesPagamento.class, "vistaPrazo", "1", new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
+            condicoesPagamentos = pagamentoRepository.getEntitys(CondicoesPagamento.class, "vistaPrazo", "1", new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
         }
 
     }
@@ -726,17 +728,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         }
     }
 
-    private List<TipoPagamento> definirTipoPagament() {
-        List<TipoPagamento> pagamentos = new ArrayList<>();
-        pagamentos.add(new TipoPagamento(1, "01", "DINHEIRO", "S", "N"));
-        pagamentos.add(new TipoPagamento(2, "02", "CHEQUE", "N", "N"));
-        pagamentos.add(new TipoPagamento(3, "03", "CARTAO DE CREDITO", "N", "N"));
-        pagamentos.add(new TipoPagamento(4, "04", "CARTAO DE DEBITO", "N", "N"));
-        pagamentos.add(new TipoPagamento(5, "05", "CREDITO NA LOJA", "N", "N"));
-        pagamentos.add(new TipoPagamento(6, "14", "DUPLICATA", "N", "S"));
 
-        return pagamentos;
-    }
 
     private void iniciarValoresPagamento() {
         totalReceber = BigDecimal.ZERO;
@@ -905,15 +897,15 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         return exibirCondicoes;
     }
 
-    public List<VendaCondicoesPagamento> getCondicoesPagamentos() {
+    public List<CondicoesPagamento> getCondicoesPagamentos() {
         return condicoesPagamentos;
     }
 
-    public VendaCondicoesPagamento getCondicaoPagamento() {
+    public CondicoesPagamento getCondicaoPagamento() {
         return condicaoPagamento;
     }
 
-    public void setCondicaoPagamento(VendaCondicoesPagamento condicaoPagamento) {
+    public void setCondicaoPagamento(CondicoesPagamento condicaoPagamento) {
         this.condicaoPagamento = condicaoPagamento;
     }
 

@@ -57,7 +57,6 @@ public class VendaCabecalho implements Serializable {
     @NotNull
     @Column(name = "TIPO_FRETE")
     private String tipoFrete;
-    @NotNull
     @Column(name = "FORMA_PAGAMENTO")
     private String formaPagamento;
     @Column(name = "VALOR_FRETE")
@@ -72,10 +71,6 @@ public class VendaCabecalho implements Serializable {
     @JoinColumn(name = "ID_VENDA_ORCAMENTO_CABECALHO", referencedColumnName = "ID")
     @ManyToOne
     private OrcamentoCabecalho orcamentoCabecalho;
-    @JoinColumn(name = "ID_VENDA_CONDICOES_PAGAMENTO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    @NotNull
-    private VendaCondicoesPagamento condicoesPagamento;
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
@@ -98,11 +93,14 @@ public class VendaCabecalho implements Serializable {
     private Empresa empresa;
     @OneToMany(mappedBy = "vendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VendaDetalhe> listaVendaDetalhe;
+    @OneToMany(mappedBy = "vendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<VendaFormaPagamento> listaFormaPagamento;
     @Transient
     private boolean excludoItem;
 
     public VendaCabecalho() {
         this.listaVendaDetalhe = new ArrayList<>();
+        this.listaFormaPagamento = new HashSet<>();
         this.dataVenda = new Date();
         this.situacao = SituacaoVenda.Digitacao.getCodigo();
         this.tipoFrete = TipoFrete.CIF.getCodigo();
@@ -202,6 +200,14 @@ public class VendaCabecalho implements Serializable {
     public BigDecimal getValorComissao() {
         valorComissao = getTaxaComissao().multiply(getValorTotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
         return valorComissao;
+    }
+
+    public Set<VendaFormaPagamento> getListaFormaPagamento() {
+        return listaFormaPagamento;
+    }
+
+    public void setListaFormaPagamento(Set<VendaFormaPagamento> listaFormaPagamento) {
+        this.listaFormaPagamento = listaFormaPagamento;
     }
 
     public void setValorComissao(BigDecimal valorComissao) {
@@ -316,14 +322,6 @@ public class VendaCabecalho implements Serializable {
 
     public void setOrcamentoCabecalho(OrcamentoCabecalho orcamentoCabecalho) {
         this.orcamentoCabecalho = orcamentoCabecalho;
-    }
-
-    public VendaCondicoesPagamento getCondicoesPagamento() {
-        return condicoesPagamento;
-    }
-
-    public void setCondicoesPagamento(VendaCondicoesPagamento condicoesPagamento) {
-        this.condicoesPagamento = condicoesPagamento;
     }
 
     public Cliente getCliente() {

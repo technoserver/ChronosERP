@@ -281,15 +281,21 @@ public class VendaToNFe extends ManualCDILookup {
             });
         } else {
 
-            FinTipoRecebimento tipoRecebimento = venda.getCondicoesPagamento().getTipoRecebimento();
-            TipoPagamento tipoPagamento = new TipoPagamento();
-            tipoPagamento = tipoPagamento.buscarPorCodigo(tipoRecebimento.getTipo());
-            NfeFormaPagamento nfeFormaPagamento = new NfeFormaPagamento();
-            nfeFormaPagamento.setTipoPagamento(tipoPagamento);
-            nfeFormaPagamento.setNfeCabecalho(nfe);
-            nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
-            nfeFormaPagamento.setValor(tipoVenda == TipoVenda.VENDA ? venda.getValorTotal() : os.getValorTotal());
-            nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
+            venda.getListaFormaPagamento().stream().forEach(f -> {
+                NfeFormaPagamento pagamento = new NfeFormaPagamento();
+                pagamento.setTroco(f.getTroco());
+                pagamento.setBandeira(f.getBandeira());
+                pagamento.setCartaoTipoIntegracao(f.getCartaoTipoIntegracao());
+                pagamento.setCnpjOperadoraCartao(f.getCnpjOperadoraCartao());
+                pagamento.setEstorno(f.getEstorno());
+                pagamento.setForma(f.getForma());
+                pagamento.setNumeroAutorizacao(f.getNumeroAutorizacao());
+                pagamento.setTipoPagamento(f.getTipoPagamento());
+                pagamento.setNfeCabecalho(nfe);
+                pagamento.setValor(f.getValor());
+                nfe.getListaNfeFormaPagamento().add(pagamento);
+            });
+
 
         }
     }
@@ -310,8 +316,15 @@ public class VendaToNFe extends ManualCDILookup {
                 BigDecimal somaParcelas = BigDecimal.ZERO;
                 BigDecimal valorParcela;
                 int number = 0;
-                List<VendaCondicoesParcelas> parcelas = venda.getCondicoesPagamento().getParcelas();
-                for (VendaCondicoesParcelas parcela : parcelas) {
+
+                CondicoesPagamento condicao = tipoVenda == TipoVenda.OS
+                        ? os.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst().get().getCondicao()
+                        : venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst().get().getCondicoesPagamento();
+
+
+                List<CondicoesParcelas> parcelas = condicao.getParcelas();
+
+                for (CondicoesParcelas parcela : parcelas) {
                     NfeDuplicata duplicata = new NfeDuplicata();
                     duplicata.setNfeCabecalho(nfe);
                     valorParcela = Biblioteca.calcularValorPercentual(nfe.getValorTotal(), parcela.getTaxa());

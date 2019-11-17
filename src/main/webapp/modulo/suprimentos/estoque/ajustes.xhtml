@@ -27,7 +27,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <p:commandButton action="#{estoqueAjusteControll.addProduto}"
-                                     update=":formCentro"
+                                     update=":formCentro,formOutrasTelas:panelOutrasTelas"
                                      value="Adcionar"/>
                 </div>
             </div>
@@ -47,6 +47,15 @@
                                   idComponente="valorVenda"
                                   styleClass="col-xs-12 col-sm-3 col-md-2"
                                   nomeAtributo="#{estoqueAjusteControll.valorVenda}"/>
+                <div class="col-sm-2">
+                    <h:outputLabel value="Tipo" for="tipo"/>
+                    <h:selectOneMenu class="form-control"
+                                     value="#{estoqueAjusteControll.tipoEstoque}"
+                                     id="tipo">
+                        <f:selectItem itemValue="1" itemLabel="Verificado"/>
+                        <f:selectItem itemValue="2" itemLabel="Não verificado"/>
+                    </h:selectOneMenu>
+                </div>
             </div>
             <div class="row m-t">
                 <div class="col-md-12">
@@ -62,7 +71,8 @@
                             <h:outputLabel value="#{row.produto.nome}"/>
                         </p:column>
                         <p:column headerText="Quantidade" styleClass="text-center" width="160">
-                            <h:outputLabel value="#{row.quantidadeEstoque}">
+                            <h:outputLabel
+                                    value="#{estoqueAjusteControll.tipoEstoque eq 2 ? row.quantidadeEstoque : row.estoqueVerificado}">
                                 <f:convertNumber pattern="#,###,##0.00"/>
                             </h:outputLabel>
                         </p:column>
@@ -105,6 +115,70 @@
         </div>
 
 
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogOutrasTelas"
+                      header="Ajuste grade" responsive="true"
+                      widgetVar="dialogOutrasTelas" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelOutrasTelas">
+                    <p:dataTable var="row"
+                                 id="table-grade"
+                                 reflow="true" editable="true" editMode="cell"
+                                 value="#{estoqueAjusteControll.grades}">
+                        <p:column headerText="Cor" styleClass="text-center">
+                            <h:outputLabel value="#{row.estoqueCor.nome}"/>
+                        </p:column>
+                        <p:column headerText="Tamanho" styleClass="text-center">
+                            <h:outputLabel value="#{row.estoqueTamanho.nome}"/>
+                        </p:column>
+                        <p:column headerText="Qtde" styleClass="text-center">
+
+                            <p:cellEditor>
+                                <f:facet name="output">
+                                    <h:outputLabel value="#{row.quantidadeEntrada}">
+                                        <f:convertNumber pattern="#,##0.00"/>
+                                    </h:outputLabel>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:inputNumber value="#{row.quantidadeEntrada}"
+                                                   decimalPlaces="2"
+                                    />
+                                </f:facet>
+                            </p:cellEditor>
+                        </p:column>
+                    </p:dataTable>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Confirmar"
+                                             id="btn-confirmar"
+                                             actionListener="#{estoqueAjusteControll.confirmarEstoqueGrade}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas').hide();}"
+                                        process="@form"
+                                        update="panelOutrasTelas,:formCentro,:formCentro:growl"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
     </ui:define>
 
 

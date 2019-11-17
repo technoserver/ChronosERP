@@ -45,7 +45,7 @@ public class VendaConsignadaCabecalho implements Serializable {
     @JoinColumn(name = "id_condicao_pagamento", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
-    private VendaCondicoesPagamento condicoesPagamento;
+    private CondicoesPagamento condicoesPagamento;
     @JoinColumn(name = "ID_CLIENTE", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     @NotNull
@@ -162,11 +162,11 @@ public class VendaConsignadaCabecalho implements Serializable {
         this.valorTotal = valorTotal;
     }
 
-    public VendaCondicoesPagamento getCondicoesPagamento() {
+    public CondicoesPagamento getCondicoesPagamento() {
         return condicoesPagamento;
     }
 
-    public void setCondicoesPagamento(VendaCondicoesPagamento condicoesPagamento) {
+    public void setCondicoesPagamento(CondicoesPagamento condicoesPagamento) {
         this.condicoesPagamento = condicoesPagamento;
     }
 

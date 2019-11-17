@@ -10,8 +10,8 @@ import java.util.Objects;
  * @author john
  */
 @Entity
-@Table(name = "venda_condicoes_parcelas")
-public class VendaCondicoesParcelas implements Serializable {
+@Table(name = "condicoes_parcelas")
+public class CondicoesParcelas implements Serializable {
 
     private static final long serialVersionUID = 2L;
     @Id
@@ -28,16 +28,16 @@ public class VendaCondicoesParcelas implements Serializable {
     private BigDecimal taxa;
     @JoinColumn(name = "id_venda_condicoes_pagamento", referencedColumnName = "id")
     @ManyToOne(optional = false)
-    private VendaCondicoesPagamento vendaCondicoesPagamento;
+    private CondicoesPagamento condicoesPagamento;
 
-    public VendaCondicoesParcelas() {
+    public CondicoesParcelas() {
         this.dias = 0;
         this.parcela = 0;
         this.taxa = BigDecimal.ZERO;
 
     }
 
-    public VendaCondicoesParcelas(Integer id) {
+    public CondicoesParcelas(Integer id) {
         this.id = id;
     }
 
@@ -103,12 +103,12 @@ public class VendaCondicoesParcelas implements Serializable {
         this.taxa = taxa;
     }
 
-    public VendaCondicoesPagamento getVendaCondicoesPagamento() {
-        return vendaCondicoesPagamento;
+    public CondicoesPagamento getCondicoesPagamento() {
+        return condicoesPagamento;
     }
 
-    public void setVendaCondicoesPagamento(VendaCondicoesPagamento vendaCondicoesPagamento) {
-        this.vendaCondicoesPagamento = vendaCondicoesPagamento;
+    public void setCondicoesPagamento(CondicoesPagamento condicoesPagamento) {
+        this.condicoesPagamento = condicoesPagamento;
     }
 
     @Override
@@ -128,7 +128,7 @@ public class VendaCondicoesParcelas implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final VendaCondicoesParcelas other = (VendaCondicoesParcelas) obj;
+        final CondicoesParcelas other = (CondicoesParcelas) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }

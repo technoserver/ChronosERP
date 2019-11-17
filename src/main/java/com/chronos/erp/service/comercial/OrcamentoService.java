@@ -2,6 +2,7 @@ package com.chronos.erp.service.comercial;
 
 import com.chronos.erp.modelo.entidades.OrcamentoCabecalho;
 import com.chronos.erp.modelo.entidades.OrcamentoDetalhe;
+import com.chronos.erp.modelo.entidades.OrcamentoFormaPagamento;
 import com.chronos.erp.modelo.entidades.VendaCabecalho;
 import com.chronos.erp.modelo.enuns.SituacaoOrcamentoPedido;
 import com.chronos.erp.repository.Repository;
@@ -36,6 +37,21 @@ public class OrcamentoService implements Serializable {
         if (orcamento.getListaOrcamentoDetalhe().isEmpty()) {
             throw new ChronosException("Itens não informado");
         }
+
+        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
+
+        if (orcamento.getListaFormaPagamento() == null || orcamento.getListaFormaPagamento().isEmpty()) {
+            throw new ChronosException("Forma de pagamento não definidas");
+        }
+
+        for (OrcamentoFormaPagamento p : orcamento.getListaFormaPagamento()) {
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+        }
+
+        if (orcamento.getValorTotal().compareTo(recebidoAteAgora) != 0) {
+            throw new ChronosException("Valores informado nos pagamento não estão consolidado !!!");
+        }
+
 
         if (!situacao.equals(SituacaoOrcamentoPedido.PENDENTE.getCodigo())) {
             String mensagem = "Este orçamento não pode ser alterado.\n";

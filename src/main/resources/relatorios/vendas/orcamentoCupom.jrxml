@@ -6,7 +6,7 @@
               topMargin="3" bottomMargin="3" isIgnorePagination="true" uuid="43e8f7d9-a4a8-4ac1-b35c-59d8ae725204">
     <property name="ireport.zoom" value="6.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="137"/>
+    <property name="ireport.y" value="944"/>
     <subDataset name="itensVenda" uuid="c04bf0ad-d6d4-4d5a-9e78-5f32d918d9c2">
         <queryString language="SQL">
             <![CDATA[select
@@ -31,6 +31,19 @@ inner join unidade_produto un on un.id = p.id_unidade_produto]]>
         <field name="valor_subtotal" class="java.math.BigDecimal"/>
         <field name="valor_total" class="java.math.BigDecimal"/>
     </subDataset>
+    <subDataset name="formasPagamento" uuid="021d071b-4e27-439a-aaee-e3d8c98718a6">
+        <parameter name="idorcamento" class="java.lang.Integer"/>
+        <queryString>
+            <![CDATA[select
+    t.descricao,
+    p.valor
+ from orcamento_forma_pagamento p
+inner join tipo_pagamento t on t.id  = p.id_tipo_pagamento
+where p.id_orcamento_cabecalho = $P{idorcamento}]]>
+        </queryString>
+        <field name="descricao" class="java.lang.String"/>
+        <field name="valor" class="java.math.BigDecimal"/>
+    </subDataset>
     <parameter name="id" class="java.lang.Integer">
         <defaultValueExpression><![CDATA[1]]></defaultValueExpression>
     </parameter>
@@ -49,7 +62,6 @@ inner join unidade_produto un on un.id = p.id_unidade_produto]]>
      v.valor_total,
      v.observacao,
      v.tipo,
-     condicao.nome as condicao,
      pc.nome as vendedor,
      empresa.razao_social AS empresa_razao_social,
      empresa.nome_fantasia AS empresa_nome_fantasia,
@@ -82,8 +94,7 @@ inner join unidade_produto un on un.id = p.id_unidade_produto]]>
 
 
 FROM
-     venda_orcamento_cabecalho v
-     INNER JOIN venda_condicoes_pagamento condicao ON condicao.id  = v.id_venda_condicoes_pagamento
+     orcamento_cabecalho v
      INNER JOIN cliente cliente on v.id_cliente = cliente.id
      INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id
      LEFT  JOIN pessoa_fisica pf ON pf.id_pessoa = pessoa.id
@@ -105,7 +116,7 @@ WHERE
     <field name="valor_desconto" class="java.math.BigDecimal"/>
     <field name="valor_total" class="java.math.BigDecimal"/>
     <field name="observacao" class="java.lang.String"/>
-    <field name="condicao" class="java.lang.String"/>
+    <field name="tipo" class="java.lang.String"/>
     <field name="vendedor" class="java.lang.String"/>
     <field name="empresa_razao_social" class="java.lang.String"/>
     <field name="empresa_nome_fantasia" class="java.lang.String"/>
@@ -132,14 +143,13 @@ WHERE
     <field name="pessoa_endereco_cep" class="java.lang.String"/>
     <field name="pessoa_endereco_fone" class="java.lang.String"/>
     <field name="pessoa_endereco_principal" class="java.lang.String"/>
-    <field name="tipo" class="java.lang.String"/>
     <variable name="TOTAL_ITENS" class="java.lang.Integer" calculation="Sum">
         <variableExpression><![CDATA[]]></variableExpression>
     </variable>
-    <group name="teste">
+    <group name="valores">
         <groupExpression><![CDATA[$F{id}]]></groupExpression>
         <groupFooter>
-            <band height="50">
+            <band height="28">
                 <staticText>
                     <reportElement x="0" y="0" width="131" height="10" uuid="d3739f27-b8c8-4bd9-98bf-8ed5f1fd6fae"/>
                     <textElement verticalAlignment="Middle">
@@ -153,13 +163,6 @@ WHERE
                         <font fontName="Open Sans" size="7" isBold="true" isPdfEmbedded="true"/>
                     </textElement>
                     <text><![CDATA[DESCONTO]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement x="0" y="29" width="75" height="10" uuid="e5247c5a-3b97-4d3b-bbe1-fc58882e4244"/>
-                    <textElement verticalAlignment="Middle">
-                        <font fontName="Open Sans" size="7" isBold="true" isPdfEmbedded="true"/>
-                    </textElement>
-                    <text><![CDATA[Forma de Pagamento]]></text>
                 </staticText>
                 <staticText>
                     <reportElement x="0" y="18" width="131" height="10" uuid="cf7b4a75-1268-4541-910e-ad6853d8d36f"/>
@@ -189,17 +192,62 @@ WHERE
                     </textElement>
                     <textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
                 </textField>
-                <textField>
-                    <reportElement x="5" y="39" width="196" height="11" uuid="b96a6002-405c-4d16-8498-940ec5494bf6"/>
-                    <textElement verticalAlignment="Middle">
-                        <font fontName="Ubuntu Condensed" size="7"/>
-                    </textElement>
-                    <textFieldExpression><![CDATA[$F{condicao}]]></textFieldExpression>
-                </textField>
                 <line>
                     <reportElement positionType="Float" x="0" y="0" width="202" height="1"
                                    uuid="d65fb0ff-0ca2-4828-acab-d2d960825e62"/>
                 </line>
+            </band>
+            <band height="10">
+                <componentElement>
+                    <reportElement key="tableDuplicatas" stretchType="RelativeToBandHeight" mode="Transparent" x="0"
+                                   y="0" width="202" height="10" isRemoveLineWhenBlank="true"
+                                   uuid="3a4c7510-6176-412b-8eb8-5a4da03e6e35"/>
+                    <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+                        <datasetRun subDataset="formasPagamento" uuid="426e727d-945f-4ce4-bfaa-64aef69e93e8">
+                            <datasetParameter name="idorcamento">
+                                <datasetParameterExpression><![CDATA[$F{id}]]></datasetParameterExpression>
+                            </datasetParameter>
+                            <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                        </datasetRun>
+                        <jr:columnGroup width="202" uuid="9516a3ed-113c-43d4-a98a-729df286c187">
+                            <jr:tableHeader height="12" rowSpan="1">
+                                <staticText>
+                                    <reportElement mode="Opaque" x="0" y="0" width="202" height="12" backcolor="#DDDDDD"
+                                                   uuid="f7dbb8b5-e8f7-46bc-8a74-102a8b92897a"/>
+                                    <textElement verticalAlignment="Middle">
+                                        <font size="9" isBold="true"/>
+                                    </textElement>
+                                    <text><![CDATA[Formas de pagamento]]></text>
+                                </staticText>
+                            </jr:tableHeader>
+                            <jr:column width="137" uuid="a406917e-f882-4fdb-9253-734271e171b1">
+                                <jr:detailCell height="12" rowSpan="1">
+                                    <textField>
+                                        <reportElement x="0" y="0" width="137" height="12"
+                                                       uuid="fce9bce1-93ff-4a27-a063-d126053fb6d5"/>
+                                        <textElement verticalAlignment="Middle">
+                                            <font size="8"/>
+                                        </textElement>
+                                        <textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+                                    </textField>
+                                </jr:detailCell>
+                            </jr:column>
+                            <jr:column width="65" uuid="34ee5675-c2bd-45be-81ae-1a6826cf9e77">
+                                <jr:detailCell height="12" rowSpan="1">
+                                    <textField pattern="#,##0.00" isBlankWhenNull="true">
+                                        <reportElement x="0" y="0" width="64" height="12"
+                                                       uuid="be4b0b15-6525-483c-b7fe-a0c3dd8a97b3"/>
+                                        <textElement textAlignment="Right">
+                                            <font size="8"/>
+                                        </textElement>
+                                        <textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+                                    </textField>
+                                </jr:detailCell>
+                            </jr:column>
+                        </jr:columnGroup>
+                    </jr:table>
+                </componentElement>
             </band>
         </groupFooter>
     </group>
@@ -404,7 +452,7 @@ $F{empresa_cnpj}.substring(8,12) + "-" + $F{empresa_cnpj}.substring(12,14)
                                uuid="ce54d3d3-5414-4b7d-a60a-c678b21ecb31"/>
             </line>
             <line>
-                <reportElement positionType="Float" x="0" y="44" width="202" height="1"
+                <reportElement positionType="Float" x="0" y="45" width="202" height="1"
                                uuid="d00836b2-b649-4d58-87fa-d76ea2a74768"/>
             </line>
             <line>

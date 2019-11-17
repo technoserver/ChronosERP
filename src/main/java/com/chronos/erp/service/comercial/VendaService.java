@@ -47,7 +47,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     @Inject
     private SyncPendentesService syncPendentesService;
     @Inject
-    private Repository<VendaCondicoesParcelas> parcelasRepository;
+    private Repository<CondicoesParcelas> parcelasRepository;
 
     @Inject
     private AuditoriaService auditoriaService;
@@ -62,17 +62,23 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     @Transactional
     public VendaCabecalho salvar(VendaCabecalho venda) throws ChronosException {
 
-        if (venda.getCondicoesPagamento() != null) {
-            venda.setFormaPagamento(venda.getCondicoesPagamento().getVistaPrazo().equals("V")
-                    ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo());
-        }
-
-        if (venda.getSituacao().equals(SituacaoVenda.Digitacao.getCodigo()) && venda.getFormaPagamento().equals("1") && venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
-            throw new ChronosException("Cliente com restrinções de bloqueio");
-        }
 
         if (venda.getListaVendaDetalhe() == null || venda.getListaVendaDetalhe().isEmpty()) {
             throw new ChronosException("Não foram definido itens para o pedido de venda");
+        }
+
+        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
+
+        if (venda.getListaFormaPagamento() == null || venda.getListaFormaPagamento().isEmpty()) {
+            throw new ChronosException("Forma de pagamento não definidas");
+        }
+
+        for (VendaFormaPagamento p : venda.getListaFormaPagamento()) {
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+        }
+
+        if (venda.getValorTotal().compareTo(recebidoAteAgora) != 0) {
+            throw new ChronosException("Valores informado nos pagamento não estão consolidado !!!");
         }
 
         venda = repository.atualizar(venda);
@@ -92,6 +98,13 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     public VendaCabecalho faturarVenda(VendaCabecalho venda) throws ChronosException {
 
 
+        Optional<VendaFormaPagamento> first = venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals(14)).findFirst();
+
+        if (venda.getSituacao().equals(SituacaoVenda.Digitacao.getCodigo()) && first.isPresent() && venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
+            throw new ChronosException("Cliente com restrinções de bloqueio");
+        }
+
+
         venda.setSituacao(SituacaoVenda.Encerrado.getCodigo());
         Integer idempresa = venda.getEmpresa().getId();
         AdmParametro parametro = FacesUtil.getParamentos();
@@ -108,8 +121,13 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             venda = salvar(venda);
         }
 
-        finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
-                venda.getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
+        Optional<VendaFormaPagamento> pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst();
+
+        if (pagamentoOptional.isPresent()) {
+            finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
+                    pagamentoOptional.get().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
+        }
+
 
         venda = repository.salvarFlush(venda);
 
@@ -133,8 +151,15 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
             NfeCabecalho nfe;
-            List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", venda.getCondicoesPagamento().getId());
-            venda.getCondicoesPagamento().setParcelas(parcelas);
+
+            Optional<VendaFormaPagamento> pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst();
+
+            if (pagamentoOptional.isPresent()) {
+                List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "condicoesPagamento.id", pagamentoOptional.get().getCondicoesPagamento().getId());
+                pagamentoOptional.get().getCondicoesPagamento().setParcelas(parcelas);
+            }
+
+
             VendaToNFe vendaNfe = new VendaToNFe(modelo, venda);
             nfe = vendaNfe.gerarNfe();
 
@@ -159,7 +184,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             if (status == StatusTransmissao.AUTORIZADA) {
                 String codigo = venda.getSituacao();
 
-                venda.getCondicoesPagamento().setParcelas(null);
+
                 venda.setSituacao(SituacaoVenda.Faturado.getCodigo());
                 venda.setNumeroFatura(nfe.getVendaCabecalho().getNumeroFatura());
                 repository.atualizar(venda);
@@ -384,7 +409,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
 
         venda.setCliente(orcamento.getCliente());
-        venda.setCondicoesPagamento(orcamento.getCondicoesPagamento());
+
         venda.setTransportadora(orcamento.getTransportadora());
         venda.setVendedor(orcamento.getVendedor());
         venda.setTipoFrete(orcamento.getTipoFrete());
@@ -399,23 +424,35 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         venda.setDataSaida(orcamento.getDataEntrega());
 
 
-        String forma = venda.getCondicoesPagamento().getVistaPrazo().equals("V")
-                ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo();
-        venda.setFormaPagamento(forma);
+//        String forma = venda.getCondicoesPagamento().getVistaPrazo().equals("V")
+//                ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo();
+        // venda.setFormaPagamento(forma);
 
         venda.calcularValorTotal();
 
         return venda;
     }
 
-    public VendaCabecalho addItem(VendaCabecalho venda, VendaDetalhe vendaDetalhe) {
-
-        vendaDetalhe.calcularDesconto();
-        vendaDetalhe.calcularValorTotal();
+    public VendaCabecalho addItem(VendaCabecalho venda, VendaDetalhe item, BigDecimal desconto, int tipoDesconto) throws ChronosException {
 
 
-        if (!venda.getListaVendaDetalhe().contains(vendaDetalhe)) {
-            venda.getListaVendaDetalhe().add(vendaDetalhe);
+        item.calcularValorTotal();
+
+        if (desconto != null && desconto.signum() > 0) {
+            if (tipoDesconto == 0) {
+                BigDecimal valorDesconto = Biblioteca.calcularValorPercentual(item.getValorSubtotal(), desconto);
+                item.setTaxaDesconto(desconto);
+                item.setValorDesconto(valorDesconto);
+            } else {
+                item.setValorDesconto(desconto);
+                BigDecimal taxDesc = Biblioteca.descDinheiroToPercentual(item.getValorSubtotal(), desconto);
+                item.setTaxaDesconto(taxDesc);
+            }
+        }
+
+
+        if (!venda.getListaVendaDetalhe().contains(item)) {
+            venda.getListaVendaDetalhe().add(item);
         }
 
         venda.calcularValorTotal();

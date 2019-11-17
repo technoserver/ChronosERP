@@ -10,23 +10,26 @@
 
 
     <h:panelGroup layout="block" id="outputPanelDetalhe">
-        <h:panelGroup layout="block" rendered="#{!vendaCabecalhoControll.telaGrid}">
+        <h:panelGroup layout="block" rendered="#{!orcamentoCabecalhoControll.telaGrid}">
+
             <h:panelGroup layout="block" id="panelCentroDetalhe">
                 <div class="ibox-content">
                     <div class="row">
                         <div class="col-md-12">
 
-                            <h:panelGroup layout="block" id="panel-valores" styleClass="row">
+                            <h:panelGroup layout="block" id="panelValores" styleClass="row">
+
                                 <div class="col-lg-4 col-xs-6">
                                     <!-- small box -->
                                     <div class="small-box bg-gray">
                                         <div class="inner">
                                             <h3>R$
                                                 <span>
-                                            <h:outputText value="#{vendaCabecalhoControll.objeto.valorTotal}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputText>
-                                        </span>
+                                                        <h:outputText
+                                                                value="#{orcamentoCabecalhoControll.objeto.valorTotal}">
+                                                            <f:convertNumber pattern="#,##0.00"/>
+                                                        </h:outputText>
+                                                    </span>
                                             </h3>
 
                                             <p>Valor Total</p>
@@ -42,51 +45,55 @@
                                         <div class="inner">
                                             <h3>R$
                                                 <span>
-                                            <h:outputText value="#{vendaCabecalhoControll.objeto.valorSubtotal}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputText>
-                                        </span>
+                                                        <h:outputText
+                                                                value="#{orcamentoCabecalhoControll.objeto.valorSubtotal}">
+                                                            <f:convertNumber pattern="#,##0.00"/>
+                                                        </h:outputText>
+                                                    </span>
                                             </h3>
 
-                                            <p>Valor dos Produtos</p>
+                                            <p>Valor Produtos</p>
                                         </div>
                                         <div class="icon" style="top: 0px">
                                             <i class="fa fa-shopping-cart"></i>
-
                                         </div>
                                     </div>
                                 </div>
+
+
                                 <div class="col-lg-4 col-xs-6">
                                     <!-- small box -->
                                     <div class="small-box bg-gray">
                                         <div class="inner">
+
                                             <h3>
                                                 R$
                                                 <span>
-                                            <h:outputText value="#{vendaCabecalhoControll.objeto.valorDesconto}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputText>
-                                        </span>
+                                                            <h:outputText
+                                                                    value="#{orcamentoCabecalhoControll.objeto.valorDesconto}">
+                                                                <f:convertNumber pattern="#,##0.00"/>
+                                                            </h:outputText>
+                                                        </span>
                                                 <p:commandLink styleClass="btn btn-link"
-                                                               title="Aplicar desconto no valor total da venda"
-                                                               update=":formOutrasTelas5:panelOutrasTelas5"
-                                                               disabled="#{vendaCabecalhoControll.objeto.valorTotal.signum() eq 0}"
-                                                               oncomplete="PF('dialogOutrasTelas5').show()">
+                                                               title="Aplicar desconto no valor total"
+                                                               update=":formOutrasTelas2:panelOutrasTelas2"
+                                                               disabled="#{orcamentoCabecalhoControll.objeto.valorTotal.signum() eq 0}"
+                                                               oncomplete="PF('dialogOutrasTelas2').show()">
                                                     <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
                                                 </p:commandLink>
 
                                                 <p:commandLink styleClass="btn btn-link"
                                                                title="Remover Desconto"
-                                                               action="#{vendaCabecalhoControll.removerDesconto}"
+                                                               action="#{orcamentoCabecalhoControll.removerDesconto}"
                                                                process="@this"
-                                                               update=":formCentro:growl,:formCentro:panel-valores,:formCentro:tab-view-vendas:itens"
-                                                               rendered="#{vendaCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
+                                                               update=":formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento"
+                                                               rendered="#{orcamentoCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
                                                     <i class="fa fa-ban fa-2x" aria-hidden="true"></i>
                                                 </p:commandLink>
                                             </h3>
 
-                                            <p>Valor do Desconto</p>
 
+                                            <p>Valor do Desconto</p>
                                         </div>
                                         <div class="icon" style="top: 0px">
                                             <i class="fa fa-percent" aria-hidden="true"></i>
@@ -97,25 +104,26 @@
                             </h:panelGroup>
 
 
-                            <p:tabView id="tab-view-vendas" style="border: 0px;" scrollable="true">
+                            <p:tabView id="tab-view-orcamento" style="border: 0px;" scrollable="true">
                                 <p:tab title="Dados Principais" id="dados-principais">
                                     <h:form id="form-dados-pripais">
                                         <div class="row">
+
+
                                             <div class="col-xs-12 col-sm-4 col-md-4">
                                                 <p:outputLabel value="Cliente" for="cliente"/>
                                                 <div class="field-action">
                                                     <p:autoComplete id="cliente"
-                                                                    value="#{vendaCabecalhoControll.pessoaCliente}"
-                                                                    completeMethod="#{vendaCabecalhoControll.getListaCliente}"
-                                                                    var="objeto" itemLabel="#{objeto.nome}"
+                                                                    value="#{orcamentoCabecalhoControll.objeto.cliente}"
+                                                                    completeMethod="#{orcamentoCabecalhoControll.getListaCliente}"
+                                                                    var="objeto" itemLabel="#{objeto.pessoa.nome}"
                                                                     itemValue="#{objeto}"
                                                                     queryDelay="500"
                                                                     style="width: 100%"
                                                                     converter="defaultConverter" forceSelection="true"
                                                                     minQueryLength="3" maxResults="10" required="true"
                                                                     emptyMessage="Nenhum registro encontrado">>
-                                                        <p:ajax event="itemSelect"
-                                                                listener="#{vendaCabecalhoControll.definirEnderecoEntrega}"/>
+
 
                                                     </p:autoComplete>
                                                     <div class="field-action__icon">
@@ -125,7 +133,7 @@
                                                                        process="@this" update="@none"
                                                         >
                                                             <p:ajax event="dialogReturn"
-                                                                    listener="#{vendaCabecalhoControll.clienteSelecionado}"
+                                                                    listener="#{orcamentoCabecalhoControll.clienteSelecionado}"
                                                                     process="@this" update="cliente"/>
                                                             <i class="fa fa-plus-circle"></i>
                                                         </p:commandLink>
@@ -133,85 +141,82 @@
 
 
                                                 </div>
-
                                             </div>
+
 
                                             <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
                                                               label="Vendedor"
-                                                              itemLabel="#{objeto.nome}"
-                                                              controller="#{vendaCabecalhoControll}"
+                                                              itemLabel="#{objeto.colaborador.pessoa.nome}"
+                                                              controller="#{orcamentoCabecalhoControll}"
                                                               completeMethod="getListaVendedor"
-                                                              nomeAtributo="#{vendaCabecalhoControll.objeto.vendedor}"
-                                                              idComponente="vendaCabecalhoVendedor">
+                                                              nomeAtributo="#{orcamentoCabecalhoControll.objeto.vendedor}"
+                                                              idComponente="vendaOrcamentoCabecalhoVendedor">
                                                 <p:ajax event="itemSelecionado"
-                                                        listener="#{vendaCabecalhoControll.definirTaxaComissao}"
+                                                        listener="#{orcamentoCabecalhoControll.definirTaxaComissao}"
                                                 />
-
                                             </erp:autoComplete>
-                                            <h:panelGroup layout="block"
-                                                          id="lista-empresa"
-                                                          rendered="#{vendaCabecalhoControll.listaEmpresas.size() gt 1}">
 
+                                            <erp:campoData label="Entrega em"
+                                                           styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                           idComponente="dataEntrega"
+                                                           nomeAtributo="#{orcamentoCabecalhoControll.objeto.dataEntrega}"/>
 
-                                                <erp:campoSelectConverter idComponente="empresa"
-                                                                          labelItens="#{obj.razaoSocial}"
-                                                                          id="emp"
-                                                                          nomeAtributo="#{vendaCabecalhoControll.objeto.empresa}"
-                                                                          itens="#{vendaCabecalhoControll.listaEmpresas}"
-                                                                          desabilitado="#{vendaCabecalhoControll.objeto.listaVendaDetalhe.size() gt 0}"
-                                                                          styleClass="col-xs-12 col-sm-4 col-md-4"
-                                                                          label="Empresa"/>
-                                            </h:panelGroup>
 
                                         </div>
-
-
                                         <div class="row">
                                             <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                                                idComponente="vendaCabecalhoObservacao"
+                                                                idComponente="vendaOrcamentoCabecalhoObservacao"
                                                                 label="Observacao"
-                                                                nomeAtributo="#{vendaCabecalhoControll.objeto.observacao}"/>
+                                                                nomeAtributo="#{orcamentoCabecalhoControll.objeto.observacao}"/>
                                         </div>
 
 
                                         <div class="ibox-footer">
-
                                             <h:panelGroup layout="block"
-                                                          rendered="#{not empty vendaCabecalhoControll.objeto}">
+                                                          rendered="#{not empty orcamentoCabecalhoControll.objeto}">
+
+
                                                 <div class="row">
                                                     <div class="col-xs-6 col-lg-6 text-center">
                                                         <h:panelGroup layout="block" class="btn-group"
-                                                                      id="grupo-botao"
-                                                                      rendered="#{!vendaCabecalhoControll.objeto.faturado and !vendaCabecalhoControll.objeto.cancelado}">
+                                                                      rendered="#{ orcamentoCabecalhoControll.objeto.situacao ne 'F' and not orcamentoCabecalhoControll.objeto.situacao ne 'C'}">
+
                                                             <p:commandButton value="Salvar"
                                                                              id="btnSalvar"
-                                                                             rendered="#{empty vendaCabecalhoControll.objeto.id}"
-                                                                             action="#{vendaCabecalhoControll.salvar()}"
-                                                                             disabled="#{!vendaCabecalhoControll.podeInserir()}"
+                                                                             rendered="#{empty orcamentoCabecalhoControll.objeto.id}"
+                                                                             action="#{orcamentoCabecalhoControll.salvar()}"
+                                                                             disabled="#{!orcamentoCabecalhoControll.podeInserir()}"
                                                                              process="form-dados-pripais"
-                                                                             oncomplete="addClass()"
-                                                                             update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
+                                                                             update=":formCentro:growl,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
 
                                                             </p:commandButton>
 
 
                                                             <p:splitButton value="Salvar"
-                                                                           rendered="#{not empty vendaCabecalhoControll.objeto.id}"
-                                                                           action="#{vendaCabecalhoControll.salvar()}"
-                                                                           update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                                                           rendered="#{not empty orcamentoCabecalhoControll.objeto.id}"
+                                                                           actionListener="#{orcamentoCabecalhoControll.salvar}"
                                                                            icon="ui-icon-disk">
-                                                                <p:menuitem value="Encerrar"
-                                                                            action="#{vendaCabecalhoControll.encerrarVenda}"
+
+                                                                <p:menuitem value="Gerar Pedido"
+                                                                            actionListener="#{orcamentoCabecalhoControll.gerarPedido}"
                                                                             process="form-dados-pripais"
-                                                                            update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
-                                                                            rendered="#{!vendaCabecalhoControll.objeto.encerrado}"
+                                                                            update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
+                                                                            rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'O' and orcamentoCabecalhoControll.objeto.situacao eq 'P'}"
+                                                                            icon="ui-icon-arrowrefresh-1-w"/>
+
+                                                                <p:menuitem value="Aprovar"
+                                                                            actionListener="#{orcamentoCabecalhoControll.aprovarPedido}"
+                                                                            process="form-dados-pripais"
+                                                                            update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
+                                                                            rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'P' and orcamentoCabecalhoControll.objeto.situacao eq 'P'}"
                                                                             icon="ui-icon-arrowrefresh-1-w"/>
 
                                                                 <p:menuitem value="Faturar"
-                                                                            action="#{vendaCabecalhoControll.faturarVenda}"
+                                                                            actionListener="#{orcamentoCabecalhoControll.gerarVenda}"
                                                                             process="form-dados-pripais"
-                                                                            update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
-                                                                            rendered="#{!vendaCabecalhoControll.objeto.faturado}"
+                                                                            update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
+                                                                            rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'P' and (orcamentoCabecalhoControll.objeto.situacao eq 'A'
+                                                                            or orcamentoCabecalhoControll.objeto.situacao eq 'P')}"
                                                                             icon="ui-icon-arrowrefresh-1-w"/>
 
                                                             </p:splitButton>
@@ -220,40 +225,43 @@
                                                         </h:panelGroup>
 
                                                     </div>
-                                                    <div class="#{vendaCabecalhoControll.objeto.faturado} ? 'col-xs-12 col-lg-12' : 'col-xs-6 col-lg-6'">
+                                                    <div class="#{orcamentoCabecalhoControll.objeto.situacao eq 'A'} ? 'col-xs-12 col-lg-12' : 'col-xs-6 col-lg-6'">
                                                         <h:commandButton value="Cancelar"
                                                                          styleClass="btn btn-default center-block"
-                                                                         actionListener="#{vendaCabecalhoControll.voltar()}"
+                                                                         actionListener="#{orcamentoCabecalhoControll.voltar()}"
                                                         >
-                                                            <p:ajax update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                                            <p:ajax update=":formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid,navegacao,:formCentro:mensagem"
                                                                     process="@this"/>
                                                         </h:commandButton>
                                                     </div>
                                                 </div>
 
-                                            </h:panelGroup>
 
+                                            </h:panelGroup>
                                         </div>
 
+
                                     </h:form>
+
+
                                 </p:tab>
 
-                                <p:tab title="Produtos" id="tab-produtos">
+                                <p:tab title="Produtos" id="produtos">
+
 
                                     <h:form id="form-produtos">
+
                                         <h:panelGroup layout="block" id="container-item"
                                                       style="height: 90px;background: #e0dfdf;display: flex;align-items: center;padding: 5px">
-
                                             <div class="row" style="height: 100%">
-
 
                                                 <h:panelGroup layout="block" class="col-xs-12 col-sm-5 col-md-5"
                                                               id="produto-selecionado">
 
                                                     <div style="display: flex;align-items: center; height: 100%;">
                                                         <p:autoComplete id="produto"
-                                                                        value="#{vendaCabecalhoControll.produto}"
-                                                                        completeMethod="#{vendaCabecalhoControll.getListaProduto}"
+                                                                        value="#{orcamentoCabecalhoControll.orcamentoDetalhe.produto}"
+                                                                        completeMethod="#{orcamentoCabecalhoControll.getListaProduto}"
                                                                         var="objeto"
                                                                         itemLabel="#{objeto.nome}" itemValue="#{objeto}"
                                                                         queryDelay="500"
@@ -262,163 +270,135 @@
                                                                         converter="defaultConverter"
                                                                         forceSelection="true"
                                                                         minQueryLength="3"
-                                                                        required="true"
                                                                         emptyMessage="Nenhum produto encontrado">
 
-                                                            <p:column headerText="Produto">
-                                                                <p:outputLabel value="#{objeto.nome}"/>
-                                                            </p:column>
-                                                            <p:column headerText="UN">
-                                                                <p:outputLabel value="#{objeto.unidade}"/>
-                                                            </p:column>
-                                                            <p:column headerText="Valor Venda" class="coluna-monetaria">
-                                                                <p:outputLabel value="#{objeto.valorVenda}">
-                                                                    <f:convertNumber pattern="#,###,##0.00"/>
-                                                                </p:outputLabel>
-                                                            </p:column>
-                                                            <p:column headerText="Verificado" class="coluna-monetaria">
-                                                                <p:outputLabel value="#{objeto.estoqueVerificado}">
-                                                                    <f:convertNumber pattern="#,###,##0.00"/>
-                                                                </p:outputLabel>
-                                                            </p:column>
-
                                                             <p:ajax event="itemSelect" process="@this"
-                                                                    update="formCentro:tab-view-vendas:form-produtos:container-item"
-                                                                    listener="#{vendaCabecalhoControll.definirValorProduto}"/>
+                                                                    update="formCentro:tab-view-orcamento:form-produtos:container-item"
+                                                                    listener="#{orcamentoCabecalhoControll.definirValorVenda}"/>
                                                         </p:autoComplete>
-
                                                         <h:panelGroup layout="block" id="grade" style="margin-left: 5px"
-                                                                      rendered="#{vendaCabecalhoControll.exibirGrade}">
+                                                                      rendered="#{orcamentoCabecalhoControll.exibirGrade}">
                                                             <h:selectOneMenu styleClass="form-control grade"
                                                                              id="cor"
-                                                                             value="#{vendaCabecalhoControll.cor}"
+                                                                             value="#{orcamentoCabecalhoControll.cor}"
                                                                              converter="defaultConverter"
                                                                              required="true">
                                                                 <f:selectItem itemValue="#{null}" itemLabel="COR"/>
                                                                 <f:selectItems
-                                                                        value="#{vendaCabecalhoControll.cores}"
+                                                                        value="#{orcamentoCabecalhoControll.cores}"
                                                                         var="#{obj}" itemValue="#{obj}"
                                                                         itemLabel="#{obj.nome}"/>
                                                                 <p:ajax process="@this" event="change"
-                                                                        update="formCentro:tab-view-vendas:form-produtos:grade"
-                                                                        listener="#{vendaCabecalhoControll.definirTamanhos()}"/>
+                                                                        update="formCentro:tab-view-orcamento:form-produtos:grade"
+                                                                        listener="#{orcamentoCabecalhoControll.definirTamanhos()}"/>
                                                             </h:selectOneMenu>
                                                             <h:selectOneMenu styleClass="form-control grade"
-                                                                             value="#{vendaCabecalhoControll.tamanho}"
+                                                                             value="#{orcamentoCabecalhoControll.tamanho}"
                                                                              converter="defaultConverter"
                                                                              required="true"
                                                                              id="tamanho">
                                                                 <f:selectItem itemValue="#{null}" itemLabel="Tamanho"/>
                                                                 <f:selectItems
-                                                                        value="#{vendaCabecalhoControll.tamanhos}"
+                                                                        value="#{orcamentoCabecalhoControll.tamanhos}"
                                                                         var="#{obj}" itemValue="#{obj}"
                                                                         itemLabel="#{obj.nome}"/>
                                                             </h:selectOneMenu>
                                                         </h:panelGroup>
-
                                                     </div>
+
 
                                                 </h:panelGroup>
 
+                                                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                                  idComponente="vendaOrcamentoDetalheQuantidade"
+                                                                  label="Quantidade"
+                                                                  requerido="true"
+                                                                  nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.quantidade}"/>
 
-                                                <div class="col-xs-12 col-sm-2 col-md-2">
-                                                    <p:outputLabel value="Quantidade"
-                                                                   for="vendaDetalheQuantidade"/>
-
-                                                    <p:inputNumber id="vendaDetalheQuantidade"
-                                                                   value="#{vendaCabecalhoControll.vendaDetalhe.quantidade}"
-                                                                   required="true"
-                                                                   style="width: 100%;"
-                                                                   disabled="#{!vendaCabecalhoControll.podeAlterarPreco}"
-                                                                   decimalPlaces="2"
-                                                                   minValue="-9999999999.99"
-                                                    >
-                                                        <p:ajax
-                                                                update="formCentro:tab-view-vendas:form-produtos:vendaDetalheQuantidade"
-                                                                process="@this"
-                                                                event="blur"
-                                                                listener="#{vendaCabecalhoControll.definirValorAtacado}"/>
-                                                    </p:inputNumber>
-                                                </div>
 
                                                 <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                                                                  idComponente="valorUnitario" label="Valor"
-                                                                  requerido="true" id="campoValor"
-                                                                  nomeAtributo="#{vendaCabecalhoControll.vendaDetalhe.valorUnitario}"/>
-
+                                                                  idComponente="valorUnitario"
+                                                                  desabilitado="#{!orcamentoCabecalhoControll.podeAlterarPreco}"
+                                                                  label="Valor"
+                                                                  requerido="true"
+                                                                  nomeAtributo="#{orcamentoCabecalhoControll.orcamentoDetalhe.valorUnitario}"/>
 
                                                 <div class="col-xs-12 col-sm-3 col-md-3">
                                                     <p:outputLabel value="Desconto" for="desconto"/>
                                                     <div class="ui-inputgroup">
 
                                                         <p:inputNumber id="desconto"
-                                                                       value="#{vendaCabecalhoControll.desconto}"
+                                                                       value="#{orcamentoCabecalhoControll.desconto}"
                                                                        style="width: 100%;"
                                                                        decimalPlaces="2"
                                                                        minValue="0"/>
 
 
                                                         <p:commandButton id="btn-tipo-desconto"
-                                                                         action="#{vendaCabecalhoControll.alterarTipoDesconto}"
+                                                                         action="#{orcamentoCabecalhoControll.alterarTipoDesconto}"
                                                                          process="@this"
-                                                                         update="formCentro:tab-view-vendas:form-produtos:btn-tipo-desconto"
-                                                                         value="#{vendaCabecalhoControll.tipoDesconto eq 0 ? '%' : 'R$' }"/>
+                                                                         update="formCentro:tab-view-orcamento:form-produtos:btn-tipo-desconto"
+                                                                         value="#{orcamentoCabecalhoControll.tipoDesconto eq 0 ? '%' : 'R$' }"/>
 
                                                         <p:commandButton id="btn-salvar"
                                                                          style="margin-left: 5px"
                                                                          value="Incluir"
-                                                                         update=":formCentro:growl,:formCentro:panel-valores,:formCentro:tab-view-vendas:form-produtos:container-item,:formCentro:tab-view-vendas:itens,:formCentro:tab-view-vendas:tipo-pagamento"
-                                                                         action="#{vendaCabecalhoControll.salvarVendaDetalhe}"
+                                                                         update=":formCentro:growl,formCentro:panelValores,:formCentro:tab-view-orcamento:form-produtos:container-item,formCentro:tab-view-orcamento:itens,:formCentro:tab-view-orcamento:tipo-pagamento"
+                                                                         action="#{orcamentoCabecalhoControll.salvarVendaOrcamentoDetalhe}"
                                                                          process="form-produtos"
                                                         />
                                                     </div>
                                                 </div>
 
                                             </div>
-
                                         </h:panelGroup>
+
                                     </h:form>
+
+
                                     <p:dataTable id="itens" var="obj"
-                                                 value="#{vendaCabecalhoControll.objeto.listaVendaDetalhe}"
-                                                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                                                 styleClass="m-t"
+                                                 value="#{orcamentoCabecalhoControll.objeto.listaOrcamentoDetalhe}"
+                                                 paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
                                                  reflow="true"
-                                                 rowIndexVar="index" rowKey="index" paginatorPosition="bottom">
+                                                 rowKey="#{obj.id}" paginatorPosition="bottom">
+
 
                                         <p:column headerText="Produto">
                                             <h:outputLabel value="#{obj.produto.nome}"/>
                                         </p:column>
-                                        <p:column headerText="Quantidade" styleClass="coluna-quantidade" width="120">
+                                        <p:column headerText="QTD." styleClass="text-center" width="110">
                                             <h:outputLabel value="#{obj.quantidade}">
                                                 <f:convertNumber pattern="0.000"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Valor UN" class="coluna-monetaria" width="101">
+                                        <p:column headerText="Valor UN" styleClass="text-right" width="110">
                                             <h:outputLabel value="#{obj.valorUnitario}">
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Subtotal" class="coluna-monetaria" width="115">
+                                        <p:column headerText="Subtotal" styleClass="text-right" width="150">
                                             <h:outputLabel value="#{obj.valorSubtotal}">
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="DESC." class="coluna-monetaria" width="100">
+                                        <p:column headerText="Desc." styleClass="text-right" width="100">
                                             <h:outputLabel value="#{obj.valorDesconto}">
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Valor Total" class="coluna-monetaria" width="150">
+                                        <p:column headerText="Total" styleClass="text-right" width="200">
                                             <h:outputLabel value="#{obj.valorTotal}">
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputLabel>
                                         </p:column>
-                                        <p:column headerText="Ações" width="120">
-
+                                        <p:column headerText="Ações" width="120" styleClass="text-center">
                                             &nbsp;
                                             <p:commandLink title="Excluir"
-                                                           action="#{vendaCabecalhoControll.excluirVendaDetalhe}"
+                                                           id="btnExluirProduto"
+                                                           action="#{orcamentoCabecalhoControll.excluirVendaOrcamentoDetalhe}"
                                                            style="position: relative; right: 7px"
-                                                           update=":formCentro:growl,itens,:formCentro:outputPanelDetalhe"
+                                                           update=":formCentro:growl,itens,:formCentro:panelValores"
                                                            process="itens"
                                                            oncomplete="atualizarMsg();"
                                                            class="btn btn-default"
@@ -427,44 +407,44 @@
                                                 <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
                                                 <f:setPropertyActionListener value="#{obj}"
-                                                                             target="#{vendaCabecalhoControll.vendaDetalheSelecionado}"/>
+                                                                             target="#{orcamentoCabecalhoControll.orcamentoDetalheSelecionado}"/>
                                             </p:commandLink>
                                         </p:column>
-                                    </p:dataTable>
 
+
+                                    </p:dataTable>
                                 </p:tab>
-                                <p:tab title="Formas de pagamento" id="tab-pagamentos">
+
+                                <p:tab title="Formas de pagamento" id="forma-pagamento">
 
                                     <h:panelGroup id="tipo-pagamento" layout="block" styleClass="row m-b">
-
                                         <div class="col-xs-12 col-sm-3 col-md-3">
                                             <h:selectOneMenu id="PedidoFormaPagamentoId"
-                                                             value="#{vendaCabecalhoControll.tipoPagamento}"
+                                                             value="#{orcamentoCabecalhoControll.tipoPagamento}"
                                                              class="form-control"
                                                              converter="defaultConverter">
-                                                <f:selectItems value="#{vendaCabecalhoControll.listTipoPagamento}"
+                                                <f:selectItems value="#{orcamentoCabecalhoControll.listTipoPagamento}"
                                                                var="obj" itemValue="#{obj}"
                                                                itemLabel="#{obj.descricao}"/>
 
                                                 <p:ajax process="@this" event="change"
-                                                        update="formCentro:tab-view-vendas:tipo-pagamento"
-                                                        listener="#{vendaCabecalhoControll.definirCondicoess()}"/>
+                                                        update="formCentro:tab-view-orcamento:tipo-pagamento"
+                                                        listener="#{orcamentoCabecalhoControll.definirCondicoess()}"/>
 
                                             </h:selectOneMenu>
                                         </div>
 
                                         <h:panelGroup layout="block" styleClass="col-xs-12 col-sm-3 col-md-3"
-                                                      rendered="#{vendaCabecalhoControll.exibirCondicoes}">
+                                                      rendered="#{orcamentoCabecalhoControll.exibirCondicoes}">
                                             <h:selectOneMenu id="condicoesPagamento"
-                                                             value="#{vendaCabecalhoControll.condicaoPagamento}"
+                                                             value="#{orcamentoCabecalhoControll.condicaoPagamento}"
                                                              class="form-control"
                                                              converter="defaultConverter">
-                                                <f:selectItems value="#{vendaCabecalhoControll.condicoesPagamentos}"
+                                                <f:selectItems value="#{orcamentoCabecalhoControll.condicoesPagamentos}"
                                                                var="obj" itemValue="#{obj}"
                                                                itemLabel="#{obj.nome}"/>
                                             </h:selectOneMenu>
                                         </h:panelGroup>
-
 
                                         <h:panelGroup layout="block" styleClass="col-xs-12 col-sm-3 col-md-3"
                                                       id="valo-pago">
@@ -473,12 +453,12 @@
 
                                                 <p:inputNumber id="valor-pago"
                                                                styleClass="input-valor-pagar"
-                                                               value="#{vendaCabecalhoControll.valorPago}"/>
+                                                               value="#{orcamentoCabecalhoControll.valorPago}"/>
                                                 <p:commandButton class="input-group-addon btn btn-lg btn-primary"
-                                                                 action="#{vendaCabecalhoControll.lancaPagamento}"
-                                                                 process="@this,:formCentro:tab-view-vendas:tipo-pagamento"
-                                                                 update="formCentro:growl,:formCentro:tab-view-vendas:valo-pago,:formCentro:tab-view-vendas:pagamentos"
-                                                                 disabled="#{vendaCabecalhoControll.podeLancaPagamento}"
+                                                                 action="#{orcamentoCabecalhoControll.lancaPagamento}"
+                                                                 process="@this,:formCentro:tab-view-orcamento:tipo-pagamento"
+                                                                 update="formCentro:growl,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos"
+                                                                 disabled="#{orcamentoCabecalhoControll.podeLancaPagamento}"
                                                                  id="botao-confirma-pagamento"
                                                                  icon="fa fa-plus">
 
@@ -490,7 +470,7 @@
                                     </h:panelGroup>
 
                                     <p:dataTable id="pagamentos" var="obj" reflow="true"
-                                                 value="#{vendaCabecalhoControll.objeto.listaFormaPagamento}">
+                                                 value="#{orcamentoCabecalhoControll.objeto.listaFormaPagamento}">
 
                                         <p:column headerText="Forma de pagamento">
                                             <h:outputText value="#{obj.tipoPagamento.descricao}"/>
@@ -505,30 +485,29 @@
                                             <p:commandButton
                                                     icon="fa fa-remove"
                                                     process="@this,pagamentos"
-                                                    update="formCentro:growl,:formCentro:tab-view-vendas:valo-pago,:formCentro:tab-view-vendas:pagamentos"
-                                                    action="#{vendaCabecalhoControll.excluirPagamento}"
+                                                    update="formCentro:growl,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos"
+                                                    action="#{orcamentoCabecalhoControll.excluirPagamento}"
 
                                             >
                                                 <f:setPropertyActionListener value="#{obj}"
-                                                                             target="#{vendaCabecalhoControll.formaPagamentoSelecionado}"/>
+                                                                             target="#{orcamentoCabecalhoControll.formaPagamentoSelecionado}"/>
                                             </p:commandButton>
 
                                         </p:column>
 
                                     </p:dataTable>
-
                                 </p:tab>
 
                             </p:tabView>
 
+
                         </div>
-
                     </div>
-
-
                 </div>
 
+
             </h:panelGroup>
+
         </h:panelGroup>
     </h:panelGroup>
 

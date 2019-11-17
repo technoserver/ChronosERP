@@ -35,6 +35,7 @@ public class ProdutoDTO implements Serializable {
     private BigDecimal precoTabela;
     private BigDecimal precoPromocao;
     private PrecoPrioritario precoPrioritario;
+    private Boolean possuiGrade;
 
 
     private Produto produto;
@@ -65,7 +66,7 @@ public class ProdutoDTO implements Serializable {
     public ProdutoDTO(Integer id, Integer idgrade, String nome, String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda,
                       BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem,
                       Integer idgrupotributario, String unidade, String podeFracionar, BigDecimal precoPromocao,
-                      PrecoPrioritario precoPrioritario, BigDecimal quantidadeVendaAtacado, BigDecimal valorVendaAtacado) {
+                      PrecoPrioritario precoPrioritario, BigDecimal quantidadeVendaAtacado, BigDecimal valorVendaAtacado, boolean possuiGrade) {
         this.id = id;
         this.idgrade = idgrade;
         this.nome = nome;
@@ -83,6 +84,7 @@ public class ProdutoDTO implements Serializable {
         this.ncm = ncm;
         this.imagem = imagem;
         this.idgrupotributario = idgrupotributario;
+        this.possuiGrade = possuiGrade;
 
         this.servico = servico;
         this.produto = new Produto(id, nome, servico, valorVenda, quantidadeEstoque, ncm, new UnidadeProduto(0, unidade));
@@ -91,6 +93,7 @@ public class ProdutoDTO implements Serializable {
         this.produto.setCodigoLst(codigoLst);
         this.produto.setControle(estoqueVerificado);
         this.produto.setDescricaoPdv(this.descricaoPdv);
+        this.produto.setPossuiGrade(this.possuiGrade);
 
         produto.setTributGrupoTributario(new TributGrupoTributario(idgrupotributario));
 
@@ -265,5 +268,13 @@ public class ProdutoDTO implements Serializable {
 
     public void setQuantidadeVenda(BigDecimal quantidadeVenda) {
         this.quantidadeVenda = quantidadeVenda;
+    }
+
+    public Boolean getPossuiGrade() {
+        return possuiGrade;
+    }
+
+    public void setPossuiGrade(Boolean possuiGrade) {
+        this.possuiGrade = possuiGrade;
     }
 }

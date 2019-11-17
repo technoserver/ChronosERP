@@ -49,7 +49,7 @@ public class OsService extends AbstractService<OsAbertura> {
     private FinLancamentoReceberService finLancamentoReceberService;
 
     @Inject
-    private Repository<VendaCondicoesParcelas> parcelasRepository;
+    private Repository<CondicoesParcelas> parcelasRepository;
 
     @Inject
     private ComissaoService comissaoService;
@@ -332,6 +332,22 @@ public class OsService extends AbstractService<OsAbertura> {
             item.setValorUnitario(d.getValorUnitario());
             item.setTipo(0);
             os.getListaOsProdutoServico().add(item);
+        }
+
+        for (OrcamentoFormaPagamento p : orcamento.getListaFormaPagamento()) {
+            OsFormaPagamento pag = new OsFormaPagamento();
+            pag.setEstorno(p.getEstorno());
+            pag.setForma(p.getForma());
+            pag.setOsAbertura(os);
+            pag.setTipoPagamento(p.getTipoPagamento());
+            pag.setTroco(p.getTroco());
+            pag.setValor(p.getValor());
+            pag.setBandeira(p.getBandeira());
+            pag.setCartaoTipoIntegracao(p.getCartaoTipoIntegracao());
+            pag.setCnpjOperadoraCartao(p.getCnpjOperadoraCartao());
+            pag.setNumeroAutorizacao(p.getNumeroAutorizacao());
+
+            os.getListaFormaPagamento().add(pag);
         }
 
 

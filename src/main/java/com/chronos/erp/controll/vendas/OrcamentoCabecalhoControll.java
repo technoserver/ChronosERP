@@ -12,6 +12,7 @@ import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.comercial.OrcamentoService;
 import com.chronos.erp.service.comercial.VendedorService;
+import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +38,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     private static final long serialVersionUID = 1L;
 
     @Inject
-    private Repository<VendaCondicoesPagamento> condicoes;
+    private Repository<CondicoesPagamento> condicoes;
     @Inject
     private Repository<Vendedor> vendedores;
     @Inject
@@ -48,12 +49,18 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     private Repository<Produto> produtos;
 
     @Inject
+    private Repository<EstoqueGrade> estoqueGradeRepository;
+
+    @Inject
     private VendedorService vendedorService;
 
     @Inject
     private OrcamentoService service;
     @Inject
     private EstoqueRepository estoqueRepository;
+    @Inject
+    private Repository<CondicoesPagamento> pagamentoRepository;
+
 
     private OrcamentoDetalhe orcamentoDetalhe;
     private OrcamentoDetalhe orcamentoDetalheSelecionado;
@@ -72,6 +79,29 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     private BigDecimal desconto;
 
     private boolean podeAlterarPreco = true;
+
+    private TipoPagamento tipoPagamento;
+    private List<TipoPagamento> listTipoPagamento;
+    private CondicoesPagamento condicaoPagamento;
+    private List<CondicoesPagamento> condicoesPagamentos;
+    private OrcamentoFormaPagamento formaPagamentoSelecionado;
+    private boolean exibirCondicoes;
+
+    private BigDecimal valorPago;
+    private BigDecimal saldoRestante;
+    private BigDecimal totalRecebido;
+    private BigDecimal totalReceber;
+    private BigDecimal troco;
+    private boolean exibirGrade = false;
+
+
+    private EstoqueCor cor;
+    private EstoqueTamanho tamanho;
+    private List<EstoqueCor> cores;
+    private List<EstoqueTamanho> tamanhos;
+    private List<EstoqueGrade> grades;
+
+
 
     @PostConstruct
     @Override
@@ -138,27 +168,45 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     @Override
     public void doCreate() {
         super.doCreate();
+        iniciarValoresPagamento();
+        listTipoPagamento = definirTipoPagament();
         getObjeto().setEmpresa(empresa);
         getObjeto().setListaOrcamentoDetalhe(new ArrayList<>());
+        getObjeto().setListaFormaPagamento(new HashSet<>());
         getObjeto().setSituacao(SituacaoOrcamentoPedido.PENDENTE.getCodigo());
         getObjeto().setTipoFrete(TipoFrete.CIF.getCodigo());
         getObjeto().setDataCadastro(new Date());
         getObjeto().setDataEntrega(new Date());
         getObjeto().setTipo(Optional.ofNullable(tipo).orElse("O"));
+
+        incluirVendaOrcamentoDetalhe();
     }
 
     @Override
     public void doEdit() {
         super.doEdit();
-
+        listTipoPagamento = definirTipoPagament();
         OrcamentoCabecalho orcamento = dataModel.getRowData(getObjeto().getId().toString());
         setObjeto(orcamento);
 
+        for (OrcamentoDetalhe item : orcamento.getListaOrcamentoDetalhe()) {
+            if (item.getIdgrade() != null) {
+                EstoqueGrade grade = estoqueGradeRepository.get(item.getIdgrade(), EstoqueGrade.class);
+
+                String nome = item.getProduto().getNome() + " COR " + grade.getEstoqueCor().getNome() + " TAM " + grade.getEstoqueTamanho().getNome();
+                item.getProduto().setNome(nome);
+
+
+            }
+        }
+        totalReceber = orcamento.getValorTotal();
+        verificaSaldoRestante();
     }
 
     @Override
     public void salvar() {
         try {
+
             OrcamentoCabecalho orcamento = service.salvar(getObjeto());
             setObjeto(orcamento);
             Mensagem.addInfoMessage("Registro salvo com sucesso");
@@ -183,6 +231,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         codigo += StringUtils.leftPad(orcamento.getId().toString(), 3, "0");
         orcamento.setCodigo(codigo);
         dao.atualizar(orcamento);
+        setTelaGrid(true);
     }
 
     public void aprovarPedido() {
@@ -227,6 +276,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         orcamentoDetalhe.setOrcamentoCabecalho(getObjeto());
         orcamentoDetalhe.setQuantidade(BigDecimal.ONE);
         desconto = BigDecimal.ZERO;
+        exibirGrade = false;
     }
 
     public void alterarVendaOrcamentoDetalhe() {
@@ -237,8 +287,25 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
         try {
 
+            if (exibirGrade) {
+                Optional<EstoqueGrade> first = grades.stream()
+                        .filter(g -> g.getEstoqueCor().getId().equals(cor.getId()) && g.getEstoqueTamanho().getId().equals(tamanho.getId()))
+                        .findFirst();
+
+                if (!first.isPresent()) {
+                    throw new ChronosException("Grade não localizada");
+                }
+
+                String nome = orcamentoDetalhe.getProduto().getNome() + " COR " + cor.getNome() + " TAM " + tamanho.getNome();
+                orcamentoDetalhe.getProduto().setNome(nome);
+                orcamentoDetalhe.setIdgrade(first.get().getId());
+            }
+
             service.salvarItem(getObjeto(), orcamentoDetalhe, desconto, tipoDesconto);
             desconto = BigDecimal.ZERO;
+            incluirVendaOrcamentoDetalhe();
+            totalReceber = getObjeto().getValorTotal();
+            verificaSaldoRestante();
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -274,16 +341,143 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         BigDecimal valor = Optional.ofNullable(orcamentoDetalhe.getProduto())
                 .map(Produto::getValorVenda).orElse(null);
         orcamentoDetalhe.setValorUnitario(valor);
+
+        exibirGrade = false;
+        if (orcamentoDetalhe.getProduto() != null && orcamentoDetalhe.getProduto().getPossuiGrade()) {
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("idproduto", orcamentoDetalhe.getProduto().getId()));
+            filtros.add(new Filtro("idempresa", empresa.getId()));
+
+            grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+
+            if (!grades.isEmpty()) {
+                cores = grades.stream().map(g -> g.getEstoqueCor()).collect(Collectors.toList());
+                exibirGrade = true;
+            }
+
+        }
+
     }
 
-    public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
-        List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
+    public void definirTamanhos() {
+        if (cor != null) {
+            tamanhos = grades.stream()
+                    .filter(g -> g.getEstoqueCor().getId().equals(cor.getId()))
+                    .map(t -> t.getEstoqueTamanho()).collect(Collectors.toList());
+        }
+    }
+
+    public void lancaPagamento() {
         try {
-            listaVendaCondicoesPagamento = condicoes.getEntitys(VendaCondicoesPagamento.class, "nome", nome);
+
+
+            if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
+                Mensagem.addErrorMessage("Todos os valores já foram recebidos. Finalize o orçamento.");
+            } else {
+
+                incluiPagamento(tipoPagamento, valorPago);
+
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao lança os pagamentos", ex);
+            } else {
+                throw new RuntimeException("Erro ao lança os pagamentos", ex);
+            }
+        }
+
+
+    }
+
+    public void definirCondicoess() {
+        exibirCondicoes = tipoPagamento.getGeraParcelas().equals("S") && !tipoPagamento.getCodigo().equals("02");
+
+
+        if (exibirCondicoes) {
+            condicoesPagamentos = pagamentoRepository.getEntitys(CondicoesPagamento.class, "vistaPrazo", "1", new Object[]{"nome", "vistaPrazo", "tipoRecebimento"});
+        }
+
+    }
+
+    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
+        Optional<OrcamentoFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
+        if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
+            Mensagem.addErrorMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já inclusa");
+        } else {
+            if (totalReceber.compareTo(valorPago) < 0 && tipoPagamento.getPermiteTroco().equals("N")) {
+                Mensagem.addErrorMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " não permite troco");
+            } else {
+                OrcamentoFormaPagamento formaPagamento = new OrcamentoFormaPagamento();
+                formaPagamento.setOrcamentoCabecalho(getObjeto());
+                formaPagamento.setTipoPagamento(tipoPagamento);
+                formaPagamento.setValor(valor);
+                formaPagamento.setForma(tipoPagamento.getCodigo());
+                formaPagamento.setEstorno("N");
+
+                if (formaPagamento.getForma().equals("14")) {
+                    formaPagamento.setCondicoesPagamento(condicaoPagamento);
+                }
+
+                totalRecebido = Biblioteca.soma(totalRecebido, valor);
+                troco = Biblioteca.subtrai(totalRecebido, totalReceber);
+                if (troco.compareTo(BigDecimal.ZERO) == -1) {
+                    troco = BigDecimal.ZERO;
+                }
+                formaPagamento.setTroco(troco);
+                getObjeto().getListaFormaPagamento().add(formaPagamento);
+                verificaSaldoRestante();
+
+
+            }
+
+        }
+
+    }
+
+    private void verificaSaldoRestante() {
+        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
+        for (OrcamentoFormaPagamento p : getObjeto().getListaFormaPagamento()) {
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+        }
+
+        saldoRestante = Biblioteca.subtrai(totalReceber, recebidoAteAgora);
+        totalRecebido = recebidoAteAgora;
+        valorPago = saldoRestante;
+        if (valorPago.compareTo(BigDecimal.ZERO) < 0) {
+            valorPago = BigDecimal.ZERO;
+        }
+        if (saldoRestante.compareTo(BigDecimal.ZERO) < 0) {
+            saldoRestante = BigDecimal.ZERO;
+        }
+    }
+
+    private Optional<OrcamentoFormaPagamento> bucarTipoPagamento(TipoPagamento tipoPagamento) {
+        return getObjeto().getListaFormaPagamento()
+                .stream()
+                .filter(fp -> fp.getTipoPagamento().equals(tipoPagamento))
+                .findAny();
+    }
+
+
+    public void excluirPagamento() {
+        if (formaPagamentoSelecionado != null) {
+            getObjeto().getListaFormaPagamento().remove(formaPagamentoSelecionado);
+
+            verificaSaldoRestante();
+        }
+    }
+
+
+    public List<CondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
+        List<CondicoesPagamento> listaCondicoesPagamento = new ArrayList<>();
+        try {
+            listaCondicoesPagamento = condicoes.getEntitys(CondicoesPagamento.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        return listaVendaCondicoesPagamento;
+        return listaCondicoesPagamento;
     }
 
     public List<Vendedor> getListaVendedor(String nome) {
@@ -359,6 +553,13 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         desconto = BigDecimal.ZERO;
     }
 
+    private void iniciarValoresPagamento() {
+        totalReceber = BigDecimal.ZERO;
+        troco = BigDecimal.ZERO;
+        totalRecebido = BigDecimal.ZERO;
+        saldoRestante = BigDecimal.ZERO;
+        valorPago = BigDecimal.ZERO;
+    }
 
     @Override
     protected Class<OrcamentoCabecalho> getClazz() {
@@ -373,6 +574,10 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     @Override
     protected boolean auditar() {
         return false;
+    }
+
+    public boolean isPodeLancaPagamento() {
+        return valorPago.signum() == 0;
     }
 
     public OrcamentoDetalhe getOrcamentoDetalhe() {
@@ -475,5 +680,83 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         return podeAlterarPreco;
     }
 
+    public TipoPagamento getTipoPagamento() {
+        return tipoPagamento;
+    }
 
+    public void setTipoPagamento(TipoPagamento tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
+    }
+
+    public List<TipoPagamento> getListTipoPagamento() {
+        return listTipoPagamento;
+    }
+
+    public void setListTipoPagamento(List<TipoPagamento> listTipoPagamento) {
+        this.listTipoPagamento = listTipoPagamento;
+    }
+
+    public CondicoesPagamento getCondicaoPagamento() {
+        return condicaoPagamento;
+    }
+
+    public void setCondicaoPagamento(CondicoesPagamento condicaoPagamento) {
+        this.condicaoPagamento = condicaoPagamento;
+    }
+
+    public List<CondicoesPagamento> getCondicoesPagamentos() {
+        return condicoesPagamentos;
+    }
+
+    public void setCondicoesPagamentos(List<CondicoesPagamento> condicoesPagamentos) {
+        this.condicoesPagamentos = condicoesPagamentos;
+    }
+
+    public BigDecimal getValorPago() {
+        return valorPago;
+    }
+
+    public void setValorPago(BigDecimal valorPago) {
+        this.valorPago = valorPago;
+    }
+
+    public OrcamentoFormaPagamento getFormaPagamentoSelecionado() {
+        return formaPagamentoSelecionado;
+    }
+
+    public void setFormaPagamentoSelecionado(OrcamentoFormaPagamento formaPagamentoSelecionado) {
+        this.formaPagamentoSelecionado = formaPagamentoSelecionado;
+    }
+
+    public EstoqueCor getCor() {
+        return cor;
+    }
+
+    public void setCor(EstoqueCor cor) {
+        this.cor = cor;
+    }
+
+    public EstoqueTamanho getTamanho() {
+        return tamanho;
+    }
+
+    public void setTamanho(EstoqueTamanho tamanho) {
+        this.tamanho = tamanho;
+    }
+
+    public List<EstoqueCor> getCores() {
+        return cores;
+    }
+
+    public List<EstoqueTamanho> getTamanhos() {
+        return tamanhos;
+    }
+
+    public boolean isExibirCondicoes() {
+        return exibirCondicoes;
+    }
+
+    public boolean isExibirGrade() {
+        return exibirGrade;
+    }
 }

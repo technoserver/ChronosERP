@@ -8,8 +8,8 @@ import java.util.Optional;
 
 
 @Entity
-@Table(name = "os_forma_pagamento")
-public class OsFormaPagamento implements Serializable {
+@Table(name = "venda_forma_pagamento")
+public class VendaFormaPagamento implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -33,12 +33,15 @@ public class OsFormaPagamento implements Serializable {
     private String estorno;
     @Column(name = "TROCO")
     private BigDecimal troco;
-    @JoinColumn(name = "id_os_abertura", referencedColumnName = "ID")
+    @JoinColumn(name = "id_venda_cabecalho", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private OsAbertura osAbertura;
+    private VendaCabecalho vendaCabecalho;
     @JoinColumn(name = "ID_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private TipoPagamento tipoPagamento;
+    @JoinColumn(name = "ID_CONDICAO_PAGAMENTO", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private CondicoesPagamento condicoesPagamento;
     @Transient
     private int qtdParcelas;
     @Transient
@@ -46,7 +49,7 @@ public class OsFormaPagamento implements Serializable {
     @Transient
     private OperadoraCartao operadoraCartao;
 
-    public OsFormaPagamento() {
+    public VendaFormaPagamento() {
         this.qtdParcelas = 1;
     }
 
@@ -122,12 +125,12 @@ public class OsFormaPagamento implements Serializable {
         this.troco = troco;
     }
 
-    public OsAbertura getOsAbertura() {
-        return osAbertura;
+    public VendaCabecalho getVendaCabecalho() {
+        return vendaCabecalho;
     }
 
-    public void setOsAbertura(OsAbertura osAbertura) {
-        this.osAbertura = osAbertura;
+    public void setVendaCabecalho(VendaCabecalho vendaCabecalho) {
+        this.vendaCabecalho = vendaCabecalho;
     }
 
     public TipoPagamento getTipoPagamento() {
@@ -138,12 +141,12 @@ public class OsFormaPagamento implements Serializable {
         this.tipoPagamento = tipoPagamento;
     }
 
-    public CondicoesPagamento getCondicao() {
-        return condicao;
+    public CondicoesPagamento getCondicoesPagamento() {
+        return condicoesPagamento;
     }
 
-    public void setCondicao(CondicoesPagamento condicao) {
-        this.condicao = condicao;
+    public void setCondicoesPagamento(CondicoesPagamento condicoesPagamento) {
+        this.condicoesPagamento = condicoesPagamento;
     }
 
     public int getQtdParcelas() {
@@ -170,9 +173,9 @@ public class OsFormaPagamento implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OsFormaPagamento)) return false;
+        if (!(o instanceof VendaFormaPagamento)) return false;
 
-        OsFormaPagamento that = (OsFormaPagamento) o;
+        VendaFormaPagamento that = (VendaFormaPagamento) o;
 
         return getId() != null ? getId().equals(that.getId()) : that.getId() != null;
     }

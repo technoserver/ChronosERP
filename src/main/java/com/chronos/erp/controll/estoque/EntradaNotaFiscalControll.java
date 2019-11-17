@@ -61,16 +61,16 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     @Inject
     private Repository<NaturezaFinanceira> naturezas;
     @Inject
-    private Repository<VendaCondicoesPagamento> condicoes;
+    private Repository<CondicoesPagamento> condicoes;
     @Inject
     private Repository<TributGrupoTributario> grupoTributarioRepository;
     @Inject
-    private Repository<VendaCondicoesParcelas> parcelasRepository;
+    private Repository<CondicoesParcelas> parcelasRepository;
 
     @Inject
     private Repository<TributOperacaoFiscal> operacoes;
     @Inject
-    private Repository<VendaCondicoesPagamento> pagamentoRepository;
+    private Repository<CondicoesPagamento> pagamentoRepository;
     @Inject
     private Repository<ContaCaixa> contaCaixaRepository;
     @Inject
@@ -101,7 +101,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private UnidadeConversao unidadeConversaoSelecionada;
     private UnidadeProduto unidadeProduto;
     private Fornecedor fornecedor;
-    private VendaCondicoesPagamento condicao;
+    private CondicoesPagamento condicao;
 
 
     private BigDecimal valorTotalFrete;
@@ -856,9 +856,9 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             throw new Exception("Condição de pagamento não definida");
         }
 
-        List<VendaCondicoesParcelas> parcelas = parcelasRepository.getEntitys(VendaCondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
+        List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
         condicao.setParcelas(parcelas);
-        for (VendaCondicoesParcelas p : condicao.getParcelas()) {
+        for (CondicoesParcelas p : condicao.getParcelas()) {
 
             numero++;
 
@@ -907,14 +907,14 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     }
 
 
-    public List<VendaCondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
-        List<VendaCondicoesPagamento> listaVendaCondicoesPagamento = new ArrayList<>();
+    public List<CondicoesPagamento> getListaVendaCondicoesPagamento(String nome) {
+        List<CondicoesPagamento> listaCondicoesPagamento = new ArrayList<>();
         try {
-            listaVendaCondicoesPagamento = condicoes.getEntitys(VendaCondicoesPagamento.class, "nome", nome);
+            listaCondicoesPagamento = condicoes.getEntitys(CondicoesPagamento.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }
-        return listaVendaCondicoesPagamento;
+        return listaCondicoesPagamento;
     }
 
     public List<Produto> getListaProduto(String descricao) {
@@ -1089,11 +1089,11 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         return nfe.getStatusNota().equals(StatusTransmissao.ENCERRADO.getCodigo());
     }
 
-    public VendaCondicoesPagamento getCondicao() {
+    public CondicoesPagamento getCondicao() {
         return condicao;
     }
 
-    public void setCondicao(VendaCondicoesPagamento condicao) {
+    public void setCondicao(CondicoesPagamento condicao) {
         this.condicao = condicao;
     }
 
