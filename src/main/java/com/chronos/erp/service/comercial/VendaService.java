@@ -154,7 +154,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             Optional<VendaFormaPagamento> pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst();
 
-            if (pagamentoOptional.isPresent()) {
+            if (pagamentoOptional.isPresent() && pagamentoOptional.get().getCondicoesPagamento() != null) {
                 List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "condicoesPagamento.id", pagamentoOptional.get().getCondicoesPagamento().getId());
                 pagamentoOptional.get().getCondicoesPagamento().setParcelas(parcelas);
             }
