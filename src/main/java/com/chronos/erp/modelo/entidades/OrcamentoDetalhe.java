@@ -142,6 +142,7 @@ public class OrcamentoDetalhe implements Serializable {
     }
 
     public void calcularValorTotal() {
+        calcularSubTotal();
         valorTotal = getValorSubtotal().subtract(getValorDesconto());
     }
 

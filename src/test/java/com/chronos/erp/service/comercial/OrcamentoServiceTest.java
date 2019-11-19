@@ -75,4 +75,20 @@ public class OrcamentoServiceTest {
         assertEquals(item.getValorTotal(), BigDecimal.valueOf(5).setScale(2));
         assertEquals(item.getValorDesconto(), BigDecimal.valueOf(5).setScale(2));
     }
+
+    @Test
+    public void devemos_garantir_que_seja_possivel_aplicar_desconto_em_todo_os_itens() throws ChronosException {
+        OrcamentoDetalhe item = new OrcamentoDetalhe();
+        item.setQuantidade(BigDecimal.valueOf(2));
+        item.setValorUnitario(BigDecimal.valueOf(36.47));
+
+        service.salvarItem(orcamento, item, null, 1);
+
+        service.aplicarDesconto(orcamento, 1, BigDecimal.valueOf(0.94));
+
+        assertEquals(item.getValorSubtotal(), BigDecimal.valueOf(72.94));
+        assertEquals(item.getValorTotal(), BigDecimal.valueOf(72).setScale(2));
+    }
+
+
 }

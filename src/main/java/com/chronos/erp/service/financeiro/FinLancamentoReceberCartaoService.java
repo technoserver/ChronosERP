@@ -33,11 +33,10 @@ public class FinLancamentoReceberCartaoService implements Serializable {
         OperadoraCartao operadoraCartao = lancamento.getOperadoraCartao();
         BigDecimal valor = lancamento.getValorBruto();
         BigDecimal valorParcela = Biblioteca.divide(valor, BigDecimal.valueOf(qtdParcelas));
-        BigDecimal valorEcargos = BigDecimal.ZERO;
+        BigDecimal valorEncargos = BigDecimal.ZERO;
         BigDecimal sumValorLiquidoParcelas = BigDecimal.ZERO;
         Calendar primeiroVencimento = Calendar.getInstance();
         primeiroVencimento.setTime(lancamento.getPrimeiroVencimento());
-
 
         BigDecimal taxa = operadoraCartaoTaxa.getTaxaAdm();
         BigDecimal valorEcargosParcela = Biblioteca.calcularValorPercentual(valorParcela, taxa);
@@ -48,10 +47,6 @@ public class FinLancamentoReceberCartaoService implements Serializable {
 
         lancamento.setListaFinParcelaReceberCartao(new ArrayList<>());
         for (int i = 0; i < qtdParcelas; i++) {
-
-
-            valorEcargos = Biblioteca.soma(valorEcargos, valorEcargosParcela);
-
 
             parcelaReceber = new FinParcelaReceberCartao();
             parcelaReceber.setFinLancamentoReceberCartao(lancamento);
@@ -84,23 +79,26 @@ public class FinLancamentoReceberCartaoService implements Serializable {
                 parcelaReceber.setValorLiquido(valorLiquido);
             }
 
+            valorEncargos = Biblioteca.soma(valorEncargos, valorEcargosParcela);
             sumValorLiquidoParcelas = Biblioteca.soma(sumValorLiquidoParcelas, valorLiquido);
             lancamento.getListaFinParcelaReceberCartao().add(parcelaReceber);
         }
 
-        lancamento.setValorEncargos(valorEcargos);
+        lancamento.setValorEncargos(valorEncargos);
         lancamento.setValorLiquido(sumValorLiquidoParcelas);
         lancamento.setTaxaAplicada(taxa);
         return lancamento;
     }
 
-    public FinLancamentoReceberCartao gerarLancamento(int id, BigDecimal valor, OperadoraCartao operadoraCartao, OperadoraCartaoTaxa operadoraCartaoTaxa, int qtdParcelas, String codModulo, Empresa empresa, String identificador) throws ChronosException {
+    public FinLancamentoReceberCartao gerarLancamento(int id, BigDecimal valor, OperadoraCartao operadoraCartao,
+                                                      OperadoraCartaoTaxa operadoraCartaoTaxa, int qtdParcelas,
+                                                      String codModulo, Empresa empresa, String identificador) throws ChronosException {
 
         String numDoc = "E" + empresa.getId()
                 + "M" + codModulo
                 + "V" + id
-                + "O" + operadoraCartao.getId()
-                + "Q" + qtdParcelas;
+                + "O" + operadoraCartao.getId();
+
 
         if (!StringUtils.isEmpty(identificador)) {
             numDoc += "NSU" + identificador;

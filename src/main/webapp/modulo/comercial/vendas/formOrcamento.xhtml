@@ -106,7 +106,7 @@
 
                             <p:tabView id="tab-view-orcamento" style="border: 0px;" scrollable="true">
                                 <p:tab title="Dados Principais" id="dados-principais">
-                                    <h:form id="form-dados-pripais">
+                                    <h:form id="form-dados-pricipais">
                                         <div class="row">
 
 
@@ -186,7 +186,7 @@
                                                                              rendered="#{empty orcamentoCabecalhoControll.objeto.id}"
                                                                              action="#{orcamentoCabecalhoControll.salvar()}"
                                                                              disabled="#{!orcamentoCabecalhoControll.podeInserir()}"
-                                                                             process="form-dados-pripais"
+                                                                             process="form-dados-pricipais"
                                                                              update=":formCentro:growl,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem">
 
                                                             </p:commandButton>
@@ -194,27 +194,28 @@
 
                                                             <p:splitButton value="Salvar"
                                                                            rendered="#{not empty orcamentoCabecalhoControll.objeto.id}"
-                                                                           actionListener="#{orcamentoCabecalhoControll.salvar}"
-                                                                           process="form-dados-pripais"
+                                                                           action="#{orcamentoCabecalhoControll.salvar}"
+                                                                           process="form-dados-pricipais"
+                                                                           update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                                                                            icon="ui-icon-disk">
 
                                                                 <p:menuitem value="Gerar Pedido"
-                                                                            actionListener="#{orcamentoCabecalhoControll.gerarPedido}"
-                                                                            process="form-dados-pripais"
+                                                                            action="#{orcamentoCabecalhoControll.gerarPedido}"
+                                                                            process="form-dados-pricipais"
                                                                             update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
                                                                             rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'O' and orcamentoCabecalhoControll.objeto.situacao eq 'P'}"
                                                                             icon="ui-icon-arrowrefresh-1-w"/>
 
                                                                 <p:menuitem value="Aprovar"
-                                                                            actionListener="#{orcamentoCabecalhoControll.aprovarPedido}"
-                                                                            process="form-dados-pripais"
+                                                                            action="#{orcamentoCabecalhoControll.aprovarPedido}"
+                                                                            process="form-dados-pricipais"
                                                                             update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
                                                                             rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'P' and orcamentoCabecalhoControll.objeto.situacao eq 'P'}"
                                                                             icon="ui-icon-arrowrefresh-1-w"/>
 
                                                                 <p:menuitem value="Faturar"
-                                                                            actionListener="#{orcamentoCabecalhoControll.gerarVenda}"
-                                                                            process="form-dados-pripais"
+                                                                            action="#{orcamentoCabecalhoControll.gerarVenda}"
+                                                                            process="form-dados-pricipais"
                                                                             update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelDetalhe,:formCentro:outputPanelGrid"
                                                                             rendered="#{orcamentoCabecalhoControll.objeto.tipo eq 'P' and (orcamentoCabecalhoControll.objeto.situacao eq 'A'
                                                                             or orcamentoCabecalhoControll.objeto.situacao eq 'P')}"
