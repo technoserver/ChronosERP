@@ -35,11 +35,11 @@ public class VendaServiceTest {
         VendaDetalhe item1 = new VendaDetalhe();
         item1.setQuantidade(BigDecimal.valueOf(2));
         item1.setValorUnitario(BigDecimal.valueOf(25));
-
+        item1.calcularValorTotal();
         VendaDetalhe item2 = new VendaDetalhe();
         item2.setQuantidade(BigDecimal.valueOf(2));
         item2.setValorUnitario(BigDecimal.valueOf(25));
-
+        item2.calcularValorTotal();
         itens.add(item1);
         itens.add(item2);
 
@@ -51,7 +51,41 @@ public class VendaServiceTest {
 
         assertEquals(venda.getValorTotal(), new BigDecimal("100"));
         assertEquals(venda.getValorSubtotal(), new BigDecimal("100"));
+
+
     }
+
+
+    @Test
+    public void devemos_garantir_que_os_valores_da_venda_sejam_calculado_quand_add_item() throws ChronosException {
+
+
+        VendaDetalhe item = new VendaDetalhe();
+        item.setQuantidade(BigDecimal.valueOf(2));
+        item.setValorUnitario(BigDecimal.valueOf(25));
+        item.setProduto(new Produto(1, ""));
+
+        service.addItem(venda, item, null, 1);
+
+        assertEquals(venda.getValorTotal(), new BigDecimal("150"));
+        assertEquals(venda.getValorSubtotal(), new BigDecimal("150"));
+    }
+
+    @Test
+    public void devemos_garantir_que_os_valores_da_venda_sejam_calculado_quand_add_item_com_desconto() throws ChronosException {
+
+
+        VendaDetalhe item = new VendaDetalhe();
+        item.setQuantidade(BigDecimal.valueOf(2));
+        item.setValorUnitario(BigDecimal.valueOf(25));
+        item.setProduto(new Produto(1, ""));
+
+        service.addItem(venda, item, BigDecimal.TEN, 1);
+
+        assertEquals(venda.getValorTotal(), new BigDecimal("140"));
+        assertEquals(venda.getValorSubtotal(), new BigDecimal("150"));
+    }
+
 
     @Test
     public void devemos_garantir_quer_o_valor_de_desconto_em_dinheiro_seja_aplicado_nos_itens() throws ChronosException {
