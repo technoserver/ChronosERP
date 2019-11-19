@@ -207,9 +207,11 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void doEdit() {
         super.doEdit();
         VendaCabecalho venda = dataModel.getRowData(getObjeto().getId().toString());
+        venda.getVendedor().setNome(venda.getVendedor().getColaborador().getPessoa().getNome());
         setObjeto(venda);
         pessoaCliente = new PessoaCliente();
         pessoaCliente.setNome(getObjeto().getCliente().getPessoa().getNome());
+
         incluirVendaDetalhe();
         listTipoPagamento = definirTipoPagament();
 
@@ -720,6 +722,9 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
         try {
             vendaService.aplicarDesconto(getObjeto(), tipoDesconto, desconto);
+            getObjeto().getListaFormaPagamento().clear();
+            totalReceber = getObjeto().getValorTotal();
+            verificaSaldoRestante();
             desconto = BigDecimal.ZERO;
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -735,6 +740,8 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     public void removerDesconto() {
         vendaService.removerDesconto(getObjeto());
         desconto = BigDecimal.ZERO;
+        totalReceber = getObjeto().getValorTotal();
+        verificaSaldoRestante();
     }
 
     private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {

@@ -86,7 +86,7 @@
                                                                title="Remover Desconto"
                                                                action="#{orcamentoCabecalhoControll.removerDesconto}"
                                                                process="@this"
-                                                               update=":formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento"
+                                                               update=":formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos"
                                                                rendered="#{orcamentoCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
                                                     <i class="fa fa-ban fa-2x" aria-hidden="true"></i>
                                                 </p:commandLink>
@@ -195,6 +195,7 @@
                                                             <p:splitButton value="Salvar"
                                                                            rendered="#{not empty orcamentoCabecalhoControll.objeto.id}"
                                                                            actionListener="#{orcamentoCabecalhoControll.salvar}"
+                                                                           process="form-dados-pripais"
                                                                            icon="ui-icon-disk">
 
                                                                 <p:menuitem value="Gerar Pedido"

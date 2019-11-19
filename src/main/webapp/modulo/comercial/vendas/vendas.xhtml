@@ -175,6 +175,14 @@
                                             icon="fa fa-print"
                                             ajax="false"/>
 
+                                <p:menuitem value="Encerrar"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{row.situacao eq 'D'}"
+                                            action="#{vendaCabecalhoControll.buscarEncerrarVenda}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{vendaCabecalhoControll.objetoSelecionado}"/>
+                                </p:menuitem>
+
                             </p:menuButton>
 
                             <p:menuButton rendered="#{row.situacao eq 'E' or row.situacao eq 'F'}">
@@ -187,16 +195,10 @@
                                             actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(row.id)}"
                                             icon="fa fa-print"
                                             ajax="false"/>
-
-
-                                <p:menuitem value="Encerrar"
-                                            update=":formCentro:growl,tableVenda"
-                                            rendered="#{row.situacao eq 'D'}"
-                                            action="#{vendaCabecalhoControll.buscarEncerrarVenda}">
-                                    <f:setPropertyActionListener value="#{row}"
-                                                                 target="#{vendaCabecalhoControll.objetoSelecionado}"/>
-                                </p:menuitem>
-
+                                <p:menuitem value="Romaneio"
+                                            target="_blank"
+                                            actionListener="#{vendaRelatorioControll.imprimirRomaneio(row.id)}"
+                                            icon="fa fa-print" ajax="false"/>
 
                                 <p:menuitem value="Faturar - NFe"
                                             update=":formCentro:growl,tableVenda"
@@ -511,7 +513,7 @@
                         <div class="col-xs-6 col-md-6 text-center">
                             <p:commandButton value="Salvar"
                                              id="btnSalvarDesonto"
-                                             update="panelOutrasTelas5,:formCentro:growl,:formCentro:panel-valores,formCentro:tab-view-vendas:itens"
+                                             update="panelOutrasTelas5,:formCentro:growl,:formCentro:panel-valores,formCentro:tab-view-vendas:itens,:formCentro:tab-view-vendas:valo-pago,:formCentro:tab-view-vendas:pagamentos"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
                                              action="#{vendaCabecalhoControll.aplicarDesconto}"/>
 
