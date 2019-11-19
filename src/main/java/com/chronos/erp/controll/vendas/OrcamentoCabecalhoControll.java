@@ -537,6 +537,8 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         try {
             service.aplicarDesconto(getObjeto(), tipoDesconto, desconto);
             desconto = BigDecimal.ZERO;
+            totalReceber = getObjeto().getValorTotal();
+            verificaSaldoRestante();
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("Ocorreu um erro!", ex);
@@ -551,6 +553,8 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     public void removerDesconto() {
         service.removerDesconto(getObjeto());
         desconto = BigDecimal.ZERO;
+        totalReceber = getObjeto().getValorTotal();
+        verificaSaldoRestante();
     }
 
     private void iniciarValoresPagamento() {
