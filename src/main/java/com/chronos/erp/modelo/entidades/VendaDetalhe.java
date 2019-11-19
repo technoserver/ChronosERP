@@ -99,7 +99,6 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorSubtotal() {
-        valorSubtotal = getQuantidade().multiply(getValorUnitario());
         return valorSubtotal;
     }
 
@@ -124,7 +123,6 @@ public class VendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorTotal() {
-        valorTotal = getValorSubtotal().subtract(getValorDesconto());
         return valorTotal;
     }
 

@@ -79,7 +79,7 @@
                                                                title="Remover Desconto"
                                                                action="#{vendaCabecalhoControll.removerDesconto}"
                                                                process="@this"
-                                                               update=":formCentro:growl,:formCentro:panel-valores,:formCentro:tab-view-vendas:itens"
+                                                               update=":formCentro:growl,:formCentro:panel-valores,:formCentro:tab-view-vendas:itens,:formCentro:tab-view-vendas:valo-pago,:formCentro:tab-view-vendas:pagamentos"
                                                                rendered="#{vendaCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
                                                     <i class="fa fa-ban fa-2x" aria-hidden="true"></i>
                                                 </p:commandLink>
@@ -148,6 +148,28 @@
                                                 />
 
                                             </erp:autoComplete>
+                                            <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                                              label="Transportadora"
+                                                              itemLabel="#{objeto.pessoa.nome}"
+                                                              controller="#{vendaCabecalhoControll}"
+                                                              completeMethod="getListaTransportadora"
+                                                              nomeAtributo="#{vendaCabecalhoControll.objeto.transportadora}"
+                                                              requerido="false"
+                                                              idComponente="transportadora"/>
+
+
+                                            <erp:campoSelect
+                                                    styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                    itens="#{vendaCabecalhoControll.compraTipoFrete}"
+                                                    label="Tipo frete"
+                                                    nomeAtributo="#{vendaCabecalhoControll.objeto.tipoFrete}"
+                                                    idComponente="tipoFrete"/>
+
+                                            <erp:campoDecimal nomeAtributo="#{vendaCabecalhoControll.objeto.valorFrete}"
+                                                              label="Valor frete"
+                                                              idComponente="valorFrete"
+                                                              styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
                                             <h:panelGroup layout="block"
                                                           id="lista-empresa"
                                                           rendered="#{vendaCabecalhoControll.listaEmpresas.size() gt 1}">
@@ -198,6 +220,7 @@
                                                             <p:splitButton value="Salvar"
                                                                            rendered="#{not empty vendaCabecalhoControll.objeto.id}"
                                                                            action="#{vendaCabecalhoControll.salvar()}"
+                                                                           process="form-dados-pripais"
                                                                            update=":formCentro:growl,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
                                                                            icon="ui-icon-disk">
                                                                 <p:menuitem value="Encerrar"
@@ -211,7 +234,7 @@
                                                                             action="#{vendaCabecalhoControll.faturarVenda}"
                                                                             process="form-dados-pripais"
                                                                             update=":formCentro:growl,formCentro:mensagem,:formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe"
-                                                                            rendered="#{!vendaCabecalhoControll.objeto.faturado}"
+                                                                            rendered="#{vendaCabecalhoControll.objeto.situacao eq 'E'}"
                                                                             icon="ui-icon-arrowrefresh-1-w"/>
 
                                                             </p:splitButton>
