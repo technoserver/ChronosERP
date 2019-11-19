@@ -262,7 +262,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         vendaDetalhe.setValorUnitario(precoVenda);
 
         exibirGrade = false;
-        if (produto != null && produto.getPossuiGrade()) {
+        if (produto != null && produto.getProduto() != null && produto.getPossuiGrade()) {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("idproduto", produto.getId()));
             filtros.add(new Filtro("idempresa", empresa.getId()));

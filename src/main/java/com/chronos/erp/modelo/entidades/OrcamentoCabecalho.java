@@ -93,6 +93,8 @@ public class OrcamentoCabecalho implements Serializable {
         this.valorFrete = BigDecimal.ZERO;
         this.valorSubtotal = BigDecimal.ZERO;
         this.valorTotal = BigDecimal.ZERO;
+        this.listaFormaPagamento = new HashSet<>();
+        this.listaOrcamentoDetalhe = new ArrayList<>();
     }
 
     public Integer getId() {

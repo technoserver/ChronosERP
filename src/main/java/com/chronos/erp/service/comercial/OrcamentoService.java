@@ -80,6 +80,15 @@ public class OrcamentoService implements Serializable {
 
     public void salvarItem(OrcamentoCabecalho orcamento, OrcamentoDetalhe item, BigDecimal desconto, int tipoDesconto) throws ChronosException {
 
+
+        if (item.getQuantidade() == null || item.getQuantidade().signum() <= 0) {
+            throw new ChronosException("Quantidade não informada");
+        }
+
+        if (item.getValorUnitario() == null || item.getValorUnitario().signum() <= 0) {
+            throw new ChronosException("Quantidade não informada");
+        }
+
         item.calcularSubTotal();
 
         if (desconto != null && desconto.signum() > 0) {
