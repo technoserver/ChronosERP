@@ -343,7 +343,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         orcamentoDetalhe.setValorUnitario(valor);
 
         exibirGrade = false;
-        if (orcamentoDetalhe.getProduto() != null && orcamentoDetalhe.getProduto().getPossuiGrade()) {
+        if (orcamentoDetalhe.getProduto() != null && orcamentoDetalhe.getProduto().getPossuiGrade() != null && orcamentoDetalhe.getProduto().getPossuiGrade()) {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("idproduto", orcamentoDetalhe.getProduto().getId()));
             filtros.add(new Filtro("idempresa", empresa.getId()));
