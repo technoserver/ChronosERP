@@ -25,7 +25,8 @@ public class OrcamentoServiceTest {
     @Test
     public void devemos_garantir_que_ser_possivel_add_um_novo_item_no_orcamento() throws ChronosException {
         OrcamentoDetalhe item = new OrcamentoDetalhe();
-
+        item.setQuantidade(BigDecimal.ONE);
+        item.setValorUnitario(BigDecimal.TEN);
         service.salvarItem(orcamento, item, null, 1);
         assertEquals(orcamento.getListaOrcamentoDetalhe().size(), 1);
     }
@@ -47,5 +48,31 @@ public class OrcamentoServiceTest {
 
         assertEquals(item.getValorSubtotal(), BigDecimal.TEN);
         assertEquals(item.getValorTotal(), BigDecimal.TEN);
+    }
+
+    @Test
+    public void devemos_garantir_que_seja_possivel_calcular_os_valores_totais_do_item_ao_add_com_desconto_em_dinheiro() throws ChronosException {
+        OrcamentoDetalhe item = new OrcamentoDetalhe();
+        item.setQuantidade(BigDecimal.ONE);
+        item.setValorUnitario(BigDecimal.TEN);
+
+        service.salvarItem(orcamento, item, BigDecimal.valueOf(5), 1);
+
+        assertEquals(item.getValorSubtotal(), BigDecimal.TEN);
+        assertEquals(item.getValorTotal(), BigDecimal.valueOf(5));
+        assertEquals(item.getValorDesconto(), BigDecimal.valueOf(5));
+    }
+
+    @Test
+    public void devemos_garantir_que_seja_possivel_calcular_os_valores_totais_do_item_ao_add_com_desconto_em_percentual() throws ChronosException {
+        OrcamentoDetalhe item = new OrcamentoDetalhe();
+        item.setQuantidade(BigDecimal.ONE);
+        item.setValorUnitario(BigDecimal.TEN);
+
+        service.salvarItem(orcamento, item, BigDecimal.valueOf(50), 0);
+
+        assertEquals(item.getValorSubtotal(), BigDecimal.TEN);
+        assertEquals(item.getValorTotal(), BigDecimal.valueOf(5).setScale(2));
+        assertEquals(item.getValorDesconto(), BigDecimal.valueOf(5).setScale(2));
     }
 }
