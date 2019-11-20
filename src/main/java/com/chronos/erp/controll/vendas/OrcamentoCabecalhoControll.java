@@ -188,7 +188,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         listTipoPagamento = definirTipoPagament();
         OrcamentoCabecalho orcamento = dataModel.getRowData(getObjeto().getId().toString());
         setObjeto(orcamento);
-
+        incluirVendaOrcamentoDetalhe();
         for (OrcamentoDetalhe item : orcamento.getListaOrcamentoDetalhe()) {
             if (item.getIdgrade() != null) {
                 EstoqueGrade grade = estoqueGradeRepository.get(item.getIdgrade(), EstoqueGrade.class);
