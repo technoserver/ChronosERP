@@ -82,7 +82,7 @@ public class FinLancamentoReceberCartaoServiceTest {
         OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(taxas, 6);
         lancamento = service.gerarLancamento(1, BigDecimal.valueOf(100), operadoraCartao, operadoraCartaoTaxa, 6, Modulo.VENDA.getCodigo(), empresa, "1020");
         BigDecimal total = lancamento.getValorLiquido().add(lancamento.getValorEncargos());
-        String numDoc = "E1M210V1O1Q6NSU1020";
+        String numDoc = "E1M210V1O1NSU1020";
         assertEquals(lancamento.getValorLiquido(), BigDecimal.valueOf(95.50).setScale(2));
         assertEquals(lancamento.getValorEncargos(), BigDecimal.valueOf(4.5).setScale(2));
         assertEquals(lancamento.getTaxaAplicada(), BigDecimal.valueOf(4.50));

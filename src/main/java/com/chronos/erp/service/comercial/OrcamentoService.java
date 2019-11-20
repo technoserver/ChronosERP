@@ -156,11 +156,12 @@ public class OrcamentoService implements Serializable {
         for (OrcamentoDetalhe i : orcamento.getListaOrcamentoDetalhe()) {
             BigDecimal descItem = Biblioteca.multiplica(fator, i.getValorSubtotal());
             BigDecimal vlrDesc = Biblioteca.soma(Optional.ofNullable(i.getValorDesconto()).orElse(BigDecimal.ZERO), descItem);
-            BigDecimal vlrTotal = Biblioteca.subtrai(i.getValorSubtotal(), vlrDesc);
-            BigDecimal txDesc = Biblioteca.calcularFator(i.getValorSubtotal(), vlrTotal);
             i.setValorDesconto(vlrDesc);
-            i.setValorTotal(vlrTotal);
+            i.calcularValorTotal();
+            BigDecimal vlrTotal = i.getValorTotal();
+            BigDecimal txDesc = Biblioteca.calcularFator(i.getValorSubtotal(), vlrTotal);
             i.setTaxaDesconto(txDesc);
+
 
         }
 

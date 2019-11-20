@@ -188,7 +188,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         listTipoPagamento = definirTipoPagament();
         OrcamentoCabecalho orcamento = dataModel.getRowData(getObjeto().getId().toString());
         setObjeto(orcamento);
-
+        incluirVendaOrcamentoDetalhe();
         for (OrcamentoDetalhe item : orcamento.getListaOrcamentoDetalhe()) {
             if (item.getIdgrade() != null) {
                 EstoqueGrade grade = estoqueGradeRepository.get(item.getIdgrade(), EstoqueGrade.class);
@@ -537,6 +537,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         try {
             service.aplicarDesconto(getObjeto(), tipoDesconto, desconto);
             desconto = BigDecimal.ZERO;
+            getObjeto().getListaFormaPagamento().clear();
             totalReceber = getObjeto().getValorTotal();
             verificaSaldoRestante();
         } catch (Exception ex) {
@@ -553,6 +554,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     public void removerDesconto() {
         service.removerDesconto(getObjeto());
         desconto = BigDecimal.ZERO;
+        getObjeto().getListaFormaPagamento().clear();
         totalReceber = getObjeto().getValorTotal();
         verificaSaldoRestante();
     }
