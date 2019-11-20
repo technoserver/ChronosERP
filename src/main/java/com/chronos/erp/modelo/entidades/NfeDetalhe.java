@@ -9,9 +9,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Table(name = "NFE_DETALHE")
@@ -118,8 +119,8 @@ public class NfeDetalhe implements Serializable {
     private NfeDetEspecificoVeiculo veiculo;
     @OneToOne(fetch = FetchType.EAGER, mappedBy = "nfeDetalhe", cascade = CascadeType.ALL)
     private NfeDetEspecificoCombustivel combustivel;
-    //    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-//    private Set<NfeDetEspecificoMedicamento> listaMedicamento;
+    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<NfeDetEspecificoGrade> listaGrade;
 //    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 //    private Set<NfeDetEspecificoArmamento> listaArmamento;
 //    @OneToMany(mappedBy = "nfeDetalhe", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -135,13 +136,13 @@ public class NfeDetalhe implements Serializable {
     @Transient
     @TaxaMaior
     private BigDecimal taxaDesconto;
-    @Transient
-    private List<EstoqueGrade> grades;
+
 
     public NfeDetalhe() {
         this.quantidadeComercial = BigDecimal.ZERO;
         this.quantidadeTributavel = BigDecimal.ZERO;
         this.produtoCadastrado = this.id != null;
+        this.listaGrade = new HashSet<>();
     }
 
     public NfeDetalhe(Integer id, Produto produto, BigDecimal quantidadeComercial) {
@@ -503,21 +504,29 @@ public class NfeDetalhe implements Serializable {
         this.nfeDetalheImpostoIssqn = nfeDetalheImpostoIssqn;
     }
 
-    public NfeDetEspecificoVeiculo getVeiculo() {
-        return veiculo;
+    public Set<NfeDetEspecificoGrade> getListaGrade() {
+        return listaGrade;
     }
 
-    public void setVeiculo(NfeDetEspecificoVeiculo veiculo) {
-        this.veiculo = veiculo;
+    public void setListaGrade(Set<NfeDetEspecificoGrade> listaGrade) {
+        this.listaGrade = listaGrade;
     }
 
-    public NfeDetEspecificoCombustivel getCombustivel() {
-        return combustivel;
-    }
-
-    public void setCombustivel(NfeDetEspecificoCombustivel combustivel) {
-        this.combustivel = combustivel;
-    }
+    //    public NfeDetEspecificoVeiculo getVeiculo() {
+//        return veiculo;
+//    }
+//
+//    public void setVeiculo(NfeDetEspecificoVeiculo veiculo) {
+//        this.veiculo = veiculo;
+//    }
+//
+//    public NfeDetEspecificoCombustivel getCombustivel() {
+//        return combustivel;
+//    }
+//
+//    public void setCombustivel(NfeDetEspecificoCombustivel combustivel) {
+//        this.combustivel = combustivel;
+//    }
 
 //    public Set<NfeDetEspecificoMedicamento> getListaMedicamento() {
 //        return listaMedicamento;
@@ -654,14 +663,6 @@ public class NfeDetalhe implements Serializable {
         return valido;
     }
 
-
-    public List<EstoqueGrade> getGrades() {
-        return grades;
-    }
-
-    public void setGrades(List<EstoqueGrade> grades) {
-        this.grades = grades;
-    }
 
     @Override
     public int hashCode() {

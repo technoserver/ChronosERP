@@ -57,10 +57,10 @@ public class EntradaNotaFiscalService implements Serializable {
 
         for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
 
-            if (item.getGrades() != null && !item.getGrades().isEmpty()) {
-                BigDecimal qtd = item.getGrades()
+            if (item.getListaGrade() != null && !item.getListaGrade().isEmpty()) {
+                BigDecimal qtd = item.getListaGrade()
                         .stream()
-                        .map(i -> i.getQuantidadeEntrada())
+                        .map(i -> i.getQuantidade())
                         .reduce(BigDecimal::add)
                         .orElse(BigDecimal.ZERO);
 
@@ -81,10 +81,10 @@ public class EntradaNotaFiscalService implements Serializable {
                     syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, detalhe.getProduto().getId());
                 }
 
-                if (detalhe.getGrades() != null && !detalhe.getGrades().isEmpty()) {
+                if (detalhe.getListaGrade() != null && !detalhe.getListaGrade().isEmpty()) {
 
-                    for (EstoqueGrade g : detalhe.getGrades()) {
-
+                    for (NfeDetEspecificoGrade eg : detalhe.getListaGrade()) {
+                        EstoqueGrade g = eg.getEstoqueGrade();
                         if (g.getQuantidadeEntrada() != null && g.getQuantidadeEntrada().signum() > 0) {
                             if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
                                 estoqueRepository.atualizarGradeQuantidaAndVerificado(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), g.getQuantidadeEntrada());
