@@ -77,6 +77,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private Repository<UnidadeConversao> conversaoRepository;
     @Inject
     private Repository<EstoqueGrade> estoqueGradeRepository;
+    @Inject
+    private Repository<NfeDetEspecificoGrade> nfeDetEspecificoGradeRepository;
 
     @Inject
     private EntradaNotaFiscalService entradaService;
@@ -447,10 +449,12 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         if (getObjeto().getTributOperacaoFiscal() == null) {
             podeIncluirProduto = false;
             Mensagem.addInfoMessage("Antes de incluir produtos selecione a Operação Fiscal.");
+            return;
 
         } else if (StringUtils.isEmpty(empresa.getCrt())) {
             podeIncluirProduto = false;
             Mensagem.addInfoMessage("CRT da empresa não definido.");
+            return;
         } else {
             tipoCstIcms = Integer.valueOf(empresa.getCrt());
             nfeDetalhe = new NfeDetalhe();
@@ -536,10 +540,10 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
             }
 
-            if (nfeDetalhe.getGrades() != null && !nfeDetalhe.getGrades().isEmpty()) {
-                BigDecimal qtd = nfeDetalhe.getGrades()
+            if (nfeDetalhe.getListaGrade() != null && !nfeDetalhe.getListaGrade().isEmpty()) {
+                BigDecimal qtd = nfeDetalhe.getListaGrade()
                         .stream()
-                        .map(i -> i.getQuantidadeEntrada())
+                        .map(i -> i.getQuantidade())
                         .reduce(BigDecimal::add)
                         .orElse(BigDecimal.ZERO);
 
@@ -762,13 +766,38 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     }
 
     public void pesquisarGrade(NfeDetalhe item, Integer idempresa, Integer idprdduto) {
-        List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro("idproduto", idprdduto));
-        filtros.add(new Filtro("idempresa", idempresa));
 
-        List<EstoqueGrade> grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+        if (item.getProduto().getPossuiGrade() != null && item.getProduto().getPossuiGrade()) {
 
-        item.setGrades(grades);
+
+            List<NfeDetEspecificoGrade> list = nfeDetEspecificoGradeRepository.getEntitys(NfeDetEspecificoGrade.class, "nfeDetalhe.id", item.getId());
+
+            item.setListaGrade(new HashSet<>(list));
+
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("idproduto", idprdduto));
+            filtros.add(new Filtro("idempresa", idempresa));
+
+            List<EstoqueGrade> grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
+
+            grades.forEach(g -> {
+
+                Optional<NfeDetEspecificoGrade> first = item.getListaGrade().stream().filter(i -> i.getEstoqueGrade().getId().equals(g.getId())).findFirst();
+
+                if (!first.isPresent()) {
+                    NfeDetEspecificoGrade grade = new NfeDetEspecificoGrade();
+                    grade.setEstoqueGrade(g);
+                    grade.setNfeDetalhe(item);
+                    grade.setQuantidade(BigDecimal.ZERO);
+
+                    item.getListaGrade().add(grade);
+                }
+            });
+
+        }
+
+
+
     }
 
     public void pesquisarGrade() {
@@ -778,7 +807,16 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         List<EstoqueGrade> grades = estoqueGradeRepository.getEntitys(EstoqueGrade.class, filtros);
 
-        nfeDetalhe.setGrades(grades);
+        nfeDetalhe.setListaGrade(new HashSet<>());
+
+        grades.forEach(g -> {
+            NfeDetEspecificoGrade grade = new NfeDetEspecificoGrade();
+            grade.setEstoqueGrade(g);
+            grade.setNfeDetalhe(nfeDetalhe);
+            grade.setQuantidade(BigDecimal.ZERO);
+
+            nfeDetalhe.getListaGrade().add(grade);
+        });
     }
 
 

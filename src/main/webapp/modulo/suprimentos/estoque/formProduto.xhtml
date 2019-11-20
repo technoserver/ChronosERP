@@ -79,27 +79,27 @@
                                     linhas="5"/>
             </div>
         </p:tab>
-        <p:tab title="Grade" rendered="#{entradaNotaFiscalControll.nfeDetalhe.grades.size() gt 0}">
+        <p:tab title="Grade" rendered="#{entradaNotaFiscalControll.nfeDetalhe.listaGrade.size() gt 0}">
             <p:dataTable var="row"
                          id="table-grade"
                          reflow="true" editable="true" editMode="cell"
-                         value="#{entradaNotaFiscalControll.nfeDetalhe.grades}">
+                         value="#{entradaNotaFiscalControll.nfeDetalhe.listaGrade}">
                 <p:column headerText="Cor" styleClass="text-center">
-                    <h:outputLabel value="#{row.estoqueCor.nome}"/>
+                    <h:outputLabel value="#{row.estoqueGrade.estoqueCor.nome}"/>
                 </p:column>
                 <p:column headerText="Tamanho" styleClass="text-center">
-                    <h:outputLabel value="#{row.estoqueTamanho.nome}"/>
+                    <h:outputLabel value="#{row.estoqueGrade.estoqueTamanho.nome}"/>
                 </p:column>
                 <p:column headerText="Qtde" styleClass="text-center">
 
                     <p:cellEditor>
                         <f:facet name="output">
-                            <h:outputLabel value="#{row.quantidadeEntrada}">
+                            <h:outputLabel value="#{row.quantidade}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </f:facet>
                         <f:facet name="input">
-                            <p:inputNumber value="#{row.quantidadeEntrada}"
+                            <p:inputNumber value="#{row.quantidade}"
                                            decimalPlaces="2"
                             />
                         </f:facet>
