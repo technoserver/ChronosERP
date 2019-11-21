@@ -46,8 +46,8 @@ public class OrcamentoServiceTest {
 
         service.salvarItem(orcamento, item, null, 1);
 
-        assertEquals(item.getValorSubtotal(), BigDecimal.TEN);
-        assertEquals(item.getValorTotal(), BigDecimal.TEN);
+        assertEquals(item.getValorSubtotal(), BigDecimal.TEN.setScale(2));
+        assertEquals(item.getValorTotal(), BigDecimal.TEN.setScale(2));
     }
 
     @Test
@@ -58,8 +58,8 @@ public class OrcamentoServiceTest {
 
         service.salvarItem(orcamento, item, BigDecimal.valueOf(5), 1);
 
-        assertEquals(item.getValorSubtotal(), BigDecimal.TEN);
-        assertEquals(item.getValorTotal(), BigDecimal.valueOf(5));
+        assertEquals(item.getValorSubtotal(), BigDecimal.TEN.setScale(2));
+        assertEquals(item.getValorTotal(), BigDecimal.valueOf(5).setScale(2));
         assertEquals(item.getValorDesconto(), BigDecimal.valueOf(5));
     }
 
@@ -71,7 +71,7 @@ public class OrcamentoServiceTest {
 
         service.salvarItem(orcamento, item, BigDecimal.valueOf(50), 0);
 
-        assertEquals(item.getValorSubtotal(), BigDecimal.TEN);
+        assertEquals(item.getValorSubtotal(), BigDecimal.TEN.setScale(2));
         assertEquals(item.getValorTotal(), BigDecimal.valueOf(5).setScale(2));
         assertEquals(item.getValorDesconto(), BigDecimal.valueOf(5).setScale(2));
     }
