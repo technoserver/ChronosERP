@@ -334,9 +334,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     }
 
     public void definirValorVenda() {
-        if (orcamentoDetalhe.getProduto() != null) {
 
-        }
 
         BigDecimal valor = Optional.ofNullable(orcamentoDetalhe.getProduto())
                 .map(Produto::getValorVenda).orElse(null);
