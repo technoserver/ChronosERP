@@ -49,8 +49,8 @@ public class VendaServiceTest {
     @Test
     public void devemos_garantir_que_os_valores_da_venda_sejam_calculado() {
 
-        assertEquals(venda.getValorTotal(), new BigDecimal("100"));
-        assertEquals(venda.getValorSubtotal(), new BigDecimal("100"));
+        assertEquals(venda.getValorTotal(), new BigDecimal("100").setScale(2));
+        assertEquals(venda.getValorSubtotal(), new BigDecimal("100").setScale(2));
 
 
     }
@@ -67,8 +67,8 @@ public class VendaServiceTest {
 
         service.addItem(venda, item, null, 1);
 
-        assertEquals(venda.getValorTotal(), new BigDecimal("150"));
-        assertEquals(venda.getValorSubtotal(), new BigDecimal("150"));
+        assertEquals(venda.getValorTotal(), new BigDecimal("150").setScale(2));
+        assertEquals(venda.getValorSubtotal(), new BigDecimal("150").setScale(2));
     }
 
     @Test
@@ -82,8 +82,8 @@ public class VendaServiceTest {
 
         service.addItem(venda, item, BigDecimal.TEN, 1);
 
-        assertEquals(venda.getValorTotal(), new BigDecimal("140"));
-        assertEquals(venda.getValorSubtotal(), new BigDecimal("150"));
+        assertEquals(venda.getValorTotal(), new BigDecimal("140").setScale(2));
+        assertEquals(venda.getValorSubtotal(), new BigDecimal("150").setScale(2));
     }
 
 
