@@ -334,21 +334,21 @@ public class OsService extends AbstractService<OsAbertura> {
             os.getListaOsProdutoServico().add(item);
         }
 
-        for (OrcamentoFormaPagamento p : orcamento.getListaFormaPagamento()) {
-            OsFormaPagamento pag = new OsFormaPagamento();
-            pag.setEstorno(p.getEstorno());
-            pag.setForma(p.getForma());
-            pag.setOsAbertura(os);
-            pag.setTipoPagamento(p.getTipoPagamento());
-            pag.setTroco(p.getTroco());
-            pag.setValor(p.getValor());
-            pag.setBandeira(p.getBandeira());
-            pag.setCartaoTipoIntegracao(p.getCartaoTipoIntegracao());
-            pag.setCnpjOperadoraCartao(p.getCnpjOperadoraCartao());
-            pag.setNumeroAutorizacao(p.getNumeroAutorizacao());
-
-            os.getListaFormaPagamento().add(pag);
-        }
+//        for (OrcamentoFormaPagamento p : orcamento.getListaFormaPagamento()) {
+//            OsFormaPagamento pag = new OsFormaPagamento();
+//            pag.setEstorno(p.getEstorno());
+//            pag.setForma(p.getForma());
+//            pag.setOsAbertura(os);
+//            pag.setTipoPagamento(p.getTipoPagamento());
+//            pag.setTroco(p.getTroco());
+//            pag.setValor(p.getValor());
+//            pag.setBandeira(p.getBandeira());
+//            pag.setCartaoTipoIntegracao(p.getCartaoTipoIntegracao());
+//            pag.setCnpjOperadoraCartao(p.getCnpjOperadoraCartao());
+//            pag.setNumeroAutorizacao(p.getNumeroAutorizacao());
+//
+//            os.getListaFormaPagamento().add(pag);
+//        }
 
 
         os.setCliente(orcamento.getCliente());

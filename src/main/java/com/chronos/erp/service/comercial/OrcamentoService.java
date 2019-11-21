@@ -45,7 +45,7 @@ public class OrcamentoService implements Serializable {
         }
 
         for (OrcamentoFormaPagamento p : orcamento.getListaFormaPagamento()) {
-            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getFormaPagamento().getValor());
         }
 
         if (orcamento.getValorTotal().compareTo(recebidoAteAgora) != 0) {
