@@ -74,7 +74,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         }
 
         for (VendaFormaPagamento p : venda.getListaFormaPagamento()) {
-            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getFormaPagamento().getValor());
         }
 
         if (venda.getValorTotal().compareTo(recebidoAteAgora) != 0) {
@@ -98,7 +98,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     public VendaCabecalho faturarVenda(VendaCabecalho venda) throws ChronosException {
 
 
-        Optional<VendaFormaPagamento> first = venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals(14)).findFirst();
+        Optional<VendaFormaPagamento> first = venda.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals(14)).findFirst();
 
         if (venda.getSituacao().equals(SituacaoVenda.Digitacao.getCodigo()) && first.isPresent() && venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
             throw new ChronosException("Cliente com restrinções de bloqueio");
@@ -121,11 +121,11 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             venda = salvar(venda);
         }
 
-        Optional<VendaFormaPagamento> pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst();
+        Optional<VendaFormaPagamento> pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("14")).findFirst();
 
         if (pagamentoOptional.isPresent()) {
             finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
-                    pagamentoOptional.get().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
+                    pagamentoOptional.get().getFormaPagamento().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
         }
 
 
@@ -152,11 +152,11 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             NfeCabecalho nfe;
 
-            Optional<VendaFormaPagamento> pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst();
+            Optional<VendaFormaPagamento> pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("14")).findFirst();
 
-            if (pagamentoOptional.isPresent() && pagamentoOptional.get().getCondicoesPagamento() != null) {
-                List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "condicoesPagamento.id", pagamentoOptional.get().getCondicoesPagamento().getId());
-                pagamentoOptional.get().getCondicoesPagamento().setParcelas(parcelas);
+            if (pagamentoOptional.isPresent() && pagamentoOptional.get().getFormaPagamento().getCondicoesPagamento() != null) {
+                List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "condicoesPagamento.id", pagamentoOptional.get().getFormaPagamento().getCondicoesPagamento().getId());
+                pagamentoOptional.get().getFormaPagamento().getCondicoesPagamento().setParcelas(parcelas);
             }
 
 

@@ -1,6 +1,7 @@
 package com.chronos.erp.modelo.entidades;
 
 import com.chronos.erp.modelo.anotacoes.TaxaMaior;
+import com.chronos.erp.util.Biblioteca;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
@@ -183,9 +184,13 @@ public class VendaDetalhe implements Serializable {
         valorDesconto = getTaxaDesconto().multiply(getValorSubtotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
     }
 
+    public void calcularSubTotal() {
+        valorSubtotal = Biblioteca.multiplica(getQuantidade(), getValorUnitario());
+    }
+
     public void calcularValorTotal() {
-        valorSubtotal = quantidade.multiply(valorUnitario);
-        valorTotal = this.valorSubtotal.subtract(this.valorDesconto);
+        calcularSubTotal();
+        valorTotal = Biblioteca.subtrai(getValorSubtotal(), getValorDesconto());
     }
 
 

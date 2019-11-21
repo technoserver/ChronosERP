@@ -56,6 +56,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
     @Inject
     private OrcamentoService service;
+
     @Inject
     private EstoqueRepository estoqueRepository;
     @Inject
@@ -399,7 +400,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
     }
 
-    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
+    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) {
         Optional<OrcamentoFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
         if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
             Mensagem.addErrorMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já inclusa");
