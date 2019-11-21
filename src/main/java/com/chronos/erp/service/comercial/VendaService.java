@@ -450,10 +450,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             }
         }
 
-
-        if (!venda.getListaVendaDetalhe().contains(item)) {
-            venda.getListaVendaDetalhe().add(item);
-        }
+        venda.getListaVendaDetalhe().add(item);
 
         venda.calcularValorTotal();
         return venda;

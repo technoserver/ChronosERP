@@ -105,9 +105,9 @@ public class OrcamentoService implements Serializable {
 
         item.calcularValorTotal();
 
-        if (!orcamento.getListaOrcamentoDetalhe().contains(item)) {
-            orcamento.getListaOrcamentoDetalhe().add(item);
-        }
+
+        orcamento.getListaOrcamentoDetalhe().add(item);
+
 
         orcamento.calcularValorTotal();
 
