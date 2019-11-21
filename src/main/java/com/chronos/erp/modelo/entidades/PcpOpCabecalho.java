@@ -34,6 +34,8 @@ public class PcpOpCabecalho implements Serializable {
     private BigDecimal porcentoVenda;
     @Column(name = "PORCENTO_ESTOQUE")
     private BigDecimal porcentoEstoque;
+    @Transient
+    private String status;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -107,6 +109,14 @@ public class PcpOpCabecalho implements Serializable {
 
     public void setPorcentoEstoque(BigDecimal porcentoEstoque) {
         this.porcentoEstoque = porcentoEstoque;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Empresa getEmpresa() {

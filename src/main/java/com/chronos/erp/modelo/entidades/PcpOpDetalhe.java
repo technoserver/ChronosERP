@@ -16,6 +16,8 @@ public class PcpOpDetalhe implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "ID_GRADE")
+    private Integer idgrade;
     @Column(name = "QUANTIDADE_PRODUZIR")
     private BigDecimal quantidadeProduzir;
     @Column(name = "QUANTIDADE_PRODUZIDA")
@@ -44,6 +46,14 @@ public class PcpOpDetalhe implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdgrade() {
+        return idgrade;
+    }
+
+    public void setIdgrade(Integer idgrade) {
+        this.idgrade = idgrade;
     }
 
     public BigDecimal getQuantidadeProduzir() {

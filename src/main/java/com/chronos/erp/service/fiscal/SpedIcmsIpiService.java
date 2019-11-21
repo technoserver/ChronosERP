@@ -124,6 +124,7 @@ public class SpedIcmsIpiService implements Serializable {
         filtros = new ArrayList<>();
         filtros.add(new Filtro(Filtro.AND, "dataHoraEntradaSaida", Filtro.MAIOR_OU_IGUAL, dataInicio));
         filtros.add(new Filtro(Filtro.AND, "dataHoraEntradaSaida", Filtro.MENOR_OU_IGUAL, dataFim));
+        filtros.add(new Filtro(Filtro.AND, "tributOperacaoFiscal.obrigacaoFiscal", Filtro.IGUAL, true));
 
         listaNfeCabecalho = nfes.getEntitys(NfeCabecalho.class, filtros);
 
@@ -242,9 +243,9 @@ public class SpedIcmsIpiService implements Serializable {
                     registro0150.setCodPart("F" + c.getFornecedor().getId());
                     registro0150.setNome(fornecedor.getNome());
                     registro0150.setCodPais("01058");
-                    if (fornecedor.getCpfCnpj().length() == 11) {
+                    if (fornecedor.getCpfCnpj() != null && fornecedor.getCpfCnpj().length() == 11) {
                         registro0150.setCpf(fornecedor.getCpfCnpj());
-                    } else if (fornecedor.getCpfCnpj().length() == 14) {
+                    } else if (fornecedor.getCpfCnpj() != null && fornecedor.getCpfCnpj().length() == 14) {
                         registro0150.setCnpj(fornecedor.getCpfCnpj());
                     }
                     registro0150.setCodMun(fornecedor.getCodigoMunicipio());
@@ -398,7 +399,7 @@ public class SpedIcmsIpiService implements Serializable {
     /**
      * // BLOCO C: DOCUMENTOS FISCAIS I - MERCADORIAS (ICMS/IPI)
      */
-    private void geraBlocoC() {
+    private void geraBlocoC() throws ChronosException {
 
 
         filtros.clear();
@@ -421,6 +422,9 @@ public class SpedIcmsIpiService implements Serializable {
             for (NfeCabecalho nfe : listaNfeCabecalho) {
                 registroC100 = new RegistroC100();
                 String modelo = nfe.getCodigoModelo();
+                if (modelo == null) {
+                    throw new ChronosException("Modelo do documento fiscal " + nfe.getNumero() + "não informado ");
+                }
                 registroC100.setIndOper(String.valueOf(nfe.getTipoOperacao()));
                 registroC100.setIndEmit("0"); // 0 - Emissao Propria
                 if (nfe.getCliente() != null) {
@@ -709,89 +713,89 @@ public class SpedIcmsIpiService implements Serializable {
             // REGISTRO C300: RESUMO DIÁRIO DAS NOTAS FISCAIS DE VENDA A
             // CONSUMIDOR (CÓDIGO 02)
             filtros.clear();
-            filtros.add(new Filtro(Filtro.AND, "viewC300.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
-            filtros.add(new Filtro(Filtro.AND, "viewC300.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
-            List<ViewSpedC300Id> listaC300 = viewC300Repository.getEntitys(ViewSpedC300Id.class, filtros);
-            RegistroC300 registroC300;
-            RegistroC310 registroC310;
-            for (ViewSpedC300Id c300 : listaC300) {
-                ViewSpedC300 viewC300 = c300.getViewSpedC300();
-
-                registroC300 = new RegistroC300();
-
-                registroC300.setCodMod("02");
-                registroC300.setSer(viewC300.getSerie());
-                registroC300.setSub(viewC300.getSubserie());
-
-                List<EcfNotaFiscalCabecalho> listaEcfNotaFiscal = new ArrayList<>();//ecfNotaFiscalCabecalhoRepository.getEntitys(dataInicio, dataFim, viewC300.getSerie(), viewC300.getSubserie());
-                if (!listaEcfNotaFiscal.isEmpty()) {
-                    registroC300.setNumDocIni(listaEcfNotaFiscal.get(0).getNumero());
-                    registroC300.setNumDocFin(listaEcfNotaFiscal.get(listaEcfNotaFiscal.size() - 1).getNumero());
-                }
-
-                registroC300.setDtDoc(viewC300.getDataEmissao());
-                registroC300.setVlDoc(viewC300.getSomaTotalNf());
-                registroC300.setVlPis(viewC300.getSomaPis());
-                registroC300.setVlCofins(viewC300.getSomaCofins());
-
-                // REGISTRO C310: DOCUMENTOS CANCELADOS DE NOTAS FISCAIS DE
-                // VENDA A CONSUMIDOR (CÓDIGO 02).
-                for (int j = 0; j < listaNf2Cancelada.size(); j++) {
-                    registroC310 = new RegistroC310();
-
-                    registroC310.setNumDocCanc(listaNf2Cancelada.get(j).getNumero());
-
-                    registroC300.getRegistroC310List().add(registroC310);
-                }
-
-                // REGISTRO C320: REGISTRO ANALÍTICO DO RESUMO DIÁRIO DAS NOTAS
-                // FISCAIS DE VENDA A CONSUMIDOR (CÓDIGO 02). ---> igual ao C390
-                filtros.clear();
-                filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
-                filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
-                List<ViewSpedC390Id> listaC390 = viewC390Repository.getEntitys(ViewSpedC390Id.class, filtros);
-                RegistroC320 registroC320;
-                for (ViewSpedC390Id c390 : listaC390) {
-                    registroC320 = new RegistroC320();
-                    ViewSpedC390 viewC390 = c390.getViewC390();
-
-                    registroC320.setCstIcms(viewC390.getCst());
-                    registroC320.setCfop(viewC390.getCfop().toString());
-                    registroC320.setAliqIcms(viewC390.getTaxaIcms());
-                    registroC320.setVlOpr(viewC390.getSomaItem());
-                    registroC320.setVlBcIcms(viewC390.getSomaBaseIcms());
-                    registroC320.setVlIcms(viewC390.getSomaIcms());
-                    registroC320.setVlRedBc(viewC390.getSomaIcmsOutras());
-
-                    // REGISTRO C321: ITENS DO RESUMO DIÁRIO DOS DOCUMENTOS
-                    // (CÓDIGO 02).
-                    filtros.clear();
-                    filtros.add(new Filtro(Filtro.AND, "viewC321.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
-                    filtros.add(new Filtro(Filtro.AND, "viewC321.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
-                    List<ViewSpedC321Id> listaC321 = viewC321Repository.getEntitys(ViewSpedC321Id.class, filtros);
-                    RegistroC321 registroC321;
-                    for (ViewSpedC321Id c321 : listaC321) {
-                        registroC321 = new RegistroC321();
-                        ViewSpedC321 spedC321 = c321.getViewC321();
-
-                        registroC321.setCodItem(spedC321.getIdProduto().toString());
-                        registroC321.setQtd(spedC321.getSomaQuantidade());
-                        registroC321.setUnid(spedC321.getDescricaoUnidade());
-                        registroC321.setVlItem(spedC321.getSomaItem());
-                        registroC321.setVlDesc(spedC321.getSomaDesconto());
-                        registroC321.setVlBcIcms(spedC321.getSomaBaseIcms());
-                        registroC321.setVlIcms(spedC321.getSomaIcms());
-                        registroC321.setVlPis(spedC321.getSomaPis());
-                        registroC321.setVlCofins(spedC321.getSomaCofins());
-
-                        registroC320.getRegistroC321List().add(registroC321);
-                    }
-
-                    registroC300.getRegistroC320List().add(registroC320);
-                }
-
-                sped.getBlocoC().getListaRegistroC300().add(registroC300);
-            }
+//            filtros.add(new Filtro(Filtro.AND, "viewC300.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
+//            filtros.add(new Filtro(Filtro.AND, "viewC300.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
+//            List<ViewSpedC300Id> listaC300 = viewC300Repository.getEntitys(ViewSpedC300Id.class, filtros);
+//            RegistroC300 registroC300;
+//            RegistroC310 registroC310;
+//            for (ViewSpedC300Id c300 : listaC300) {
+//                ViewSpedC300 viewC300 = c300.getViewSpedC300();
+//
+//                registroC300 = new RegistroC300();
+//
+//                registroC300.setCodMod("02");
+//                registroC300.setSer(viewC300.getSerie());
+//                registroC300.setSub(viewC300.getSubserie());
+//
+//                List<EcfNotaFiscalCabecalho> listaEcfNotaFiscal = new ArrayList<>();//ecfNotaFiscalCabecalhoRepository.getEntitys(dataInicio, dataFim, viewC300.getSerie(), viewC300.getSubserie());
+//                if (!listaEcfNotaFiscal.isEmpty()) {
+//                    registroC300.setNumDocIni(listaEcfNotaFiscal.get(0).getNumero());
+//                    registroC300.setNumDocFin(listaEcfNotaFiscal.get(listaEcfNotaFiscal.size() - 1).getNumero());
+//                }
+//
+//                registroC300.setDtDoc(viewC300.getDataEmissao());
+//                registroC300.setVlDoc(viewC300.getSomaTotalNf());
+//                registroC300.setVlPis(viewC300.getSomaPis());
+//                registroC300.setVlCofins(viewC300.getSomaCofins());
+//
+//                // REGISTRO C310: DOCUMENTOS CANCELADOS DE NOTAS FISCAIS DE
+//                // VENDA A CONSUMIDOR (CÓDIGO 02).
+//                for (int j = 0; j < listaNf2Cancelada.size(); j++) {
+//                    registroC310 = new RegistroC310();
+//
+//                    registroC310.setNumDocCanc(listaNf2Cancelada.get(j).getNumero());
+//
+//                    registroC300.getRegistroC310List().add(registroC310);
+//                }
+//
+//                // REGISTRO C320: REGISTRO ANALÍTICO DO RESUMO DIÁRIO DAS NOTAS
+//                // FISCAIS DE VENDA A CONSUMIDOR (CÓDIGO 02). ---> igual ao C390
+//                filtros.clear();
+//                filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
+//                filtros.add(new Filtro(Filtro.AND, "viewC390.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
+//                List<ViewSpedC390Id> listaC390 = viewC390Repository.getEntitys(ViewSpedC390Id.class, filtros);
+//                RegistroC320 registroC320;
+//                for (ViewSpedC390Id c390 : listaC390) {
+//                    registroC320 = new RegistroC320();
+//                    ViewSpedC390 viewC390 = c390.getViewC390();
+//
+//                    registroC320.setCstIcms(viewC390.getCst());
+//                    registroC320.setCfop(viewC390.getCfop().toString());
+//                    registroC320.setAliqIcms(viewC390.getTaxaIcms());
+//                    registroC320.setVlOpr(viewC390.getSomaItem());
+//                    registroC320.setVlBcIcms(viewC390.getSomaBaseIcms());
+//                    registroC320.setVlIcms(viewC390.getSomaIcms());
+//                    registroC320.setVlRedBc(viewC390.getSomaIcmsOutras());
+//
+//                    // REGISTRO C321: ITENS DO RESUMO DIÁRIO DOS DOCUMENTOS
+//                    // (CÓDIGO 02).
+//                    filtros.clear();
+//                    filtros.add(new Filtro(Filtro.AND, "viewC321.dataEmissao", Filtro.MAIOR_OU_IGUAL, dataInicio));
+//                    filtros.add(new Filtro(Filtro.AND, "viewC321.dataEmissao", Filtro.MENOR_OU_IGUAL, dataFim));
+//                    List<ViewSpedC321Id> listaC321 = viewC321Repository.getEntitys(ViewSpedC321Id.class, filtros);
+//                    RegistroC321 registroC321;
+//                    for (ViewSpedC321Id c321 : listaC321) {
+//                        registroC321 = new RegistroC321();
+//                        ViewSpedC321 spedC321 = c321.getViewC321();
+//
+//                        registroC321.setCodItem(spedC321.getIdProduto().toString());
+//                        registroC321.setQtd(spedC321.getSomaQuantidade());
+//                        registroC321.setUnid(spedC321.getDescricaoUnidade());
+//                        registroC321.setVlItem(spedC321.getSomaItem());
+//                        registroC321.setVlDesc(spedC321.getSomaDesconto());
+//                        registroC321.setVlBcIcms(spedC321.getSomaBaseIcms());
+//                        registroC321.setVlIcms(spedC321.getSomaIcms());
+//                        registroC321.setVlPis(spedC321.getSomaPis());
+//                        registroC321.setVlCofins(spedC321.getSomaCofins());
+//
+//                        registroC320.getRegistroC321List().add(registroC321);
+//                    }
+//
+//                    registroC300.getRegistroC320List().add(registroC320);
+//                }
+//
+//                sped.getBlocoC().getListaRegistroC300().add(registroC300);
+            //           }
         }// if (perfil.equals("B")) {
 
         // Ambos os Perfis
