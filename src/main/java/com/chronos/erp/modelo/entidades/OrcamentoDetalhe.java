@@ -2,6 +2,8 @@
 package com.chronos.erp.modelo.entidades;
 
 
+import com.chronos.erp.util.Biblioteca;
+
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
@@ -138,12 +140,12 @@ public class OrcamentoDetalhe implements Serializable {
     }
 
     public void calcularSubTotal() {
-        valorSubtotal = getQuantidade().multiply(getValorUnitario());
+        valorSubtotal = Biblioteca.multiplica(getQuantidade(), getValorUnitario());
     }
 
     public void calcularValorTotal() {
         calcularSubTotal();
-        valorTotal = getValorSubtotal().subtract(getValorDesconto());
+        valorTotal = Biblioteca.subtrai(getValorSubtotal(), getValorDesconto());
     }
 
     @Override

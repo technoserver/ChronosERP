@@ -1,5 +1,6 @@
 package com.chronos.erp.modelo.entidades;
 
+import com.chronos.erp.util.Biblioteca;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -341,11 +342,9 @@ public class OrcamentoCabecalho implements Serializable {
 
     public BigDecimal calcularValorTotal() {
         valorTotal = calcularValorProdutos();
-        valorTotal = valorTotal.add(getValorFrete())
-                .subtract(calcularTotalDesconto());
-        if (valorTotal == null) {
-            System.out.println("");
-        }
+        valorTotal = Biblioteca.soma(valorTotal, valorFrete);
+        valorTotal = Biblioteca.subtrai(valorTotal, calcularTotalDesconto());
+
         return valorTotal;
     }
 

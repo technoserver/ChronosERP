@@ -3,6 +3,7 @@ package com.chronos.erp.modelo.entidades;
 import com.chronos.erp.modelo.anotacoes.TaxaMaior;
 import com.chronos.erp.modelo.enuns.SituacaoVenda;
 import com.chronos.erp.modelo.enuns.TipoFrete;
+import com.chronos.erp.util.Biblioteca;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -10,8 +11,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.*;
 
 @Entity
@@ -421,9 +420,9 @@ public class VendaCabecalho implements Serializable {
 
     public BigDecimal calcularValorTotal() {
         valorTotal = calcularValorProdutos();
-        valorTotal = valorTotal.add(getValorFrete())
-                .add(getValorSeguro())
-                .subtract(calcularTotalDesconto());
+        valorTotal = Biblioteca.soma(valorTotal, valorFrete);
+        valorTotal = Biblioteca.subtrai(valorTotal, calcularTotalDesconto());
+
         return valorTotal;
     }
 
@@ -435,25 +434,7 @@ public class VendaCabecalho implements Serializable {
                 .orElse(BigDecimal.ZERO);
     }
 
-    public String valorSubTotalFormatado() {
-        return formatarValor(calcularValorProdutos());
-    }
 
-    public String valorDescontoFormatado() {
-        return formatarValor(calcularTotalDesconto());
-    }
-
-    public String valorTotalFormatado() {
-        return formatarValor(calcularValorTotal());
-    }
-
-    private String formatarValor(BigDecimal valor) {
-        DecimalFormatSymbols simboloDecimal = DecimalFormatSymbols.getInstance();
-        simboloDecimal.setDecimalSeparator('.');
-        DecimalFormat formatar = new DecimalFormat("0.00", simboloDecimal);
-
-        return formatar.format(Optional.ofNullable(valor).orElse(BigDecimal.ZERO));
-    }
 
     public boolean temProduto() {
         return getListaVendaDetalhe().size() > 0;

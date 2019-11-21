@@ -283,16 +283,16 @@ public class VendaToNFe extends ManualCDILookup {
 
             venda.getListaFormaPagamento().stream().forEach(f -> {
                 NfeFormaPagamento pagamento = new NfeFormaPagamento();
-                pagamento.setTroco(f.getTroco());
-                pagamento.setBandeira(f.getBandeira());
-                pagamento.setCartaoTipoIntegracao(f.getCartaoTipoIntegracao());
-                pagamento.setCnpjOperadoraCartao(f.getCnpjOperadoraCartao());
-                pagamento.setEstorno(f.getEstorno());
-                pagamento.setForma(f.getForma());
-                pagamento.setNumeroAutorizacao(f.getNumeroAutorizacao());
-                pagamento.setTipoPagamento(f.getTipoPagamento());
+                pagamento.setTroco(f.getFormaPagamento().getTroco());
+                pagamento.setBandeira(f.getFormaPagamento().getBandeira());
+                pagamento.setCartaoTipoIntegracao(f.getFormaPagamento().getCartaoTipoIntegracao());
+                pagamento.setCnpjOperadoraCartao(f.getFormaPagamento().getCnpjOperadoraCartao());
+                pagamento.setEstorno(f.getFormaPagamento().getEstorno());
+                pagamento.setForma(f.getFormaPagamento().getForma());
+                pagamento.setNumeroAutorizacao(f.getFormaPagamento().getNumeroAutorizacao());
+                pagamento.setTipoPagamento(f.getFormaPagamento().getTipoPagamento());
                 pagamento.setNfeCabecalho(nfe);
-                pagamento.setValor(f.getValor());
+                pagamento.setValor(f.getFormaPagamento().getValor());
                 nfe.getListaNfeFormaPagamento().add(pagamento);
             });
 
@@ -319,7 +319,7 @@ public class VendaToNFe extends ManualCDILookup {
 
                 CondicoesPagamento condicao = tipoVenda == TipoVenda.OS
                         ? os.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst().get().getCondicao()
-                        : venda.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst().get().getCondicoesPagamento();
+                        : venda.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("14")).findFirst().get().getFormaPagamento().getCondicoesPagamento();
 
 
                 List<CondicoesParcelas> parcelas = condicao.getParcelas();

@@ -3,8 +3,6 @@ package com.chronos.erp.modelo.entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Optional;
 
 
 @Entity
@@ -17,41 +15,12 @@ public class VendaFormaPagamento implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "FORMA")
-    private String forma;
-    @Column(name = "VALOR")
-    private BigDecimal valor;
-    @Column(name = "CARTAO_TIPO_INTEGRACAO")
-    private String cartaoTipoIntegracao;
-    @Column(name = "CNPJ_OPERADORA_CARTAO")
-    private String cnpjOperadoraCartao;
-    @Column(name = "BANDEIRA")
-    private String bandeira;
-    @Column(name = "NUMERO_AUTORIZACAO")
-    private String numeroAutorizacao;
-    @Column(name = "ESTORNO")
-    private String estorno;
-    @Column(name = "TROCO")
-    private BigDecimal troco;
     @JoinColumn(name = "id_venda_cabecalho", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private VendaCabecalho vendaCabecalho;
-    @JoinColumn(name = "ID_TIPO_PAGAMENTO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private TipoPagamento tipoPagamento;
-    @JoinColumn(name = "ID_CONDICAO_PAGAMENTO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private CondicoesPagamento condicoesPagamento;
-    @Transient
-    private int qtdParcelas;
-    @Transient
-    private CondicoesPagamento condicao;
-    @Transient
-    private OperadoraCartao operadoraCartao;
+    @Embedded
+    private FormaPagamento formaPagamento;
 
-    public VendaFormaPagamento() {
-        this.qtdParcelas = 1;
-    }
 
     public Integer getId() {
         return id;
@@ -59,70 +28,6 @@ public class VendaFormaPagamento implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getForma() {
-        return forma;
-    }
-
-    public void setForma(String forma) {
-        this.forma = forma;
-    }
-
-    public BigDecimal getValor() {
-        return valor;
-    }
-
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
-
-    public String getCartaoTipoIntegracao() {
-        return cartaoTipoIntegracao;
-    }
-
-    public void setCartaoTipoIntegracao(String cartaoTipoIntegracao) {
-        this.cartaoTipoIntegracao = cartaoTipoIntegracao;
-    }
-
-    public String getCnpjOperadoraCartao() {
-        return cnpjOperadoraCartao;
-    }
-
-    public void setCnpjOperadoraCartao(String cnpjOperadoraCartao) {
-        this.cnpjOperadoraCartao = cnpjOperadoraCartao;
-    }
-
-    public String getBandeira() {
-        return bandeira;
-    }
-
-    public void setBandeira(String bandeira) {
-        this.bandeira = bandeira;
-    }
-
-    public String getNumeroAutorizacao() {
-        return numeroAutorizacao;
-    }
-
-    public void setNumeroAutorizacao(String numeroAutorizacao) {
-        this.numeroAutorizacao = numeroAutorizacao;
-    }
-
-    public String getEstorno() {
-        return estorno;
-    }
-
-    public void setEstorno(String estorno) {
-        this.estorno = estorno;
-    }
-
-    public BigDecimal getTroco() {
-        return troco;
-    }
-
-    public void setTroco(BigDecimal troco) {
-        this.troco = troco;
     }
 
     public VendaCabecalho getVendaCabecalho() {
@@ -133,41 +38,12 @@ public class VendaFormaPagamento implements Serializable {
         this.vendaCabecalho = vendaCabecalho;
     }
 
-    public TipoPagamento getTipoPagamento() {
-        return tipoPagamento;
+    public FormaPagamento getFormaPagamento() {
+        return formaPagamento;
     }
 
-    public void setTipoPagamento(TipoPagamento tipoPagamento) {
-        this.tipoPagamento = tipoPagamento;
-    }
-
-    public CondicoesPagamento getCondicoesPagamento() {
-        return condicoesPagamento;
-    }
-
-    public void setCondicoesPagamento(CondicoesPagamento condicoesPagamento) {
-        this.condicoesPagamento = condicoesPagamento;
-    }
-
-    public int getQtdParcelas() {
-        return qtdParcelas;
-    }
-
-    public void setQtdParcelas(int qtdParcelas) {
-        this.qtdParcelas = qtdParcelas;
-    }
-
-    public OperadoraCartao getOperadoraCartao() {
-        return operadoraCartao;
-    }
-
-    public void setOperadoraCartao(OperadoraCartao operadoraCartao) {
-        this.operadoraCartao = operadoraCartao;
-    }
-
-
-    public BigDecimal getValorTotal() {
-        return this.valor.subtract(Optional.ofNullable(this.troco).orElse(BigDecimal.ZERO));
+    public void setFormaPagamento(FormaPagamento formaPagamento) {
+        this.formaPagamento = formaPagamento;
     }
 
     @Override

@@ -98,6 +98,44 @@ public class VendaServiceTest {
     }
 
     @Test
+    public void devemos_garantir_que_seja_possveil_calcular_os_totais_com_desconto() throws ChronosException {
+
+        venda.getListaVendaDetalhe().clear();
+
+        VendaDetalhe item = new VendaDetalhe();
+        item.setQuantidade(BigDecimal.valueOf(0.5));
+        item.setValorUnitario(BigDecimal.valueOf(4.99));
+
+        service.addItem(venda, item, BigDecimal.valueOf(0.25), 1);
+
+        VendaDetalhe item2 = new VendaDetalhe();
+        item2.setQuantidade(BigDecimal.valueOf(5));
+        item2.setValorUnitario(BigDecimal.valueOf(2.99));
+
+        service.addItem(venda, item2, BigDecimal.valueOf(1.5), 1);
+
+
+        VendaDetalhe item3 = new VendaDetalhe();
+        item3.setQuantidade(BigDecimal.valueOf(4));
+        item3.setValorUnitario(BigDecimal.valueOf(1.99));
+
+        service.addItem(venda, item3, BigDecimal.valueOf(0.8), 1);
+
+
+        VendaDetalhe item4 = new VendaDetalhe();
+        item4.setQuantidade(BigDecimal.valueOf(6));
+        item4.setValorUnitario(BigDecimal.valueOf(3.99));
+
+        service.addItem(venda, item4, BigDecimal.valueOf(2.39), 1);
+
+        assertEquals(venda.getValorSubtotal(), BigDecimal.valueOf(49.35));
+        assertEquals(venda.getValorTotal(), BigDecimal.valueOf(44.41));
+        assertEquals(venda.getValorDesconto(), BigDecimal.valueOf(4.94));
+
+    }
+
+
+    @Test
     public void devemos_garantir_quer_o_valor_de_desconto_em_percentual_seja_aplicado_nos_itens() throws ChronosException {
 
         service.aplicarDesconto(venda, 2, BigDecimal.TEN);
