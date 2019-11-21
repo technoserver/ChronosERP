@@ -94,6 +94,18 @@
             </li>
         </c:if>
 
+        <li class="${fn:contains(view.viewId,'pcp')?'active':''}">
+            <a href="#">
+                <span class="nav-label">PCP</span>
+                <span class="fa arrow"></span>
+            </a>
+            <ul class="nav nav-third-level collapse ">
+                <erp:subMenu caminho="/modulo/suprimentos/pcp/producao"
+                             label="Produção"
+                             funcao="producao"/>
+            </ul>
+        </li>
+
 
     </ul>
 

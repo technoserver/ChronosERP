@@ -223,8 +223,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         grupo = new ProdutoGrupo();
         conversoes = new ArrayList<>();
         grades = new ArrayList<>();
-        fichaTecnica = new FichaTecnica();
-        fichaTecnica.setProduto(getObjeto());
+        incluirFichaTecnica();
 
 
     }
@@ -251,6 +250,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         } else {
             grades = new ArrayList<>();
         }
+        incluirFichaTecnica();
 
     }
 

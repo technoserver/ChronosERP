@@ -1,0 +1,282 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Produção
+    </ui:define>
+
+    <ui:define name="tela">
+        #{pcpOpCabecalhoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Produção
+    </ui:define>
+
+    <ui:define name="css">
+        <style type="text/css">
+            .grade {
+                border: none;
+                background-color: transparent;
+                padding: 1px;
+            }
+        </style>
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{pcpOpCabecalhoControll}"
+                       idDataTable="dataTableProducao"
+                       nomeFuncao="CFOP"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Inicio">
+                <h:outputLabel value="#{row.inicio}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Previsao Entrega">
+                <h:outputLabel value="#{row.previsaoEntrega}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+            <p:column headerText="Termino">
+                <h:outputLabel value="#{row.termino}">
+                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                </h:outputLabel>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{pcpOpCabecalhoControll}"
+                                   nomeFuncao="CFOP"
+                                   id="telaDetalhe"
+        >
+
+            <p:tabView id="tabs" scrollable="true" activeIndex="0">
+                <p:tab id="dados-principais" title="Dados Principais">
+                    <div class="row">
+                        <erp:campoData styleClass="col-xs-12 col-md-2"
+                                       idComponente="pcpOpCabecalhoInicio" label="Inicio"
+                                       nomeAtributo="#{pcpOpCabecalhoControll.objeto.inicio}"/>
+                        <erp:campoData styleClass="col-xs-12 col-md-2"
+                                       idComponente="pcpOpCabecalhoPrevisaoEntrega"
+                                       label="Previsao Entrega"
+                                       nomeAtributo="#{pcpOpCabecalhoControll.objeto.previsaoEntrega}"/>
+                        <erp:campoData styleClass="col-xs-12 col-md-2"
+                                       idComponente="pcpOpCabecalhoTermino" label="Termino"
+                                       nomeAtributo="#{pcpOpCabecalhoControll.objeto.termino}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-md-2"
+                                          idComponente="pcpOpCabecalhoCustoTotalPrevisto"
+                                          label="Custo Previsto"
+                                          nomeAtributo="#{pcpOpCabecalhoControll.objeto.custoTotalPrevisto}"/>
+                        <erp:campoDecimal styleClass="col-xs-12 col-md-2"
+                                          idComponente="pcpOpCabecalhoCustoTotalRealizado"
+                                          label="Custo Realizado"
+                                          nomeAtributo="#{pcpOpCabecalhoControll.objeto.custoTotalRealizado}"/>
+                    </div>
+
+                </p:tab>
+                <p:tab id="produtos" title="Itens">
+
+
+                    <h:form id="form-produtos">
+
+                        <h:panelGroup layout="block" id="container-item"
+                                      style="height: 90px;background: #e0dfdf;display: flex;align-items: center;padding: 5px">
+                            <div class="row" style="height: 100%">
+
+                                <h:panelGroup layout="block" class="col-xs-12 col-sm-5 col-md-5"
+                                              id="produto-selecionado">
+
+                                    <div style="display: flex;align-items: center; height: 100%;">
+                                        <p:autoComplete id="produto"
+                                                        value="#{pcpOpCabecalhoControll.pcpOpDetalhe.produto}"
+                                                        completeMethod="#{pcpOpCabecalhoControll.getListaProduto}"
+                                                        var="objeto"
+                                                        itemLabel="#{objeto.nome}" itemValue="#{objeto}"
+                                                        queryDelay="500"
+                                                        style="#{orcamentoCabecalhoControll.exibirGrade ? 'width: 77%':'width: 100%'}"
+                                                        placeholder="Digite o nome ou código ou código interno do Prod."
+                                                        converter="defaultConverter"
+                                                        forceSelection="true"
+                                                        minQueryLength="3"
+                                                        emptyMessage="Nenhum produto encontrado">
+
+                                            <p:ajax event="itemSelect" process="@this"
+                                                    update="formCentro:tabs:form-produtos:container-item"
+                                                    listener="#{pcpOpCabecalhoControll.buscarGrade}"/>
+                                        </p:autoComplete>
+                                        <h:panelGroup layout="block" id="grade" style="margin-left: 5px"
+                                                      rendered="#{pcpOpCabecalhoControll.exibirGrade}">
+                                            <h:selectOneMenu styleClass="form-control grade"
+                                                             id="cor"
+                                                             value="#{pcpOpCabecalhoControll.cor}"
+                                                             converter="defaultConverter"
+                                                             required="true">
+                                                <f:selectItem itemValue="#{null}" itemLabel="COR"/>
+                                                <f:selectItems
+                                                        value="#{pcpOpCabecalhoControll.cores}"
+                                                        var="#{obj}" itemValue="#{obj}"
+                                                        itemLabel="#{obj.nome}"/>
+                                                <p:ajax process="@this" event="change"
+                                                        update="formCentro:tab-view-orcamento:form-produtos:grade"
+                                                        listener="#{pcpOpCabecalhoControll.definirTamanhos()}"/>
+                                            </h:selectOneMenu>
+                                            <h:selectOneMenu styleClass="form-control grade"
+                                                             value="#{pcpOpCabecalhoControll.tamanho}"
+                                                             converter="defaultConverter"
+                                                             required="true"
+                                                             id="tamanho">
+                                                <f:selectItem itemValue="#{null}" itemLabel="Tamanho"/>
+                                                <f:selectItems
+                                                        value="#{pcpOpCabecalhoControll.tamanhos}"
+                                                        var="#{obj}" itemValue="#{obj}"
+                                                        itemLabel="#{obj.nome}"/>
+                                            </h:selectOneMenu>
+                                        </h:panelGroup>
+                                    </div>
+
+
+                                </h:panelGroup>
+
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                                  idComponente="vendaOrcamentoDetalheQuantidade"
+                                                  label="Quantidade a produzir"
+                                                  requerido="true"
+                                                  nomeAtributo="#{pcpOpCabecalhoControll.pcpOpDetalhe.quantidadeProduzir}"/>
+
+
+                                <div class="col-xs-12 col-sm-4 col-md-4">
+                                    <p:outputLabel value="Quantidade para produção" for="quantidadeProduzir"/>
+                                    <div class="field-action">
+
+                                        <p:inputNumber id="quantidadeProduzir"
+                                                       value="#{pcpOpCabecalhoControll.pcpOpDetalhe.quantidadeProduzir}"
+                                                       style="width: 100%;"
+                                                       decimalPlaces="2"
+                                                       minValue="0"/>
+
+
+                                        <div>
+                                            <p:commandButton id="btn-salvar"
+                                                             style="margin-left: 5px"
+                                                             value="Incluir"
+
+                                                             action="#{pcpOpCabecalhoControll.salvarPcpOpDetalhe}"
+                                                             process="form-produtos"
+                                            />
+                                            <!--                                                             update=":formCentro:growl,:formCentro:tabs:form-produtos:container-item,formCentro:tabs:itens"-->
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </h:panelGroup>
+
+                    </h:form>
+
+                    <p:dataTable id="itens" var="obj"
+                                 value="#{pcpOpCabecalhoControll.objeto.listaPcpOpDetalhe}"
+                                 selection="#{pcpOpCabecalhoControll.pcpOpDetalheSelecionado}"
+                                 rowKey="#{obj.id}" reflow="true">
+
+
+                        <p:column headerText="Produto">
+                            <h:outputLabel value="#{obj.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="Qtde Produzir">
+                            <h:outputLabel value="#{obj.quantidadeProduzir}"/>
+                        </p:column>
+                        <p:column headerText="Qtde Produzida">
+                            <h:outputLabel value="#{obj.quantidadeProduzida}"/>
+                        </p:column>
+                        <p:column headerText="Qtde Entregue">
+                            <h:outputLabel value="#{obj.quantidadeEntregue}"/>
+                        </p:column>
+                        <p:column headerText="Custo Previsto">
+                            <h:outputLabel value="#{obj.custoPrevisto}"/>
+                        </p:column>
+                        <p:column headerText="Custo Realizado">
+                            <h:outputLabel value="#{obj.custoRealizado}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+            </p:tabView>
+
+
+        </erp:telaInclusaoAlteracao>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogOutrasTelas"
+                      header="Item" responsive="true"
+                      widgetVar="dialogOutrasTelas" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelOutrasTelas">
+
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-9">
+                            <p:outputLabel value="Produto" for="pcpOpDetalheProduto"/>
+                            <br/>
+                            <p:autoComplete id="pcpOpDetalheProduto"
+                                            value="#{pcpOpCabecalhoControll.pcpOpDetalhe.produto}"
+                                            completeMethod="#{pcpOpCabecalhoControll.getListaProduto}"
+                                            var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"
+                                            converter="defaultConverter"
+                                            forceSelection="true" minQueryLength="3" maxResults="10"
+                                            required="true" style="width: 100%"
+                                            emptyMessage="Nenhum registro encontrado"/>
+                        </div>
+                        <erp:campoDecimal styleClass="col-xs-12 col-md-3"
+                                          idComponente="pcpOpDetalheQuantidadeProduzir"
+                                          label="Qtde Produzir" requerido="true"
+                                          nomeAtributo="#{pcpOpCabecalhoControll.pcpOpDetalhe.quantidadeProduzir}"/>
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             id="salvar"
+                                             actionListener="#{pcpOpCabecalhoControll.salvarPcpOpDetalhe}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas').hide();}"
+                                             process="@form"
+                                             update="panelOutrasTelas,:formCentro:growl"/>
+
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
