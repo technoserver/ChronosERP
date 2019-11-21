@@ -56,6 +56,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
     @Inject
     private OrcamentoService service;
+
     @Inject
     private EstoqueRepository estoqueRepository;
     @Inject
@@ -200,7 +201,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
             }
         }
         totalReceber = orcamento.getValorTotal();
-        verificaSaldoRestante();
+        verificaSaldoRestante(getObjeto().getListaFormaPagamento().stream().map(f -> f.getFormaPagamento()).collect(Collectors.toList()));
     }
 
     @Override
@@ -305,7 +306,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
             desconto = BigDecimal.ZERO;
             incluirVendaOrcamentoDetalhe();
             totalReceber = getObjeto().getValorTotal();
-            verificaSaldoRestante();
+            verificaSaldoRestante(getObjeto().getListaFormaPagamento().stream().map(f -> f.getFormaPagamento()).collect(Collectors.toList()));
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -334,9 +335,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     }
 
     public void definirValorVenda() {
-        if (orcamentoDetalhe.getProduto() != null) {
 
-        }
 
         BigDecimal valor = Optional.ofNullable(orcamentoDetalhe.getProduto())
                 .map(Produto::getValorVenda).orElse(null);
@@ -401,7 +400,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
     }
 
-    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
+    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) {
         Optional<OrcamentoFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
         if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
             Mensagem.addErrorMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já inclusa");
@@ -410,14 +409,19 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
                 Mensagem.addErrorMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " não permite troco");
             } else {
                 OrcamentoFormaPagamento formaPagamento = new OrcamentoFormaPagamento();
-                formaPagamento.setOrcamentoCabecalho(getObjeto());
-                formaPagamento.setTipoPagamento(tipoPagamento);
-                formaPagamento.setValor(valor);
-                formaPagamento.setForma(tipoPagamento.getCodigo());
-                formaPagamento.setEstorno("N");
 
-                if (formaPagamento.getForma().equals("14")) {
-                    formaPagamento.setCondicoesPagamento(condicaoPagamento);
+                FormaPagamento forma = new FormaPagamento();
+
+                formaPagamento.setFormaPagamento(forma);
+
+                formaPagamento.setOrcamentoCabecalho(getObjeto());
+                forma.setTipoPagamento(tipoPagamento);
+                forma.setValor(valor);
+                forma.setForma(tipoPagamento.getCodigo());
+                forma.setEstorno("N");
+
+                if (forma.getForma().equals("14")) {
+                    forma.setCondicoesPagamento(condicaoPagamento);
                 }
 
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
@@ -425,9 +429,9 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
                 if (troco.compareTo(BigDecimal.ZERO) == -1) {
                     troco = BigDecimal.ZERO;
                 }
-                formaPagamento.setTroco(troco);
+                forma.setTroco(troco);
                 getObjeto().getListaFormaPagamento().add(formaPagamento);
-                verificaSaldoRestante();
+                verificaSaldoRestante(getObjeto().getListaFormaPagamento().stream().map(f -> f.getFormaPagamento()).collect(Collectors.toList()));
 
 
             }
@@ -436,9 +440,9 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
     }
 
-    private void verificaSaldoRestante() {
+    private void verificaSaldoRestante(List<FormaPagamento> pagamentos) {
         BigDecimal recebidoAteAgora = BigDecimal.ZERO;
-        for (OrcamentoFormaPagamento p : getObjeto().getListaFormaPagamento()) {
+        for (FormaPagamento p : pagamentos) {
             recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
         }
 
@@ -456,7 +460,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     private Optional<OrcamentoFormaPagamento> bucarTipoPagamento(TipoPagamento tipoPagamento) {
         return getObjeto().getListaFormaPagamento()
                 .stream()
-                .filter(fp -> fp.getTipoPagamento().equals(tipoPagamento))
+                .filter(fp -> fp.getFormaPagamento().getTipoPagamento().equals(tipoPagamento))
                 .findAny();
     }
 
@@ -465,7 +469,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         if (formaPagamentoSelecionado != null) {
             getObjeto().getListaFormaPagamento().remove(formaPagamentoSelecionado);
 
-            verificaSaldoRestante();
+            verificaSaldoRestante(getObjeto().getListaFormaPagamento().stream().map(f -> f.getFormaPagamento()).collect(Collectors.toList()));
         }
     }
 
@@ -539,7 +543,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
             desconto = BigDecimal.ZERO;
             getObjeto().getListaFormaPagamento().clear();
             totalReceber = getObjeto().getValorTotal();
-            verificaSaldoRestante();
+            verificaSaldoRestante(getObjeto().getListaFormaPagamento().stream().map(f -> f.getFormaPagamento()).collect(Collectors.toList()));
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("Ocorreu um erro!", ex);
@@ -556,7 +560,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         desconto = BigDecimal.ZERO;
         getObjeto().getListaFormaPagamento().clear();
         totalReceber = getObjeto().getValorTotal();
-        verificaSaldoRestante();
+        verificaSaldoRestante(getObjeto().getListaFormaPagamento().stream().map(f -> f.getFormaPagamento()).collect(Collectors.toList()));
     }
 
     private void iniciarValoresPagamento() {

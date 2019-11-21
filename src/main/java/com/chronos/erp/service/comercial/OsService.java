@@ -336,16 +336,16 @@ public class OsService extends AbstractService<OsAbertura> {
 
         for (OrcamentoFormaPagamento p : orcamento.getListaFormaPagamento()) {
             OsFormaPagamento pag = new OsFormaPagamento();
-            pag.setEstorno(p.getEstorno());
-            pag.setForma(p.getForma());
+            pag.setEstorno(p.getFormaPagamento().getEstorno());
+            pag.setForma(p.getFormaPagamento().getForma());
             pag.setOsAbertura(os);
-            pag.setTipoPagamento(p.getTipoPagamento());
-            pag.setTroco(p.getTroco());
-            pag.setValor(p.getValor());
-            pag.setBandeira(p.getBandeira());
-            pag.setCartaoTipoIntegracao(p.getCartaoTipoIntegracao());
-            pag.setCnpjOperadoraCartao(p.getCnpjOperadoraCartao());
-            pag.setNumeroAutorizacao(p.getNumeroAutorizacao());
+            pag.setTipoPagamento(p.getFormaPagamento().getTipoPagamento());
+            pag.setTroco(p.getFormaPagamento().getTroco());
+            pag.setValor(p.getFormaPagamento().getValor());
+            pag.setBandeira(p.getFormaPagamento().getBandeira());
+            pag.setCartaoTipoIntegracao(p.getFormaPagamento().getCartaoTipoIntegracao());
+            pag.setCnpjOperadoraCartao(p.getFormaPagamento().getCnpjOperadoraCartao());
+            pag.setNumeroAutorizacao(p.getFormaPagamento().getNumeroAutorizacao());
 
             os.getListaFormaPagamento().add(pag);
         }
