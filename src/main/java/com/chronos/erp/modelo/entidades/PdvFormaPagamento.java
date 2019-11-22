@@ -36,7 +36,7 @@ public class PdvFormaPagamento implements Serializable {
     @JoinColumn(name = "ID_PDV_VENDA_CABECALHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private PdvVendaCabecalho pdvVendaCabecalho;
-    @JoinColumn(name = "ID_PDV_TIPO_PAGAMENTO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private TipoPagamento tipoPagamento;
     @Transient
