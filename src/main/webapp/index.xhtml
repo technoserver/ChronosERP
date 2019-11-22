@@ -320,9 +320,9 @@
                     <div class="ibox-content">
                         <h3 style="font-weight: bold;margin-bottom: 20px">Compromissos</h3>
                         <p:dataTable id="dataTableCompromisso" var="obj"
-                                     value="#{homeControll.compromissos}"
-                                     paginator="true" rows="10" rowsPerPageTemplate="10,20,30,40"
-                                     resizableColumns="true" paginatorPosition="bottom">
+                                     value="#{homeControll.compromissos}" reflow="true"
+                                     emptyMessage="Nenhum compromisso encontrado"
+                                     resizableColumns="true">
 
 
                             <p:column headerText="Data" width="100">
