@@ -16,7 +16,7 @@ public class PcpOpDetalhe implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "ID_GRADE")
+    @Column(name = "id_estoque_grade")
     private Integer idgrade;
     @Column(name = "QUANTIDADE_PRODUZIR")
     private BigDecimal quantidadeProduzir;

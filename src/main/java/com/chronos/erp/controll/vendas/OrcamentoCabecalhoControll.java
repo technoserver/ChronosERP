@@ -225,7 +225,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
 
     public void gerarPedido() {
-        OrcamentoCabecalho orcamento = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+        OrcamentoCabecalho orcamento = isTelaGrid() ? dataModel.getRowData(getObjetoSelecionado().getId().toString()) : getObjeto();
         orcamento.setTipo("P");
         orcamento.setSituacao("A");
         String codigo = orcamento.getTipo().equals("P") ? "#PE" : "#OE";

@@ -4,6 +4,9 @@ import com.chronos.erp.controll.AbstractControll;
 import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
+import com.chronos.erp.service.ChronosException;
+import com.chronos.erp.util.Biblioteca;
+import com.chronos.erp.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -11,8 +14,8 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Named
@@ -41,8 +44,9 @@ public class PcpOpCabecalhoControll extends AbstractControll<PcpOpCabecalho> imp
     public void doCreate() {
         super.doCreate();
         getObjeto().setEmpresa(empresa);
-        getObjeto().setListaPcpOpDetalhe(new HashSet<>());
-
+        getObjeto().setListaPcpOpDetalhe(new ArrayList<>());
+        getObjeto().setCustoTotalPrevisto(BigDecimal.ZERO);
+        getObjeto().setCustoTotalRealizado(BigDecimal.ZERO);
         incluirPcpOpDetalhe();
     }
 
@@ -68,7 +72,8 @@ public class PcpOpCabecalhoControll extends AbstractControll<PcpOpCabecalho> imp
 
     public void buscarGrade() {
 
-
+        pcpOpDetalhe.setCustoPrevisto(Optional.ofNullable(pcpOpDetalhe.getProduto().getCustoProducao()).orElse(BigDecimal.ZERO));
+        pcpOpDetalhe.setCustoRealizado(Optional.ofNullable(pcpOpDetalhe.getProduto().getCustoProducao()).orElse(BigDecimal.ZERO));
         exibirGrade = false;
         if (pcpOpDetalhe.getProduto() != null && pcpOpDetalhe.getProduto().getPossuiGrade() != null && pcpOpDetalhe.getProduto().getPossuiGrade()) {
             List<Filtro> filtros = new ArrayList<>();
@@ -86,17 +91,70 @@ public class PcpOpCabecalhoControll extends AbstractControll<PcpOpCabecalho> imp
 
     }
 
-    public void salvarPcpOpDetalhe() {
-        if (pcpOpDetalhe.getId() == null) {
-            getObjeto().getListaPcpOpDetalhe().add(pcpOpDetalhe);
+    public void definirTamanhos() {
+        if (cor != null) {
+            tamanhos = grades.stream()
+                    .filter(g -> g.getEstoqueCor().getId().equals(cor.getId()))
+                    .map(t -> t.getEstoqueTamanho()).collect(Collectors.toList());
         }
-        salvar("Registro salvo com sucesso!");
+    }
+
+    public void salvarPcpOpDetalhe() {
+
+
+        try {
+            if (exibirGrade) {
+                Optional<EstoqueGrade> first = grades.stream()
+                        .filter(g -> g.getEstoqueCor().getId().equals(cor.getId()) && g.getEstoqueTamanho().getId().equals(tamanho.getId()))
+                        .findFirst();
+
+                if (!first.isPresent()) {
+                    throw new ChronosException("Grade não localizada");
+                }
+
+                String nome = pcpOpDetalhe.getProduto().getNome() + " COR " + cor.getNome() + " TAM " + tamanho.getNome();
+                pcpOpDetalhe.getProduto().setNome(nome);
+                pcpOpDetalhe.setIdgrade(first.get().getId());
+            }
+
+            getObjeto().getListaPcpOpDetalhe().add(pcpOpDetalhe);
+
+            BigDecimal custoPrevisto = getObjeto().getCustoTotalPrevisto();
+            BigDecimal custoTotalRealizado = getObjeto().getCustoTotalRealizado();
+
+            custoPrevisto = Biblioteca.soma(custoPrevisto, pcpOpDetalhe.getCustoPrevisto());
+            custoTotalRealizado = Biblioteca.soma(custoTotalRealizado, pcpOpDetalhe.getCustoRealizado());
+
+            getObjeto().setCustoTotalPrevisto(custoPrevisto);
+            getObjeto().setCustoTotalRealizado(custoTotalRealizado);
+
+            incluirPcpOpDetalhe();
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao add o item da venda", ex);
+            }
+        }
+
+
+
     }
 
     public void excluirPcpOpDetalhe() {
 
+        BigDecimal custoPrevisto = getObjeto().getCustoTotalPrevisto();
+        BigDecimal custoTotalRealizado = getObjeto().getCustoTotalRealizado();
+
+        custoPrevisto = Biblioteca.subtrai(custoPrevisto, pcpOpDetalhe.getCustoPrevisto());
+        custoTotalRealizado = Biblioteca.subtrai(custoTotalRealizado, pcpOpDetalhe.getCustoRealizado());
+
+        getObjeto().setCustoTotalPrevisto(custoPrevisto);
+        getObjeto().setCustoTotalRealizado(custoTotalRealizado);
+
         getObjeto().getListaPcpOpDetalhe().remove(pcpOpDetalheSelecionado);
-        salvar("Registro excluído com sucesso!");
+
 
     }
 
@@ -107,8 +165,8 @@ public class PcpOpCabecalhoControll extends AbstractControll<PcpOpCabecalho> imp
             filtros.add(new Filtro("servico", "N"));
             filtros.add(new Filtro("nome", Filtro.LIKE, nome));
             filtros.add(new Filtro(Filtro.AND, "tipo", Filtro.IN, new Object[]{"V", "P"}));
-            atributos = new Object[]{"nome"};
-            listaProduto = produtoRepository.getEntitys(Produto.class, filtros, atributos);
+
+            listaProduto = produtoRepository.getEntitys(Produto.class, filtros);
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -122,7 +180,7 @@ public class PcpOpCabecalhoControll extends AbstractControll<PcpOpCabecalho> imp
 
     @Override
     protected String getFuncaoBase() {
-        return "PCP_OPERACAO";
+        return "PCP_ORDER_PRODUCAO";
     }
 
     @Override

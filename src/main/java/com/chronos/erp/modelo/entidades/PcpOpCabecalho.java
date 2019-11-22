@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class PcpOpCabecalho implements Serializable {
     @ManyToOne(optional = false)
     private Empresa empresa;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pcpOpCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<PcpOpDetalhe> listaPcpOpDetalhe;
+    private List<PcpOpDetalhe> listaPcpOpDetalhe;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "pcpOpCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PcpInstrucaoOp> listaPcpInstrucaoOp;
 
@@ -127,11 +128,11 @@ public class PcpOpCabecalho implements Serializable {
         this.empresa = empresa;
     }
 
-    public Set<PcpOpDetalhe> getListaPcpOpDetalhe() {
+    public List<PcpOpDetalhe> getListaPcpOpDetalhe() {
         return listaPcpOpDetalhe;
     }
 
-    public void setListaPcpOpDetalhe(Set<PcpOpDetalhe> listaPcpOpDetalhe) {
+    public void setListaPcpOpDetalhe(List<PcpOpDetalhe> listaPcpOpDetalhe) {
         this.listaPcpOpDetalhe = listaPcpOpDetalhe;
     }
 
