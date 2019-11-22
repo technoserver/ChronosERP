@@ -46,7 +46,7 @@ public class ProdutoTamanhoControll extends AbstractControll<EstoqueTamanho> imp
 
     @Override
     protected String getFuncaoBase() {
-        return "ESTOQUE_COR";
+        return "ESTOQUE_TAMANHO";
     }
 
     @Override

@@ -2,22 +2,22 @@
     <idLote>1</idLote>
     <indSinc>1</indSinc>
     <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
-        <infNFe versao="4.00" Id="NFe53190916925371000114550100000003291524163938">
+        <infNFe versao="4.00" Id="NFe53191116925371000114550100000003361765364190">
             <ide>
                 <cUF>53</cUF>
-                <cNF>52416393</cNF>
-                <natOp>VENDA A CONSUMIDOR FINAL</natOp>
+                <cNF>76536419</cNF>
+                <natOp>VENDA</natOp>
                 <mod>55</mod>
                 <serie>10</serie>
-                <nNF>329</nNF>
-                <dhEmi>2019-09-25T15:30:01-03:00</dhEmi>
-                <dhSaiEnt>2019-09-25T15:30:01-03:00</dhSaiEnt>
+                <nNF>336</nNF>
+                <dhEmi>2019-11-21T21:53:00-02:00</dhEmi>
+                <dhSaiEnt>2019-11-21T21:53:00-02:00</dhSaiEnt>
                 <tpNF>1</tpNF>
-                <idDest>1</idDest>
+                <idDest>2</idDest>
                 <cMunFG>5300108</cMunFG>
                 <tpImp>1</tpImp>
                 <tpEmis>1</tpEmis>
-                <cDV>8</cDV>
+                <cDV>0</cDV>
                 <tpAmb>2</tpAmb>
                 <finNFe>1</finNFe>
                 <indFinal>1</indFinal>
@@ -44,15 +44,15 @@
                 <CRT>1</CRT>
             </emit>
             <dest>
-                <CPF>23117815880</CPF>
+                <CPF>02056446510</CPF>
                 <xNome>NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xNome>
                 <enderDest>
-                    <xLgr>LOGRADOURO</xLgr>
+                    <xLgr>logradouro</xLgr>
                     <nro>1020</nro>
-                    <xBairro>CENTRO</xBairro>
-                    <cMun>5300108</cMun>
-                    <xMun>BRASILIA</xMun>
-                    <UF>DF</UF>
+                    <xBairro>centro</xBairro>
+                    <cMun>2802908</cMun>
+                    <xMun>ITABAIANA</xMun>
+                    <UF>SE</UF>
                     <CEP>99999999</CEP>
                     <cPais>1058</cPais>
                     <xPais>Brazil</xPais>
@@ -62,18 +62,18 @@
             <det nItem="1">
                 <prod>
                     <cProd>1</cProd>
-                    <cEAN>SEM GTIN</cEAN>
+                    <cEAN>07898051681605</cEAN>
                     <xProd>NOTA FISCAL EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL</xProd>
                     <NCM>01042090</NCM>
-                    <CFOP>5102</CFOP>
+                    <CFOP>6102</CFOP>
                     <uCom>UN</uCom>
                     <qCom>1.0000</qCom>
-                    <vUnCom>10</vUnCom>
+                    <vUnCom>10.000000</vUnCom>
                     <vProd>10.00</vProd>
-                    <cEANTrib>SEM GTIN</cEANTrib>
+                    <cEANTrib>07898051681605</cEANTrib>
                     <uTrib>UN</uTrib>
                     <qTrib>1.0000</qTrib>
-                    <vUnTrib>10</vUnTrib>
+                    <vUnTrib>10.000000</vUnTrib>
                     <indTot>1</indTot>
                 </prod>
                 <imposto>
@@ -129,12 +129,7 @@
             <transp>
                 <modFrete>0</modFrete>
             </transp>
-            <pag>
-                <detPag>
-                    <tPag>01</tPag>
-                    <vPag>10.00</vPag>
-                </detPag>
-            </pag>
+            <pag/>
             <infAdic>
                 <infCpl>Trib. Aprox. Federal R$ 0,42 e R$ 1,80 Estadual e R$ 0,00 Municipal Fonte IBPT</infCpl>
             </infAdic>
@@ -143,17 +138,17 @@
             <SignedInfo>
                 <CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                 <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
-                <Reference URI="#NFe53190916925371000114550100000003291524163938">
+                <Reference URI="#NFe53191116925371000114550100000003361765364190">
                     <Transforms>
                         <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
                         <Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
                     </Transforms>
                     <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                    <DigestValue>m/gKXcxnCLM4tbatZwWSYOg2720=</DigestValue>
+                    <DigestValue>5AI/KcReDJ0j1y1okJleB2cQ4jc=</DigestValue>
                 </Reference>
             </SignedInfo>
             <SignatureValue>
-                CdqjgxC/K8F65BP9QkdG3EYvPVkBxhGbFytgGIbqPHBXIktJ8XN2E0i1ZZrhNTPIvB/FI/CSZ/cwfdgBGC9BQi2qmHFiBdlZqoFS0k/cc9vTSY9haLPszvw7UuDZdotzofxBfNsLH6hYoKrBzzoFo6KChjZ92FjXO8xmxSt+6oaEQxLLOqWKYqN/KzmzMBgVKuhQpAglMjQV3oEyqP99Op/CYRSFRzPrV0xvquPdm8f/fFR7mlicrIUJ/IjCqWrmonmz/m3MNz0klwyLR5pb9yz+GrQhzvPCSMcZuzNJq1Ql9SO8gViIDkcStFzLxq3hDxSHJZIB5dTtwmNVP2ZDjA==
+                FOrZolztfnL/hiy5nzP67QaFRctOt0sqHPqMbHcYb5x2Jf2sNyahQfBTbO7979poCvOUu+tmbnr9oDJ991W3j8CyfGebJe22PwX+7zos0U6HwXxBocpOZsPF6SLrefdun2eqPYXHOjMmjOxGyma1OGEQyR+JOq+CfuS7FZp+z5FyNarLsy2MYC8uvaF3A1vr8rCKLJO9SwZPVgEFytqpQMjN4Tt/Rr9MUdEjSUF9pLma+/9vd2Z9OTLkz24D3aFld/EpXJh25UAN5bJXCC3wUCBCSUQfK5cCq9O9/3wBAcW/8no7BP8EGwl0OyOCKbEWx51e2IPPA3sHGqGZPq23Jg==
             </SignatureValue>
             <KeyInfo>
                 <X509Data>
