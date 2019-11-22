@@ -516,11 +516,11 @@
                                                  value="#{vendaCabecalhoControll.objeto.listaFormaPagamento}">
 
                                         <p:column headerText="Forma de pagamento">
-                                            <h:outputText value="#{obj.tipoPagamento.descricao}"/>
+                                            <h:outputText value="#{obj.formaPagamento.tipoPagamento.descricao}"/>
                                         </p:column>
 
                                         <p:column headerText="Valor" styleClass="text-right">
-                                            <h:outputText value="#{obj.valor}">
+                                            <h:outputText value="#{obj.formaPagamento.valor}">
                                                 <f:convertNumber pattern="#,##0.00"/>
                                             </h:outputText>
                                         </p:column>

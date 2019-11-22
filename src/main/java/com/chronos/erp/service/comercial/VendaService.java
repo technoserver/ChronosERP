@@ -24,10 +24,7 @@ import org.springframework.util.StringUtils;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by john on 06/09/17.
@@ -422,11 +419,14 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         venda.setObservacao(orcamento.getObservacao());
         venda.setEmpresa(orcamento.getEmpresa());
         venda.setDataSaida(orcamento.getDataEntrega());
+        venda.setListaFormaPagamento(new HashSet<>());
 
-
-//        String forma = venda.getCondicoesPagamento().getVistaPrazo().equals("V")
-//                ? FormaPagamento.AVISTA.getCodigo() : FormaPagamento.APRAZO.getCodigo();
-        // venda.setFormaPagamento(forma);
+        orcamento.getListaFormaPagamento().forEach(p -> {
+            VendaFormaPagamento pag = new VendaFormaPagamento();
+            pag.setVendaCabecalho(venda);
+            pag.setFormaPagamento(p.getFormaPagamento());
+            venda.getListaFormaPagamento().add(pag);
+        });
 
         venda.calcularValorTotal();
 
