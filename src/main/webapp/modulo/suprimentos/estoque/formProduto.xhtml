@@ -79,8 +79,9 @@
                                     linhas="5"/>
             </div>
         </p:tab>
-        <p:tab title="Grade" rendered="#{entradaNotaFiscalControll.nfeDetalhe.listaGrade.size() gt 0}">
+        <p:tab title="Grade" disabled="#{entradaNotaFiscalControll.nfeDetalhe.listaGrade.size() eq 0}">
             <p:dataTable var="row"
+                         rendered="#{entradaNotaFiscalControll.nfeDetalhe.listaGrade.size() gt 0}"
                          id="table-grade"
                          reflow="true" editable="true" editMode="cell"
                          value="#{entradaNotaFiscalControll.nfeDetalhe.listaGrade}">
