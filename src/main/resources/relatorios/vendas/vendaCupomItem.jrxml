@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="vendaCupomItem" pageWidth="200" pageHeight="752" columnWidth="200" leftMargin="0" rightMargin="0"
+              topMargin="0" bottomMargin="0" uuid="381cc635-c26a-4415-993d-b0ce86f4dec2">
+    <property name="ireport.zoom" value="8.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <parameter name="id" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[select
+     p.id,
+     g.codigo,
+        (CASE
+	WHEN g.id is not null THEN  p.nome || (' ' ||c.nome || COALESCE(' TAM '||t.nome,''))
+	ELSE p.nome
+     END) as nome,
+     un.sigla,
+     i.quantidade,
+     i.valor_unitario,
+     i.valor_desconto,
+     i.valor_subtotal,
+     i.valor_total
+from venda_detalhe i
+inner join produto p on i.id_produto = p.id
+inner join unidade_produto un on un.id = p.id_unidade_produto
+left join estoque_grade g on g.id = i.id_grade
+left join estoque_cor c on g.id_estoque_cor = c.id
+left join estoque_tamanho t on g.id_estoque_tamanho = t.id
+where i.id_venda_cabecalho = $P{id}]]>
+    </queryString>
+    <field name="id" class="java.lang.Integer"/>
+    <field name="codigo" class="java.lang.String"/>
+    <field name="nome" class="java.lang.String"/>
+    <field name="sigla" class="java.lang.String"/>
+    <field name="quantidade" class="java.math.BigDecimal"/>
+    <field name="valor_unitario" class="java.math.BigDecimal"/>
+    <field name="valor_desconto" class="java.math.BigDecimal"/>
+    <field name="valor_subtotal" class="java.math.BigDecimal"/>
+    <field name="valor_total" class="java.math.BigDecimal"/>
+    <detail>
+        <band height="13" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="34" height="7" uuid="d5cf1acb-e6a2-4b71-a149-8f750951ffe4"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="6"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{codigo}!=null ? $F{codigo}:new DecimalFormat("000000").format(Double.valueOf($F{id}))]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="34" y="0" width="166" height="7" uuid="ce2bf0fc-6753-4b8d-923b-a97afbd0647d"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="6"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="103" y="6" width="67" height="7" uuid="7e2d4add-d23c-42ef-9ed5-397ad15f41f1"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="6"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new DecimalFormat("#,###,##0.00").format($F{valor_unitario})
++" x "+
+new DecimalFormat("#,##0.000").format($F{quantidade})+" "+$F{sigla}+" = "]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="170" y="6" width="30" height="7" uuid="82e4e0fa-9f3d-4936-8bed-3b78f82d155e"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="6"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[new DecimalFormat("#,###,##0.00").format($F{valor_total}== null ? 0 : $F{valor_total})]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>
