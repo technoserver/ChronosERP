@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="relacaoProduto" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
+              topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
+    <property name="ireport.zoom" value="4.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="248"/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.report.description" value=""/>
+    <style name="tituloDetail" fontName="Times New Roman" fontSize="8" isItalic="false" isUnderline="false"
+           isStrikeThrough="false"/>
+    <style name="dadosDetail" fontName="Times New Roman" fontSize="8" isBold="false" isItalic="false"
+           isUnderline="false" isStrikeThrough="false"/>
+    <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression>
+            <![CDATA["/home/john/projetos/java/chronosnfe/src/main/resources/com/chronos/relatorio/comercial/"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="idempresa" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="produto" class="java.lang.String">
+        <defaultValueExpression><![CDATA["%"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="idsubgrupo" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="inativo" class="java.lang.String">
+        <defaultValueExpression><![CDATA["N"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="tipoProduto" class="java.lang.String">
+        <defaultValueExpression><![CDATA["V"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="estoqueVerificado" class="java.lang.Boolean" isForPrompting="false">
+        <defaultValueExpression><![CDATA[false]]></defaultValueExpression>
+    </parameter>
+    <parameter name="quantidade" class="java.math.BigDecimal"/>
+    <parameter name="negativo" class="java.lang.Boolean"/>
+    <parameter name="filtro" class="java.lang.String">
+        <defaultValueExpression><![CDATA[" AND 1 = 1"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="ordenacao" class="java.lang.String">
+        <defaultValueExpression><![CDATA["p.id"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="tipoOrdernacao" class="java.lang.String">
+        <defaultValueExpression><![CDATA["ASC"]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+     eg.codigo,
+     p.codigo_interno,
+     empresa.id as idempresa,
+     p.gtin,
+     p.nome || ' COR ' || cor.nome || ' TAM ' || tam.nome as nome,
+     p.ncm,
+     p.cest,
+     COALESCE(p.custo_unitario,0) as custo_unitario,
+     COALESCE(p.valor_venda,0) as valor_venda,
+     p.servico,
+     p.tipo,
+     p.inativo,
+     COALESCE(eg.quantidade,0) AS quantidade_estoque,
+     COALESCE(eg.verificado,0) AS estoque_verificado,
+     m.nome as marca,
+     sg.nome as subgrupo,
+     g.nome as grupo,
+     empresa.razao_social AS empresa_razao_social,
+     empresa.nome_fantasia AS empresa_nome_fantasia,
+     empresa.cnpj AS empresa_cnpj,
+     empresa.inscricao_estadual AS empresa_inscricao_estadual,
+     empresa.imagem_logotipo AS empresa_imagem_logotipo,
+     empresa_endereco.logradouro AS empresa_endereco_logradouro,
+     empresa_endereco.numero AS empresa_endereco_numero,
+     empresa_endereco.complemento AS empresa_endereco_complemento,
+     empresa_endereco.bairro AS empresa_endereco_bairro,
+     empresa_endereco.cidade AS empresa_endereco_cidade,
+     empresa_endereco.cep AS empresa_endereco_cep,
+     empresa_endereco.fone AS empresa_endereco_fone,
+     empresa_endereco.uf AS empresa_endereco_uf,
+     empresa.email AS empresa_email
+FROM
+     produto p
+     INNER JOIN produto_subgrupo sg ON sg.id = p.id_subgrupo
+     INNER JOIN produto_grupo g ON g.id = sg.id_grupo
+     INNER JOIN unidade_produto un ON un.id = p.id_unidade_produto
+     LEFT  JOIN produto_marca m ON m.id = p.id_marca_produto
+     INNER JOIN empresa_produto ep ON ep.id_produto = p.id
+     INNER JOIN empresa empresa ON ep.id_empresa = empresa.id
+     INNER JOIN estoque_grade eg ON (eg.id_produto = p.id and eg.id_empresa = empresa.id)
+     INNER JOIN estoque_cor cor ON cor.id = eg.id_estoque_cor
+     INNER JOIN estoque_tamanho tam ON tam.id = eg.id_estoque_tamanho
+     INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_endereco.principal = 'S' and p.nome like $P{produto} and p.servico = 'N' and (sg.id = $P{idsubgrupo} or $P{idsubgrupo} is null) and (p.inativo = $P{inativo} or $P{inativo} is null)  and (p.tipo = $P{tipoProduto} or $P{tipoProduto} is null)
+   $P!{filtro}]]>
+    </queryString>
+    <field name="codigo" class="java.lang.String"/>
+    <field name="codigo_interno" class="java.lang.String"/>
+    <field name="idempresa" class="java.lang.Integer"/>
+    <field name="gtin" class="java.lang.String"/>
+    <field name="nome" class="java.lang.String"/>
+    <field name="ncm" class="java.lang.String"/>
+    <field name="cest" class="java.lang.String"/>
+    <field name="custo_unitario" class="java.math.BigDecimal"/>
+    <field name="valor_venda" class="java.math.BigDecimal"/>
+    <field name="servico" class="java.lang.String"/>
+    <field name="tipo" class="java.lang.String"/>
+    <field name="inativo" class="java.lang.String"/>
+    <field name="quantidade_estoque" class="java.math.BigDecimal"/>
+    <field name="estoque_verificado" class="java.math.BigDecimal"/>
+    <field name="marca" class="java.lang.String"/>
+    <field name="subgrupo" class="java.lang.String"/>
+    <field name="grupo" class="java.lang.String"/>
+    <field name="empresa_razao_social" class="java.lang.String"/>
+    <field name="empresa_nome_fantasia" class="java.lang.String"/>
+    <field name="empresa_cnpj" class="java.lang.String"/>
+    <field name="empresa_inscricao_estadual" class="java.lang.String"/>
+    <field name="empresa_imagem_logotipo" class="java.lang.String"/>
+    <field name="empresa_endereco_logradouro" class="java.lang.String"/>
+    <field name="empresa_endereco_numero" class="java.lang.String"/>
+    <field name="empresa_endereco_complemento" class="java.lang.String"/>
+    <field name="empresa_endereco_bairro" class="java.lang.String"/>
+    <field name="empresa_endereco_cidade" class="java.lang.String"/>
+    <field name="empresa_endereco_cep" class="java.lang.String"/>
+    <field name="empresa_endereco_fone" class="java.lang.String"/>
+    <field name="empresa_endereco_uf" class="java.lang.String"/>
+    <field name="empresa_email" class="java.lang.String"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="113" splitType="Stretch">
+            <image isUsingCache="true" onErrorType="Blank">
+                <reportElement positionType="Float" mode="Transparent" x="2" y="0" width="150" height="79"
+                               uuid="39763776-99a0-40da-b698-701f2a065525"/>
+                <imageExpression><![CDATA[$F{empresa_imagem_logotipo}]]></imageExpression>
+            </image>
+            <line>
+                <reportElement x="0" y="112" width="555" height="1" uuid="84907098-40f5-401a-b232-5785f0e8faa0"/>
+            </line>
+            <textField>
+                <reportElement x="278" y="0" width="277" height="14" uuid="ef82db32-1726-4cac-9ee3-442ef2dd7348"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="278" y="13" width="277" height="14" uuid="14107320-d172-4d59-a268-5adef321104a"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_endereco_logradouro}+","+$F{empresa_endereco_numero}+"-"+$F{empresa_endereco_bairro}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="278" y="26" width="36" height="14" uuid="a149d8c6-723f-4357-9d21-645cb4198c1a"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <text><![CDATA[CNPJ:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="414" y="26" width="36" height="14" uuid="4317725a-a011-4efa-a747-33d0d6ac5668"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <text><![CDATA[IE:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="314" y="26" width="100" height="14" uuid="1c93043a-de2c-469a-b30f-97b358a0bef6"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_cnpj}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="450" y="26" width="105" height="14" uuid="28109b0f-511b-49bc-9be3-71e5f0970c7a"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_inscricao_estadual}==null?"":$F{empresa_inscricao_estadual}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="278" y="39" width="36" height="14" uuid="bc675e70-68e2-4869-a07a-a903455d3aad"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <text><![CDATA[FONE:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="314" y="39" width="100" height="14" uuid="e74f0bb5-464b-4151-ba79-52e5c583565c"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_endereco_fone}==null?"":$F{empresa_endereco_fone}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="278" y="52" width="36" height="14" uuid="97d8cc50-d1d9-4406-bef4-4f7e1bd328dd"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <text><![CDATA[EMAIL:]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="314" y="52" width="241" height="14" uuid="fe6cdf0f-3001-4494-83a5-e61c65526513"/>
+                <textElement>
+                    <font fontName="Times New Roman"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_email}==null?"":$F{empresa_email}]]></textFieldExpression>
+            </textField>
+            <textField pattern="dd/MM/yyyy">
+                <reportElement x="460" y="65" width="37" height="14" uuid="08715cba-59c2-4071-9808-e2941dfdb4e0"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <textField pattern="HH:mm">
+                <reportElement x="523" y="65" width="32" height="14" uuid="68f116aa-e1ee-402f-a1fd-1aaa48fe9578"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="436" y="65" width="22" height="14" uuid="0308f1da-c227-4637-9e2d-eee1ab75dc1b"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Data:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="500" y="65" width="23" height="14" uuid="39ef6df0-2e43-4ded-a70a-80d1aa833a79"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Hora:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="81" width="555" height="19" uuid="8f005b14-0cd6-4980-9621-f58de4312734"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Relação de Grade de Produto]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="100" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
+            </line>
+            <staticText>
+                <reportElement style="tituloDetail" x="2" y="101" width="211" height="12"
+                               uuid="a2c0b2fa-d7d4-46f5-bc87-3f3660977e23"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Nome]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="381" y="101" width="40" height="12"
+                               uuid="9478002a-cc00-40f9-a76b-698e9893244d"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Custo]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="420" y="101" width="60" height="12"
+                               uuid="b81a598d-e978-4d34-b725-a6683f96eada"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor de Venda]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="520" y="101" width="35" height="12"
+                               uuid="33d7d5cf-315b-4bda-b934-06b4b6b49be2"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Estoque]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="212" y="101" width="71" height="12"
+                               uuid="79936264-c37c-4960-a9fa-14849cebe4a1"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Grupo]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="282" y="101" width="100" height="12"
+                               uuid="9589eb9c-fa4c-48b1-a77c-b5e490ead779"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[SubGrupo]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="480" y="100" width="40" height="12"
+                               uuid="06a37dbc-6836-4a46-9daa-2da5204ad2b6"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Verificado]]></text>
+            </staticText>
+        </band>
+    </title>
+    <detail>
+        <band height="23" splitType="Stretch">
+            <textField>
+                <reportElement style="dadosDetail" x="0" y="11" width="213" height="12"
+                               uuid="bffa8ff5-e215-4d3d-bb9c-214da15ea2a9"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="213" y="0" width="70" height="12"
+                               uuid="dee38c3e-eb3b-4f12-928c-f8879c12c40e"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{grupo}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="283" y="0" width="99" height="12"
+                               uuid="a29860fb-6c6a-4318-ae55-a0c7b6629686"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{subgrupo}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="381" y="0" width="40" height="12"
+                               uuid="68fdbdd4-58c5-46a9-8e07-81cb660f13d4"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{custo_unitario}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="520" y="0" width="35" height="12"
+                               uuid="139d6260-3b7c-495d-bbb5-1142437df7c6"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{quantidade_estoque}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00" isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="421" y="0" width="59" height="12"
+                               uuid="ec258554-0b6a-4a1f-8500-33c7183069c1"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{valor_venda}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement style="dadosDetail" x="0" y="0" width="213" height="12"
+                               uuid="c9cd7705-faee-4dbf-8c0d-f0c404239fbd"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression>
+                    <![CDATA["CÓD. "+ $F{codigo} + ($F{gtin}!=null && !$F{gtin}.isEmpty() ? " CÓD. Barras "+$F{gtin}:"")]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00">
+                <reportElement style="dadosDetail" x="480" y="0" width="40" height="12"
+                               uuid="e38e8e00-fe65-4fd6-9c71-143e2619b55e"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="7"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{estoque_verificado}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+</jasperReport>

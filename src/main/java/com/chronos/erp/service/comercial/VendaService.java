@@ -393,6 +393,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         for (OrcamentoDetalhe d : orcamento.getListaOrcamentoDetalhe()) {
             itemVenda = new VendaDetalhe();
             itemVenda.setVendaCabecalho(venda);
+            itemVenda.setIdgrade(d.getIdgrade());
             itemVenda.setProduto(d.getProduto());
             itemVenda.setQuantidade(d.getQuantidade());
             itemVenda.setTaxaDesconto(d.getTaxaDesconto());

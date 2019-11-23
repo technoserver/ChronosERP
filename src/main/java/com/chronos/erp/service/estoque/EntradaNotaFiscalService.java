@@ -85,13 +85,13 @@ public class EntradaNotaFiscalService implements Serializable {
 
                     for (NfeDetEspecificoGrade eg : detalhe.getListaGrade()) {
                         EstoqueGrade g = eg.getEstoqueGrade();
-                        if (g.getQuantidadeEntrada() != null && g.getQuantidadeEntrada().signum() > 0) {
+                        if (eg.getQuantidade() != null && eg.getQuantidade().signum() > 0) {
                             if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
-                                estoqueRepository.atualizarGradeQuantidaAndVerificado(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), g.getQuantidadeEntrada());
+                                estoqueRepository.atualizarGradeQuantidaAndVerificado(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), eg.getQuantidade());
                             } else if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
-                                estoqueRepository.atualizarGradeVerificado(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), g.getQuantidadeEntrada());
+                                estoqueRepository.atualizarGradeVerificado(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), eg.getQuantidade());
                             } else {
-                                estoqueRepository.atualizarGradeQuantidade(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), g.getQuantidadeEntrada());
+                                estoqueRepository.atualizarGradeQuantidade(idempresa, g.getIdproduto(), g.getEstoqueCor().getId(), g.getEstoqueTamanho().getId(), eg.getQuantidade());
                             }
                         }
 

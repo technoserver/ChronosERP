@@ -140,7 +140,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     public List<ProdutoDTO> getProdutoDTO(String nome, Empresa empresa, String servico) {
 
         String filtro = servico.equals("S") ? "" : "and p.servico = '" + servico + "'";
-        int id = StringUtils.isEmpty(nome) && nome.length() <= 9 && org.apache.commons.lang3.StringUtils.isNumeric(nome) ? Integer.parseInt(nome) : 0;
+        int id = !StringUtils.isEmpty(nome) && nome.length() <= 9 && org.apache.commons.lang3.StringUtils.isNumeric(nome) ? Integer.parseInt(nome) : 0;
         String jpql = "select DISTINCT new com.chronos.erp.dto.ProdutoDTO(p.id,p.produtoGrade.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
                 "ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,un.sigla," +
                 "un.podeFracionar,pp.valor,p.precoPrioritario,p.quantidadeVendaAtacado,p.valorVendaAtacado,p.possuiGrade) From Produto p " +
@@ -153,7 +153,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
                 "order by p.nome";
 
 
-        nome = !org.apache.commons.lang3.StringUtils.isNumeric(nome) ? "%" + nome.toLowerCase().trim() + "%" : nome;
+        nome = "%" + nome.toLowerCase().trim() + "%";
         List<ProdutoDTO> produtos = getEntity(ProdutoDTO.class, jpql, nome, empresa.getId(), id);
         return produtos;
     }

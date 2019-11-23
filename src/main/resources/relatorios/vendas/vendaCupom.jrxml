@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="vendaCupom" pageWidth="208" pageHeight="791" columnWidth="202" leftMargin="3" rightMargin="3"
+              topMargin="3" bottomMargin="3" isIgnorePagination="true" uuid="43e8f7d9-a4a8-4ac1-b35c-59d8ae725204">
+    <property name="ireport.zoom" value="5.0"/>
+    <property name="ireport.x" value="8"/>
+    <property name="ireport.y" value="480"/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+    <subDataset name="itensVenda" uuid="c04bf0ad-d6d4-4d5a-9e78-5f32d918d9c2">
+        <queryString language="SQL">
+            <![CDATA[select
+     p.id,
+     p.nome,
+     un.sigla,
+     i.quantidade,
+     i.valor_unitario,
+     i.valor_desconto,
+     i.valor_subtotal,
+     i.valor_total
+from venda_detalhe i
+inner join produto p on i.id_produto = p.id
+inner join unidade_produto un on un.id = p.id_unidade_produto]]>
+        </queryString>
+        <field name="id" class="java.lang.Integer"/>
+        <field name="nome" class="java.lang.String"/>
+        <field name="sigla" class="java.lang.String"/>
+        <field name="quantidade" class="java.math.BigDecimal"/>
+        <field name="valor_unitario" class="java.math.BigDecimal"/>
+        <field name="valor_desconto" class="java.math.BigDecimal"/>
+        <field name="valor_subtotal" class="java.math.BigDecimal"/>
+        <field name="valor_total" class="java.math.BigDecimal"/>
+    </subDataset>
+    <subDataset name="formaPagamento" uuid="bf26feb7-d4be-4fb1-a51e-5f9262c5b739">
+        <parameter name="idvenda" class="java.lang.Integer"/>
+        <queryString>
+            <![CDATA[select
+    t.descricao,
+    p.valor
+ from orcamento_forma_pagamento p
+inner join tipo_pagamento t on t.id  = p.id_tipo_pagamento
+where p.id_orcamento_cabecalho = $P{idvenda}]]>
+        </queryString>
+        <field name="descricao" class="java.lang.String"/>
+        <field name="valor" class="java.math.BigDecimal"/>
+    </subDataset>
+    <parameter name="idvenda" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[1]]></defaultValueExpression>
+    </parameter>
+    <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+        <defaultValueExpression><![CDATA["E:\\projetos\\jasper\\MyReports\\MyReports\\"]]></defaultValueExpression>
+    </parameter>
+    <queryString>
+        <![CDATA[SELECT
+     v.id,
+     v.numero_fatura,
+     v.data_venda,
+     v.local_entrega,
+     v.valor_subtotal,
+     v.valor_desconto,
+     v.valor_total,
+     v.observacao,
+     pc.nome as vendedor,
+     empresa.razao_social AS empresa_razao_social,
+     empresa.nome_fantasia AS empresa_nome_fantasia,
+     empresa.cnpj AS empresa_cnpj,
+     empresa.inscricao_estadual AS empresa_inscricao_estadual,
+     empresa.imagem_logotipo AS empresa_imagem_logotipo,
+     empresa_endereco.logradouro AS empresa_endereco_logradouro,
+     empresa_endereco.numero AS empresa_endereco_numero,
+     empresa_endereco.complemento AS empresa_endereco_complemento,
+     empresa_endereco.bairro AS empresa_endereco_bairro,
+     empresa_endereco.cidade AS empresa_endereco_cidade,
+     empresa_endereco.cep AS empresa_endereco_cep,
+     empresa_endereco.fone AS empresa_endereco_fone,
+     empresa_endereco.uf AS empresa_endereco_uf,
+     empresa.email AS empresa_email,
+     pessoa.nome AS pessoa_nome,
+     CASE
+            WHEN pessoa.tipo='F' THEN pf.cpf
+            ELSE pj.cnpj
+     END as cpf_cnpj,
+     pessoa_endereco.logradouro AS pessoa_endereco_logradouro,
+     pessoa_endereco.numero AS pessoa_endereco_numero,
+     pessoa_endereco.complemento AS pessoa_endereco_complemento,
+     pessoa_endereco.bairro AS pessoa_endereco_bairro,
+     pessoa_endereco.cidade AS pessoa_endereco_cidade,
+     pessoa_endereco.uf AS pessoa_endereco_uf,
+     pessoa_endereco.cep AS pessoa_endereco_cep,
+     pessoa_endereco.fone AS pessoa_endereco_fone,
+     pessoa_endereco.principal AS pessoa_endereco_principal
+
+
+FROM
+     venda_cabecalho v
+     INNER JOIN cliente cliente on v.id_cliente = cliente.id
+     INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id
+     LEFT  JOIN pessoa_fisica pf ON pf.id_pessoa = pessoa.id
+     LEFT  JOIN pessoa_juridica pj ON pj.id_pessoa = pessoa.id
+     INNER JOIN pessoa_endereco pessoa_endereco ON pessoa.id = pessoa_endereco.id_pessoa
+     INNER JOIN vendedor vd ON vd.id = v.id_vendedor
+     INNER JOIN colaborador c ON c.id = vd.id_colaborador
+     INNER JOIN pessoa pc on pc.id = c.id_pessoa
+     INNER JOIN empresa empresa ON v.id_empresa = empresa.id
+     INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
+WHERE
+     empresa_endereco.principal = 'S' and v.id = $P{idvenda}]]>
+    </queryString>
+    <field name="id" class="java.lang.Integer"/>
+    <field name="numero_fatura" class="java.lang.Integer"/>
+    <field name="data_venda" class="java.sql.Date"/>
+    <field name="local_entrega" class="java.lang.String"/>
+    <field name="valor_subtotal" class="java.math.BigDecimal"/>
+    <field name="valor_desconto" class="java.math.BigDecimal"/>
+    <field name="valor_total" class="java.math.BigDecimal"/>
+    <field name="observacao" class="java.lang.String"/>
+    <field name="vendedor" class="java.lang.String"/>
+    <field name="empresa_razao_social" class="java.lang.String"/>
+    <field name="empresa_nome_fantasia" class="java.lang.String"/>
+    <field name="empresa_cnpj" class="java.lang.String"/>
+    <field name="empresa_inscricao_estadual" class="java.lang.String"/>
+    <field name="empresa_imagem_logotipo" class="java.lang.String"/>
+    <field name="empresa_endereco_logradouro" class="java.lang.String"/>
+    <field name="empresa_endereco_numero" class="java.lang.String"/>
+    <field name="empresa_endereco_complemento" class="java.lang.String"/>
+    <field name="empresa_endereco_bairro" class="java.lang.String"/>
+    <field name="empresa_endereco_cidade" class="java.lang.String"/>
+    <field name="empresa_endereco_cep" class="java.lang.String"/>
+    <field name="empresa_endereco_fone" class="java.lang.String"/>
+    <field name="empresa_endereco_uf" class="java.lang.String"/>
+    <field name="empresa_email" class="java.lang.String"/>
+    <field name="pessoa_nome" class="java.lang.String"/>
+    <field name="cpf_cnpj" class="java.lang.String"/>
+    <field name="pessoa_endereco_logradouro" class="java.lang.String"/>
+    <field name="pessoa_endereco_numero" class="java.lang.String"/>
+    <field name="pessoa_endereco_complemento" class="java.lang.String"/>
+    <field name="pessoa_endereco_bairro" class="java.lang.String"/>
+    <field name="pessoa_endereco_cidade" class="java.lang.String"/>
+    <field name="pessoa_endereco_uf" class="java.lang.String"/>
+    <field name="pessoa_endereco_cep" class="java.lang.String"/>
+    <field name="pessoa_endereco_fone" class="java.lang.String"/>
+    <field name="pessoa_endereco_principal" class="java.lang.String"/>
+    <variable name="TOTAL_ITENS" class="java.lang.Integer" calculation="Sum">
+        <variableExpression><![CDATA[]]></variableExpression>
+    </variable>
+    <group name="teste">
+        <groupExpression><![CDATA[$F{id}]]></groupExpression>
+        <groupFooter>
+            <band height="50">
+                <staticText>
+                    <reportElement x="0" y="0" width="131" height="9" uuid="d3739f27-b8c8-4bd9-98bf-8ed5f1fd6fae"/>
+                    <textElement>
+                        <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                    </textElement>
+                    <text><![CDATA[VALOR SUBTOTAL R$]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="0" y="9" width="131" height="9" uuid="88fc0024-b103-49b4-9c0e-2c4c5ca1631a"/>
+                    <textElement>
+                        <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                    </textElement>
+                    <text><![CDATA[DESCONTO R$]]></text>
+                </staticText>
+                <textField evaluationTime="Report" pattern="#,##0.00;-#,##0.00" isBlankWhenNull="false">
+                    <reportElement x="131" y="0" width="71" height="9" uuid="7df46ae2-c87b-4a53-ba0a-3ca8ba18c6aa"/>
+                    <textElement>
+                        <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$F{valor_subtotal}]]></textFieldExpression>
+                </textField>
+                <textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+                    <reportElement x="131" y="9" width="71" height="9" uuid="31931ce0-d3ab-46ce-a739-654c9b83d06d"/>
+                    <textElement>
+                        <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$F{valor_desconto}]]></textFieldExpression>
+                </textField>
+                <staticText>
+                    <reportElement x="0" y="18" width="131" height="9" uuid="cf7b4a75-1268-4541-910e-ad6853d8d36f"/>
+                    <textElement>
+                        <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                    </textElement>
+                    <text><![CDATA[VALOR TOTAL R$]]></text>
+                </staticText>
+                <textField pattern="#,##0.00;-#,##0.00" isBlankWhenNull="true">
+                    <reportElement x="131" y="18" width="71" height="9" uuid="2597890e-57aa-4e3e-86b4-271a12b693ee"/>
+                    <textElement>
+                        <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
+                </textField>
+                <componentElement>
+                    <reportElement key="tableDuplicatas" stretchType="RelativeToBandHeight" mode="Transparent" x="0"
+                                   y="27" width="202" height="23" isRemoveLineWhenBlank="true"
+                                   uuid="ad665803-e3f1-4bab-bbde-a990d55a8742"/>
+                    <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+                        <datasetRun subDataset="formaPagamento" uuid="46be4925-d55c-456d-ae0a-a0356c55fac3">
+                            <datasetParameter name="idvenda">
+                                <datasetParameterExpression><![CDATA[$F{id}]]></datasetParameterExpression>
+                            </datasetParameter>
+                            <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                        </datasetRun>
+                        <jr:columnGroup width="202" uuid="1a5247cb-fcba-4596-87ce-4a696c6d6e70">
+                            <jr:tableHeader height="12" rowSpan="1">
+                                <staticText>
+                                    <reportElement mode="Opaque" x="0" y="0" width="202" height="12" backcolor="#DDDDDD"
+                                                   uuid="16f10f61-6a00-49c3-9ad4-fd30f9a5b960"/>
+                                    <textElement verticalAlignment="Middle">
+                                        <font size="9" isBold="true"/>
+                                    </textElement>
+                                    <text><![CDATA[Formas de pagamento]]></text>
+                                </staticText>
+                            </jr:tableHeader>
+                            <jr:column width="137" uuid="455e43b5-bce8-470c-9cd8-c048a544bc3a">
+                                <jr:detailCell height="12" rowSpan="1">
+                                    <textField>
+                                        <reportElement x="0" y="0" width="137" height="12"
+                                                       uuid="466b40eb-fe84-4be7-be48-e84484bb5d6a"/>
+                                        <textElement verticalAlignment="Middle">
+                                            <font size="8"/>
+                                        </textElement>
+                                        <textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+                                    </textField>
+                                </jr:detailCell>
+                            </jr:column>
+                            <jr:column width="65" uuid="9923c465-b44b-4108-bd39-8e748342bb1d">
+                                <jr:detailCell height="12" rowSpan="1">
+                                    <textField pattern="#,##0.00" isBlankWhenNull="true">
+                                        <reportElement x="0" y="0" width="64" height="12"
+                                                       uuid="35cdf607-ced1-413f-a816-54396c693673"/>
+                                        <textElement textAlignment="Right">
+                                            <font size="8"/>
+                                        </textElement>
+                                        <textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+                                    </textField>
+                                </jr:detailCell>
+                            </jr:column>
+                        </jr:columnGroup>
+                    </jr:table>
+                </componentElement>
+            </band>
+        </groupFooter>
+    </group>
+    <title>
+        <band height="71" splitType="Stretch">
+            <textField isBlankWhenNull="true">
+                <reportElement x="75" y="0" width="127" height="9" uuid="a74bdaf5-df36-457e-915f-27347bcbf72a"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="6" isBold="true" pdfEncoding="" isPdfEmbedded="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="75" y="9" width="127" height="9" uuid="efbe58b5-c163-41b7-bdad-14f10309f24e"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="6" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA["CNPJ: " + $F{empresa_cnpj}.substring(0,2) + "." +
+$F{empresa_cnpj}.substring(2,5) + "." + $F{empresa_cnpj}.substring(5,8) + "/" +
+$F{empresa_cnpj}.substring(8,12) + "-" + $F{empresa_cnpj}.substring(12,14)
++ " - IE: " + $F{empresa_inscricao_estadual}
++ " - IM: "]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="75" y="18" width="127" height="9" uuid="8c8898fc-cecb-4cc3-bf1a-885d8066d68d"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="6" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{empresa_endereco_logradouro}
++ ", " + $F{empresa_endereco_numero}
++ " - " + $F{empresa_endereco_bairro}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="75" y="27" width="127" height="10" uuid="388fa089-5bd5-40e5-98a8-b314039a2d7c"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="6" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$F{empresa_endereco_cidade} + " - " + $F{empresa_endereco_uf}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="70" width="202" height="1" uuid="25ef40bb-8deb-4ae8-ac80-d9cbc6a44a02"/>
+            </line>
+            <image scaleImage="FillFrame" onErrorType="Blank" evaluationTime="Report">
+                <reportElement x="0" y="0" width="70" height="38" uuid="010767fe-58bc-4570-98c4-2c8c716c4286"/>
+                <imageExpression><![CDATA[$F{empresa_imagem_logotipo}]]></imageExpression>
+            </image>
+            <textField>
+                <reportElement x="45" y="52" width="92" height="9" uuid="39faa86f-e3f0-4f6b-a322-288dde0f4094"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="6"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[new DecimalFormat("000000").format($F{id}==null ?0:$F{id})]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="42" width="45" height="10" uuid="093e6f5c-1f7b-4692-992c-386c7b650eb3"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="8"/>
+                </textElement>
+                <text><![CDATA[Data :]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="52" width="45" height="9" uuid="256cabbe-bef3-4dc8-b3ef-a519dbc1dc1a"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="8"/>
+                </textElement>
+                <text><![CDATA[Pedido :]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="45" y="42" width="92" height="10" uuid="bf58299d-b88f-4e12-ab2f-d4a0b85419d5"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="6"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[new SimpleDateFormat("dd/MM/yyyy").format($F{data_venda})]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="61" width="45" height="10" uuid="e7027563-257b-4ea3-a3bd-d8f72e896227"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="8"/>
+                </textElement>
+                <text><![CDATA[Cliente :]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="45" y="61" width="157" height="10" uuid="b416ba17-fb98-4de7-9482-61e77146787e"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="6"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{pessoa_nome}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="10" splitType="Stretch">
+            <staticText>
+                <reportElement x="0" y="0" width="34" height="10" uuid="33ec2538-78cd-4c9b-8e6e-5961dcd7daf3"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <text><![CDATA[Código]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="33" y="0" width="52" height="10" uuid="5682caf3-87e8-4ae9-a467-a9cac9987c9b"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <text><![CDATA[Descrição]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="9" width="202" height="1" uuid="5eb54958-c192-4e82-83ba-1baf8531f0a9"/>
+            </line>
+            <staticText>
+                <reportElement x="158" y="0" width="44" height="10" uuid="b00a3df6-72f7-4ee1-86ea-9277bcef1d0c"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <text><![CDATA[Total]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="143" y="0" width="15" height="10" uuid="94a37a3b-3f7d-4207-b565-23277958c977"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <text><![CDATA[Qt]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="87" y="0" width="34" height="10" uuid="c3dfb502-20f7-46be-b202-73ff6ac21966"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <text><![CDATA[Valor]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <subreport>
+                <reportElement x="0" y="0" width="202" height="20" uuid="f2df91ae-95b6-447b-ba15-7ca455283aa8"/>
+                <subreportParameter name="id">
+                    <subreportParameterExpression><![CDATA[$F{id}]]></subreportParameterExpression>
+                </subreportParameter>
+                <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                <subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "vendaCupomItem.jasper"]]></subreportExpression>
+            </subreport>
+        </band>
+    </detail>
+    <columnFooter>
+        <band height="97" splitType="Stretch">
+            <line>
+                <reportElement positionType="Float" x="34" y="23" width="143" height="1"
+                               uuid="ce54d3d3-5414-4b7d-a60a-c678b21ecb31"/>
+            </line>
+            <line>
+                <reportElement positionType="Float" x="0" y="59" width="202" height="1"
+                               uuid="d00836b2-b649-4d58-87fa-d76ea2a74768"/>
+            </line>
+            <line>
+                <reportElement positionType="Float" x="0" y="0" width="202" height="1"
+                               uuid="d84a3bdf-2c5f-4114-9d24-4e3d326199fc"/>
+            </line>
+            <staticText>
+                <reportElement positionType="Float" x="0" y="92" width="202" height="5"
+                               uuid="8993579d-1a55-4700-98c0-4ef59ea697f7"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="5" isBold="false" isPdfEmbedded="false"/>
+                </textElement>
+                <text><![CDATA[ copyright ChronosInfo - www.chronoserp.com.br (55) 61 4103-2540]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="0" y="59" width="202" height="10"
+                               uuid="fbfa63a1-85b0-4091-9f19-8b44403de2fb"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="7" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <text><![CDATA[*****Observações*****]]></text>
+            </staticText>
+            <textField pattern="" isBlankWhenNull="true">
+                <reportElement positionType="Float" x="0" y="49" width="201" height="10"
+                               uuid="c54a8e68-183d-49f3-ba4f-adb50d9cc7e3"/>
+                <textElement>
+                    <font fontName="Lucida Console" size="6" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Vendedor:  "+ $F{vendedor}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement positionType="Float" x="0" y="85" width="202" height="7"
+                               uuid="714105d1-0239-4a15-8aab-a874315e2312"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="5" isBold="true" isPdfEmbedded="false"/>
+                </textElement>
+                <text><![CDATA[***** Este Ticket não é Documento Fiscal*****]]></text>
+            </staticText>
+            <textField isBlankWhenNull="true">
+                <reportElement x="0" y="68" width="202" height="16" uuid="ccdc392c-d6c8-47f7-a744-256dabbf5b36"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="5"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{observacao}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="24" width="201" height="7" uuid="c0813ebe-19de-4b1f-849d-93a9e5e8c521"/>
+                <textElement>
+                    <font fontName="Ubuntu Condensed" size="6"/>
+                </textElement>
+                <text><![CDATA[Assinatura do  Cliente]]></text>
+            </staticText>
+        </band>
+    </columnFooter>
+</jasperReport>
