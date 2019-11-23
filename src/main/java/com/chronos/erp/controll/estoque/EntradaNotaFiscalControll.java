@@ -43,7 +43,6 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     private static final long serialVersionUID = 1L;
 
-
     @Inject
     private Repository<ProdutoMarca> marcas;
     @Inject
@@ -363,7 +362,6 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         valorTotalCofins = BigDecimal.ZERO;
         valorTotalIpi = BigDecimal.ZERO;
         valorTotalNF = BigDecimal.ZERO;
-
     }
 
 
