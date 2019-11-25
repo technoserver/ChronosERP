@@ -147,7 +147,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
                 "LEFT JOIN ProdutoPromocao pp on pp.produto.id = p.id " +
-                "where (LOWER(p.nome)  like ?1 or p.gtin = ?1 or p.codigoInterno = ?1 or p.id = ?3) and ep.empresa.id = ?2 and  " +
+                "where (LOWER(p.nome)  like ?1 or p.gtin like ?1 or p.codigoInterno = ?1 or p.id = ?3) and ep.empresa.id = ?2 and  " +
                 "p.tributGrupoTributario is not null and p.tipo = 'V' and p.inativo = 'N' " +
                 filtro +
                 "order by p.nome";
