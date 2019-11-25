@@ -214,6 +214,7 @@ public class BalcaoControll implements Serializable {
                 instanciarParametro();
                 parcelas = new ArrayList<>();
                 msgListaProduto = "";
+                tipoPagamento = new TipoPagamento().buscarPorCodigo("01");
             }
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -738,14 +739,16 @@ public class BalcaoControll implements Serializable {
             if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
                 venda.setTroco(troco);
                 venda = service.finalizarVenda(venda, parcelas);
+
+                if (parametro != null && parametro.getFaturarVenda()) {
+                    boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+                    vendaService.transmitirNFe(venda, estoque);
+                }
+
                 telaVenda = false;
                 telaPagamentos = false;
                 telaImpressao = true;
                 id = venda.getId();
-
-                if (parametro != null && parametro.getFaturarVenda()) {
-                    gerarNfce();
-                }
 
             } else {
                 Mensagem.addInfoMessage("Valores informados não são suficientes para finalizar a venda.");
