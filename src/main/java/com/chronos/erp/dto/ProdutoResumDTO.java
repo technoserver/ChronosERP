@@ -21,6 +21,9 @@ public class ProdutoResumDTO implements Serializable {
     private String cest;
     private BigDecimal verificado;
     private BigDecimal valorVenda;
+    private BigDecimal custo;
+    private BigDecimal encargos;
+    private BigDecimal margemLucro;
     private UnidadeProduto unidadeProduto;
     private ProdutoSubGrupo subGrupo;
     private TributGrupoTributario grupoTributario;
@@ -38,6 +41,8 @@ public class ProdutoResumDTO implements Serializable {
         prod.setUnidadeProduto(unidadeProduto);
         prod.setProdutoSubGrupo(subGrupo);
         prod.setTributGrupoTributario(grupoTributario);
+        prod.setCustoUnitario(custo);
+        prod.setEncargosVenda(encargos);
 
 
         return prod;
@@ -113,5 +118,29 @@ public class ProdutoResumDTO implements Serializable {
 
     public void setGrupoTributario(TributGrupoTributario grupoTributario) {
         this.grupoTributario = grupoTributario;
+    }
+
+    public BigDecimal getMargemLucro() {
+        return margemLucro;
+    }
+
+    public void setMargemLucro(BigDecimal margemLucro) {
+        this.margemLucro = margemLucro;
+    }
+
+    public BigDecimal getCusto() {
+        return custo;
+    }
+
+    public void setCusto(BigDecimal custo) {
+        this.custo = custo;
+    }
+
+    public BigDecimal getEncargos() {
+        return encargos;
+    }
+
+    public void setEncargos(BigDecimal encargos) {
+        this.encargos = encargos;
     }
 }
