@@ -7,17 +7,19 @@ import com.chronos.erp.modelo.entidades.TributGrupoTributario;
 import com.chronos.erp.modelo.entidades.UnidadeProduto;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
+import com.chronos.erp.service.ChronosException;
+import com.chronos.erp.util.Biblioteca;
+import com.chronos.erp.util.jsf.Mensagem;
 import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Named
 @ViewScoped
@@ -58,6 +60,26 @@ public class CadastroRapidoProdutoControll implements Serializable {
         PrimeFaces.current().dialog().closeDynamic(null);
     }
 
+
+    public void calcularValorVenda() {
+
+
+        try {
+            BigDecimal encargos = Optional.ofNullable(produto.getEncargos()).orElse(BigDecimal.ZERO);
+            BigDecimal custo = Optional.ofNullable(produto.getCusto()).orElse(BigDecimal.ZERO);
+            BigDecimal margem = Optional.ofNullable(produto.getMargemLucro()).orElse(BigDecimal.ZERO);
+            BigDecimal custoTotal = Biblioteca.soma(encargos, custo);
+            BigDecimal valorSugerido = Biblioteca.calcularValorPercentual(custoTotal, margem);
+            BigDecimal valorVenda = Biblioteca.soma(custoTotal, valorSugerido);
+            produto.setValorVenda(valorVenda);
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().validationFailed();
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage(ex.getMessage());
+            }
+
+        }
+    }
 
     public void salvar() {
 
