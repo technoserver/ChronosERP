@@ -35,7 +35,7 @@ public class NfeFormaPagamento implements Serializable {
     @JoinColumn(name = "ID_NFE_CABECALHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private NfeCabecalho nfeCabecalho;
-    @JoinColumn(name = "ID_PDV_TIPO_PAGAMENTO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private TipoPagamento tipoPagamento;
 
