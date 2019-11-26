@@ -1048,6 +1048,11 @@ public class GeraXMLEnvio {
 
             detPag.setVPag(FormatValor.getInstance().formatarValor(p.getForma().equals("90") ? BigDecimal.ZERO : valor));
 
+            if (p.getCartaoTipoIntegracao() != null && p.getCartaoTipoIntegracao().equals("2")) {
+
+                detPag.setCard(new Pag.DetPag.Card());
+                detPag.getCard().setTpIntegra("2");
+            }
 
             pag.getDetPag().add(detPag);
         });

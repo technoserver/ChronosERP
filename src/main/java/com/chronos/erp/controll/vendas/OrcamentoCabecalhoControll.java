@@ -424,6 +424,10 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
                     forma.setCondicoesPagamento(condicaoPagamento);
                 }
 
+                if (forma.getForma().equals("03") || forma.getForma().equals("04")) {
+                    forma.setCartaoTipoIntegracao("02");
+                }
+
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
                 troco = Biblioteca.subtrai(totalRecebido, totalReceber);
                 if (troco.compareTo(BigDecimal.ZERO) == -1) {
