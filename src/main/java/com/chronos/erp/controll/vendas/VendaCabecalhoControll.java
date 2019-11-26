@@ -768,6 +768,10 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                     forma.setCondicoesPagamento(condicaoPagamento);
                 }
 
+                if (forma.getForma().equals("03") || forma.getForma().equals("04")) {
+                    forma.setCartaoTipoIntegracao("02");
+                }
+
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
                 troco = Biblioteca.subtrai(totalRecebido, totalReceber);
                 if (troco.compareTo(BigDecimal.ZERO) == -1) {

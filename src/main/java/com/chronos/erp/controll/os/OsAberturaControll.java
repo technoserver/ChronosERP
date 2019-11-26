@@ -575,6 +575,10 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                     formaPagamento.setCondicao(condicaoPagamento);
                 }
 
+                if (formaPagamento.getForma().equals("03") || formaPagamento.getForma().equals("04")) {
+                    formaPagamento.setCartaoTipoIntegracao("02");
+                }
+
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
                 troco = Biblioteca.subtrai(totalRecebido, totalReceber);
                 if (troco.compareTo(BigDecimal.ZERO) == -1) {
