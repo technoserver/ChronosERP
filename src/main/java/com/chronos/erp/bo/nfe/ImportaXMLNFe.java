@@ -476,12 +476,18 @@ public class ImportaXMLNFe {
         if (icms.getICMS90() != null) {
             impostoIcms.setOrigemMercadoria(Integer.valueOf(icms.getICMS90().getOrig()));
             impostoIcms.setCstIcms(icms.getICMS90().getCST());
-            impostoIcms.setModalidadeBcIcms(Integer.valueOf(icms.getICMS90().getModBCST()));
+            if (icms.getICMS90().getModBCST() != null) {
+                impostoIcms.setModalidadeBcIcms(Integer.valueOf(icms.getICMS90().getModBCST()));
+            }
+
             impostoIcms.setTaxaReducaoBcIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS90().getPRedBC()));
             impostoIcms.setBaseCalculoIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS90().getVBC()));
             impostoIcms.setAliquotaIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS90().getPICMS()));
             impostoIcms.setValorIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS90().getVICMS()));
-            impostoIcms.setModalidadeBcIcmsSt(Integer.valueOf(icms.getICMS90().getModBCST()));
+            if (icms.getICMS90().getModBCST() != null) {
+                impostoIcms.setModalidadeBcIcmsSt(Integer.valueOf(icms.getICMS90().getModBCST()));
+            }
+
             impostoIcms.setPercentualMvaIcmsSt(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS90().getPMVAST()));
             impostoIcms.setPercentualReducaoBcIcmsSt(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS90().getPRedBCST()));
             impostoIcms.setValorBaseCalculoIcmsSt(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS90().getVBCST()));

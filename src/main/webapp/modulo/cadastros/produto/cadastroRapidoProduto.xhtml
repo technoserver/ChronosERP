@@ -70,9 +70,43 @@
                                   nomeAtributo="#{cadastroRapidoProdutoControll.produto.grupoTributario}"
                                   idComponente="grupoTributario"/>
 
-                <erp:campoDecimal idComponente="nome"
+
+                <erp:campoDecimal idComponente="custo"
+                                  styleClass="col-xs-4"
+                                  id="cmp-custo"
+                                  label="Custo"
+                                  nomeAtributo="#{cadastroRapidoProdutoControll.produto.custo}"/>
+
+                <erp:campoDecimal idComponente="encargos"
+                                  styleClass="col-xs-4"
+                                  id="cmp-encagos"
+                                  label="Encargos"
+                                  nomeAtributo="#{cadastroRapidoProdutoControll.produto.encargos}"/>
+
+
+                <div class="col-xs-4">
+                    <p:outputLabel value="Lucro %" for="margemLucro"/>
+                    <div class="ui-inputgroup">
+
+                        <p:inputNumber id="margemLucro"
+                                       value="#{cadastroRapidoProdutoControll.produto.margemLucro}"
+                                       style="width: 100%;"
+                                       decimalPlaces="2"
+                                       minValue="0"/>
+
+                        <p:commandButton id="btn-calc"
+                                         action="#{cadastroRapidoProdutoControll.calcularValorVenda}"
+                                         process="@this,:formCadProd:cmp-custo:custo,:formCadProd:cmp-encagos:encargos,:formCadProd:margemLucro"
+                                         update="formCadProd:cmp-valor-venda:valorVenda"
+                                         icon="fa fa-calculator"
+                        />
+                    </div>
+                </div>
+
+                <erp:campoDecimal idComponente="valorVenda"
                                   styleClass="col-xs-4"
                                   label="Valor de venda"
+                                  id="cmp-valor-venda"
                                   requerido="true"
                                   nomeAtributo="#{cadastroRapidoProdutoControll.produto.valorVenda}"/>
 
