@@ -131,18 +131,30 @@ public class NfeService implements Serializable {
 
     public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo) throws ChronosException, CertificadoException {
 
-        configuracao = nfeConfiguracaoService.instanciarConfNfe(empresa, modelo);
+        try {
+            configuracao = nfeConfiguracaoService.instanciarConfNfe(empresa, modelo);
 
 
-        if (configuracoes == null) {
-            nfeConfiguracaoService.validarConfEmissor(configuracao);
+            if (configuracoes == null) {
+                nfeConfiguracaoService.validarConfEmissor(configuracao);
 
-            configuracoes = NfeTransmissao.getInstance().iniciarConfiguracoes(new ConfEmissorDTO(Integer.valueOf(configuracao.getWebserviceUf()), configuracao.getCaminhoSchemas(),
-                    configuracao.getCertificadoDigitalCaminho(), configuracao.getCertificadoDigitalSenha(), configuracao.getWebserviceAmbiente(), "4.00"));
+                configuracoes = NfeTransmissao.getInstance().iniciarConfiguracoes(new ConfEmissorDTO(Integer.valueOf(configuracao.getWebserviceUf()), configuracao.getCaminhoSchemas(),
+                        configuracao.getCertificadoDigitalCaminho(), configuracao.getCertificadoDigitalSenha(), configuracao.getWebserviceAmbiente(), "4.00"));
+            }
+
+
+            return configuracao;
+        } catch (Exception ex) {
+            if (ex instanceof CertificadoException) {
+                throw new ChronosException(ex.getMessage());
+            } else if (ex instanceof ChronosException) {
+                throw ex;
+            } else {
+                throw new RuntimeException(ex);
+            }
         }
 
 
-        return configuracao;
 
 
     }
