@@ -181,7 +181,7 @@
             FROM pdv_movimento m
             JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
             JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
-            JOIN pdv_tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
+            JOIN tipo_pagamento t ON f.id_tipo_pagamento = t.id
             JOIN pdv_operador o ON o.id = m.id_pdv_operador
             WHERE (m.id = ?1) and data_abertura BETWEEN ?2 and ?3 and (v.status_venda = 'E' or v.status_venda = 'F')
 
