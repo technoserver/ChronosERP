@@ -36,10 +36,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -89,6 +87,11 @@ public class BalcaoControll implements Serializable {
     private MovimentoService movimentoService;
     @Inject
     private ProdutoService produtoService;
+
+    @Inject
+    private Repository<PdvCaixa> caixaRepository;
+    @Inject
+    private Repository<PdvOperador> operadorRepository;
 
     @Inject
     private PdvVendaDetalheService vendaDetalheService;
@@ -153,6 +156,17 @@ public class BalcaoControll implements Serializable {
 
     private boolean podeAlterarPreco = true;
 
+    private String status;
+    private Date dataInicial;
+    private Date dataFinal;
+    private int idcaixa;
+    private int idoperador;
+
+    private Map<String, String> statusDomain;
+    private Map<String, Integer> operadorDomain;
+    private Map<String, Integer> caixaDomain;
+
+
     @PostConstruct
     private void init() {
 
@@ -161,6 +175,25 @@ public class BalcaoControll implements Serializable {
 
         this.podeAlterarPreco = usuario.getAdministrador().equals("S")
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
+
+        List<PdvCaixa> Caixas = caixaRepository.getEntitys(PdvCaixa.class, new Object[]{"codigo", "nome"});
+
+        caixaDomain = new LinkedHashMap<>();
+        caixaDomain.put("Todos", 0);
+        caixaDomain.putAll(Caixas.stream()
+                .collect(Collectors.toMap(PdvCaixa::getNome, PdvCaixa::getId)));
+
+        operadorDomain = new LinkedHashMap<>();
+        operadorDomain.put("Todos", 0);
+        operadorDomain.putAll(operadorRepository.getEntitys(PdvOperador.class, new Object[]{"login"}).stream()
+                .collect(Collectors.toMap(PdvOperador::getLogin, PdvOperador::getId)));
+
+        empresa = FacesUtil.getEmpresaUsuario();
+        statusDomain = new LinkedHashMap<>();
+        statusDomain.put("Todos", null);
+        statusDomain.put("Encerrada", "E");
+        statusDomain.put("Faturada", "F");
+        statusDomain.put("Cancelada", "C");
 
     }
 
@@ -181,10 +214,36 @@ public class BalcaoControll implements Serializable {
         Object[] atributos = new Object[]{"idnfe", "dataHoraVenda", "valorSubtotal", "valorDesconto", "valorTotal", "nomeCliente",
                 "sicronizado", "statusVenda", "pdvMovimento.pdvCaixa.nome"};
         dataModel.setAtributos(atributos);
-        dataModel.getFiltros().clear();
-        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        pesquisar();
         return dataModel;
     }
+
+    public void pesquisar() {
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+
+        if (!StringUtils.isEmpty(status)) {
+            dataModel.getFiltros().add(new Filtro("statusVenda", status));
+        }
+
+        if (dataInicial != null) {
+            dataModel.getFiltros().add(new Filtro("dataHoraVenda", Filtro.MAIOR_OU_IGUAL, dataInicial));
+        }
+
+        if (dataFinal != null) {
+            dataModel.getFiltros().add(new Filtro("dataHoraVenda", Filtro.MENOR_OU_IGUAL, dataFinal));
+        }
+
+        if (idcaixa > 0) {
+            dataModel.getFiltros().add(new Filtro("pdvMovimento.pdvCaixa.id", idcaixa));
+        }
+
+        if (idoperador > 0) {
+            dataModel.getFiltros().add(new Filtro("pdvMovimento.pdvOperador.id", idoperador));
+        }
+
+    }
+
 
     public void novaVenda() {
         try {
@@ -1190,5 +1249,57 @@ public class BalcaoControll implements Serializable {
 
     public boolean isPodeAlterarPreco() {
         return podeAlterarPreco;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
+    }
+
+    public Map<String, String> getStatusDomain() {
+        return statusDomain;
+    }
+
+    public Map<String, Integer> getOperadorDomain() {
+        return operadorDomain;
+    }
+
+    public Map<String, Integer> getCaixaDomain() {
+        return caixaDomain;
+    }
+
+    public int getIdcaixa() {
+        return idcaixa;
+    }
+
+    public void setIdcaixa(int idcaixa) {
+        this.idcaixa = idcaixa;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getIdoperador() {
+        return idoperador;
+    }
+
+    public void setIdoperador(int idoperador) {
+        this.idoperador = idoperador;
     }
 }

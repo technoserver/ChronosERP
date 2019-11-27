@@ -234,6 +234,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             importado = false;
             Mensagem.addInfoMessage("NF fiscal finalizada não será mais possivel fazer a edição");
         } catch (Exception ex) {
+            getObjeto().setStatusNota(0);
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
             } else {
@@ -765,6 +766,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void pesquisarGrade(NfeDetalhe item, Integer idempresa, Integer idprdduto) {
 
+        item.setListaGrade(new HashSet<>());
         if (item.getProduto().getPossuiGrade() != null && item.getProduto().getPossuiGrade()) {
 
 
@@ -892,7 +894,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             throw new Exception("Condição de pagamento não definida");
         }
 
-        List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
+        List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "condicoesPagamento.id", condicao.getId());
         condicao.setParcelas(parcelas);
         for (CondicoesParcelas p : condicao.getParcelas()) {
 
