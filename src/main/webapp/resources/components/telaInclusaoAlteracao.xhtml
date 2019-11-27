@@ -42,7 +42,7 @@
                         <div class="row">
                             <div class="col-xs-6 col-lg-6 text-center">
                                 <p:defaultCommand
-                                        target="#{empty cc.attrs.controller.objeto.id ? 'formCentro:telaDetalhe:btn-save':'formCentro:telaDetalhe:btn-save'}"/>
+                                        target="#{empty cc.attrs.controller.objeto.id ? 'formCentro:telaDetalhe:btn-save':'formCentro:telaDetalhe:btn-update'}"/>
                                 <p:commandButton value="Salvar"
                                                  id="btn-save"
                                                  rendered="#{empty cc.attrs.controller.objeto.id and !cc.attrs.somenteConsulta}"
