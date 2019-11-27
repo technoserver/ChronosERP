@@ -160,6 +160,14 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>VENDAS CANCELADAS....................R$</td>
+                    <td class="text-right">
+                        <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalCancelado}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+                <tr>
                     <td>DESCONTOS............................R$</td>
                     <td class="text-right">
                         <h:outputText value="#{movimentoCaixaRelatorioControll.movimento.totalDesconto}">

@@ -13,7 +13,7 @@
         <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
         <property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
         <parameter name="idmovimento" class="java.lang.Integer"/>
-        <queryString language="SQL">
+        <queryString>
             <![CDATA[SELECT
     codigo,
     descricao,
@@ -27,7 +27,7 @@ FROM
 	FROM pdv_movimento m
 	INNER JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
 	INNER JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
-	INNER JOIN tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
+	INNER JOIN tipo_pagamento t ON f.id_tipo_pagamento = t.id
 	WHERE m.id =   $P{idmovimento}
 
     UNION ALL
@@ -131,7 +131,7 @@ GROUP BY codigo, descricao;]]>
             FROM pdv_movimento m
             INNER JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
             INNER JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
-            INNER JOIN tipo_pagamento t ON f.id_pdv_tipo_pagamento = t.id
+            INNER JOIN tipo_pagamento t ON f.id_tipo_pagamento = t.id
             INNER JOIN pdv_operador o ON o.id = m.id_pdv_operador
             INNER JOIN empresa empresa ON m.id_empresa = empresa.id
             INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
