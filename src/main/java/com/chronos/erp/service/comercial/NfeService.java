@@ -1199,6 +1199,12 @@ public class NfeService implements Serializable {
         nfeFormaPagamento.setNfeCabecalho(nfe);
         nfeFormaPagamento.setForma(tipoPagamento.getCodigo());
         nfeFormaPagamento.setValor(nfe.getValorTotal());
+
+
+        if (nfeFormaPagamento.getForma().equals("03") || nfeFormaPagamento.getForma().equals("04")) {
+            nfeFormaPagamento.setCartaoTipoIntegracao("2");
+        }
+
         nfe.getListaNfeFormaPagamento().clear();
         nfe.getListaNfeFormaPagamento().add(nfeFormaPagamento);
     }

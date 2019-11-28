@@ -69,6 +69,17 @@ public class EntradaNotaFiscalService implements Serializable {
                 }
             }
         }
+        if (!nfe.getListaDuplicata().isEmpty()) {
+
+            if (naturezaFinanceira == null) {
+                throw new ChronosException("Natureza financeira não informada");
+            }
+
+            if (contaCaixa == null) {
+                throw new ChronosException("Conta caixa não informada");
+            }
+
+        }
 
         Integer idempresa = nfe.getEmpresa().getId();
         AdmParametro parametro = FacesUtil.getParamentos();
@@ -124,10 +135,15 @@ public class EntradaNotaFiscalService implements Serializable {
         }
         String descricao = "Entrada da NFe :" + nfe.getNumero() + " Fornecedor :" + nfe.getEmitente().getNome();
         nfe.setStatusNota(StatusTransmissao.ENCERRADO.getCodigo());
-        nfe = repository.atualizar(nfe);
+
+
         if (!nfe.getListaDuplicata().isEmpty()) {
+
             lancamentoPagarService.gerarLancamento(nfe, contaCaixa, naturezaFinanceira);
         }
+
+        nfe = repository.atualizar(nfe);
+
         if (inclusao) {
             auditoriaService.gerarLog(AcaoLog.INSERT, descricao, "Entrada de NF");
         }

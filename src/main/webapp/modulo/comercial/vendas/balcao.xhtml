@@ -386,12 +386,55 @@
             <p:outputPanel rendered="#{balcaoControll.telaGrid}" id="telaGrid">
                 <div class="ibox-content">
 
+                    <div class="row m-b">
+                        <erp:campoData nomeAtributo="#{balcaoControll.dataInicial}"
+                                       label="Data da Venda inicial"
+                                       idComponente="dataInicial"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                        <erp:campoData nomeAtributo="#{balcaoControll.dataFinal}"
+                                       label="Data da venda Final"
+                                       idComponente="dataFinal"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+
+                        <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                                         label="Caixa"
+                                         nomeAtributo="#{balcaoControll.idcaixa}"
+                                         idComponente="caixa"
+                                         itens="#{balcaoControll.caixaDomain}"/>
+
+                        <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
+                                         label="Status"
+                                         nomeAtributo="#{balcaoControll.status}"
+                                         idComponente="status"
+                                         itens="#{balcaoControll.statusDomain}"/>
+
+                        <div class="col-xs-6 col-sm-4 col-md-4">
+                            <h:outputLabel value="Operador"
+                                           for="pdvoperador"/>
+                            <div class="field-action">
+                                <h:selectOneMenu id="pdvoperador"
+                                                 class="form-control"
+                                                 value="#{balcaoControll.idoperador}">
+                                    <f:selectItems value="#{balcaoControll.operadorDomain}"/>
+
+                                </h:selectOneMenu>
+                                <p:commandButton value="Pesquisar" style="margin-left: 10px"
+                                                 action="#{balcaoControll.pesquisar}"
+                                                 process="@form"
+                                                 update="formCentro:tableVenda"
+
+                                />
+                            </div>
+
+                        </div>
+                    </div>
 
                     <p:dataTable
                             value="#{balcaoControll.dataModel}"
                             var="row" id="tableVenda" paginator="true"
-                            rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
-                            reflow="true" rendered="#{vendaCabecalhoControll.podeConsultar()}"
+                            rows="10" rowsPerPageTemplate="20,30,40,50" paginatorPosition="bottom" reflow="true"
                             lazy="true" sortBy="#{row.id}" sortOrder="descending"
                     >
 
@@ -458,7 +501,7 @@
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.idnfe and row.sicronizado eq 'N'}"
                                             action="#{balcaoControll.gerarNfce}"
-                                            >
+                                >
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{balcaoControll.venda}"/>
                                 </p:menuitem>
@@ -572,7 +615,7 @@
                                                      action="#{balcaoControll.danfe}"
                                                      rendered="#{not empty balcaoControll.venda.idnfe}"
                                                      class="btn btn-primary btn-lg">
-                                        <p:ajax disabled="true" />
+                                        <p:ajax disabled="true"/>
                                     </h:commandButton>
                                     &nbsp;
                                     <h:commandButton value="EMITIR NFCe"
