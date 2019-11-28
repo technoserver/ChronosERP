@@ -990,7 +990,19 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         List<Produto> listaProduto = new ArrayList<>();
 
         try {
-            listaProduto = produtos.getEntitys(Produto.class, "descricaoPdv", descricao);
+            List<Filtro> filtros = new ArrayList<>();
+
+            filtros.add(new Filtro(true, Filtro.AND, "nome", Filtro.LIKE, descricao));
+            filtros.add(new Filtro(Filtro.OR, "descricaoPdv", Filtro.LIKE, descricao));
+
+            if (descricao.trim().length() <= 9 && org.apache.commons.lang3.StringUtils.isNumeric(descricao)) {
+                filtros.add(new Filtro(Filtro.OR, "id", Filtro.IGUAL, Integer.parseInt(descricao)));
+            }
+            filtros.add(new Filtro(Filtro.OR, "codigoInterno", Filtro.LIKE, descricao));
+            filtros.add(new Filtro(Filtro.OR, "gtin", Filtro.LIKE, descricao, true));
+
+
+            listaProduto = produtos.getEntitys(Produto.class, filtros, new Object[]{"nome"});
         } catch (Exception e) {
             e.printStackTrace();
         }
