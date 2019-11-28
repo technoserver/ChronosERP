@@ -109,13 +109,11 @@
                                   idComponente="produtoValorCompra" label="Valor Compra"
                                   nomeAtributo="#{entradaNotaFiscalControll.produto.valorCompra}"/>
                 <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  id="cmp-venda"
                                   idComponente="produtoValorVenda" label="Valor Venda"
                                   nomeAtributo="#{entradaNotaFiscalControll.produto.valorVenda}"
                 />
-                <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
-                                 idComponente="produtoTipoItemSped" label="Tipo Item Sped"
-                                 nomeAtributo="#{entradaNotaFiscalControll.produto.tipoItemSped}"
-                                 itens="#{entradaNotaFiscalControll.tipoItemSped}"/>
+
             </div>
 
             <div class="row">
@@ -143,6 +141,11 @@
                             idComponente="produtoCest" label="CEST"
                             nomeAtributo="#{entradaNotaFiscalControll.produto.cest}"
                             tamanhoMaximo="7"/>
+
+            <erp:campoSelect styleClass="col-xs-12 col-sm-6 col-md-6"
+                             idComponente="produtoTipoItemSped" label="Tipo Item Sped"
+                             nomeAtributo="#{entradaNotaFiscalControll.produto.tipoItemSped}"
+                             itens="#{entradaNotaFiscalControll.tipoItemSped}"/>
 
         </p:tab>
 
@@ -187,6 +190,39 @@
 
             </div>
 
+
+        </p:tab>
+
+        <p:tab title="Formação de preço">
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                              id="cmp-custo"
+                              idComponente="encargosVenda" label="Custo unitario"
+                              nomeAtributo="#{entradaNotaFiscalControll.produto.custoUnitario}"
+            />
+            <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                              id="cmp-encagos"
+                              idComponente="encargosVenda" label="Encargos"
+                              nomeAtributo="#{entradaNotaFiscalControll.produto.encargosVenda}"
+            />
+
+            <div class="col-xs-4">
+                <p:outputLabel value="Lucro %" for="margemLucro"/>
+                <div class="ui-inputgroup">
+
+                    <p:inputNumber id="margemLucro"
+                                   value="#{entradaNotaFiscalControll.margemLucro}"
+                                   style="width: 100%;"
+                                   decimalPlaces="2"
+                                   minValue="0"/>
+
+                    <p:commandButton id="btn-calc"
+                                     action="#{entradaNotaFiscalControll.calcularValorVenda}"
+                                     process="@this,:formOutrasTelas3:tabNfeProduto:cmp-custo:encargosVenda,:formOutrasTelas3:tabNfeProduto:cmp-encagos:encargosVenda,:formOutrasTelas3:tabNfeProduto:margemLucro"
+                                     update=":formOutrasTelas3:tabNfeProduto:cmp-venda:produtoValorVenda"
+                                     icon="fa fa-calculator"
+                    />
+                </div>
+            </div>
 
         </p:tab>
 

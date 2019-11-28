@@ -140,6 +140,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private Date dataInicial;
     private Date dataFinal;
 
+    private BigDecimal margemLucro;
+
 
     @Override
     public ERPLazyDataModel<NfeCabecalho> getDataModel() {
@@ -615,6 +617,15 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         UnidadeProduto sigla = unidades.get(UnidadeProduto.class, "sigla", nfeDetalhe.getUnidadeComercial(), new Object[]{"sigla"});
 
+        produto.setCustoUnitario(nfeDetalheSelecionado.getValorUnitarioComercial());
+
+
+        BigDecimal custo = Biblioteca.soma(BigDecimal.ZERO, Optional.ofNullable(nfeDetalheSelecionado.getValorFrete()).orElse(BigDecimal.ZERO));
+        custo = Biblioteca.soma(custo, Optional.ofNullable(nfeDetalhe.getValorOutrasDespesas()).orElse(BigDecimal.ZERO));
+        custo = Biblioteca.soma(custo, Optional.ofNullable(nfeDetalhe.getValorSeguro()).orElse(BigDecimal.ZERO));
+
+        produto.setEncargosVenda(custo);
+
         if (sigla != null) {
             produto.setUnidadeProduto(sigla);
         }
@@ -660,6 +671,26 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             } else {
                 throw new RuntimeException("erro ao disvincular produto", ex);
             }
+        }
+    }
+
+    public void calcularValorVenda() {
+
+
+        try {
+            BigDecimal encargos = Optional.ofNullable(produto.getEncargosVenda()).orElse(BigDecimal.ZERO);
+            BigDecimal custo = Optional.ofNullable(produto.getCustoUnitario()).orElse(BigDecimal.ZERO);
+            BigDecimal margem = Optional.ofNullable(margemLucro).orElse(BigDecimal.ZERO);
+            BigDecimal custoTotal = Biblioteca.soma(encargos, custo);
+            BigDecimal valorSugerido = Biblioteca.calcularValorPercentual(custoTotal, margem);
+            BigDecimal valorVenda = Biblioteca.soma(custoTotal, valorSugerido);
+            produto.setValorVenda(valorVenda);
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().validationFailed();
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage(ex.getMessage());
+            }
+
         }
     }
 
@@ -1430,5 +1461,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setDataFinal(Date dataFinal) {
         this.dataFinal = dataFinal;
+    }
+
+    public BigDecimal getMargemLucro() {
+        return margemLucro;
+    }
+
+    public void setMargemLucro(BigDecimal margemLucro) {
+        this.margemLucro = margemLucro;
     }
 }
