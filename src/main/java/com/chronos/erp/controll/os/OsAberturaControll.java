@@ -576,7 +576,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 }
 
                 if (formaPagamento.getForma().equals("03") || formaPagamento.getForma().equals("04")) {
-                    formaPagamento.setCartaoTipoIntegracao("02");
+                    formaPagamento.setCartaoTipoIntegracao("2");
                 }
 
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
