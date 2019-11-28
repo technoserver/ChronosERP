@@ -70,6 +70,17 @@
                                     </h:selectOneMenu>
                                 </div>
 
+                                <div class="col-xs-12 col-sm-3 col-md-3">
+                                    <h:outputLabel value="Sugerir ultimo valor de compra na entrada"
+                                                   for="sugerirValorCompraEntrada"/>
+                                    <h:selectOneMenu id="sugerirValorCompraEntrada"
+                                                     value="#{admParametrosControll.objeto.sugerirValorCompraEntrada}"
+                                                     styleClass="form-control">
+                                        <f:selectItem itemLabel="NAO" itemValue="N"/>
+                                        <f:selectItem itemLabel="SIM" itemValue="S"/>
+                                    </h:selectOneMenu>
+                                </div>
+
 
                             </div>
 

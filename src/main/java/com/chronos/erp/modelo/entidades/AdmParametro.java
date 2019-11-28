@@ -37,6 +37,8 @@ public class AdmParametro implements Serializable {
     private Boolean frenteCaixa;
     @Column(name = "os_gerar_movimento_caixa")
     private String osGerarMovimentoCaixa;
+    @Column(name = "sugerir_valor_compra_entrada")
+    private String sugerirValorCompraEntrada;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -149,6 +151,14 @@ public class AdmParametro implements Serializable {
 
     public void setOsGerarMovimentoCaixa(String osGerarMovimentoCaixa) {
         this.osGerarMovimentoCaixa = osGerarMovimentoCaixa;
+    }
+
+    public String getSugerirValorCompraEntrada() {
+        return sugerirValorCompraEntrada;
+    }
+
+    public void setSugerirValorCompraEntrada(String sugerirValorCompraEntrada) {
+        this.sugerirValorCompraEntrada = sugerirValorCompraEntrada;
     }
 
     @Override

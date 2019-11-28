@@ -7,6 +7,7 @@ import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.cadastros.FornecedorService;
+import com.chronos.erp.service.cadastros.ProdutoFornecedorService;
 import com.chronos.erp.service.comercial.SyncPendentesService;
 import com.chronos.erp.service.financeiro.FinLancamentoPagarService;
 import com.chronos.erp.service.gerencial.AuditoriaService;
@@ -48,6 +49,8 @@ public class EntradaNotaFiscalService implements Serializable {
 
     @Inject
     private FornecedorService fornecedorService;
+    @Inject
+    private ProdutoFornecedorService produtoFornecedorService;
 
 
     @Transactional
@@ -142,7 +145,10 @@ public class EntradaNotaFiscalService implements Serializable {
             lancamentoPagarService.gerarLancamento(nfe, contaCaixa, naturezaFinanceira);
         }
 
+        produtoFornecedorService.atualizarUtimaCompra(nfe);
+
         nfe = repository.atualizar(nfe);
+
 
         if (inclusao) {
             auditoriaService.gerarLog(AcaoLog.INSERT, descricao, "Entrada de NF");
