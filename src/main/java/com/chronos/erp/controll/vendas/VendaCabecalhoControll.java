@@ -769,7 +769,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                 }
 
                 if (forma.getForma().equals("03") || forma.getForma().equals("04")) {
-                    forma.setCartaoTipoIntegracao("02");
+                    forma.setCartaoTipoIntegracao("2");
                 }
 
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);

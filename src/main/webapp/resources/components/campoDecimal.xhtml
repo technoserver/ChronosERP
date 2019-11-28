@@ -18,6 +18,7 @@
         <cc:attribute name="somenteLeitura" default="false" />
         <cc:attribute name="desabilitado" default="false"/>
         <cc:attribute name="valorMaximo" default="false"/>
+        <cc:attribute name="casaDecimais" default="2"/>
 
     </cc:interface>
 
@@ -33,7 +34,7 @@
                            style="width: 100%;"
                            disabled="#{cc.attrs.desabilitado}"
                            readonly="#{cc.attrs.somenteLeitura}"
-                           decimalPlaces="2"
+                           decimalPlaces="#{cc.attrs.casaDecimais}"
                            minValue="0"
                            >
 
