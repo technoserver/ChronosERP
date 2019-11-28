@@ -91,5 +91,33 @@ public class ProdutoFornecedorService implements Serializable {
         repository.excluir(FornecedorProduto.class, filtros);
     }
 
+    @Transactional
+    public void atualizarUtimaCompra(NfeCabecalho nfe) throws ChronosException {
+
+
+        for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
+
+            FornecedorProduto fornecedorProduto = pesquisar(item.getProduto().getId(), nfe.getFornecedor().getId());
+
+            if (fornecedorProduto == null) {
+                salvar(item.getProduto(), nfe.getFornecedor(), nfe.getEmpresa(), item.getValorUnitarioComercial(), item.getCodigoProduto());
+            } else {
+                fornecedorProduto.setDataUltimaCompra(nfe.getDataHoraEntradaSaida());
+                fornecedorProduto.setPrecoUltimaCompra(item.getValorUnitarioComercial());
+            }
+        }
+
+    }
+
+    public FornecedorProduto pesquisar(int idproduto, int idfornecedor) {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("produto.id", idproduto));
+        filtros.add(new Filtro("fornecedor.id", idfornecedor));
+
+        FornecedorProduto fornecedorProduto = repository.get(FornecedorProduto.class, filtros);
+
+        return fornecedorProduto;
+    }
+
 
 }

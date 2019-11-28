@@ -831,6 +831,19 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     }
 
+    public void definirValoresProduto() {
+
+        if (parametro.getSugerirValorCompraEntrada() != null && parametro.getSugerirValorCompraEntrada().equals("S")) {
+            FornecedorProduto fornecedorProduto = produtoFornecedorService.pesquisar(nfeDetalhe.getProduto().getId(), getObjeto().getFornecedor().getId());
+
+            if (fornecedorProduto != null && fornecedorProduto.getPrecoUltimaCompra() != null) {
+                nfeDetalhe.setValorUnitarioComercial(fornecedorProduto.getPrecoUltimaCompra());
+            }
+        }
+
+        pesquisar();
+    }
+
     public void pesquisarGrade() {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro("idproduto", nfeDetalhe.getProduto().getId()));
