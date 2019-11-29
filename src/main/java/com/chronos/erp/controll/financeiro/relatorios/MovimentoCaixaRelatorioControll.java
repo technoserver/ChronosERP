@@ -77,13 +77,15 @@ public class MovimentoCaixaRelatorioControll extends AbstractRelatorioControll i
                     cartaoDebito = cartaoDebito.add(v.getValor());
                     break;
                 case "05":
+                    credito = credito.add(v.getValor());
+                    break;
+                case "11":
+                case "12":
+                case "13":
                     ticket = ticket.add(v.getValor());
                     break;
-                case "06":
+                case "14":
                     duplicata = duplicata.add(v.getValor());
-                    break;
-                case "07":
-                    credito = credito.add(v.getValor());
                     break;
             }
         }
