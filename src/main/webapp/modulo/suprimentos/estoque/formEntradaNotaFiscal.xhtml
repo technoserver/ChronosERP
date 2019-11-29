@@ -45,9 +45,9 @@
                         </erp:autoComplete>
 
                         <div class="col-xs-12 col-sm-4 col-md-4">
-                            <p:outputLabel value="Fornecedor" for="compraPedidoFornecedor" />
+                            <p:outputLabel value="Fornecedor" for="fornecedor"/>
                             <br />
-                            <p:autoComplete id="compraPedidoFornecedor"
+                            <p:autoComplete id="fornecedor"
                                             value="#{entradaNotaFiscalControll.objeto.fornecedor}"
                                             completeMethod="#{entradaNotaFiscalControll.getListaFornecedor}"
                                             var="fornecedor" itemLabel="#{fornecedor.pessoa.nome}"
@@ -55,6 +55,7 @@
                                             converter="defaultConverter"
                                             forceSelection="true" minQueryLength="3" maxResults="100"
                                             required="true" style="width: 100%"
+                                            disabled="#{entradaNotaFiscalControll.objeto.listaNfeDetalhe.size() gt 0}"
                                             emptyMessage="Nenhum registro encontrado" />
                         </div>
                         <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"

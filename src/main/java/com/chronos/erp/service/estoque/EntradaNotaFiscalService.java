@@ -7,6 +7,7 @@ import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.cadastros.FornecedorService;
+import com.chronos.erp.service.cadastros.ProdutoFornecedorService;
 import com.chronos.erp.service.comercial.SyncPendentesService;
 import com.chronos.erp.service.financeiro.FinLancamentoPagarService;
 import com.chronos.erp.service.gerencial.AuditoriaService;
@@ -48,6 +49,8 @@ public class EntradaNotaFiscalService implements Serializable {
 
     @Inject
     private FornecedorService fornecedorService;
+    @Inject
+    private ProdutoFornecedorService produtoFornecedorService;
 
 
     @Transactional
@@ -68,6 +71,17 @@ public class EntradaNotaFiscalService implements Serializable {
                     throw new ChronosException("Quantidade de estoque informada para grade invalida ");
                 }
             }
+        }
+        if (!nfe.getListaDuplicata().isEmpty()) {
+
+            if (naturezaFinanceira == null) {
+                throw new ChronosException("Natureza financeira não informada");
+            }
+
+            if (contaCaixa == null) {
+                throw new ChronosException("Conta caixa não informada");
+            }
+
         }
 
         Integer idempresa = nfe.getEmpresa().getId();
@@ -124,10 +138,18 @@ public class EntradaNotaFiscalService implements Serializable {
         }
         String descricao = "Entrada da NFe :" + nfe.getNumero() + " Fornecedor :" + nfe.getEmitente().getNome();
         nfe.setStatusNota(StatusTransmissao.ENCERRADO.getCodigo());
-        nfe = repository.atualizar(nfe);
+
+
         if (!nfe.getListaDuplicata().isEmpty()) {
+
             lancamentoPagarService.gerarLancamento(nfe, contaCaixa, naturezaFinanceira);
         }
+
+        produtoFornecedorService.atualizarUtimaCompra(nfe);
+
+        nfe = repository.atualizar(nfe);
+
+
         if (inclusao) {
             auditoriaService.gerarLog(AcaoLog.INSERT, descricao, "Entrada de NF");
         }

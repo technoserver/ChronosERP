@@ -140,6 +140,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private Date dataInicial;
     private Date dataFinal;
 
+    private BigDecimal margemLucro;
+
 
     @Override
     public ERPLazyDataModel<NfeCabecalho> getDataModel() {
@@ -234,6 +236,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             importado = false;
             Mensagem.addInfoMessage("NF fiscal finalizada não será mais possivel fazer a edição");
         } catch (Exception ex) {
+            getObjeto().setStatusNota(0);
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
             } else {
@@ -614,6 +617,15 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
         UnidadeProduto sigla = unidades.get(UnidadeProduto.class, "sigla", nfeDetalhe.getUnidadeComercial(), new Object[]{"sigla"});
 
+        produto.setCustoUnitario(nfeDetalheSelecionado.getValorUnitarioComercial());
+
+
+        BigDecimal custo = Biblioteca.soma(BigDecimal.ZERO, Optional.ofNullable(nfeDetalheSelecionado.getValorFrete()).orElse(BigDecimal.ZERO));
+        custo = Biblioteca.soma(custo, Optional.ofNullable(nfeDetalhe.getValorOutrasDespesas()).orElse(BigDecimal.ZERO));
+        custo = Biblioteca.soma(custo, Optional.ofNullable(nfeDetalhe.getValorSeguro()).orElse(BigDecimal.ZERO));
+
+        produto.setEncargosVenda(custo);
+
         if (sigla != null) {
             produto.setUnidadeProduto(sigla);
         }
@@ -659,6 +671,26 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             } else {
                 throw new RuntimeException("erro ao disvincular produto", ex);
             }
+        }
+    }
+
+    public void calcularValorVenda() {
+
+
+        try {
+            BigDecimal encargos = Optional.ofNullable(produto.getEncargosVenda()).orElse(BigDecimal.ZERO);
+            BigDecimal custo = Optional.ofNullable(produto.getCustoUnitario()).orElse(BigDecimal.ZERO);
+            BigDecimal margem = Optional.ofNullable(margemLucro).orElse(BigDecimal.ZERO);
+            BigDecimal custoTotal = Biblioteca.soma(encargos, custo);
+            BigDecimal valorSugerido = Biblioteca.calcularValorPercentual(custoTotal, margem);
+            BigDecimal valorVenda = Biblioteca.soma(custoTotal, valorSugerido);
+            produto.setValorVenda(valorVenda);
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().validationFailed();
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage(ex.getMessage());
+            }
+
         }
     }
 
@@ -765,6 +797,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void pesquisarGrade(NfeDetalhe item, Integer idempresa, Integer idprdduto) {
 
+        item.setListaGrade(new HashSet<>());
         if (item.getProduto().getPossuiGrade() != null && item.getProduto().getPossuiGrade()) {
 
 
@@ -796,6 +829,19 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
 
 
+    }
+
+    public void definirValoresProduto() {
+
+        if (parametro.getSugerirValorCompraEntrada() != null && parametro.getSugerirValorCompraEntrada().equals("S")) {
+            FornecedorProduto fornecedorProduto = produtoFornecedorService.pesquisar(nfeDetalhe.getProduto().getId(), getObjeto().getFornecedor().getId());
+
+            if (fornecedorProduto != null && fornecedorProduto.getPrecoUltimaCompra() != null) {
+                nfeDetalhe.setValorUnitarioComercial(fornecedorProduto.getPrecoUltimaCompra());
+            }
+        }
+
+        pesquisar();
     }
 
     public void pesquisarGrade() {
@@ -892,7 +938,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             throw new Exception("Condição de pagamento não definida");
         }
 
-        List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "vendaCondicoesPagamento.id", condicao.getId());
+        List<CondicoesParcelas> parcelas = parcelasRepository.getEntitys(CondicoesParcelas.class, "condicoesPagamento.id", condicao.getId());
         condicao.setParcelas(parcelas);
         for (CondicoesParcelas p : condicao.getParcelas()) {
 
@@ -957,7 +1003,19 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         List<Produto> listaProduto = new ArrayList<>();
 
         try {
-            listaProduto = produtos.getEntitys(Produto.class, "descricaoPdv", descricao);
+            List<Filtro> filtros = new ArrayList<>();
+
+            filtros.add(new Filtro(true, Filtro.AND, "nome", Filtro.LIKE, descricao));
+            filtros.add(new Filtro(Filtro.OR, "descricaoPdv", Filtro.LIKE, descricao));
+
+            if (descricao.trim().length() <= 9 && org.apache.commons.lang3.StringUtils.isNumeric(descricao)) {
+                filtros.add(new Filtro(Filtro.OR, "id", Filtro.IGUAL, Integer.parseInt(descricao)));
+            }
+            filtros.add(new Filtro(Filtro.OR, "codigoInterno", Filtro.LIKE, descricao));
+            filtros.add(new Filtro(Filtro.OR, "gtin", Filtro.LIKE, descricao, true));
+
+
+            listaProduto = produtos.getEntitys(Produto.class, filtros, new Object[]{"nome"});
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1428,5 +1486,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setDataFinal(Date dataFinal) {
         this.dataFinal = dataFinal;
+    }
+
+    public BigDecimal getMargemLucro() {
+        return margemLucro;
+    }
+
+    public void setMargemLucro(BigDecimal margemLucro) {
+        this.margemLucro = margemLucro;
     }
 }

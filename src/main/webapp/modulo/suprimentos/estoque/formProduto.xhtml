@@ -27,13 +27,14 @@
                         <p:ajax event="itemSelect"
                                 update="formOutrasTelas:panelNfeDetalhe"
                                 process="@this"
-                                listener="#{entradaNotaFiscalControll.pesquisarGrade()}"/>
+                                listener="#{entradaNotaFiscalControll.definirValoresProduto}"/>
                     </p:autoComplete>
                 </div>
-                <erp:campoDecimal  styleClass="col-xs-12 col-sm-2 col-md-2"
-                                   idComponente="nfeDetalheQuantidadeComercial" label="Quantidade"
-                                   nomeAtributo="#{entradaNotaFiscalControll.nfeDetalhe.quantidadeComercial}"
-                                   requerido="true" />
+                <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="nfeDetalheQuantidadeComercial" label="Quantidade"
+                                  nomeAtributo="#{entradaNotaFiscalControll.nfeDetalhe.quantidadeComercial}"
+                                  casaDecimais="6"
+                                  requerido="true" />
                 <div class="col-xs-12 col-sm-2 col-md-2">
                     <h:outputLabel value="Valor" for="nfeDetalheValorUnitarioComercial"/>
 
@@ -41,7 +42,7 @@
                     <p:inputNumber id        = "nfeDetalheValorUnitarioComercial"
                                    value     = "#{entradaNotaFiscalControll.nfeDetalhe.valorUnitarioComercial}"
                                    style="width: 100%;"
-                                   decimalPlaces="2"
+                                   decimalPlaces="6"
                                    thousandSeparator="."
                                    decimalSeparator=","
                                    required="true">
