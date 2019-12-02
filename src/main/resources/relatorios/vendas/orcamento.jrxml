@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f965743b-6c7a-477f-b60d-af0db6e4d658">
     <property name="ireport.zoom" value="3.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="584"/>
+    <property name="ireport.y" value="392"/>
     <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
     <style name="dadosDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isBold="false"
@@ -414,7 +414,7 @@ WHERE
             <textField>
                 <reportElement style="dadosDetail" x="63" y="155" width="315" height="13"
                                uuid="63e9b548-8fa4-4d13-8cbb-6050858c48d6"/>
-                <textFieldExpression><![CDATA[$F{empresa_endereco_bairro}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{pessoa_endereco_bairro}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement style="dadosDetail" x="63" y="179" width="315" height="13"
