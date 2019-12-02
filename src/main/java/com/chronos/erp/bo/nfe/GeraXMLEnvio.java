@@ -941,7 +941,7 @@ public class GeraXMLEnvio {
 
                 icms60.setCST(cst);
                 icms60.setOrig(origemMercadoria);
-                icms60.setVBCSTRet(FormatValor.getInstance().formatarValor(impIcms.getValorBcIcmsStRetido()));
+                icms60.setVBCSTRet(FormatValor.getInstance().formatarValorToNull(impIcms.getValorBcIcmsStRetido()));
                 icms60.setVICMSSTRet(FormatValor.getInstance().formatarValor(impIcms.getValorIcmsStRetido()));
             }
             if (cst.equals("70")) {

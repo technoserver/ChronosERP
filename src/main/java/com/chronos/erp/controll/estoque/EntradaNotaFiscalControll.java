@@ -697,7 +697,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     public void salvarNovoProduto() {
         try {
 
-            if (produto.getTipo().equals("V") && (produto.getValorVenda() == null || produto.getValorVenda().signum() <= 0)) {
+            if (produto.getTipo() != null && produto.getTipo().equals("V") && (produto.getValorVenda() == null || produto.getValorVenda().signum() <= 0)) {
                 FacesContext.getCurrentInstance().validationFailed();
                 throw new ChronosException("Valor de venda orbigatório");
             } else {

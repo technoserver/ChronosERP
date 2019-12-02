@@ -30,6 +30,8 @@ public class EstoqueRelatorioControll extends AbstractRelatorioControll implemen
     private Date dataFinal;
     private Fornecedor fornecedor;
 
+    private String detalhado = "N";
+
 
     public void imprimirRelacaoEntradas() {
         parametros = new HashMap<>();
@@ -42,7 +44,7 @@ public class EstoqueRelatorioControll extends AbstractRelatorioControll implemen
         }
 
         String caminhoRelatorio = "/relatorios/estoque";
-        String nomeRelatorio = "relacaoNotaEntrada.jasper";
+        String nomeRelatorio = detalhado.equals("N") ? "relacaoNotaEntrada.jasper" : "relacaoNotaEntradaDetalhado.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoEntradas.pdf");
     }
@@ -81,5 +83,13 @@ public class EstoqueRelatorioControll extends AbstractRelatorioControll implemen
 
     public void setFornecedor(Fornecedor fornecedor) {
         this.fornecedor = fornecedor;
+    }
+
+    public String getDetalhado() {
+        return detalhado;
+    }
+
+    public void setDetalhado(String detalhado) {
+        this.detalhado = detalhado;
     }
 }
