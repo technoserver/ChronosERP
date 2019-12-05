@@ -23,6 +23,18 @@
     </ui:define>
 
 
+    <ui:define name="css">
+        <style type="text/css">
+
+            @media (max-width: 640px) {
+                .expand {
+                    display: block;
+                }
+            }
+        </style>
+    </ui:define>
+
+
     <ui:define name="gridDados">
         <p:outputPanel id="outputPanelGrid">
             <p:outputPanel rendered="#{produtoControll.telaGrid}">
@@ -37,17 +49,17 @@
 
 
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-4 m-b">
                                 <p:commandButton
                                         value="Gerar Integracao com a balança"
                                         action="#{produtoControll.buscarConfiguracoesBalanca}"
                                         oncomplete="PF('dialogOutrasTelas7').show();"
                                         update=":formOutrasTelas7:panelOutrasTelas7"
                                 />
-
+                            </div>
+                            <div class="col-sm-4 m-b">
                                 <p:commandButton
                                         value="Cadastro rápido"
-                                        style="margin-left: 5px"
                                         action="#{cadastroRapidoProdutoControll.abrirDialog}"
                                         rendered="#{produtoControll.podeInserir()}"
                                         process="@this" update="@none">
@@ -56,6 +68,9 @@
                                             process="@this"
                                             update=":formCentro:growl,:formCentro:outputPanelGrid"/>
                                 </p:commandButton>
+                            </div>
+                            <div class="col-sm-4 m-b">
+
 
                                 <p:commandButton value="Cadastro completo"
                                                  action="#{produtoControll.doCreate()}"
@@ -203,22 +218,22 @@
                             </p:commandLink>
 
                         </p:column>
-                        <p:rowExpansion>
+                        <p:rowExpansion styleClass="expand">
 
 
-                            <p:panelGrid columns="3">
-                                <h:outputLabel value="Empresa"/>
-                                <h:outputLabel value="Estoque"/>
-                                <h:outputLabel value="Verificado"/>
+                            <p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-6,ui-g-12 ui-md-6" layout="grid">
+
 
                                 <c:forEach items="#{produtoControll.listProdutoEmpresa}" var="prod">
-
+                                    <h:outputLabel value="Empresa"/>
                                     <h:outputLabel value="#{prod.empresa.razaoSocial}"/>
 
-
+                                    <h:outputLabel value="Estoque"/>
                                     <h:outputLabel value="#{prod.quantidadeEstoque}">
                                         <f:convertNumber pattern="#,##0.000"/>
                                     </h:outputLabel>
+
+                                    <h:outputLabel value="Verificado"/>
                                     <h:outputLabel value="#{prod.estoqueVerificado}">
                                         <f:convertNumber pattern="#,##0.000"/>
                                     </h:outputLabel>
