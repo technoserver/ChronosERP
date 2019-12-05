@@ -23,6 +23,18 @@
     </ui:define>
 
 
+    <ui:define name="css">
+        <style type="text/css">
+
+            @media (max-width: 640px) {
+                .expand {
+                    display: block;
+                }
+            }
+        </style>
+    </ui:define>
+
+
     <ui:define name="gridDados">
         <p:outputPanel id="outputPanelGrid">
             <p:outputPanel rendered="#{produtoControll.telaGrid}">
@@ -206,7 +218,7 @@
                             </p:commandLink>
 
                         </p:column>
-                        <p:rowExpansion>
+                        <p:rowExpansion styleClass="expand">
 
 
                             <p:panelGrid columns="2" columnClasses="ui-g-12 ui-md-6,ui-g-12 ui-md-6" layout="grid">
