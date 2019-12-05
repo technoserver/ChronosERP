@@ -3,6 +3,7 @@ package com.chronos.erp.controll.gerencial;
 import com.chronos.erp.controll.AbstractControll;
 import com.chronos.erp.modelo.entidades.RestricaoSistema;
 import com.chronos.erp.modelo.entidades.Usuario;
+import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.util.jsf.Mensagem;
@@ -47,8 +48,10 @@ public class RestricaoSistemaControll extends AbstractControll<RestricaoSistema>
     public List<Usuario> getListUsuario(String nome) {
         List<Usuario> list = new ArrayList<>();
         try {
-
-            list = usuarioRepository.getEntitys(Usuario.class, "login", nome, new Object[]{"login"});
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("administrador", "N"));
+            filtros.add(new Filtro("login", Filtro.LIKE, nome));
+            list = usuarioRepository.getEntitys(Usuario.class, filtros, new Object[]{"login"});
         } catch (Exception ex) {
             ex.printStackTrace();
         }

@@ -15,7 +15,7 @@ public class ViewMovimentoCaixa implements Serializable {
     @Id
     @Basic
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     private Integer idmovimento;
     private Integer idorigem;
     @Column(name = "data_hora")
@@ -31,11 +31,11 @@ public class ViewMovimentoCaixa implements Serializable {
     private String observacao;
 
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
