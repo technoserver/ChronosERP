@@ -54,6 +54,9 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     private Repository<Empresa> empresaRepository;
 
     @Inject
+    private Repository<RestricaoSistema> restricaoSistemaRepository;
+
+    @Inject
     private PessoaService service;
 
     private String nome;
@@ -65,6 +68,8 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     private PessoaCliente clienteSelecionado;
 
     private String completo;
+
+    private RestricaoSistema restricaoSistema;
 
 
     @PostConstruct
@@ -114,6 +119,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         getObjeto().setDataCadastro(new Date());
         getObjeto().setBloqueado("N");
         completo = "N";
+        restricaoSistema = restricaoSistemaRepository.get(RestricaoSistema.class, "usuario.id", usuario.getId());
 
     }
 
@@ -126,6 +132,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
         super.doEdit();
         setTelaGrid(false);
         completo = "N";
+        restricaoSistema = restricaoSistemaRepository.get(RestricaoSistema.class, "usuario.id", usuario.getId());
     }
 
     @Override
@@ -329,5 +336,11 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
     public void setIdmepresaFiltro(Integer idmepresaFiltro) {
         this.idmepresaFiltro = idmepresaFiltro;
+    }
+
+    public boolean isAlteraLimiteCredito() {
+        return restricaoSistema != null
+                && restricaoSistema.getBloquearVendaPorLimiteCredito() != null
+                && restricaoSistema.getBloquearVendaPorLimiteCredito().equals("S");
     }
 }
