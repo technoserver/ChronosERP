@@ -83,7 +83,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
             clienteDataModel.setClazz(PessoaCliente.class);
         }
 
-
+        pesquisar();
         return clienteDataModel;
     }
 
