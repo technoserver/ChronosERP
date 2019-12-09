@@ -163,27 +163,42 @@ public class VendaToNFe extends ManualCDILookup {
 
         // NFC-e não pode ser emitida para contribuinte do ICMS
         IndicadorIe indicador;
-        if (modelo == ModeloDocumento.NFCE) {
-            indicador = IndicadorIe.NAO_CONTRIBUINTE;
-        } else if (nfe.getDestinatario().getCpfCnpj().length() == 14) {
-            if (nfe.getDestinatario().getInscricaoEstadual() == null || nfe.getDestinatario().getInscricaoEstadual().equals("")) {
-                indicador = IndicadorIe.NAO_CONTRIBUINTE;
+        if (modelo == ModeloDocumento.NFE) {
 
-            } else if (nfe.getDestinatario().getInscricaoEstadual().equalsIgnoreCase("ISENTO")) {
-                indicador = IndicadorIe.CONTRIBUINTE_ISENTO;
+            if (nfe.getDestinatario().getCpfCnpj().length() == 14) {
+                if (nfe.getDestinatario().getInscricaoEstadual() == null || nfe.getDestinatario().getInscricaoEstadual().equals("")) {
+                    indicador = IndicadorIe.NAO_CONTRIBUINTE;
+
+                } else if (nfe.getDestinatario().getInscricaoEstadual().equalsIgnoreCase("ISENTO")) {
+                    if (nfe.getDestinatario().getUf().equals("AM") || nfe.getDestinatario().getUf().equals("BA")
+                            || nfe.getDestinatario().getUf().equals("CE") || nfe.getDestinatario().getUf().equals("GO")
+                            || nfe.getDestinatario().getUf().equals("MG") || nfe.getDestinatario().getUf().equals("MS")
+                            || nfe.getDestinatario().getUf().equals("MT") || nfe.getDestinatario().getUf().equals("PE")
+                            || nfe.getDestinatario().getUf().equals("RN") || nfe.getDestinatario().getUf().equals("SE")
+                            || nfe.getDestinatario().getUf().equals("SP")) {
+
+                        indicador = IndicadorIe.NAO_CONTRIBUINTE;
+                    } else {
+
+                        indicador = IndicadorIe.CONTRIBUINTE_ISENTO;
+                    }
+                } else {
+                    indicador = IndicadorIe.CONTRIBUINTE_ICMS;
+
+                }
+
             } else {
-                indicador = IndicadorIe.CONTRIBUINTE_ICMS;
+                indicador = IndicadorIe.NAO_CONTRIBUINTE;
             }
-        } else if (nfe.getDestinatario().getUf().equals("AM") || ufDestino.equals("BA")
-                || ufDestino.equals("CE") || ufDestino.equals("GO")
-                || ufDestino.equals("MG") || ufDestino.equals("MS")
-                || ufDestino.equals("MT") || ufDestino.equals("PE")
-                || ufDestino.equals("RN") || ufDestino.equals("SE")
-                || ufDestino.equals("SP")) {
-            indicador = IndicadorIe.NAO_CONTRIBUINTE;
+
         } else {
-            indicador = IndicadorIe.CONTRIBUINTE_ISENTO;
+
+            indicador = IndicadorIe.NAO_CONTRIBUINTE;
+
+
         }
+
+
         ConsumidorOperacao consumidorOperacao = indicador == IndicadorIe.NAO_CONTRIBUINTE ? ConsumidorOperacao.FINAL : ConsumidorOperacao.NORMAL;
         nfe.getDestinatario().setIndicadorIe(indicador.getCodigo());
         nfe.setLocalDestino(localDestino.getCodigo());
