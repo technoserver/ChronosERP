@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="4.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="290"/>
+    <property name="ireport.y" value="266"/>
     <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
     <style name="dadosDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isBold="false"
@@ -15,66 +15,43 @@
         <defaultValueExpression>
             <![CDATA["/home/john/projetos/java/chronosnfe/src/main/resources/com/chronos/relatorio/comercial/"]]></defaultValueExpression>
     </parameter>
+    <parameter name="ordem" class="java.lang.String">
+        <defaultValueExpression><![CDATA["cliente.nome"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="tipo" class="java.lang.String">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="nome" class="java.lang.String">
+        <defaultValueExpression><![CDATA["%"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="cpf_cnpj" class="java.lang.String">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="uf" class="java.lang.String">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="cidade" class="java.lang.String">
+        <defaultValueExpression><![CDATA["%"]]></defaultValueExpression>
+    </parameter>
     <parameter name="idempresa" class="java.lang.Integer">
         <defaultValueExpression><![CDATA[1]]></defaultValueExpression>
     </parameter>
-    <parameter name="periodoInicial" class="java.util.Date">
-        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
-    </parameter>
-    <parameter name="peridoFInal" class="java.util.Date">
-        <defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
-    </parameter>
     <queryString>
-        <![CDATA[ SELECT c.id,
-    ep.id_empresa,
-    c.id_operacao_fiscal,
-    c.id_pessoa,
-    c.id_atividade_for_cli,
-    c.id_situacao_for_cli,
-    c.desde,
-    c.data_cadastro,
-    c.data_alteracao,
-    c.observacao,
-    c.conta_tomador,
-    c.gera_financeiro,
-    c.indicador_preco,
-    c.porcento_desconto,
-    c.forma_desconto,
-    c.limite_credito,
-    c.tipo_frete,
-    e.logradouro,
-    e.numero,
-    e.complemento,
-    e.bairro,
-    e.cidade,
-    e.cep,
-    e.municipio_ibge,
-    e.uf,
-    e.fone,
-    p.nome,
-    p.tipo,
-    p.email,
-    p.site,
-    pf.cpf AS cpf,
-    pf.rg AS rg,
-    pf.data_nascimento
-   FROM john.pessoa p
-   INNER JOIN john.pessoa_fisica pf ON pf.id_pessoa = p.id
-   INNER JOIN john.empresa_pessoa ep ON ep.id_pessoa = p.id
-   INNER JOIN john.cliente c ON c.id_pessoa = p.id
-   INNER JOIN john.pessoa_endereco e ON e.id_pessoa = p.id
-  WHERE p.cliente = 'S' AND e.principal = 'S' and ep.id_empresa = $P{idempresa} and pf.data_nascimento between $P{periodoInicial} and $P{peridoFInal}
-order by pf.data_nascimento]]>
+        <![CDATA[select * from view_pessoa_cliente_empresa
+WHERE
+id_empresa = $P{idempresa}
+and nome like $P{nome} and (cpf_cnpj = $P{cpf_cnpj} or  $P{cpf_cnpj} is null) and cidade like $P{cidade}
+and (uf = $P{uf}  or $P{uf} is null) and (tipo = $P{tipo} or $P{tipo} is null)
+ORDER BY $P{ordem}]]>
     </queryString>
     <field name="id" class="java.lang.Integer"/>
-    <field name="id_empresa" class="java.lang.Integer"/>
     <field name="id_operacao_fiscal" class="java.lang.Integer"/>
     <field name="id_pessoa" class="java.lang.Integer"/>
     <field name="id_atividade_for_cli" class="java.lang.Integer"/>
     <field name="id_situacao_for_cli" class="java.lang.Integer"/>
+    <field name="id_empresa" class="java.lang.Integer"/>
     <field name="desde" class="java.sql.Date"/>
     <field name="data_cadastro" class="java.sql.Date"/>
-    <field name="data_alteracao" class="java.sql.Timestamp"/>
     <field name="observacao" class="java.lang.String"/>
     <field name="conta_tomador" class="java.lang.String"/>
     <field name="gera_financeiro" class="java.lang.String"/>
@@ -96,9 +73,22 @@ order by pf.data_nascimento]]>
     <field name="tipo" class="java.lang.String"/>
     <field name="email" class="java.lang.String"/>
     <field name="site" class="java.lang.String"/>
-    <field name="cpf" class="java.lang.String"/>
-    <field name="rg" class="java.lang.String"/>
-    <field name="data_nascimento" class="java.sql.Date"/>
+    <field name="cpf_cnpj" class="java.lang.String"/>
+    <field name="rg_ie" class="java.lang.String"/>
+    <field name="empresa_razao_social" class="java.lang.String"/>
+    <field name="empresa_nome_fantasia" class="java.lang.String"/>
+    <field name="empresa_cnpj" class="java.lang.String"/>
+    <field name="empresa_inscricao_estadual" class="java.lang.String"/>
+    <field name="empresa_imagem_logotipo" class="java.lang.String"/>
+    <field name="empresa_endereco_logradouro" class="java.lang.String"/>
+    <field name="empresa_endereco_numero" class="java.lang.String"/>
+    <field name="empresa_endereco_complemento" class="java.lang.String"/>
+    <field name="empresa_endereco_bairro" class="java.lang.String"/>
+    <field name="empresa_endereco_cidade" class="java.lang.String"/>
+    <field name="empresa_endereco_cep" class="java.lang.String"/>
+    <field name="empresa_endereco_fone" class="java.lang.String"/>
+    <field name="empresa_endereco_uf" class="java.lang.String"/>
+    <field name="empresa_email" class="java.lang.String"/>
     <background>
         <band splitType="Stretch"/>
     </background>
@@ -294,11 +284,18 @@ order by pf.data_nascimento]]>
             <textField>
                 <reportElement style="dadosDetail" x="0" y="0" width="80" height="12"
                                uuid="384343e6-0241-48e0-aff2-1383e30accd9"/>
-                <textFieldExpression><![CDATA[$F{cpf} !=null && $F{cpf}.length() == 11?
-  $F{cpf}.substring(0, 3) + "."
-+ $F{cpf}.substring(3, 6) + "."
-+ $F{cpf}.substring(6, 9) + "-"
-+ $F{cpf}.substring(9, 11)
+                <textFieldExpression><![CDATA[$F{cpf_cnpj} !=null && $F{cpf_cnpj}.length() == 11?
+  $F{cpf_cnpj}.substring(0, 3) + "."
++ $F{cpf_cnpj}.substring(3, 6) + "."
++ $F{cpf_cnpj}.substring(6, 9) + "-"
++ $F{cpf_cnpj}.substring(9, 11)
+  :
+  $F{cpf_cnpj} != null && $F{cpf_cnpj}.length() == 14 ?
+  $F{cpf_cnpj}.substring(0, 2) + "."
++ $F{cpf_cnpj}.substring(2, 5) + "."
++ $F{cpf_cnpj}.substring(5, 8) + "/"
++ $F{cpf_cnpj}.substring(8, 12) + "-"
++ $F{cpf_cnpj}.substring(12, 14)
   : ""]]></textFieldExpression>
             </textField>
             <textField>
