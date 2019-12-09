@@ -55,16 +55,17 @@
                                      funcao="operador"/>
                     </li>
 
-                    <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
+                    <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/movimentos')?'active':''}">
                         <erp:subMenu caminho="/modulo/comercial/caixa/movimentos"
                                      label="Movimentos"
-                                     funcao="condicoesPagamento"/>
+                                     rendered="#{seguranca.operadorOuAdmin}"
+                                     funcao="movimentos"/>
                     </li>
 
-                    <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/')?'active':''}">
+                    <li class="${fn:contains(view.viewId,'modulo/comercial/caixa/caixa')?'active':''}">
                         <erp:subMenu caminho="/modulo/comercial/caixa/caixa"
                                      label="Caixa"
-                                     funcao="caixa"/>
+                                     funcao="/caixa/caixa"/>
                     </li>
                 </ul>
             </li>

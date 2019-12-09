@@ -94,6 +94,8 @@ public interface Repository<T> {
 
     <T> List<T> getEntitysNamedQuery(Class<T> clazz, String namedQuery, Object... atributos) throws PersistenceException;
 
+    <T> List<T> getEntitysNamedQueryParam(Class<T> clazz, String namedQuery, int[] values, String parametro) throws PersistenceException;
+
     List<T> getEntitys(Class<T> clazz, List<Filtro> filters) throws PersistenceException;
 
     List<T> getEntitys(Class<T> clazz, List<Filtro> filters, Object[] atributos) throws PersistenceException;
@@ -125,5 +127,5 @@ public interface Repository<T> {
 
     List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder, Object[] joinfetch, Object[] atributos) throws Exception;
 
-
+    <T> List<T> executeQuery(Class<T> classToCast, String query, int ids[]);
 }

@@ -1,6 +1,7 @@
 package com.chronos.erp.controll.cadastros.relatorios;
 
 import com.chronos.erp.controll.AbstractRelatorioControll;
+import org.springframework.util.StringUtils;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -26,12 +27,23 @@ public class ClienteRelatorioControll extends AbstractRelatorioControll implemen
     public void executarRelatorio() {
 
         parametros = new HashMap<>();
-        parametros.put("uf", retornaValorPadrao(uf).replace("Selecione", ""));
+
+        if (!uf.equals("Selecione")) {
+            parametros.put("uf", uf);
+        }
+
+        if (!tipo.equals("%")) {
+            parametros.put("tipo", tipo);
+        }
+
+        if (!StringUtils.isEmpty(cpfCnpj)) {
+            parametros.put("cpf_cnpj", cpfCnpj);
+        }
+
         parametros.put("cidade", retornaValorPadrao(cidade));
         parametros.put("nome", retornaValorPadrao(cliente));
-        parametros.put("tipo", retornaValorPadrao(tipo));
-        parametros.put("cpf_cnpj", cpfCnpj);
         parametros.put("idempresa", empresa.getId());
+
         String caminhoRelatorio = "/relatorios/cadastros";
         String nomeRelatorio = "relacaoCliente.jasper";
 
