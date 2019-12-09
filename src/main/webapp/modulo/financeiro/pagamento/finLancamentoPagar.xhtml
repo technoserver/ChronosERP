@@ -22,37 +22,66 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{finLancamentoPagarControll}"
-                       idDataTable="dataTableFinLancamentoPagar"
-                       nomeFuncao="Lancamento Pagar"
-                       id="telaGrid"
-                       >
+
+        <erp:formularioGrid controller="#{finLancamentoPagarControll}"
+
+                            id="telaGrid"
+        >
+
+            <div class="row m-b">
+
+                <h:panelGroup class="col-xs-12 col-sm-4 col-md-4" layout="block"
+                              rendered="#{finLancamentoPagarControll.listaEmpresas.size() gt 1}">
+                    <h:outputLabel value="Empresa"/>
+                    <h:selectOneMenu value="#{finLancamentoPagarControll.idmepresaFiltro}" styleClass="form-control">
+                        <f:selectItems value="#{finLancamentoPagarControll.listaEmpresas}" itemValue="#{obj.id}"
+                                       var="obj"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+                <div class="col-xs-12 col-sm-6 col-md-6">
+                    <h:outputLabel value="Fornecedor" for="fornecedor"/>
+                    <div class="field-action">
+                        <h:inputText value="#{finLancamentoPagarControll.fornecedor}"
+                                     id="fornecedor"
+                                     styleClass="form-control"/>
+                        <p:commandButton value="Pesquisar"
+                                         update="formCentro:telaGrid:table:lancamentos"
+                                         style="margin-left: 10px"/>
+                    </div>
+                </div>
+
+            </div>
 
 
-            <p:column headerText="Fornecedor">
-                <h:outputLabel value="#{row.fornecedor.pessoa.nome}"/>
-            </p:column>
-            <p:column headerText="Qtde Parcela" styleClass="text-center" width="128">
-                <h:outputLabel value="#{row.quantidadeParcela}"/>
-            </p:column>
-            <p:column headerText="Lançamento" styleClass="text-center" width="117">
-                <h:outputLabel value="#{row.dataLancamento}">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="1º Vencimento" styleClass="text-center" width="145">
-                <h:outputLabel value="#{row.primeiroVencimento}">
-                    <f:convertDateTime pattern="dd/MM/yyyy"/>
-                </h:outputLabel>
-            </p:column>
-            <p:column headerText="A Pagar" styleClass="text-right" width="150">
-                <h:outputLabel value="#{row.valorAPagar}">
-                    <f:convertNumber pattern="#,##0.00"/>
-                </h:outputLabel>
-            </p:column>
+            <erp:gridDadosSemForm idDataTable="lancamentos"
+                                  id="table"
+                                  controller="#{finLancamentoPagarControll}">
+                <p:column headerText="Fornecedor">
+                    <h:outputLabel value="#{row.fornecedor.pessoa.nome}"/>
+                </p:column>
+                <p:column headerText="Qtde Parcela" styleClass="text-center" width="128">
+                    <h:outputLabel value="#{row.quantidadeParcela}"/>
+                </p:column>
+                <p:column headerText="Lançamento" styleClass="text-center" width="117">
+                    <h:outputLabel value="#{row.dataLancamento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="1º Vencimento" styleClass="text-center" width="145">
+                    <h:outputLabel value="#{row.primeiroVencimento}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="A Pagar" styleClass="text-right" width="150">
+                    <h:outputLabel value="#{row.valorAPagar}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+            </erp:gridDadosSemForm>
 
 
-        </erp:gridDados>
+        </erp:formularioGrid>
     </ui:define>
 
 
@@ -62,8 +91,9 @@
                                    id="telaDetalhe">
 
 
-            <p:tabView id="dadosPrincipais" scrollable="true" activeIndex="#{finLancamentoPagarControll.activeTabIndex}">
-                <p:ajax event="tabChange"  listener="#{finLancamentoPagarControll.onTabChange}"/>
+            <p:tabView id="dadosPrincipais" scrollable="true"
+                       activeIndex="#{finLancamentoPagarControll.activeTabIndex}">
+                <p:ajax event="tabChange" listener="#{finLancamentoPagarControll.onTabChange}"/>
                 <p:tab title="Dados Principais">
                     <div class="row">
 
@@ -120,22 +150,22 @@
                     <div class="row">
 
                         <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                                label="Conta Caixa"
-                                                itemLabel="#{objeto.nome}"
-                                                controller="#{finLancamentoPagarControll}"
-                                                completeMethod="getListaContaCaixa"
-                                                nomeAtributo="#{finLancamentoPagarControll.contaCaixa}"
-                                                idComponente="finLancamentoPagarContaCaixa"
-                                                requerido="#{empty finLancamentoPagarControll.objeto.id}"/>
+                                          label="Conta Caixa"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{finLancamentoPagarControll}"
+                                          completeMethod="getListaContaCaixa"
+                                          nomeAtributo="#{finLancamentoPagarControll.contaCaixa}"
+                                          idComponente="finLancamentoPagarContaCaixa"
+                                          requerido="#{empty finLancamentoPagarControll.objeto.id}"/>
 
                         <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                                label="Natureza Financeira"
-                                                itemLabel="#{objeto.descricao}"
-                                                controller="#{finLancamentoPagarControll}"
-                                                completeMethod="getListaNaturezaFinanceira"
-                                                nomeAtributo="#{finLancamentoPagarControll.naturezaFinanceira}"
-                                                idComponente="finLancamentoPagarNaturezaFinanceira"
-                                                requerido="#{empty finLancamentoPagarControll.objeto.id}"/>
+                                          label="Natureza Financeira"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{finLancamentoPagarControll}"
+                                          completeMethod="getListaNaturezaFinanceira"
+                                          nomeAtributo="#{finLancamentoPagarControll.naturezaFinanceira}"
+                                          idComponente="finLancamentoPagarNaturezaFinanceira"
+                                          requerido="#{empty finLancamentoPagarControll.objeto.id}"/>
 
 
                     </div>
@@ -146,7 +176,7 @@
                                  value="#{finLancamentoPagarControll.objeto.listaFinParcelaPagar}"
                                  resizableColumns="true"
                                  sortBy="#{obj.dataVencimento}"
-                                 >
+                    >
 
 
                         <p:column headerText="Numero Parcela">

@@ -1,12 +1,15 @@
 package com.chronos.erp.controll.financeiro;
 
 import com.chronos.erp.controll.AbstractControll;
+import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.util.Constants;
 import com.chronos.erp.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -52,6 +55,40 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
     //atributos utilizados para geração das parcelas
     private ContaCaixa contaCaixa;
     private NaturezaFinanceira naturezaFinanceira;
+
+    private Integer idmepresaFiltro;
+    private String fornecedor;
+
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        idmepresaFiltro = empresa.getId();
+        pesquisarEmpresas();
+    }
+
+    @Override
+    public ERPLazyDataModel<FinLancamentoPagar> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setDao(dao);
+            dataModel.setClazz(FinLancamentoPagar.class);
+        }
+
+        pesquisar();
+        return dataModel;
+    }
+
+    public void pesquisar() {
+        dataModel.getFiltros().clear();
+        if (!StringUtils.isEmpty(fornecedor)) {
+            dataModel.getFiltros().add(new Filtro("fornecedor.pessoa.nome", Filtro.LIKE, fornecedor));
+        }
+
+        idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        dataModel.addFiltro("empresa.id", idmepresaFiltro, Filtro.IGUAL);
+    }
 
     @Override
     public void doCreate() {
@@ -385,5 +422,21 @@ public class FinLancamentoPagarControll extends AbstractControll<FinLancamentoPa
 
     public void setLancamentosFiltrados(List<FinLancamentoPagar> lancamentosFiltrados) {
         this.lancamentosFiltrados = lancamentosFiltrados;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
+    }
+
+    public String getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(String fornecedor) {
+        this.fornecedor = fornecedor;
     }
 }

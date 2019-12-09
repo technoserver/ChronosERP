@@ -1,6 +1,8 @@
 package com.chronos.erp.controll.pdv;
 
 import com.chronos.erp.controll.ERPLazyDataModel;
+import com.chronos.erp.dto.MapDTO;
+import com.chronos.erp.dto.UsuarioDTO;
 import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
@@ -16,10 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -77,6 +76,11 @@ public class PdvMovimentoControll implements Serializable {
     private Map<String, Integer> operadorDomain;
     private Map<String, Integer> caixaDomain;
 
+    private UsuarioDTO usuario;
+
+    private PdvMovimento movimentoDetalhado;
+    private List<MapDTO> formasPagamento;
+
     public PdvMovimentoControll() {
     }
 
@@ -87,11 +91,15 @@ public class PdvMovimentoControll implements Serializable {
         try {
             empresa = FacesUtil.getEmpresaUsuario();
             temConfiguracao = service.verificarConfPdv(empresa);
+            usuario = FacesUtil.getUsuarioSessao();
+            idoperador = usuario != null && usuario.getOperador() != null ? usuario.getOperador().getId() : idoperador;
+
             if (temConfiguracao) {
                 iniciarObjetos();
             } else {
                 Mensagem.addInfoMessage("É preciso informar as configuracoes do PDV");
             }
+            formasPagamento = new ArrayList<>();
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
@@ -150,6 +158,69 @@ public class PdvMovimentoControll implements Serializable {
         if (idoperador > 0) {
             dataModel.getFiltros().add(new Filtro("pdvOperador.id", idoperador));
         }
+
+    }
+
+    public void detalheMovimentos() {
+        List<Filtro> filtros = new ArrayList<>();
+
+        filtros.add(new Filtro("empresa.id", empresa.getId()));
+        if (!StringUtils.isEmpty(status)) {
+            dataModel.getFiltros().add(new Filtro("statusMovimento", status));
+        }
+
+        if (dataInicial != null) {
+            if (status.equals("F")) {
+                filtros.add(new Filtro("dataFechamento", Filtro.MAIOR_OU_IGUAL, dataInicial));
+            } else {
+                filtros.add(new Filtro("dataAbertura", Filtro.MAIOR_OU_IGUAL, dataInicial));
+            }
+        }
+
+        if (dataFinal != null) {
+            if (status.equals("F")) {
+                filtros.add(new Filtro("dataFechamento", Filtro.MENOR_OU_IGUAL, dataFinal));
+            } else {
+                filtros.add(new Filtro("dataAbertura", Filtro.MENOR_OU_IGUAL, dataFinal));
+            }
+        }
+
+        if (idcaixa > 0) {
+            filtros.add(new Filtro("pdvCaixa.id", idcaixa));
+        }
+
+        if (idoperador > 0) {
+            filtros.add(new Filtro("pdvOperador.id", idoperador));
+        }
+
+        List<PdvMovimento> movimentos = repository.getEntitys(PdvMovimento.class, filtros);
+        movimentoDetalhado = new PdvMovimento();
+        int[] ids = new int[movimentos.size()];
+
+        int i = 0;
+        for (PdvMovimento m : movimentos) {
+            movimentoDetalhado.setTotalRecebido(movimentoDetalhado.getTotalRecebido().add(m.getTotalRecebido()));
+            movimentoDetalhado.setTotalVenda(movimentoDetalhado.getTotalVenda().add(m.getTotalVenda()));
+            movimentoDetalhado.setTotalSangria(movimentoDetalhado.getTotalSangria().add(m.getTotalSangria()));
+            movimentoDetalhado.setTotalDesconto(movimentoDetalhado.getTotalDesconto().add(m.getTotalDesconto()));
+            movimentoDetalhado.setTotalSuprimento(movimentoDetalhado.getTotalSuprimento().add(m.getTotalSuprimento()));
+            movimentoDetalhado.setTotalAcrescimo(movimentoDetalhado.getTotalAcrescimo().add(m.getTotalAcrescimo()));
+            movimentoDetalhado.setTotalTroco(movimentoDetalhado.getTotalTroco().add(m.getTotalTroco()));
+            movimentoDetalhado.setTotalCancelado(movimentoDetalhado.getTotalCancelado().add(m.getTotalCancelado()));
+            movimentoDetalhado.setTotalFinal(movimentoDetalhado.getTotalFinal().add(m.getTotalFinal()));
+            ids[i] = m.getId();
+            i++;
+        }
+        if (ids.length > 0) {
+            String jpql = "SELECT new com.chronos.erp.dto.MapDTO(t.descricao,sum(f.valor)) from PdvFormaPagamento f " +
+                    "inner join f.pdvVendaCabecalho v " +
+                    "inner join v.pdvMovimento m " +
+                    "inner join f.tipoPagamento t " +
+                    "where m.id in :ids " +
+                    "group by t.descricao";
+            formasPagamento = repository.executeQuery(MapDTO.class, jpql, ids);
+        }
+
 
     }
 
@@ -400,5 +471,13 @@ public class PdvMovimentoControll implements Serializable {
 
     public void setCaixas(List<PdvCaixa> caixas) {
         Caixas = caixas;
+    }
+
+    public PdvMovimento getMovimentoDetalhado() {
+        return movimentoDetalhado;
+    }
+
+    public List<MapDTO> getFormasPagamento() {
+        return formasPagamento;
     }
 }

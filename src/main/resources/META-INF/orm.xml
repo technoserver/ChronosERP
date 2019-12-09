@@ -214,6 +214,30 @@
 
     </named-native-query>
 
+    <named-native-query name="Pdv.formaPagamentoPorMovimento" result-set-mapping="formaPagamentoPorMovimentoMapping">
+        <query>
+            select
+            t.descricao || (CASE
+            WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '01') THEN ' (Visa) '
+            WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '02') THEN ' (Mastercard) '
+            WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '03') THEN ' (American Express) '
+            WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '04') THEN ' (Sorocred) '
+            WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '06') THEN ' (Elo) '
+            WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '07') THEN ' (Hipercard) '
+            WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '08') THEN ' (Aura) '
+            WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '09') THEN ' (Cabal) '
+            ELSE ''
+            END) as descricao,
+            sum(f.valor) as total
+            from pdv_forma_pagamento f
+            inner join pdv_venda_cabecalho v on v.id = f.id_pdv_venda_cabecalho
+            inner join pdv_movimento m on m.id = v.id_pdv_movimento
+            inner join tipo_pagamento t on t.id = f.id_tipo_pagamento
+            where m.id in (:ids)
+            group by t.descricao,f.forma,f.bandeira
+        </query>
+    </named-native-query>
+
 
     <sql-result-set-mapping name="produtoDTOMapping">
         <constructor-result target-class="com.chronos.erp.dto.ProdutoDTO">
@@ -317,6 +341,13 @@
             <column name="tipo" class="java.lang.String"/>
             <column name="origem" class="java.lang.String"/>
             <column name="observacao" class="java.lang.String"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="formaPagamentoPorMovimentoMapping">
+        <constructor-result target-class="com.chronos.erp.dto.MapDTO">
+            <column name="descricao" class="java.lang.String"/>
+            <column name="total" class="java.math.BigDecimal"/>
         </constructor-result>
     </sql-result-set-mapping>
 

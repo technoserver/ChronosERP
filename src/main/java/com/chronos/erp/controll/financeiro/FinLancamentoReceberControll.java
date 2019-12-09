@@ -1,6 +1,7 @@
 package com.chronos.erp.controll.financeiro;
 
 import com.chronos.erp.controll.AbstractControll;
+import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
@@ -10,7 +11,9 @@ import com.chronos.erp.util.Constants;
 import com.chronos.erp.util.jpa.Transactional;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
+import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -68,6 +71,40 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     private ContaCaixa contaCaixa;
     private NaturezaFinanceira naturezaFinanceira;
 
+    private Integer idmepresaFiltro;
+    private String cliente;
+
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        idmepresaFiltro = empresa.getId();
+        pesquisarEmpresas();
+    }
+
+    @Override
+    public ERPLazyDataModel<FinLancamentoReceber> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setDao(dao);
+            dataModel.setClazz(FinLancamentoReceber.class);
+        }
+
+        pesquisar();
+        return dataModel;
+    }
+
+
+    public void pesquisar() {
+        dataModel.getFiltros().clear();
+        if (!StringUtils.isEmpty(cliente)) {
+            dataModel.getFiltros().add(new Filtro("cliente.pessoa.nome", Filtro.LIKE, cliente));
+        }
+
+        idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        dataModel.addFiltro("empresa.id", idmepresaFiltro, Filtro.IGUAL);
+    }
 
     @Override
     public void doCreate() {
@@ -79,6 +116,7 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
         getObjeto().setEmpresa(empresa);
 
     }
+
 
     @Override
     public void doEdit() {
@@ -495,5 +533,21 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
 
     public void setRecebimentoSelecionado(FinParcelaRecebimento recebimentoSelecionado) {
         this.recebimentoSelecionado = recebimentoSelecionado;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
+    }
+
+    public String getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(String cliente) {
+        this.cliente = cliente;
     }
 }
