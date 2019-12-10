@@ -1,13 +1,16 @@
 package com.chronos.erp.controll.vendas;
 
 import com.chronos.erp.controll.AbstractControll;
+import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.modelo.entidades.CondicoesPagamento;
 import com.chronos.erp.modelo.entidades.CondicoesParcelas;
 import com.chronos.erp.modelo.entidades.FinTipoRecebimento;
+import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,6 +33,27 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<CondicoesP
     private CondicoesParcelas condicoesParcelas;
 
     private String nome;
+    private Integer idmepresaFiltro;
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        idmepresaFiltro = empresa.getId();
+        pesquisarEmpresas();
+    }
+
+    public ERPLazyDataModel<CondicoesPagamento> getDataModel() {
+
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setDao(dao);
+            dataModel.setClazz(CondicoesPagamento.class);
+        }
+
+        pesquisar();
+        return dataModel;
+    }
 
 
     public void pesquisar() {
@@ -37,6 +61,8 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<CondicoesP
         if (!StringUtils.isEmpty(nome)) {
             dataModel.addFiltro("nome", nome);
         }
+        idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        dataModel.addFiltro("empresa.id", idmepresaFiltro, Filtro.IGUAL);
     }
 
     @Override
@@ -138,5 +164,13 @@ public class VendaCondicoesPagamentoControll extends AbstractControll<CondicoesP
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
     }
 }
