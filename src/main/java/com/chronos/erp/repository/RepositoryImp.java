@@ -15,6 +15,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author john
@@ -439,6 +440,15 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     }
 
     @Override
+    public <T> List<T> getEntitysNamedQueryParam(Class<T> clazz, String namedQuery, int[] values, String paramentro) throws PersistenceException {
+
+        TypedQuery<T> query = em.createNamedQuery(namedQuery, clazz);
+        query.setParameter(paramentro, Arrays.asList(values));
+
+        return query.getResultList();
+    }
+
+    @Override
     public List<T> getEntitys(Class<T> clazz, List<Filtro> filtros) throws PersistenceException {
         Object atributos[] = null;
         return getEntitys(clazz, filtros, atributos);
@@ -512,6 +522,16 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
     @Override
     public List<T> getEntitys(Class<T> clazz, List<Filtro> filters, int first, int pageSize, String sortField, SortOrder sortOrder, Object[] joinFetch, Object[] atributos) throws PersistenceException {
         return getTs(clazz, clazz, filters, first, pageSize, sortField, sortOrder, joinFetch, atributos);
+    }
+
+    @Override
+    public <T1> List<T1> executeQuery(Class<T1> classToCast, String query, int[] ids) {
+        List<Integer> idss = Arrays.stream(ids)
+                .boxed()
+                .collect(Collectors.toList());
+        Query qr = em.createQuery(query);
+        qr.setParameter("ids", idss);
+        return qr.getResultList();
     }
 
     /**

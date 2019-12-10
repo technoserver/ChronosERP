@@ -67,6 +67,11 @@ public class Seguranca implements Serializable {
         return getUsuarioLogado().getCargo();
     }
 
+    public boolean isOperadorOuAdmin() {
+        return (getUsuarioLogado().getAdministrador() != null || getUsuarioLogado().getAdministrador().equals("S"))
+                || getUsuarioLogado().getOperador() != null;
+    }
+
     public boolean isTemAcessoEpresa() {
         return getUsuarioLogado().getAdministrador().equals("S");
     }

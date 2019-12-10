@@ -164,10 +164,11 @@
                 border-color: #0C1B25;
             }
 
-            .box-title{
-                 display: none;
+            .box-title {
+                display: none;
             }
-            .ui-inputnumber input{
+
+            .ui-inputnumber input {
                 font-size: 50px !important;
                 font-weight: bold !important;
             }
@@ -181,7 +182,14 @@
             <p:outputPanel rendered="#{pdvMovimentoControll.telaGrid}">
                 <div class="ibox-content">
                     <erp:msgPermissao permissao="#{true}"/>
-
+                    <h:panelGroup layout="block" class="row m-b" rendered="#{seguranca.administrador}">
+                        <div class="col-xs-12">
+                            <p:commandButton value="Movimento detalhado"
+                                             action="#{pdvMovimentoControll.detalheMovimentos}"
+                                             update=":formOutrasTelas:dialogOutrasTelas"
+                                             oncomplete="PF('dialogOutrasTelas').show()"/>
+                        </div>
+                    </h:panelGroup>
                     <div class="row m-b">
                         <erp:campoData styleClass="col-xs-6 col-sm-2 col-md-2"
                                        idComponente="dataInicial"
@@ -205,7 +213,8 @@
                                          itens="#{pdvMovimentoControll.caixaDomain}"/>
 
 
-                        <div class="col-xs-6 col-sm-4 col-md-4">
+                        <h:panelGroup layout="block" class="col-xs-6 col-sm-4 col-md-4"
+                                      rendered="#{seguranca.administrador}">
                             <h:outputLabel value="Operador"
                                            for="pdvoperador"/>
                             <div class="field-action">
@@ -221,7 +230,7 @@
                                 />
                             </div>
 
-                        </div>
+                        </h:panelGroup>
 
 
                     </div>
@@ -350,6 +359,167 @@
 
             </h:panelGroup>
         </h:panelGroup>
+    </ui:define>
+
+    <ui:define name="outrasTelas">
+        <h:form id="formOutrasTelas">
+            <p:dialog id="dialogOutrasTelas" header="Detalhar Movimento" widgetVar="dialogOutrasTelas"
+                      showEffect="slide" width="450" height="450" hideEffect="slide" closable="true"
+                      resizable="true" modal="true" dynamic="true" responsive="true">
+
+                <p:outputPanel id="panelOutrasTela">
+
+                    <div class="text-center  row">
+                        <div class="col-sm-12">
+
+                            <fieldset class="muted" style="padding:0 !important">
+                                <legend>
+                                    <h3 class="margin-top-0">
+                                        <i class="fa icon-moneybag margin-right-10px"></i>Total
+                                    </h3>
+                                </legend>
+                                <table width="100%" cellpadding="5" cellspacing="0" class="margin-bottom-10px">
+                                    <tbody>
+                                    <tr class="border-bottom-1px">
+                                        <td>
+                                            <strong class="m-l">Suprimentos:</strong>
+                                        </td>
+                                        <td class="nowrap m-r text-right" width="1">
+                                            R$
+                                            <span id="sub-total">
+                                                 <h:outputText
+                                                         value="#{pdvMovimentoControll.movimentoDetalhado.totalSuprimento}">
+                                                     <f:convertNumber pattern="#,##0.00"/>
+                                                 </h:outputText>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-bottom-1px">
+                                        <td><strong class="m-l">Acrescimos:</strong></td>
+                                        <td class="nowrap m-r text-right" width="1">
+                                            R$
+                                            <span id="descontos">
+                                                <h:outputText
+                                                        value="#{pdvMovimentoControll.movimentoDetalhado.totalAcrescimo}">
+                                                    <f:convertNumber pattern="#,##0.00"/>
+                                                </h:outputText>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-bottom-1px">
+                                        <td><strong class="m-l">Sangria:</strong></td>
+                                        <td class="nowrap m-r text-right" width="1">
+                                            R$
+                                            <span id="acrescimos">
+                                                    <h:outputText
+                                                            value="#{pdvMovimentoControll.movimentoDetalhado.totalSangria}">
+                                                        <f:convertNumber pattern="#,##0.00"/>
+                                                    </h:outputText>
+                                                </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-bottom-1px">
+                                        <td><strong class="m-l">Recebimentos:</strong></td>
+                                        <td class="nowrap m-r text-right" width="1">
+                                            R$
+                                            <span id="pagamentos">
+                                                    <h:outputText
+                                                            value="#{pdvMovimentoControll.movimentoDetalhado.totalRecebido}">
+                                                        <f:convertNumber pattern="#,##0.00"/>
+                                                    </h:outputText>
+                                                </span>
+
+                                        </td>
+                                    </tr>
+                                    <tr class="border-bottom-1px">
+                                        <td><strong class="m-l">Vendas:</strong></td>
+                                        <td class="nowrap m-r text-right" width="1">
+                                            R$
+                                            <span id="restante">
+                                                    <h:outputText
+                                                            value="#{pdvMovimentoControll.movimentoDetalhado.totalVenda}">
+                                                        <f:convertNumber pattern="#,##0.00"/>
+                                                    </h:outputText>
+                                                </span>
+
+                                        </td>
+                                    </tr>
+
+                                    <tr class="border-bottom-1px">
+                                        <td><strong class="m-l">Descontos:</strong></td>
+                                        <td class="nowrap m-r text-right" width="1">
+                                            R$
+                                            <span id="troco">
+                                                    <h:outputText
+                                                            value="#{pdvMovimentoControll.movimentoDetalhado.totalDesconto}">
+                                                        <f:convertNumber pattern="#,##0.00"/>
+                                                    </h:outputText>
+                                                </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-bottom-1px">
+                                        <td><strong class="m-l">Troco:</strong></td>
+                                        <td class="nowrap m-r text-right" width="1">
+                                            R$
+                                            <span>
+                                                    <h:outputText
+                                                            value="#{pdvMovimentoControll.movimentoDetalhado.totalTroco}">
+                                                        <f:convertNumber pattern="#,##0.00"/>
+                                                    </h:outputText>
+                                                </span>
+                                        </td>
+                                    </tr>
+
+                                    <tr class="border-bottom-1px">
+                                        <td><strong class="m-l">Total em Caixa:</strong></td>
+                                        <td class="nowrap m-r text-right" width="1">
+                                            R$
+                                            <span>
+                                                    <h:outputText
+                                                            value="#{pdvMovimentoControll.movimentoDetalhado.totalFinal}">
+                                                        <f:convertNumber pattern="#,##0.00"/>
+                                                    </h:outputText>
+                                                </span>
+
+                                        </td>
+                                    </tr>
+                                    <tr class="border-bottom-1px">
+                                        <td colspan="2" style="text-align: center"><h4
+                                                class="m-l">Formas de pagamento</h4></td>
+
+                                    </tr>
+                                    <ui:repeat value="#{pdvMovimentoControll.formasPagamento}" var="row">
+                                        <tr class="border-bottom-1px">
+                                            <td><strong class="m-l ">#{row.descricao}</strong></td>
+                                            <td class="nowrap m-r text-right" width="1">
+                                                R$
+                                                <span>
+                                                    <h:outputText value="#{row.valor}">
+                                                        <f:convertNumber pattern="#,##0.00"/>
+                                                    </h:outputText>
+                                                </span>
+
+                                            </td>
+                                        </tr>
+                                    </ui:repeat>
+                                    </tbody>
+                                </table>
+                            </fieldset>
+
+
+                        </div>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <p:commandButton value="Fechar"
+                                     oncomplete="PF('dialogOutrasTelas').hide(); "
+                                     process="@this"/>
+                </f:facet>
+
+            </p:dialog>
+
+        </h:form>
     </ui:define>
 
     <ui:define name="outrasTelas2">
