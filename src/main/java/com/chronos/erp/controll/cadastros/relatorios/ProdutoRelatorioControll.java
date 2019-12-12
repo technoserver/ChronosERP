@@ -36,6 +36,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
     private String inativo;
     private String tipoProduto;
     private String estoque;
+    private String resumido;
     private ProdutoGrupo grupo;
 
     private HashMap<String, Integer> listSubGrupos = new LinkedHashMap<>();
@@ -81,7 +82,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         definirOrdenacao(parametros, campo, orderEnum);
 
         String caminhoRelatorio = "/relatorios/cadastros";
-        String nomeRelatorio = "relacaoProdutos.jasper";
+        String nomeRelatorio = resumido.equals("N") ? "relacaoProdutos.jasper" : "relacaoProdutosResumido.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoProdutos.pdf");
     }
@@ -225,5 +226,13 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     public void setTipoOrdenacao(int tipoOrdenacao) {
         this.tipoOrdenacao = tipoOrdenacao;
+    }
+
+    public String getResumido() {
+        return resumido;
+    }
+
+    public void setResumido(String resumido) {
+        this.resumido = resumido;
     }
 }

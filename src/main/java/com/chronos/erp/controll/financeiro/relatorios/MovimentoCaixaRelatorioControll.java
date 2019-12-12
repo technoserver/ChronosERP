@@ -131,8 +131,6 @@ public class MovimentoCaixaRelatorioControll extends AbstractRelatorioControll i
 
 
         try {
-            Date dataInicial = new SimpleDateFormat("yyyy-MM-dd").parse("0001-01-01");
-            Date dataFinal = new Date();
             parametros = new HashMap<>();
             parametros.put("idmovimento", id);
 

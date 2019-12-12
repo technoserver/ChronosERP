@@ -497,6 +497,10 @@
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{balcaoControll.venda}"/>
                                 </p:menuitem>
+                                <p:menuitem value="Pedido"
+                                            target="_blank"
+                                            actionListener="#{vendaRelatorioControll.imprimirPedidoPdv(row.id)}"
+                                            icon="fa fa-print" ajax="false"/>
                                 <p:menuitem value="Emitir NFCe"
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.idnfe and row.sicronizado eq 'N'}"

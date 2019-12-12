@@ -139,6 +139,7 @@ public class EntradaNotaFiscalService implements Serializable {
         String descricao = "Entrada da NFe :" + nfe.getNumero() + " Fornecedor :" + nfe.getEmitente().getNome();
         nfe.setStatusNota(StatusTransmissao.ENCERRADO.getCodigo());
 
+        nfe = repository.atualizar(nfe);
 
         if (!nfe.getListaDuplicata().isEmpty()) {
 
@@ -146,8 +147,6 @@ public class EntradaNotaFiscalService implements Serializable {
         }
 
         produtoFornecedorService.atualizarUtimaCompra(nfe);
-
-        nfe = repository.atualizar(nfe);
 
 
         if (inclusao) {

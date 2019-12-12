@@ -117,6 +117,7 @@ public class ImportaXMLNFe {
             nfeCabecalho.setValorCofins(FormatValor.getInstance().formatarValorToBigDecimal(icmsTot.getVCOFINS()));
             nfeCabecalho.setValorDespesasAcessorias(FormatValor.getInstance().formatarValorToBigDecimal(icmsTot.getVOutro()));
             nfeCabecalho.setValorTotal(FormatValor.getInstance().formatarValorToBigDecimal(icmsTot.getVNF()));
+            nfeCabecalho.setValorFcp(FormatValor.getInstance().formatarValorToBigDecimal(icmsTot.getVFCP()));
         }
 
         //cabecalho - totais issqn
@@ -400,6 +401,12 @@ public class ImportaXMLNFe {
             impostoIcms.setBaseCalculoIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS00().getVBC()));
             impostoIcms.setAliquotaIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS00().getPICMS()));
             impostoIcms.setValorIcms(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS00().getVICMS()));
+
+            if (icms.getICMS00().getVFCP() != null) {
+                impostoIcms.setPercentualFcp(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS00().getPFCP()));
+                impostoIcms.setValorFcp(FormatValor.getInstance().formatarValorToBigDecimal(icms.getICMS00().getVFCP()));
+            }
+
         }
         if (icms.getICMS10() != null) {
             impostoIcms.setOrigemMercadoria(Integer.valueOf(icms.getICMS10().getOrig()));
