@@ -1,6 +1,7 @@
 package com.chronos.erp.controll.pdv;
 
 import com.chronos.erp.controll.AbstractControll;
+import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.modelo.entidades.PdvCaixa;
 import com.chronos.erp.modelo.entidades.PdvConfiguracao;
 import com.chronos.erp.repository.Filtro;
@@ -32,6 +33,17 @@ public class PdvCaixaControll extends AbstractControll<PdvCaixa> implements Seri
         }
     }
 
+    @Override
+    public ERPLazyDataModel<PdvCaixa> getDataModel() {
+        if (dataModel == null) {
+            dataModel = new ERPLazyDataModel<>();
+            dataModel.setClazz(PdvCaixa.class);
+            dataModel.setDao(dao);
+        }
+        dataModel.getFiltros().clear();
+        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        return dataModel;
+    }
 
     private boolean validar() {
         List<Filtro> filtros = new ArrayList<>();

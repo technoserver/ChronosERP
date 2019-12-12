@@ -19,6 +19,7 @@ public class ProdutoResumDTO implements Serializable {
     private String descricaoPdv;
     private String ncm;
     private String cest;
+    private String gtin;
     private BigDecimal verificado;
     private BigDecimal valorVenda;
     private BigDecimal custo;
@@ -43,7 +44,7 @@ public class ProdutoResumDTO implements Serializable {
         prod.setTributGrupoTributario(grupoTributario);
         prod.setCustoUnitario(custo);
         prod.setEncargosVenda(encargos);
-
+        prod.setGtin(gtin);
 
         return prod;
     }
@@ -110,6 +111,14 @@ public class ProdutoResumDTO implements Serializable {
 
     public void setSubGrupo(ProdutoSubGrupo subGrupo) {
         this.subGrupo = subGrupo;
+    }
+
+    public String getGtin() {
+        return gtin;
+    }
+
+    public void setGtin(String gtin) {
+        this.gtin = gtin;
     }
 
     public TributGrupoTributario getGrupoTributario() {
