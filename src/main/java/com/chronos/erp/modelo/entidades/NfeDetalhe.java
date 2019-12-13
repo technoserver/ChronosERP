@@ -97,6 +97,8 @@ public class NfeDetalhe implements Serializable {
     private BigDecimal percentualDevolvido;
     @Column(name = "VALOR_IPI_DEVOLVIDO")
     private BigDecimal valorIpiDevolvido;
+    @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")
+    private String classificacaoContabilConta;
     @JoinColumn(name = "ID_NFE_CABECALHO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private NfeCabecalho nfeCabecalho;
@@ -438,6 +440,14 @@ public class NfeDetalhe implements Serializable {
 
     public void setValorIpiDevolvido(BigDecimal valorIpiDevolvido) {
         this.valorIpiDevolvido = valorIpiDevolvido;
+    }
+
+    public String getClassificacaoContabilConta() {
+        return classificacaoContabilConta;
+    }
+
+    public void setClassificacaoContabilConta(String classificacaoContabilConta) {
+        this.classificacaoContabilConta = classificacaoContabilConta;
     }
 
     public NfeCabecalho getNfeCabecalho() {

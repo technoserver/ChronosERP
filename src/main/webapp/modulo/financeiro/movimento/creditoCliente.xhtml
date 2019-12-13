@@ -135,6 +135,20 @@
                         </h:outputLabel>
                     </p:column>
 
+                    <p:column headerText="Ações" rendered="#{seguranca.administrador}" styleClass="text-center">
+                        <p:commandLink title="Excluir" action="#{creditoPessoaControll.excluirMocimento()}"
+                                       class="btn btn-default"
+                                       update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                       rendered="#{row.tipoMovimento eq 'C'}"
+                        >
+                            <i class="fa fa-times"></i>
+                            <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{creditoPessoaControll.movimentoSelecionado}"/>
+                        </p:commandLink>
+                    </p:column>
+
                 </p:dataTable>
 
             </h:panelGroup>

@@ -463,6 +463,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             nfeDetalhe.setNfeCabecalho(getObjeto());
 
             nfeDetalhe.setCfop(getObjeto().getTributOperacaoFiscal().getCfop());
+            nfeDetalhe.setClassificacaoContabilConta(getObjeto().getTributOperacaoFiscal().getClassificacaoContabilConta());
 
             if (getObjeto().getTributOperacaoFiscal().getObrigacaoFiscal()) {
                 nfeDetalheImpostoIcms = new NfeDetalheImpostoIcms();

@@ -48,6 +48,8 @@ public class CreditoPessoaControll extends AbstractControll<ContaPessoa> impleme
     private MovimentoContaPessoa movimento;
     private List<MovimentoContaPessoa> movimentos;
 
+    private MovimentoContaPessoa movimentoSelecionado;
+
 
     @Inject
     private ContaPessoaService service;
@@ -112,10 +114,10 @@ public class CreditoPessoaControll extends AbstractControll<ContaPessoa> impleme
         }
     }
 
-    public void estornarValor() {
+    public void excluirMocimento() {
         try {
-            service.lancaMovimento(getObjeto(), valor, TipoLancamento.CREDITO, "0", "0");
-            Mensagem.addInfoMessage("Estorno de credito realizado com sucesso");
+            service.excluirMovimento(getObjeto(), movimentoSelecionado);
+            Mensagem.addInfoMessage("Exclusão realizada com sucesso");
         } catch (Exception ex) {
             logger.error("erro ao estornar movimento de credito ", ex);
             throw new RuntimeException("erro ao estornar movimento de credito\n " + ex.getMessage());
@@ -160,5 +162,13 @@ public class CreditoPessoaControll extends AbstractControll<ContaPessoa> impleme
 
     public void setValor(BigDecimal valor) {
         this.valor = valor;
+    }
+
+    public MovimentoContaPessoa getMovimentoSelecionado() {
+        return movimentoSelecionado;
+    }
+
+    public void setMovimentoSelecionado(MovimentoContaPessoa movimentoSelecionado) {
+        this.movimentoSelecionado = movimentoSelecionado;
     }
 }

@@ -301,6 +301,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             nfeDetalhe = new NfeDetalhe();
             nfeDetalhe.setNfeCabecalho(getObjeto());
             nfeDetalhe.setQuantidadeComercial(BigDecimal.ONE);
+            nfeDetalhe.setClassificacaoContabilConta(getObjeto().getTributOperacaoFiscal().getClassificacaoContabilConta());
             if (getObjeto().getFinalidadeEmissao() > 1) {
                 instanciaImpostos();
             }
@@ -719,7 +720,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
 
         try {
-            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
+            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn", "classificacaoContabilConta"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
@@ -737,33 +738,42 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     }
 
     public void selecionaDestinatario(SelectEvent event) {
-        pessoaCliente = (PessoaCliente) event.getObject();
-        Cliente cliente = new Cliente();
-        cliente.setId(pessoaCliente.getId());
-        getObjeto().setCliente(cliente);
-
-        getObjeto().getDestinatario().setCpfCnpj(pessoaCliente.getCpfCnpj());
-        getObjeto().getDestinatario().setNome(pessoaCliente.getNome());
-        getObjeto().getDestinatario().setLogradouro(pessoaCliente.getLogradouro());
-        getObjeto().getDestinatario().setComplemento(pessoaCliente.getComplemento());
-        getObjeto().getDestinatario().setNumero(pessoaCliente.getNumero());
-        getObjeto().getDestinatario().setBairro(pessoaCliente.getBairro());
-        getObjeto().getDestinatario().setNomeMunicipio(pessoaCliente.getCidade());
-        getObjeto().getDestinatario().setCodigoMunicipio(pessoaCliente.getMunicipioIbge());
-        getObjeto().getDestinatario().setUf(pessoaCliente.getUf());
-        getObjeto().getDestinatario().setCep(pessoaCliente.getCep());
-        getObjeto().getDestinatario().setTelefone(pessoaCliente.getFone());
-        getObjeto().getDestinatario().setInscricaoEstadual(pessoaCliente.getRgIe());
-        getObjeto().getDestinatario().setEmail(pessoaCliente.getEmail());
-        getObjeto().getDestinatario().setCodigoPais(1058);
-        getObjeto().getDestinatario().setNomePais("Brazil");
 
 
-        getObjeto().setLocalDestino(LocalDestino.getByUf(empresa.buscarEnderecoPrincipal().getUf(), pessoaCliente.getUf()));
+        try {
+            pessoaCliente = (PessoaCliente) event.getObject();
+            Cliente cliente = new Cliente();
+            cliente.setId(pessoaCliente.getId());
+            getObjeto().setCliente(cliente);
 
-        nfeService.definirIndicadorIe(getObjeto().getDestinatario(), getObjeto().getModeloDocumento());
+            getObjeto().getDestinatario().setCpfCnpj(pessoaCliente.getCpfCnpj());
+            getObjeto().getDestinatario().setNome(pessoaCliente.getNome());
+            getObjeto().getDestinatario().setLogradouro(pessoaCliente.getLogradouro());
+            getObjeto().getDestinatario().setComplemento(pessoaCliente.getComplemento());
+            getObjeto().getDestinatario().setNumero(pessoaCliente.getNumero());
+            getObjeto().getDestinatario().setBairro(pessoaCliente.getBairro());
+            getObjeto().getDestinatario().setNomeMunicipio(pessoaCliente.getCidade());
+            getObjeto().getDestinatario().setCodigoMunicipio(pessoaCliente.getMunicipioIbge());
+            getObjeto().getDestinatario().setUf(pessoaCliente.getUf());
+            getObjeto().getDestinatario().setCep(pessoaCliente.getCep());
+            getObjeto().getDestinatario().setTelefone(pessoaCliente.getFone());
+            getObjeto().getDestinatario().setInscricaoEstadual(pessoaCliente.getRgIe());
+            getObjeto().getDestinatario().setEmail(pessoaCliente.getEmail());
+            getObjeto().getDestinatario().setCodigoPais(1058);
+            getObjeto().getDestinatario().setNomePais("Brazil");
 
-        dadosSalvos = false;
+
+            getObjeto().setLocalDestino(LocalDestino.getByUf(empresa.buscarEnderecoPrincipal().getUf(), pessoaCliente.getUf()));
+            nfeService.definirIndicadorIe(getObjeto().getDestinatario(), getObjeto().getModeloDocumento());
+            dadosSalvos = false;
+        } catch (ChronosException e) {
+            if (e instanceof ChronosException) {
+                Mensagem.addErrorMessage("", e);
+            } else {
+                throw new RuntimeException("Erro definir destinatário", e);
+            }
+        }
+
 
     }
 

@@ -187,6 +187,22 @@ public abstract class AbstractControll<T> implements Serializable {
     private HashMap<String, String> mdfeCodigoUnidadeMedida;
     private HashMap<String, Integer> mdfeResponsavelSeguro;
 
+    //contabil
+    private HashMap<String, String> informarContaContabil;
+    private HashMap<String, String> periodicidadeInciceContabil;
+    private HashMap<String, String> tipoPlanoContaSped;
+    private HashMap<String, String> situacaoContaContabil;
+    private HashMap<String, String> naturezaContaContabil;
+    private HashMap<String, String> patrimonioResultadoContaContabil;
+    private HashMap<String, String> dfcContaContabil;
+    private HashMap<String, String> criterioLancamentoFechamento;
+    private HashMap<String, String> tipoLancamentoProgramado;
+    private HashMap<String, String> tipoLancamento;
+    private HashMap<String, String> formaCalculoDre;
+    private HashMap<String, String> sinalDre;
+    private HashMap<String, String> contabilLivroFormaEscrituracao;
+    private HashMap<String, String> aberturaFechamento;
+
     protected abstract Class<T> getClazz();
 
     protected abstract String getFuncaoBase();
@@ -738,6 +754,73 @@ public abstract class AbstractControll<T> implements Serializable {
         proprietarioTipo.put("Agregado", "0");
         proprietarioTipo.put("Independente", "1");
         proprietarioTipo.put("Outros", "2");
+
+
+        informarContaContabil = new HashMap<>();
+        informarContaContabil.put("Código", "C");
+        informarContaContabil.put("Máscara", "M");
+
+        periodicidadeInciceContabil = new HashMap<>();
+        periodicidadeInciceContabil.put("Diário", "D");
+        periodicidadeInciceContabil.put("Mensal", "M");
+
+        tipoPlanoContaSped = new HashMap<>();
+        tipoPlanoContaSped.put("Sintética", "S");
+        tipoPlanoContaSped.put("Análitica", "A");
+
+        situacaoContaContabil = new HashMap<>();
+        situacaoContaContabil.put("Ativa", "A");
+        situacaoContaContabil.put("Inativa", "I");
+
+        naturezaContaContabil = new HashMap<>();
+        naturezaContaContabil.put("Credora", "C");
+        naturezaContaContabil.put("Devedora", "D");
+
+        patrimonioResultadoContaContabil = new HashMap<>();
+        patrimonioResultadoContaContabil.put("Patrimônio", "P");
+        patrimonioResultadoContaContabil.put("Resultado", "R");
+
+        dfcContaContabil = new HashMap<>();
+        dfcContaContabil.put("Não participa", "N");
+        dfcContaContabil.put("Atividades Operacionais", "O");
+        dfcContaContabil.put("Atividades de Financiamento", "F");
+        dfcContaContabil.put("Atividades de Investimento", "I");
+
+        criterioLancamentoFechamento = new HashMap<>();
+        criterioLancamentoFechamento.put("Livre", "L");
+        criterioLancamentoFechamento.put("Avisar", "A");
+        criterioLancamentoFechamento.put("Não permitir (para lançamentos efetuados fora do período informado)", "N");
+
+        tipoLancamentoProgramado = new HashMap<>();
+        tipoLancamentoProgramado.put("Um Débito para Vários Créditos", "UDVC");
+        tipoLancamentoProgramado.put("Um Crédito para Vários Débitos", "UCVD");
+        tipoLancamentoProgramado.put("Um Débito para Um Crédito", "UDUC");
+        tipoLancamentoProgramado.put("Vários Débitos para Vários Créditos", "VDVC");
+
+        tipoLancamento = new HashMap<>();
+        tipoLancamento.put("Crédito", "C");
+        tipoLancamento.put("Débito", "D");
+
+        formaCalculoDre = new HashMap<>();
+        formaCalculoDre.put("Sintética [soma contas filhas - sinal de mais ou de menos]", "S");
+        formaCalculoDre.put("Vinculada [vinculada a conta do balancete - recupera o sinal da conta mãe]", "V");
+        formaCalculoDre.put("Resultado de Operações da DRE [soma das operações - sinal de igual]", "R");
+
+        sinalDre = new HashMap<>();
+        sinalDre.put("+", "+");
+        sinalDre.put("-", "-");
+        sinalDre.put("=", "=");
+
+        contabilLivroFormaEscrituracao = new HashMap<>();
+        contabilLivroFormaEscrituracao.put("Diário Geral", "G");
+        contabilLivroFormaEscrituracao.put("Diário com Escrituração Resumida", "R");
+        contabilLivroFormaEscrituracao.put("Diário Auxiliar", "A");
+        contabilLivroFormaEscrituracao.put("Razão Auxiliar", "Z");
+        contabilLivroFormaEscrituracao.put("Livro de Balancetes Diários e Balanços", "B");
+
+        aberturaFechamento = new HashMap<>();
+        aberturaFechamento.put("Abertura", "A");
+        aberturaFechamento.put("Fechamento", "F");
 
 
     }
@@ -1480,6 +1563,63 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public HashMap<String, Integer> getOsStatus() {
         return osStatus;
+    }
+
+
+    public HashMap<String, String> getInformarContaContabil() {
+        return informarContaContabil;
+    }
+
+    public HashMap<String, String> getPeriodicidadeInciceContabil() {
+        return periodicidadeInciceContabil;
+    }
+
+    public HashMap<String, String> getTipoPlanoContaSped() {
+        return tipoPlanoContaSped;
+    }
+
+    public HashMap<String, String> getSituacaoContaContabil() {
+        return situacaoContaContabil;
+    }
+
+    public HashMap<String, String> getNaturezaContaContabil() {
+        return naturezaContaContabil;
+    }
+
+    public HashMap<String, String> getPatrimonioResultadoContaContabil() {
+        return patrimonioResultadoContaContabil;
+    }
+
+    public HashMap<String, String> getDfcContaContabil() {
+        return dfcContaContabil;
+    }
+
+    public HashMap<String, String> getCriterioLancamentoFechamento() {
+        return criterioLancamentoFechamento;
+    }
+
+    public HashMap<String, String> getTipoLancamentoProgramado() {
+        return tipoLancamentoProgramado;
+    }
+
+    public HashMap<String, String> getTipoLancamento() {
+        return tipoLancamento;
+    }
+
+    public HashMap<String, String> getFormaCalculoDre() {
+        return formaCalculoDre;
+    }
+
+    public HashMap<String, String> getSinalDre() {
+        return sinalDre;
+    }
+
+    public HashMap<String, String> getContabilLivroFormaEscrituracao() {
+        return contabilLivroFormaEscrituracao;
+    }
+
+    public HashMap<String, String> getAberturaFechamento() {
+        return aberturaFechamento;
     }
 
     public List<Empresa> getListaEmpresas() {

@@ -54,6 +54,8 @@ public class TributOperacaoFiscal implements Serializable {
     private Boolean calculoIrrf;
     @Column(name = "OBSERVACAO")
     private String observacao;
+    @Column(name = "CLASSIFICACAO_CONTABIL_CONTA")
+    private String classificacaoContabilConta;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "tributOperacaoFiscal", cascade = CascadeType.ALL)
     private TributPisCodApuracao tributPisCodApuracao;
@@ -112,7 +114,7 @@ public class TributOperacaoFiscal implements Serializable {
     }
 
 
-    public TributOperacaoFiscal(Integer id, String descricao, Integer cfop, Boolean obrigacaoFiscal, Boolean destacaIpi, Boolean destacaPisCofins, Boolean calculoIssqn) {
+    public TributOperacaoFiscal(Integer id, String descricao, Integer cfop, Boolean obrigacaoFiscal, Boolean destacaIpi, Boolean destacaPisCofins, Boolean calculoIssqn, String classificacaoContabilConta) {
         this.id = id;
         this.descricao = descricao;
         this.cfop = cfop;
@@ -120,6 +122,7 @@ public class TributOperacaoFiscal implements Serializable {
         this.destacaIpi = destacaIpi;
         this.destacaPisCofins = destacaPisCofins;
         this.calculoIssqn = calculoIssqn;
+        this.classificacaoContabilConta = classificacaoContabilConta;
     }
 
     public TributOperacaoFiscal(Integer id, String descricao, Integer cfop, Boolean obrigacaoFiscal, Boolean destacaIpi, Boolean destacaPisCofins, Boolean calculoIssqn, Boolean estoque, Boolean estoqueVerificado) {
@@ -294,6 +297,14 @@ public class TributOperacaoFiscal implements Serializable {
 
     public void setTributIss(TributIss tributIss) {
         this.tributIss = tributIss;
+    }
+
+    public String getClassificacaoContabilConta() {
+        return classificacaoContabilConta;
+    }
+
+    public void setClassificacaoContabilConta(String classificacaoContabilConta) {
+        this.classificacaoContabilConta = classificacaoContabilConta;
     }
 
     @Override
