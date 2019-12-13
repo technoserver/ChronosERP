@@ -61,7 +61,7 @@ public class TributacaoControll extends AbstractControll<TributOperacaoFiscal> i
             dataModel.setClazz(TributOperacaoFiscal.class);
             dataModel.setDao(dao);
         }
-        dataModel.setAtributos(new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
+        dataModel.setAtributos(new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn", "classificacaoContabilConta"});
         return dataModel;
     }
 

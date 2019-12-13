@@ -38,9 +38,13 @@ public class PdvMovimentoControll implements Serializable {
     private Repository<PdvCaixa> caixaRepository;
     @Inject
     private Repository<PdvOperador> operadorRepository;
-
     @Inject
     private MovimentoService service;
+
+    @Inject
+    private Repository<PdvSuprimento> pdvSuprimentoRepository;
+    @Inject
+    private Repository<PdvSangria> pdvSangriaRepository;
 
     private ERPLazyDataModel<PdvMovimento> dataModel;
 
@@ -166,7 +170,7 @@ public class PdvMovimentoControll implements Serializable {
 
         filtros.add(new Filtro("empresa.id", empresa.getId()));
         if (!StringUtils.isEmpty(status)) {
-            dataModel.getFiltros().add(new Filtro("statusMovimento", status));
+            filtros.add(new Filtro("statusMovimento", Filtro.IGUAL, status));
         }
 
         if (dataInicial != null) {
@@ -219,9 +223,31 @@ public class PdvMovimentoControll implements Serializable {
                     "where m.id in :ids " +
                     "group by t.descricao";
             formasPagamento = repository.executeQuery(MapDTO.class, jpql, ids);
+
+            jpql = "SELECT new com.chronos.erp.dto.MapDTO('Dinheiro',sum(s.valor *-1)) from PdvSangria s " +
+                    "inner join s.pdvMovimento m " +
+                    "where m.id in :ids ";
+            List<MapDTO> sangrias = repository.executeQuery(MapDTO.class, jpql, ids);
+
+            jpql = "SELECT new com.chronos.erp.dto.MapDTO('Dinheiro',sum(s.valor)) from PdvSuprimento s " +
+                    "inner join s.pdvMovimento m " +
+                    "where m.id in :ids ";
+            List<MapDTO> suprimentos = repository.executeQuery(MapDTO.class, jpql, ids);
+
+            BigDecimal totalSangria = sangrias.stream().map(s -> Optional.ofNullable(s.getValor()).orElse(BigDecimal.ZERO)).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+            BigDecimal totalSuprimentos = suprimentos.stream().map(s -> Optional.ofNullable(s.getValor()).orElse(BigDecimal.ZERO)).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+
+            BigDecimal total = totalSuprimentos.add(totalSangria);
+
+            Optional<MapDTO> dinheiro = formasPagamento.stream().filter(p -> p.getDescricao().equals("Dinheiro")).findFirst();
+
+            if (dinheiro.isPresent()) {
+                dinheiro.get().setValor(dinheiro.get().getValor().add(total));
+            } else {
+                formasPagamento.add(new MapDTO("Dinheiro", total));
+            }
+
         }
-
-
     }
 
 
