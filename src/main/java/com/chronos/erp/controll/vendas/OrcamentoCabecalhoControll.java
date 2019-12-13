@@ -129,11 +129,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
             dataModel.setDao(dao);
         }
 
-        if (dataModel.getFiltros().isEmpty()) {
-            dataModel.addFiltro("tipo", Optional.ofNullable(tipo).orElse("O"), Filtro.IGUAL);
-        }
-
-
+        pesquisar();
         return dataModel;
     }
 

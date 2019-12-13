@@ -404,20 +404,22 @@
                                          idComponente="caixa"
                                          itens="#{balcaoControll.caixaDomain}"/>
 
-                        <erp:campoSelect styleClass="col-xs-6 col-sm-2 col-md-2"
-                                         label="Status"
-                                         nomeAtributo="#{balcaoControll.status}"
-                                         idComponente="status"
-                                         itens="#{balcaoControll.statusDomain}"/>
 
-                        <div class="col-xs-6 col-sm-4 col-md-4">
-                            <h:outputLabel value="Operador"
-                                           for="pdvoperador"/>
+                        <erp:campoSelect styleClass="col-xs-6 col-sm-3 col-md-3"
+                                         label="Operador"
+                                         rendered="#{seguranca.administrador}"
+                                         nomeAtributo="#{balcaoControll.idoperador}"
+                                         idComponente="idoperador"
+                                         itens="#{balcaoControll.operadorDomain}"/>
+
+                        <div class="col-xs-6 col-sm-3 col-md-3">
+                            <h:outputLabel value="Status"
+                                           for="status"/>
                             <div class="field-action">
-                                <h:selectOneMenu id="pdvoperador"
+                                <h:selectOneMenu id="status"
                                                  class="form-control"
-                                                 value="#{balcaoControll.idoperador}">
-                                    <f:selectItems value="#{balcaoControll.operadorDomain}"/>
+                                                 value="#{balcaoControll.status}">
+                                    <f:selectItems value="#{balcaoControll.statusDomain}"/>
 
                                 </h:selectOneMenu>
                                 <p:commandButton value="Pesquisar" style="margin-left: 10px"
@@ -429,6 +431,8 @@
                             </div>
 
                         </div>
+
+
                     </div>
 
                     <p:dataTable

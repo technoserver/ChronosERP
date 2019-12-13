@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Conta contabil
+    </ui:define>
+
+    <ui:define name="tela">
+        #{contabilContaControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        CFOP
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <erp:gridDados controller="#{contabilContaControll}"
+                       idDataTable="dataTableCest"
+                       nomeFuncao="CFOP"
+                       id="telaGrid"
+        >
+
+            <p:column headerText="Descrição">
+                <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+
+            <p:column headerText="Classificacao">
+                <h:outputLabel value="#{row.classificacao}"/>
+            </p:column>
+
+
+        </erp:gridDados>
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+        <erp:telaInclusaoAlteracao controller="#{contabilContaControll}"
+                                   nomeFuncao="CFOP"
+                                   id="telaDetalhe"
+        >
+
+            <div class="row">
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-3 col-md-3"
+                                  label="Plano Conta"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{contabilContaControll}"
+                                  completeMethod="getListaPlanoConta"
+                                  nomeAtributo="#{contabilContaControll.objeto.planoConta}"
+                                  idComponente="planoConta">
+
+                    <p:ajax event="itemSelecionado"
+                            listener="#{contabilContaControll.selecionarPlano}"
+                            update="formCentro:telaDetalhe:campoContas:contas,formCentro:telaDetalhe:classificacao:classificacao"/>
+                </erp:autoComplete>
+
+                <erp:campoSelectConverter itens="#{contabilContaControll.contas}"
+                                          id="campoContas"
+                                          styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          idComponente="contas"
+                                          nomeAtributo="#{contabilContaControll.objeto.contabilConta}"
+                                          label="Conta Pai"
+                                          requerido="#{(empty contabilContaControll.objeto.planoConta and contabilContaControll.objeto.planoConta.niveis > 1)? true:false}"
+                                          labelItens="#{obj.descricao}"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                idComponente="descricao" label="Descricao"
+                                nomeAtributo="#{contabilContaControll.objeto.descricao}"
+                                tamanhoMaximo="100"/>
+
+
+            </div>
+            <div class="row">
+
+                <erp:campoMascara styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  nomeAtributo="#{contabilContaControll.objeto.classificacao}"
+                                  label="Classificacao"
+                                  mascara="#{contabilContaControll.mascara}"
+                                  id="classificacao"
+                                  desabilitado="#{contabilContaControll.classificacao}"
+                                  idComponente="classificacao"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="codigoReduzido" label="Código reduzido"
+                                nomeAtributo="#{contabilContaControll.objeto.codigoReduzido}"
+                                tamanhoMaximo="10"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                idComponente="codigoEfd" label="Código EFD"
+                                nomeAtributo="#{contabilContaControll.objeto.codigoEfd}"
+                                tamanhoMaximo="2"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 nomeAtributo="#{contabilContaControll.objeto.tipo}"
+                                 idComponente="tipo"
+                                 label="Tipo"
+                                 itens="#{contabilContaControll.tipoPlanoContaSped}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 nomeAtributo="#{contabilContaControll.objeto.natureza}"
+                                 idComponente="natureza"
+                                 label="Natureza"
+                                 itens="#{contabilContaControll.tipoPlanoContaSped}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 nomeAtributo="#{contabilContaControll.objeto.natureza}"
+                                 idComponente="natureza"
+                                 label="Natureza"
+                                 itens="#{contabilContaControll.naturezaContaContabil}"/>
+            </div>
+
+            <div class="row">
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 nomeAtributo="#{contabilContaControll.objeto.patrimonioResultado}"
+                                 idComponente="patrimonioResultado"
+                                 label="Resultado patrimonio"
+                                 itens="#{contabilContaControll.patrimonioResultadoContaContabil}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 nomeAtributo="#{contabilContaControll.objeto.livroCaixa}"
+                                 idComponente="livroCaixa"
+                                 label="Livro Caixa"
+                                 itens="#{contabilContaControll.simNao}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 nomeAtributo="#{contabilContaControll.objeto.dfc}"
+                                 idComponente="dfc"
+                                 label="DFC"
+                                 itens="#{contabilContaControll.dfcContaContabil}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 nomeAtributo="#{contabilContaControll.objeto.situacao}"
+                                 idComponente="situacao"
+                                 label="Situação"
+                                 itens="#{contabilContaControll.situacaoContaContabil}"/>
+            </div>
+
+        </erp:telaInclusaoAlteracao>
+
+
+    </ui:define>
+
+</ui:composition>

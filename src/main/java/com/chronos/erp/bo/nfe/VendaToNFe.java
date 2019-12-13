@@ -240,7 +240,7 @@ public class VendaToNFe extends ManualCDILookup {
             itemNfe.setQuantidadeTributavel(item.getQuantidade());
             itemNfe.setProduto(item.getProduto());
             itemNfe.pegarInfoProduto();
-
+            itemNfe.setClassificacaoContabilConta(operacaoFiscal.getClassificacaoContabilConta());
             BigDecimal valorVenda = item.getValor();
             valorVenda = valorVenda == null ? itemNfe.getProduto().getValorVenda() : valorVenda;
             itemNfe.setValorUnitarioComercial(valorVenda);

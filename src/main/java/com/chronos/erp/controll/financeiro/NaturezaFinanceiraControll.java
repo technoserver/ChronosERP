@@ -60,6 +60,7 @@ public class NaturezaFinanceiraControll extends AbstractControll<NaturezaFinance
     public void doEdit() {
         super.doEdit();
         definirMascara();
+        definirNaturezas(getObjeto().getPlanoNaturezaFinanceira().getNiveis());
     }
 
     @Override
@@ -112,11 +113,15 @@ public class NaturezaFinanceiraControll extends AbstractControll<NaturezaFinance
             PlanoNaturezaFinanceira plano = (PlanoNaturezaFinanceira) event.getObject();
             List<Filtro> filtros = new ArrayList<>();
             int nivel = plano.getNiveis() >= 1 ? plano.getNiveis() - 1 : 1;
-            naturezas = nivel == 0 ? null : dao.getEntitys(NaturezaFinanceira.class, "planoNaturezaFinanceira.niveis", nivel);
-            definirMascara();
+            definirNaturezas(nivel);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void definirNaturezas(int nivel) {
+        naturezas = nivel == 0 ? null : dao.getEntitys(NaturezaFinanceira.class, "planoNaturezaFinanceira.niveis", nivel);
+        definirMascara();
     }
 
     public void buscarNaturezas() {

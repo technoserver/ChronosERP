@@ -155,8 +155,6 @@ public class NfeService implements Serializable {
         }
 
 
-
-
     }
 
     public NfeCabecalho dadosPadroes(Empresa empresa, ModeloDocumento modelo) throws ChronosException, CertificadoException {
@@ -979,9 +977,11 @@ public class NfeService implements Serializable {
         FacesUtil.setConfEmissor(null);
     }
 
-    public void definirIndicadorIe(NfeDestinatario destinatario, ModeloDocumento modelo) {
+    public void definirIndicadorIe(NfeDestinatario destinatario, ModeloDocumento modelo) throws ChronosException {
         if (modelo == ModeloDocumento.NFE) {
-
+            if (destinatario.getCpfCnpj() == null) {
+                throw new ChronosException("CPF/CNPJ do destinatário não informado");
+            }
             if (destinatario.getCpfCnpj().length() == 14) {
                 if (destinatario.getInscricaoEstadual() == null || destinatario.getInscricaoEstadual().equals("")) {
                     destinatario.setIndicadorIe(9);
