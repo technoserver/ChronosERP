@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+
+    <ul class="nav nav-second-level collapse ">
+        <li class="${fn:contains(view.viewId,'modulo/contabil/')?'active':''}">
+
+
+            <erp:subMenu caminho="/modulo/contabil/planoContabil"
+                         label="Plano conta"
+                         funcao="planoContabil"/>
+
+
+            <erp:subMenu caminho="/modulo/contabil/contaContabil"
+                         label="Conta contabil"
+                         funcao="contaContabil"/>
+
+
+        </li>
+    </ul>
+
+
+</ui:composition>

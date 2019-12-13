@@ -78,9 +78,9 @@ public class HomeControll extends AbstractControll<Colaborador> implements Seria
 
         possueAviso = !avisos.isEmpty();
 
-        valorTotalVendaNoAno = vendaRepository.valorTotalNoAno();
-        valorTotalVendaNoMes = vendaRepository.valorTotalNoMes();
-        valorVendaMedioNoAno = vendaRepository.valorVendaMedioNoAno();
+        valorTotalVendaNoAno = vendaRepository.valorTotalNoAno(usuario.getIdempresa());
+        valorTotalVendaNoMes = vendaRepository.valorTotalNoMes(usuario.getIdempresa());
+        valorVendaMedioNoAno = vendaRepository.valorVendaMedioNoAno(usuario.getIdempresa());
     }
 
     public void confirmarAviso() {

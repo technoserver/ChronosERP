@@ -5,10 +5,12 @@ import com.chronos.erp.modelo.entidades.Funcao;
 import com.chronos.erp.modelo.entidades.Papel;
 import com.chronos.erp.modelo.entidades.PapelFuncao;
 import com.chronos.erp.modelo.entidades.Usuario;
+import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
+import org.primefaces.model.SortOrder;
 import org.springframework.beans.BeanUtils;
 
 import javax.annotation.PostConstruct;
@@ -48,7 +50,8 @@ public class PapelControll extends AbstractControll<Papel> implements Serializab
     @Override
     public void init() {
         super.init();
-        funcoes = funcaoRepository.getEntitys(Funcao.class, new Object[]{"nome"});
+        List<Filtro> filtros = new ArrayList<>();
+        funcoes = funcaoRepository.getEntitys(Funcao.class, filtros, "nome", SortOrder.ASCENDING, new Object[]{"nome"});
         funcoestarget = new ArrayList<>();
         listModel = new DualListModel<>(funcoes, funcoestarget);
 

@@ -26,28 +26,31 @@ public class VendaRepository extends AbstractRepository implements Serializable 
     }
 
 
-    public BigDecimal valorTotalNoAno() {
+    public BigDecimal valorTotalNoAno(Integer idmperesa) {
         Optional<BigDecimal> optional = Optional.ofNullable(
-                em.createQuery("select sum(valorTotal) from PdvVendaCabecalho v where year (v.dataHoraVenda) = :ano and (statusVenda = 'E' or  statusVenda = 'F')", BigDecimal.class)
+                em.createQuery("select sum(valorTotal) from PdvVendaCabecalho v where v.empresa.id =:empresa and year (v.dataHoraVenda) = :ano and (statusVenda = 'E' or  statusVenda = 'F')", BigDecimal.class)
                         .setParameter("ano", Year.now().getValue())
+                        .setParameter("empresa", idmperesa)
                         .getSingleResult());
         return optional.orElse(BigDecimal.ZERO);
     }
 
 
-    public BigDecimal valorTotalNoMes() {
+    public BigDecimal valorTotalNoMes(Integer idmperesa) {
         Optional<BigDecimal> optional = Optional.ofNullable(
-                em.createQuery("select sum(valorTotal) from PdvVendaCabecalho v where month(v.dataHoraVenda) = :mes and (statusVenda = 'E' or  statusVenda = 'F')", BigDecimal.class)
+                em.createQuery("select sum(valorTotal) from PdvVendaCabecalho v where v.empresa.id =:empresa and month(v.dataHoraVenda) = :mes and (statusVenda = 'E' or  statusVenda = 'F')", BigDecimal.class)
                         .setParameter("mes", MonthDay.now().getMonthValue())
+                        .setParameter("empresa", idmperesa)
                         .getSingleResult());
         return optional.orElse(BigDecimal.ZERO);
     }
 
 
-    public BigDecimal valorVendaMedioNoAno() {
+    public BigDecimal valorVendaMedioNoAno(Integer idmperesa) {
         Optional<BigDecimal> optional = Optional.ofNullable(
-                em.createQuery("select sum(valorTotal)/count(*) from PdvVendaCabecalho v where year(v.dataHoraVenda) = :ano and (statusVenda = 'E' or  statusVenda = 'F')", BigDecimal.class)
+                em.createQuery("select sum(valorTotal)/count(*) from PdvVendaCabecalho v where v.empresa.id =:empresa and year(v.dataHoraVenda) = :ano and (statusVenda = 'E' or  statusVenda = 'F')", BigDecimal.class)
                         .setParameter("ano", Year.now().getValue())
+                        .setParameter("empresa", idmperesa)
                         .getSingleResult());
         return optional.orElse(BigDecimal.ZERO);
     }

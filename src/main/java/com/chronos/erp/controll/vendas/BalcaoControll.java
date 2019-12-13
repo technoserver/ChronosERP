@@ -238,8 +238,13 @@ public class BalcaoControll implements Serializable {
             dataModel.getFiltros().add(new Filtro("pdvMovimento.pdvCaixa.id", idcaixa));
         }
 
-        if (idoperador > 0) {
-            dataModel.getFiltros().add(new Filtro("pdvMovimento.pdvOperador.id", idoperador));
+        if (usuario.getAdministrador().equals("N")) {
+            int id = usuario.getOperador() != null ? usuario.getOperador().getId() : 0;
+            dataModel.getFiltros().add(new Filtro("pdvMovimento.pdvOperador.id", id));
+        } else {
+            if (idoperador > 0) {
+                dataModel.getFiltros().add(new Filtro("pdvMovimento.pdvOperador.id", idoperador));
+            }
         }
 
     }

@@ -53,6 +53,15 @@ public class ContaPessoaService implements Serializable {
         auditoriaService.gerarLog(AcaoLog.INSERT, conteudo, "LANCAMENTO DE CREDITO CLIENTE");
     }
 
+    @Transactional
+    public void excluirMovimento(ContaPessoa conta, MovimentoContaPessoa movimento) {
+        movimentoRepository.excluir(movimento);
+        atualizarSaldoConta(conta, TipoLancamento.DEBITO, movimento.getValor());
+        String conteudo = "Exclusão de Crédito";
+        conteudo += "na conta de " + conta.getPessoa().getNome() + " no valor de " + FormatValor.getInstance().formatarValor(movimento.getValor());
+        auditoriaService.gerarLog(AcaoLog.DELETE, conteudo, "LANCAMENTO DE CREDITO CLIENTE");
+    }
+
     private void atualizarSaldoConta(ContaPessoa conta, TipoLancamento tipo, BigDecimal valor) {
         valor = tipo == TipoLancamento.CREDITO ? valor : valor.negate();
         conta.setSaldo(conta.getSaldo().add(valor));
