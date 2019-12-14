@@ -25,6 +25,16 @@ import java.util.List;
 public abstract class PessoaControll<T> extends AbstractControll<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Inject
+    private Repository<EmpresaPessoa> empresaPessoaRepository;
+    @Inject
+    private Repository<Municipio> municipios;
+    @Inject
+    private Repository<Pessoa> pessoas;
+    @Inject
+    private Repository<EstadoCivil> estadosCivis;
+    @Inject
+    private Repository<Empresa> empresaRepository;
     protected Empresa emp;
     private PessoaContato pessoaContatoSelecionado;
     private PessoaContato pessoaContato;
@@ -36,14 +46,7 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
     private Municipio cidade;
     private List<Municipio> cidades;
     private List<EstadoCivil> listEstadoCivil;
-    @Inject
-    private Repository<Municipio> municipios;
-    @Inject
-    private Repository<Pessoa> pessoas;
-    @Inject
-    private Repository<EstadoCivil> estadosCivis;
-    @Inject
-    private Repository<Empresa> empresaRepository;
+
 
     private String cpf;
     private String cnpj;
@@ -88,6 +91,14 @@ public abstract class PessoaControll<T> extends AbstractControll<T> implements S
         cidade = new Municipio(0, endereco.getCidade(), endereco.getMunicipioIbge());
 
 
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("empresaPrincipal", "S"));
+        filtros.add(new Filtro("pessoa.id", getPessoa().getId()));
+        EmpresaPessoa empresaPessoa = empresaPessoaRepository.get(EmpresaPessoa.class, filtros, new Object[]{"empresa.id", "empresa.razaoSocial"});
+
+        if (empresaPessoa != null) {
+            emp = empresaPessoa.getEmpresa();
+        }
     }
 
     public void definirTipo() {

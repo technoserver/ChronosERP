@@ -63,6 +63,13 @@
 
                                  nomeAtributo="#{vendaRelatorioControll.statusVendas}"/>
 
+                <erp:campoSelect nomeAtributo="#{vendaRelatorioControll.tipoRelatorio}"
+                                 itens="#{vendaRelatorioControll.tiposRelatorio}"
+                                 styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 idComponente="tipoRelatorio"
+                                 label="Modelo"
+                />
+
                 <div class="col-xs-12 col-sm-12 col-md-12 text-center m-t">
 
                     <p:commandLink title="Gerar relatório"

@@ -75,6 +75,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     private Integer idvendedor;
     private Map<String, Integer> listaVendedor;
     private Map<String, String> situacoes;
+    private Integer idmepresaFiltro;
 
     private int tipoDesconto;
     private BigDecimal desconto;
@@ -118,6 +119,8 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
 
+        pesquisarEmpresas();
+
     }
 
     @Override
@@ -160,6 +163,8 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         if (!org.springframework.util.StringUtils.isEmpty(status)) {
             dataModel.addFiltro("situacao", status, Filtro.IGUAL);
         }
+        idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        dataModel.getFiltros().add(new Filtro("empresa.id", idmepresaFiltro));
     }
 
     @Override
@@ -768,5 +773,13 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
 
     public boolean isExibirGrade() {
         return exibirGrade;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
     }
 }

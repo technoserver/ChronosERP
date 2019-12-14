@@ -15,10 +15,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by john on 14/09/17.
@@ -36,13 +33,19 @@ public class AbstractRelatorioControll implements Serializable {
     @Inject
     protected EntityManager em;
     protected Map<String, Object> parametros;
+    protected Map<String, String> tiposRelatorio;
     protected Empresa empresa;
     @Inject
     protected UsuarioService userService;
 
+    protected String tipoRelatorio = "PDF";
+
     @PostConstruct
     protected void init() {
         this.empresa = FacesUtil.getEmpresaUsuario();
+        this.tiposRelatorio = new HashMap<>();
+        tiposRelatorio.put("PDF", "PDF");
+        tiposRelatorio.put("XLS", "XLS");
     }
 
 
@@ -58,7 +61,7 @@ public class AbstractRelatorioControll implements Serializable {
 
     protected void executarRelatorio(String diretorioRelatorio, String nomeRelatorio, String nomeArquivoSaida) {
 
-        ExecutorRelatorio executor = new ExecutorRelatorio(diretorioRelatorio, nomeRelatorio, response, parametros, nomeArquivoSaida);
+        ExecutorRelatorio executor = new ExecutorRelatorio(diretorioRelatorio, nomeRelatorio, response, parametros, nomeArquivoSaida, tipoRelatorio);
 
         Session session = em.unwrap(Session.class);
         session.doWork(executor);
@@ -82,5 +85,17 @@ public class AbstractRelatorioControll implements Serializable {
 
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
+    }
+
+    public String getTipoRelatorio() {
+        return tipoRelatorio;
+    }
+
+    public void setTipoRelatorio(String tipoRelatorio) {
+        this.tipoRelatorio = tipoRelatorio;
+    }
+
+    public Map<String, String> getTiposRelatorio() {
+        return tiposRelatorio;
     }
 }

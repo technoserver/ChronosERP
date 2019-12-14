@@ -49,6 +49,18 @@
                                       rendered="#{cc.attrs.controller.objeto.pessoa.colaborador eq 'S' and empty cc.attrs.controller.objeto.pessoa.id}"
                                       requerido="true"/>
 
+                    <h:panelGroup layout="block" styleClass="row"
+                                  rendered="#{cc.attrs.controller.objeto.pessoa.colaborador eq 'S' and not empty cc.attrs.controller.objeto.id}">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
+                                        idComponente="razaoSocial"
+                                        tamanhoMaximo="100"
+                                        desabilitado="true"
+                                        nomeAtributo="#{cc.attrs.controller.emp.razaoSocial}"
+                                        label="Empresa"/>
+
+                    </h:panelGroup>
+
+
                     <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
                                     idComponente="pessoaJuridicaFantasia" label="Fantasia"
                                     nomeAtributo="#{cc.attrs.controller.objeto.pessoa.pessoaJuridica.fantasia}"

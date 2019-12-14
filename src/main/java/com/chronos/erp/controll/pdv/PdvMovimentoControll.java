@@ -16,6 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -46,6 +48,7 @@ public class PdvMovimentoControll implements Serializable {
     @Inject
     private Repository<PdvSangria> pdvSangriaRepository;
 
+
     private ERPLazyDataModel<PdvMovimento> dataModel;
 
     private PdvMovimento movimento;
@@ -72,6 +75,7 @@ public class PdvMovimentoControll implements Serializable {
 
     private String status;
     private Empresa empresa;
+    private PdvMovimento movimentoAberto;
     private Date dataInicial, dataFinal;
     private int idoperador;
     private int idcaixa;
@@ -79,11 +83,18 @@ public class PdvMovimentoControll implements Serializable {
     private Map<String, String> statusDomain;
     private Map<String, Integer> operadorDomain;
     private Map<String, Integer> caixaDomain;
+    private Map<String, Integer> tiposLancamento;
 
     private UsuarioDTO usuario;
 
     private PdvMovimento movimentoDetalhado;
     private List<MapDTO> formasPagamento;
+    private String obsLancamento;
+    @NotNull
+    @DecimalMin(value = "0.01", message = "O valor  do lançamento deve ser maior que R$0,01")
+    private BigDecimal valorLancamento;
+    private int tipoLancamento;
+
 
     public PdvMovimentoControll() {
     }
@@ -94,10 +105,13 @@ public class PdvMovimentoControll implements Serializable {
 
         try {
             empresa = FacesUtil.getEmpresaUsuario();
+            movimentoAberto = FacesUtil.getMovimento();
             temConfiguracao = service.verificarConfPdv(empresa);
             usuario = FacesUtil.getUsuarioSessao();
             idoperador = usuario != null && usuario.getOperador() != null ? usuario.getOperador().getId() : idoperador;
-
+            tiposLancamento = new HashMap<>();
+            tiposLancamento.put("Suprimento", 1);
+            tiposLancamento.put("Sangria", 2);
             if (temConfiguracao) {
                 iniciarObjetos();
             } else {
@@ -285,6 +299,10 @@ public class PdvMovimentoControll implements Serializable {
             ex.printStackTrace();
             Mensagem.addErrorMessage("", ex);
         }
+    }
+
+    public void lancarMovimento() {
+        service.lancarMovimento(tipoLancamento, valorLancamento, obsLancamento);
     }
 
 
@@ -505,5 +523,37 @@ public class PdvMovimentoControll implements Serializable {
 
     public List<MapDTO> getFormasPagamento() {
         return formasPagamento;
+    }
+
+    public String getObsLancamento() {
+        return obsLancamento;
+    }
+
+    public void setObsLancamento(String obsLancamento) {
+        this.obsLancamento = obsLancamento;
+    }
+
+    public BigDecimal getValorLancamento() {
+        return valorLancamento;
+    }
+
+    public void setValorLancamento(BigDecimal valorLancamento) {
+        this.valorLancamento = valorLancamento;
+    }
+
+    public int getTipoLancamento() {
+        return tipoLancamento;
+    }
+
+    public void setTipoLancamento(int tipoLancamento) {
+        this.tipoLancamento = tipoLancamento;
+    }
+
+    public Boolean isExisteMovimento() {
+        return movimentoAberto != null;
+    }
+
+    public Map<String, Integer> getTiposLancamento() {
+        return tiposLancamento;
     }
 }
