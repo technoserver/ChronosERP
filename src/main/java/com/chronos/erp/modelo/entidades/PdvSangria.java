@@ -8,7 +8,7 @@ import java.util.Date;
 
 
 @Entity
-@Table(name = "NFCE_SANGRIA")
+@Table(name = "PDV_SANGRIA")
 public class PdvSangria implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,7 +24,7 @@ public class PdvSangria implements Serializable {
     private BigDecimal valor;
     @Column(name = "OBSERVACAO")
     private String observacao;
-    @JoinColumn(name = "ID_NFCE_MOVIMENTO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_PDV_MOVIMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private PdvMovimento pdvMovimento;
 
