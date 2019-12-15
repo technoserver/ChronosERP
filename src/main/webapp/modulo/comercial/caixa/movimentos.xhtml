@@ -168,7 +168,7 @@
                 display: none;
             }
 
-            .ui-inputnumber input {
+            .ui-inputnumber valor-abertura {
                 font-size: 50px !important;
                 font-weight: bold !important;
             }
@@ -182,14 +182,26 @@
             <p:outputPanel rendered="#{pdvMovimentoControll.telaGrid}">
                 <div class="ibox-content">
                     <erp:msgPermissao permissao="#{true}"/>
-                    <h:panelGroup layout="block" class="row m-b" rendered="#{seguranca.administrador}">
-                        <div class="col-xs-12">
-                            <p:commandButton value="Movimento detalhado"
-                                             action="#{pdvMovimentoControll.detalheMovimentos}"
-                                             update=":formOutrasTelas:dialogOutrasTelas"
-                                             oncomplete="PF('dialogOutrasTelas').show()"/>
-                        </div>
-                    </h:panelGroup>
+
+
+                    <div class="row m-b">
+                        <h:panelGroup layout="block" class="col-xs-12 col-sm-3" rendered="#{seguranca.administrador}">
+                            <div class="">
+                                <p:commandButton value="Movimento detalhado"
+                                                 action="#{pdvMovimentoControll.detalheMovimentos}"
+                                                 update=":formOutrasTelas:dialogOutrasTelas"
+                                                 oncomplete="PF('dialogOutrasTelas').show()"/>
+                            </div>
+                        </h:panelGroup>
+
+                        <h:panelGroup layout="block" class="col-xs-12 col-sm-2"
+                                      rendered="#{pdvMovimentoControll.isExisteMovimento()}">
+                            <p:commandButton value="Lançamento"
+                                             update=":formOutrasTelas3:dialogOutrasTelas3"
+                                             oncomplete="PF('dialogOutrasTelas3').show()"/>
+
+                        </h:panelGroup>
+                    </div>
                     <div class="row m-b">
                         <erp:campoData styleClass="col-xs-6 col-sm-2 col-md-2"
                                        idComponente="dataInicial"
@@ -537,6 +549,60 @@
                     <p:commandButton value="Fechar"
                                      oncomplete="PF('dialogMovimento').hide(); "
                                      process="@this"/>
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas3">
+        <h:form id="formOutrasTelas3">
+            <p:dialog id="dialogOutrasTelas3" header="Lançamento" widgetVar="dialogOutrasTelas3"
+                      showEffect="slide" width="700" hideEffect="slide" closable="false"
+                      resizable="true" modal="true" dynamic="true" responsive="true">
+                <p:outputPanel id="panelOutrasTelas3">
+                    <div class="row">
+                        <erp:campoSelect styleClass="col-sm-4"
+                                         nomeAtributo="#{pdvMovimentoControll.tipoLancamento}"
+                                         label="Tipo"
+                                         idComponente="tipo"
+                                         itens="#{pdvMovimentoControll.tiposLancamento}"
+                        />
+                        <erp:campoDecimal styleClass="col-sm-4"
+                                          label="Valor"
+                                          requerido="true"
+                                          nomeAtributo="#{pdvMovimentoControll.valorLancamento}"
+                                          idComponente="valorLancamento"/>
+
+                        <erp:campoAreaTexto styleClass="col-sm-12"
+                                            idComponente="obs"
+                                            linhas="10"
+                                            label="Observação"
+                                            nomeAtributo="#{pdvMovimentoControll.obsLancamento}"/>
+                    </div>
+                </p:outputPanel>
+
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-lg-6 text-center">
+                            <p:commandButton value="Salvar"
+                                             action="#{pdvMovimentoControll.lancarMovimento}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas3').hide();}"
+                                             update=":formCentro:growl,formCentro:dataTableMovimento"
+                                             process="@form"/>
+                        </div>
+
+                        <div class="col-xs-6 col-lg-6 text-center">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas3').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+
+                    </div>
+
                 </f:facet>
 
             </p:dialog>

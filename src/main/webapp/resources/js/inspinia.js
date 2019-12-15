@@ -195,7 +195,7 @@ $(document).ready(function () {
     if (localStorageSupport()) {
 
         var collapse = localStorage.getItem("collapse_menu");
-        var fixedsidebar = localStorage.getItem("fixedsidebar");
+        var fixedsidebar = 'on' //localStorage.getItem("fixedsidebar");
         var fixednavbar = localStorage.getItem("fixednavbar");
         var boxedlayout = localStorage.getItem("boxedlayout");
         var fixedfooter = localStorage.getItem("fixedfooter");
