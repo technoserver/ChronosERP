@@ -81,6 +81,15 @@ public class MovimentoService implements Serializable {
             throw new ChronosException("Já existe movimento aberto para esse operador");
         }
 
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("statusMovimento", "A"));
+        filtros.add(new Filtro("pdvCaixa.id", caixa.getId()));
+        boolean existeCaixaAberto = repository.existeRegisro(PdvMovimento.class, filtros);
+
+        if (existeCaixaAberto) {
+            throw new ChronosException("Esse caixa já se encontra em  aberto");
+        }
+
         movimento = new PdvMovimento();
         movimento.setEmpresa(empresa);
 
@@ -267,7 +276,7 @@ public class MovimentoService implements Serializable {
                 fileTemp.mkdir();
             }
             map.put("CONTEUDO", linhasRelatorio.toString());
-            String caminhoJasper = "/com/erp/erplight/relatorios/comercial/nfce/relatorioMovimento.jasper";
+            String caminhoJasper = "/relatorios/nfce/relatorioMovimento.jasper";
             InputStream inputStream = this.getClass().getResourceAsStream(caminhoJasper);
             JasperPrint jp = JasperFillManager.fillReport(inputStream, map, new JREmptyDataSource());
             byte[] pdfFile = JasperExportManager.exportReportToPdf(jp);

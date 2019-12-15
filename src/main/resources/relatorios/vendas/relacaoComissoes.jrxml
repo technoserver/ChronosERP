@@ -5,7 +5,7 @@
               name="relacaoComissao" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="3.0"/>
-    <property name="ireport.x" value="414"/>
+    <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="40"/>
     <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
@@ -284,10 +284,11 @@ new SimpleDateFormat("dd/MM/yyyy").format( $P{peridoFinal})]]></textFieldExpress
     </title>
     <detail>
         <band height="12" splitType="Stretch">
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement style="dadosDetail" x="0" y="0" width="208" height="12"
                                uuid="a59c4b38-7f1a-4368-9733-d5e8569e2e5d"/>
-                <textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
+                <textFieldExpression>
+                    <![CDATA[$F{cliente} == null ?"Cliente não identificado" : $F{cliente} ]]></textFieldExpression>
             </textField>
             <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement style="dadosDetail" x="210" y="0" width="69" height="12"
