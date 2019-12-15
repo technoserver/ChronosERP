@@ -38,14 +38,14 @@ public class AbstractRelatorioControll implements Serializable {
     @Inject
     protected UsuarioService userService;
 
-    protected String tipoRelatorio = "PDF";
+    protected String tipoRelatorio = "pdf";
 
     @PostConstruct
     protected void init() {
         this.empresa = FacesUtil.getEmpresaUsuario();
         this.tiposRelatorio = new HashMap<>();
-        tiposRelatorio.put("PDF", "PDF");
-        tiposRelatorio.put("XLS", "XLS");
+        tiposRelatorio.put("PDF", "pdf");
+        tiposRelatorio.put("XLS", "xls");
     }
 
 

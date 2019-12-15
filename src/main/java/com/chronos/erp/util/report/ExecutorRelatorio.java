@@ -64,7 +64,7 @@ public class ExecutorRelatorio implements Work {
             if (this.relatorioGerado) {
 
 
-                if (tipoRelatorio.equals("PDF")) {
+                if (tipoRelatorio.equals("pdf")) {
                     Exporter<ExporterInput, PdfReportConfiguration, PdfExporterConfiguration, OutputStreamExporterOutput> exportadorPdv = new JRPdfExporter();
                     exportadorPdv.setExporterInput(new SimpleExporterInput(print));
                     exportadorPdv.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));

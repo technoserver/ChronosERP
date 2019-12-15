@@ -76,15 +76,12 @@ public class Seguranca implements Serializable {
         return getUsuarioLogado().getAdministrador().equals("S");
     }
 
-
     public boolean isTemAcesso(String modulo) {
         return FacesUtil.isUserInRole(modulo + "_CONSULTAR") || FacesUtil.isUserInRole("ADMIN");
-
     }
 
     public boolean isPodeRealizar(String modulo) {
         return FacesUtil.isUserInRole(modulo) || FacesUtil.isUserInRole("ADMIN");
-
     }
 
     private UsuarioDTO getUsuarioLogado() {

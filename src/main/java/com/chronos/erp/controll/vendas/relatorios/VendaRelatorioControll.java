@@ -44,7 +44,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
     private Date dataInicial;
     private Date dataFinal;
-    private Integer idvendedor;
+    private Integer idvendedor = 0;
     private int idcupom;
     private int idvendaConsignada;
     private int idgrupo;
@@ -77,11 +77,12 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
         status = new LinkedHashMap<>();
         status.put("Todos", "");
-        status.put("Cancelada", "C");
-        status.put("Producao", "P");
+        status.put("Encerrada", "E");
         status.put("Faturada", "F");
         status.put("Devolvida", "D");
-        status.put("Encerrada", "E");
+        status.put("Devolvida Parcilamente", "DP");
+        status.put("Cancelada", "C");
+
 
         naoSim = new LinkedHashMap<>();
         naoSim.put("NÂO", false);
@@ -197,7 +198,10 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "relacaoVendas.jasper";
 
-        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoVendas.pdf");
+        String nome = "relacaoVendas." + tipoRelatorio;
+
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, nome);
     }
 
     public void imprimirLucratividade() {
