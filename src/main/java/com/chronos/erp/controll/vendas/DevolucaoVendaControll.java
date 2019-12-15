@@ -37,8 +37,6 @@ public class DevolucaoVendaControll implements Serializable {
             dataModel.setClazz(VendaDevolucao.class);
         }
 
-        dataModel.setAtributos(new Object[]{"dataDevolucao", "valorCredito", "totalParcial", "creditoUtilizado", "vendaCabecalho.id"});
-
         return dataModel;
     }
 
