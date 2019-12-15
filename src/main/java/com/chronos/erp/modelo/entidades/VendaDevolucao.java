@@ -19,8 +19,13 @@ public class VendaDevolucao implements Serializable {
     @Column(name = "ID")
     private Integer id;
 
+    @NotNull
+    @Column(name = "id_venda")
+    private Integer idVenda;
+
     @Column(name = "id_venda_utilizacao")
     private Integer idVendaUtilizacao;
+
 
     @NotNull
     @Temporal(TemporalType.DATE)
@@ -39,9 +44,9 @@ public class VendaDevolucao implements Serializable {
     @Column(name = "credito_utilizado")
     private String creditoUtilizado;
 
-    @JoinColumn(name = "ID_VENDA_CABECALHO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private VendaCabecalho vendaCabecalho;
+    @NotNull
+    @Column(name = "gerado_credito")
+    private String geradoCredito;
 
     @OneToMany(mappedBy = "vendaDevolucao", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VendaDevolucaoItem> listaVendaDevolucaoItem;
@@ -51,6 +56,7 @@ public class VendaDevolucao implements Serializable {
         this.dataDevolucao = new Date();
         this.creditoUtilizado = "N";
         this.totalParcial = "T";
+        this.geradoCredito = "N";
     }
 
     public VendaDevolucao(Integer id, Date dataDevolucao, BigDecimal valorCredito, String totalParcial, String creditoUtilizado, Integer idvenda) {
@@ -59,7 +65,7 @@ public class VendaDevolucao implements Serializable {
         this.valorCredito = valorCredito;
         this.totalParcial = totalParcial;
         this.creditoUtilizado = creditoUtilizado;
-        this.vendaCabecalho = new VendaCabecalho(idvenda);
+        this.idVenda = idvenda;
     }
 
     public Integer getId() {
@@ -68,6 +74,22 @@ public class VendaDevolucao implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdVenda() {
+        return idVenda;
+    }
+
+    public void setIdVenda(Integer idVenda) {
+        this.idVenda = idVenda;
+    }
+
+    public String getGeradoCredito() {
+        return geradoCredito;
+    }
+
+    public void setGeradoCredito(String geradoCredito) {
+        this.geradoCredito = geradoCredito;
     }
 
     public Integer getIdVendaUtilizacao() {
@@ -110,13 +132,7 @@ public class VendaDevolucao implements Serializable {
         this.creditoUtilizado = creditoUtilizado;
     }
 
-    public VendaCabecalho getVendaCabecalho() {
-        return vendaCabecalho;
-    }
 
-    public void setVendaCabecalho(VendaCabecalho vendaCabecalho) {
-        this.vendaCabecalho = vendaCabecalho;
-    }
 
     public List<VendaDevolucaoItem> getListaVendaDevolucaoItem() {
         return listaVendaDevolucaoItem;
