@@ -1,0 +1,354 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Recibo
+    </ui:define>
+
+    <ui:define name="tela">
+        Recibo
+    </ui:define>
+    <ui:define name="controle">
+        Financeiro
+    </ui:define>
+
+    <ui:define name="css">
+        <style type="text/css">
+            .table-div {
+                border: 1px solid #ccc;
+                padding: 40px;
+            }
+
+            .m-t-20 {
+                margin-top: 20px !important;
+            }
+
+            .columns {
+                margin-left: -.75rem;
+                margin-right: -.75rem;
+                margin-top: -.75rem;
+            }
+
+            .columns:not(:last-child) {
+                margin-bottom: calc(1.5rem - .75rem);
+            }
+
+            .column {
+                display: block;
+                flex-basis: 0;
+                flex-grow: 1;
+                flex-shrink: 1;
+                padding: .75rem;
+            }
+
+            .title {
+                color: #363636;
+                font-size: 2rem;
+                font-weight: 600;
+                line-height: 1.125;
+            }
+
+            .title, .subtitle {
+                word-break: break-word;
+            }
+
+            .has-text-centered {
+                text-align: center !important;
+            }
+
+            .has-text-right {
+                text-align: right !important;
+            }
+
+            .is-size-5 {
+                font-size: 1.25rem !important;
+            }
+
+            .borda-preco {
+                border: 1px solid #333;
+                padding: 4px 10px;
+            }
+
+            .recibo-p p {
+                margin-bottom: 5px;
+            }
+
+            .borda-assinatura {
+                border-top: 1px solid #999;
+                margin: auto;
+                display: block;
+                width: 30%;
+            }
+
+            .is-pulled-right {
+                float: right !important;
+            }
+
+            @media screen and (min-width: 769px), print {
+                .columns:not(.is-desktop) {
+                    display: flex;
+                }
+            }
+        </style>
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+        <h:panelGroup id="tela">
+            <h:panelGroup id="recibo" rendered="#{reciboControll.telaRecibo}">
+
+                <div class="ibox-content">
+
+
+                    <div class="row">
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                          idComponente="valor"
+                                          label="Valor" requerido="true"
+                                          nomeAtributo="#{reciboControll.valor}"/>
+                    </div>
+                    <div class="row">
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
+                                        idComponente="pagador1"
+                                        label="Pagador"
+                                        exibirInfo="true"
+                                        mensangemInfo="Opção para informar o pagador de forma livre"
+                                        nomeAtributo="#{reciboControll.pagador}"
+                                        tamanhoMaximo="50"/>
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Pagador"
+                                          itemLabel="#{objeto.pessoa.nome}"
+                                          controller="#{reciboControll}"
+                                          completeMethod="getListaCliente"
+                                          exibirInfo="true"
+                                          requerido="false"
+                                          mensangemInfo="Opção para buscar os cliente cadastrados"
+                                          nomeAtributo="#{reciboControll.cliente}"
+                                          idComponente="pagador2"/>
+
+                    </div>
+                    <div class="row">
+                        <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            idComponente="referente"
+                                            label="Referente a(o)"
+                                            nomeAtributo="#{reciboControll.referente}"
+                                            linhas="5" requerido="true"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                        idComponente="local"
+                                        label="Local"
+                                        nomeAtributo="#{reciboControll.local}"
+                                        tamanhoMaximo="50"/>
+
+                        <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       idComponente="data"
+                                       label="Data"
+                                       nomeAtributo="#{reciboControll.data}"/>
+                    </div>
+                    <div class="row">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                                        idComponente="nome"
+                                        label="Nome do Emissor"
+                                        nomeAtributo="#{reciboControll.nome}"
+                                        tamanhoMaximo="50"/>
+
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                        idComponente="cpfCnpj"
+                                        label="CPF/CNPJ"
+                                        nomeAtributo="#{reciboControll.cpfCnpj}"
+                                        tamanhoMaximo="50"/>
+                    </div>
+                </div>
+
+                <div class="ibox-footer">
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <p:commandButton value="Confirmar" update="formCentro"
+                                             action="#{reciboControll.confirmar}"/>
+                        </div>
+                    </div>
+                </div>
+
+
+            </h:panelGroup>
+
+            <h:panelGroup id="impressao" rendered="#{!reciboControll.telaRecibo}">
+
+                <div class="ibox-content">
+                    <p:commandButton value="Voltar" action="#{reciboControll.voltar}" update="formCentro:tela"/>
+                    <p:commandButton value="Imprimir" icon="fa fa-print" styleClass="is-pulled-right">
+                        <p:printer target="print"/>
+                    </p:commandButton>
+
+                    <h:panelGroup layout="block" id="print">
+                        <style type="text/css">
+                            .table-div {
+                                border: 1px solid #ccc;
+                                padding: 40px;
+                            }
+
+                            .m-t-20 {
+                                margin-top: 20px !important;
+                            }
+
+                            .columns {
+                                margin-left: -.75rem;
+                                margin-right: -.75rem;
+                                margin-top: -.75rem;
+                            }
+
+                            .columns:not(:last-child) {
+                                margin-bottom: calc(1.5rem - .75rem);
+                            }
+
+                            .column {
+                                display: block;
+                                flex-basis: 0;
+                                flex-grow: 1;
+                                flex-shrink: 1;
+                                padding: .75rem;
+                            }
+
+                            .title {
+                                color: #363636;
+                                font-size: 2rem;
+                                font-weight: 600;
+                                line-height: 1.125;
+                            }
+
+                            .title, .subtitle {
+                                word-break: break-word;
+                            }
+
+                            .has-text-centered {
+                                text-align: center !important;
+                            }
+
+                            .has-text-right {
+                                text-align: right !important;
+                            }
+
+                            .is-size-5 {
+                                font-size: 1.25rem !important;
+                            }
+
+                            .borda-preco {
+                                border: 1px solid #333;
+                                padding: 4px 10px;
+                            }
+
+                            .recibo-p p {
+                                margin-bottom: 5px;
+                            }
+
+                            .borda-assinatura {
+                                border-top: 1px solid #999;
+                                margin: auto;
+                                display: block;
+                                width: 30%;
+                            }
+
+                            .is-pulled-right {
+                                float: right !important;
+                            }
+
+                            @media screen and (min-width: 769px), print {
+                                .columns:not(.is-desktop) {
+                                    display: flex;
+                                }
+                            }
+                        </style>
+                        <div class="m-b row">
+
+
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td width="200px">
+                                        <p:graphicImage
+                                                value="/image/empresa?logoEmp=#{reciboControll.empresa.imagemLogotipo}"
+                                                class="img-responsive foto" style="height: 140px"
+                                                rendered="#{reciboControll.empresa.imagemLogotipo!=null}"/>
+                                        <p:graphicImage name="No-image-found.jpg" library="images"
+                                                        class="img-responsive foto"
+                                                        rendered="#{reciboControll.empresa.imagemLogotipo==null}"
+                                                        style="height: 140px"/>
+                                    </td>
+                                    <td>
+                                        <div id="empresa">
+                                            <b>#{reciboControll.empresa.razaoSocial}</b>
+                                        </div>
+                                        <div>#{reciboControll.empresa.buscarEnderecoPrincipal().logradouro}, #{reciboControll.empresa.buscarEnderecoPrincipal().numero}, #{reciboControll.empresa.buscarEnderecoPrincipal().bairro}</div>
+                                        <div>#{reciboControll.empresa.buscarEnderecoPrincipal().cep} - #{reciboControll.empresa.buscarEnderecoPrincipal().cidade} ­ #{reciboControll.empresa.buscarEnderecoPrincipal().uf}</div>
+
+                                        #{reciboControll.empresa.buscarEnderecoPrincipal().fone}
+                                    </td>
+                                </tr>
+
+                            </table>
+
+
+                        </div>
+                        <div class="table-div m-t-20">
+                            <div class="columns">
+                                <div class="column">
+                                    <h1 class="title is-size-5 has-text-centered">Recibo de Pagamento</h1>
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column has-text-left"><b class=""></b></div>
+                                <div class="column has-text-right">
+                                    <b class="borda-preco">
+                                        R$
+                                        <h:outputText value="#{reciboControll.valor}">
+                                            <f:convertNumber pattern="#,##0.00"/>
+                                        </h:outputText>
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column recibo-p">
+                                    <p>Recebi(emos) de <b>#{reciboControll.pagadorInformado}</b>, a importância de
+                                        <b>#{reciboControll.valorPorExtenso}</b> referente à
+                                        <b>#{reciboControll.referente}</b>.</p>
+                                    <p>Para maior clareza firmo(amos) o presente recibo para que produza os seus efeitos, dando plena, rasa e irrevogável quitação, pelo valor recebido.</p>
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column">
+                                    <p class="has-text-right">#{reciboControll.local}, #{reciboControll.dataFormatada}</p>
+                                </div>
+                            </div>
+                            <div class="columns">
+                                <div class="column has-text-centered">
+                                    <span class="borda-assinatura"><p>#{reciboControll.nome}</p></span>
+                                    <p>#{reciboControll.cpfCnpj}</p>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+
+
+                </div>
+
+
+            </h:panelGroup>
+
+        </h:panelGroup>
+
+
+    </ui:define>
+
+
+</ui:composition>

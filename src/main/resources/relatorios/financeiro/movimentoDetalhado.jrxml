@@ -42,8 +42,8 @@
 FROM
     (
     SELECT
-		t.codigo,
-	    t.descricao || (CASE
+	 t.codigo,
+	 t.descricao || (CASE
             WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '01') THEN ' (Visa) '
             WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '02') THEN ' (Mastercard) '
             WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '03') THEN ' (American Express) '
@@ -80,6 +80,17 @@ FROM
 	FROM pdv_movimento m
 	INNER JOIN pdv_suprimento s ON s.id_pdv_movimento = m.id
 	WHERE m.id = $P{idmovimento}
+
+    UNION ALL
+
+SELECT
+        t.tipo,
+        t.descricao,
+        r.valor_recebido
+FROM pdv_movimento m
+INNER JOIN fin_parcela_recebimento r ON r.id_pdv_movimento = m.id
+INNER JOIN fin_tipo_recebimento t ON r.id_fin_tipo_recebimento = t.id
+WHERE m.id = $P{idmovimento}
 
     UNION ALL
 		SELECT
