@@ -118,7 +118,7 @@ GROUP BY codigo, descricao;]]>
             m.id AS idmovimento,
             s.id AS idorigem,
             s.data_sangria AS data_hora,
-            'Saída - Sangria' AS descricao,
+            COALESCE(s.observacao,'Saída - Sangria') AS descricao,
             s.valor,
             '01' AS codigo_forma_pagamento,
             'Dinheiro' AS forma_pagamento,
@@ -134,7 +134,7 @@ GROUP BY codigo, descricao;]]>
             JOIN pdv_operador o ON o.id = m.id_pdv_operador
             INNER JOIN empresa empresa ON m.id_empresa = empresa.id
             INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
-            WHERE (m.id =  $P{idmovimento} or  $P{idmovimento} is null)
+            WHERE m.id =  $P{idmovimento}
 
             UNION
             SELECT
@@ -143,7 +143,7 @@ GROUP BY codigo, descricao;]]>
             m.id AS idmovimento,
             s.id AS idorigem,
             s.data_suprimento AS data_hora,
-            'Entrada - Acrécimo' AS descricao,
+            COALESCE(s.observacao,'Entrada - Acrécimo') AS descricao,
             s.valor,
             '01' AS codigo_forma_pagamento,
             'Dinheiro' AS forma_pagamento,
@@ -160,7 +160,7 @@ GROUP BY codigo, descricao;]]>
             JOIN pdv_operador o ON o.id = m.id_pdv_operador
             INNER JOIN empresa empresa ON m.id_empresa = empresa.id
             INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
-            WHERE (m.id =  $P{idmovimento} or  $P{idmovimento} is null)
+            WHERE m.id  = $P{idmovimento}
 
             UNION
             SELECT
@@ -187,7 +187,7 @@ GROUP BY codigo, descricao;]]>
             INNER JOIN pdv_operador o ON o.id = m.id_pdv_operador
             INNER JOIN empresa empresa ON m.id_empresa = empresa.id
             INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
-            WHERE (m.id =  $P{idmovimento} or  $P{idmovimento} is null)
+            WHERE m.id =  $P{idmovimento}
 
             and (v.status_venda = 'E' or v.status_venda = 'F')
 UNION
@@ -214,7 +214,7 @@ UNION
             INNER JOIN tipo_pagamento t ON f.id_tipo_pagamento = t.id
             INNER JOIN empresa empresa ON m.id_empresa = empresa.id
             INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
-            WHERE (m.id =  $P{idmovimento} or  $P{idmovimento} is null)
+            WHERE m.id =  $P{idmovimento}
             and (o.status = 13 or o.status = 12)
 	  union
             select
@@ -443,7 +443,7 @@ UNION
             </staticText>
             <staticText>
                 <reportElement x="477" y="0" width="78" height="12" uuid="f1175562-6b6c-436c-b53f-3b5086b0d548"/>
-                <textElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Valor]]></text>
@@ -467,36 +467,36 @@ UNION
         </band>
     </columnHeader>
     <detail>
-        <band height="12" splitType="Stretch">
+        <band height="25" splitType="Stretch">
             <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
             <textField>
                 <reportElement x="0" y="0" width="50" height="12" uuid="c3726723-7a8d-49e3-8d3b-9ea0b83dd506">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{idorigem}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="50" y="0" width="108" height="12" uuid="527d05b2-d641-44a0-950f-9cb01ef72277">
+                <reportElement x="50" y="12" width="505" height="12" uuid="527d05b2-d641-44a0-950f-9cb01ef72277">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
             </textField>
             <textField pattern="dd/MM/yyyy HH:mm">
                 <reportElement x="158" y="0" width="78" height="12" uuid="1a0d21ba-2942-4ed5-9d15-71761d1e57ed"/>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{data_hora}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement x="238" y="0" width="122" height="12" uuid="c139ae74-164b-41c4-a67b-49b91abe25ee"/>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{operador}]]></textFieldExpression>
@@ -505,7 +505,7 @@ UNION
                 <reportElement x="477" y="0" width="78" height="12" uuid="fafb5b72-881f-4663-9895-4bbaeb6c75b6">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
-                <textElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
@@ -514,7 +514,7 @@ UNION
                 <reportElement x="442" y="0" width="35" height="12" uuid="f3e8aa13-9f05-4592-b6b0-9d80ab51bc06">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
@@ -523,7 +523,7 @@ UNION
                 <reportElement x="360" y="0" width="82" height="12" uuid="a4859c46-fbca-4dd9-8fe5-bdca5bf0b478">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{forma_pagamento}]]></textFieldExpression>
@@ -633,9 +633,9 @@ UNION
                         <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
                     </datasetRun>
                     <jr:columnGroup width="253" uuid="3791d302-837f-4804-8fd7-97031094d27f">
-                        <jr:tableHeader height="12" rowSpan="1">
+                        <jr:tableHeader height="15" rowSpan="1">
                             <staticText>
-                                <reportElement mode="Opaque" x="0" y="0" width="253" height="12" backcolor="#DDDDDD"
+                                <reportElement mode="Opaque" x="0" y="0" width="253" height="15" backcolor="#DDDDDD"
                                                uuid="0079f82b-e108-4e7b-9598-05aede13f231"/>
                                 <textElement verticalAlignment="Middle">
                                     <font isBold="true"/>
@@ -747,7 +747,7 @@ UNION
                 <textFieldExpression><![CDATA[$V{totalVendas}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement positionType="Float" x="453" y="96" width="100" height="12"
+                <reportElement positionType="Float" x="455" y="96" width="100" height="12"
                                uuid="ac38fb38-4c02-4a06-b41a-70c8ab6d350c">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>

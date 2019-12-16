@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.*;
 import org.hibernate.jdbc.Work;
 
@@ -30,18 +31,20 @@ public class ExecutorRelatorio implements Work {
     private HttpServletResponse response;
     private Map<String, Object> parametros;
     private String nomeArquivoSaida;
+    private String tipoRelatorio;
 
     private boolean relatorioGerado;
 
 
     public ExecutorRelatorio(String diretorioRelatorio, String nomeRelatorio,
                              HttpServletResponse response, Map<String, Object> parametros,
-                             String nomeArquivoSaida) {
+                             String nomeArquivoSaida, String tipoRelatorio) {
         this.diretorioRelatorio = diretorioRelatorio;
         this.nomeRelatorio = nomeRelatorio;
         this.response = response;
         this.parametros = parametros;
         this.nomeArquivoSaida = nomeArquivoSaida;
+        this.tipoRelatorio = tipoRelatorio;
 
         this.parametros.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
     }
@@ -59,18 +62,37 @@ public class ExecutorRelatorio implements Work {
             this.relatorioGerado = print.getPages().size() > 0;
 
             if (this.relatorioGerado) {
-                Exporter<ExporterInput, PdfReportConfiguration, PdfExporterConfiguration, OutputStreamExporterOutput> exportador = new JRPdfExporter();
-                exportador.setExporterInput(new SimpleExporterInput(print));
-                exportador.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
 
-                // Seta o nome do arquivo e a disposição: "inline" abre no próprio navegador
-                // Mude para "attachment" para indicar que deve ser feito um download
 
-                response.setContentType("application/pdf");
-                response.setHeader("Content-Disposition", "inline; filename=\""
-                        + this.nomeArquivoSaida + "\"");
+                if (tipoRelatorio.equals("pdf")) {
+                    Exporter<ExporterInput, PdfReportConfiguration, PdfExporterConfiguration, OutputStreamExporterOutput> exportadorPdv = new JRPdfExporter();
+                    exportadorPdv.setExporterInput(new SimpleExporterInput(print));
+                    exportadorPdv.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
 
-                exportador.exportReport();
+                    // Seta o nome do arquivo e a disposição: "inline" abre no próprio navegador
+                    // Mude para "attachment" para indicar que deve ser feito um download
+
+                    response.setContentType("application/pdf");
+                    response.setHeader("Content-Disposition", "inline; filename=\""
+                            + this.nomeArquivoSaida + "\"");
+
+                    exportadorPdv.exportReport();
+                } else {
+                    SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+                    configuration.setOnePagePerSheet(true);
+                    configuration.setIgnoreGraphics(false);
+
+                    Exporter exporter = new JRXlsxExporter();
+                    exporter.setExporterInput(new SimpleExporterInput(print));
+                    exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(response.getOutputStream()));
+                    exporter.setConfiguration(configuration);
+
+                    response.setContentType("application/vnd.ms-excel");
+                    response.setHeader("Content-Disposition", "inline; filename=\""
+                            + this.nomeArquivoSaida + "\"");
+
+                    exporter.exportReport();
+                }
             }
         } catch (Exception e) {
             throw new SQLException("Erro ao executar relatório " + this.diretorioRelatorio + "/" + this.nomeRelatorio, e);

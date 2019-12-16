@@ -23,6 +23,7 @@ import org.primefaces.model.SortOrder;
 import org.primefaces.model.UploadedFile;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -139,9 +140,17 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private String numero;
     private Date dataInicial;
     private Date dataFinal;
+    private Integer idmepresaFiltro;
 
     private BigDecimal margemLucro;
 
+
+    @PostConstruct
+    @Override
+    public void init() {
+        super.init();
+        pesquisarEmpresas();
+    }
 
     @Override
     public ERPLazyDataModel<NfeCabecalho> getDataModel() {
@@ -154,12 +163,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         dataModel.setOrdernarPor("dataHoraEntradaSaida");
         Object[] atribut = new Object[]{"fornecedor", "serie", "numero", "dataHoraEntradaSaida", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota"};
         dataModel.setAtributos(atribut);
-
-        if (dataModel.getFiltros().isEmpty()) {
-            dataModel.addFiltro("tipoOperacao", 0, Filtro.IGUAL);
-            dataModel.addFiltro("finalidadeEmissao", 1, Filtro.IGUAL);
-        }
-
+        pesquisar();
         return dataModel;
     }
 
@@ -185,6 +189,9 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         if (!StringUtils.isEmpty(nomeFornecedor)) {
             dataModel.addFiltro("fornecedor.pessoa.nome", nomeFornecedor, Filtro.LIKE);
         }
+
+        idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        dataModel.getFiltros().add(new Filtro("empresa.id", idmepresaFiltro));
 
     }
 
@@ -1495,5 +1502,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setMargemLucro(BigDecimal margemLucro) {
         this.margemLucro = margemLucro;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
     }
 }

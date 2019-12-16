@@ -63,10 +63,11 @@
                                             <h3>
                                                 R$
                                                 <span>
-                                            <h:outputText value="#{vendaCabecalhoControll.objeto.valorDesconto}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputText>
-                                        </span>
+                                                    <h:outputText
+                                                            value="#{vendaCabecalhoControll.objeto.valorDesconto}">
+                                                        <f:convertNumber pattern="#,##0.00"/>
+                                                    </h:outputText>
+                                                </span>
                                                 <p:commandLink styleClass="btn btn-link"
                                                                title="Aplicar desconto no valor total da venda"
                                                                update=":formOutrasTelas5:panelOutrasTelas5"

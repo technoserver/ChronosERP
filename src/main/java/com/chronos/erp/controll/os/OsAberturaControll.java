@@ -92,6 +92,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private Date dataFinal;
     private String justificativa;
     private int statusOs;
+    private Integer idmepresaFiltro;
 
     private Map<String, Integer> status;
 
@@ -122,7 +123,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
 
         listTipoPagamento = definirTipoPagament();
-
+        pesquisarEmpresas();
     }
 
     @Override
@@ -168,6 +169,9 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         if (statusOs > 0) {
             dataModel.addFiltro("status", statusOs, Filtro.IGUAL);
         }
+
+        idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
+        dataModel.getFiltros().add(new Filtro("empresa.id", idmepresaFiltro));
 
 
     }
@@ -955,5 +959,13 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void setStatusOs(int statusOs) {
         this.statusOs = statusOs;
+    }
+
+    public Integer getIdmepresaFiltro() {
+        return idmepresaFiltro;
+    }
+
+    public void setIdmepresaFiltro(Integer idmepresaFiltro) {
+        this.idmepresaFiltro = idmepresaFiltro;
     }
 }

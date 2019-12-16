@@ -56,6 +56,16 @@
                                idComponente="dataFinal"
                                styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
+                <h:panelGroup class="col-xs-12 col-sm-6 col-md-6" layout="block"
+                              rendered="#{osAberturaControll.listaEmpresas.size() gt 1}">
+                    <h:outputLabel value="Empresa"/>
+                    <h:selectOneMenu value="#{osAberturaControll.idmepresaFiltro}"
+                                     styleClass="form-control">
+                        <f:selectItems value="#{osAberturaControll.listaEmpresas}" itemValue="#{obj.id}"
+                                       var="obj"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
 
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <h:outputLabel value="Status" for="status"/>

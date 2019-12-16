@@ -232,7 +232,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
         devolucao.setTotalParcial(totalParcial);
         devolucao.setValorCredito(venda.getValorTotal());
-        devolucao.setVendaCabecalho(venda);
+        devolucao.setIdVenda(venda.getId());
 
         if (venda.getSituacao().equals(SituacaoVenda.Faturado.getCodigo())) {
 

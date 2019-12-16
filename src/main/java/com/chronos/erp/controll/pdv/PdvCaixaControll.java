@@ -23,15 +23,9 @@ import java.util.List;
 public class PdvCaixaControll extends AbstractControll<PdvCaixa> implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Inject
     private Repository<PdvConfiguracao> pdvConfiguracaoRepository;
-
-    @Override
-    public void salvar() {
-        if (validar()) {
-            super.salvar();
-        }
-    }
 
     @Override
     public ERPLazyDataModel<PdvCaixa> getDataModel() {
@@ -41,8 +35,21 @@ public class PdvCaixaControll extends AbstractControll<PdvCaixa> implements Seri
             dataModel.setDao(dao);
         }
         dataModel.getFiltros().clear();
-        dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
+        dataModel.getFiltros().add(new Filtro("idempresa", empresa.getId()));
         return dataModel;
+    }
+
+    @Override
+    public void doCreate() {
+        super.doCreate();
+        getObjeto().setIdempresa(empresa.getId());
+    }
+
+    @Override
+    public void salvar() {
+        if (validar()) {
+            super.salvar();
+        }
     }
 
     private boolean validar() {

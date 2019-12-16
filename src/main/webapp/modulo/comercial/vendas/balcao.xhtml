@@ -490,7 +490,7 @@
                                 <p:menuitem value="Cupom"
                                             rendered="#{empty row.idnfe}"
                                             target="blank"
-                                            outcome="/modulo/comercial/vendas/relatorios/cupomBalcao"
+                                            outcome="/modulo/relatorios/comercial/vendas/cupomBalcao"
                                             icon="fa fa-print" ajax="false">
                                     <f:param name="idcupom" value="#{row.id}"/>
                                 </p:menuitem>
@@ -613,7 +613,7 @@
                                     <h:link id="imprimir-cupom"
                                             value="IMPRIMIR CUPOM"
                                             class="btn btn-primary btn-lg"
-                                            outcome="/modulo/comercial/vendas/relatorios/cupomBalcao"
+                                            outcome="/modulo/relatorios/comercial/vendas/cupomBalcao"
                                             target="blank"
                                             rendered="#{empty balcaoControll.venda.idnfe}">
                                         <f:param name="idcupom" value="#{balcaoControll.venda.id}"/>

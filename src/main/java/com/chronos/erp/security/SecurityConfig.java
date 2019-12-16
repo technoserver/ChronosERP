@@ -83,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 //.antMatchers("/modulo/**").hasAnyRole("ADMINISTRADORES") apenas se usa hasAnyRole quando tiver ROLE na frente
                 // ex ROLE_ADMINISTRADORES, caso esteja esteja apenas ADMINISTRADORES é usado hasAuthority
-                .antMatchers("/index*").authenticated()
+                .antMatchers("/index.xhtml*").authenticated()
                 .antMatchers("/modulo/cadastros/administrativo/**").access("hasRole('ADMIN') and hasRole('ADMIN')")
                 .antMatchers("/modulo/cadastros/**").authenticated()
                 .antMatchers("/modulo/cadastros/**").authenticated()

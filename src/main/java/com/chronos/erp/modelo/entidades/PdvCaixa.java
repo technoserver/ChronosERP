@@ -19,6 +19,8 @@ public class PdvCaixa implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    @Column(name = "ID_EMPRESA")
+    private Integer idempresa;
     @Column(name = "codigo")
     @NotBlank
     private String codigo;
@@ -64,6 +66,14 @@ public class PdvCaixa implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getIdempresa() {
+        return idempresa;
+    }
+
+    public void setIdempresa(Integer idempresa) {
+        this.idempresa = idempresa;
     }
 
     public String getNome() {

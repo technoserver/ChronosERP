@@ -56,10 +56,12 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
 
     private String completo;
 
+
     @Inject
     private PessoaService service;
 
     private String nome, situacao, nomeCargo, nomeSetor;
+
 
 
     @Override
@@ -117,7 +119,10 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
         idtipoAdimissao = colaborador.getTipoAdmissao() != null ? colaborador.getTipoAdmissao().getId() : 1;
         idsituacao = colaborador.getSituacaoColaborador().getId();
         idtipo = colaborador.getTipoColaborador().getId();
+        completo = "S";
         iniciarObjetos();
+
+
     }
 
     @Override
@@ -433,4 +438,5 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
     public void setNomeSetor(String nomeSetor) {
         this.nomeSetor = nomeSetor;
     }
+
 }

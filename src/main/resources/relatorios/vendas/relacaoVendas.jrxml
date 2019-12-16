@@ -5,7 +5,7 @@
               name="relacaoVendas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="2.0"/>
-    <property name="ireport.x" value="0"/>
+    <property name="ireport.x" value="231"/>
     <property name="ireport.y" value="0"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ERP Light"/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -164,7 +164,7 @@ WHERE empresa.id = $P{idempresa}  and  empresa_endereco.principal = 'S'
 and (v.id_cliente  = $P{idcliente}  or $P{idcliente} is null )
 and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
 and (v.status_venda = $P{situacao} or $P{situacao} is null)
-and v.data_hora_venda BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal}
+and v.data_hora_venda::date BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal}
 and (v.id =$P{id} or $P{id} is null)
 order by $P!{ordem}]]>
     </queryString>
@@ -317,7 +317,7 @@ order by $P!{ordem}]]>
             </staticText>
             <staticText>
                 <reportElement x="0" y="81" width="555" height="19" uuid="8f005b14-0cd6-4980-9621-f58de4312734"/>
-                <textElement textAlignment="Center">
+                <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="12" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Relação de venda]]></text>
@@ -328,7 +328,7 @@ order by $P!{ordem}]]>
             <staticText>
                 <reportElement style="tituloDetail" x="43" y="101" width="171" height="12"
                                uuid="abced5c5-b994-49b4-9a17-3277c15ed63c"/>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Cliente]]></text>
@@ -336,7 +336,7 @@ order by $P!{ordem}]]>
             <staticText>
                 <reportElement style="tituloDetail" x="216" y="101" width="109" height="12"
                                uuid="a2c0b2fa-d7d4-46f5-bc87-3f3660977e23"/>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Vendedor]]></text>
@@ -344,7 +344,7 @@ order by $P!{ordem}]]>
             <staticText>
                 <reportElement style="tituloDetail" x="363" y="101" width="51" height="12"
                                uuid="3c2dd349-f275-4219-a25f-964b27cae822"/>
-                <textElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Status]]></text>
@@ -352,7 +352,7 @@ order by $P!{ordem}]]>
             <staticText>
                 <reportElement style="tituloDetail" x="508" y="101" width="47" height="12"
                                uuid="9478002a-cc00-40f9-a76b-698e9893244d"/>
-                <textElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Valor Total]]></text>
@@ -360,7 +360,7 @@ order by $P!{ordem}]]>
             <staticText>
                 <reportElement style="tituloDetail" x="0" y="100" width="41" height="12"
                                uuid="b81a598d-e978-4d34-b725-a6683f96eada"/>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Nº Pedido]]></text>
@@ -368,7 +368,7 @@ order by $P!{ordem}]]>
             <staticText>
                 <reportElement style="tituloDetail" x="414" y="101" width="55" height="12"
                                uuid="79936264-c37c-4960-a9fa-14849cebe4a1"/>
-                <textElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Subtotal]]></text>
@@ -376,7 +376,7 @@ order by $P!{ordem}]]>
             <staticText>
                 <reportElement style="tituloDetail" x="469" y="101" width="39" height="12"
                                uuid="9589eb9c-fa4c-48b1-a77c-b5e490ead779"/>
-                <textElement>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Desconto]]></text>
@@ -384,7 +384,7 @@ order by $P!{ordem}]]>
             <staticText>
                 <reportElement style="tituloDetail" x="325" y="101" width="38" height="12"
                                uuid="bd02ea33-f691-48b8-8e8f-07ae046a8a70"/>
-                <textElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Data]]></text>
@@ -396,21 +396,25 @@ order by $P!{ordem}]]>
             <textField>
                 <reportElement style="dadosDetail" x="43" y="0" width="171" height="12"
                                uuid="98d4e1a1-5a62-48bb-b930-8b3969c0b4ac"/>
+                <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement style="dadosDetail" x="2" y="0" width="39" height="12"
                                uuid="db2ea711-d020-4037-8e76-4fab7e8de16e"/>
+                <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[new DecimalFormat("000000").format($F{id})]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement style="dadosDetail" x="216" y="0" width="109" height="12"
                                uuid="794e9bd1-60cc-4531-aeff-ae75205e18fa"/>
+                <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{vendedor}]]></textFieldExpression>
             </textField>
             <textField pattern="">
                 <reportElement style="dadosDetail" x="363" y="0" width="51" height="12"
                                uuid="1633254b-731c-45c2-b525-35bedb41fef7"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{situacao}.equals("D")?"Digitacao":
 $F{situacao}.equals("P")?"Producao":
 $F{situacao}.equals("X")?"Expedicao":
@@ -422,21 +426,25 @@ $F{situacao}.equals("N")?"Nota Fiscal":""]]></textFieldExpression>
             <textField pattern="#,##0.00">
                 <reportElement style="dadosDetail" x="508" y="0" width="47" height="12"
                                uuid="bc63d15d-c606-46b0-a53e-99acb4ad9cd4"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{valor_total}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
                 <reportElement style="dadosDetail" x="469" y="0" width="39" height="12"
                                uuid="3f544bb4-b00a-4b5f-824b-a7253969b692"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{valor_desconto}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
                 <reportElement style="dadosDetail" x="414" y="0" width="55" height="12"
                                uuid="67c84540-a494-4d34-ae07-067d1eabc7ec"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{valor_subtotal}]]></textFieldExpression>
             </textField>
             <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement style="dadosDetail" x="325" y="0" width="38" height="12"
                                uuid="5fdfd4a2-9fea-4a50-9ad0-235d3e5fa0bc"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{data_venda}]]></textFieldExpression>
             </textField>
         </band>
@@ -470,16 +478,19 @@ $F{situacao}.equals("N")?"Nota Fiscal":""]]></textFieldExpression>
             <textField pattern="#,##0.00">
                 <reportElement style="dadosDetail" x="469" y="24" width="86" height="12"
                                uuid="69dc6c4a-7c64-4e46-8f7c-65b1113797b4"/>
+                <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$V{desconto}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
                 <reportElement style="dadosDetail" x="469" y="36" width="86" height="12"
                                uuid="befc6df8-89e3-4b1b-aeb8-2c62e859f52f"/>
+                <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
                 <reportElement style="dadosDetail" x="469" y="12" width="86" height="12"
                                uuid="514fba33-75f6-4161-9af7-ef5cfa42a7ee"/>
+                <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[$V{subTotal}]]></textFieldExpression>
             </textField>
         </band>
