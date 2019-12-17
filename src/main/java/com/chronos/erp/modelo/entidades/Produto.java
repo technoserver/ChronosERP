@@ -213,6 +213,8 @@ public class Produto implements Serializable {
         this.tipo = "V";
         this.possuiGrade = false;
 
+        this.dataCadastro = new Date();
+
     }
 
     public Produto(Integer id, String nome) {
