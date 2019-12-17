@@ -75,7 +75,9 @@
                                 <p:commandButton value="Cadastro completo"
                                                  action="#{produtoControll.doCreate()}"
                                                  update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
-                                                 rendered="#{produtoControll.podeInserir()}"/>
+                                                 rendered="#{produtoControll.podeInserir()}">
+                                    <p:resetInput target=":formCentro"/>
+                                </p:commandButton>
 
                             </div>
                         </div>
@@ -258,7 +260,9 @@
                                              oncomplete="addClass()"
                                              update=":formCentro:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
 
-                            />
+                            >
+                                <p:resetInput target=":formCentro"/>
+                            </p:commandButton>
 
                         </div>
                         <div class="col-xs-6 col-lg-6">
