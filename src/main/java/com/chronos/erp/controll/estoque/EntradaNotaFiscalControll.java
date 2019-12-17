@@ -849,7 +849,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
             }
         }
 
-        pesquisar();
+        pesquisarGrade();
     }
 
     public void pesquisarGrade() {
