@@ -62,14 +62,14 @@
                                             update=":formCentro:growl,#{cc.attrs.gridPadrao ?':formCentro:telaGrid:outputPanelGrid' :':formCentro:outputPanelGrid'},:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"/>
                                 </h:commandButton>
                             </div>
-                            <div class="#{!cc.attrs.somenteConsulta? 'col-xs-6 col-lg-6':'col-xs-12 col-lg-12'}">
-                                <h:commandButton value="Cancelar" styleClass="btn btn-default center-block"
+                            <div class="#{!cc.attrs.somenteConsulta? 'col-xs-6 col-lg-6 text-center':'col-xs-12 col-lg-12 text-center'}">
+                                <p:commandButton value="Cancelar" styleClass="default-btn"
                                                  actionListener="#{cc.attrs.controller.voltar()}"
+                                                 update="#{cc.attrs.gridPadrao ?':formCentro:telaGrid:outputPanelGrid' :':formCentro:outputPanelGrid'},:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                                 process="@this" resetValues="true"
                                 >
                                     <p:resetInput target=":formCentro"/>
-                                    <p:ajax update="#{cc.attrs.gridPadrao ?':formCentro:telaGrid:outputPanelGrid' :':formCentro:outputPanelGrid'},:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
-                                            process="@this" resetValues="true"/>
-                                </h:commandButton>
+                                </p:commandButton>
                             </div>
                         </div>
 
