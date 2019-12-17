@@ -185,7 +185,8 @@
 
 
                     <div class="row m-b">
-                        <h:panelGroup layout="block" class="col-xs-12 col-sm-3" rendered="#{seguranca.administrador}">
+                        <h:panelGroup layout="block" class="col-xs-12 col-sm-3 m-t"
+                                      rendered="#{seguranca.administrador}">
                             <div class="">
                                 <p:commandButton value="Movimento detalhado"
                                                  action="#{pdvMovimentoControll.detalheMovimentos}"
@@ -194,8 +195,8 @@
                             </div>
                         </h:panelGroup>
 
-                        <h:panelGroup layout="block" class="col-xs-12 col-sm-2"
-                                      rendered="#{pdvMovimentoControll.isExisteMovimento()}">
+                        <h:panelGroup layout="block" class="col-xs-12 col-sm-2 m-t"
+                                      rendered="#{pdvMovimentoControll.temMovimento}">
                             <p:commandButton value="Lançamento"
                                              update=":formOutrasTelas3:dialogOutrasTelas3"
                                              oncomplete="PF('dialogOutrasTelas3').show()"/>
