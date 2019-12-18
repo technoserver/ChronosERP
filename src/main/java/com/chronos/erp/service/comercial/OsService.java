@@ -7,10 +7,12 @@ import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.modelo.enuns.AcaoLog;
 import com.chronos.erp.modelo.enuns.Modulo;
 import com.chronos.erp.modelo.enuns.StatusTransmissao;
+import com.chronos.erp.modelo.enuns.TipoLancamento;
 import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.AbstractService;
 import com.chronos.erp.service.ChronosException;
+import com.chronos.erp.service.financeiro.ContaPessoaService;
 import com.chronos.erp.service.financeiro.FinLancamentoReceberService;
 import com.chronos.erp.service.financeiro.MovimentoService;
 import com.chronos.erp.service.gerencial.AuditoriaService;
@@ -56,6 +58,11 @@ public class OsService extends AbstractService<OsAbertura> {
 
     @Inject
     private AuditoriaService auditoriaService;
+
+    @Inject
+    private Repository<ContaPessoa> contaPessoaRepository;
+    @Inject
+    private ContaPessoaService contaPessoaService;
 
 
     public OsAbertura salvar(OsAbertura os) throws ChronosException {
@@ -261,6 +268,18 @@ public class OsService extends AbstractService<OsAbertura> {
             formaPagamento.get().getCondicao();
             finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
                     formaPagamento.get().getCondicao(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, os.getEmpresa());
+        }
+
+        formaPagamento = os.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("05")).findFirst();
+
+        if (formaPagamento.isPresent()) {
+            ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", os.getCliente().getPessoa().getId());
+
+            if (conta == null || conta.getSaldo().compareTo(formaPagamento.get().getValor()) < 0) {
+                throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
+            } else {
+                contaPessoaService.lancaMovimento(conta, formaPagamento.get().getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), os.getId().toString());
+            }
         }
 
 

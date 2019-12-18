@@ -10,6 +10,7 @@ import com.chronos.erp.repository.Repository;
 import com.chronos.erp.repository.VendaRepository;
 import com.chronos.erp.service.AbstractService;
 import com.chronos.erp.service.ChronosException;
+import com.chronos.erp.service.financeiro.ContaPessoaService;
 import com.chronos.erp.service.financeiro.FinLancamentoReceberService;
 import com.chronos.erp.service.gerencial.AuditoriaService;
 import com.chronos.erp.util.Biblioteca;
@@ -54,6 +55,10 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     private Repository<NfeCabecalho> nfeCabecalhoRepository;
     @Inject
     private Repository<VendaDevolucao> vendaDevolucaoRepository;
+    @Inject
+    private Repository<ContaPessoa> contaPessoaRepository;
+    @Inject
+    private ContaPessoaService contaPessoaService;
 
 
     @Transactional
@@ -123,6 +128,18 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         if (pagamentoOptional.isPresent()) {
             finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
                     pagamentoOptional.get().getFormaPagamento().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
+        }
+
+        pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("05")).findFirst();
+
+        if (pagamentoOptional.isPresent()) {
+            ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
+
+            if (conta == null || conta.getSaldo().compareTo(pagamentoOptional.get().getFormaPagamento().getValor()) < 0) {
+                throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
+            } else {
+                contaPessoaService.lancaMovimento(conta, pagamentoOptional.get().getFormaPagamento().getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), venda.getId().toString());
+            }
         }
 
 

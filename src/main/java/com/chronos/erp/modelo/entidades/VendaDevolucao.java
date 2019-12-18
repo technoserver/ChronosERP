@@ -47,10 +47,14 @@ public class VendaDevolucao implements Serializable {
     @NotNull
     @Column(name = "gerado_credito")
     private String geradoCredito;
+    @NotNull
+    @Column(name = "codigo_modulo")
+    private String codigoModulo;
 
     @OneToMany(mappedBy = "vendaDevolucao", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VendaDevolucaoItem> listaVendaDevolucaoItem;
-
+    @Transient
+    private BigDecimal valorVenda;
 
     public VendaDevolucao() {
         this.dataDevolucao = new Date();
@@ -132,7 +136,13 @@ public class VendaDevolucao implements Serializable {
         this.creditoUtilizado = creditoUtilizado;
     }
 
+    public String getCodigoModulo() {
+        return codigoModulo;
+    }
 
+    public void setCodigoModulo(String codigoModulo) {
+        this.codigoModulo = codigoModulo;
+    }
 
     public List<VendaDevolucaoItem> getListaVendaDevolucaoItem() {
         return listaVendaDevolucaoItem;
@@ -140,6 +150,22 @@ public class VendaDevolucao implements Serializable {
 
     public void setListaVendaDevolucaoItem(List<VendaDevolucaoItem> listaVendaDevolucaoItem) {
         this.listaVendaDevolucaoItem = listaVendaDevolucaoItem;
+    }
+
+    public BigDecimal getValorVenda() {
+        return valorVenda;
+    }
+
+    public void setValorVenda(BigDecimal valorVenda) {
+        this.valorVenda = valorVenda;
+    }
+
+    public void calcularValorCredito() {
+        valorCredito = listaVendaDevolucaoItem
+                .stream()
+                .map(i -> (i.getQuantidade().multiply(i.getValor())))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 
     @Override

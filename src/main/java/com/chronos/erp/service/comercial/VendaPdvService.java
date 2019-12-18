@@ -21,6 +21,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,6 +75,8 @@ public class VendaPdvService implements Serializable {
 
     @Inject
     private Repository<NfeCabecalho> nfeRepository;
+    @Inject
+    private VendaDevolucaoService vendaDevolucaoService;
 
 
     @Transactional
@@ -279,6 +282,54 @@ public class VendaPdvService implements Serializable {
         }
 
         venda.calcularValorTotal();
+    }
+
+    public VendaDevolucao gerarDevolucao(PdvVendaCabecalho venda) {
+        VendaDevolucao devolucao = new VendaDevolucao();
+
+
+        devolucao.setIdVenda(venda.getId());
+        devolucao.setValorCredito(venda.getValorTotal());
+        devolucao.setDataDevolucao(new Date());
+        devolucao.setGeradoCredito("N");
+        devolucao.setCreditoUtilizado("N");
+        devolucao.setListaVendaDevolucaoItem(new ArrayList<>());
+
+        venda.getListaPdvVendaDetalhe().forEach(i -> {
+            VendaDevolucaoItem item = new VendaDevolucaoItem();
+            item.setProduto(i.getProduto());
+            item.setQuantidade(i.getQuantidade());
+            item.setValor(i.getValorUnitario());
+            item.setVendaDevolucao(devolucao);
+
+            devolucao.getListaVendaDevolucaoItem().add(item);
+        });
+
+
+        return devolucao;
+    }
+
+    public void confirmarDevolucao(VendaDevolucao devolucao, PdvVendaCabecalho venda) throws ChronosException {
+
+        devolucao = vendaDevolucaoService.gerarDevolucao(devolucao);
+
+        venda.setStatusVenda(devolucao.getTotalParcial().equals("P") ? "DP" : "D");
+        repository.atualizar(venda);
+
+        if (venda.getValorComissao() != null && venda.getValorComissao().signum() > 0) {
+            comissaoService.gerarComissao("A", "D", venda.getValorComissao(), venda.getValorTotal(),
+                    venda.getId().toString(), venda.getVendedor().getColaborador(), Modulo.PDV);
+        }
+        List<ProdutoVendaDTO> produtos = new ArrayList<>();
+        venda.getListaPdvVendaDetalhe().forEach(p -> {
+            produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade().negate()));
+
+        });
+
+        estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
+
+        String conteudo = String.format("Devolução de Venda Nº %d modulo %s", devolucao.getIdVenda(), devolucao.getCodigoModulo());
+        auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, conteudo, "PDV");
     }
 
     public void removerDesconto(PdvVendaCabecalho venda) {

@@ -98,6 +98,9 @@ public class BalcaoControll implements Serializable {
 
     private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
 
+    private VendaDevolucao devolucao;
+    private PdvVendaCabecalho vendaDevolvida;
+
     private AdmParametro parametro;
     private PdvVendaCabecalho venda;
     private PdvVendaDetalhe item;
@@ -422,6 +425,18 @@ public class BalcaoControll implements Serializable {
                 throw new RuntimeException("Erro ao cancelar Cupom", ex);
             }
         }
+    }
+
+    public void exibirDevolucao() {
+
+    }
+
+    public void removerItemDevolucao() {
+
+    }
+
+    public void confirmarDevolucao() {
+
     }
 
 
@@ -1306,5 +1321,21 @@ public class BalcaoControll implements Serializable {
 
     public void setIdoperador(int idoperador) {
         this.idoperador = idoperador;
+    }
+
+    public VendaDevolucao getDevolucao() {
+        return devolucao;
+    }
+
+    public void setDevolucao(VendaDevolucao devolucao) {
+        this.devolucao = devolucao;
+    }
+
+    public PdvVendaCabecalho getVendaDevolvida() {
+        return vendaDevolvida;
+    }
+
+    public void setVendaDevolvida(PdvVendaCabecalho vendaDevolvida) {
+        this.vendaDevolvida = vendaDevolvida;
     }
 }
