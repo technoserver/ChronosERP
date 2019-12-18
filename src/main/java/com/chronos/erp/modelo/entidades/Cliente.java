@@ -78,6 +78,7 @@ public class Cliente implements Serializable {
         this.pessoa = new Pessoa(nome);
     }
 
+
     public Cliente(Integer id, Integer idpessoa, String nome) {
         this.id = id;
         this.pessoa = new Pessoa(idpessoa, nome);

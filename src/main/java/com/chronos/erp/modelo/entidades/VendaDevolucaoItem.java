@@ -34,6 +34,8 @@ public class VendaDevolucaoItem implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private Produto produto;
+    @Transient
+    private BigDecimal quantidadeVenda;
 
     public VendaDevolucaoItem() {
     }
@@ -76,6 +78,14 @@ public class VendaDevolucaoItem implements Serializable {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public BigDecimal getQuantidadeVenda() {
+        return quantidadeVenda;
+    }
+
+    public void setQuantidadeVenda(BigDecimal quantidadeVenda) {
+        this.quantidadeVenda = quantidadeVenda;
     }
 
     @Override

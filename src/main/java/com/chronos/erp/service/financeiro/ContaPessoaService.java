@@ -1,8 +1,11 @@
 package com.chronos.erp.service.financeiro;
 
+import com.chronos.erp.modelo.entidades.Cliente;
 import com.chronos.erp.modelo.entidades.ContaPessoa;
 import com.chronos.erp.modelo.entidades.MovimentoContaPessoa;
+import com.chronos.erp.modelo.entidades.VendaDevolucao;
 import com.chronos.erp.modelo.enuns.AcaoLog;
+import com.chronos.erp.modelo.enuns.Modulo;
 import com.chronos.erp.modelo.enuns.TipoLancamento;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.gerencial.AuditoriaService;
@@ -34,6 +37,22 @@ public class ContaPessoaService implements Serializable {
     public ContaPessoa salvar(ContaPessoa conta) {
         conta = contaPessoaRepository.atualizar(conta);
         return conta;
+    }
+
+    public void lancarMovimentoDevolucaoPdv(Cliente cliente, VendaDevolucao devolucao) {
+
+        ContaPessoa contaPessoa = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", cliente.getPessoa().getId());
+
+        if (contaPessoa == null) {
+            contaPessoa = new ContaPessoa();
+            contaPessoa.setSaldo(BigDecimal.ZERO);
+            contaPessoa.setPessoa(cliente.getPessoa());
+
+            contaPessoa = contaPessoaRepository.atualizar(contaPessoa);
+
+        }
+
+        lancaMovimento(contaPessoa, devolucao.getValorCredito(), TipoLancamento.CREDITO, Modulo.DEVOLUCAO_PDV.getCodigo(), devolucao.getId().toString());
     }
 
     @Transactional
