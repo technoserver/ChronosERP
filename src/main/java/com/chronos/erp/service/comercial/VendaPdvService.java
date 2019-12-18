@@ -294,6 +294,8 @@ public class VendaPdvService implements Serializable {
         devolucao.setGeradoCredito("N");
         devolucao.setCreditoUtilizado("N");
         devolucao.setListaVendaDevolucaoItem(new ArrayList<>());
+        devolucao.setValorVenda(venda.getValorTotal());
+        devolucao.setCodigoModulo(Modulo.PDV.getCodigo());
 
         venda.getListaPdvVendaDetalhe().forEach(i -> {
             VendaDevolucaoItem item = new VendaDevolucaoItem();
@@ -301,7 +303,7 @@ public class VendaPdvService implements Serializable {
             item.setQuantidade(i.getQuantidade());
             item.setValor(i.getValorUnitario());
             item.setVendaDevolucao(devolucao);
-
+            item.setQuantidadeVenda(i.getQuantidade());
             devolucao.getListaVendaDevolucaoItem().add(item);
         });
 
@@ -309,11 +311,17 @@ public class VendaPdvService implements Serializable {
         return devolucao;
     }
 
+    @Transactional
     public void confirmarDevolucao(VendaDevolucao devolucao, PdvVendaCabecalho venda) throws ChronosException {
 
         devolucao = vendaDevolucaoService.gerarDevolucao(devolucao);
 
         venda.setStatusVenda(devolucao.getTotalParcial().equals("P") ? "DP" : "D");
+        venda.setNomeCliente(venda.getCliente().getPessoa().getNome());
+        // todo anexar CPF/CNPJ
+//        String cpfCnpj = venda.getCliente().getPessoa().getTipo().equals("F")
+//                ? venda.getCliente().getPessoa().getPessoaFisica().getCpf()
+//                : venda.getCliente().getPessoa().getPessoaJuridica().getCnpj();
         repository.atualizar(venda);
 
         if (venda.getValorComissao() != null && venda.getValorComissao().signum() > 0) {
@@ -327,6 +335,10 @@ public class VendaPdvService implements Serializable {
         });
 
         estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
+
+        if (devolucao.getGeradoCredito().equals("S") && venda.getCliente() != null) {
+            contaPessoaService.lancarMovimentoDevolucaoPdv(venda.getCliente(), devolucao);
+        }
 
         String conteudo = String.format("Devolução de Venda Nº %d modulo %s", devolucao.getIdVenda(), devolucao.getCodigoModulo());
         auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, conteudo, "PDV");

@@ -99,6 +99,7 @@ public class BalcaoControll implements Serializable {
     private ERPLazyDataModel<PdvVendaCabecalho> dataModel;
 
     private VendaDevolucao devolucao;
+    private VendaDevolucaoItem vendaDevolucaoItemSelecionado;
     private PdvVendaCabecalho vendaDevolvida;
 
     private AdmParametro parametro;
@@ -428,15 +429,26 @@ public class BalcaoControll implements Serializable {
     }
 
     public void exibirDevolucao() {
-
+        vendaDevolvida = dataModel.getRowData(this.venda.getId().toString());
+        devolucao = service.gerarDevolucao(vendaDevolvida);
     }
 
     public void removerItemDevolucao() {
+        devolucao.getListaVendaDevolucaoItem().remove(vendaDevolucaoItemSelecionado);
 
     }
 
     public void confirmarDevolucao() {
-
+        try {
+            service.confirmarDevolucao(devolucao, vendaDevolvida);
+            Mensagem.addInfoMessage("Devolução realizada com sucesso");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao gerar a devolução", ex);
+            }
+        }
     }
 
 
@@ -614,7 +626,7 @@ public class BalcaoControll implements Serializable {
 
             filtros.add(new Filtro(Filtro.OR, "id", Filtro.IGUAL, id));
 
-            list = clientes.getEntitys(Cliente.class, filtros, new Object[]{"pessoa.nome"});
+            list = clientes.getEntitys(Cliente.class, filtros, new Object[]{"pessoa.id", "pessoa.nome"});
         } catch (Exception ex) {
 
         }
@@ -1329,6 +1341,14 @@ public class BalcaoControll implements Serializable {
 
     public void setDevolucao(VendaDevolucao devolucao) {
         this.devolucao = devolucao;
+    }
+
+    public VendaDevolucaoItem getVendaDevolucaoItemSelecionado() {
+        return vendaDevolucaoItemSelecionado;
+    }
+
+    public void setVendaDevolucaoItemSelecionado(VendaDevolucaoItem vendaDevolucaoItemSelecionado) {
+        this.vendaDevolucaoItemSelecionado = vendaDevolucaoItemSelecionado;
     }
 
     public PdvVendaCabecalho getVendaDevolvida() {
