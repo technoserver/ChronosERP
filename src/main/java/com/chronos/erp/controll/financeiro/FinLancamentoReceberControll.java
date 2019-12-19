@@ -3,6 +3,7 @@ package com.chronos.erp.controll.financeiro;
 import com.chronos.erp.controll.AbstractControll;
 import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.modelo.entidades.*;
+import com.chronos.erp.modelo.view.ViewLancamentoReceberResum;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
@@ -55,6 +56,8 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     private Repository<FinParcelaRecebimento> recebimentoRepository;
     @Inject
     private MovimentoService movimentoService;
+    @Inject
+    private Repository<ViewLancamentoReceberResum> viewLancamentoReceberResumRepository;
 
     private List<FinLancamentoReceber> lancamentosSelecionados;
     private List<FinLancamentoReceber> lancamentosFiltrados;
@@ -74,6 +77,7 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     private Integer idmepresaFiltro;
     private String cliente;
 
+    private FinLancamentoReceberDataModel dataModelResum;
 
     @PostConstruct
     @Override

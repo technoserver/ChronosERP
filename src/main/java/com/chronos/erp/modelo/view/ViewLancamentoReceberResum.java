@@ -1,33 +1,34 @@
-package com.chronos.erp.dto;
+package com.chronos.erp.modelo.view;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class LancamentoReceberDTO implements Serializable {
+@Entity
+@Table(name = "view_movimento_caixa")
+public class ViewLancamentoReceberResum implements Serializable {
 
+    @Id
+    @Basic
+    @Column(name = "id")
     private Integer id;
+    @Column(name = "numero_documento")
     private String numDoc;
+    @Column(name = "nome")
     private String cliente;
+    @Column(name = "quantidade_parcela")
     private Integer qtdParcelas;
+    @Column(name = "valor_total")
     private BigDecimal valorAReceber;
     private BigDecimal saldo;
+    @Column(name = "data_lancamento")
     private Date dataLancamento;
     private String status;
 
-    public LancamentoReceberDTO() {
+    public ViewLancamentoReceberResum() {
     }
 
-    public LancamentoReceberDTO(Integer id, String numDoc, String cliente, Integer qtdParcelas, BigDecimal valorAReceber, BigDecimal saldo, Date dataLancamento, String status) {
-        this.id = id;
-        this.numDoc = numDoc;
-        this.cliente = cliente;
-        this.qtdParcelas = qtdParcelas;
-        this.valorAReceber = valorAReceber;
-        this.saldo = saldo;
-        this.dataLancamento = dataLancamento;
-        this.status = status;
-    }
 
     public Integer getId() {
         return id;
