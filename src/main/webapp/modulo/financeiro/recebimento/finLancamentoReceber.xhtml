@@ -37,6 +37,12 @@
                     </h:selectOneMenu>
                 </h:panelGroup>
 
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 itens="#{finLancamentoReceberControll.statusParcela}"
+                                 nomeAtributo="#{finLancamentoReceberControll.status}"
+                                 label="Status"
+                                 idComponente="status"/>
+
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <h:outputLabel value="Cliente" for="cliente"/>
                     <div class="field-action">
@@ -52,7 +58,7 @@
             </div>
 
             <p:dataTable
-                    value="#{finLancamentoReceberControll.dataModel}"
+                    value="#{finLancamentoReceberControll.dataModelResum}"
                     var="row" id="dataTabelLacanemtos" paginator="true"
                     emptyMessage="Nenhum registro encontrado"
                     rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
@@ -61,27 +67,29 @@
 
                 <p:column headerText="Cliente">
                     <p>
-                        <h:outputLabel value="Documento Nº "/> &nbsp; #{row.numeroDocumento}
+                        <h:outputLabel value="Documento Nº "/> &nbsp; #{row.numDoc}
                     </p>
-                    #{row.cliente.pessoa.nome}
-                </p:column>
-                <p:column headerText="Qte Parcelas" width="140" styleClass="text-center">
-                    <h:outputLabel value="#{row.quantidadeParcela}"/>
-                </p:column>
-                <p:column headerText="Valor A Receber" styleClass="text-right" width="155">
-                    <h:outputLabel value="#{row.valorAReceber}">
-                        <f:convertNumber pattern="#,##0.00"/>
-                    </h:outputLabel>
+                    #{row.cliente}
                 </p:column>
                 <p:column headerText="Lancamento" styleClass="text-center" width="150">
                     <h:outputLabel value="#{row.dataLancamento}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputLabel>
                 </p:column>
-                <p:column headerText="1º Vencimento" styleClass="text-center" width="145">
-                    <h:outputLabel value="#{row.primeiroVencimento}">
-                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                <p:column headerText="Valor Lancamento" styleClass="text-right" width="175">
+                    <h:outputLabel value="#{row.valorAReceber}">
+                        <f:convertNumber pattern="#,##0.00"/>
                     </h:outputLabel>
+                </p:column>
+                <p:column headerText="Restante" styleClass="text-right" width="155">
+                    <h:outputLabel value="#{row.saldo}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+                <p:column headerText="Status" styleClass="text-center" width="125">
+                    <h:outputLabel value="Quitada" rendered="#{row.status eq 'Q'}"/>
+                    <h:outputLabel value="Quitada parcialmente" rendered="#{row.status eq 'QP'}"/>
+                    <h:outputLabel value="Aberta" rendered="#{row.status eq 'A'}"/>
                 </p:column>
 
 
@@ -93,16 +101,16 @@
                                     update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     action="#{finLancamentoReceberControll.doEdit}">
                             <f:setPropertyActionListener value="#{row}"
-                                                         target="#{finLancamentoReceberControll.objetoSelecionado}"/>
+                                                         target="#{finLancamentoReceberControll.viewLancamentoReceberResumSelecionado}"/>
                         </p:menuitem>
                         <p:menuitem value="Excluir"
                                     update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid"
-                                    rendered="#{finLancamentoReceberControll.podeExcluir()}"
+                                    rendered="#{finLancamentoReceberControll.podeExcluir() and row.status eq 'A'}"
                                     process="dataTabelLacanemtos"
                                     action="#{finLancamentoReceberControll.remover}">
                             <p:confirm header="Confirmar" message="Deseja excluir ?"/>
                             <f:setPropertyActionListener value="#{row}"
-                                                         target="#{finLancamentoReceberControll.objetoSelecionado}"/>
+                                                         target="#{finLancamentoReceberControll.viewLancamentoReceberResumSelecionado}"/>
                         </p:menuitem>
                         <p:menuitem value="Carner"
                                     target="_blank"
@@ -122,6 +130,7 @@
     <ui:define name="telaInclusaoAlteracao">
         <erp:telaInclusaoAlteracao controller="#{finLancamentoReceberControll}"
                                    nomeFuncao=" Lancamento de contas Receber"
+                                   somenteConsulta="#{finLancamentoReceberControll.somenteConsulta}"
                                    id="telaDetalhe"
         >
 
@@ -159,7 +168,7 @@
                                           nomeAtributo="#{finLancamentoReceberControll.objeto.quantidadeParcela}"/>
                         <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="finLancamentoReceberIntervaloEntreParcelas"
-                                          label="Intervalo Entre Parcelas" requerido="true"
+                                          label="Intervalo" requerido="true"
                                           nomeAtributo="#{finLancamentoReceberControll.objeto.intervaloEntreParcelas}"/>
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="finLancamentoReceberValorTotal"
@@ -172,27 +181,27 @@
                                        nomeAtributo="#{finLancamentoReceberControll.objeto.primeiroVencimento}"/>
 
                     </div>
-
-                    <erp:separador label="Dados para geração das parcelas"/>
-                    <div class="row">
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                          label="Conta Caixa"
-                                          itemLabel="#{objeto.nome}"
-                                          controller="#{finLancamentoReceberControll}"
-                                          completeMethod="getListaContaCaixa"
-                                          nomeAtributo="#{finLancamentoReceberControll.contaCaixa}"
-                                          idComponente="finLancamentoReceberContaCaixa"
-                                          requerido="#{empty finLancamentoReceberControll.objeto.id}"/>
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                          label="Natureza Financeira"
-                                          itemLabel="#{objeto.descricao}"
-                                          controller="#{finLancamentoReceberControll}"
-                                          completeMethod="getListaNaturezaFinanceira"
-                                          nomeAtributo="#{finLancamentoReceberControll.naturezaFinanceira}"
-                                          idComponente="finLancamentoReceberNaturezaFinanceira"
-                                          requerido="#{empty finLancamentoReceberControll.objeto.id}"/>
-                    </div>
-
+                    <h:panelGroup layout="block" rendered="#{empty finLancamentoReceberControll.objeto.id}">
+                        <erp:separador label="Dados para geração das parcelas"/>
+                        <div class="row">
+                            <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                              label="Conta Caixa"
+                                              itemLabel="#{objeto.nome}"
+                                              controller="#{finLancamentoReceberControll}"
+                                              completeMethod="getListaContaCaixa"
+                                              nomeAtributo="#{finLancamentoReceberControll.contaCaixa}"
+                                              idComponente="finLancamentoReceberContaCaixa"
+                                              requerido="#{empty finLancamentoReceberControll.objeto.id}"/>
+                            <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                              label="Natureza Financeira"
+                                              itemLabel="#{objeto.descricao}"
+                                              controller="#{finLancamentoReceberControll}"
+                                              completeMethod="getListaNaturezaFinanceira"
+                                              nomeAtributo="#{finLancamentoReceberControll.naturezaFinanceira}"
+                                              idComponente="finLancamentoReceberNaturezaFinanceira"
+                                              requerido="#{empty finLancamentoReceberControll.objeto.id}"/>
+                        </div>
+                    </h:panelGroup>
 
                 </p:tab>
 
@@ -261,7 +270,7 @@
                     </p:dataTable>
                 </p:tab>
                 <p:tab title="Recebimento" id="tabRecebimento"
-                       disabled="#{finLancamentoReceberControll.recebimentos.size() eq 0}">
+                       disabled="#{empty finLancamentoReceberControll.objeto.id or finLancamentoReceberControll.recebimentos.size() eq 0}">
                     <p:dataTable id="dataTableRecebimento" var="obj"
                                  value="#{finLancamentoReceberControll.recebimentos}"
                                  resizableColumns="true">
@@ -276,7 +285,7 @@
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputLabel>
                         </p:column>
-                        <p:column headerText="Açoes" styleClass="text-center">
+                        <p:column headerText="Açoes" styleClass="text-center" rendered="#{seguranca.administrador}">
                             <p:commandLink title="Estornar"
                                            action="#{finLancamentoReceberControll.excluirRecebimento}"
                                            update=":formCentro:growl,:formCentro:telaDetalhe:tabViewDetalhes"

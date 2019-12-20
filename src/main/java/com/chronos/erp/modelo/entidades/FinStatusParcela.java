@@ -66,6 +66,11 @@ public class FinStatusParcela implements Serializable {
         this.id = id;
     }
 
+    public FinStatusParcela(Integer id, String descricao) {
+        this.id = id;
+        this.descricao = descricao;
+    }
+
 
     public FinStatusParcela() {
     }
