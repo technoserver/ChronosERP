@@ -12,6 +12,7 @@ public class PdvVendaDetalheService extends AbstractService<PdvVendaDetalhe> {
 
 
     public PdvVendaCabecalho addProduto(PdvVendaCabecalho venda, PdvVendaDetalhe item) {
+        item.calcularValorTotal();
         Optional<PdvVendaDetalhe> itemOpt = getItemVenda(venda, item.getProduto());
         BigDecimal quantidade = item.getQuantidade();
         if (itemOpt.isPresent()) {
