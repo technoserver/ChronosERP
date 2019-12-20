@@ -88,6 +88,7 @@
                                  reflow="true" rendered="#{finRecebimentoControll.podeConsultar()}"
                                  sortBy="#{row.dataVencimento}"
                                  rowKey="#{row.idParcelaReceber}"
+                                 selectionMode="multiple"
                                  selection="#{finRecebimentoControll.parcelasSelecionadas}"
                                  rowStyleClass="#{row.vencido?'red_color':''}">
 
@@ -98,10 +99,7 @@
                                 update="formCentro:panel-valor-pagar"/>
                         <p:ajax event="rowUnselect" listener="#{finRecebimentoControll.calcularValorAPagar}"
                                 update="formCentro:panel-valor-pagar"/>
-                        <p:ajax event="rowSelectCheckbox" listener="#{finRecebimentoControll.calcularValorAPagar}"
-                                update="formCentro:panel-valor-pagar"/>
 
-                        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                         <p:column style="width:3%">
                             <p:rowToggler/>
                         </p:column>
