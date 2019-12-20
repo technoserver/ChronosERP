@@ -4,15 +4,18 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Optional;
 
 @Entity
-@Table(name = "view_movimento_caixa")
+@Table(name = "view_fin_lancamento_receber_resum")
 public class ViewLancamentoReceberResum implements Serializable {
 
     @Id
     @Basic
     @Column(name = "id")
     private Integer id;
+    @Column(name = "id_empresa")
+    private Integer idempresa;
     @Column(name = "numero_documento")
     private String numDoc;
     @Column(name = "nome")
@@ -71,7 +74,7 @@ public class ViewLancamentoReceberResum implements Serializable {
     }
 
     public BigDecimal getSaldo() {
-        return saldo;
+        return Optional.ofNullable(saldo).orElse(valorAReceber);
     }
 
     public void setSaldo(BigDecimal saldo) {
@@ -92,5 +95,13 @@ public class ViewLancamentoReceberResum implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getIdempresa() {
+        return idempresa;
+    }
+
+    public void setIdempresa(Integer idempresa) {
+        this.idempresa = idempresa;
     }
 }

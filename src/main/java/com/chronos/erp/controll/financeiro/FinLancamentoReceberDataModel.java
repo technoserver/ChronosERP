@@ -1,7 +1,6 @@
 package com.chronos.erp.controll.financeiro;
 
 import com.chronos.erp.controll.ERPLazyDataModel;
-import com.chronos.erp.controll.cadastros.datamodel.ClienteDataModel;
 import com.chronos.erp.modelo.view.ViewLancamentoReceberResum;
 import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ import java.util.Map;
  */
 public class FinLancamentoReceberDataModel extends ERPLazyDataModel<ViewLancamentoReceberResum> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClienteDataModel.class);
+    private static final Logger logger = LoggerFactory.getLogger(FinLancamentoReceberDataModel.class);
 
     @Override
     public List<ViewLancamentoReceberResum> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {

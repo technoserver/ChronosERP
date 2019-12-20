@@ -1,14 +1,16 @@
 package com.chronos.erp.controll.financeiro;
 
 import com.chronos.erp.controll.AbstractControll;
-import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.modelo.entidades.*;
+import com.chronos.erp.modelo.enuns.AcaoLog;
 import com.chronos.erp.modelo.view.ViewLancamentoReceberResum;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.financeiro.MovimentoService;
+import com.chronos.erp.service.gerencial.AuditoriaService;
 import com.chronos.erp.util.Constants;
+import com.chronos.erp.util.FormatValor;
 import com.chronos.erp.util.jpa.Transactional;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
@@ -43,8 +45,6 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     @Inject
     private Repository<NaturezaFinanceira> naturezas;
     @Inject
-    private Repository<FinStatusParcela> status;
-    @Inject
     private Repository<FinParcelaReceber> parcelas;
     @Inject
     private Repository<FinConfiguracaoBoleto> configuracoes;
@@ -58,6 +58,8 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     private MovimentoService movimentoService;
     @Inject
     private Repository<ViewLancamentoReceberResum> viewLancamentoReceberResumRepository;
+    @Inject
+    private AuditoriaService auditoriaService;
 
     private List<FinLancamentoReceber> lancamentosSelecionados;
     private List<FinLancamentoReceber> lancamentosFiltrados;
@@ -76,8 +78,14 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
 
     private Integer idmepresaFiltro;
     private String cliente;
+    private String status = "A";
 
     private FinLancamentoReceberDataModel dataModelResum;
+    private ViewLancamentoReceberResum viewLancamentoReceberResumSelecionado;
+
+    private Map<String, String> statusParcela;
+
+    private boolean somenteConsulta = false;
 
     @PostConstruct
     @Override
@@ -85,29 +93,42 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
         super.init();
         idmepresaFiltro = empresa.getId();
         pesquisarEmpresas();
+        statusParcela = new LinkedHashMap<>();
+        statusParcela.put("ABERTAS", "A");
+        statusParcela.put("QUITADAS", "Q");
+        statusParcela.put("TODAS", "");
     }
 
-    @Override
-    public ERPLazyDataModel<FinLancamentoReceber> getDataModel() {
-        if (dataModel == null) {
-            dataModel = new ERPLazyDataModel<>();
-            dataModel.setDao(dao);
-            dataModel.setClazz(FinLancamentoReceber.class);
+
+    public FinLancamentoReceberDataModel getDataModelResum() {
+        if (dataModelResum == null) {
+            dataModelResum = new FinLancamentoReceberDataModel();
+            dataModelResum.setDao(viewLancamentoReceberResumRepository);
+            dataModelResum.setClazz(ViewLancamentoReceberResum.class);
         }
 
         pesquisar();
-        return dataModel;
+        return dataModelResum;
     }
 
 
     public void pesquisar() {
-        dataModel.getFiltros().clear();
+        dataModelResum.getFiltros().clear();
         if (!StringUtils.isEmpty(cliente)) {
-            dataModel.getFiltros().add(new Filtro("cliente.pessoa.nome", Filtro.LIKE, cliente));
+            dataModelResum.getFiltros().add(new Filtro("cliente", Filtro.LIKE, cliente));
+        }
+
+        if (!StringUtils.isEmpty(status)) {
+            if (status.equals("A")) {
+                dataModelResum.addFiltro("status", "Q", Filtro.DIFERENTE);
+
+            } else {
+                dataModelResum.addFiltro("status", "Q", Filtro.IGUAL);
+            }
         }
 
         idmepresaFiltro = idmepresaFiltro == null || idmepresaFiltro == 0 ? empresa.getId() : idmepresaFiltro;
-        dataModel.addFiltro("empresa.id", idmepresaFiltro, Filtro.IGUAL);
+        dataModelResum.addFiltro("idempresa", idmepresaFiltro, Filtro.IGUAL);
     }
 
     @Override
@@ -125,10 +146,12 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
     @Override
     public void doEdit() {
         super.doEdit();
-        FinLancamentoReceber lancamento = dataModel.getRowData(getObjeto().getId().toString());
+        FinLancamentoReceber lancamento = dataModel.getRowData(viewLancamentoReceberResumSelecionado.getId().toString());
         setObjeto(lancamento);
 
         recebimentos = new ArrayList<>();
+
+        somenteConsulta = lancamento.getListaFinParcelaReceber().stream().filter(p -> !p.getFinStatusParcela().getId().equals(1)).findFirst().isPresent();
 
         lancamento.getListaFinParcelaReceber().forEach(p -> {
             if (p.getListaFinParcelaRecebimento() != null) {
@@ -136,7 +159,25 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
                     recebimentos.add(r);
                 });
             }
+
         });
+    }
+
+    @Override
+    public void remover() {
+        try {
+            FinLancamentoReceber lancamento = dataModel.getRowData(viewLancamentoReceberResumSelecionado.getId().toString());
+
+            dao.excluir(lancamento, lancamento.getId());
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro qo estorna o recebimento", ex);
+            }
+
+        }
     }
 
     @Override
@@ -256,15 +297,22 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
             }
 
 
-            if (recebimentoSelecionado.getFinParcelaReceber().getFinStatusParcela().getSituacao().equals("02")) {
-                recebimentoSelecionado.getFinParcelaReceber().setFinStatusParcela(new FinStatusParcela(1));
-                parcelas.atualizar(recebimentoSelecionado.getFinParcelaReceber());
+            List<FinParcelaRecebimento> recebimentos = recebimentoRepository.getEntitys(FinParcelaRecebimento.class,
+                    "finParcelaReceber.id", recebimentoSelecionado.getFinParcelaReceber().getId());
+
+            if (recebimentos.isEmpty() || recebimentos.size() == 1) {
+                FinParcelaReceber finParcelaReceber = parcelas.get(recebimentoSelecionado.getFinParcelaReceber().getId(), FinParcelaReceber.class);
+                finParcelaReceber.setFinStatusParcela(new FinStatusParcela(1, "Aberta"));
+                parcelas.atualizar(finParcelaReceber);
             }
 
-            recebimentoRepository.excluir(recebimentoSelecionado);
+
+            recebimentoRepository.excluir(recebimentoSelecionado, recebimentoSelecionado.getId());
 
             Mensagem.addInfoMessage("Estorno realizado com sucesso");
-
+            String conteudo = "Estorno de recebimento da parcela " + recebimentoSelecionado.getFinParcelaReceber().getNumeroParcela();
+            conteudo += " referente ao documento " + getObjeto().getNumeroDocumento() + " no valor de " + FormatValor.getInstance().formatarValor(recebimentoSelecionado.getValorRecebido());
+            auditoriaService.gerarLog(AcaoLog.DELETE, conteudo, "Lancamento a Receber");
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -553,5 +601,29 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
 
     public void setCliente(String cliente) {
         this.cliente = cliente;
+    }
+
+    public Map<String, String> getStatusParcela() {
+        return statusParcela;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public ViewLancamentoReceberResum getViewLancamentoReceberResumSelecionado() {
+        return viewLancamentoReceberResumSelecionado;
+    }
+
+    public void setViewLancamentoReceberResumSelecionado(ViewLancamentoReceberResum viewLancamentoReceberResumSelecionado) {
+        this.viewLancamentoReceberResumSelecionado = viewLancamentoReceberResumSelecionado;
+    }
+
+    public boolean isSomenteConsulta() {
+        return somenteConsulta;
     }
 }
