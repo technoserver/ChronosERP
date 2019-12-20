@@ -1,6 +1,7 @@
 package com.chronos.erp.modelo.entidades;
 
 import com.chronos.erp.modelo.anotacoes.TaxaMaior;
+import com.chronos.erp.util.Biblioteca;
 
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMax;
@@ -8,6 +9,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Optional;
 
 /**
@@ -97,7 +99,6 @@ public class PdvVendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorSubtotal() {
-        valorSubtotal = getQuantidade().multiply(getValorUnitario());
         return valorSubtotal;
     }
 
@@ -122,7 +123,6 @@ public class PdvVendaDetalhe implements Serializable {
     }
 
     public BigDecimal getValorTotal() {
-        valorTotal = getValorSubtotal().subtract(getValorDesconto());
         return valorTotal;
     }
 
@@ -160,6 +160,19 @@ public class PdvVendaDetalhe implements Serializable {
 
     public void setProduto(Produto produto) {
         this.produto = produto;
+    }
+
+    public void calcularDesconto() {
+        valorDesconto = getTaxaDesconto().multiply(getValorSubtotal()).divide(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public void calcularSubTotal() {
+        valorSubtotal = Biblioteca.multiplica(getQuantidade(), getValorUnitario());
+    }
+
+    public void calcularValorTotal() {
+        calcularSubTotal();
+        valorTotal = Biblioteca.subtrai(getValorSubtotal(), getValorDesconto());
     }
 
     @Override
