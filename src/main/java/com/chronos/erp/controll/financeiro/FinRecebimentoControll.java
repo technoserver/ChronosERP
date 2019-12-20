@@ -181,6 +181,9 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         Integer id;
 
         String idempresa = "E" + empresa.getId();
+        if (numDoc.length() < 7) {
+            return;
+        }
         String str = numDoc.substring(6 + 1, numDoc.lastIndexOf("C"));
         if (numDoc.contains(idempresa + "M" + Modulo.VENDA.getCodigo())) {
 

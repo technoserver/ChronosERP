@@ -1157,6 +1157,8 @@ public class NfeService implements Serializable {
             nfe.getListaNfeDetalhe().stream().forEach(i -> {
                 i.setId(null);
                 i.setNfeCabecalho(copia);
+                i.setListaGrade(new HashSet<>());
+
 
                 if (i.getNfeDetalheImpostoCofins() != null) {
                     i.getNfeDetalheImpostoCofins().setNfeDetalhe(i);

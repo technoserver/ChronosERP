@@ -65,7 +65,7 @@ public class MovimentoCaixaRelatorioControll extends AbstractRelatorioControll i
             switch (v.getCodigoFormaPagamento()) {
 
                 case "01":
-                    dinheiro = dinheiro.add(v.getValor());
+                    dinheiro = dinheiro.add(v.getTipo().equals("S") ? v.getValor().negate() : v.getValor());
                     break;
                 case "02":
                     cheque = cheque.add(v.getValor());
