@@ -25,6 +25,7 @@ import com.chronos.erp.repository.NfeRepository;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.configuracao.DocumentoFiscalService;
+import com.chronos.erp.service.configuracao.EmailService;
 import com.chronos.erp.service.configuracao.NfeConfiguracaoService;
 import com.chronos.erp.util.ArquivoUtil;
 import com.chronos.erp.util.Biblioteca;
@@ -97,6 +98,9 @@ public class NfeService implements Serializable {
 
     private ConfiguracaoEmissorDTO configuracao;
     private Configuracoes configuracoes;
+
+    @Inject
+    private EmailService emailService;
 
 
     @Inject
@@ -1193,6 +1197,29 @@ public class NfeService implements Serializable {
         repository.salvar(copia);
 
 
+    }
+
+
+    public void enviarEmail(NfeCabecalho nfe, String email, String assunto, String texto) throws Exception {
+
+        String cnpj = nfe.getEmpresa().getCnpj();
+        String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(cnpj);
+        String arquivoPdf = pastaXml + System.getProperty("file.separator") + nfe.getNomePdf();
+        String caminhoXml = pastaXml + System.getProperty("file.separator") + nfe.getNomeXml();
+        File fileXml = new File(caminhoXml);
+        File filePdf = new File(arquivoPdf);
+
+
+        if (!filePdf.exists()) {
+            gerarDanfe(nfe);
+        }
+
+        List<File> arquivos = new ArrayList<>();
+
+        arquivos.add(fileXml);
+        arquivos.add(filePdf);
+
+        emailService.enviar(nfe.getEmpresa().getId(), arquivos, email, assunto, texto);
     }
 
     private void definirFormaPagamento(NfeCabecalho nfe, TipoPagamento tipoPagamento) {

@@ -415,12 +415,10 @@ order by $P!{ordem}]]>
                 <reportElement style="dadosDetail" x="363" y="0" width="51" height="12"
                                uuid="1633254b-731c-45c2-b525-35bedb41fef7"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{situacao}.equals("D")?"Digitacao":
-$F{situacao}.equals("P")?"Producao":
-$F{situacao}.equals("X")?"Expedicao":
-$F{situacao}.equals("F")?"Faturado":
-$F{situacao}.equals("E")?"Entregue":
-$F{situacao}.equals("V")?"Devolução":
+                <textFieldExpression><![CDATA[$F{situacao}.equals("F")?"Faturada":
+$F{situacao}.equals("E")?"Encerrada":
+$F{situacao}.equals("DP")?"Devolução Parcial":
+$F{situacao}.equals("DV")?"Devolução":
 $F{situacao}.equals("N")?"Nota Fiscal":""]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">

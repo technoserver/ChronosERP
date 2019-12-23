@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Certificado configuracao
+    </ui:define>
+
+    <ui:define name="tela">
+        #{emailConfiguracaoControll.titulo}
+    </ui:define>
+    <ui:define name="controle">
+        Certificado configuracao
+    </ui:define>
+
+
+    <ui:define name="telaInclusaoAlteracao">
+
+        <div class="ibox-content">
+
+            <div class="row">
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="usuario" label="Usuário"
+                                requerido="true"
+                                nomeAtributo="#{emailConfiguracaoControll.objeto.usuario}"
+                                tamanhoMaximo="100"
+                />
+
+                <erp:campoSenha styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="senha" label="Senha"
+                                requerido="true"
+                                nomeAtributo="#{emailConfiguracaoControll.objeto.senha}"
+                                tamanhoMaximo="100"
+                />
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="servidorSmtp" label="Servidor SMTP"
+                                requerido="true"
+                                nomeAtributo="#{emailConfiguracaoControll.objeto.servidorSmtp}"
+                                tamanhoMaximo="100"
+                />
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
+                                idComponente="assunto" label="Assunto"
+                                requerido="true"
+                                nomeAtributo="#{emailConfiguracaoControll.objeto.assunto}"
+                                tamanhoMaximo="100"
+                />
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="porta" label="Porta"
+                                  requerido="true"
+                                  nomeAtributo="#{emailConfiguracaoControll.objeto.porta}"
+                />
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 itens="#{emailConfiguracaoControll.naoSim}"
+                                 idComponente="autenticaSsl"
+                                 label="Conexão segura SSL"
+                                 nomeAtributo="#{emailConfiguracaoControll.objeto.autenticaSsl}"/>
+
+                <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+                                 itens="#{emailConfiguracaoControll.naoSim}"
+                                 idComponente="usaTls"
+                                 label="Conexão segura TLS"
+                                 nomeAtributo="#{emailConfiguracaoControll.objeto.usaTls}"/>
+
+                <erp:campoAreaTexto idComponente="texto"
+                                    styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    nomeAtributo="#{emailConfiguracaoControll.objeto.texto}"
+                                    label="Texto"/>
+            </div>
+        </div>
+
+        <div class="ibox-footer">
+            <div class="row">
+                <div class="col-xs-6 col-lg-6 text-center">
+                    <p:commandButton value="Salvar"
+                                     id="btn-salvar"
+                                     action="#{emailConfiguracaoControll.salvar}"
+                                     process="@form"
+                                     update=":formCentro:growl"/>
+                </div>
+                <div class="col-xs-6 col-lg-6 text-center">
+
+                </div>
+
+            </div>
+        </div>
+
+    </ui:define>
+
+
+</ui:composition>

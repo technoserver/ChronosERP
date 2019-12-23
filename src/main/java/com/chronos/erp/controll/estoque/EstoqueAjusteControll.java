@@ -87,8 +87,11 @@ public class EstoqueAjusteControll implements Serializable {
                 } else {
                     if (tipoEstoque == 1) {
                         produto.setEstoqueVerificado(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
+                    } else if (tipoEstoque == 2) {
+                        produto.setQuantidadeEstoque(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
                     } else {
                         produto.setQuantidadeEstoque(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
+                        produto.setEstoqueVerificado(Optional.ofNullable(quantidade).orElse(BigDecimal.ZERO));
                     }
 
 
@@ -182,8 +185,11 @@ public class EstoqueAjusteControll implements Serializable {
                 for (EstoqueGrade g : gradesUpdate) {
                     if (tipoEstoque == 1) {
                         g.setVerificado(g.getQuantidadeEntrada());
+                    } else if (tipoEstoque == 2) {
+                        g.setQuantidade(g.getQuantidadeEntrada());
                     } else {
                         g.setQuantidade(g.getQuantidadeEntrada());
+                        g.setVerificado(g.getQuantidadeEntrada());
                     }
                     estoqueGradeRepository.atualizar(g);
                 }
