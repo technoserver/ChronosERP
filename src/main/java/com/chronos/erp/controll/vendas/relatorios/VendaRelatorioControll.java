@@ -76,12 +76,10 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
 
         status = new LinkedHashMap<>();
-        status.put("Todos", "");
         status.put("Encerrada", "E");
         status.put("Faturada", "F");
-        status.put("Devolvida", "D");
+        status.put("Devolvida", "DV");
         status.put("Devolvida Parcilamente", "DP");
-        status.put("Cancelada", "C");
 
 
         naoSim = new LinkedHashMap<>();

@@ -202,9 +202,11 @@
 
                     <h:commandLink class="btn btn-default"
                                    title="Enviar Email" style="margin-left: 5px;"
-                                   action="#{nfeCabecalhoControll.enviarEmail}"
-                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar and not empty nfeCabecalhoControll.objeto.destinatario.email}"
+                                   action="#{nfeCabecalhoControll.exibirEnvioEmail}"
+                                   rendered="#{not empty nfeCabecalhoControll.objeto.id and nfeCabecalhoControll.objeto.podeCancelar}"
                                    id="btnEmail">
+                        <p:ajax oncomplete="PF('dialogOutrasTelas7').show();"
+                                update=":formOutrasTelas7:panelOutrasTelas7"/>
                         <i class="fa fa-envelope-o" aria-hidden="true"></i>
                     </h:commandLink>
 
@@ -578,6 +580,65 @@
                             <h:commandButton value="Cancelar"
                                              styleClass="btn btn-default center-block">
                                 <p:ajax oncomplete="PF('dialogOutrasTelas6').hide();init()"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas7">
+        <h:form id="formOutrasTelas7">
+            <p:dialog id="dialogOutrasTelas7" header="Carta de Correção"
+                      widgetVar="dialogOutrasTelas7" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800" responsive="true">
+                <p:outputPanel id="panelOutrasTelas7">
+                    <div class="row">
+
+                        <erp:campoExpressaoRegular
+                                styleClass="col-xs-12 col-sm-12 col-md-12"
+                                requerido="true"
+                                tamanhoMaximo="100"
+                                nomeAtributo="#{nfeCabecalhoControll.email}"
+                                label="Email"
+                                idComponente="email"
+                                expressao="/[a-z0-9_\.\-@]/i"/>
+
+                        <erp:campoTexto idComponente="assunto"
+                                        nomeAtributo="#{nfeCabecalhoControll.assunto}"
+                                        tamanhoMaximo="100"
+                                        requerido="true"
+                                        styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        label="Assunto"/>
+
+                        <erp:campoAreaTexto idComponente="labelCartaCorrecao"
+                                            label="Texto:" styleClass="col-xs-12 col-sm-12 col-md-12"
+                                            linhas="3"
+                                            nomeAtributo="#{nfeCabecalhoControll.texto}"
+                                            requerido="true"/>
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Enviar"
+                                             actionListener="#{nfeCabecalhoControll.enviarEmail}"
+                                             styleClass="btn btn-primary center-block">
+                                <p:ajax
+                                        oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas7').hide();}"
+                                        process="@form"
+                                        update="panelOutrasTelas7,:formCentro:growl,:formCentro:telaDetalhe:panelCentroDetalhe"/>
+                            </h:commandButton>
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas7').hide();"
                                         process="@this"/>
                             </h:commandButton>
                         </div>

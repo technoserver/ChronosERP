@@ -8,7 +8,7 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "email_configuracao")
-public class EmailConfiguraca implements Serializable {
+public class EmailConfiguracao implements Serializable {
 
 
     private static final long serialVersionUID = 1L;
@@ -17,7 +17,7 @@ public class EmailConfiguraca implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "ERVIDOR_SMTP")
+    @Column(name = "SERVIDOR_SMTP")
     private String servidorSmtp;
     @Column(name = "PORTA")
     private Integer porta;
@@ -29,6 +29,8 @@ public class EmailConfiguraca implements Serializable {
     private String assunto;
     @Column(name = "AUTENTICA_SSL")
     private String autenticaSsl;
+    @Column(name = "usa_tls")
+    private String usaTls;
     @Column(name = "TEXTO")
     private String texto;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
@@ -36,7 +38,14 @@ public class EmailConfiguraca implements Serializable {
     private Empresa empresa;
 
 
-    public EmailConfiguraca() {
+    public EmailConfiguracao() {
+    }
+
+    public EmailConfiguracao(Integer id, String assunto, String texto) {
+        this.id = id;
+        this.assunto = assunto;
+        this.texto = texto;
+
     }
 
     public Integer getId() {
@@ -95,6 +104,14 @@ public class EmailConfiguraca implements Serializable {
         this.autenticaSsl = autenticaSsl;
     }
 
+    public String getUsaTls() {
+        return usaTls;
+    }
+
+    public void setUsaTls(String usaTls) {
+        this.usaTls = usaTls;
+    }
+
     public String getTexto() {
         return texto;
     }
@@ -114,9 +131,9 @@ public class EmailConfiguraca implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof EmailConfiguraca)) return false;
+        if (!(o instanceof EmailConfiguracao)) return false;
 
-        EmailConfiguraca that = (EmailConfiguraca) o;
+        EmailConfiguracao that = (EmailConfiguracao) o;
 
         return getId() != null ? getId().equals(that.getId()) : that.getId() == null;
     }

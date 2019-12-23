@@ -18,6 +18,7 @@ import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import com.outjected.email.api.SendFailedException;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.SortOrder;
@@ -27,6 +28,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.mail.AuthenticationFailedException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
@@ -53,8 +55,8 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private Repository<Veiculo> veiculoRepository;
     @Inject
     private Repository<NfeEvento> eventoRepository;
-
-
+    @Inject
+    private Repository<EmailConfiguracao> emailConfiguracaoRepository;
     @Inject
     private Repository<NotaFiscalTipo> notaFiscalTipoRepository;
 
@@ -93,6 +95,10 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     private NfeEvento nfeEventoSelecionado;
     private Veiculo veiculo;
     private ViewPessoaTransportadora transportadora;
+
+    private String email;
+    private String assunto;
+    private String texto;
 
     private boolean podeAlterarPreco = true;
 
@@ -510,6 +516,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     }
 
 
+
     public void transmitirNfe() {
         try {
             if (dadosSalvos) {
@@ -593,25 +600,39 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         }
     }
 
+    public void exibirEnvioEmail() {
+
+
+        NfeCabecalho nfe = isTelaGrid() ? dataModel.getRowData(getObjetoSelecionado().getId().toString()) : getObjeto();
+        setObjeto(nfe);
+
+        EmailConfiguracao emailConfiguracao = emailConfiguracaoRepository.get(EmailConfiguracao.class, "empresa.id", empresa.getId(), new Object[]{"assunto", "texto"});
+
+        if (emailConfiguracao != null) {
+            assunto = emailConfiguracao.getAssunto();
+            texto = emailConfiguracao.getTexto();
+        }
+        email = nfe.getDestinatario().getEmail();
+
+    }
+
     public void enviarEmail() {
 
         try {
-//            configuracao = configuracao != null ? configuracao : configuraNfe();
-//            ConfEmail confEmail = new ConfEmail();
-//            confEmail.setHost(configuracao.getEmailServidorSmtp());
-//            confEmail.setPorta(configuracao.getEmailPorta());
-//            confEmail.setSsl(configuracao.getEmailAutenticaSsl().equals("S"));
-//            confEmail.setUsuario(configuracao.getEmailUsuario());
-//            confEmail.setSenha(configuracao.getEmailSenha());
-//            confEmail.setTsl(!configuracao.getEmailAutenticaSsl().equals("S"));
-//            EnvioEmail envio = new EnvioEmail();
-//
-//            envio.enviarNfeEmail(confEmail, getObjeto());
-//
-//            Mensagem.addInfoMessage("Email enviado com sucesso");
+
+            nfeService.enviarEmail(getObjeto(), email, assunto, texto);
+            Mensagem.addInfoMessage("Email enviado com sucesso");
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Mensagem.addErrorMessage("Ocorreu um erro ao enviar email!", ex);
+
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else if (ex instanceof AuthenticationFailedException || ex instanceof SendFailedException) {
+                Mensagem.addErrorMessage("Erro ao enviar email", ex);
+            } else {
+                throw new RuntimeException("Erro ao enviar email", ex);
+            }
+
+
         }
     }
 
@@ -836,6 +857,30 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     // <editor-fold defaultstate="collapsed" desc="GETS SETS">
 
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAssunto() {
+        return assunto;
+    }
+
+    public void setAssunto(String assunto) {
+        this.assunto = assunto;
+    }
+
+    public String getTexto() {
+        return texto;
+    }
+
+    public void setTexto(String texto) {
+        this.texto = texto;
+    }
 
     public NfeTransporteVolume getVolume() {
         return volume;
