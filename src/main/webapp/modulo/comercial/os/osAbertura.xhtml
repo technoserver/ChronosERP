@@ -152,12 +152,18 @@
                     </p:commandLink>
                     &nbsp;
                     <p:menuButton style="height: 26px;">
-                        <p:menuitem value="Imprimir OS"
+                        <p:menuitem value="Imprimir OS 1 Via"
                                     icon="fa fa-print"
                                     action="#{osRelatorioControll.imprimirOS(row.id)}"
                                     target="_blank"
                                     ajax="false">
 
+                        </p:menuitem>
+                        <p:menuitem value="Imprimir OS 2 Via"
+                                    target="blank"
+                                    outcome="/modulo/relatorios/comercial/os/os"
+                                    icon="fa fa-print" ajax="false">
+                            <f:param name="id" value="#{row.id}"/>
                         </p:menuitem>
                         <p:menuitem value="Encerrar OS"
                                     action="#{osAberturaControll.encerrar}"
@@ -278,11 +284,11 @@
                 <p:tab title="Serviço/Produto" id="tabProduto">
                     <ui:include src="osServicoProduto.xhtml"/>
                 </p:tab>
-                <p:tab title="Evolução" id="tabEvolucao" disabled="#{empty osAberturaControll.objeto.id}">
+                <p:tab title="Evolução" id="tabEvolucao">
                     <ui:include src="osEvolucao.xhtml"/>
                 </p:tab>
 
-                <p:tab title="Equipamento" id="tabEquipamento" disabled="#{empty osAberturaControll.objeto.id}">
+                <p:tab title="Equipamento" id="tabEquipamento">
                     <ui:include src="osEquipamento.xhtml"/>
                 </p:tab>
                 <p:tab title="Pagamentos" id="tabPagamento">
@@ -342,6 +348,7 @@
                                              action="#{osAberturaControll.salvarOsAberturaEquipamento}"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOsAberturaEquipamento').hide()}"
                                              update=":formOutrasTelas:panelOsAberturaEquipamento,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                             process="@form"
                                              id="btnSalvaEquipamento">
 
                             </p:commandButton>

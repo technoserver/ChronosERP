@@ -1,8 +1,11 @@
 package com.chronos.erp.controll.os.relatorio;
 
 import com.chronos.erp.controll.AbstractRelatorioControll;
+import com.chronos.erp.modelo.entidades.OsAbertura;
+import com.chronos.erp.repository.Repository;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Date;
@@ -17,14 +20,33 @@ public class OsRelatorioControll extends AbstractRelatorioControll implements Se
 
     private static final long serialVersionUID = 1L;
 
+    @Inject
+    private Repository<OsAbertura> repository;
+
     private Date dataInicial;
     private Date dataFinal;
+    private int id;
+    private OsAbertura os;
+
+
+    public void buscarOs() {
+        os = repository.get(id, OsAbertura.class);
+    }
 
     public void imprimirOS(int id) {
         parametros = new HashMap<>();
         parametros.put("id_os", id);
         String caminhoRelatorio = "/relatorios/os";
         String nomeRelatorio = "os.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "os.pdf");
+    }
+
+    public void imprimiOs2Via(int id) {
+        parametros = new HashMap<>();
+        parametros.put("id_os", id);
+        String caminhoRelatorio = "/relatorios/os";
+        String nomeRelatorio = "osAtendimento.jasper";
 
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "os.pdf");
     }
@@ -55,5 +77,17 @@ public class OsRelatorioControll extends AbstractRelatorioControll implements Se
 
     public void setDataFinal(Date dataFinal) {
         this.dataFinal = dataFinal;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public OsAbertura getOs() {
+        return os;
     }
 }

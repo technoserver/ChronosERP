@@ -95,6 +95,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private Integer idmepresaFiltro;
 
     private Map<String, Integer> status;
+    private Map<String, String> tiposAtendimento;
 
     private boolean podeAlterarPreco = true;
 
@@ -121,6 +122,15 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
         this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
+
+        tiposAtendimento = new LinkedHashMap<>();
+        tiposAtendimento.put("Interno", "AI");
+        tiposAtendimento.put("Externo", "AE");
+        tiposAtendimento.put("Garantia", "GA");
+        tiposAtendimento.put("Retorno", "RT");
+        tiposAtendimento.put("Orcamento", "OC");
+        tiposAtendimento.put("Contrato", "CO");
+
 
         listTipoPagamento = definirTipoPagament();
         pesquisarEmpresas();
@@ -313,9 +323,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         try {
             OsAbertura os = isTelaGrid() ? dataModel.getRowData(getObjetoSelecionado().getId().toString()) : getObjeto();
 
-            if (os.getListaOsProdutoServico().isEmpty()) {
-                throw new ChronosException("Não foram informado produtos ou serviço para a OS");
-            }
             osService.encerrar(os);
             setTelaGrid(true);
             Mensagem.addInfoMessage("OS Encerrada com sucesso");
@@ -332,10 +339,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         try {
 
             OsAbertura os = isTelaGrid() ? dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class) : getObjeto();
-
-            if (os.getListaOsProdutoServico().isEmpty()) {
-                throw new ChronosException("Não foram informado produtos ou serviço para a OS");
-            }
 
             ModeloDocumento modelo = codigoModelo.equals("65") ? ModeloDocumento.NFCE : ModeloDocumento.NFE;
 
@@ -493,7 +496,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         if (osAberturaEquipamento.getId() == null) {
             getObjeto().getListaOsAberturaEquipamento().add(osAberturaEquipamento);
         }
-        salvar("Registro salvo com sucesso!");
         setTelaGrid(false);
         setActiveTabIndex(3);
     }
@@ -519,7 +521,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             getObjeto().getListaOsEvolucao().add(osEvolucao);
         }
         setActiveTabIndex(2);
-        salvar("Registro salvo com sucesso!");
         setTelaGrid(false);
         if (emailValido && osEvolucao.getEnviarEmail().equals("S")) {
             enviarEmail(getObjeto().getCliente().getPessoa().getEmail(), osEvolucao.getObservacao());
@@ -967,5 +968,9 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void setIdmepresaFiltro(Integer idmepresaFiltro) {
         this.idmepresaFiltro = idmepresaFiltro;
+    }
+
+    public Map<String, String> getTiposAtendimento() {
+        return tiposAtendimento;
     }
 }

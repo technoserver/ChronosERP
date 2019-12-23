@@ -35,8 +35,8 @@ public class FornecedorRelatorioControll extends AbstractRelatorioControll imple
 
         String caminhoRelatorio = "/relatorios/cadastros";
         String nomeRelatorio = "relacaoFornecedor.jasper";
-
-        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoFornecedor.pdf");
+        String nome = "relacaoFornecedor." + tipoRelatorio;
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, nome);
 
     }
 
