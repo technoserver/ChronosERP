@@ -83,8 +83,8 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
         String caminhoRelatorio = "/relatorios/cadastros";
         String nomeRelatorio = resumido.equals("N") ? "relacaoProdutos.jasper" : "relacaoProdutosResumido.jasper";
-
-        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoProdutos.pdf");
+        String nome = "relacaoProdutos." + tipoRelatorio;
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, nome);
     }
 
     public void executarRelatorioGrade() {

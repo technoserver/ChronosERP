@@ -107,6 +107,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/modulo/fiscal/tributacao/**").hasAnyRole("TRIBUTACAO")
                 .antMatchers("/modulo/fiscal/sped/**").hasAnyRole("SPED_FISCAL", "SPED_CONTRIBUICOES")
                 .antMatchers("/modulo/contabil/**").hasAnyRole("CONTABIL")
+                .antMatchers("/modulo/**").authenticated()
                 .and()
                 .addFilterAfter(filtro, BasicAuthenticationFilter.class)
                 .formLogin()

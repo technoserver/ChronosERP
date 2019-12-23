@@ -27,6 +27,8 @@ public class OsAbertura implements Serializable {
     private Integer idnfeCabecalho;
     @Column(name = "NUMERO")
     private String numero;
+    @Column(name = "tipo_atendimento")
+    private String tipoAtendimento;
     @Temporal(TemporalType.DATE)
     @Column(name = "DATA_INICIO")
     private Date dataInicio;
@@ -102,6 +104,7 @@ public class OsAbertura implements Serializable {
         this.valorTotalServico = BigDecimal.ZERO;
         this.valorTotalDesconto = BigDecimal.ZERO;
         this.valorComissao = BigDecimal.ZERO;
+        this.tipoAtendimento = "AI";
 
     }
 
@@ -244,6 +247,14 @@ public class OsAbertura implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getTipoAtendimento() {
+        return tipoAtendimento;
+    }
+
+    public void setTipoAtendimento(String tipoAtendimento) {
+        this.tipoAtendimento = tipoAtendimento;
     }
 
     public Set<OsEvolucao> getListaOsEvolucao() {

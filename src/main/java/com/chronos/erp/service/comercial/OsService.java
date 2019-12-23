@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -204,6 +205,10 @@ public class OsService extends AbstractService<OsAbertura> {
             throw new ChronosException("Produtos ou serviço não informado !!!");
         }
 
+        if (!os.getStatus().equals(12)) {
+            encerrar(os);
+        }
+
         NfeCabecalho nfe;
 
         VendaToNFe vendaNfe = new VendaToNFe(modelo, os);
@@ -213,15 +218,13 @@ public class OsService extends AbstractService<OsAbertura> {
         nfe.setSerie(configuracaoEmissorDTO.getSerie());
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
-        Integer statusOs = os.getStatus();
+
         StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
 
         if (status == StatusTransmissao.AUTORIZADA) {
             Mensagem.addInfoMessage("OS Faturada com sucesso");
-            if (!status.equals(12)) {
-                BigDecimal comissao = gerarComissoes(os);
-                repository.atualizar(os);
-            }
+            os.setStatus(13);
+            repository.atualizar(os);
         }
 
 
@@ -230,71 +233,75 @@ public class OsService extends AbstractService<OsAbertura> {
     @Transactional
     public void encerrar(OsAbertura os) throws ChronosException {
 
-        if (os.getListaOsProdutoServico() == null || os.getListaOsProdutoServico().isEmpty()) {
-            throw new ChronosException("Produtos ou serviço não informado !!!");
+
+        if (!os.getListaOsProdutoServico().isEmpty()) {
+
+
+            List<ProdutoVendaDTO> produtos = new ArrayList<>();
+            os.getListaOsProdutoServico()
+                    .stream()
+                    .filter(p -> p.getProduto().getServico().equalsIgnoreCase("N"))
+                    .forEach(p -> {
+                        produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
+                    });
+
+            estoqueRepositoy.atualizaEstoqueVerificado(os.getEmpresa().getId(), produtos);
         }
 
-        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
+        if (os.getValorTotalProduto().signum() > 0 || os.getValorTotalServico().signum() > 0) {
+            BigDecimal recebidoAteAgora = BigDecimal.ZERO;
 
-        if (os.getListaFormaPagamento() == null | os.getListaFormaPagamento().isEmpty()) {
-            throw new ChronosException("Forma de pagamento não definidas");
-        }
+            if (os.getListaFormaPagamento() == null | os.getListaFormaPagamento().isEmpty()) {
+                throw new ChronosException("Forma de pagamento não definidas");
+            }
 
-        for (OsFormaPagamento p : os.getListaFormaPagamento()) {
-            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
-        }
+            for (OsFormaPagamento p : os.getListaFormaPagamento()) {
+                recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+            }
 
-        if (os.getValorTotal().compareTo(recebidoAteAgora) != 0) {
-            throw new ChronosException("Valores informado nos pagamento não estão consolidado !!!");
-        }
+            if (os.getValorTotal().compareTo(recebidoAteAgora) != 0) {
+                throw new ChronosException("Valores informado nos pagamento não estão consolidado !!!");
+            }
 
-        if (os.getListaOsProdutoServico() == null || os.getListaOsProdutoServico().isEmpty()) {
-            throw new ChronosException("Produtos ou serviço não informado !!!");
-        }
+            if (os.getListaOsProdutoServico() == null || os.getListaOsProdutoServico().isEmpty()) {
+                throw new ChronosException("Produtos ou serviço não informado !!!");
+            }
 
-        List<ProdutoVendaDTO> produtos = new ArrayList<>();
-        os.getListaOsProdutoServico()
-                .stream()
-                .filter(p -> p.getProduto().getServico().equalsIgnoreCase("N"))
-                .forEach(p -> {
-                    produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
-                });
+            Optional<OsFormaPagamento> formaPagamento = os.getListaFormaPagamento().stream().filter(f -> f.equals("14")).findFirst();
 
-        estoqueRepositoy.atualizaEstoqueVerificado(os.getEmpresa().getId(), produtos);
+            if (formaPagamento.isPresent()) {
+                formaPagamento.get().getCondicao();
+                finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
+                        formaPagamento.get().getCondicao(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, os.getEmpresa());
+            }
 
-        Optional<OsFormaPagamento> formaPagamento = os.getListaFormaPagamento().stream().filter(f -> f.equals("14")).findFirst();
+            formaPagamento = os.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("05")).findFirst();
 
-        if (formaPagamento.isPresent()) {
-            formaPagamento.get().getCondicao();
-            finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
-                    formaPagamento.get().getCondicao(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, os.getEmpresa());
-        }
+            if (formaPagamento.isPresent()) {
+                ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", os.getCliente().getPessoa().getId());
 
-        formaPagamento = os.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("05")).findFirst();
+                if (conta == null || conta.getSaldo().compareTo(formaPagamento.get().getValor()) < 0) {
+                    throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
+                } else {
+                    contaPessoaService.lancaMovimento(conta, formaPagamento.get().getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), os.getId().toString());
+                }
+            }
 
-        if (formaPagamento.isPresent()) {
-            ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", os.getCliente().getPessoa().getId());
+            BigDecimal comissao = gerarComissoes(os);
 
-            if (conta == null || conta.getSaldo().compareTo(formaPagamento.get().getValor()) < 0) {
-                throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
-            } else {
-                contaPessoaService.lancaMovimento(conta, formaPagamento.get().getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), os.getId().toString());
+            os.setValorComissao(comissao);
+
+            if (os.getMovimento() != null) {
+                movimentoService.lancaVenda(os.getValorTotal(), os.getValorTotalDesconto(), BigDecimal.ZERO);
             }
         }
 
-
+        os.setDataFim(new Date());
         os = repository.saveAndFlush(os);
 
         auditoriaService.gerarLog(AcaoLog.ENCERRAR_OS, "Encerrado OS " + os.getNumero(), "OS");
 
-        BigDecimal comissao = gerarComissoes(os);
-
-        os.setValorComissao(comissao);
         os.setStatus(12);
-
-        if (os.getMovimento() != null) {
-            movimentoService.lancaVenda(os.getValorTotal(), os.getValorTotalDesconto(), BigDecimal.ZERO);
-        }
 
         repository.atualizar(os);
 
@@ -307,22 +314,18 @@ public class OsService extends AbstractService<OsAbertura> {
         if (os.getStatus().equals(13)) {
             NfeCabecalho nfe = nfeRepository.get(os.getIdnfeCabecalho(), NfeCabecalho.class);
             nfe.setJustificativaCancelamento(justificativa);
-
-
             cancelado = nfeService.cancelarNFe(nfe, estoque);
-            if (cancelado) {
-                finLancamentoReceberService.excluirFinanceiro(os.getNumero(), Modulo.OS);
-            }
-        } else {
+        }
+
+        if (cancelado && (os.getValorTotalProduto().signum() > 0 || os.getValorTotalServico().signum() > 0)) {
             finLancamentoReceberService.excluirFinanceiro(os.getNumero(), Modulo.OS);
         }
 
-        if (estoque && cancelado) {
+        if (estoque && cancelado && os.getValorTotalProduto().signum() > 0) {
             for (OsProdutoServico item : os.getListaOsProdutoServico()) {
                 if (item.getProduto().getServico().equals("N")) {
                     estoqueRepositoy.atualizaEstoqueEmpresaControle(os.getEmpresa().getId(), item.getProduto().getId(), item.getQuantidade());
                 }
-
             }
         }
         os.setStatus(11);

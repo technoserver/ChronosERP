@@ -46,8 +46,8 @@ public class ClienteRelatorioControll extends AbstractRelatorioControll implemen
 
         String caminhoRelatorio = "/relatorios/cadastros";
         String nomeRelatorio = "relacaoCliente.jasper";
-
-        executarRelatorio(caminhoRelatorio, nomeRelatorio, "relacaoClientes.pdf");
+        String nome = "relacaoClientes." + tipoRelatorio;
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, nome);
 
     }
 
