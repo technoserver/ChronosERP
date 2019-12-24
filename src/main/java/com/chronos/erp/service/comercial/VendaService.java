@@ -117,6 +117,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
                 syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, p.getProduto().getId());
             }
         });
+        estoqueRepositoy.lancaMovimentoEstoqueVerificado(venda.getEmpresa().getId(), produtos, Modulo.VENDA, venda.getId().toString(), "S");
         estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
 
         if (venda.getId() == null) {

@@ -7,6 +7,7 @@ import com.chronos.erp.modelo.entidades.Empresa;
 import com.chronos.erp.modelo.entidades.NfeCabecalho;
 import com.chronos.erp.modelo.entidades.NfeDetalhe;
 import com.chronos.erp.modelo.entidades.Produto;
+import com.chronos.erp.modelo.enuns.Modulo;
 import com.chronos.erp.modelo.view.ViewProdutoEmpresa;
 import org.apache.commons.lang.StringUtils;
 
@@ -49,6 +50,12 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
     public void atualizaEstoqueVerificado(Integer idEmpresa, List<ProdutoVendaDTO> itens) {
         for (ProdutoVendaDTO item : itens) {
             atualizaEstoqueEmpresaControle(idEmpresa, item.getId(), item.getQuantidade().negate());
+        }
+    }
+
+    public void lancaMovimentoEstoqueVerificado(Integer idEmpresa, List<ProdutoVendaDTO> itens, Modulo modulo, String numDoc, String entradaSaida) {
+        for (ProdutoVendaDTO item : itens) {
+            atualizarEstoqueMovimento(item.getId(), idEmpresa, item.getQuantidade(), modulo.getCodigo(), numDoc, "V", entradaSaida);
         }
     }
 
@@ -196,6 +203,13 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         query.setParameter("idproduto", idProduto);
         query.setParameter("idempresa", idEmpresa);
         query.executeUpdate();
+    }
+
+    public void atualizarEstoqueMovimento(int idproduto, int idempresa, BigDecimal quantidade, String codigo_modulo, String documento, String tipo, String entradaSaida) {
+
+        String sql = "SELECT CAST(movimento_produto(" + idempresa + "," + idproduto + "," + quantidade + ",'" + codigo_modulo + "" +
+                "','" + documento + "','" + tipo + "','" + entradaSaida + "') AS text)";
+        em.createNativeQuery(sql).getSingleResult();
     }
 
 
