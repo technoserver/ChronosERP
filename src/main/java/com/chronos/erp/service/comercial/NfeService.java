@@ -15,10 +15,7 @@ import com.chronos.erp.dto.ConfiguracaoEmissorDTO;
 import com.chronos.erp.dto.EventoDTO;
 import com.chronos.erp.dto.RetornoEventoDTO;
 import com.chronos.erp.modelo.entidades.*;
-import com.chronos.erp.modelo.enuns.EventoNfe;
-import com.chronos.erp.modelo.enuns.FinalidadeEmissao;
-import com.chronos.erp.modelo.enuns.StatusTransmissao;
-import com.chronos.erp.modelo.enuns.TipoArquivo;
+import com.chronos.erp.modelo.enuns.*;
 import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.NfeRepository;
@@ -531,28 +528,33 @@ public class NfeService implements Serializable {
                 nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getProtNFe().getInfProt().getDhRecbto()));
                 String xmlProc = XmlUtil.criaNfeProc(nfeEnv, retorno.getProtNFe());
                 nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
-                nfe = nfeRepository.procedimentoNfeAutorizada(nfe, atualizarEstoque);
+
                 documentoFiscalService.atualizarNumeroNfe(nfe);
                 salvaNfeXml(xmlProc, nfe);
                 salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa().getCnpj());
-
+                Modulo modulo = nfe.getModeloDocumento() == ModeloDocumento.NFE ? Modulo.NFe : Modulo.NFCe;
                 if (venda != null) {
                     venda.setNumeroFatura(nfe.getId());
                     nfe.setVendaCabecalho(venda);
+                    modulo = Modulo.VENDA;
                 }
                 if (os != null) {
                     os.setStatus(13);
                     os.setIdnfeCabecalho(nfe.getId());
                     osRepository.atualizar(os);
+                    modulo = Modulo.OS;
                 }
                 if (pdv != null) {
                     pdv.setIdnfe(nfe.getId());
                     nfe.setPdv(pdv);
+                    modulo = Modulo.PDV;
                 }
 
                 if (transferencia != null) {
                     transferencia.setIdnfecabeclaho(nfe.getId());
                 }
+
+                nfe = nfeRepository.procedimentoNfeAutorizada(nfe, atualizarEstoque, modulo);
 
                 status = StatusTransmissao.AUTORIZADA;
 
@@ -857,7 +859,7 @@ public class NfeService implements Serializable {
             nfe.setVersaoAplicativo(result.getProtNFe().getInfProt().getVerAplic());
             String xmlProc = XmlUtil.criaNfeProc(nfeEnv, result.getProtNFe());
             nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
-            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false);
+            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false, Modulo.NFe);
             if (Integer.valueOf(nfe.getNumero()) == notaFiscalTipo.getUltimoNumero()) {
                 documentoFiscalService.atualizarNumeroNfe(notaFiscalTipo, Integer.valueOf(nfe.getNumero()));
             }
@@ -865,7 +867,7 @@ public class NfeService implements Serializable {
             salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa().getCnpj());
         } else {
             nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
-            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false);
+            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false, Modulo.NFe);
         }
 
     }
