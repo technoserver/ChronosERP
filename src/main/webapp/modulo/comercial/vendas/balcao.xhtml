@@ -442,33 +442,36 @@
                             lazy="true" sortBy="#{row.id}" sortOrder="descending"
                     >
 
+                        <p:column headerText="Código" width="74">
+                            <h:outputText value="#{row.id}"/>
+                        </p:column>
                         <p:column headerText="Caixa" width="90">
-                            <h:outputLabel value="#{row.caixa}"/>
+                            <h:outputText value="#{row.caixa}"/>
                         </p:column>
 
                         <p:column headerText="Cliente" width="130">
-                            <h:outputLabel value="#{row.nomeCliente == null ? 'Não identificado': row.nomeCliente}"/>
+                            <h:outputText value="#{row.nomeCliente == null ? 'Não identificado': row.nomeCliente}"/>
                         </p:column>
                         <p:column headerText="Data Venda" width="130" sortBy="#{row.dataHoraVenda}"
                                   styleClass="text-center">
-                            <h:outputLabel value="#{row.dataHoraVenda}">
+                            <h:outputText value="#{row.dataHoraVenda}">
                                 <f:convertDateTime pattern="dd/MM/yyyy"/>
-                            </h:outputLabel>
+                            </h:outputText>
                         </p:column>
-                        <p:column headerText="Subtotal" class="coluna-monetaria" width="130">
-                            <h:outputLabel value="#{row.valorSubtotal}">
+                        <p:column headerText="Subtotal" class="coluna-monetaria" width="100">
+                            <h:outputText value="#{row.valorSubtotal}">
                                 <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
+                            </h:outputText>
                         </p:column>
-                        <p:column headerText="Desconto" class="coluna-monetaria" width="75">
-                            <h:outputLabel value="#{row.valorDesconto}">
+                        <p:column headerText="Desc." class="coluna-monetaria" width="75">
+                            <h:outputText value="#{row.valorDesconto}">
                                 <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
+                            </h:outputText>
                         </p:column>
-                        <p:column headerText="Valor Total" class="coluna-monetaria" width="130">
-                            <h:outputLabel value="#{row.valorTotal}">
+                        <p:column headerText="Total" class="coluna-monetaria" width="100">
+                            <h:outputText value="#{row.valorTotal}">
                                 <f:convertNumber pattern="#,##0.00"/>
-                            </h:outputLabel>
+                            </h:outputText>
                         </p:column>
                         <p:column headerText="Situacao" sortBy="#{row.statusVenda}" width="130"
                                   styleClass="text-center">
@@ -490,7 +493,7 @@
 
                         </p:column>
 
-                        <p:column headerText="Ações" width="60" class="text-center">
+                        <p:column headerText="Ações" width="63" class="text-center">
 
                             <p:menuButton rendered="#{row.statusVenda ne 'C'}">
                                 <p:menuitem value="Cupom"
