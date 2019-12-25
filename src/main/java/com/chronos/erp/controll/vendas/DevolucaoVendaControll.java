@@ -4,6 +4,9 @@ import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.modelo.entidades.VendaDevolucao;
 import com.chronos.erp.modelo.entidades.VendaDevolucaoItem;
 import com.chronos.erp.repository.Repository;
+import com.chronos.erp.service.ChronosException;
+import com.chronos.erp.service.comercial.VendaDevolucaoService;
+import com.chronos.erp.util.jsf.Mensagem;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 
@@ -25,6 +28,8 @@ public class DevolucaoVendaControll implements Serializable {
 
     @Inject
     private Repository<VendaDevolucao> repository;
+    @Inject
+    private VendaDevolucaoService service;
 
     @Inject
     private Repository<VendaDevolucaoItem> itemRepository;
@@ -47,6 +52,19 @@ public class DevolucaoVendaControll implements Serializable {
 
 
             itens = itemRepository.getEntitys(VendaDevolucaoItem.class, "vendaDevolucao.id", devolucao.getId());
+        }
+    }
+
+    public void gerarCreditoCliente(int id) {
+        try {
+            service.gerarCredito(id);
+            Mensagem.addInfoMessage("Crédito gerado com sucesso");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar crédito", ex);
+            }
         }
     }
 
