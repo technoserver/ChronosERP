@@ -27,7 +27,7 @@
             <div class="ibox-content">
 
                 <p:dataTable value="#{devolucaoVendaControll.dataModel}"
-                             var="row" id="dataTableProduto" paginator="true"
+                             var="row" id="devolucoes" paginator="true"
                              rowKey="#{row.id}"
                              rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                              reflow="true" lazy="true">
@@ -61,6 +61,16 @@
 
                     <p:column headerText="Crédito utilizado" styleClass="text-center">
                         <h:outputLabel value="#{row.creditoUtilizado eq 'S' ? 'SIM':'NAO'}"/>
+                    </p:column>
+
+                    <p:column headerText="Ações" styleClass="text-center">
+                        <p:menuButton rendered="#{row.creditoUtilizado eq 'N'}">
+                            <p:menuitem value="Gerar Crédito"
+                                        id="btn-gerar-credito"
+                                        update=":formCentro:growl,devolucoes"
+                                        action="#{devolucaoVendaControll.gerarCreditoCliente(row.id)}"/>
+
+                        </p:menuButton>
                     </p:column>
 
 

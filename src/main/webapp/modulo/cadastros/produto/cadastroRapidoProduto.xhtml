@@ -70,6 +70,21 @@
                                   nomeAtributo="#{cadastroRapidoProdutoControll.produto.grupoTributario}"
                                   idComponente="grupoTributario"/>
 
+                <erp:autoComplete styleClass="col-xs-6 col-sm-6 col-md-6"
+                                  label="Marca"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{cadastroRapidoProdutoControll}"
+                                  completeMethod="getListaMarca"
+                                  requerido="false"
+                                  nomeAtributo="#{cadastroRapidoProdutoControll.produto.marca}"
+                                  idComponente="marca"/>
+
+                <erp:campoTexto idComponente="gtin"
+                                styleClass="col-xs-6"
+                                label="GTIN"
+                                tamanhoMaximo="14"
+                                nomeAtributo="#{cadastroRapidoProdutoControll.produto.gtin}"/>
+
 
                 <erp:campoDecimal idComponente="custo"
                                   styleClass="col-xs-4"
@@ -122,12 +137,6 @@
                                 label="CEST"
                                 tamanhoMaximo="7"
                                 nomeAtributo="#{cadastroRapidoProdutoControll.produto.cest}"/>
-
-                <erp:campoTexto idComponente="gtin"
-                                styleClass="col-xs-4"
-                                label="GTIN"
-                                tamanhoMaximo="14"
-                                nomeAtributo="#{cadastroRapidoProdutoControll.produto.gtin}"/>
 
 
             </div>

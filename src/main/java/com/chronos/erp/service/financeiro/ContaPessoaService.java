@@ -5,7 +5,6 @@ import com.chronos.erp.modelo.entidades.ContaPessoa;
 import com.chronos.erp.modelo.entidades.MovimentoContaPessoa;
 import com.chronos.erp.modelo.entidades.VendaDevolucao;
 import com.chronos.erp.modelo.enuns.AcaoLog;
-import com.chronos.erp.modelo.enuns.Modulo;
 import com.chronos.erp.modelo.enuns.TipoLancamento;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.gerencial.AuditoriaService;
@@ -39,7 +38,7 @@ public class ContaPessoaService implements Serializable {
         return conta;
     }
 
-    public void lancarMovimentoDevolucaoPdv(Cliente cliente, VendaDevolucao devolucao) {
+    public void lancarMovimentoDevolucao(Cliente cliente, VendaDevolucao devolucao) {
 
         ContaPessoa contaPessoa = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", cliente.getPessoa().getId());
 
@@ -52,8 +51,9 @@ public class ContaPessoaService implements Serializable {
 
         }
 
-        lancaMovimento(contaPessoa, devolucao.getValorCredito(), TipoLancamento.CREDITO, Modulo.DEVOLUCAO_PDV.getCodigo(), devolucao.getId().toString());
+        lancaMovimento(contaPessoa, devolucao.getValorCredito(), TipoLancamento.CREDITO, devolucao.getCodigoModulo(), devolucao.getId().toString());
     }
+
 
     @Transactional
     public void lancaMovimento(ContaPessoa conta, BigDecimal valor, TipoLancamento tipoLancamento, String codigo, String numDocumento) {

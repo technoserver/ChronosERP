@@ -1,10 +1,7 @@
 package com.chronos.erp.dto;
 
 
-import com.chronos.erp.modelo.entidades.Produto;
-import com.chronos.erp.modelo.entidades.ProdutoSubGrupo;
-import com.chronos.erp.modelo.entidades.TributGrupoTributario;
-import com.chronos.erp.modelo.entidades.UnidadeProduto;
+import com.chronos.erp.modelo.entidades.*;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -28,6 +25,7 @@ public class ProdutoResumDTO implements Serializable {
     private UnidadeProduto unidadeProduto;
     private ProdutoSubGrupo subGrupo;
     private TributGrupoTributario grupoTributario;
+    private ProdutoMarca marca;
 
     public Produto gerarProduto() {
         Produto prod = new Produto();
@@ -42,6 +40,7 @@ public class ProdutoResumDTO implements Serializable {
         prod.setUnidadeProduto(unidadeProduto);
         prod.setProdutoSubGrupo(subGrupo);
         prod.setTributGrupoTributario(grupoTributario);
+        prod.setProdutoMarca(marca);
         prod.setCustoUnitario(custo);
         prod.setEncargosVenda(encargos);
         prod.setGtin(gtin);
@@ -151,5 +150,13 @@ public class ProdutoResumDTO implements Serializable {
 
     public void setEncargos(BigDecimal encargos) {
         this.encargos = encargos;
+    }
+
+    public ProdutoMarca getMarca() {
+        return marca;
+    }
+
+    public void setMarca(ProdutoMarca marca) {
+        this.marca = marca;
     }
 }
