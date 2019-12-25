@@ -20,6 +20,7 @@ import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.exception.EmissorException;
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
@@ -231,10 +232,12 @@ public class BalcaoControll implements Serializable {
         }
 
         if (dataInicial != null) {
+            dataInicial = DateUtils.truncate(dataInicial, Calendar.DATE);
             dataModel.getFiltros().add(new Filtro("dataHoraVenda", Filtro.MAIOR_OU_IGUAL, dataInicial));
         }
 
         if (dataFinal != null) {
+            dataFinal = DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataFinal, 23), 59), 59);
             dataModel.getFiltros().add(new Filtro("dataHoraVenda", Filtro.MENOR_OU_IGUAL, dataFinal));
         }
 
