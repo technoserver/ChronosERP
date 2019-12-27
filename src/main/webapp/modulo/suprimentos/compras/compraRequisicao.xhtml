@@ -111,7 +111,7 @@
             <p:dataTable id="dataTableCompraRequisicaoDetalhe" var="obj"
                          value="#{compraRequisicaoControll.objeto.listaCompraRequisicaoDetalhe}"
                          paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                         resizableColumns="true" paginatorPosition="bottom" reflow="true"
+                         paginatorPosition="bottom" reflow="true"
                          rowKey="#{obj.id}" styleClass="t2ti-campo-100">
 
 
@@ -128,7 +128,7 @@
                     <h:outputLabel
                             value="#{compraRequisicaoControll.keyFromValue(compraRequisicaoControll.simNao, obj.itemCotado)}"/>
                 </p:column>
-                <p:column headerText="Ações" width="110">
+                <p:column headerText="Ações" width="140">
                     <p:commandLink title="Alterar" id="btnAlterarIcmsCustom"
                                    action="#{compraRequisicaoControll.alterarItemRequisicao()}"
                                    class=" btn btn-default"

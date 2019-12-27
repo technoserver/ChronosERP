@@ -51,9 +51,7 @@ public class CompraTipoRequisicao implements Serializable {
     private String nome;
     @Column(name = "DESCRICAO")
     private String descricao;
-    @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
-    private Empresa empresa;
+
 
     public CompraTipoRequisicao() {
     }
@@ -93,14 +91,6 @@ public class CompraTipoRequisicao implements Serializable {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
     }
 
     @Override
