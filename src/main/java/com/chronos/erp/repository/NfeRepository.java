@@ -66,8 +66,9 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             if (nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")) {
 
-                atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
                 atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), nfeDetalhe.getNfeCabecalho().getNumero(), "V", "S");
+                atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+
             }
 
         }
@@ -76,8 +77,9 @@ public class NfeRepository extends AbstractRepository implements Serializable {
     public void atualizaEstoqueVerificado(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe, Modulo modulo) throws Exception {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             if (nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")) {
-                atualizaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
                 atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), nfeDetalhe.getNfeCabecalho().getNumero(), "V", "S");
+                atualizaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+
             }
 
         }
@@ -88,9 +90,10 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         String numero = listaNfeDetalhe.get(0).getNfeCabecalho().getNumero();
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             if (nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")) {
-                atualizaEstoqueEmpresaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
                 atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), numero, "V", "S");
                 atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), numero, "F", "S");
+                atualizaEstoqueEmpresaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
+
             }
 
         }

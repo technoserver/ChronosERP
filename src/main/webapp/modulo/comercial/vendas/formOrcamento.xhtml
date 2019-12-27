@@ -274,6 +274,23 @@
                                                                         minQueryLength="3"
                                                                         emptyMessage="Nenhum produto encontrado">
 
+                                                            <p:column headerText="Produto">
+                                                                <p:outputLabel value="#{objeto.nome}"/>
+                                                            </p:column>
+                                                            <p:column headerText="UN">
+                                                                <p:outputLabel value="#{objeto.unidadeProduto.sigla}"/>
+                                                            </p:column>
+                                                            <p:column headerText="Valor Venda" class="coluna-monetaria">
+                                                                <p:outputLabel value="#{objeto.valorVenda}">
+                                                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                                                </p:outputLabel>
+                                                            </p:column>
+                                                            <p:column headerText="Verificado" class="coluna-monetaria">
+                                                                <p:outputLabel value="#{objeto.controle}">
+                                                                    <f:convertNumber pattern="#,###,##0.00"/>
+                                                                </p:outputLabel>
+                                                            </p:column>
+
                                                             <p:ajax event="itemSelect" process="@this"
                                                                     update="formCentro:tab-view-orcamento:form-produtos:container-item"
                                                                     listener="#{orcamentoCabecalhoControll.definirValorVenda}"/>

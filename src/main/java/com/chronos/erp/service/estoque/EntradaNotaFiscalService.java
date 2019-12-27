@@ -334,19 +334,22 @@ public class EntradaNotaFiscalService implements Serializable {
 
     private void atualizarEstoque(Empresa empresa, TributOperacaoFiscal operacaoFiscal, NfeDetalhe detalhe) {
         if (operacaoFiscal.getEstoqueVerificado() && operacaoFiscal.getEstoque()) {
+            estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
+                    Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "F", "E");
+            estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
+                    Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "V", "E");
             estoqueRepository.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
-            estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
-                    Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "F", "E");
-            estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
-                    Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "V", "E");
+
         } else if (operacaoFiscal.getEstoqueVerificado()) {
-            estoqueRepository.atualizaEstoqueEmpresaControle(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
             estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
                     Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "V", "E");
+            estoqueRepository.atualizaEstoqueEmpresaControle(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+
         } else {
-            estoqueRepository.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
             estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
                     Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "F", "E");
+            estoqueRepository.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+
         }
     }
 }
