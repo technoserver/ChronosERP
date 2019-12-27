@@ -53,6 +53,7 @@ public class CompraRequisicaoControll extends AbstractControll<CompraRequisicao>
         super.doCreate();
         getObjeto().setDataRequisicao(new Date());
         getObjeto().setListaCompraRequisicaoDetalhe(new HashSet<>());
+        getObjeto().setEmpresa(empresa);
     }
 
     @Override
@@ -76,6 +77,7 @@ public class CompraRequisicaoControll extends AbstractControll<CompraRequisicao>
             }
         }
         super.salvar();
+        setTelaGrid(false);
     }
 
     public void incluirItemRequisicao() {
@@ -93,13 +95,12 @@ public class CompraRequisicaoControll extends AbstractControll<CompraRequisicao>
         if (compraRequisicaoDetalhe.getId() == null) {
             getObjeto().getListaCompraRequisicaoDetalhe().add(compraRequisicaoDetalhe);
         }
-        salvar("Item salvo com sucesso!");
+
     }
 
     public void excluirItemRequisicao() {
 
         getObjeto().getListaCompraRequisicaoDetalhe().remove(detalheSelecionado);
-        salvar("Item excluído com sucesso!");
 
     }
 
