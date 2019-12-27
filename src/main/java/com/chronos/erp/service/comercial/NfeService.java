@@ -15,16 +15,14 @@ import com.chronos.erp.dto.ConfiguracaoEmissorDTO;
 import com.chronos.erp.dto.EventoDTO;
 import com.chronos.erp.dto.RetornoEventoDTO;
 import com.chronos.erp.modelo.entidades.*;
-import com.chronos.erp.modelo.enuns.EventoNfe;
-import com.chronos.erp.modelo.enuns.FinalidadeEmissao;
-import com.chronos.erp.modelo.enuns.StatusTransmissao;
-import com.chronos.erp.modelo.enuns.TipoArquivo;
+import com.chronos.erp.modelo.enuns.*;
 import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.NfeRepository;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.configuracao.DocumentoFiscalService;
+import com.chronos.erp.service.configuracao.EmailService;
 import com.chronos.erp.service.configuracao.NfeConfiguracaoService;
 import com.chronos.erp.util.ArquivoUtil;
 import com.chronos.erp.util.Biblioteca;
@@ -97,6 +95,9 @@ public class NfeService implements Serializable {
 
     private ConfiguracaoEmissorDTO configuracao;
     private Configuracoes configuracoes;
+
+    @Inject
+    private EmailService emailService;
 
 
     @Inject
@@ -527,28 +528,33 @@ public class NfeService implements Serializable {
                 nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getProtNFe().getInfProt().getDhRecbto()));
                 String xmlProc = XmlUtil.criaNfeProc(nfeEnv, retorno.getProtNFe());
                 nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
-                nfe = nfeRepository.procedimentoNfeAutorizada(nfe, atualizarEstoque);
+
                 documentoFiscalService.atualizarNumeroNfe(nfe);
                 salvaNfeXml(xmlProc, nfe);
                 salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa().getCnpj());
-
+                Modulo modulo = nfe.getModeloDocumento() == ModeloDocumento.NFE ? Modulo.NFe : Modulo.NFCe;
                 if (venda != null) {
                     venda.setNumeroFatura(nfe.getId());
                     nfe.setVendaCabecalho(venda);
+                    modulo = Modulo.VENDA;
                 }
                 if (os != null) {
                     os.setStatus(13);
                     os.setIdnfeCabecalho(nfe.getId());
                     osRepository.atualizar(os);
+                    modulo = Modulo.OS;
                 }
                 if (pdv != null) {
                     pdv.setIdnfe(nfe.getId());
                     nfe.setPdv(pdv);
+                    modulo = Modulo.PDV;
                 }
 
                 if (transferencia != null) {
                     transferencia.setIdnfecabeclaho(nfe.getId());
                 }
+
+                nfe = nfeRepository.procedimentoNfeAutorizada(nfe, atualizarEstoque, modulo);
 
                 status = StatusTransmissao.AUTORIZADA;
 
@@ -853,7 +859,7 @@ public class NfeService implements Serializable {
             nfe.setVersaoAplicativo(result.getProtNFe().getInfProt().getVerAplic());
             String xmlProc = XmlUtil.criaNfeProc(nfeEnv, result.getProtNFe());
             nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
-            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false);
+            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false, Modulo.NFe);
             if (Integer.valueOf(nfe.getNumero()) == notaFiscalTipo.getUltimoNumero()) {
                 documentoFiscalService.atualizarNumeroNfe(notaFiscalTipo, Integer.valueOf(nfe.getNumero()));
             }
@@ -861,7 +867,7 @@ public class NfeService implements Serializable {
             salvarXml(xmlProc, TipoArquivo.NFe, nfe.getNomeXml(), nfe.getEmpresa().getCnpj());
         } else {
             nfe.setStatusNota(StatusTransmissao.EDICAO.getCodigo());
-            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false);
+            nfe = nfeRepository.procedimentoNfeAutorizada(nfe, false, Modulo.NFe);
         }
 
     }
@@ -1193,6 +1199,29 @@ public class NfeService implements Serializable {
         repository.salvar(copia);
 
 
+    }
+
+
+    public void enviarEmail(NfeCabecalho nfe, String email, String assunto, String texto) throws Exception {
+
+        String cnpj = nfe.getEmpresa().getCnpj();
+        String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(cnpj);
+        String arquivoPdf = pastaXml + System.getProperty("file.separator") + nfe.getNomePdf();
+        String caminhoXml = pastaXml + System.getProperty("file.separator") + nfe.getNomeXml();
+        File fileXml = new File(caminhoXml);
+        File filePdf = new File(arquivoPdf);
+
+
+        if (!filePdf.exists()) {
+            gerarDanfe(nfe);
+        }
+
+        List<File> arquivos = new ArrayList<>();
+
+        arquivos.add(fileXml);
+        arquivos.add(filePdf);
+
+        emailService.enviar(nfe.getEmpresa().getId(), arquivos, email, assunto, texto);
     }
 
     private void definirFormaPagamento(NfeCabecalho nfe, TipoPagamento tipoPagamento) {

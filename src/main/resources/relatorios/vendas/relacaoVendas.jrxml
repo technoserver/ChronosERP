@@ -84,7 +84,7 @@ FROM
      INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
      LEFT JOIN nfe_cabecalho n ON n.id_venda_cabecalho = v.id
 WHERE empresa.id = $P{idempresa} and  empresa_endereco.principal = 'S' and (v.id_cliente =  $P{idcliente} or $P{idcliente} is null )
-and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null) and (v.situacao = $P{situacao} or $P{situacao} is null)
+and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null) and (v.situacao in($P{situacao}) or $P{situacao} is null)
  and v.data_venda BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal} and (v.id =$P{id} or $P{id} is null)
 union
 SELECT
@@ -163,7 +163,7 @@ INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id
 WHERE empresa.id = $P{idempresa}  and  empresa_endereco.principal = 'S'
 and (v.id_cliente  = $P{idcliente}  or $P{idcliente} is null )
 and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
-and (v.status_venda = $P{situacao} or $P{situacao} is null)
+and (v.status_venda in($P{situacao}) or $P{situacao} is null)
 and v.data_hora_venda::date BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal}
 and (v.id =$P{id} or $P{id} is null)
 order by $P!{ordem}]]>
@@ -415,12 +415,10 @@ order by $P!{ordem}]]>
                 <reportElement style="dadosDetail" x="363" y="0" width="51" height="12"
                                uuid="1633254b-731c-45c2-b525-35bedb41fef7"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                <textFieldExpression><![CDATA[$F{situacao}.equals("D")?"Digitacao":
-$F{situacao}.equals("P")?"Producao":
-$F{situacao}.equals("X")?"Expedicao":
-$F{situacao}.equals("F")?"Faturado":
-$F{situacao}.equals("E")?"Entregue":
-$F{situacao}.equals("V")?"Devolução":
+                <textFieldExpression><![CDATA[$F{situacao}.equals("F")?"Faturada":
+$F{situacao}.equals("E")?"Encerrada":
+$F{situacao}.equals("DP")?"Devolução Parcial":
+$F{situacao}.equals("DV")?"Devolução":
 $F{situacao}.equals("N")?"Nota Fiscal":""]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">

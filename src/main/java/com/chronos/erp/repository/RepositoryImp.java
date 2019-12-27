@@ -637,6 +637,10 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
                 jpqlBuilder.append(" LOWER(o." + f.getAtributo() + ") ");
                 jpqlBuilder.append(Filtro.LIKE);
                 jpqlBuilder.append(" :valor").append(i);
+            } else if (f.getValor() instanceof Date) {
+                jpqlBuilder.append(" o." + f.getAtributo() + " ");
+                jpqlBuilder.append(f.getOperadorRelacional());
+                jpqlBuilder.append(" :valor").append(i);
             } else {
                 jpqlBuilder.append(" o." + f.getAtributo() + " ");
                 jpqlBuilder.append(f.getOperadorRelacional());
@@ -668,6 +672,8 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
                         } else {
                             jpql.append(" ").append(andOr).append(" LOWER(o.").append(atributo).append(") like :").append(atributo.replaceAll("\\.", ""));
                         }
+                    } else if (valor instanceof Date) {
+                        jpql.append(" ").append(andOr).append(" TRUNC(o.").append(atributo).append(") = :").append(atributo.replaceAll("\\.", ""));
                     } else {
                         if (primeiraCondicao) {
                             jpql.append(" o.").append(atributo).append(" = :").append(atributo.replaceAll("\\.", ""));
@@ -700,17 +706,27 @@ public class RepositoryImp<T> implements Serializable, Repository<T> {
                 }
 
             } else if (f.getOperadorRelacional().equals(Filtro.BETWEEN)) {
-                query.setParameter("valor" + i + "A", f.getValores()[0]);
-                query.setParameter("valor" + i + "B", f.getValores()[1]);
+                castParameter(query, "valor" + i + "A", f.getValores()[0]);
+                castParameter(query, "valor" + i + "B", f.getValores()[1]);
             } else if (f.getValor().getClass() == String.class && f.getOperadorRelacional().equals(Filtro.LIKE)) {
                 query.setParameter("valor" + i, "%" + String.valueOf(f.getValor()).trim().toLowerCase() + "%");
             } else if (f.getValor().getClass() == String.class) {
                 query.setParameter("valor" + i, String.valueOf(f.getValor()).trim());
             } else {
-                query.setParameter("valor" + i, f.getValor());
+                castParameter(query, "valor" + i, f.getValor());
+
             }
         }
         return query;
+    }
+
+    private void castParameter(Query query, String parametro, Object valor) {
+        if (valor instanceof Date) {
+            Date data = (Date) valor;
+            query.setParameter(parametro, data, TemporalType.DATE);
+        } else {
+            query.setParameter(parametro, valor);
+        }
     }
 
     @Transactional

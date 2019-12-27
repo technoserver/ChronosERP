@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="/WEB-INF/layout/layoutPadrao.xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
+>
+
+    <ui:define name="title">
+        Estoque
+    </ui:define>
+
+    <ui:define name="tela">
+        Movimento
+    </ui:define>
+    <ui:define name="controle">
+        Movimento
+    </ui:define>
+
+
+    <ui:define name="gridDados">
+
+        <div class="ibox-content">
+            <div class="row">
+
+                <erp:campoData nomeAtributo="#{movimentoProdutoControll.dataInicial}"
+                               label="Data inicial"
+                               idComponente="dataInicial"
+                               styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                <erp:campoData nomeAtributo="#{movimentoProdutoControll.dataFinal}"
+                               label="Data Final"
+                               idComponente="dataFinal"
+                               styleClass="col-xs-12 col-sm-2 col-md-2"/>
+                <h:panelGroup class="col-xs-12 col-sm-4 col-md-4" layout="block"
+                              rendered="#{movimentoProdutoControll.listaEmpresas.size() gt 1}">
+                    <h:outputLabel value="Empresa"/>
+                    <h:selectOneMenu value="#{movimentoProdutoControll.idempresa}"
+                                     styleClass="form-control">
+                        <f:selectItems value="#{movimentoProdutoControll.listaEmpresas}" itemValue="#{obj.id}"
+                                       var="obj"/>
+                    </h:selectOneMenu>
+                </h:panelGroup>
+
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <h:outputLabel value="Produto" for="produto"/>
+
+                    <div class="field-action">
+                        <h:inputText value="#{movimentoProdutoControll.produto}"
+                                     id="produto"
+                                     styleClass="form-control"/>
+                        <p:commandButton action="#{movimentoProdutoControll.pesquisar}"
+                                         update="produtos"
+                                         value="Pesquisar"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-t">
+                <div class="col-md-12">
+                    <p:dataTable value="#{movimentoProdutoControll.movimentos}" var="row" id="produtos"
+                                 emptyMessage="Nenhuma movimentacao"
+                                 reflow="true">
+                        <p:column headerText="produto">
+                            <h:outputLabel value="#{row.empresaProduto.produto.nome}"/>
+                        </p:column>
+                        <p:column headerText="Data Mov." styleClass="text-center" width="125">
+                            <h:outputLabel value="#{row.dataMovimento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Tipo" styleClass="text-center" width="60">
+                            <h:outputLabel value="#{row.tipo}"/>
+                        </p:column>
+                        <p:column headerText="Entrada/Saida" styleClass="text-center" width="140">
+                            <h:outputLabel value="#{row.entradaSaida}"/>
+                        </p:column>
+                        <p:column headerText="Quantidade" styleClass="text-center" width="125">
+                            <h:outputLabel value="#{row.quantidade}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+                        <p:column headerText="Quant. anterior" styleClass="text-center" width="155">
+                            <h:outputLabel value="#{row.quantidadeAnterior}">
+                                <f:convertNumber pattern="#,###,##0.00"/>
+                            </h:outputLabel>
+                        </p:column>
+
+                    </p:dataTable>
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </ui:define>
+
+
+</ui:composition>

@@ -1,10 +1,7 @@
 package com.chronos.erp.controll.cadastros;
 
 import com.chronos.erp.dto.ProdutoResumDTO;
-import com.chronos.erp.modelo.entidades.ProdutoGrupo;
-import com.chronos.erp.modelo.entidades.ProdutoSubGrupo;
-import com.chronos.erp.modelo.entidades.TributGrupoTributario;
-import com.chronos.erp.modelo.entidades.UnidadeProduto;
+import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
@@ -35,6 +32,8 @@ public class CadastroRapidoProdutoControll implements Serializable {
     private Repository<UnidadeProduto> unidadeProdutoRepository;
     @Inject
     private Repository<TributGrupoTributario> grupoTributarioRepository;
+    @Inject
+    private Repository<ProdutoMarca> produtoMarcaRepository;
 
     private ProdutoResumDTO produto;
 
@@ -132,6 +131,17 @@ public class CadastroRapidoProdutoControll implements Serializable {
             // e.printStackTrace();
         }
         return listaGrupoTributario;
+    }
+
+    public List<ProdutoMarca> getListaMarca(String nome) {
+        List<ProdutoMarca> lista = new ArrayList<>();
+        try {
+
+            lista = produtoMarcaRepository.getEntitys(ProdutoMarca.class, "nome", nome, new Object[]{"nome"});
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return lista;
     }
 
     public ProdutoResumDTO getProduto() {

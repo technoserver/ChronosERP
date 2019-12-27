@@ -2,6 +2,7 @@ package com.chronos.erp.service.estoque;
 
 import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.modelo.enuns.AcaoLog;
+import com.chronos.erp.modelo.enuns.Modulo;
 import com.chronos.erp.modelo.enuns.StatusTransmissao;
 import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Repository;
@@ -333,11 +334,22 @@ public class EntradaNotaFiscalService implements Serializable {
 
     private void atualizarEstoque(Empresa empresa, TributOperacaoFiscal operacaoFiscal, NfeDetalhe detalhe) {
         if (operacaoFiscal.getEstoqueVerificado() && operacaoFiscal.getEstoque()) {
+            estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
+                    Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "F", "E");
+            estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
+                    Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "V", "E");
             estoqueRepository.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+
         } else if (operacaoFiscal.getEstoqueVerificado()) {
+            estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
+                    Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "V", "E");
             estoqueRepository.atualizaEstoqueEmpresaControle(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+
         } else {
+            estoqueRepository.atualizarEstoqueMovimento(detalhe.getProduto().getId(), empresa.getId(), detalhe.getQuantidadeComercial(),
+                    Modulo.ENTRADA.getCodigo(), detalhe.getNfeCabecalho().getNumero(), "F", "E");
             estoqueRepository.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
+
         }
     }
 }

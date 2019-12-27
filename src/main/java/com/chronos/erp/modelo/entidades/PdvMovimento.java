@@ -316,6 +316,7 @@ public class PdvMovimento implements Serializable {
                 .add(getTotalAcrescimo())
                 .subtract(getTotalDesconto())
                 .subtract(getTotalSangria())
+                .subtract(getTotalCancelado())
                 .add(getTotalSuprimento())
                 .add(getTotalRecebido())
                 .add(getTotalVenda())

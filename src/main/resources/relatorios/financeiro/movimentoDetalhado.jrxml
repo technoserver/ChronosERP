@@ -7,8 +7,8 @@
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ERP Light"/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="ireport.zoom" value="2.0"/>
-    <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="0"/>
+    <property name="ireport.x" value="7"/>
+    <property name="ireport.y" value="144"/>
     <style name="teste"/>
     <style name="table">
         <box>
@@ -59,7 +59,7 @@ FROM
 	INNER JOIN pdv_venda_cabecalho v ON v.id_pdv_movimento = m.id
 	INNER JOIN pdv_forma_pagamento f ON f.id_pdv_venda_cabecalho = v.id
 	INNER JOIN tipo_pagamento t ON f.id_tipo_pagamento = t.id
-	WHERE m.id =   $P{idmovimento}
+	WHERE m.id =   $P{idmovimento} and v.status_venda in('F','E')
 
 	UNION ALL
 
@@ -111,7 +111,7 @@ WHERE m.id = $P{idmovimento}
 		JOIN os_abertura o ON o.id_movimento = m.id
 		JOIN os_forma_pagamento f ON f.id_os_abertura = o.id
 		JOIN tipo_pagamento t ON f.id_tipo_pagamento = t.id
-		WHERE m.id =   $P{idmovimento})  pagamentos
+		WHERE m.id =   $P{idmovimento} and o.status in(12,13) )  pagamentos
 GROUP BY codigo, descricao;]]>
         </queryString>
         <field name="codigo" class="java.lang.String"/>
@@ -180,7 +180,7 @@ GROUP BY codigo, descricao;]]>
             m.id AS idmovimento,
             v.id AS idorigem,
             v.data_hora_venda AS data_hora,
-            ('Venda n°' || v.id) || '(PDV)' AS descricao,
+            ('Venda n°' || v.id) || ' - ' || v.nome_cliente || ' (PDV)' AS descricao,
             f.valor-f.troco,
             t.codigo AS codigo_forma_pagamento,
             t.descricao AS forma_pagamento,
@@ -440,7 +440,7 @@ UNION
             </staticText>
             <staticText>
                 <reportElement x="158" y="0" width="78" height="12" uuid="045d61e3-9495-4999-991e-9b3bde94a06f"/>
-                <textElement>
+                <textElement textAlignment="Center">
                     <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Data]]></text>
@@ -478,7 +478,7 @@ UNION
         </band>
     </columnHeader>
     <detail>
-        <band height="25" splitType="Stretch">
+        <band height="27" splitType="Stretch">
             <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
             <textField>
                 <reportElement x="0" y="0" width="50" height="12" uuid="c3726723-7a8d-49e3-8d3b-9ea0b83dd506">
@@ -490,7 +490,7 @@ UNION
                 <textFieldExpression><![CDATA[$F{idorigem}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="50" y="12" width="505" height="12" uuid="527d05b2-d641-44a0-950f-9cb01ef72277">
+                <reportElement x="50" y="13" width="505" height="14" uuid="527d05b2-d641-44a0-950f-9cb01ef72277">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
                 <textElement verticalAlignment="Middle">
@@ -500,7 +500,7 @@ UNION
             </textField>
             <textField pattern="dd/MM/yyyy HH:mm">
                 <reportElement x="158" y="0" width="78" height="12" uuid="1a0d21ba-2942-4ed5-9d15-71761d1e57ed"/>
-                <textElement verticalAlignment="Middle">
+                <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{data_hora}]]></textFieldExpression>
@@ -525,7 +525,7 @@ UNION
                 <reportElement x="442" y="0" width="35" height="12" uuid="f3e8aa13-9f05-4592-b6b0-9d80ab51bc06">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
-                <textElement verticalAlignment="Middle">
+                <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
@@ -598,7 +598,7 @@ UNION
                 <text><![CDATA[Saldo]]></text>
             </staticText>
             <textField pattern="#,##0.00">
-                <reportElement positionType="Float" x="453" y="108" width="100" height="12"
+                <reportElement positionType="Float" x="455" y="108" width="100" height="12"
                                uuid="866e86cb-6b5f-4648-ba33-d0b175c4c352">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
@@ -608,7 +608,7 @@ UNION
                 <textFieldExpression><![CDATA[$V{totalEntradaOrigem}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement positionType="Float" x="453" y="120" width="100" height="12"
+                <reportElement positionType="Float" x="455" y="120" width="100" height="12"
                                uuid="7d6bf093-55f9-4b82-8c00-124ba586f39a">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
@@ -618,7 +618,7 @@ UNION
                 <textFieldExpression><![CDATA[$V{totalSaidaOrigem}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement positionType="Float" x="453" y="132" width="100" height="12"
+                <reportElement positionType="Float" x="455" y="132" width="100" height="12"
                                uuid="6d4c7ca8-aefb-421c-b109-7020af8b4e84">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
@@ -728,7 +728,7 @@ UNION
                 <text><![CDATA[Total Recebido]]></text>
             </staticText>
             <textField pattern="#,##0.00">
-                <reportElement positionType="Float" x="453" y="60" width="100" height="12"
+                <reportElement positionType="Float" x="455" y="60" width="100" height="12"
                                uuid="db1863a0-8fc7-4875-bf84-70f2ab66f28d">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
@@ -738,7 +738,7 @@ UNION
                 <textFieldExpression><![CDATA[$V{totalSuprimentos}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement positionType="Float" x="453" y="72" width="100" height="12"
+                <reportElement positionType="Float" x="455" y="72" width="100" height="12"
                                uuid="f81fd9d0-0d67-41f1-bb22-7dfae88c9357">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>
@@ -748,7 +748,7 @@ UNION
                 <textFieldExpression><![CDATA[$V{totalsangrai}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement positionType="Float" x="453" y="84" width="102" height="12"
+                <reportElement positionType="Float" x="455" y="84" width="100" height="12"
                                uuid="824b6b11-bd79-4b54-b6ff-4d9138fe8ec3">
                     <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                 </reportElement>

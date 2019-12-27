@@ -337,7 +337,7 @@ public class VendaPdvService implements Serializable {
         estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
 
         if (devolucao.getGeradoCredito().equals("S") && venda.getCliente() != null) {
-            contaPessoaService.lancarMovimentoDevolucaoPdv(venda.getCliente(), devolucao);
+            contaPessoaService.lancarMovimentoDevolucao(venda.getCliente(), devolucao);
         }
 
         String conteudo = String.format("Devolução de Venda Nº %d modulo %s", devolucao.getIdVenda(), devolucao.getCodigoModulo());

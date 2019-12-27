@@ -10,6 +10,7 @@ import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.financeiro.MovimentoService;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
@@ -139,9 +140,7 @@ public class PdvMovimentoControll implements Serializable {
         atributos = new Object[]{"idGerenteSupervisor", "dataAbertura", "horaAbertura", "dataFechamento", "horaFechamento", "totalSuprimento", "totalSangria", "totalVenda", "totalDesconto", "totalAcrescimo", "totalFinal", "totalRecebido", "totalTroco", "totalCancelado", "statusMovimento", "empresa.id", "pdvCaixa.codigo"};
         dataModel.setAtributos(atributos);
 
-        if (dataModel.getFiltros().isEmpty()) {
-            dataModel.getFiltros().add(new Filtro("empresa.id", empresa.getId()));
-        }
+        pesquisar();
 
         return dataModel;
     }
@@ -173,8 +172,13 @@ public class PdvMovimentoControll implements Serializable {
             dataModel.getFiltros().add(new Filtro("pdvCaixa.id", idcaixa));
         }
 
-        if (idoperador > 0) {
-            dataModel.getFiltros().add(new Filtro("pdvOperador.id", idoperador));
+        if (usuario.getAdministrador().equals("N")) {
+            int id = usuario.getOperador() != null ? usuario.getOperador().getId() : 0;
+            dataModel.getFiltros().add(new Filtro("pdvOperador.id", id));
+        } else {
+            if (idoperador > 0) {
+                dataModel.getFiltros().add(new Filtro("pdvOperador.id", idoperador));
+            }
         }
 
     }
@@ -188,6 +192,7 @@ public class PdvMovimentoControll implements Serializable {
         }
 
         if (dataInicial != null) {
+            dataInicial = DateUtils.truncate(dataInicial, Calendar.DATE);
             if (status.equals("F")) {
                 filtros.add(new Filtro("dataFechamento", Filtro.MAIOR_OU_IGUAL, dataInicial));
             } else {
@@ -196,6 +201,7 @@ public class PdvMovimentoControll implements Serializable {
         }
 
         if (dataFinal != null) {
+            dataFinal = DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataFinal, 23), 59), 59);
             if (status.equals("F")) {
                 filtros.add(new Filtro("dataFechamento", Filtro.MENOR_OU_IGUAL, dataFinal));
             } else {
@@ -207,8 +213,13 @@ public class PdvMovimentoControll implements Serializable {
             filtros.add(new Filtro("pdvCaixa.id", idcaixa));
         }
 
-        if (idoperador > 0) {
-            filtros.add(new Filtro("pdvOperador.id", idoperador));
+        if (usuario.getAdministrador().equals("N")) {
+            int id = usuario.getOperador() != null ? usuario.getOperador().getId() : 0;
+            dataModel.getFiltros().add(new Filtro("pdvOperador.id", id));
+        } else {
+            if (idoperador > 0) {
+                dataModel.getFiltros().add(new Filtro("pdvOperador.id", idoperador));
+            }
         }
 
         List<PdvMovimento> movimentos = repository.getEntitys(PdvMovimento.class, filtros);
@@ -234,7 +245,7 @@ public class PdvMovimentoControll implements Serializable {
                     "inner join f.pdvVendaCabecalho v " +
                     "inner join v.pdvMovimento m " +
                     "inner join f.tipoPagamento t " +
-                    "where m.id in :ids " +
+                    "where m.id in :ids and v.statusVenda in ('F','E')" +
                     "group by t.descricao";
             formasPagamento = repository.executeQuery(MapDTO.class, jpql, ids);
 
@@ -303,6 +314,8 @@ public class PdvMovimentoControll implements Serializable {
 
     public void lancarMovimento() {
         service.lancarMovimento(tipoLancamento, valorLancamento, obsLancamento);
+        valorLancamento = BigDecimal.ZERO;
+        obsLancamento = "";
     }
 
 

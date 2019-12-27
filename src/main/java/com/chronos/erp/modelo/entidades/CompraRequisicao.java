@@ -55,6 +55,9 @@ public class CompraRequisicao implements Serializable {
     @JoinColumn(name = "ID_COLABORADOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Colaborador colaborador;
+    @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
+    @ManyToOne(optional = false)
+    private Empresa empresa;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "compraRequisicao", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CompraRequisicaoDetalhe> listaCompraRequisicaoDetalhe;
 
@@ -99,6 +102,14 @@ public class CompraRequisicao implements Serializable {
 
     public void setColaborador(Colaborador colaborador) {
         this.colaborador = colaborador;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     public Set<CompraRequisicaoDetalhe> getListaCompraRequisicaoDetalhe() {

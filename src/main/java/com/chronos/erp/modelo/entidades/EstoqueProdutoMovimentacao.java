@@ -3,6 +3,7 @@ package com.chronos.erp.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * Created by john on 12/12/17.
@@ -18,29 +19,27 @@ public class EstoqueProdutoMovimentacao implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-
     @Column(name = "DOCUMENTO")
     private String documento;
 
     @Column(name = "QUANTIDADE")
     private BigDecimal quantidade;
+    @Column(name = "data_movimento")
+    @Temporal(TemporalType.DATE)
+    private Date dataMovimento;
+    @Column(name = "QUANTIDADE_ANTERIOR")
+    private BigDecimal quantidadeAnterior;
 
-    @Column(name = "VALOR_CUSTO")
-    private BigDecimal valorCusto;
 
-    @Column(name = "SALDO_FISICO")
-    private BigDecimal saldoFisico;
-
-    @Column(name = "SALDO_FINANCEIRO")
-    private BigDecimal saldoFinanceiro;
+    @Column(name = "tipo")
+    private String tipo;
 
     @Column(name = "ENTRADA_SAIDA")
     private String entradaSaida;
 
-    @JoinColumn(name = "ID_PRODUTO", referencedColumnName = "ID")
+    @JoinColumn(name = "ID_EMPRESA_PRODUTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    private Produto produto;
-
+    private EmpresaProduto empresaProduto;
 
     public Integer getId() {
         return id;
@@ -49,6 +48,7 @@ public class EstoqueProdutoMovimentacao implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
+
 
     public String getDocumento() {
         return documento;
@@ -66,28 +66,28 @@ public class EstoqueProdutoMovimentacao implements Serializable {
         this.quantidade = quantidade;
     }
 
-    public BigDecimal getValorCusto() {
-        return valorCusto;
+    public Date getDataMovimento() {
+        return dataMovimento;
     }
 
-    public void setValorCusto(BigDecimal valorCusto) {
-        this.valorCusto = valorCusto;
+    public void setDataMovimento(Date dataMovimento) {
+        this.dataMovimento = dataMovimento;
     }
 
-    public BigDecimal getSaldoFisico() {
-        return saldoFisico;
+    public BigDecimal getQuantidadeAnterior() {
+        return quantidadeAnterior;
     }
 
-    public void setSaldoFisico(BigDecimal saldoFisico) {
-        this.saldoFisico = saldoFisico;
+    public void setQuantidadeAnterior(BigDecimal quantidadeAnterior) {
+        this.quantidadeAnterior = quantidadeAnterior;
     }
 
-    public BigDecimal getSaldoFinanceiro() {
-        return saldoFinanceiro;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setSaldoFinanceiro(BigDecimal saldoFinanceiro) {
-        this.saldoFinanceiro = saldoFinanceiro;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getEntradaSaida() {
@@ -98,12 +98,12 @@ public class EstoqueProdutoMovimentacao implements Serializable {
         this.entradaSaida = entradaSaida;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public EmpresaProduto getEmpresaProduto() {
+        return empresaProduto;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setEmpresaProduto(EmpresaProduto empresaProduto) {
+        this.empresaProduto = empresaProduto;
     }
 
     @Override

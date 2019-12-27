@@ -6,6 +6,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 template="/WEB-INF/layout/layoutPadrao.xhtml"
                 xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
                 xmlns:p="http://primefaces.org/ui"
 
 >
@@ -118,6 +119,13 @@
 
                         </h:selectOneMenu>
                     </div>
+
+                    <erp:campoSelect nomeAtributo="#{produtoRelatorioControll.tipoRelatorio}"
+                                     itens="#{produtoRelatorioControll.tiposRelatorio}"
+                                     styleClass="col-xs-12 col-sm-2 col-md-2"
+                                     idComponente="tipoRelatorio"
+                                     label="Modelo"
+                    />
 
                     <div class="col-xs-6 col-sm-2 col-md-2">
                         <h:outputLabel value="Resumido" for="resumido"/>
