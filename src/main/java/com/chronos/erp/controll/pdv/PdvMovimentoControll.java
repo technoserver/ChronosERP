@@ -213,8 +213,13 @@ public class PdvMovimentoControll implements Serializable {
             filtros.add(new Filtro("pdvCaixa.id", idcaixa));
         }
 
-        if (idoperador > 0) {
-            filtros.add(new Filtro("pdvOperador.id", idoperador));
+        if (usuario.getAdministrador().equals("N")) {
+            int id = usuario.getOperador() != null ? usuario.getOperador().getId() : 0;
+            dataModel.getFiltros().add(new Filtro("pdvOperador.id", id));
+        } else {
+            if (idoperador > 0) {
+                dataModel.getFiltros().add(new Filtro("pdvOperador.id", idoperador));
+            }
         }
 
         List<PdvMovimento> movimentos = repository.getEntitys(PdvMovimento.class, filtros);
@@ -240,7 +245,7 @@ public class PdvMovimentoControll implements Serializable {
                     "inner join f.pdvVendaCabecalho v " +
                     "inner join v.pdvMovimento m " +
                     "inner join f.tipoPagamento t " +
-                    "where m.id in :ids " +
+                    "where m.id in :ids and v.statusVenda in ('F','E')" +
                     "group by t.descricao";
             formasPagamento = repository.executeQuery(MapDTO.class, jpql, ids);
 
@@ -309,6 +314,8 @@ public class PdvMovimentoControll implements Serializable {
 
     public void lancarMovimento() {
         service.lancarMovimento(tipoLancamento, valorLancamento, obsLancamento);
+        valorLancamento = BigDecimal.ZERO;
+        obsLancamento = "";
     }
 
 

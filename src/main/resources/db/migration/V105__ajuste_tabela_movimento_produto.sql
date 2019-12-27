@@ -1,4 +1,4 @@
-drop function if exists movimento_produto;
+drop function if exists movimento_produto(int, int, decimal, varchar, varchar, char, char);
 
 ALTER TABLE estoque_produto_movimentacao
     DROP CONSTRAINT estoque_produto_movimentacao_id_produto_fkey;
