@@ -301,7 +301,7 @@ public class VendaPdvService implements Serializable {
             VendaDevolucaoItem item = new VendaDevolucaoItem();
             item.setProduto(i.getProduto());
             item.setQuantidade(i.getQuantidade());
-            item.setValor(i.getValorUnitario());
+            item.setValor(i.getValorTotal());
             item.setVendaDevolucao(devolucao);
             item.setQuantidadeVenda(i.getQuantidade());
             devolucao.getListaVendaDevolucaoItem().add(item);
@@ -328,10 +328,11 @@ public class VendaPdvService implements Serializable {
             comissaoService.gerarComissao("A", "D", venda.getValorComissao(), venda.getValorTotal(),
                     venda.getId().toString(), venda.getVendedor().getColaborador(), Modulo.PDV);
         }
+
         List<ProdutoVendaDTO> produtos = new ArrayList<>();
+
         venda.getListaPdvVendaDetalhe().forEach(p -> {
             produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade().negate()));
-
         });
 
         estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);

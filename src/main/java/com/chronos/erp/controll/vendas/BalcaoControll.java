@@ -22,6 +22,7 @@ import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.exception.EmissorException;
 import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -436,10 +437,32 @@ public class BalcaoControll implements Serializable {
         devolucao = service.gerarDevolucao(vendaDevolvida);
     }
 
+    public void calcularValorDevolucao(CellEditEvent event) {
+
+        try {
+
+            for (VendaDevolucaoItem item : devolucao.getListaVendaDevolucaoItem()) {
+                if (!item.getQuantidade().equals(item.getQuantidadeVenda())) {
+                    BigDecimal valorUn = Biblioteca.divide(item.getValor(), item.getQuantidadeVenda());
+                    BigDecimal valor = Biblioteca.multiplica(item.getQuantidade(), valorUn);
+                    item.setValor(valor);
+                }
+            }
+
+            devolucao.calcularValorCredito();
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao calcular devolucao", ex);
+            }
+        }
+    }
+
     public void removerItemDevolucao() {
         devolucao.getListaVendaDevolucaoItem().remove(vendaDevolucaoItemSelecionado);
-
     }
+
 
     public void confirmarDevolucao() {
         try {

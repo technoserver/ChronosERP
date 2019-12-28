@@ -163,7 +163,7 @@ public class VendaDevolucao implements Serializable {
     public void calcularValorCredito() {
         valorCredito = listaVendaDevolucaoItem
                 .stream()
-                .map(i -> (i.getQuantidade().multiply(i.getValor())))
+                .map(i -> (i.getValor()))
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO);
     }

@@ -563,15 +563,12 @@
                     <div class="row">
                         <div class="col-xs-6 col-lg-6  text-center">
 
-                            <p:commandButton value="Nova Venda"
-                                             actionListener="#{balcaoControll.novaVenda}"
-                                             process="@this"
-                                             onclick="loadLocalStorage()"
-                                             oncomplete="$('.navbar-minimalize').trigger('click');$('.ibox-title').css({ display: 'none' });"
-                                             update=":formCentro:outputPanelGrid,:formCentro:outputPanelDetalhe,navegacao,:formCentro:mensagem"
-                            >
+                            <a target="blank"
+                               class="btn btn-primary"
+                               href="http://pdv.chronoserp.com.br:4200/chronos-pdv/login">
+                                Ir para o PDV
+                            </a>
 
-                            </p:commandButton>
 
                         </div>
                         <div class="col-xs-6 col-lg-6">
@@ -1034,7 +1031,7 @@
                     </div>
                     <div class="row m-b" style="margin-right: -14px;margin-left: -14px">
 
-                        <div class="col-md-12">
+                        <h:panelGroup layout="block" class="col-md-12" id="dados">
                             <p:panelGrid columns="2" layout="grid">
                                 <label>Cliente</label>
                                 <h:outputText
@@ -1045,11 +1042,11 @@
                                         value="#{balcaoControll.vendaDevolvida.vendedor.colaborador.pessoa.nome}"/>
 
                                 <label>Total</label>
-                                <h:outputText value="#{balcaoControll.vendaDevolvida.valorTotal}">
+                                <h:outputText value="#{balcaoControll.vendaDevolvida.valorTotal}" id="valor-total">
                                     <f:convertNumber pattern="#,##0.00"/>
                                 </h:outputText>
                             </p:panelGrid>
-                        </div>
+                        </h:panelGroup>
 
                         <div class="col-md-12">
 
@@ -1081,6 +1078,8 @@
                     <p:dataTable id="dataTableItemDevolucao" var="obj"
                                  value="#{balcaoControll.devolucao.listaVendaDevolucaoItem}"
                                  reflow="true" editable="true" editMode="cell" widgetVar="itemDevolvido">
+
+                        <p:ajax event="cellEdit" listener="#{balcaoControll.calcularValorDevolucao}"/>
 
                         <p:column headerText="Produto">
                             <h:outputLabel value="#{obj.produto.nome}"/>
@@ -1127,7 +1126,7 @@
                         <div class="col-xs-6 col-md-6 text-center">
                             <p:commandButton value="Salvar"
                                              id="btn-confimar-dedolucao"
-                                             update=":formOutrasTelas6:panelOutrasTelas6,dialogOutrasTelas6,:formCentro:growl"
+                                             update=":formOutrasTelas6:panelOutrasTelas6,dialogOutrasTelas6,:formCentro:growl,:formCentro:tableVenda"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas6').hide();}"
                                              process="@form"
                                              action="#{balcaoControll.confirmarDevolucao}"/>
