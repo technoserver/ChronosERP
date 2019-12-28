@@ -462,7 +462,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     }
 
 
-    public void faturarVenda() {
+    public void faturarVenda(String mod) {
         boolean estoque = isTemAcesso("ESTOQUE");
         if (!getObjeto().getListaVendaDetalhe().isEmpty()) {
 
@@ -477,29 +477,22 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
 
                 }
             }
-
-            vendaService.transmitirNFe(getObjeto(), ModeloDocumento.NFE, estoque);
+            ModeloDocumento modelo = mod.equals("65") ? ModeloDocumento.NFCE : ModeloDocumento.NFE;
+            vendaService.transmitirNFe(getObjeto(), modelo, estoque);
         }
     }
 
     public void gerarNFe() {
-        ModeloDocumento modelo = ModeloDocumento.NFE;
         VendaCabecalho venda = dao.getJoinFetch(getObjetoSelecionado().getId(), VendaCabecalho.class);
-        boolean estoque = isTemAcesso("ESTOQUE");
-        if (!venda.getListaVendaDetalhe().isEmpty()) {
-            vendaService.transmitirNFe(venda, modelo, estoque);
-        }
-
+        setObjeto(venda);
+        faturarVenda("55");
     }
 
 
     public void gerarNfce() {
-        ModeloDocumento modelo = ModeloDocumento.NFCE;
         VendaCabecalho venda = dao.getJoinFetch(getObjetoSelecionado().getId(), VendaCabecalho.class);
-        boolean estoque = isTemAcesso("ESTOQUE");
-        if (!venda.getListaVendaDetalhe().isEmpty()) {
-            vendaService.transmitirNFe(venda, modelo, estoque);
-        }
+        setObjeto(venda);
+        faturarVenda("65");
     }
 
     public void danfe() {

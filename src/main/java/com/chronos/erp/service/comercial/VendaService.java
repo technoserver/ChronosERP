@@ -127,7 +127,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         Optional<VendaFormaPagamento> pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("14")).findFirst();
 
         if (pagamentoOptional.isPresent()) {
-            finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
+            finLancamentoReceberService.gerarLancamento(venda.getId(), pagamentoOptional.get().getFormaPagamento().getValor(), venda.getCliente(),
                     pagamentoOptional.get().getFormaPagamento().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
         }
 
