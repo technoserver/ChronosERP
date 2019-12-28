@@ -2,7 +2,9 @@ package com.chronos.erp.controll.financeiro.relatorios;
 
 import com.chronos.erp.controll.AbstractRelatorioControll;
 import com.chronos.erp.dto.ReciboPagamentoDTO;
+import com.chronos.erp.modelo.entidades.Cliente;
 import com.chronos.erp.repository.ParcelaPagarRepository;
+import com.chronos.erp.repository.Repository;
 import org.springframework.util.StringUtils;
 
 import javax.enterprise.context.RequestScoped;
@@ -10,9 +12,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by john on 03/11/17.
@@ -24,12 +24,14 @@ public class ContasReceberRelatorioControll extends AbstractRelatorioControll im
     private static final long serialVersionUID = 1L;
     @Inject
     private ParcelaPagarRepository repository;
+    @Inject
+    private Repository<Cliente> clienteRepository;
 
     private Date vencimentoDe;
     private Date vencimentoAte;
     private String numDocumento;
     private String situacao;
-    private String cliente;
+    private Cliente cliente;
 
     public void gerarContasReceber() {
 
@@ -40,10 +42,12 @@ public class ContasReceberRelatorioControll extends AbstractRelatorioControll im
             parametros.put("vencimentoDe", Optional.ofNullable(vencimentoDe).orElse(new SimpleDateFormat("yyyy-MM-dd").parse("1990-01-01")));
             parametros.put("vencimentoAte", Optional.ofNullable(vencimentoAte).orElse(new Date()));
             parametros.put("numDocumento", StringUtils.isEmpty(numDocumento) ? null : numDocumento);
-            parametros.put("fornecedor", ("%" + cliente.trim().toLowerCase() + "%"));
             parametros.put("situacao", StringUtils.isEmpty(situacao) ? null : situacao);
             parametros.put("idempresa", empresa.getId());
 
+            if (cliente != null) {
+                parametros.put("idcliente", cliente.getId());
+            }
 
             String caminhoRelatorio = "/relatorios/financeiro";
             String nomeRelatorio = "relacaoContasReceber.jasper";
@@ -81,6 +85,16 @@ public class ContasReceberRelatorioControll extends AbstractRelatorioControll im
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "carner.pdf");
     }
 
+    public List<Cliente> getListaCliente(String nome) {
+        List<Cliente> listaCliente = new ArrayList<>();
+        try {
+            listaCliente = clienteRepository.getEntitys(Cliente.class, "pessoa.nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaCliente;
+    }
+
 
     public Date getVencimentoDe() {
         return vencimentoDe;
@@ -114,11 +128,11 @@ public class ContasReceberRelatorioControll extends AbstractRelatorioControll im
         this.situacao = situacao;
     }
 
-    public String getCliente() {
+    public Cliente getCliente() {
         return cliente;
     }
 
-    public void setCliente(String cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 }

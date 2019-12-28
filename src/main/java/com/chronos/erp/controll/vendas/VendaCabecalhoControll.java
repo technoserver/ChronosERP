@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,7 +67,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
     @Inject
-    private EstoqueRepository estoqueRepositoy;
+    private EstoqueRepository estoqueRepository;
     @Inject
     private VendaService vendaService;
     @Inject
@@ -523,14 +522,20 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
         try {
             SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(getObjetoSelecionado().getSituacao());
             VendaCabecalho venda = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+            String numDoc = "E" + venda.getEmpresa().getId()
+                    + "M" + Modulo.VENDA.getCodigo()
+                    + "V" + venda.getId();
             if (situacao == SituacaoVenda.Encerrado) {
+
 
                 setObjeto(venda);
                 getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());
-                finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
+                finLancamentoReceberService.excluirFinanceiro(numDoc, Modulo.VENDA);
                 salvar();
                 for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
-                    estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
+                    estoqueRepository.atualizarEstoqueMovimento(item.getProduto().getId(), venda.getEmpresa().getId(), item.getQuantidade(),
+                            Modulo.VENDA.getCodigo(), venda.getId().toString(), "V", "E");
+                    estoqueRepository.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
                 }
                 auditoriaService.gerarLog(AcaoLog.CANCELAR_VENDA, "Venda cancelada", " VENDAS");
             } else if (situacao == SituacaoVenda.Faturado) {
@@ -541,7 +546,7 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                 boolean estoque = isTemAcesso("ESTOQUE");
                 boolean cancelada = nfeService.cancelarNFe(nfe, estoque);
                 if (cancelada) {
-                    finLancamentoReceberService.excluirFinanceiro(new DecimalFormat("VD0000000").format(getObjetoSelecionado().getId()), Modulo.VENDA);
+                    finLancamentoReceberService.excluirFinanceiro(numDoc, Modulo.VENDA);
                     getObjeto().setSituacao(SituacaoVenda.CANCELADA.getCodigo());
                     Map<String, Object> atributos = new HashMap<>();
                     atributos.put("situacao", SituacaoVenda.CANCELADA.getCodigo());
@@ -550,7 +555,11 @@ public class VendaCabecalhoControll extends AbstractControll<VendaCabecalho> imp
                     dao.updateNativo(VendaCabecalho.class, filtros, atributos);
                     if (estoque) {
                         for (VendaDetalhe item : getObjeto().getListaVendaDetalhe()) {
-                            estoqueRepositoy.atualizaEstoqueEmpresaControle(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
+                            estoqueRepository.atualizarEstoqueMovimento(item.getProduto().getId(), venda.getEmpresa().getId(), item.getQuantidade(),
+                                    Modulo.ENTRADA.getCodigo(), venda.getId().toString(), "F", "E");
+                            estoqueRepository.atualizarEstoqueMovimento(item.getProduto().getId(), venda.getEmpresa().getId(), item.getQuantidade(),
+                                    Modulo.ENTRADA.getCodigo(), venda.getId().toString(), "V", "E");
+                            estoqueRepository.atualizaEstoqueEmpresaControleFiscal(empresa.getId(), item.getProduto().getId(), item.getQuantidade());
                         }
                     }
 
