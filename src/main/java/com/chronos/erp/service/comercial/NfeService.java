@@ -528,6 +528,7 @@ public class NfeService implements Serializable {
                 nfe.setDataHoraProcessamento(FormatValor.getInstance().formatarDataNota(retorno.getProtNFe().getInfProt().getDhRecbto()));
                 String xmlProc = XmlUtil.criaNfeProc(nfeEnv, retorno.getProtNFe());
                 nfe.setStatusNota(StatusTransmissao.AUTORIZADA.getCodigo());
+                nfe = nfeRepository.procedimentoNfeAutorizada(nfe, atualizarEstoque, Modulo.NFe);
 
                 documentoFiscalService.atualizarNumeroNfe(nfe);
                 salvaNfeXml(xmlProc, nfe);
@@ -536,25 +537,22 @@ public class NfeService implements Serializable {
                 if (venda != null) {
                     venda.setNumeroFatura(nfe.getId());
                     nfe.setVendaCabecalho(venda);
-                    modulo = Modulo.VENDA;
                 }
                 if (os != null) {
                     os.setStatus(13);
                     os.setIdnfeCabecalho(nfe.getId());
                     osRepository.atualizar(os);
-                    modulo = Modulo.OS;
+
                 }
                 if (pdv != null) {
                     pdv.setIdnfe(nfe.getId());
                     nfe.setPdv(pdv);
-                    modulo = Modulo.PDV;
                 }
 
                 if (transferencia != null) {
                     transferencia.setIdnfecabeclaho(nfe.getId());
                 }
 
-                nfe = nfeRepository.procedimentoNfeAutorizada(nfe, atualizarEstoque, modulo);
 
                 status = StatusTransmissao.AUTORIZADA;
 

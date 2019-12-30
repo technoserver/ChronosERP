@@ -37,6 +37,7 @@ public class VendaDevolucaoService implements Serializable {
             if (item.getQuantidade().compareTo(item.getQuantidadeVenda()) > 0) {
                 throw new ChronosException("Quantidade devolvida maior que a quantidade vendida");
             }
+
         }
 
         devolucao.setCreditoUtilizado(devolucao.getGeradoCredito());

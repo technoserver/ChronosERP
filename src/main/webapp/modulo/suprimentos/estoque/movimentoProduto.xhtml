@@ -62,7 +62,8 @@
             <div class="row m-t">
                 <div class="col-md-12">
                     <p:dataTable value="#{movimentoProdutoControll.movimentos}" var="row" id="produtos"
-                                 emptyMessage="Nenhuma movimentacao"
+                                 emptyMessage="Nenhuma movimentacao" sortBy="#{row.dataMovimento}"
+                                 sortOrder="descending"
                                  reflow="true">
                         <p:column headerText="produto">
                             <h:outputLabel value="#{row.empresaProduto.produto.nome}"/>

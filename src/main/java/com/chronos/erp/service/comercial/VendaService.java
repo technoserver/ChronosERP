@@ -36,7 +36,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
     @Inject
-    private EstoqueRepository estoqueRepositoy;
+    private EstoqueRepository estoqueRepository;
 
     @Inject
     private VendaRepository repository;
@@ -117,8 +117,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
                 syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, p.getProduto().getId());
             }
         });
-        estoqueRepositoy.lancaMovimentoEstoqueVerificado(venda.getEmpresa().getId(), produtos, Modulo.VENDA, venda.getId().toString(), "S");
-        estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
+        estoqueRepository.lancaMovimentoEstoqueVerificado(venda.getEmpresa().getId(), produtos, Modulo.VENDA, venda.getId().toString(), "S");
+        estoqueRepository.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
 
         if (venda.getId() == null) {
             venda = salvar(venda);
@@ -127,7 +127,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         Optional<VendaFormaPagamento> pagamentoOptional = venda.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("14")).findFirst();
 
         if (pagamentoOptional.isPresent()) {
-            finLancamentoReceberService.gerarLancamento(venda.getId(), venda.getValorTotal(), venda.getCliente(),
+            finLancamentoReceberService.gerarLancamento(venda.getId(), pagamentoOptional.get().getFormaPagamento().getValor(), venda.getCliente(),
                     pagamentoOptional.get().getFormaPagamento().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
         }
 
@@ -251,6 +251,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
         devolucao.setTotalParcial(totalParcial);
         devolucao.setValorCredito(venda.getValorTotal());
         devolucao.setIdVenda(venda.getId());
+        devolucao.setCodigoModulo(Modulo.VENDA.getCodigo());
 
         if (venda.getSituacao().equals(SituacaoVenda.Faturado.getCodigo())) {
 
@@ -352,8 +353,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
                 repository.atualizarNamedQuery("VendaCabecalho.UpdateSituacao", situacao, venda.getId());
 
-                Mensagem.addInfoMessage("Devolução gerada com sucesso");
                 auditoriaService.gerarLog(AcaoLog.DEVOLUCAO, "Devolução de venda " + venda.getId() + " numero da NF-e " + nfe.getNumero(), "VENDA");
+                Mensagem.addInfoMessage("Devolução gerada com sucesso");
 
             } else {
                 FacesContext.getCurrentInstance().validationFailed();
@@ -377,8 +378,9 @@ public class VendaService extends AbstractService<VendaCabecalho> {
                     itemDevolucao.setValor(valorPorItem);
 
                     itensDevolucao.add(itemDevolucao);
-
-                    estoqueRepositoy.atualizaEstoqueEmpresaControle(venda.getEmpresa().getId(), item.getProduto().getId(), item.getQuantidadeDevolvida());
+                    estoqueRepository.atualizarEstoqueMovimento(item.getProduto().getId(), venda.getEmpresa().getId(), item.getQuantidade(),
+                            Modulo.ENTRADA.getCodigo(), venda.getId().toString(), "V", "E");
+                    estoqueRepository.atualizaEstoqueEmpresaControle(venda.getEmpresa().getId(), item.getProduto().getId(), item.getQuantidadeDevolvida());
 
                 }
 

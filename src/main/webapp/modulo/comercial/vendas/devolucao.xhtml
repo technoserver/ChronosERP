@@ -28,7 +28,7 @@
 
                 <p:dataTable value="#{devolucaoVendaControll.dataModel}"
                              var="row" id="devolucoes" paginator="true"
-                             rowKey="#{row.id}"
+                             rowKey="#{row.id}" sortBy="#{row.id}" sortOrder="descending"
                              rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                              reflow="true" lazy="true">
 
@@ -59,7 +59,7 @@
                         </h:outputLabel>
                     </p:column>
 
-                    <p:column headerText="Crédito utilizado" styleClass="text-center">
+                    <p:column headerText="Crédito utilizado" styleClass="text-center" sortBy="#{row.creditoUtilizado}">
                         <h:outputLabel value="#{row.creditoUtilizado eq 'S' ? 'SIM':'NAO'}"/>
                     </p:column>
 

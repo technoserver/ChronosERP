@@ -24,20 +24,16 @@
     <ui:define name="telaInclusaoAlteracao">
         <div class="ibox-content">
             <div class="row">
-                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-4"
-                                nomeAtributo="#{contasReceberRelatorioControll.cliente}"
-                                tamanhoMaximo="100" label="Cliente" idComponente="cliente"/>
-                <div class="col-xs-12 col-sm-2 col-md-2">
-                    <h:outputLabel value="Situação" for="situacao"/>
-                    <h:selectOneMenu id="situacao" class="form-control"
-                                     value="#{contasReceberRelatorioControll.situacao}">
-                        <f:selectItem itemLabel="Todos" itemValue="#{null}"/>
-                        <f:selectItem itemLabel="Aberto" itemValue="01"/>
-                        <f:selectItem itemLabel="Quitado" itemValue="02"/>
-                        <f:selectItem itemLabel="Quitado Parcialmente" itemValue="03"/>
-                        <f:selectItem itemLabel="Vencido" itemValue="04"/>
-                    </h:selectOneMenu>
-                </div>
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
+                                  label="Cliente"
+                                  itemLabel="#{objeto.pessoa.nome}"
+                                  controller="#{contasReceberRelatorioControll}"
+                                  completeMethod="getListaCliente"
+                                  requerido="false"
+                                  nomeAtributo="#{contasReceberRelatorioControll.cliente}"
+                                  idComponente="cliente"/>
+
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                                 nomeAtributo="#{contasReceberRelatorioControll.numDocumento}"
@@ -51,10 +47,23 @@
                                idComponente="vencimentoAte"
                                styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
+                <div class="col-xs-12 col-sm-2 col-md-2">
+                    <h:outputLabel value="Situação" for="situacao"/>
+                    <h:selectOneMenu id="situacao" class="form-control"
+                                     value="#{contasReceberRelatorioControll.situacao}">
+                        <f:selectItem itemLabel="Todos" itemValue="#{null}"/>
+                        <f:selectItem itemLabel="Aberto" itemValue="01"/>
+                        <f:selectItem itemLabel="Quitado" itemValue="02"/>
+                        <f:selectItem itemLabel="Quitado Parcialmente" itemValue="03"/>
+                        <f:selectItem itemLabel="Vencido" itemValue="04"/>
+                    </h:selectOneMenu>
+                </div>
+
                 <div class="col-xs-12 col-sm-12 col-md-12 text-center m-t">
 
                     <p:commandLink title="Gerar relatório"
                                    value="Gerar Relatório"
+                                   target="blank"
                                    styleClass="btn btn-primary"
                                    actionListener="#{contasReceberRelatorioControll.gerarContasReceber}"
                                    ajax="false">

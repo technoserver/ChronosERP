@@ -7,8 +7,8 @@
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ERP Light"/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="ireport.zoom" value="2.0"/>
-    <property name="ireport.x" value="7"/>
-    <property name="ireport.y" value="144"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="287"/>
     <style name="teste"/>
     <style name="table">
         <box>
@@ -200,7 +200,7 @@ GROUP BY codigo, descricao;]]>
             INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
             WHERE m.id =  $P{idmovimento}
 
-            and (v.status_venda = 'E' or v.status_venda = 'F')
+            and v.status_venda in('E','F','D','DP')
 UNION
             SELECT
             concat(m.id , f.id , 3) AS id,
