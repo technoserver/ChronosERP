@@ -165,6 +165,13 @@
                                     icon="fa fa-print" ajax="false">
                             <f:param name="id" value="#{row.id}"/>
                         </p:menuitem>
+                        <p:menuitem value="Ficha de atendim."
+                                    icon="fa fa-print"
+                                    action="#{osRelatorioControll.impirmirFichaAtendimento(row.id)}"
+                                    target="_blank"
+                                    ajax="false">
+
+                        </p:menuitem>
                         <p:menuitem value="Encerrar OS"
                                     action="#{osAberturaControll.encerrar}"
                                     update=":formCentro:mensagem"
@@ -175,13 +182,13 @@
                         <p:menuitem value="Faturar - NFe"
                                     action="#{osAberturaControll.faturar('55')}"
                                     update=":formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
-                                    rendered="#{osAberturaControll.isTemAcesso('NFE') and empty row.idnfeCabecalho}"
+                                    rendered="#{osAberturaControll.isTemAcesso('NFE') and empty row.idnfeCabecalho and osAberturaControll.exibirOpcaoFaturamento}"
                         >
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
                         <p:menuitem value="Faturar - NFCe"
-                                    rendered="#{osAberturaControll.isTemAcesso('NFCE') and empty row.idnfeCabecalho}"
+                                    rendered="#{osAberturaControll.isTemAcesso('NFCE') and empty row.idnfeCabecalho  and osAberturaControll.exibirOpcaoFaturamento}"
                                     action="#{osAberturaControll.faturar('65')}"
                                     update=":formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                         >
@@ -190,7 +197,7 @@
                         </p:menuitem>
                         <p:menuitem value="Gerar Danfe"
                                     icon="fa fa-print" ajax="false"
-                                    rendered="#{(osAberturaControll.isTemAcesso('NFCE') or osAberturaControll.isTemAcesso('NFE'))  and not empty row.idnfeCabecalho}"
+                                    rendered="#{(osAberturaControll.isTemAcesso('NFCE') or osAberturaControll.isTemAcesso('NFE'))  and not empty row.idnfeCabecalho and osAberturaControll.exibirOpcaoFaturamento}"
                                     action="#{osAberturaControll.danfe}">
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>

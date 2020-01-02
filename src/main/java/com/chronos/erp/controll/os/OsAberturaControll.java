@@ -973,4 +973,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public Map<String, String> getTiposAtendimento() {
         return tiposAtendimento;
     }
+
+    public boolean isExibirOpcaoFaturamento() {
+        return empresa.buscarEnderecoPrincipal() != null && empresa.buscarEnderecoPrincipal().getUf().equals("DF");
+    }
 }

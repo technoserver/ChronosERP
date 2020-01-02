@@ -200,13 +200,22 @@
                                     icon="fa fa-print" ajax="false">
                             <f:param name="id" value="#{osAberturaControll.objeto.id}"/>
                         </p:menuitem>
+                        <p:menuitem value="Ficha de atendim."
+                                    icon="fa fa-print"
+                                    action="#{osRelatorioControll.impirmirFichaAtendimento(osAberturaControll.objeto.id)}"
+                                    target="_blank"
+                                    ajax="false">
+
+                        </p:menuitem>
                         <p:menuitem value="Encerrar" actionListener="#{osAberturaControll.encerrar}"
                                     update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     icon="ui-icon-arrowrefresh-1-w"/>
                         <p:menuitem value="Faturar - NFe"
                                     update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                    rendered="#{osAberturaControll.exibirOpcaoFaturamento}"
                                     action="#{osAberturaControll.faturar('55')}"/>
                         <p:menuitem value="Faturar - NFCe"
+                                    rendered="#{osAberturaControll.exibirOpcaoFaturamento}"
                                     update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     action="#{osAberturaControll.faturar('65')}"/>
                     </p:splitButton>

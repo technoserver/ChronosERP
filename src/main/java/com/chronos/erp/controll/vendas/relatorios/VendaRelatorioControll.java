@@ -76,10 +76,12 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
 
         status = new LinkedHashMap<>();
+        status.put("Encerrado/Faturado", "");
         status.put("Encerrada", "E");
         status.put("Faturada", "F");
         status.put("Devolvida", "DV");
         status.put("Devolvida Parcilamente", "DP");
+        status.put("Cancelado", "C");
 
 
         naoSim = new LinkedHashMap<>();
@@ -190,8 +192,20 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         }
 
         if (!StringUtils.isEmpty(statusVendas)) {
-            parametros.put("situacao", statusVendas);
+
+            switch (statusVendas) {
+                case "C":
+                    parametros.put("situacao", Arrays.asList(new String[]{"C"}));
+                    break;
+                case "D":
+                    parametros.put("situacao", Arrays.asList(new String[]{"D"}));
+                    break;
+                case "DP":
+                    parametros.put("situacao", Arrays.asList(new String[]{"DP"}));
+                    break;
+            }
         }
+
 
         String caminhoRelatorio = "/relatorios/vendas";
         String nomeRelatorio = "relacaoVendas.jasper";

@@ -42,6 +42,15 @@ public class OsRelatorioControll extends AbstractRelatorioControll implements Se
         executarRelatorio(caminhoRelatorio, nomeRelatorio, "os.pdf");
     }
 
+    public void impirmirFichaAtendimento(int id) {
+        parametros = new HashMap<>();
+        parametros.put("id_os", id);
+        String caminhoRelatorio = "/relatorios/os";
+        String nomeRelatorio = "os_ficha_atendimento.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "ficha_atendimento.pdf");
+    }
+
     public void imprimiOs2Via(int id) {
         parametros = new HashMap<>();
         parametros.put("id_os", id);
