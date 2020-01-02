@@ -5,7 +5,7 @@
               name="relacaoVendas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="2.0"/>
-    <property name="ireport.x" value="231"/>
+    <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="0"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ERP Light"/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -32,8 +32,8 @@
     <parameter name="idvendedor" class="java.lang.Integer">
         <parameterDescription><![CDATA[]]></parameterDescription>
     </parameter>
-    <parameter name="situacao" class="java.lang.String">
-        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    <parameter name="situacao" class="java.util.Collection">
+        <defaultValueExpression><![CDATA[Arrays.asList(new String[] {"E","F"})]]></defaultValueExpression>
     </parameter>
     <parameter name="dataPedidoFinal" class="java.util.Date">
         <defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
@@ -43,9 +43,6 @@
     </parameter>
     <parameter name="ordem" class="java.lang.String">
         <defaultValueExpression><![CDATA["data_venda"]]></defaultValueExpression>
-    </parameter>
-    <parameter name="status_os" class="java.lang.Integer">
-        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
     </parameter>
     <queryString>
         <![CDATA[SELECT
@@ -83,51 +80,14 @@ FROM
      INNER JOIN empresa empresa ON v.id_empresa = empresa.id
      INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
      LEFT JOIN nfe_cabecalho n ON n.id_venda_cabecalho = v.id
-WHERE empresa.id = $P{idempresa} and  empresa_endereco.principal = 'S' and (v.id_cliente =  $P{idcliente} or $P{idcliente} is null )
-and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null) and (v.situacao in($P{situacao}) or $P{situacao} is null)
- and v.data_venda BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal} and (v.id =$P{id} or $P{id} is null)
-union
-SELECT
-     os.id,
-     p.nome as cliente,
-     pv.nome as vendedor,
-     cast(os.status as text) as status,
-     (os.valor_total_servicos + os.valor_total_produtos - os.valor_total_desconto ) as valor_subtotal,
-     os.valor_total_desconto,
-     (os.valor_total_servicos + os.valor_total_produtos) as valor_total,
-     os.valor_comissao,
-     os.data_fim as data_venda,
-     n.numero,
-     empresa.razao_social AS empresa_razao_social,
-     empresa.nome_fantasia AS empresa_nome_fantasia,
-     empresa.cnpj AS empresa_cnpj,
-     empresa.inscricao_estadual AS empresa_inscricao_estadual,
-     empresa.imagem_logotipo AS empresa_imagem_logotipo,
-     empresa_endereco.logradouro AS empresa_endereco_logradouro,
-     empresa_endereco.numero AS empresa_endereco_numero,
-     empresa_endereco.complemento AS empresa_endereco_complemento,
-     empresa_endereco.bairro AS empresa_endereco_bairro,
-     empresa_endereco.cidade AS empresa_endereco_cidade,
-     empresa_endereco.cep AS empresa_endereco_cep,
-     empresa_endereco.fone AS empresa_endereco_fone,
-     empresa_endereco.uf AS empresa_endereco_uf,
-     empresa.email AS empresa_email
-FROM
-     os_abertura os
-     INNER JOIN cliente c ON os.id_cliente = c.id
-     INNER JOIN pessoa p ON c.id_pessoa = p.id
-     LEFT JOIN vendedor vd ON vd.id = os.id_vendedor
-     INNER JOIN colaborador cl ON vd.id_colaborador = cl.id
-     INNER JOIN pessoa pv ON cl.id_pessoa = pv.id
-     INNER JOIN empresa empresa ON os.id_empresa = empresa.id
-     INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
-     LEFT JOIN nfe_cabecalho n ON n.id_venda_cabecalho = os.id
 WHERE empresa.id = $P{idempresa} and  empresa_endereco.principal = 'S'
-and (os.id_cliente =  $P{idcliente} or $P{idcliente} is null )
-and (os.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
-and (os.status = $P{status_os} or $P{status_os} is null)
-and os.data_fim BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal} and (os.id =$P{id} or $P{id} is null)
+and (v.id_cliente =  $P{idcliente} or $P{idcliente} is null )
+and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
+and ($X{IN, situacao, situacao})
+and v.data_venda BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal} and (v.id =$P{id} or $P{id} is null)
+
 union
+
 SELECT
      v.id,
      COALESCE(v.nome_cliente, 'Cliente não identificado') AS cliente,
@@ -163,7 +123,7 @@ INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id
 WHERE empresa.id = $P{idempresa}  and  empresa_endereco.principal = 'S'
 and (v.id_cliente  = $P{idcliente}  or $P{idcliente} is null )
 and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
-and (v.status_venda in($P{situacao}) or $P{situacao} is null)
+and ($X{IN, v.status_venda, situacao})
 and v.data_hora_venda::date BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal}
 and (v.id =$P{id} or $P{id} is null)
 order by $P!{ordem}]]>
@@ -326,7 +286,7 @@ order by $P!{ordem}]]>
                 <reportElement x="0" y="100" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
             </line>
             <staticText>
-                <reportElement style="tituloDetail" x="43" y="101" width="171" height="12"
+                <reportElement style="tituloDetail" x="43" y="101" width="165" height="12"
                                uuid="abced5c5-b994-49b4-9a17-3277c15ed63c"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
@@ -334,7 +294,7 @@ order by $P!{ordem}]]>
                 <text><![CDATA[Cliente]]></text>
             </staticText>
             <staticText>
-                <reportElement style="tituloDetail" x="216" y="101" width="109" height="12"
+                <reportElement style="tituloDetail" x="209" y="101" width="109" height="12"
                                uuid="a2c0b2fa-d7d4-46f5-bc87-3f3660977e23"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
@@ -382,7 +342,7 @@ order by $P!{ordem}]]>
                 <text><![CDATA[Desconto]]></text>
             </staticText>
             <staticText>
-                <reportElement style="tituloDetail" x="325" y="101" width="38" height="12"
+                <reportElement style="tituloDetail" x="318" y="101" width="45" height="12"
                                uuid="bd02ea33-f691-48b8-8e8f-07ae046a8a70"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
@@ -394,7 +354,7 @@ order by $P!{ordem}]]>
     <detail>
         <band height="12" splitType="Stretch">
             <textField>
-                <reportElement style="dadosDetail" x="43" y="0" width="171" height="12"
+                <reportElement style="dadosDetail" x="43" y="0" width="165" height="12"
                                uuid="98d4e1a1-5a62-48bb-b930-8b3969c0b4ac"/>
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{cliente}]]></textFieldExpression>
@@ -406,7 +366,7 @@ order by $P!{ordem}]]>
                 <textFieldExpression><![CDATA[new DecimalFormat("000000").format($F{id})]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="dadosDetail" x="216" y="0" width="109" height="12"
+                <reportElement style="dadosDetail" x="209" y="0" width="109" height="12"
                                uuid="794e9bd1-60cc-4531-aeff-ae75205e18fa"/>
                 <textElement verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{vendedor}]]></textFieldExpression>
@@ -417,6 +377,7 @@ order by $P!{ordem}]]>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{situacao}.equals("F")?"Faturada":
 $F{situacao}.equals("E")?"Encerrada":
+$F{situacao}.equals("C")?"Cancelada":
 $F{situacao}.equals("DP")?"Devolução Parcial":
 $F{situacao}.equals("DV")?"Devolução":
 $F{situacao}.equals("N")?"Nota Fiscal":""]]></textFieldExpression>
@@ -440,7 +401,7 @@ $F{situacao}.equals("N")?"Nota Fiscal":""]]></textFieldExpression>
                 <textFieldExpression><![CDATA[$F{valor_subtotal}]]></textFieldExpression>
             </textField>
             <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-                <reportElement style="dadosDetail" x="325" y="0" width="38" height="12"
+                <reportElement style="dadosDetail" x="318" y="0" width="45" height="12"
                                uuid="5fdfd4a2-9fea-4a50-9ad0-235d3e5fa0bc"/>
                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$F{data_venda}]]></textFieldExpression>
