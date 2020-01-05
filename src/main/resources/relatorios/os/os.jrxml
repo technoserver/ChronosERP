@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="2.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="316"/>
+    <property name="ireport.y" value="374"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <style name="table">
         <box>
@@ -596,22 +596,22 @@ $F{status}.equals(12) ? "ENCERRADO" :
 $F{status}.equals(13) ? "FATURADO" : ""]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="0" y="66" width="278" height="8" uuid="d93ebe80-c125-4fd9-853a-6e2f7564c959"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement x="0" y="66" width="278" height="10" uuid="d93ebe80-c125-4fd9-853a-6e2f7564c959"/>
+                <textElement textAlignment="Center" verticalAlignment="Bottom">
                     <font fontName="Courier New" size="7" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Solicitante]]></text>
             </staticText>
             <staticText>
                 <reportElement x="0" y="59" width="278" height="8" uuid="32823659-356e-48c7-966c-6e383b0f82d0"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <textElement textAlignment="Center" verticalAlignment="Top">
                     <font fontName="Courier New" size="7" isBold="true"/>
                 </textElement>
                 <text><![CDATA[___________________________________]]></text>
             </staticText>
             <staticText>
-                <reportElement x="278" y="66" width="277" height="8" uuid="9c3fd58b-2680-400b-bb1c-55093e1f4d69"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement x="278" y="66" width="277" height="10" uuid="9c3fd58b-2680-400b-bb1c-55093e1f4d69"/>
+                <textElement textAlignment="Center" verticalAlignment="Bottom">
                     <font fontName="Courier New" size="7" isBold="true"/>
                 </textElement>
                 <text><![CDATA[tecnico]]></text>

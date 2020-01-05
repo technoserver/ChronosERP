@@ -27,15 +27,15 @@
         </li>
 
 
-        <li class="${fn:contains(view.viewId,'modulo/financeiro/relatorios/')?'active':''}">
+        <li class="${fn:contains(view.viewId,'modulo/relatorios/financeiro')?'active':''}">
             <a href="#">Financeiro
                 <span class="fa arrow"></span>
             </a>
             <ul class="nav nav-third-level">
-                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasPagar"
+                <erp:subMenu caminho="/modulo/relatorios/financeiro/relacaoContasPagar"
                              label="Contas a pagar"
                              funcao="relacaoContasPagar"/>
-                <erp:subMenu caminho="/modulo/financeiro/relatorios/relacaoContasReceber"
+                <erp:subMenu caminho="/modulo/relatorios/financeiro/relacaoContasReceber"
                              label="Contas a receber"
                              funcao="relacaoContasReceber"/>
 

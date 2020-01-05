@@ -66,7 +66,7 @@ public class NfeRepository extends AbstractRepository implements Serializable {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             if (nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")) {
 
-                atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), nfeDetalhe.getNfeCabecalho().getNumero(), "V", "S");
+                atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), nfeDetalhe.getNfeCabecalho().getId().toString(), "F", "S");
                 atualizaEstoqueEmpresa(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
 
             }
@@ -77,7 +77,7 @@ public class NfeRepository extends AbstractRepository implements Serializable {
     public void atualizaEstoqueVerificado(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe, Modulo modulo) throws Exception {
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             if (nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")) {
-                atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), nfeDetalhe.getNfeCabecalho().getNumero(), "V", "S");
+                atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), nfeDetalhe.getNfeCabecalho().getId().toString(), "V", "S");
                 atualizaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
 
             }
@@ -87,13 +87,12 @@ public class NfeRepository extends AbstractRepository implements Serializable {
 
     public void atualizaEstoqueEmpresaEstoqueVerificado(Integer idEmpresa, List<NfeDetalhe> listaNfeDetalhe, Modulo modulo) throws Exception {
 
-        String numero = listaNfeDetalhe.get(0).getNfeCabecalho().getNumero();
+        String numero = listaNfeDetalhe.get(0).getNfeCabecalho().getId().toString();
         for (NfeDetalhe nfeDetalhe : listaNfeDetalhe) {
             if (nfeDetalhe.getProduto().getServico().equalsIgnoreCase("N")) {
                 atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), numero, "V", "S");
                 atualizarEstoqueMovimento(nfeDetalhe.getProduto().getId(), idEmpresa, nfeDetalhe.getQuantidadeComercial(), modulo.getCodigo(), numero, "F", "S");
                 atualizaEstoqueEmpresaEstoqueVerificado(idEmpresa, nfeDetalhe.getProduto().getId(), nfeDetalhe.getQuantidadeComercial().negate());
-
             }
 
         }
