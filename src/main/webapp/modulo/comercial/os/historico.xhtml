@@ -14,7 +14,7 @@
     </ui:define>
 
     <ui:define name="tela">
-        #{osHistoricoEquipamentoControll.titulo}
+        Historico
     </ui:define>
     <ui:define name="controle">
         Historico de OS
@@ -23,67 +23,87 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{osHistoricoEquipamentoControll}"
-                       idDataTable="dataTableHistorico"
-                       nomeFuncao="HISTORICO"
-                       id="telaGrid"
-                       somenteConsulta="true">
+        <p:outputPanel id="outputPanelGrid">
+            <p:outputPanel rendered="#{osHistoricoEquipamentoControll.telaGrid}">
 
-            <p:column headerText="Equipamento">
-                <h:outputLabel value="#{row.osEquipamento.nome}"/>
-            </p:column>
-            <p:column headerText="Numero Serie">
-                <h:outputLabel value="#{row.numeroSerie}"/>
-            </p:column>
+                <div class="ibox-content">
+                    <div class="row">
+                        <erp:campoTexto idComponente="Cliente"
+                                        nomeAtributo="#{osHistoricoEquipamentoControll.cliente}"
+                                        styleClass="col-xs-12 col-sm-8 col-md-8"
+                                        tamanhoMaximo="60" label="Nome"/>
+
+                        <erp:campoTexto idComponente="Cliente"
+                                        nomeAtributo="#{osHistoricoEquipamentoControll.numeroSerie}"
+                                        styleClass="col-xs-12 col-sm-4 col-md-4"
+                                        tamanhoMaximo="60" label="Número de serie"/>
+
+                        <erp:campoData nomeAtributo="#{osHistoricoEquipamentoControll.dataInicial}"
+                                       label="Data entrada inicial"
+                                       idComponente="dataFinal"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                        <erp:campoData nomeAtributo="#{osHistoricoEquipamentoControll.dataInicial}"
+                                       label="Data entrada final"
+                                       idComponente="dataInicial"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                        <div class="col-md-2" style="margin-top: 20px">
+
+                            <p:commandButton title="Pesquisar"
+                                             value="Pesquisar"
+                                             actionListener="#{osHistoricoEquipamentoControll.pesquisar}"
+                                             update="equipamentos"/>
 
 
-        </erp:gridDados>
+                        </div>
+                    </div>
+                    <div class="row m-t">
+                        <p:dataTable id="equipamentos" var="row"
+                                     value="#{osHistoricoEquipamentoControll.lista}"
+                                     reflow="true">
+                            <p:column headerText="Entrada em">
+                                <h:outputText value="#{row.osAbertura.dataInicio}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Equipamento">
+                                <h:outputText value="#{row.osEquipamento.nome}"/>
+                            </p:column>
+                            <p:column headerText="Numero Serie">
+                                <h:outputText value="#{row.numeroSerie}"/>
+                            </p:column>
+                            <p:column headerText="Ações" styleClass="text-center">
+                                <p:menuButton style="height: 26px;">
+                                    <p:menuitem value="Imprimir OS 1 Via"
+                                                icon="fa fa-print"
+                                                action="#{osRelatorioControll.imprimirOS(row.osAbertura.id)}"
+                                                target="_blank"
+                                                ajax="false">
+
+                                    </p:menuitem>
+                                    <p:menuitem value="Imprimir OS 2 Via"
+                                                target="blank"
+                                                outcome="/modulo/relatorios/comercial/os/os"
+                                                icon="fa fa-print" ajax="false">
+                                        <f:param name="id" value="#{row.osAbertura.id}"/>
+                                    </p:menuitem>
+                                </p:menuButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+
+                </div>
+
+
+            </p:outputPanel>
+        </p:outputPanel>
+
     </ui:define>
 
 
     <ui:define name="telaInclusaoAlteracao">
-        <erp:telaInclusaoAlteracao controller="#{osHistoricoEquipamentoControll}"
-                                   nomeFuncao="HISTORICO"
-                                   id="telaDetalhe"
-        >
-            <div class="row">
 
-
-                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-4"
-                                idComponente="osAberturaEquipamentoNome" label="Equipamento"
-                                tamanhoMaximo="1000"
-                                somenteLeitura="true"
-                                nomeAtributo="#{osHistoricoEquipamentoControll.objeto.osEquipamento.nome}"/>
-                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-4"
-                                idComponente="osAberturaEquipamentoNumeroSerie"
-                                label="Numero Serie"
-                                tamanhoMaximo="100"
-                                somenteLeitura="true"
-                                nomeAtributo="#{osHistoricoEquipamentoControll.objeto.numeroSerie}"/>
-            </div>
-            <div class="row m-t">
-                <p:dataTable id="dataTableOsProdutoServico" var="obj"
-                             value="#{osHistoricoEquipamentoControll.listaOsProdutoServico}"
-                             paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                             paginatorPosition="bottom"
-                             resizableColumns="true" reflow="true">
-
-                    <p:column headerText="Produto/Servico">
-                        <h:outputLabel value="#{obj.produto.nome}"/>
-                    </p:column>
-                    <p:column headerText="Complemento">
-                        <h:outputLabel value="#{obj.complemento}"/>
-                    </p:column>
-                    <p:column headerText="Quantidade">
-                        <h:outputLabel value="#{obj.quantidade}">
-                            <f:convertNumber pattern="0.000"/>
-                        </h:outputLabel>
-                    </p:column>
-                </p:dataTable>
-
-            </div>
-
-        </erp:telaInclusaoAlteracao>
     </ui:define>
 
 </ui:composition>

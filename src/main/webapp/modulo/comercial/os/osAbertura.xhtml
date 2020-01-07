@@ -496,11 +496,6 @@
                                           idComponente="osEvolucaoHoraRegistro" label="Hora Registro"
                                           nomeAtributo="#{osAberturaControll.osEvolucao.horaRegistro}"
                                           mascara="99:99:99"/>
-                        <erp:campoSelect styleClass="col-xs-12 col-sm-4 col-md-4"
-                                         idComponente="osEvolucaoEnviarEmail" label="Enviar Email"
-                                         rendered="#{osAberturaControll.emailValido}"
-                                         nomeAtributo="#{osAberturaControll.osEvolucao.enviarEmail}"
-                                         itens="#{osAberturaControll.simNao}"/>
                     </div>
                     <div class="row">
                         <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
@@ -519,7 +514,7 @@
                                              id="btnSalvarEvolucao">
                                 <p:ajax process="@form"
                                         oncomplete="if (!args.validationFailed) {PF('dialogOsEvolucao').hide();}"
-                                        update=":formOutrasTelas3:panelOsEvolucao,:formCentro:growl"/>
+                                        update=":formOutrasTelas3:panelOsEvolucao,:formCentro:growl,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsEvolucao"/>
                             </h:commandButton>
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6 text-center">

@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -34,6 +35,14 @@ public class OsAberturaEquipamento implements Serializable {
     private OsEquipamento osEquipamento;
 
     public OsAberturaEquipamento() {
+    }
+
+    public OsAberturaEquipamento(Integer id, String numeroSerie, Integer tipoCobertura, String equipamento, Integer idos, Date dataInicio) {
+        this.id = id;
+        this.numeroSerie = numeroSerie;
+        this.tipoCobertura = tipoCobertura;
+        this.osEquipamento = new OsEquipamento(0, equipamento);
+        this.osAbertura = new OsAbertura(idos, dataInicio);
     }
 
     public Integer getId() {

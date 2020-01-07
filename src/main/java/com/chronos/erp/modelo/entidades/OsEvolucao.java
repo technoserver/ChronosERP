@@ -23,6 +23,8 @@ public class OsEvolucao implements Serializable {
     private Date dataRegistro;
     @Column(name = "HORA_REGISTRO")
     private String horaRegistro;
+    private String modelo;
+    private String responsavel;
     @Column(name = "OBSERVACAO")
     private String observacao;
     @Column(name = "ENVIAR_EMAIL")
@@ -33,6 +35,8 @@ public class OsEvolucao implements Serializable {
     private OsAbertura osAbertura;
 
     public OsEvolucao() {
+        this.dataRegistro = new Date();
+        this.enviarEmail = "N";
     }
 
     public Integer getId() {
@@ -73,6 +77,22 @@ public class OsEvolucao implements Serializable {
 
     public void setEnviarEmail(String enviarEmail) {
         this.enviarEmail = enviarEmail;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public String getResponsavel() {
+        return responsavel;
+    }
+
+    public void setResponsavel(String responsavel) {
+        this.responsavel = responsavel;
     }
 
     public OsAbertura getOsAbertura() {
