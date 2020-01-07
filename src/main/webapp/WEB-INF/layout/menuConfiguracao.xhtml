@@ -32,6 +32,11 @@
                          exibir="#{seguranca.isTemAcesso('NFCE_CONFIGURACAO')}"
                          funcao="pdvConfiguracao"/>
 
+            <erp:subMenu caminho="/modulo/configuracoes/osConfiguracao"
+                         label="OS"
+                         exibir="#{seguranca.isTemAcesso('OS_CONFIGURACAO')}"
+                         funcao="osConfiguracao"/>
+
             <erp:subMenu caminho="/modulo/configuracoes/mdfeConfiguracao"
                          label="MDF-e"
                          funcao="mdfeConfiguracao"/>

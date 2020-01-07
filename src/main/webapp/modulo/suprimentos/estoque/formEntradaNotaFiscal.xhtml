@@ -202,29 +202,29 @@
             >
 
 
-                <p:column headerText="Cód." width="60">
-                    <h:outputLabel value="#{obj.produto == null ? 0 : obj.produto.id}" />
+                <p:column headerText="Código" width="105">
+                    <h:outputText value="#{obj.produto == null ? 0 : obj.produto.id}"/>
                 </p:column>
                 <p:column headerText="Produto">
-                    <h:outputLabel value="#{obj.nomeProduto}" />
+                    <h:outputText value="#{obj.nomeProduto}"/>
                 </p:column>
                 <p:column headerText="Und" width="65" styleClass="text-center">
-                    <h:outputLabel value="#{obj.unidadeComercial}" />
+                    <h:outputText value="#{obj.unidadeComercial}"/>
                 </p:column>
                 <p:column headerText="Qtde" width="75" styleClass="text-center">
-                    <h:outputLabel value="#{obj.quantidadeComercial}">
-                        <f:convertNumber pattern="#,###,##0.000" />
-                    </h:outputLabel>
+                    <h:outputText value="#{obj.quantidadeComercial}">
+                        <f:convertNumber pattern="#,###,##0.000"/>
+                    </h:outputText>
                 </p:column>
                 <p:column headerText="Valor" width="100" style="text-align: right">
-                    <h:outputLabel value="#{obj.valorUnitarioComercial}">
-                        <f:convertNumber pattern="#,###,##0.00" />
-                    </h:outputLabel>
+                    <h:outputText value="#{obj.valorUnitarioComercial}">
+                        <f:convertNumber pattern="#,###,##0.00"/>
+                    </h:outputText>
                 </p:column>
                 <p:column headerText="Total" width="100" style="text-align: right">
-                    <h:outputLabel value="#{obj.valorTotal}">
-                        <f:convertNumber pattern="#,###,##0.00" />
-                    </h:outputLabel>
+                    <h:outputText value="#{obj.valorTotal}">
+                        <f:convertNumber pattern="#,###,##0.00"/>
+                    </h:outputText>
                 </p:column>
                 <p:column headerText="Ações" width="120" styleClass="text-center">
                     <p:commandLink process="dataTableNfeDetalhe" title="Alterar" style="margin-right: 5px"

@@ -55,6 +55,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Inject
     private Repository<OrcamentoCabecalho> orcamentoRepository;
     @Inject
+    private Repository<OsConfiguracao> osConfiguracaoRepository;
+    @Inject
     private OsService osService;
     @Inject
     private OsProdutoServicoService produtoServicoService;
@@ -62,6 +64,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private ProdutoService produtoService;
     @Inject
     private MovimentoService movimentoService;
+
 
 
     private OsAberturaEquipamento osAberturaEquipamento;
@@ -213,6 +216,14 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 getObjeto().setDataInicio(new Date());
                 getObjeto().setHoraInicio(new SimpleDateFormat("HH:mm:ss").format(new Date()));
 
+                OsConfiguracao configuracao = osConfiguracaoRepository.get(OsConfiguracao.class, "empresa.id", empresa.getId());
+
+                if (configuracao != null) {
+                    getObjeto().setObservacaoAbertura(configuracao.getObservacaoPadrao());
+                    int diasUteis = configuracao.getQtdDiasUteisParaEntrega() == null ? 0 : configuracao.getQtdDiasUteisParaEntrega();
+                    Date date = Biblioteca.addDiasUteis(new Date(), diasUteis);
+                    getObjeto().setDataPrevisao(date);
+                }
 
                 getObjeto().setListaOsAberturaEquipamento(new HashSet<>());
                 getObjeto().setListaOsProdutoServico(new ArrayList<>());
@@ -510,6 +521,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public void incluirOsEvolucao() {
         osEvolucao = new OsEvolucao();
         osEvolucao.setOsAbertura(getObjeto());
+        osEvolucao.setResponsavel(usuario.getNome());
     }
 
     public void alterarOsEvolucao() {
