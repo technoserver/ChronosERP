@@ -75,6 +75,10 @@
 
 
                     <p:rowExpansion>
+                        <div style="display: flex" class="m-b">
+                            <span><b>Cliente :</b></span>
+                            <span style="margin-left: 5px">#{devolucaoVendaControll.cliente}</span>
+                        </div>
                         <h:dataTable var="item" value="#{devolucaoVendaControll.itens}"
                                      styleClass="table table-bordered table-striped table-condensed">
                             <h:column>

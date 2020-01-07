@@ -1,8 +1,11 @@
 package com.chronos.erp.controll.vendas;
 
 import com.chronos.erp.controll.ERPLazyDataModel;
+import com.chronos.erp.modelo.entidades.PdvVendaCabecalho;
+import com.chronos.erp.modelo.entidades.VendaCabecalho;
 import com.chronos.erp.modelo.entidades.VendaDevolucao;
 import com.chronos.erp.modelo.entidades.VendaDevolucaoItem;
+import com.chronos.erp.modelo.enuns.Modulo;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.comercial.VendaDevolucaoService;
@@ -33,6 +36,12 @@ public class DevolucaoVendaControll implements Serializable {
 
     @Inject
     private Repository<VendaDevolucaoItem> itemRepository;
+    @Inject
+    private Repository<VendaCabecalho> vendaCabecalhoRepository;
+    @Inject
+    private Repository<PdvVendaCabecalho> pdvVendaCabecalhoRepository;
+
+    private String cliente;
 
     public ERPLazyDataModel<VendaDevolucao> getDataModel() {
 
@@ -50,6 +59,17 @@ public class DevolucaoVendaControll implements Serializable {
         if (event.getVisibility() == Visibility.VISIBLE) {
             VendaDevolucao devolucao = (VendaDevolucao) event.getData();
 
+            if (devolucao.getCodigoModulo().equals(Modulo.VENDA.getCodigo())) {
+                VendaCabecalho venda = vendaCabecalhoRepository.get(devolucao.getIdVenda(), VendaCabecalho.class);
+                if (venda != null) {
+                    cliente = venda.getCliente().getPessoa().getNome();
+                }
+            } else if (devolucao.getCodigoModulo().equals(Modulo.PDV.getCodigo())) {
+                PdvVendaCabecalho venda = pdvVendaCabecalhoRepository.get(devolucao.getIdVenda(), PdvVendaCabecalho.class);
+                if (venda != null) {
+                    cliente = venda.getNomeCliente();
+                }
+            }
 
             itens = itemRepository.getEntitys(VendaDevolucaoItem.class, "vendaDevolucao.id", devolucao.getId());
         }
@@ -70,5 +90,9 @@ public class DevolucaoVendaControll implements Serializable {
 
     public List<VendaDevolucaoItem> getItens() {
         return itens;
+    }
+
+    public String getCliente() {
+        return cliente;
     }
 }
