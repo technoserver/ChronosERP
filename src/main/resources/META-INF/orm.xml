@@ -195,14 +195,15 @@
             r.data_recebimento AS data_hora,
             ('Recebimento n°' || r.id) || ' de '|| ps.nome AS descricao,
             r.valor_recebido,
-            '01' AS codigo_forma_pagamento,
-            'Dinheiro' AS forma_pagamento,
+            tr.tipo AS codigo_forma_pagamento,
+            tr.descricao AS forma_pagamento,
             'E' AS tipo,
             'RECEBIMENTO' AS origem,
             '' AS observacao
             from pdv_movimento m
             inner join pdv_operador o ON o.id = m.id_pdv_operador
             inner join fin_parcela_recebimento r on r.id_pdv_movimento = m.id
+            inner join fin_tipo_recebimento tr on tr.id = r.id_fin_tipo_recebimento
             inner join fin_parcela_receber p on p.id = r.id_fin_parcela_receber
             inner join fin_lancamento_receber l on l.id = p.id_fin_lancamento_receber
             inner join cliente c on c.id = l.id_cliente

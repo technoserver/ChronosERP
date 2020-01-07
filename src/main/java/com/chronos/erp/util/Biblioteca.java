@@ -530,6 +530,40 @@ public class Biblioteca {
         return c.getTime();
     }
 
+    public static Date addDiasUteis(Date dataInicial, int numeroDias) {
+
+        int workingDays = 0;
+        int totalDays = numeroDias;
+
+        Calendar calendar = new GregorianCalendar();
+
+        //Setando o calendar com a Data Inicial
+        calendar.setTime(dataInicial);
+
+        for (int i = 0; i <= totalDays; i++) {
+
+            if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+                workingDays++;
+            }
+            calendar.add(Calendar.DATE, 1);
+        }
+        calendar.add(Calendar.DATE, workingDays);
+
+        return calendar.getTime();
+    }
+
+    public static int deductDates(Date initialDate, Date finalDate) {
+
+        if (initialDate == null || finalDate == null) {
+            return 0;
+        }
+
+        int days = (int) ((finalDate.getTime() - initialDate.getTime()) / (24 * 60 * 60 * 1000));
+
+
+        return (days > 0 ? days : 0);
+    }
+
     /**
      * Retorna o periodo imediatamente anterior ao informado(mm/aaaa).
      *

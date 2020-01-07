@@ -3,6 +3,7 @@ package com.chronos.erp.modelo.entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 
 @Entity
@@ -21,6 +22,11 @@ public class OsEquipamento implements Serializable {
     private String descricao;
 
     public OsEquipamento() {
+    }
+
+    public OsEquipamento(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
     }
 
     public Integer getId() {
@@ -47,9 +53,17 @@ public class OsEquipamento implements Serializable {
         this.descricao = descricao;
     }
 
+
     @Override
-    public String toString() {
-        return "com.t2tierp.model.bean.ordemservico.OsEquipamento[id=" + id + "]";
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OsEquipamento that = (OsEquipamento) o;
+        return Objects.equals(id, that.id);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -14,6 +14,7 @@ import com.chronos.erp.util.jsf.Mensagem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,6 +44,7 @@ public class UsuarioConttroll extends AbstractControll<Usuario> implements Seria
 
     private List<EmpresaPessoa> listEmpresaPessoa;
 
+    @Size(min = 6, message = "minimo de 6 caracteres")
     private String senha;
 
     private EmpresaPessoa empresaPessoa;

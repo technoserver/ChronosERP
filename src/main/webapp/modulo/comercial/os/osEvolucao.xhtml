@@ -38,9 +38,8 @@
         <p:column headerText="Observacao">
             <h:outputLabel value="#{obj.observacao}"/>
         </p:column>
-        <p:column headerText="Enviar Email">
-            <h:outputLabel
-                    value="#{osAberturaControll.keyFromValue(osAberturaControll.simNao, obj.enviarEmail)}"/>
+        <p:column headerText="Reponsavel">
+            <h:outputLabel value="#{obj.responsavel}"/>
         </p:column>
         <p:column headerText="Ações" width="150" styleClass="text-center">
             <p:commandLink process="dataTableOsEvolucao" title="Alterar" style="margin-right: 4px"
