@@ -32,6 +32,18 @@
         <erp:formularioGrid controller="#{osAberturaControll}" id="telaGrid">
 
             <div class="row m-b">
+                <div class="col-sm-12">
+                    <p:commandButton value="Nova OS"
+                                     action="#{osAberturaControll.doCreate}"
+                                     rocess="@form"
+                                     update="formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,:formCentro:mensagem"
+
+                    />
+
+                </div>
+            </div>
+
+            <div class="row m-b">
 
 
                 <erp:campoTexto nomeAtributo="#{osAberturaControll.cliente}"
@@ -354,7 +366,7 @@
                             <p:commandButton value="Salvar"
                                              action="#{osAberturaControll.salvarOsAberturaEquipamento}"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOsAberturaEquipamento').hide()}"
-                                             update=":formOutrasTelas:panelOsAberturaEquipamento,:formCentro:growl,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                             update=":formOutrasTelas:panelOsAberturaEquipamento,:formCentro:growl,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsEvolucao"
                                              process="@form"
                                              id="btnSalvaEquipamento">
 

@@ -14,6 +14,7 @@ public class ClienteResumDTO {
     private String uf;
     private String cep;
     private String fone;
+    private String email;
 
 
     public String getNome() {
@@ -110,5 +111,13 @@ public class ClienteResumDTO {
 
     public void setMunicipioIbge(Integer municipioIbge) {
         this.municipioIbge = municipioIbge;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

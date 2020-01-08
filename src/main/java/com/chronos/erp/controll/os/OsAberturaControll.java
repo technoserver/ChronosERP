@@ -9,6 +9,7 @@ import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.cadastros.ProdutoService;
 import com.chronos.erp.service.comercial.OsProdutoServicoService;
 import com.chronos.erp.service.comercial.OsService;
+import com.chronos.erp.service.comercial.VendedorService;
 import com.chronos.erp.service.financeiro.MovimentoService;
 import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jsf.FacesUtil;
@@ -64,7 +65,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private ProdutoService produtoService;
     @Inject
     private MovimentoService movimentoService;
-
+    @Inject
+    private VendedorService vendedorService;
 
 
     private OsAberturaEquipamento osAberturaEquipamento;
@@ -235,6 +237,13 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 if (parametro.getOsGerarMovimentoCaixa().equals("S")) {
                     getObjeto().setMovimento(movimento);
                 }
+
+                Vendedor vendedor = vendedorService.instaciarVendedor(usuario.getIdcolaborador());
+                if (vendedor != null) {
+                    vendedor.setNome(vendedor.getColaborador().getPessoa().getNome());
+                    getObjeto().setVendedor(vendedor);
+                }
+
 
                 temProduto = false;
             }

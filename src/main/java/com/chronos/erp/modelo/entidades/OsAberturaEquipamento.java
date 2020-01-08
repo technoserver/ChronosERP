@@ -86,25 +86,17 @@ public class OsAberturaEquipamento implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.id);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OsAberturaEquipamento that = (OsAberturaEquipamento) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(numeroSerie, that.numeroSerie);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final OsAberturaEquipamento other = (OsAberturaEquipamento) obj;
-        return Objects.equals(this.id, other.id);
+    public int hashCode() {
+        return Objects.hash(id, numeroSerie);
     }
 
     @Override
