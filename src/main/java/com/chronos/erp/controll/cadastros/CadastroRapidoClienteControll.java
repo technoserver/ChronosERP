@@ -70,6 +70,7 @@ public class CadastroRapidoClienteControll implements Serializable {
         pessoa.setColaborador("N");
         pessoa.setTransportadora("N");
         pessoa.setFornecedor("N");
+        pessoa.setEmail(cliente.getEmail());
 
 
         if (cliente.getTipo().equals("F")) {
@@ -100,6 +101,7 @@ public class CadastroRapidoClienteControll implements Serializable {
         end.setLogradouro(cliente.getLogradouro());
         end.setNumero(cliente.getNumero());
         end.setFone(cliente.getFone());
+
 
         pessoa.getListaPessoaEndereco().add(end);
 

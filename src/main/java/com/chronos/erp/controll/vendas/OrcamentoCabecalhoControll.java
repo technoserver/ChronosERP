@@ -224,6 +224,20 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
         }
     }
 
+    @Override
+    public void remover() {
+        try {
+            service.remover(getObjetoSelecionado());
+            Mensagem.addInfoMessage("Registro removido com sucesso");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao tenta remover", ex);
+            }
+
+        }
+    }
 
     public void gerarPedido() {
         OrcamentoCabecalho orcamento = isTelaGrid() ? dataModel.getRowData(getObjetoSelecionado().getId().toString()) : getObjeto();
