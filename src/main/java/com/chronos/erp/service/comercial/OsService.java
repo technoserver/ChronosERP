@@ -233,6 +233,10 @@ public class OsService extends AbstractService<OsAbertura> {
     @Transactional
     public void encerrar(OsAbertura os) throws ChronosException {
 
+        if (os.getTecnico() == null) {
+            throw new ChronosException("Técnico não definido");
+        }
+
 
         if (!os.getListaOsProdutoServico().isEmpty()) {
 
