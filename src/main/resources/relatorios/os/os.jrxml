@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="2.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="374"/>
+    <property name="ireport.y" value="373"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <style name="table">
         <box>
@@ -85,9 +85,9 @@ FROM
      INNER JOIN cliente cliente on os.id_cliente = cliente.id
      INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id
      INNER JOIN pessoa_endereco pessoa_endereco ON pessoa.id = pessoa_endereco.id_pessoa
-     INNER JOIN tecnico t on t.id = os.id_tecnico
-     INNER JOIN colaborador colaborador on colaborador.id = t.id_colaborador
-     INNER JOIN pessoa pessoa_colaborador on pessoa_colaborador.id = colaborador.id_pessoa
+     LEFT JOIN tecnico t on t.id = os.id_tecnico
+     LEFT JOIN colaborador colaborador on colaborador.id = t.id_colaborador
+     LEFT JOIN pessoa pessoa_colaborador on pessoa_colaborador.id = colaborador.id_pessoa
      LEFT JOIN vendedor v on v.id = os.id_vendedor
      LEFT JOIN colaborador cv on cv.id = v.id_colaborador
      LEFT JOIN pessoa pv on pv.id = cv.id_pessoa

@@ -269,7 +269,11 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             } else {
                 super.doEdit();
                 OsAbertura os = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
-                os.getTecnico().setNome(os.getTecnico().getColaborador().getPessoa().getNome());
+
+                if (os.getTecnico() != null) {
+                    os.getTecnico().setNome(os.getTecnico().getColaborador().getPessoa().getNome());
+                }
+
                 if (os.getVendedor() != null) {
                     os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
                 }
@@ -357,6 +361,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public void faturar(String codigoModelo) {
 
         try {
+
 
             OsAbertura os = isTelaGrid() ? dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class) : getObjeto();
 

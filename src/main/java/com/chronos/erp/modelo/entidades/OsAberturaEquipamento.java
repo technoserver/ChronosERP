@@ -24,6 +24,7 @@ public class OsAberturaEquipamento implements Serializable {
     @NotBlank(message = "Número de serie origatório")
     @Column(name = "NUMERO_SERIE")
     private String numeroSerie;
+    private String modelo;
     @Column(name = "TIPO_COBERTURA")
     private Integer tipoCobertura;
     @JoinColumn(name = "ID_OS_ABERTURA", referencedColumnName = "ID")
@@ -55,6 +56,14 @@ public class OsAberturaEquipamento implements Serializable {
 
     public String getNumeroSerie() {
         return numeroSerie;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
 
     public void setNumeroSerie(String numeroSerie) {

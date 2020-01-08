@@ -61,8 +61,6 @@ FROM
      INNER JOIN cliente cliente on os.id_cliente = cliente.id
      INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id
      INNER JOIN pessoa_endereco pessoa_endereco ON pessoa.id = pessoa_endereco.id_pessoa
-     INNER JOIN colaborador colaborador on colaborador.id = os.id_colaborador
-     INNER JOIN pessoa pessoa_colaborador on pessoa_colaborador.id = colaborador.id_pessoa
      INNER JOIN empresa empresa ON os.id_empresa = empresa.id
      INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
 WHERE empresa.id = $P{idempresa} and empresa_endereco.principal = 'S' and os.data_inicio between $P{periodoInicial} and $P{periodoFinal}  and (status = $P{status} or $P{status} is Null)]]>

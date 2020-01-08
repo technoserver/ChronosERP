@@ -23,7 +23,6 @@ public class OsEvolucao implements Serializable {
     private Date dataRegistro;
     @Column(name = "HORA_REGISTRO")
     private String horaRegistro;
-    private String modelo;
     private String responsavel;
     @Column(name = "OBSERVACAO")
     private String observacao;
@@ -79,13 +78,6 @@ public class OsEvolucao implements Serializable {
         this.enviarEmail = enviarEmail;
     }
 
-    public String getModelo() {
-        return modelo;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
 
     public String getResponsavel() {
         return responsavel;
@@ -111,14 +103,13 @@ public class OsEvolucao implements Serializable {
         return Objects.equals(id, that.id) &&
                 Objects.equals(dataRegistro, that.dataRegistro) &&
                 Objects.equals(horaRegistro, that.horaRegistro) &&
-                Objects.equals(modelo, that.modelo) &&
                 Objects.equals(responsavel, that.responsavel) &&
                 Objects.equals(observacao, that.observacao);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dataRegistro, horaRegistro, modelo, responsavel, observacao);
+        return Objects.hash(id, dataRegistro, horaRegistro, responsavel, observacao);
     }
 
     @Override
