@@ -9,6 +9,7 @@ import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.cadastros.ProdutoService;
 import com.chronos.erp.service.comercial.OsProdutoServicoService;
 import com.chronos.erp.service.comercial.OsService;
+import com.chronos.erp.service.comercial.VendedorService;
 import com.chronos.erp.service.financeiro.MovimentoService;
 import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jsf.FacesUtil;
@@ -64,7 +65,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private ProdutoService produtoService;
     @Inject
     private MovimentoService movimentoService;
-
+    @Inject
+    private VendedorService vendedorService;
 
 
     private OsAberturaEquipamento osAberturaEquipamento;
@@ -236,6 +238,13 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                     getObjeto().setMovimento(movimento);
                 }
 
+                Vendedor vendedor = vendedorService.instaciarVendedor(usuario.getIdcolaborador());
+                if (vendedor != null) {
+                    vendedor.setNome(vendedor.getColaborador().getPessoa().getNome());
+                    getObjeto().setVendedor(vendedor);
+                }
+
+
                 temProduto = false;
             }
         } catch (Exception ex) {
@@ -260,7 +269,11 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             } else {
                 super.doEdit();
                 OsAbertura os = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
-                os.getTecnico().setNome(os.getTecnico().getColaborador().getPessoa().getNome());
+
+                if (os.getTecnico() != null) {
+                    os.getTecnico().setNome(os.getTecnico().getColaborador().getPessoa().getNome());
+                }
+
                 if (os.getVendedor() != null) {
                     os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
                 }
@@ -348,6 +361,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public void faturar(String codigoModelo) {
 
         try {
+
 
             OsAbertura os = isTelaGrid() ? dao.getJoinFetch(getObjetoSelecionado().getId(), OsAbertura.class) : getObjeto();
 

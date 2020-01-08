@@ -25,6 +25,8 @@ public class OrcamentoService implements Serializable {
     private Repository<OrcamentoCabecalho> repository;
     @Inject
     private Repository<VendaCabecalho> vendaRepository;
+    @Inject
+    private Repository<OrcamentoFormaPagamento> orcamentoFormaPagamentoRepository;
 
     @Inject
     private VendaService vendaService;
@@ -201,7 +203,8 @@ public class OrcamentoService implements Serializable {
     }
 
     @Transactional
-    public void excluir(OrcamentoCabecalho orcamento) {
-
+    public void remover(OrcamentoCabecalho orcamento) {
+        orcamentoFormaPagamentoRepository.excluir(OrcamentoFormaPagamento.class, "orcamentoCabecalho.id", orcamento.getId());
+        repository.excluir(orcamento, orcamento.getId());
     }
 }

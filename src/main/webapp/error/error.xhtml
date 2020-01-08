@@ -183,9 +183,9 @@
         </div>
         
         <div style="display: none">
-            <h:outputText value="Message:#{pfExceptionHandler.message}" />
+            Message: #{pfExceptionHandler.message} <br/>
             <pre>
-                #{pfExceptionHandler.formattedStackTrace}
+                StackTrace: <h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false"/> <br/>
             </pre>
         </div>
 

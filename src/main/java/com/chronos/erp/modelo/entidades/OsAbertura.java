@@ -73,7 +73,6 @@ public class OsAbertura implements Serializable {
     private Integer status;
     @JoinColumn(name = "ID_TECNICO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
-    @NotNull
     private Tecnico tecnico;
     @JoinColumn(name = "ID_VENDEDOR", referencedColumnName = "ID")
     @ManyToOne(optional = false)

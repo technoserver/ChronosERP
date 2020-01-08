@@ -36,7 +36,7 @@
                             itemValue="#{tecnico}"
                             converter="defaultConverter"
                             forceSelection="true" minQueryLength="3" maxResults="10"
-                            required="true" style="width: 100%"
+                            required="false" style="width: 100%"
                             emptyMessage="Nenhum registro encontrado"/>
         </div>
         <div class="col-xs-12 col-sm-4 col-md-4">
@@ -186,7 +186,10 @@
 
                 </p:commandButton>
                 <c:if test="#{not empty osAberturaControll.objeto.id and !(osAberturaControll.objeto.status eq '12' or osAberturaControll.objeto.status eq '13')}">
-                    <p:splitButton value="Salvar" actionListener="#{osAberturaControll.salvar()}" icon="ui-icon-disk">
+                    <p:splitButton value="Salvar"
+                                   update=":formCentro:growl"
+                                   actionListener="#{osAberturaControll.salvar()}"
+                                   icon="ui-icon-disk">
                         <p:menuitem value="Imprimir OS 1 Via"
                                     icon="fa fa-print"
                                     action="#{osRelatorioControll.imprimirOS(osAberturaControll.objeto.id)}"
