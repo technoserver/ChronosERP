@@ -194,6 +194,10 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         if (!StringUtils.isEmpty(statusVendas)) {
 
             switch (statusVendas) {
+                case "F":
+                    parametros.put("situacao", Arrays.asList(new String[]{"F"}));
+                case "E":
+                    parametros.put("situacao", Arrays.asList(new String[]{"E"}));
                 case "C":
                     parametros.put("situacao", Arrays.asList(new String[]{"C"}));
                     break;
