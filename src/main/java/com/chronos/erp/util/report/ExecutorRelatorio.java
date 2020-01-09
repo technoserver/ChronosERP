@@ -58,6 +58,10 @@ public class ExecutorRelatorio implements Work {
             }
             parametros.put("SUBREPORT_DIR", this.getClass().getResource(this.diretorioRelatorio + File.separator).getPath());
 
+            if (!tipoRelatorio.equals("pdf")) {
+                parametros.put("IS_IGNORE_PAGINATION", true);
+            }
+
             JasperPrint print = JasperFillManager.fillReport(relatorioStream, this.parametros, connection);
             this.relatorioGerado = print.getPages().size() > 0;
 
