@@ -442,14 +442,14 @@
                             lazy="true" sortBy="#{row.id}" sortOrder="descending"
                     >
 
-                        <p:column headerText="Código" width="74">
+                        <p:column headerText="Código" width="74" sortBy="#{row.id}">
                             <h:outputText value="#{row.id}"/>
                         </p:column>
                         <p:column headerText="Caixa" width="90">
                             <h:outputText value="#{row.caixa}"/>
                         </p:column>
 
-                        <p:column headerText="Cliente" width="130">
+                        <p:column headerText="Cliente" width="130" sortBy="#{row.nomeCliente}">
                             <h:outputText value="#{row.nomeCliente == null ? 'Não identificado': row.nomeCliente}"/>
                         </p:column>
                         <p:column headerText="Data Venda" width="130" sortBy="#{row.dataHoraVenda}"
@@ -468,7 +468,7 @@
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputText>
                         </p:column>
-                        <p:column headerText="Total" class="coluna-monetaria" width="100">
+                        <p:column headerText="Total" class="coluna-monetaria" width="100" sortBy="#{row.valorTotal}">
                             <h:outputText value="#{row.valorTotal}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputText>

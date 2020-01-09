@@ -17,6 +17,86 @@
            isStrikeThrough="false"/>
     <style name="dadosDetail" fontName="Times New Roman" fontSize="8" isBold="false" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
+    <subDataset name="formasPagamento" uuid="f8776699-b4d1-4c9c-bf14-aea6036da7ac">
+        <parameter name="idcliente" class="java.lang.Integer">
+            <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+        </parameter>
+        <parameter name="idvendedor" class="java.lang.Integer">
+            <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+        </parameter>
+        <parameter name="dataPedidoInicial" class="java.util.Date">
+            <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+        </parameter>
+        <parameter name="dataPedidoFinal" class="java.util.Date">
+            <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+        </parameter>
+        <parameter name="situacao" class="java.util.Collection">
+            <defaultValueExpression><![CDATA[Arrays.asList(new String[] {"E","F"})]]></defaultValueExpression>
+        </parameter>
+        <parameter name="idempresa" class="java.lang.Integer">
+            <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+        </parameter>
+        <queryString>
+            <![CDATA[select
+	id,
+	descricao,
+	sum (valor) as valor
+from (select
+		tp.id,
+	tp.descricao || (CASE
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '01') THEN ' (Visa) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '02') THEN ' (Mastercard) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '03') THEN ' (American Express) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '04') THEN ' (Sorocred) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '06') THEN ' (Elo) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '07') THEN ' (Hipercard) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '08') THEN ' (Aura) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '09') THEN ' (Cabal) '
+		ELSE ''
+	END) as descricao,
+	f.valor
+from venda_cabecalho v
+inner join venda_forma_pagamento f on v.id = f.id_venda_cabecalho
+inner join tipo_pagamento tp on tp.id = f.id_tipo_pagamento
+WHERE v.id_empresa = $P{idempresa}
+and (v.id_cliente =  $P{idcliente} or $P{idcliente} is null )
+and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
+and ($X{IN, situacao, situacao})
+and v.data_venda BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal}
+
+
+union all
+
+select
+	tp.id,
+	tp.descricao || (CASE
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '01') THEN ' (Visa) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '02') THEN ' (Mastercard) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '03') THEN ' (American Express) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '04') THEN ' (Sorocred) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '06') THEN ' (Elo) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '07') THEN ' (Hipercard) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '08') THEN ' (Aura) '
+		WHEN ((f.forma = '04' or f.forma = '03') and f.bandeira = '09') THEN ' (Cabal) '
+		ELSE ''
+	END) as descricao,
+	valor
+from pdv_venda_cabecalho v
+inner join pdv_forma_pagamento f on v.id = f.id_pdv_venda_cabecalho
+inner join tipo_pagamento tp on tp.id = f.id_tipo_pagamento
+WHERE v.id_empresa = $P{idempresa}
+and (v.id_cliente  = $P{idcliente}  or $P{idcliente} is null )
+and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
+and ($X{IN, v.status_venda, situacao})
+and v.data_hora_venda::date BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal}
+
+) pagamento
+group by id,descricao]]>
+        </queryString>
+        <field name="id" class="java.lang.Integer"/>
+        <field name="descricao" class="java.lang.String"/>
+        <field name="valor" class="java.math.BigDecimal"/>
+    </subDataset>
     <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
         <defaultValueExpression>
             <![CDATA["/home/john/projetos/java/chronosnfe/src/main/resources/com/chronos/relatorio/comercial/"]]></defaultValueExpression>
@@ -86,7 +166,7 @@ and (v.id_vendedor =  $P{idvendedor} or $P{idvendedor} is null)
 and ($X{IN, situacao, situacao})
 and v.data_venda BETWEEN $P{dataPedidoInicial} and $P{dataPedidoFinal} and (v.id =$P{id} or $P{id} is null)
 
-union
+union all
 
 SELECT
      v.id,
@@ -409,49 +489,114 @@ $F{situacao}.equals("N")?"Nota Fiscal":""]]></textFieldExpression>
         </band>
     </detail>
     <summary>
-        <band height="66">
+        <band height="80">
             <staticText>
-                <reportElement style="tituloDetail" x="414" y="12" width="55" height="12"
+                <reportElement style="tituloDetail" positionType="Float" x="413" y="32" width="55" height="12"
                                uuid="f9b4d3b4-927d-4b1b-9f97-0334357d67ae"/>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[SubTotal]]></text>
             </staticText>
             <staticText>
-                <reportElement style="tituloDetail" x="413" y="24" width="56" height="12"
+                <reportElement style="tituloDetail" positionType="Float" x="412" y="44" width="56" height="12"
                                uuid="f58f1e2f-1f4b-4f10-a91a-686afffed770"/>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Desconto]]></text>
             </staticText>
             <staticText>
-                <reportElement style="tituloDetail" x="413" y="36" width="56" height="12"
+                <reportElement style="tituloDetail" positionType="Float" x="412" y="56" width="56" height="12"
                                uuid="fb214e9f-f1c4-41e7-adf1-ab88e5e13ab3"/>
-                <textElement>
+                <textElement verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Total]]></text>
             </staticText>
             <textField pattern="#,##0.00">
-                <reportElement style="dadosDetail" x="469" y="24" width="86" height="12"
+                <reportElement style="dadosDetail" positionType="Float" x="468" y="44" width="86" height="12"
                                uuid="69dc6c4a-7c64-4e46-8f7c-65b1113797b4"/>
-                <textElement textAlignment="Right"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$V{desconto}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement style="dadosDetail" x="469" y="36" width="86" height="12"
+                <reportElement style="dadosDetail" positionType="Float" x="468" y="56" width="86" height="12"
                                uuid="befc6df8-89e3-4b1b-aeb8-2c62e859f52f"/>
-                <textElement textAlignment="Right"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$V{total}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement style="dadosDetail" x="469" y="12" width="86" height="12"
+                <reportElement style="dadosDetail" positionType="Float" x="468" y="32" width="86" height="12"
                                uuid="514fba33-75f6-4161-9af7-ef5cfa42a7ee"/>
-                <textElement textAlignment="Right"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"/>
                 <textFieldExpression><![CDATA[$V{subTotal}]]></textFieldExpression>
             </textField>
+            <componentElement>
+                <reportElement key="tableFormaPagamento" stretchType="RelativeToBandHeight" mode="Transparent" x="318"
+                               y="10" width="236" height="10" isRemoveLineWhenBlank="true"
+                               uuid="03872955-8685-4625-8575-fa4db56c8d59"/>
+                <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                          xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+                    <datasetRun subDataset="formasPagamento" uuid="3283f4f6-d345-4fa9-9573-93a27ee9b312">
+                        <datasetParameter name="idcliente">
+                            <datasetParameterExpression><![CDATA[$P{idcliente}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <datasetParameter name="idvendedor">
+                            <datasetParameterExpression><![CDATA[$P{idvendedor}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <datasetParameter name="situacao">
+                            <datasetParameterExpression><![CDATA[$P{situacao}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <datasetParameter name="dataPedidoInicial">
+                            <datasetParameterExpression><![CDATA[$P{dataPedidoInicial}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <datasetParameter name="dataPedidoFinal">
+                            <datasetParameterExpression><![CDATA[$P{dataPedidoFinal}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <datasetParameter name="idempresa">
+                            <datasetParameterExpression><![CDATA[$P{idempresa}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                    </datasetRun>
+                    <jr:columnGroup width="240" uuid="7d21f5e0-7125-4487-b78a-99181dee5e40">
+                        <jr:tableHeader height="12" rowSpan="1">
+                            <staticText>
+                                <reportElement style="tituloDetail" mode="Opaque" x="0" y="0" width="240" height="12"
+                                               backcolor="#DDDDDD" uuid="26e10ae7-a6d4-4552-856f-0f61b5898d96"/>
+                                <textElement verticalAlignment="Middle">
+                                    <font isBold="true"/>
+                                </textElement>
+                                <text><![CDATA[Formas de Pagamento]]></text>
+                            </staticText>
+                        </jr:tableHeader>
+                        <jr:column width="150" uuid="edb127c6-85a6-4a20-8782-04edafc4df80">
+                            <jr:detailCell height="13" rowSpan="1">
+                                <textField>
+                                    <reportElement x="0" y="0" width="150" height="13"
+                                                   uuid="ade19802-6be3-48d9-af14-48c58830d5a7"/>
+                                    <textElement verticalAlignment="Middle">
+                                        <font fontName="Times New Roman" size="8"/>
+                                    </textElement>
+                                    <textFieldExpression><![CDATA[$F{descricao}]]></textFieldExpression>
+                                </textField>
+                            </jr:detailCell>
+                        </jr:column>
+                        <jr:column width="90" uuid="be6c38d7-733d-465f-a1ad-ab068063e67b">
+                            <jr:detailCell height="13" rowSpan="1">
+                                <textField pattern="#,##0.00" isBlankWhenNull="true">
+                                    <reportElement x="0" y="0" width="90" height="13"
+                                                   uuid="72fa6da6-7ffb-4759-83ee-8b332c5f0b0c"/>
+                                    <textElement textAlignment="Right" verticalAlignment="Middle">
+                                        <font fontName="Times New Roman" size="8"/>
+                                    </textElement>
+                                    <textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
+                                </textField>
+                            </jr:detailCell>
+                        </jr:column>
+                    </jr:columnGroup>
+                </jr:table>
+            </componentElement>
         </band>
     </summary>
 </jasperReport>
