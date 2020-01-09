@@ -196,8 +196,10 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
             switch (statusVendas) {
                 case "F":
                     parametros.put("situacao", Arrays.asList(new String[]{"F"}));
+                    break;
                 case "E":
                     parametros.put("situacao", Arrays.asList(new String[]{"E"}));
+                    break;
                 case "C":
                     parametros.put("situacao", Arrays.asList(new String[]{"C"}));
                     break;
