@@ -5,8 +5,11 @@ import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.modelo.enuns.Estados;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
+import com.chronos.erp.service.ChronosException;
+import com.chronos.erp.service.cadastros.PessoaService;
 import com.chronos.erp.util.jpa.Transactional;
 import com.chronos.erp.util.jsf.FacesUtil;
+import com.chronos.erp.util.jsf.Mensagem;
 import org.primefaces.PrimeFaces;
 
 import javax.annotation.PostConstruct;
@@ -31,8 +34,13 @@ public class CadastroRapidoClienteControll implements Serializable {
     @Inject
     private Repository<EmpresaPessoa> empresaPessoaRepository;
 
+    @Inject
+    private PessoaService service;
+
+
     private ClienteResumDTO cliente;
     private Map<String, String> tipoPessoa;
+
 
     private Municipio cidade;
     private List<Municipio> cidades;
@@ -63,71 +71,75 @@ public class CadastroRapidoClienteControll implements Serializable {
 
     @Transactional
     public void salvar() {
-        Pessoa pessoa = new Pessoa();
-        pessoa.setTipo(cliente.getTipo());
-        pessoa.setNome(cliente.getNome());
-        pessoa.setCliente("S");
-        pessoa.setColaborador("N");
-        pessoa.setTransportadora("N");
-        pessoa.setFornecedor("N");
-        pessoa.setEmail(cliente.getEmail());
 
 
-        if (cliente.getTipo().equals("F")) {
-            pessoa.setPessoaFisica(new PessoaFisica());
-            pessoa.getPessoaFisica().setPessoa(pessoa);
-            pessoa.getPessoaFisica().setEstadoCivil(new EstadoCivil(1));
-        } else {
-            pessoa.setPessoaFisica(new PessoaFisica());
-            pessoa.getPessoaJuridica().setPessoa(pessoa);
-            pessoa.getPessoaJuridica().setFantasia(cliente.getNome());
+        try {
+
+
+            Pessoa pessoa = new Pessoa();
+            pessoa.setTipo(cliente.getTipo());
+            pessoa.setNome(cliente.getNome());
+            pessoa.setCliente("S");
+            pessoa.setColaborador("N");
+            pessoa.setTransportadora("N");
+            pessoa.setFornecedor("N");
+            pessoa.setEmail(cliente.getEmail());
+
+
+            if (cliente.getTipo().equals("F")) {
+                pessoa.setPessoaFisica(new PessoaFisica());
+                pessoa.getPessoaFisica().setPessoa(pessoa);
+                pessoa.getPessoaFisica().setEstadoCivil(new EstadoCivil(1));
+                pessoa.getPessoaFisica().setCpf(cliente.getCpfCnpj());
+            } else {
+                pessoa.setPessoaFisica(new PessoaFisica());
+                pessoa.getPessoaJuridica().setPessoa(pessoa);
+                pessoa.getPessoaJuridica().setFantasia(cliente.getNome());
+                pessoa.getPessoaJuridica().setCnpj(cliente.getCpfCnpj());
+            }
+
+            pessoa.setListaPessoaContato(new HashSet<>());
+            pessoa.setListaPessoaEndereco(new HashSet<>());
+            pessoa.setListaPessoaTelefone(new HashSet<>());
+            PessoaEndereco end = new PessoaEndereco();
+            end.setPessoa(pessoa);
+            end.setPrincipal("S");
+            end.setCep(cliente.getCep());
+            end.setCidade(cliente.getCidade());
+            end.setMunicipioIbge(cliente.getMunicipioIbge());
+            end.setUf(cliente.getUf());
+            end.setBairro(cliente.getBairro());
+            end.setCobranca("S");
+            end.setComplemento(cliente.getComplemento());
+            end.setCorrespondencia("S");
+            end.setEntrega("S");
+            end.setLogradouro(cliente.getLogradouro());
+            end.setNumero(cliente.getNumero());
+            end.setFone(cliente.getFone());
+
+
+            pessoa.getListaPessoaEndereco().add(end);
+
+            Cliente cliente = new Cliente();
+            cliente.setPessoa(pessoa);
+            cliente.setDataCadastro(new Date());
+            cliente.setSituacaoForCli(new SituacaoForCli(1));
+            cliente.setAtividadeForCli(new AtividadeForCli(1));
+            cliente.setBloqueado("N");
+            cliente.setDesde(new Date());
+            cliente.setDataAlteracao(new Date());
+
+            Cliente clienteSalvo = service.salvarCliente(cliente, FacesUtil.getEmpresaUsuario());
+
+
+            PrimeFaces.current().dialog().closeDynamic(clienteSalvo);
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            }
         }
-
-        pessoa.setListaPessoaContato(new HashSet<>());
-        pessoa.setListaPessoaEndereco(new HashSet<>());
-        pessoa.setListaPessoaTelefone(new HashSet<>());
-        PessoaEndereco end = new PessoaEndereco();
-        end.setPessoa(pessoa);
-        end.setPrincipal("S");
-        end.setCep(cliente.getCep());
-        end.setCidade(cliente.getCidade());
-        end.setMunicipioIbge(cliente.getMunicipioIbge());
-        end.setUf(cliente.getUf());
-        end.setBairro(cliente.getBairro());
-        end.setCobranca("S");
-        end.setComplemento(cliente.getComplemento());
-        end.setCorrespondencia("S");
-        end.setEntrega("S");
-        end.setLogradouro(cliente.getLogradouro());
-        end.setNumero(cliente.getNumero());
-        end.setFone(cliente.getFone());
-
-
-        pessoa.getListaPessoaEndereco().add(end);
-
-        pessoa = pessoaRepository.atualizar(pessoa);
-
-        Cliente clienteSalvo = new Cliente();
-        clienteSalvo.setPessoa(pessoa);
-        clienteSalvo.setDataCadastro(new Date());
-        clienteSalvo.setSituacaoForCli(new SituacaoForCli(1));
-        clienteSalvo.setAtividadeForCli(new AtividadeForCli(1));
-        clienteSalvo.setBloqueado("N");
-        clienteSalvo.setDesde(new Date());
-        clienteSalvo.setDataAlteracao(new Date());
-
-        clienteSalvo = repository.atualizar(clienteSalvo);
-
-        EmpresaPessoa empresaPessoa = new EmpresaPessoa();
-        empresaPessoa.setPessoa(pessoa);
-        empresaPessoa.setEmpresa(FacesUtil.getEmpresaUsuario());
-        empresaPessoa.setResponsavelLegal("N");
-        empresaPessoa.setEmpresaPrincipal("S");
-
-
-        empresaPessoaRepository.salvar(empresaPessoa);
-
-        PrimeFaces.current().dialog().closeDynamic(clienteSalvo);
     }
 
     public List<Estados> getEstado() {

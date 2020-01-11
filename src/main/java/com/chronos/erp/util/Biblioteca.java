@@ -650,6 +650,13 @@ public class Biblioteca {
 
     }
 
+    public static String getHoraAtual() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        Date hora = Calendar.getInstance().getTime();
+        String dataFormatada = sdf.format(hora);
+        return dataFormatada;
+    }
+
     public static BigDecimal calcularValorPercentual(BigDecimal total, BigDecimal taxa) throws ChronosException {
         BigDecimal valor = multiplica(total, taxa);
         valor = divide(valor, BigDecimal.valueOf(100));

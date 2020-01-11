@@ -137,18 +137,20 @@ public class PessoaService implements Serializable {
 
             pessoa.setPessoaJuridica(null);
         } else {
-            Object[] atributos = new Object[]{"pessoa.nome"};
-            PessoaJuridica pj = pessoasJuridica.get(PessoaJuridica.class, "cnpj", pessoa.getPessoaJuridica().getCnpj().replaceAll("\\D", ""), atributos);
+            if (!StringUtils.isEmpty(pessoa.getPessoaJuridica().getCnpj())) {
+                Object[] atributos = new Object[]{"pessoa.nome"};
+                PessoaJuridica pj = pessoasJuridica.get(PessoaJuridica.class, "cnpj", pessoa.getPessoaJuridica().getCnpj().replaceAll("\\D", ""), atributos);
 
-            if (pj != null && !pj.equals(pessoa.getPessoaJuridica())) {
-                throw new ChronosException("CNPJ ja informado em :" + pj.getPessoa().getNome());
+                if (pj != null && !pj.equals(pessoa.getPessoaJuridica())) {
+                    throw new ChronosException("CNPJ ja informado em :" + pj.getPessoa().getNome());
+                }
+                if (!Biblioteca.cnpjValido(pessoa.getIdentificador())) {
+                    throw new ChronosException("CNPJ invalido");
+                }
+                pessoa.setPessoaFisica(null);
+                String fantasia = StringUtils.isEmpty(pessoa.getPessoaJuridica().getFantasia()) ? pessoa.getNome() : pessoa.getPessoaJuridica().getFantasia();
+                pessoa.getPessoaJuridica().setFantasia(fantasia);
             }
-            if (!Biblioteca.cnpjValido(pessoa.getIdentificador())) {
-                throw new ChronosException("CNPJ invalido");
-            }
-            pessoa.setPessoaFisica(null);
-            String fantasia = StringUtils.isEmpty(pessoa.getPessoaJuridica().getFantasia()) ? pessoa.getNome() : pessoa.getPessoaJuridica().getFantasia();
-            pessoa.getPessoaJuridica().setFantasia(fantasia);
         }
 
         if (pessoa.getListaPessoaEndereco() == null || pessoa.getListaPessoaEndereco().isEmpty()) {

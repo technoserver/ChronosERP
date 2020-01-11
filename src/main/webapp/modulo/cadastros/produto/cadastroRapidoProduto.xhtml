@@ -13,6 +13,16 @@
     <h:outputStylesheet library="css" name="bootstrap.min.css"/>
 </h:head>
 <h:body>
+    <p:ajaxStatus onstart="PF('statusDialog').show();"
+                  onsuccess="PF('statusDialog').hide();"
+    >
+
+    </p:ajaxStatus>
+
+    <p:dialog modal="true" widgetVar="statusDialog" header="Carregando..."
+              draggable="false" closable="false" resizable="false">
+        <p:graphicImage value="/resources/images/ajax_loading_bar.gif"/>
+    </p:dialog>
     <h:form id="formCadProd">
 
         <div class="ui-fluid">

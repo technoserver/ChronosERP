@@ -34,16 +34,19 @@ public class OsAberturaEquipamento implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     private OsEquipamento osEquipamento;
+    @Transient
+    private String tipoAtendimento;
 
     public OsAberturaEquipamento() {
     }
 
-    public OsAberturaEquipamento(Integer id, String numeroSerie, Integer tipoCobertura, String equipamento, Integer idos, Date dataInicio) {
+    public OsAberturaEquipamento(Integer id, String numeroSerie, Integer tipoCobertura, String equipamento, Integer idos, Date dataInicio, String tipoAtendimento) {
         this.id = id;
         this.numeroSerie = numeroSerie;
         this.tipoCobertura = tipoCobertura;
         this.osEquipamento = new OsEquipamento(0, equipamento);
         this.osAbertura = new OsAbertura(idos, dataInicio);
+        this.tipoAtendimento = tipoAtendimento;
     }
 
     public Integer getId() {
@@ -92,6 +95,10 @@ public class OsAberturaEquipamento implements Serializable {
 
     public void setOsEquipamento(OsEquipamento osEquipamento) {
         this.osEquipamento = osEquipamento;
+    }
+
+    public String getTipoAtendimento() {
+        return tipoAtendimento;
     }
 
     @Override

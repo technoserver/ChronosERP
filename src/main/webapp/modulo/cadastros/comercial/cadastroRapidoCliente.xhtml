@@ -13,9 +13,19 @@
     <h:outputStylesheet library="css" name="bootstrap.min.css"/>
 </h:head>
 <h:body>
+    <p:ajaxStatus onstart="PF('statusDialog').show();"
+                  onsuccess="PF('statusDialog').hide();"
+    >
+
+    </p:ajaxStatus>
+
+    <p:dialog modal="true" widgetVar="statusDialog" header="Carregando..."
+              draggable="false" closable="false" resizable="false">
+        <p:graphicImage value="/resources/images/ajax_loading_bar.gif"/>
+    </p:dialog>
+
     <h:form id="form-cad-cliente">
         <div class="ui-fluid">
-
             <div class="ui-g">
                 <div class="col-xs-12">
                     <p:messages id="msg" showSummary="true" closable="true"/>
@@ -38,6 +48,7 @@
                                      value="#{cadastroRapidoClienteControll.cliente.tipo}">
                         <f:selectItems value="#{cadastroRapidoClienteControll.tipoPessoa}"/>
                         <p:ajax event="change"
+                                update="form-cad-cliente:documento"
                                 process="@this"
                         />
 
@@ -119,6 +130,20 @@
                                        nomeAtributo="#{cadastroRapidoClienteControll.cliente.fone}"
                                        tamanhoMaximo="14"/>
                 </div>
+                <h:panelGroup id="documento" layout="block" styleClass="ui-g">
+                    <erp:campoCpf styleClass="col-xs-6 col-sm-2 col-md-2"
+                                  idComponente="pessoaFisicaCpf" label="CPF"
+                                  rendered="#{cadastroRapidoClienteControll.cliente.tipo eq 'F'}"
+                                  nomeAtributo="#{cadastroRapidoClienteControll.cliente.cpfCnpj}"/>
+
+
+                    <erp:campoCnpj styleClass="col-xs-6 col-sm-2 col-md-2"
+                                   idComponente="pessoaJuridicaCnpj" label="CNPJ"
+                                   rendered="#{cadastroRapidoClienteControll.cliente.tipo eq 'J'}"
+                                   nomeAtributo="#{cadastroRapidoClienteControll.cliente.cpfCnpj}"
+
+                    />
+                </h:panelGroup>
             </p:outputPanel>
             <hr/>
 

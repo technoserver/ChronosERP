@@ -138,7 +138,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     @Override
     public void salvar() {
 
-        Cliente cliente = null;
+        Cliente cliente;
         try {
             if (completo.equals("S")) {
                 cliente = service.salvarCliente(getObjeto(), empresa);

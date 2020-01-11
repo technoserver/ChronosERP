@@ -176,7 +176,7 @@ public class OrcamentoService implements Serializable {
         BigDecimal sobra = Biblioteca.soma(valorDesconto, descAntecipado);
         sobra = Biblioteca.subtrai(sobra, descItens);
 
-        if (sobra.signum() > 0) {
+        if (sobra.signum() != 0) {
             OrcamentoDetalhe item = orcamento.getListaOrcamentoDetalhe().get(0);
             BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
             BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);
