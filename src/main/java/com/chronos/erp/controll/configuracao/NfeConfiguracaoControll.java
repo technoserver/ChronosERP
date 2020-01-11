@@ -5,6 +5,7 @@ import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.modelo.entidades.NfeConfiguracao;
 import com.chronos.erp.modelo.enuns.TipoArquivo;
 import com.chronos.erp.repository.Filtro;
+import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.comercial.NfeService;
 import com.chronos.erp.util.ArquivoUtil;
 import com.chronos.erp.util.Constants;
@@ -46,16 +47,32 @@ public class NfeConfiguracaoControll extends AbstractControll<NfeConfiguracao> i
 
     @Override
     public void doCreate() {
-        super.doCreate();
 
-        getObjeto().setEmpresa(empresa);
-        getObjeto().setCaminhoArquivoDanfe("");
-        getObjeto().setCaminhoSalvarPdf("S");
-        getObjeto().setCaminhoSchemas("");
-        getObjeto().setFormatoImpressaoDanfe(1);
-        getObjeto().setProcessoEmissao(0);
-        getObjeto().setSalvarXml("S");
-        getObjeto().setWebserviceUf(empresa.getCodigoIbgeUf().toString());
+
+        try {
+
+            if (empresa.getCodigoIbgeUf() == null) {
+                throw new ChronosException("Código de IBGE não definido para a empresa");
+            }
+
+            super.doCreate();
+
+
+            getObjeto().setEmpresa(empresa);
+            getObjeto().setCaminhoArquivoDanfe("");
+            getObjeto().setCaminhoSalvarPdf("S");
+            getObjeto().setCaminhoSchemas("");
+            getObjeto().setFormatoImpressaoDanfe(1);
+            getObjeto().setProcessoEmissao(0);
+            getObjeto().setSalvarXml("S");
+            getObjeto().setWebserviceUf(empresa.getCodigoIbgeUf().toString());
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao tentar cria a configuração de NF-e", ex);
+            }
+        }
 
     }
 

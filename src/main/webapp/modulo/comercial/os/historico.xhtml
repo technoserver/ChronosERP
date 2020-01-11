@@ -38,12 +38,19 @@
                                         styleClass="col-xs-12 col-sm-4 col-md-4"
                                         tamanhoMaximo="60" label="Número de serie"/>
 
+                        <erp:campoSelect styleClass="col-xs-12 col-sm-4 col-md-4"
+                                         idComponente="tipoAtendimento"
+                                         nomeAtributo="#{osHistoricoEquipamentoControll.tipoAtendimento}"
+                                         label="Tipo Atendimento"
+                                         itens="#{osHistoricoEquipamentoControll.tiposAtendimento}"/>
+
+
                         <erp:campoData nomeAtributo="#{osHistoricoEquipamentoControll.dataInicial}"
                                        label="Data entrada inicial"
                                        idComponente="dataFinal"
                                        styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
-                        <erp:campoData nomeAtributo="#{osHistoricoEquipamentoControll.dataInicial}"
+                        <erp:campoData nomeAtributo="#{osHistoricoEquipamentoControll.dataFinal}"
                                        label="Data entrada final"
                                        idComponente="dataInicial"
                                        styleClass="col-xs-12 col-sm-2 col-md-2"/>
@@ -70,8 +77,15 @@
                             <p:column headerText="Equipamento">
                                 <h:outputText value="#{row.osEquipamento.nome}"/>
                             </p:column>
-                            <p:column headerText="Numero Serie">
+                            <p:column headerText="Número Serie">
                                 <h:outputText value="#{row.numeroSerie}"/>
+                            </p:column>
+                            <p:column headerText="Número Serie">
+                                <h:outputText value="#{row.numeroSerie}"/>
+                            </p:column>
+                            <p:column headerText="Tipo Atendimento" styleClass="text-center">
+                                <h:outputText
+                                        value="#{osHistoricoEquipamentoControll.keyFromValue(row.tipoAtendimento)}"/>
                             </p:column>
                             <p:column headerText="Ações" styleClass="text-center">
                                 <p:menuButton style="height: 26px;">

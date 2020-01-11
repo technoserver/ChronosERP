@@ -282,15 +282,6 @@
                             </h:outputLabel>
                         </p:column>
                         <p:column headerText="Ações" width="140" style="text-align: center">
-
-                            <p:commandLink process="dataTableNfeDetalhe" title="Detalhes Impostos"
-                                           oncomplete="PF('dialogDetalheImposto').show()" styleClass="btn btn-default"
-                                           action="#{nfeCabecalhoControll.detalheImposto()}"
-                            >
-                                <i class="fa fa-search"/>
-                                <f:setPropertyActionListener value="#{obj}"
-                                                             target="#{nfeCabecalhoControll.nfeDetalheSelecionado}"/>
-                            </p:commandLink>
                             &nbsp;
                             <p:commandLink process="dataTableNfeDetalhe" title="Excluir" styleClass="btn btn-default"
                                            action="#{nfeCabecalhoControll.excluirProduto}"

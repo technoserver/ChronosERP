@@ -137,7 +137,7 @@ public class CadastroRapidoProdutoControll implements Serializable {
         List<ProdutoMarca> lista = new ArrayList<>();
         try {
 
-            lista = produtoMarcaRepository.getEntitys(ProdutoMarca.class, "nome", nome, new Object[]{"nome"});
+            lista = produtoMarcaRepository.getEntitys(ProdutoMarca.class, "nome", nome);
         } catch (Exception e) {
             // e.printStackTrace();
         }

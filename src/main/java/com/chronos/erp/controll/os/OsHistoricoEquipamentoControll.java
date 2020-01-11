@@ -12,9 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 28/09/17.
@@ -38,11 +36,22 @@ public class OsHistoricoEquipamentoControll implements Serializable {
     private String numeroSerie;
     private Date dataInicial;
     private Date dataFinal;
+    private String tipoAtendimento;
     private boolean telaGrid;
+    private Map<String, String> tiposAtendimento;
 
     @PostConstruct
     public void init() {
         telaGrid = true;
+        tipoAtendimento = "";
+        tiposAtendimento = new LinkedHashMap<>();
+        tiposAtendimento.put("Todos", "");
+        tiposAtendimento.put("Interno", "AI");
+        tiposAtendimento.put("Externo", "AE");
+        tiposAtendimento.put("Garantia", "GA");
+        tiposAtendimento.put("Retorno", "RT");
+        tiposAtendimento.put("Orcamento", "OC");
+        tiposAtendimento.put("Contrato", "CO");
     }
 
     public void pesquisar() {
@@ -63,7 +72,12 @@ public class OsHistoricoEquipamentoControll implements Serializable {
             filtros.add(new Filtro("osAbertura.dataInicio", Filtro.MENOR_OU_IGUAL, dataFinal));
         }
 
-        lista = repository.getEntitys(OsAberturaEquipamento.class, filtros, new Object[]{"numeroSerie", "tipoCobertura", "osEquipamento.nome", "osAbertura.id", "osAbertura.dataInicio"});
+        if (!StringUtils.isEmpty(tipoAtendimento)) {
+            filtros.add(new Filtro("osAbertura.tipoAtendimento", Filtro.IGUAL, tipoAtendimento));
+        }
+
+        lista = repository.getEntitys(OsAberturaEquipamento.class, filtros, new Object[]{"numeroSerie", "tipoCobertura",
+                "osEquipamento.nome", "osAbertura.id", "osAbertura.dataInicio", "osAbertura.tipoAtendimento"});
     }
 
 
@@ -81,6 +95,15 @@ public class OsHistoricoEquipamentoControll implements Serializable {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro!", e);
         }
+    }
+
+    public String keyFromValue(Object value) {
+        for (Object o : tiposAtendimento.keySet()) {
+            if (tiposAtendimento.get(o).equals(value)) {
+                return String.valueOf(o);
+            }
+        }
+        return null;
     }
 
 
@@ -130,5 +153,17 @@ public class OsHistoricoEquipamentoControll implements Serializable {
 
     public boolean isTelaGrid() {
         return telaGrid;
+    }
+
+    public Map<String, String> getTiposAtendimento() {
+        return tiposAtendimento;
+    }
+
+    public String getTipoAtendimento() {
+        return tipoAtendimento;
+    }
+
+    public void setTipoAtendimento(String tipoAtendimento) {
+        this.tipoAtendimento = tipoAtendimento;
     }
 }

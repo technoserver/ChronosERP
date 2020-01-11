@@ -536,6 +536,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         osEvolucao = new OsEvolucao();
         osEvolucao.setOsAbertura(getObjeto());
         osEvolucao.setResponsavel(usuario.getNome());
+        osEvolucao.setHoraRegistro(Biblioteca.getHoraAtual());
     }
 
     public void alterarOsEvolucao() {
