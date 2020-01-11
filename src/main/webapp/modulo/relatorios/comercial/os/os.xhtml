@@ -7,7 +7,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
 >
 <h:head>
-    <title>Cadastro rápido de produto</title>
+    <title>#{osRelatorioControll.os.numero}</title>
 
     <h:outputScript library="primefaces" name="jquery/jquery.js"/>
     <h:outputStylesheet library="css" name="bootstrap.min.css"/>
@@ -29,15 +29,16 @@
             font-size: 14px;
             color: #5f666c;
             -webkit-font-smoothing: antialiased !important;
+            background: rgb(204, 204, 204);
         }
 
         page {
             background: white;
             display: block;
             margin: 0 auto;
-            padding: 0 2cm 2cm 1.5cm;
+            padding: 0 0.5cm 0 0.5cm;
             margin-bottom: 0.5cm;
-            box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
             font-size: 9pt;
         }
 
@@ -46,21 +47,17 @@
             height: 29.7cm;
         }
 
-        page[size="A4"][layout="landscape"] {
-            width: 29.7cm;
-            height: 21cm;
-        }
-
         .conteudo {
             position: relative;
             width: 100%;
-            height: 48%;
+            height: 50%;
         }
 
         .footer {
             position: absolute;
             bottom: 0;
             width: 100%;
+            height: 50px;
         }
 
         .via {
@@ -116,7 +113,7 @@
         }
 
         table tbody tr td {
-            padding: 3px;
+            padding: 0px;
         }
 
         table tbody tr:last-child {
@@ -170,16 +167,25 @@
         }
 
         .obs {
+            text-align: justify;
             overflow: hidden;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
         }
 
         @media print {
-            body, .page {
+            body, page {
                 margin: 0;
+                padding: 0 0.5cm 0 0.5cm;
                 box-shadow: 0 0 0 0;
+            }
+
+            @page {
+                margin: 0;
+                padding: 0;
+                outline: 0;
+                box-sizing: border-box;
             }
         }
     </style>

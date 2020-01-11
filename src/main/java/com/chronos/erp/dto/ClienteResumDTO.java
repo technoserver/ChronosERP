@@ -16,6 +16,9 @@ public class ClienteResumDTO {
     private String fone;
     private String email;
 
+    public ClienteResumDTO() {
+        tipo = "F";
+    }
 
     public String getNome() {
         return nome;

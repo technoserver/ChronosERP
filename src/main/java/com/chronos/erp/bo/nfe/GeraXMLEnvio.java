@@ -306,7 +306,7 @@ public class GeraXMLEnvio {
         enderecoEmi.setCEP(emitente.getCep());
         enderecoEmi.setCPais("1058");
         enderecoEmi.setXPais("BRASIL");
-        enderecoEmi.setFone(StringUtils.isEmpty(emitente.getTelefone()) ? null : emitente.getTelefone());
+        enderecoEmi.setFone(StringUtils.isEmpty(emitente.getTelefone()) ? null : emitente.getTelefone().trim());
         return enderecoEmi;
     }
 
@@ -347,7 +347,7 @@ public class GeraXMLEnvio {
 
     private TEndereco getTEndereco(NfeDestinatario destinatario) {
         TEndereco enderecoDest = new TEndereco();
-        enderecoDest.setXLgr(destinatario.getLogradouro());
+        enderecoDest.setXLgr(destinatario.getLogradouro().trim());
         enderecoDest.setNro(destinatario.getNumero());
         if (destinatario.getComplemento() != null) {
             enderecoDest.setXCpl(destinatario.getComplemento().equals("") ? null : destinatario.getComplemento());
@@ -361,7 +361,7 @@ public class GeraXMLEnvio {
         enderecoDest.setCPais(destinatario.getCodigoPais() == null ? null : destinatario.getCodigoPais().toString());
         enderecoDest.setXPais(destinatario.getNomePais());
         if (destinatario.getTelefone() != null) {
-            enderecoDest.setFone(destinatario.getTelefone().equals("") ? null : destinatario.getTelefone());
+            enderecoDest.setFone(destinatario.getTelefone().equals("") ? null : destinatario.getTelefone().trim());
         }
 
         return enderecoDest;
@@ -503,7 +503,7 @@ public class GeraXMLEnvio {
         String ean = StringUtils.isEmpty(nfeDetalhe.getGtin()) ? "SEM GTIN" : nfeDetalhe.getGtin();
         prod.setCProd(nfeDetalhe.getCodigoProduto());
         prod.setCEAN(ean);
-        prod.setXProd(nfeDetalhe.getNomeProduto());
+        prod.setXProd(nfeDetalhe.getNomeProduto().trim());
         prod.setNCM(nfeDetalhe.getNcm());
         if (!StringUtils.isEmpty(nfeDetalhe.getCest())) {
             prod.setCEST(nfeDetalhe.getCest());
