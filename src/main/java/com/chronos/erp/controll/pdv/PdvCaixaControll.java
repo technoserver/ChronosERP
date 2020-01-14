@@ -55,7 +55,9 @@ public class PdvCaixaControll extends AbstractControll<PdvCaixa> implements Seri
     private boolean validar() {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro(Filtro.AND, "codigo", Filtro.IGUAL, getObjeto().getCodigo()));
-        filtros.add(new Filtro(Filtro.OR, "nome", Filtro.IGUAL, getObjeto().getNome()));
+        filtros.add(new Filtro(Filtro.AND, "idempresa", Filtro.IGUAL, empresa.getId()));
+
+
         PdvCaixa caixa = dao.get(PdvCaixa.class, filtros);
 
         if (caixa != null && !caixa.equals(getObjeto())) {

@@ -120,6 +120,7 @@ public class PdvConfiguracaoControll extends AbstractControll<PdvConfiguracao> i
             PdvConfiguracao result = service.salvar(getObjeto());
             nfeService.cleanConf();
             setObjeto(result);
+            Mensagem.addInfoMessage("Registro salvo com sucesso");
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
@@ -151,6 +152,7 @@ public class PdvConfiguracaoControll extends AbstractControll<PdvConfiguracao> i
         try {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro(Filtro.AND, "nome", Filtro.LIKE, nome));
+            filtros.add(new Filtro(Filtro.AND, "idempresa", Filtro.IGUAL, empresa.getId()));
             caixas = repositoryCaixa.getEntitys(PdvCaixa.class, filtros);
         } catch (Exception ex) {
 

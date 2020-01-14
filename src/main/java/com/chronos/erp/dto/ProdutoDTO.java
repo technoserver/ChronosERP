@@ -25,6 +25,7 @@ public class ProdutoDTO implements Serializable {
     private BigDecimal quantidadeEstoque;
     private BigDecimal estoqueVerificado;
     private String ncm;
+    private String cest;
     private String imagem;
     private Integer idgrupotributario;
     private String unidade;
@@ -52,7 +53,6 @@ public class ProdutoDTO implements Serializable {
         this.estoqueVerificado = estoqueVerificado;
         this.unidade = unidade;
         this.ncm = ncm;
-
         this.produto = new Produto(id, nome);
         this.produto.setControle(estoqueVerificado);
         this.produto.setCustoUnitario(custoUnitario);
@@ -64,7 +64,7 @@ public class ProdutoDTO implements Serializable {
 
 
     public ProdutoDTO(Integer id, Integer idgrade, String nome, String descricaoPdv, String servico, String codigoLst, BigDecimal valorVenda,
-                      BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String imagem,
+                      BigDecimal quantidadeEstoque, BigDecimal estoqueVerificado, String ncm, String cest, String imagem,
                       Integer idgrupotributario, String unidade, String podeFracionar, BigDecimal precoPromocao,
                       PrecoPrioritario precoPrioritario, BigDecimal quantidadeVendaAtacado, BigDecimal valorVendaAtacado, boolean possuiGrade) {
         this.id = id;
@@ -82,6 +82,7 @@ public class ProdutoDTO implements Serializable {
         this.estoqueVerificado = estoqueVerificado;
         this.unidade = unidade;
         this.ncm = ncm;
+        this.cest = cest;
         this.imagem = imagem;
         this.idgrupotributario = idgrupotributario;
         this.possuiGrade = possuiGrade;
@@ -89,6 +90,7 @@ public class ProdutoDTO implements Serializable {
         this.servico = servico;
         this.produto = new Produto(id, nome, servico, valorVenda, quantidadeEstoque, ncm, new UnidadeProduto(0, unidade));
         this.produto.setImagem(imagem);
+        this.produto.setCest(cest);
         this.produto.getUnidadeProduto().setPodeFracionar(podeFracionar);
         this.produto.setCodigoLst(codigoLst);
         this.produto.setControle(estoqueVerificado);
