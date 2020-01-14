@@ -87,6 +87,7 @@ public class PessoasControll extends AbstractControll<Pessoa> implements Seriali
         getObjeto().setListaPessoaEndereco(new HashSet<>());
         getObjeto().setListaPessoaTelefone(new HashSet<>());
 
+
         endereco = new PessoaEndereco();
         endereco.setPrincipal("S");
         endereco.setCobranca("S");
@@ -100,6 +101,7 @@ public class PessoasControll extends AbstractControll<Pessoa> implements Seriali
 
         getObjeto().setTipo("F");
         getObjeto().setPessoaFisica(pf);
+        getObjeto().getPessoaFisica().setEstadoCivil(new EstadoCivil(1, "SOLTEIRO"));
         pf.setPessoa(getObjeto());
 
     }

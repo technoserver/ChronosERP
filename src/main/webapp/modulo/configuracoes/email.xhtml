@@ -74,6 +74,7 @@
 
                 <erp:campoAreaTexto idComponente="texto"
                                     styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    linhas="10"
                                     nomeAtributo="#{emailConfiguracaoControll.objeto.texto}"
                                     label="Texto"/>
             </div>
@@ -81,15 +82,12 @@
 
         <div class="ibox-footer">
             <div class="row">
-                <div class="col-xs-6 col-lg-6 text-center">
+                <div class="col-xs-12 col-lg-12 text-center">
                     <p:commandButton value="Salvar"
                                      id="btn-salvar"
                                      action="#{emailConfiguracaoControll.salvar}"
                                      process="@form"
                                      update=":formCentro:growl"/>
-                </div>
-                <div class="col-xs-6 col-lg-6 text-center">
-
                 </div>
 
             </div>
