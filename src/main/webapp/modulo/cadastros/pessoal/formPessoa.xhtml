@@ -47,8 +47,8 @@
                                      value="#{pessoasControll.objeto.tipo}">
                         <f:selectItems value="#{pessoasControll.tipoPessoa}"/>
                         <p:ajax event="change"
-                                update="formCentro:telaDetalhe:telaCadastroPessoa:panelPessoaFisicaJuridica,formCentro:telaDetalhe:telaCadastroPessoa:camposNone"
-                                process="@this" listener="#{pessoasControll.definirTipo()}"
+                                update=":formCentro:telaDetalhe:telaCadastroPessoa:panelPessoaFisicaJuridica,:formCentro:telaDetalhe:telaCadastroPessoa:camposNone"
+                                process="@this,@form" listener="#{pessoasControll.definirTipo()}"
                                 oncomplete="addClass()"/>
 
                     </h:selectOneMenu>

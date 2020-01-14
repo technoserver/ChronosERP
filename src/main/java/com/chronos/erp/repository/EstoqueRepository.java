@@ -149,7 +149,7 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
         String filtro = servico.equals("S") ? "" : "and p.servico = '" + servico + "'";
         int id = !StringUtils.isEmpty(nome) && nome.length() <= 9 && org.apache.commons.lang3.StringUtils.isNumeric(nome) ? Integer.parseInt(nome) : 0;
         String jpql = "select DISTINCT new com.chronos.erp.dto.ProdutoDTO(p.id,p.produtoGrade.id,p.nome,p.descricaoPdv,p.servico,p.codigoLst,p.valorVenda," +
-                "ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.imagem,p.tributGrupoTributario.id,un.sigla," +
+                "ep.quantidadeEstoque,ep.estoqueVerificado,p.ncm,p.cest,p.imagem,p.tributGrupoTributario.id,un.sigla," +
                 "un.podeFracionar,pp.valor,p.precoPrioritario,p.quantidadeVendaAtacado,p.valorVendaAtacado,p.possuiGrade) From Produto p " +
                 "INNER JOIN EmpresaProduto ep ON ep.produto.id  = p.id " +
                 "INNER JOIN UnidadeProduto un ON p.unidadeProduto.id  = un.id " +
