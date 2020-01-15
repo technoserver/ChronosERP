@@ -26,10 +26,7 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by john on 13/12/17.
@@ -43,7 +40,7 @@ public class OsService extends AbstractService<OsAbertura> {
     @Inject
     private EstoqueRepository estoqueRepositoy;
 
-    private List<OsProdutoServico> itens;
+    private Set<OsProdutoServico> itens;
     @Inject
     private NfeService nfeService;
     @Inject
@@ -171,7 +168,7 @@ public class OsService extends AbstractService<OsAbertura> {
         sobra = Biblioteca.subtrai(sobra, descItens);
 
         if (sobra.signum() > 0 || sobra.signum() < 0) {
-            OsProdutoServico item = os.getListaOsProdutoServico().get(0);
+            OsProdutoServico item = os.getListaOsProdutoServico().stream().findFirst().get();
             BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
             BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);
             BigDecimal txDesc = Biblioteca.calcularFator(item.getValorSubtotal(), vlrTotal);
