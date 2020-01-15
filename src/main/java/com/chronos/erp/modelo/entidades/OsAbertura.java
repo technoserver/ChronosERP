@@ -10,7 +10,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.*;
+import java.util.Date;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Table(name = "OS_ABERTURA")
@@ -89,8 +92,8 @@ public class OsAbertura implements Serializable {
     private PdvMovimento movimento;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OsEvolucao> listaOsEvolucao;
-    @OneToMany(mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OsProdutoServico> listaOsProdutoServico;
+    @OneToMany(mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<OsProdutoServico> listaOsProdutoServico;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OsAberturaEquipamento> listaOsAberturaEquipamento;
     @OneToMany(mappedBy = "osAbertura", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -270,11 +273,11 @@ public class OsAbertura implements Serializable {
         this.listaOsEvolucao = listaOsEvolucao;
     }
 
-    public List<OsProdutoServico> getListaOsProdutoServico() {
+    public Set<OsProdutoServico> getListaOsProdutoServico() {
         return listaOsProdutoServico;
     }
 
-    public void setListaOsProdutoServico(List<OsProdutoServico> listaOsProdutoServico) {
+    public void setListaOsProdutoServico(Set<OsProdutoServico> listaOsProdutoServico) {
         this.listaOsProdutoServico = listaOsProdutoServico;
     }
 
