@@ -8,7 +8,6 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.Optional;
 
 @Entity
@@ -161,28 +160,6 @@ public class OsProdutoServico implements Serializable {
     @Override
     public String toString() {
         return "OsProdutoServico{" + "id=" + id + '}';
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 19 * hash + Objects.hashCode(this.id);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final OsProdutoServico other = (OsProdutoServico) obj;
-        return Objects.equals(this.id, other.id);
     }
 
 }
