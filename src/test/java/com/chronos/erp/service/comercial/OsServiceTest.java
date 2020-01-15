@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -23,7 +23,7 @@ public class OsServiceTest {
         service = new OsService();
 
         os = new OsAbertura();
-        os.setListaOsProdutoServico(new ArrayList<>());
+        os.setListaOsProdutoServico(new HashSet<>());
     }
 
     @Test
