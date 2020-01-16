@@ -217,6 +217,26 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
         duplicatas = getObjeto().getDuplicatas();
     }
 
+    @Override
+    public void remover() {
+        try {
+            if (getObjetoSelecionado().getStatusNota().equals(StatusTransmissao.ENCERRADO.getCodigo())) {
+                NfeCabecalho nfe = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+                entradaService.estornarEstoque(nfe);
+                Mensagem.addInfoMessage("Registro excluso com sucesso");
+            } else {
+                this.remover();
+            }
+
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Erro ao finzalizer ", ex);
+            }
+        }
+    }
 
     public void salvarEntrada() {
         try {
