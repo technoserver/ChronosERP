@@ -648,7 +648,7 @@ public class NfeService implements Serializable {
         caminho += System.getProperty("file.separator") + nfe.getNomeXml();
 
         HashMap parametrosRelatorio = new HashMap<>();
-        String camLogo = ArquivoUtil.getInstance().getImagemTransmissao(nfe.getEmpresa().getCnpj());
+        String camLogo = configuracao.getCaminhoLogomarca();
         camLogo = new File(camLogo).exists() ? camLogo : context.getRealPath("resources/images/logo_nfe_peq.png");
         Image logo = new ImageIcon(camLogo).getImage();
         // logo.flush();

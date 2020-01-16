@@ -12,12 +12,16 @@ import com.chronos.erp.util.Constants;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
+import org.springframework.util.StringUtils;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  * Created by john on 26/09/17.
@@ -90,11 +94,16 @@ public class NfeConfiguracaoControll extends AbstractControll<NfeConfiguracao> i
         try {
 
             UploadedFile arquivo = event.getFile();
-            String nomeArquivo = "logo_transmissao_" + empresa.getCnpj();
+            String nomeArquivo = "logo_transmissao_" + UUID.randomUUID().toString();
             String extensao = arquivo.getFileName().substring(arquivo.getFileName().lastIndexOf("."));
             nomeArquivo += extensao;
-            getObjeto().setCaminhoLogomarca(ArquivoUtil.getInstance().escrever(TipoArquivo.LogoTransmissao, empresa.getCnpj(), arquivo.getInputstream(), nomeArquivo));
 
+            if (!StringUtils.isEmpty(getObjeto().getCaminhoLogomarca())) {
+                Files.deleteIfExists(Paths.get(getObjeto().getCaminhoLogomarca()));
+            }
+
+            getObjeto().setCaminhoLogomarca(ArquivoUtil.getInstance().escrever(TipoArquivo.LogoTransmissao, empresa.getCnpj(), arquivo.getInputstream(), nomeArquivo));
+            salvar();
         } catch (Exception e) {
             Mensagem.addErrorMessage("", e);
             e.printStackTrace();
