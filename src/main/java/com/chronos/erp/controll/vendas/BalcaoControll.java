@@ -459,8 +459,8 @@ public class BalcaoControll implements Serializable {
         }
     }
 
-    public void removerItemDevolucao() {
-        devolucao.getListaVendaDevolucaoItem().remove(vendaDevolucaoItemSelecionado);
+    public void removerItemDevolucao(int idx) {
+        devolucao.getListaVendaDevolucaoItem().remove(idx);
     }
 
 

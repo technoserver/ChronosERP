@@ -143,6 +143,7 @@ public class PessoasControll extends AbstractControll<Pessoa> implements Seriali
             pessoa.setTipo("F");
             pessoa.setPessoaFisica(pf);
             pf.setPessoa(pessoa);
+            getObjeto().getPessoaFisica().setEstadoCivil(new EstadoCivil(1, "SOLTEIRO"));
         } else {
             pessoa.setPessoaFisica(null);
             PessoaJuridica pj = new PessoaJuridica();
