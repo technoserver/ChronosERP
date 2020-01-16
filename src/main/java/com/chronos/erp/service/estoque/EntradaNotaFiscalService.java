@@ -88,7 +88,10 @@ public class EntradaNotaFiscalService implements Serializable {
         Integer idempresa = nfe.getEmpresa().getId();
         AdmParametro parametro = FacesUtil.getParamentos();
         nfe.setNaturezaOperacao(nfe.getTributOperacaoFiscal().getDescricaoNaNf());
+
+
         if (nfe.getId() == null || !nfe.getStatusNota().equals(StatusTransmissao.ENCERRADO.getCodigo())) {
+            nfe = repository.atualizar(nfe);
             inclusao = true;
             for (NfeDetalhe detalhe : nfe.getListaNfeDetalhe()) {
                 atualizarEstoque(nfe.getEmpresa(), nfe.getTributOperacaoFiscal(), detalhe);
@@ -139,7 +142,6 @@ public class EntradaNotaFiscalService implements Serializable {
         }
         String descricao = "Entrada da NFe :" + nfe.getNumero() + " Fornecedor :" + nfe.getEmitente().getNome();
         nfe.setStatusNota(StatusTransmissao.ENCERRADO.getCodigo());
-
         nfe = repository.atualizar(nfe);
 
         if (!nfe.getListaDuplicata().isEmpty()) {
@@ -351,5 +353,41 @@ public class EntradaNotaFiscalService implements Serializable {
             estoqueRepository.atualizaEstoqueEmpresa(empresa.getId(), detalhe.getProduto().getId(), detalhe.getQuantidadeComercial());
 
         }
+    }
+
+    @Transactional
+    public void estornarEstoque(NfeCabecalho nfe) {
+        Empresa emp = nfe.getEmpresa();
+
+
+        if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
+            estoqueRepository.atualizaEstoqueEmpresaControleFiscal(emp.getId(), nfe.getListaNfeDetalhe());
+        } else if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
+            estoqueRepository.atualizaEstoqueEmpresaControle(emp.getId(), nfe.getListaNfeDetalhe());
+        } else {
+            estoqueRepository.atualizaEstoqueEmpresa(emp.getId(), nfe.getListaNfeDetalhe());
+        }
+
+        for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
+            if (nfe.getTributOperacaoFiscal().getEstoqueVerificado() && nfe.getTributOperacaoFiscal().getEstoque()) {
+                estoqueRepository.atualizarEstoqueMovimento(item.getProduto().getId(), emp.getId(), item.getQuantidadeComercial(),
+                        Modulo.ENTRADA.getCodigo(), item.getNfeCabecalho().getId().toString(), "F", "S");
+                estoqueRepository.atualizarEstoqueMovimento(item.getProduto().getId(), emp.getId(), item.getQuantidadeComercial(),
+                        Modulo.ENTRADA.getCodigo(), item.getNfeCabecalho().getId().toString(), "V", "S");
+
+
+            } else if (nfe.getTributOperacaoFiscal().getEstoqueVerificado()) {
+                estoqueRepository.atualizarEstoqueMovimento(item.getProduto().getId(), emp.getId(), item.getQuantidadeComercial(),
+                        Modulo.ENTRADA.getCodigo(), item.getNfeCabecalho().getId().toString(), "V", "S");
+
+            } else {
+                estoqueRepository.atualizarEstoqueMovimento(item.getProduto().getId(), emp.getId(), item.getQuantidadeComercial(),
+                        Modulo.ENTRADA.getCodigo(), item.getNfeCabecalho().getId().toString(), "F", "S");
+
+            }
+        }
+
+        repository.excluir(nfe, nfe.getId());
+        auditoriaService.gerarLog(AcaoLog.DELETE, "Exclusão de Nota fiscal de entrada já encerrada", "Entrada de NF");
     }
 }

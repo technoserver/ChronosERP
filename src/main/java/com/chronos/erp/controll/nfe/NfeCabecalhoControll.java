@@ -503,8 +503,6 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
     }
 
     public void danfe() {
-
-
         try {
 
             nfeService.danfe(getObjeto());

@@ -15,7 +15,8 @@
             <h:outputLabel value="Modalidade Frete" for="modalidadeFrete"/>
             <h:selectOneMenu styleClass="form-control"
                              id="modalidadeFrete"
-                             value="#{nfeCabecalhoControll.objeto.transporte.modalidadeFrete}">
+                             value="#{nfeCabecalhoControll.objeto.transporte.modalidadeFrete}"
+                             rendered="#{not empty nfeCabecalhoControll.objeto.transporte}">
                 <f:selectItems value="#{nfeCabecalhoControll.modalidadeFreteNfe}"/>
                 <p:ajax process="@this" update=":formCentro:telaDetalhe:tabNfe:dadosTransportadora"/>
             </h:selectOneMenu>
