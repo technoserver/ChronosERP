@@ -1077,6 +1077,7 @@
 
                     <p:dataTable id="dataTableItemDevolucao" var="obj"
                                  value="#{balcaoControll.devolucao.listaVendaDevolucaoItem}"
+                                 rowIndexVar="idx"
                                  reflow="true" editable="true" editMode="cell" widgetVar="itemDevolvido">
 
                         <p:ajax event="cellEdit" listener="#{balcaoControll.calcularValorDevolucao}"/>
@@ -1105,7 +1106,7 @@
                             </p:cellEditor>
                         </p:column>
                         <p:column headerText="" width="60" styleClass="text-center">
-                            <p:commandLink title="Excluir" action="#{balcaoControll.removerItemDevolucao()}"
+                            <p:commandLink title="Excluir" action="#{balcaoControll.removerItemDevolucao(idx)}"
                                            update="dataTableItemDevolucao"
                                            process="dataTableItemDevolucao"
                                            class="btn btn-default">

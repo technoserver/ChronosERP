@@ -11,16 +11,14 @@ import com.chronos.erp.service.comercial.NfeService;
 import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import org.apache.commons.lang3.time.DateUtils;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by john on 30/11/17.
@@ -71,13 +69,15 @@ public class NfeRelatorioControll extends AbstractRelatorioControll implements S
         try {
             List<NfeCabecalho> nfes;
             List<Filtro> filtros = new LinkedList<>();
-            periodo = periodo == null ? new Date() : periodo;
-            dataFinal = dataFinal == null ? new Date() : dataFinal;
+
+            periodo = DateUtils.truncate(periodo == null ? new Date() : periodo, Calendar.DATE);
+            dataFinal = DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataFinal == null ? new Date() : dataFinal, 23), 59), 59);
             String nomeArquivo = empresa.getCnpj() + new SimpleDateFormat("_MM_yyyy").format(periodo);
             filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MAIOR_OU_IGUAL, periodo));
             filtros.add(new Filtro(Filtro.AND, "dataHoraEmissao", Filtro.MENOR_OU_IGUAL,
                     new Date(dataFinal.getTime() + (1000 * 60 * 60 * 24))));
             filtros.add(new Filtro(Filtro.AND, "codigoModelo", Filtro.IGUAL, modelo));
+            filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
             filtros.add(new Filtro("statusNota", StatusTransmissao.AUTORIZADA.getCodigo(), StatusTransmissao.CANCELADA.getCodigo()));
             nfes = repository.getEntitys(NfeCabecalho.class, filtros, 0, new Object[]{"empresa.id", "empresa.cnpj", "digitoChaveAcesso", "chaveAcesso", "qrcode", "codigoModelo", "statusNota"});
 

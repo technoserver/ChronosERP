@@ -80,7 +80,8 @@
                         <f:selectItems value="#{cc.attrs.controller.tipoPessoa}"/>
                         <p:ajax event="change"
                                 update=":formCentro:telaDetalhe:dadosPessoa:telaCadastroPessoa:panelPessoaFisicaJuridica,:formCentro:telaDetalhe:dadosPessoa:telaCadastroPessoa:camposNone"
-                                process="@this,@form" listener="#{cc.attrs.controller.definirTipo()}"
+                                process="@this,:formCentro:telaDetalhe:dadosPessoa:telaCadastroPessoa:campoNome:pessoaNome"
+                                listener="#{cc.attrs.controller.definirTipo()}"
                                 oncomplete="addClass()"/>
                     </h:selectOneMenu>
                 </h:panelGroup>
