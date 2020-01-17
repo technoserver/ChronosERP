@@ -67,7 +67,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     protected void init() {
         super.init();
 
-        listaVendedor = vendedorService.getMapVendedores();
+        listaVendedor = vendedorService.getMapColaboradorComissionado();
 
         listaGrupo = new LinkedHashMap<>();
         listaGrupo.put("TODOS", 0);

@@ -72,15 +72,14 @@ public class ColaboradorControll extends PessoaControll<Colaborador> implements 
             dataModel.setClazz(Colaborador.class);
 
         }
-        dataModel.getFiltros().clear();
-        dataModel.addFiltro("pessoa.id", 1, Filtro.DIFERENTE);
         pesquisar();
         dataModel.setAtributos(new Object[]{"pessoa.id", "pessoa.nome", "matricula", "situacaoColaborador.nome", "cargo.nome", "setor.nome"});
         return dataModel;
     }
 
     public void pesquisar() {
-
+        dataModel.getFiltros().clear();
+        dataModel.addFiltro("pessoa.id", 1, Filtro.DIFERENTE);
         if (!StringUtils.isEmpty(nome)) {
             dataModel.getFiltros().add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
         }

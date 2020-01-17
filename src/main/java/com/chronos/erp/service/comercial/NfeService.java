@@ -626,13 +626,18 @@ public class NfeService implements Serializable {
         File fileXml = new File(caminhoXml);
         File filePdf = new File(arquivoPdf);
 
-        if (!filePdf.exists() && !fileXml.exists()) {
-            System.out.println("Na existe nem xml e nem pdf");
-        }
+
 
         if (filePdf.exists()) {
             FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         } else {
+            if (configuracao == null) {
+                configuracao = nfeConfiguracaoService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
+                if (configuracao == null) {
+                    throw new ChronosException("COnfigurações para NFe não definida");
+                }
+            }
+
             gerarDanfe(nfe);
             FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         }
