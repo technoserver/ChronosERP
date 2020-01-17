@@ -1,6 +1,7 @@
 package com.chronos.erp.service.comercial;
 
 import com.chronos.erp.modelo.entidades.Colaborador;
+import com.chronos.erp.modelo.entidades.Tecnico;
 import com.chronos.erp.modelo.entidades.Vendedor;
 import com.chronos.erp.repository.Repository;
 
@@ -20,6 +21,8 @@ public class VendedorService implements Serializable {
 
     @Inject
     private Repository<Vendedor> repository;
+    @Inject
+    private Repository<Tecnico> tecnicoRepository;
 
     public Vendedor instaciarVendedor(Integer idcolaborador) {
 
@@ -45,6 +48,19 @@ public class VendedorService implements Serializable {
         listaVendedor.putAll(list.stream()
                 .collect(Collectors.toMap((Vendedor::getNome), Vendedor::getId)));
 
+        return listaVendedor;
+    }
+
+    public Map<String, Integer> getMapColaboradorComissionado() {
+        List<Vendedor> list = repository.getEntitys(Vendedor.class, new ArrayList<>(), new Object[]{"colaborador.id", "colaborador.pessoa.nome"});
+        list.add(0, new Vendedor(0, 0, "TODOS"));
+        Map<String, Integer> listaVendedor = new LinkedHashMap<>();
+        listaVendedor.putAll(list.stream()
+                .collect(Collectors.toMap(v -> (v.getColaborador().getNome()), v -> v.getColaborador().getId())));
+
+        List<Tecnico> tecnicos = tecnicoRepository.getEntitys(Tecnico.class, new ArrayList<>(), new Object[]{"colaborador.id", "colaborador.pessoa.nome"});
+        listaVendedor.putAll(tecnicos.stream()
+                .collect(Collectors.toMap(t -> (t.getColaborador().getNome()), t -> t.getColaborador().getId())));
         return listaVendedor;
     }
 }
