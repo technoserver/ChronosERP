@@ -178,7 +178,7 @@
         </p:tab>
 
 
-        <p:tab title="Produtos/Serviços" id="tabProdutos">
+        <p:tab title="Produtos" id="tabProdutos">
             <div class="row">
                 <div class="col-lg-12">
                     <h:commandLink title="Novo"
@@ -226,59 +226,87 @@
                         <f:convertNumber pattern="#,###,##0.00"/>
                     </h:outputText>
                 </p:column>
-                <p:column headerText="Ações" width="120" styleClass="text-center">
-                    <p:commandLink process="dataTableNfeDetalhe" title="Alterar" style="margin-right: 5px"
-                                   id="btnAlterarProduto"
-                                   oncomplete="PF('dialogNfeDetalhe').show()" styleClass="btn btn-default"
-                                   action="#{entradaNotaFiscalControll.alteraProduto}"
-                                   rendered="#{not empty obj.produto.id}"
-                                   update=":formOutrasTelas:panelNfeDetalhe" >
-                        <i class="fa fa-file-text-o"></i>
-                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
-                    </p:commandLink>
+                <p:column headerText="Ações" width="80" styleClass="text-center">
+                    <p:menuButton>
+                        <p:menuitem value="Alterar"
+                                    id="btnAlterarProduto"
+                                    process="dataTableNfeDetalhe"
+                                    update=":formOutrasTelas:panelNfeDetalhe"
+                                    oncomplete="PF('dialogNfeDetalhe').show()"
+                                    rendered="#{not empty obj.produto.id}"
+                                    action="#{entradaNotaFiscalControll.alteraProduto}">
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                        </p:menuitem>
 
-                    <p:commandLink process="dataTableNfeDetalhe,:formCentro:tabNfe:panel-dados-principais"
-                                   title="Excluir" styleClass="btn btn-default"
-                                   id="btnExcluirProduto" style="margin-right: 5px"
-                                   action="#{entradaNotaFiscalControll.excluirProduto}"
-                                   rendered="#{not entradaNotaFiscalControll.importado}"
-                                   update="dataTableNfeDetalhe,:formCentro:tabNfe:panel-dados-principais">
-                        <i class="fa fa-close"/>
-                        <p:confirm header="Confirmação" message="Confirma Exclusão?"
-                                   icon="ui-icon-alert" />
-                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
-                    </p:commandLink>
+                        <p:menuitem value="Excluir"
+                                    id="btnExcluirProduto"
+                                    process="dataTableNfeDetalhe,:formCentro:tabNfe:panel-dados-principais"
+                                    update="dataTableNfeDetalhe,:formCentro:tabNfe:panel-dados-principais"
+                                    oncomplete="PF('dialogNfeDetalhe').show()"
+                                    rendered="#{not entradaNotaFiscalControll.importado}"
+                                    action="#{entradaNotaFiscalControll.excluirProduto}">
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                        </p:menuitem>
 
-                    <p:commandLink process="dataTableNfeDetalhe" title="Vincular Produto"
-                                   id="btnVincularProduto" style="margin-right: 5px"
-                                   oncomplete="PF('dialogVincularProduto').show()" styleClass="btn btn-default"
-                                   action="#{entradaNotaFiscalControll.exibirVinculoProduto()}"
-                                   update=":formOutrasTelas5:panelVincularProduto"
-                                   rendered="#{ empty obj.produto.id}">
-                        <i class="glyphicon glyphicon-check"></i>
-                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
-                    </p:commandLink>
+                        <p:menuitem value="Vincular Produto"
+                                    id="btnVincularProduto"
+                                    process="dataTableNfeDetalhe"
+                                    update=":formOutrasTelas5:panelVincularProduto"
+                                    oncomplete="PF('dialogVincularProduto').show()"
+                                    rendered="#{ empty obj.produto.id}"
+                                    action="#{entradaNotaFiscalControll.exibirVinculoProduto()}">
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                        </p:menuitem>
 
-                    <p:commandLink process="formCentro:tabNfe:tabProdutos" title="Desvincular Produto"
-                                   id="btnDisvincularProduto"
-                                   styleClass="btn btn-default"
-                                   action="#{entradaNotaFiscalControll.disvincularProduto}"
-                                   update=":formCentro:tabNfe:tabProdutos,:formCentro:mensagem"
-                                   rendered="#{ not empty obj.produto.id and obj.produtoCadastrado and empty entradaNotaFiscalControll.objeto.id and entradaNotaFiscalControll.importado}">
-                        <i class="fa fa-chain-broken"></i>
-                        <f:setPropertyActionListener value="#{obj}"
-                                                     target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
-                    </p:commandLink>
+                        <p:menuitem value="Desvincular Produto"
+                                    id="btnDisvincularProduto"
+                                    process="formCentro:tabNfe:tabProdutos"
+                                    update=":formCentro:tabNfe:tabProdutos,:formCentro:mensagem"
+                                    oncomplete="PF('dialogVincularProduto').show()"
+                                    rendered="#{ not empty obj.produto.id and obj.produtoCadastrado and empty entradaNotaFiscalControll.objeto.id and entradaNotaFiscalControll.importado}"
+                                    action="#{entradaNotaFiscalControll.disvincularProduto}">
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                        </p:menuitem>
 
-                    <p:commandLink process="dataTableNfeDetalhe" title="Cadastrar Produto"
-                                   id="btnCadastraProduto" style="margin-right: 5px"
-                                   oncomplete="PF('dialogCadastrarProduto').show()" styleClass="btn btn-default"
-                                   action="#{entradaNotaFiscalControll.cadastrarProduto()}"
-                                   update=":formOutrasTelas3:panelCadastrarProduto"
-                                   rendered="#{empty obj.produto.id}">
-                        <i class="fa fa-file-powerpoint-o"></i>
-                        <f:setPropertyActionListener value="#{obj}" target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
-                    </p:commandLink>
+                        <p:menuitem value="Cadastrar Produto"
+                                    id="btnCadastraProduto"
+                                    process="dataTableNfeDetalhe"
+                                    update=":formOutrasTelas3:panelCadastrarProduto"
+                                    oncomplete="PF('dialogCadastrarProduto').show()"
+                                    rendered="#{empty obj.produto.id}"
+                                    action="#{entradaNotaFiscalControll.cadastrarProduto()}">
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                        </p:menuitem>
+
+                        <p:menuitem value="Convensão de UN"
+                                    id="btnConvensaoUN"
+                                    process="dataTableNfeDetalhe"
+                                    update=":formOutrasTelas7:panelOutrasTelas7"
+                                    oncomplete="PF('dialogOutrasTelas7').show()"
+                                    rendered="#{not empty obj.produto.id}"
+                        >
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                        </p:menuitem>
+
+                        <p:menuitem value="Atual. VLR. de venda"
+                                    id="btnAtualizarValorVenda"
+                                    action="#{entradaNotaFiscalControll.calcularPrecoSugerido}"
+                                    update=":formOutrasTelas8:panelOutrasTelas8"
+                                    oncomplete="PF('dialogOutrasTelas8').show()"
+                                    rendered="#{not empty obj.produto.id}"
+                        >
+                            <f:setPropertyActionListener value="#{obj}"
+                                                         target="#{entradaNotaFiscalControll.nfeDetalheSelecionado}"/>
+                        </p:menuitem>
+
+                    </p:menuButton>
+
                 </p:column>
             </p:dataTable>
 

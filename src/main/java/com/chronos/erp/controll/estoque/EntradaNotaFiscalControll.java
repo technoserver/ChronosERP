@@ -121,6 +121,8 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
     private BigDecimal valorTotalNF;
     private BigDecimal fator;
 
+    private BigDecimal qtdConversao;
+
 
     private String acao;
 
@@ -700,6 +702,78 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 throw new RuntimeException("erro ao disvincular produto", ex);
             }
         }
+    }
+
+    public void converterUnidade() {
+        try {
+            if (nfeDetalheSelecionado.getQuantidadeTributavel() == null || nfeDetalheSelecionado.getQuantidadeTributavel().signum() < 0) {
+                nfeDetalheSelecionado.setQuantidadeTributavel(nfeDetalheSelecionado.getQuantidadeComercial());
+            }
+
+            if (nfeDetalheSelecionado.getValorUnitarioTributavel() == null || nfeDetalheSelecionado.getValorUnitarioTributavel().signum() < 0) {
+                nfeDetalheSelecionado.setValorUnitarioTributavel(nfeDetalheSelecionado.getQuantidadeComercial());
+            }
+
+            if (StringUtils.isEmpty(nfeDetalheSelecionado.getUnidadeTributavel())) {
+                nfeDetalheSelecionado.setUnidadeTributavel(nfeDetalheSelecionado.getUnidadeComercial());
+            }
+
+            BigDecimal novaQuantidade = acao.equals("M")
+                    ? Biblioteca.multiplica(nfeDetalheSelecionado.getQuantidadeComercial(), fator)
+                    : Biblioteca.divide(nfeDetalheSelecionado.getQuantidadeComercial(), fator);
+
+
+            BigDecimal valorTotal = nfeDetalheSelecionado.getValorSubtotal();
+            BigDecimal novoValorUnitario = Biblioteca.divide(valorTotal, novaQuantidade);
+
+            nfeDetalheSelecionado.setQuantidadeComercial(novaQuantidade);
+            nfeDetalheSelecionado.setValorUnitarioComercial(novoValorUnitario);
+            nfeDetalheSelecionado.setUnidadeComercial(unidadeProduto.getSigla());
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("erro ao disvincular produto", ex);
+            }
+        }
+    }
+
+    public void calcularPrecoSugerido() {
+
+        BigDecimal encargos = Biblioteca.soma(nfeDetalheSelecionado.getValorOutrasDespesas(), nfeDetalheSelecionado.getValorFrete());
+        encargos = Biblioteca.soma(encargos, nfeDetalheSelecionado.getValorSeguro());
+        if (nfeDetalheSelecionado.getNfeDetalheImpostoIpi() != null && nfeDetalheSelecionado.getNfeDetalheImpostoIpi().getValorIpi() != null) {
+            encargos = Biblioteca.soma(encargos, nfeDetalheSelecionado.getNfeDetalheImpostoIpi().getValorIpi());
+        }
+        if (nfeDetalheSelecionado.getNfeDetalheImpostoIcms() != null && nfeDetalheSelecionado.getNfeDetalheImpostoIcms().getValorIcmsSt() != null) {
+            encargos = Biblioteca.soma(encargos, nfeDetalheSelecionado.getNfeDetalheImpostoIcms().getValorIcmsSt());
+        }
+
+        nfeDetalheSelecionado.getProduto().setEncargosVenda(encargos);
+        nfeDetalheSelecionado.getProduto().setCustoUnitario(nfeDetalheSelecionado.getValorUnitarioComercial());
+
+    }
+
+    public void atualizarPrecoSugerido() {
+
+        try {
+            BigDecimal custoTotal = Biblioteca.soma(nfeDetalheSelecionado.getProduto().getEncargosVenda(), nfeDetalheSelecionado.getProduto().getCustoUnitario());
+            BigDecimal valorSugerido = Biblioteca.calcularValorPercentual(custoTotal, margemLucro);
+            BigDecimal valorVenda = Biblioteca.soma(custoTotal, valorSugerido);
+            nfeDetalheSelecionado.getProduto().setValorVenda(valorVenda);
+        } catch (Exception ex) {
+            FacesContext.getCurrentInstance().validationFailed();
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage(ex.getMessage());
+            }
+        }
+    }
+
+    public void salvarPrecoSugerido() {
+        produtoService.atualizarPrecoSugerido(nfeDetalheSelecionado.getProduto().getId(), nfeDetalheSelecionado.getProduto().getCustoUnitario(),
+                nfeDetalheSelecionado.getProduto().getEncargosVenda(), nfeDetalheSelecionado.getProduto().getValorVenda());
+        Mensagem.addInfoMessage("Valor de venda e encargos atualizado com sucesso");
     }
 
     public void calcularValorVenda() {
@@ -1530,5 +1604,13 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
 
     public void setIdmepresaFiltro(Integer idmepresaFiltro) {
         this.idmepresaFiltro = idmepresaFiltro;
+    }
+
+    public BigDecimal getQtdConversao() {
+        return qtdConversao;
+    }
+
+    public void setQtdConversao(BigDecimal qtdConversao) {
+        this.qtdConversao = qtdConversao;
     }
 }
