@@ -495,6 +495,8 @@ public class Biblioteca {
     }
 
     public static BigDecimal soma(BigDecimal valor1, BigDecimal valor2) {
+        valor1 = Optional.ofNullable(valor1).orElse(BigDecimal.ZERO);
+        valor2 = Optional.ofNullable(valor2).orElse(BigDecimal.ZERO);
         BigDecimal resultado = valor1.add(valor2, MathContext.DECIMAL64);
         resultado = resultado.setScale(2, RoundingMode.HALF_UP);
         return resultado;

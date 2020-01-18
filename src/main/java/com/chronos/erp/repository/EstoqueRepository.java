@@ -32,6 +32,11 @@ public class EstoqueRepository extends AbstractRepository implements Serializabl
 
     }
 
+    public void atualizarPrecoSugerido(Integer id, BigDecimal custoUnitario, BigDecimal valorVenda) {
+        String jpql = "UPDATE Produto p SET p.valorVenda = ?1, p.custoUnitario =?2 where p.id =?3";
+        execute(jpql, valorVenda, custoUnitario, id);
+    }
+
     public void ajustarEstoqueEmpresa(Integer idEmpresa, Integer idProduto, BigDecimal quantidade) {
 
         String jpql = "UPDATE EmpresaProduto p set p.quantidadeEstoque = ?1 where p.produto.id = ?2 and p.empresa.id= ?3";
