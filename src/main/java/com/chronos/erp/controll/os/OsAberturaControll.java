@@ -207,12 +207,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Override
     public void doCreate() {
         try {
-            PdvMovimento movimento = verificarMovimento();
-            if (parametro.getOsGerarMovimentoCaixa().equals("S") && movimento == null) {
-                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-                context.redirect(context.getRequestContextPath() + "/modulo/comercial/caixa/movimentos.xhtml");
-                return;
-            } else {
+
                 super.doCreate();
                 iniciarValoresPagamento();
                 getObjeto().setDataInicio(new Date());
@@ -234,10 +229,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 getObjeto().setStatus(1);
                 getObjeto().setEmpresa(empresa);
 
-                if (parametro.getOsGerarMovimentoCaixa().equals("S")) {
-                    getObjeto().setMovimento(movimento);
-                }
-
                 Vendedor vendedor = vendedorService.instaciarVendedor(usuario.getIdcolaborador());
                 if (vendedor != null) {
                     vendedor.setNome(vendedor.getColaborador().getPessoa().getNome());
@@ -246,7 +237,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
 
                 temProduto = false;
-            }
+
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("Erro ao iniciar uma nova os", ex);
@@ -261,13 +252,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Override
     public void doEdit() {
         try {
-            PdvMovimento movimento = verificarMovimento();
-            if (parametro.getOsGerarMovimentoCaixa().equals("S") && movimento == null) {
-                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-                context.redirect(context.getRequestContextPath() + "/modulo/comercial/caixa/movimentos.xhtml");
-                return;
-            } else {
-                super.doEdit();
+
+            super.doEdit();
                 OsAbertura os = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
 
                 if (os.getTecnico() != null) {
@@ -283,7 +269,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 totalReceber = os.getValorTotal();
                 verificaSaldoRestante();
                 temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
-            }
+
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("Erro ao iniciar uma nova os", ex);
@@ -345,12 +331,19 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public void encerrar() {
         try {
-            OsAbertura os = isTelaGrid() ? dataModel.getRowData(getObjetoSelecionado().getId().toString()) : getObjeto();
 
-            osService.encerrar(os);
-            setTelaGrid(true);
-            Mensagem.addInfoMessage("OS Encerrada com sucesso");
-
+            PdvMovimento movimento = verificarMovimento();
+            if (parametro.getOsGerarMovimentoCaixa().equals("S") && movimento == null) {
+                ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+                context.redirect(context.getRequestContextPath() + "/modulo/comercial/caixa/movimentos.xhtml");
+                return;
+            } else {
+                OsAbertura os = isTelaGrid() ? dataModel.getRowData(getObjetoSelecionado().getId().toString()) : getObjeto();
+                os.setMovimento(movimento);
+                osService.encerrar(os);
+                setTelaGrid(true);
+                Mensagem.addInfoMessage("OS Encerrada com sucesso");
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();

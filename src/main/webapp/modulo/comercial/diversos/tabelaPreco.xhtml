@@ -30,21 +30,63 @@
 
     <ui:define name="gridDados">
 
-        <erp:gridDados controller="#{tabelaPrecosControll}"
-                       idDataTable="dataTableTabelaPreco"
-                       nomeFuncao="Regiao"
-                       id="telaGrid"
-        >
+        <erp:formularioGrid controller="#{tabelaPrecosControll}" id="telaGrid">
 
-            <p:column headerText="Nome">
-                <h:outputLabel value="#{row.nome}"/>
-            </p:column>
-            <p:column headerText="Principal" styleClass="text-center" width="100">
-                <h:outputLabel value="#{row.principal eq 'S'? 'SIM':'NAO'}"/>
-            </p:column>
+            <p:dataTable
+                    value="#{tabelaPrecosControll.dataModel}"
+                    var="row" id="list" paginator="true"
+                    emptyMessage="Nenhum registro encontrado"
+                    rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                    reflow="true" rendered="#{tabelaPrecosControll.podeConsultar()}"
+                    lazy="true"
+            >
 
+                <p:column headerText="Nome">
+                    <h:outputLabel value="#{row.nome}"/>
+                </p:column>
+                <p:column headerText="Principal" styleClass="text-center" width="100">
+                    <h:outputLabel value="#{row.principal eq 'S'? 'SIM':'NAO'}"/>
+                </p:column>
+                <p:column headerText="Ações" width="180" styleClass="text-center"
+                          rendered="#{tabelaPrecosControll.podeExcluir() or tabelaPrecosControll.podeAlterar()}">
+                    <p:commandLink title="Alterar"
+                                   action="#{tabelaPrecosControll.doEdit()}"
+                                   class=" btn btn-default"
+                                   update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem"
+                                   rendered="#{tabelaPrecosControll.podeAlterar()}"
+                                   id="btnAlterar">
+                        <i class="fa fa-file-text-o"></i>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{tabelaPrecosControll.objetoSelecionado}"/>
+                    </p:commandLink>
+                    &nbsp;
+                    <p:commandLink title="Excluir" action="#{tabelaPrecosControll.remover()}"
+                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                                   process="list"
+                                   oncomplete="atualizarMsg();"
+                                   id="btnExcluir"
+                                   class="btn btn-default"
+                                   rendered="#{tabelaPrecosControll.podeExcluir()}"
+                    >
+                        <i class="fa fa-times"></i>
+                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
-        </erp:gridDados>
+                        <f:setPropertyActionListener value="#{row}"
+                                                     target="#{tabelaPrecosControll.objetoSelecionado}"/>
+                    </p:commandLink>
+
+                    <p:commandLink id="btn-print" styleClass="btn btn-default"
+                                   action="#{vendaRelatorioControll.imprimirTabelaPreco(row.id)}"
+                                   ajax="false"
+                                   target="_blank">
+                        <i class="fa fa-print"> </i>
+
+                    </p:commandLink>
+                </p:column>
+
+            </p:dataTable>
+
+        </erp:formularioGrid>
     </ui:define>
 
 
@@ -111,6 +153,8 @@
                         <i class="fa fa-plus"> </i>
 
                     </p:commandLink>
+
+
                 </div>
 
             </div>
