@@ -31,16 +31,16 @@ public class NfeConfiguracaoService implements Serializable {
 
         ConfiguracaoEmissorDTO configuracao;
 
-        if (modelo == ModeloDocumento.NFE) {
-            ConfiguracaoNfeDTO configuracaoNfeDTO = repository.getNamedQuery(ConfiguracaoNfeDTO.class, "Nfe.configuracao", empresa.getId());
+         if (modelo == ModeloDocumento.NFE) {
+             ConfiguracaoNfeDTO configuracaoNfeDTO = repository.getNamedQuery(ConfiguracaoNfeDTO.class, "Nfe.configuracao", empresa.getId());
 
-            if (configuracaoNfeDTO == null) {
-                throw new ChronosException("É preciso definir as configuracoes para NF-e");
-            }
-            configuracao = new ConfiguracaoEmissorDTO(configuracaoNfeDTO);
+             if (configuracaoNfeDTO == null) {
+                 throw new ChronosException("É preciso definir as configuracoes para NF-e");
+             }
+             configuracao = new ConfiguracaoEmissorDTO(configuracaoNfeDTO);
 
-        } else {
-            ConfiguracaoPdvDTO configuracaoPdvDTO = repository.getNamedQuery(ConfiguracaoPdvDTO.class, "Pdv.configuracao", empresa.getId());
+         } else {
+             ConfiguracaoPdvDTO configuracaoPdvDTO = repository.getNamedQuery(ConfiguracaoPdvDTO.class, "Pdv.configuracao", empresa.getId());
 
             if (configuracaoPdvDTO == null) {
                 throw new ChronosException("É preciso definir as configuracoes para NF-e");

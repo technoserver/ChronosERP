@@ -32,6 +32,11 @@
                             <f:convertNumber pattern="#,###,##0.00"/>
                         </p:outputLabel>
                     </p:column>
+                    <p:column headerText="EV" class="coluna-monetaria">
+                        <p:outputLabel value="#{produto.controle}">
+                            <f:convertNumber pattern="#,###,##0.00"/>
+                        </p:outputLabel>
+                    </p:column>
                     <p:column headerText="Estoque" class="coluna-monetaria">
                         <p:outputLabel value="#{produto.quantidadeEstoque}">
                             <f:convertNumber pattern="#,###,##0.00"/>

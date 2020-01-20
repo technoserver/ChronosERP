@@ -583,5 +583,161 @@
         </h:form>
     </ui:define>
 
+    <ui:define name="outrasTelas7">
+        <h:form id="formOutrasTelas7">
+            <p:dialog id="dialogOutrasTelas7" header="Convensão de UN"
+                      widgetVar="dialogOutrasTelas7" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="800">
+                <p:outputPanel id="panelOutrasTelas7">
+                    <div class="ui-g">
+                        <erp:campoTexto
+                                styleClass="col-xs-12 col-sm-6"
+                                label="Produto"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheSelecionado.nomeProduto}"
+                                somenteLeitura="true"
+                                idComponente="nomeProduto"
+                                tamanhoMaximo="200"/>
+
+                        <erp:campoTexto
+                                styleClass="col-xs-12 col-sm-3"
+                                label="UN Atual"
+                                nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheSelecionado.unidadeComercial}"
+                                somenteLeitura="true"
+                                idComponente="nomeProduto"
+                                tamanhoMaximo="200"/>
+
+                        <div class="col-xs-12 col-sm-3">
+                            <p:outputLabel value="UN conversao" for="unidadeProdutoConversao"/>
+                            <br/>
+                            <p:autoComplete id="unidadeProdutoConversao"
+                                            value="#{entradaNotaFiscalControll.unidadeProduto}"
+                                            completeMethod="#{entradaNotaFiscalControll.getListaUnidadeProduto}"
+                                            var="unidadeProduto" itemLabel="#{unidadeProduto.sigla}"
+                                            itemValue="#{unidadeProduto}"
+                                            converter="defaultConverter"
+                                            dropdown="true"
+                                            forceSelection="true" minQueryLength="2" maxResults="20"
+                                            required="true" style="width: 100%"
+                                            emptyMessage="Nenhum registro encontrado"/>
+                        </div>
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3"
+                                          id="cmp-qtdConversao"
+                                          idComponente="qtdConversao"
+                                          label="Fator"
+                                          requerido="true"
+                                          nomeAtributo="#{entradaNotaFiscalControll.fator}"/>
+
+                        <div class="col-xs-12 col-sm-3 col-md-3">
+                            <h:outputLabel value="Tipo" for="tipo"/>
+
+                            <h:selectOneMenu styleClass="form-control" id="tipo"
+                                             value="#{entradaNotaFiscalControll.acao}">
+                                <f:selectItem itemValue="M" itemLabel="MULTIPLICAÇÂO"/>
+                                <f:selectItem itemValue="D" itemLabel="DIVISÃO"/>
+                            </h:selectOneMenu>
+
+                        </div>
+
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+
+                        <div class="col-xs-6 col-lg-6 text-center">
+                            <p:commandButton value="Confirmar"
+                                             action="#{entradaNotaFiscalControll.converterUnidade()}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas7').hide();}"
+                                             process="@form"
+                                             update=":formCentro:mensagem,:formCentro:tabNfe:dataTableNfeDetalhe"
+                                             id="btn-confirmar-conversao-un"/>
+
+                        </div>
+
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas7').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas8">
+        <h:form id="formOutrasTelas8">
+            <p:dialog id="dialogOutrasTelas8" header="Atualizar preço de venda"
+                      widgetVar="dialogOutrasTelas8" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="true"
+                      width="800">
+                <p:outputPanel id="panelOutrasTelas8">
+                    <div class="ui-g">
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          id="cmp-atulalizar-custo"
+                                          idComponente="encargosVenda" label="Custo unitario"
+                                          nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheSelecionado.produto.custoUnitario}"
+                        />
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          id="cmp-atulaliza-encagos"
+                                          idComponente="encargosVenda" label="Encargos"
+                                          nomeAtributo="#{entradaNotaFiscalControll.nfeDetalheSelecionado.produto.encargosVenda}"
+                        />
+
+                        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                          id="cmp-atulaliza-margem"
+                                          idComponente="margemLucro"
+                                          label="Margem de lucro"
+                                          nomeAtributo="#{entradaNotaFiscalControll.margemLucro}"
+                        />
+
+                        <div class="col-xs-3">
+                            <p:outputLabel value="Valor Venda" for="valorVenda"/>
+                            <div class="ui-inputgroup">
+
+                                <p:inputNumber id="valorVenda"
+                                               value="#{entradaNotaFiscalControll.nfeDetalheSelecionado.produto.valorVenda}"
+                                               style="width: 100%;"
+                                               decimalPlaces="2"
+                                               required="true"
+                                               minValue="0"/>
+
+                                <p:commandButton id="btn-calc"
+                                                 action="#{entradaNotaFiscalControll.atualizarPrecoSugerido}"
+                                                 update="formOutrasTelas8:valorVenda"
+                                                 icon="fa fa-calculator"
+                                />
+                            </div>
+                        </div>
+
+                    </div>
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+
+                        <div class="col-xs-6 col-lg-6 text-center">
+                            <p:commandButton value="Confirmar"
+                                             action="#{entradaNotaFiscalControll.salvarPrecoSugerido}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas8').hide();}"
+                                             process="@form"
+                                             update=":formCentro:mensagem"
+                                             id="btn-confirmar-conversao-uns"/>
+
+                        </div>
+
+                        <div class="col-xs-6 col-lg-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas8').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
 
 </ui:composition>

@@ -9,6 +9,7 @@ import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.util.ArquivoUtil;
+import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jpa.Transactional;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
@@ -386,5 +387,9 @@ public class ProdutoService implements Serializable {
         }
     }
 
-
+    @Transactional
+    public void atualizarPrecoSugerido(Integer id, BigDecimal custoUnitario, BigDecimal encargosVenda, BigDecimal valorVenda) {
+        custoUnitario = Biblioteca.soma(custoUnitario, encargosVenda);
+        repository.atualizarPrecoSugerido(id, custoUnitario, valorVenda);
+    }
 }
