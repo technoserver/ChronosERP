@@ -460,6 +460,7 @@ $F{situacao}.equals("E")?"Encerrada":
 $F{situacao}.equals("C")?"Cancelada":
 $F{situacao}.equals("DP")?"Devolução Parcial":
 $F{situacao}.equals("DV")?"Devolução":
+$F{situacao}.equals("D")?"Digitação":
 $F{situacao}.equals("N")?"Nota Fiscal":""]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">

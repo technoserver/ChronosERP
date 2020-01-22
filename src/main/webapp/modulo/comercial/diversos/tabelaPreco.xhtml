@@ -166,7 +166,7 @@
                                  paginator="true"
                                  rowsPerPageTemplate="20,40,60,80,100" paginatorPosition="bottom" rows="20"
                                  editable="true" editMode="cell"
-                                 reflow="true" emptyMessage="Nenhum produto incluso" resizableColumns="true">
+                                 reflow="true" emptyMessage="Nenhum produto incluso">
 
 
                         <p:column headerText="Produto">
@@ -224,7 +224,7 @@
                       hideEffect="slide" resizable="true" modal="true" closable="false"
                       width="600">
                 <p:outputPanel id="panelProduto">
-                    <div class="row">
+                    <div class="ui-g">
                         <erp:autoComplete styleClass="col-xs-12 col-sm-9 col-md-9"
                                           label="Produto"
                                           itemLabel="#{objeto.nome}"
