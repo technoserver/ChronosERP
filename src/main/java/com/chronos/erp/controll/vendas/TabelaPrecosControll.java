@@ -1,6 +1,7 @@
 package com.chronos.erp.controll.vendas;
 
 import com.chronos.erp.controll.AbstractControll;
+import com.chronos.erp.modelo.entidades.EmpresaProduto;
 import com.chronos.erp.modelo.entidades.Produto;
 import com.chronos.erp.modelo.entidades.TabelaPreco;
 import com.chronos.erp.modelo.entidades.TabelaPrecoProduto;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by john on 15/06/18.
@@ -37,6 +39,8 @@ public class TabelaPrecosControll extends AbstractControll<TabelaPreco> implemen
 
     @Inject
     private Repository<Produto> produtoRepository;
+    @Inject
+    private Repository<EmpresaProduto> empresaProdutoRepository;
 
     private TabelaPrecoProduto item;
     private TabelaPrecoProduto itemSelecionado;
@@ -97,18 +101,18 @@ public class TabelaPrecosControll extends AbstractControll<TabelaPreco> implemen
     public void incluirTodosProduto() {
 
         List<Filtro> filtros = new ArrayList<>();
-        filtros.add(new Filtro("inativo", "N"));
-        filtros.add(new Filtro("excluido", "N"));
-        filtros.add(new Filtro("tipo", "V"));
-        filtros.add(new Filtro("valorVenda", Filtro.MAIOR, BigDecimal.ZERO));
-        List<Produto> produtos = produtoRepository.getEntitys(Produto.class, filtros, new Object[]{"nome", "valorVenda"});
+        filtros.add(new Filtro("produto.inativo", "N"));
+        filtros.add(new Filtro("produto.excluido", "N"));
+        filtros.add(new Filtro("produto.tipo", "V"));
+        filtros.add(new Filtro("empresa.id", empresa.getId()));
+        filtros.add(new Filtro("produto.valorVenda", Filtro.MAIOR, BigDecimal.ZERO));
+        List<EmpresaProduto> produtos = empresaProdutoRepository.getEntitys(EmpresaProduto.class, filtros, new Object[]{"produto.id,produto.nome", "produto.valorVenda"});
 
-        for (Produto p : produtos) {
+        for (EmpresaProduto p : produtos) {
             TabelaPrecoProduto precoProduto = new TabelaPrecoProduto();
             precoProduto.setTabelaPreco(getObjeto());
-            precoProduto.setPreco(p.getValorVenda());
-            precoProduto.setProduto(p);
-            precoProduto.setPreco(p.getValorVenda());
+            precoProduto.setPreco(p.getProduto().getValorVenda());
+            precoProduto.setProduto(p.getProduto());
             getObjeto().getListaProduto().add(precoProduto);
         }
     }
@@ -117,11 +121,18 @@ public class TabelaPrecosControll extends AbstractControll<TabelaPreco> implemen
         List<Produto> produtos = new ArrayList<>();
         try {
             List<Filtro> filtros = new ArrayList<>();
-            filtros.add(new Filtro("inativo", "N"));
-            filtros.add(new Filtro("excluido", "N"));
-            filtros.add(new Filtro("tipo", "V"));
-            filtros.add(new Filtro("valorVenda", Filtro.MAIOR, BigDecimal.ZERO));
-            produtos = produtoRepository.getEntitys(Produto.class, filtros, new Object[]{"nome", "valorVenda"});
+            filtros.add(new Filtro("produto.inativo", "N"));
+            filtros.add(new Filtro("produto.excluido", "N"));
+            filtros.add(new Filtro("produto.tipo", "V"));
+            filtros.add(new Filtro("produto.nome", Filtro.LIKE, nome));
+            filtros.add(new Filtro("empresa.id", empresa.getId()));
+            filtros.add(new Filtro("produto.valorVenda", Filtro.MAIOR, BigDecimal.ZERO));
+            List<EmpresaProduto> empresaProdutos = empresaProdutoRepository.getEntitys(EmpresaProduto.class, filtros, new Object[]{"produto.id,produto.nome", "produto.valorVenda"});
+
+            produtos = empresaProdutos
+                    .stream()
+                    .map(ep -> new Produto(ep.getId(), ep.getProduto().getNome(), ep.getProduto().getValorVenda())).collect(Collectors.toList());
+
         } catch (Exception ex) {
 
         }

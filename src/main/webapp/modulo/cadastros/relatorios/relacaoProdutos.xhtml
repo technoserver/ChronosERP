@@ -120,12 +120,24 @@
                         </h:selectOneMenu>
                     </div>
 
+                    <div class="col-xs-12 col-sm-2 col-md-2">
+                        <h:outputLabel value="Descrição" for="descricao"/>
+                        <h:selectOneMenu id="descricao" class="form-control"
+                                         value="#{produtoRelatorioControll.tipoDescricao}">
+                            <f:selectItem itemLabel="Nome" itemValue="N"/>
+                            <f:selectItem itemLabel="Descrição PDV" itemValue="D"/>
+
+
+                        </h:selectOneMenu>
+                    </div>
+
                     <erp:campoSelect nomeAtributo="#{produtoRelatorioControll.tipoRelatorio}"
                                      itens="#{produtoRelatorioControll.tiposRelatorio}"
                                      styleClass="col-xs-12 col-sm-2 col-md-2"
                                      idComponente="tipoRelatorio"
                                      label="Modelo"
                     />
+
 
                     <div class="col-xs-6 col-sm-2 col-md-2">
                         <h:outputLabel value="Resumido" for="resumido"/>

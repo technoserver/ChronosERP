@@ -186,7 +186,7 @@
                         </p:menuitem>
                         <p:menuitem value="Encerrar OS"
                                     action="#{osAberturaControll.encerrar}"
-                                    update=":formCentro:mensagem,:formCentro:telaGrid:dataTableOsAbertura"
+                                    update=":formCentro:mensagem,:formCentro:growl,:formCentro:telaGrid:dataTableOsAbertura"
                                     rendered="#{osAberturaControll.isTemAcesso('FINANCEIRO') and (row.status ne 13  and row.status ne 12)}">
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
