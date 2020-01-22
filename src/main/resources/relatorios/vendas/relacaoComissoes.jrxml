@@ -63,8 +63,8 @@
 
 from comissao c
 inner join colaborador cl on cl.id = c.id_colaborador
-inner join pessoa cp on cp.id = cl.id_pessoa
-inner join empresa_pessoa ep on cp.id = ep.id_pessoa
+inner join pessoa cp on cp.id = cl.id_pessoa,
+empresa ep
 inner join empresa empresa on empresa.id = ep.id_empresa
 WHERE empresa.id = $P{idempresa} and (cl.id = $P{idvendedor} or $P{idvendedor} is null) and c.data_lancamento BETWEEN $P{peridoInicial} and $P{peridoFinal}
 order by cl.id,data_lancamento]]>
@@ -288,7 +288,7 @@ new SimpleDateFormat("dd/MM/yyyy").format( $P{peridoFinal})]]></textFieldExpress
                 <reportElement style="dadosDetail" x="0" y="0" width="208" height="12"
                                uuid="a59c4b38-7f1a-4368-9733-d5e8569e2e5d"/>
                 <textFieldExpression>
-                    <![CDATA[$F{cliente} == null ?"Cliente não identificado" : $F{cliente} ]]></textFieldExpression>
+                    <![CDATA[$F{cliente} == null ?"Cliente não identificado" : $F{cliente}]]></textFieldExpression>
             </textField>
             <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement style="dadosDetail" x="210" y="0" width="69" height="12"

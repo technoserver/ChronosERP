@@ -50,7 +50,7 @@
                 <div class="col-xs-12 col-sm-6 col-md-6">
                     <ṕ:outputLabel value="Veiculo" for="veiculo"/>
                     <h:selectOneMenu value="#{nfeCabecalhoControll.veiculo}" id="veiculo" styleClass="form-control"
-                                     required="true" converter="defaultConverter">
+                                     converter="defaultConverter">
                         <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>
                         <f:selectItems value="#{nfeCabecalhoControll.veiculos}" var="obj" itemValue="#{obj}"/>
                     </h:selectOneMenu>

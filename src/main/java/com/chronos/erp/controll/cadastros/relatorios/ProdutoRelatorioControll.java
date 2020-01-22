@@ -43,6 +43,8 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     private String ordernarPor;
 
+    private String tipoDescricao = "N";
+
     private int tipoOrdenacao;
 
 
@@ -59,6 +61,9 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         parametros.put("idempresa", empresa.getId());
         parametros.put("estoqueVerificado", estoqueVerificado);
 
+        if (resumido.equals("N")) {
+            parametros.put("tipoDescricao", tipoDescricao);
+        }
 
         String filtro = estoqueVerificado ? " ep.estoque_verificado" : " ep.quantidade_estoque";
         if (!StringUtils.isEmpty(estoque) && estoque.equals("P")) {
@@ -234,5 +239,13 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     public void setResumido(String resumido) {
         this.resumido = resumido;
+    }
+
+    public String getTipoDescricao() {
+        return tipoDescricao;
+    }
+
+    public void setTipoDescricao(String tipoDescricao) {
+        this.tipoDescricao = tipoDescricao;
     }
 }

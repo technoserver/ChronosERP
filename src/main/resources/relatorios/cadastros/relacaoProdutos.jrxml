@@ -5,7 +5,7 @@
               name="relacaoProduto" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="2.0"/>
-    <property name="ireport.x" value="0"/>
+    <property name="ireport.x" value="177"/>
     <property name="ireport.y" value="0"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -47,6 +47,9 @@
     <parameter name="tipoOrdernacao" class="java.lang.String">
         <defaultValueExpression><![CDATA["ASC"]]></defaultValueExpression>
     </parameter>
+    <parameter name="tipoDescricao" class="java.lang.String">
+        <defaultValueExpression><![CDATA["N"]]></defaultValueExpression>
+    </parameter>
     <queryString>
         <![CDATA[SELECT
      p.id,
@@ -54,6 +57,7 @@
      empresa.id as idempresa,
      p.gtin,
      p.nome,
+     p.descricao_pdv,
      p.ncm,
      p.cest,
      COALESCE(p.custo_unitario,0) as custo_unitario,
@@ -93,9 +97,11 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
    $P!{filtro}]]>
     </queryString>
     <field name="id" class="java.lang.Integer"/>
+    <field name="codigo_interno" class="java.lang.String"/>
     <field name="idempresa" class="java.lang.Integer"/>
     <field name="gtin" class="java.lang.String"/>
     <field name="nome" class="java.lang.String"/>
+    <field name="descricao_pdv" class="java.lang.String"/>
     <field name="ncm" class="java.lang.String"/>
     <field name="cest" class="java.lang.String"/>
     <field name="custo_unitario" class="java.math.BigDecimal"/>
@@ -336,7 +342,8 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
                 <textElement verticalAlignment="Middle">
                     <font size="7"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+                <textFieldExpression>
+                    <![CDATA[$P{tipoDescricao}.equals("N") ? $F{nome} : $F{descricao_pdv}]]></textFieldExpression>
             </textField>
             <textField>
                 <reportElement style="dadosDetail" x="213" y="0" width="41" height="12"

@@ -77,6 +77,8 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
         status = new LinkedHashMap<>();
         status.put("Encerrado/Faturado", "");
+        status.put("Encerrado/Digitacao", "ED");
+        status.put("Digitacao", "D");
         status.put("Encerrada", "E");
         status.put("Faturada", "F");
         status.put("Devolvida", "DV");
@@ -91,6 +93,9 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         if (idcupom > 0) {
 
         }
+
+        dataFinal = new Date();
+        dataInicial = new Date();
     }
 
     public void buscarPedido() {
@@ -204,6 +209,11 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         if (!StringUtils.isEmpty(statusVendas)) {
 
             switch (statusVendas) {
+                case "ED":
+                    parametros.put("situacao", Arrays.asList(new String[]{"D", "E"}));
+                case "D":
+                    parametros.put("situacao", Arrays.asList(new String[]{"D"}));
+                    break;
                 case "F":
                     parametros.put("situacao", Arrays.asList(new String[]{"F"}));
                     break;
@@ -213,7 +223,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
                 case "C":
                     parametros.put("situacao", Arrays.asList(new String[]{"C"}));
                     break;
-                case "D":
+                case "DV":
                     parametros.put("situacao", Arrays.asList(new String[]{"D"}));
                     break;
                 case "DP":
