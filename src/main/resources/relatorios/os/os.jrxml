@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="2.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="373"/>
+    <property name="ireport.y" value="374"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <style name="table">
         <box>
@@ -441,15 +441,7 @@ WHERE
         </band>
     </detail>
     <pageFooter>
-        <band height="13">
-            <staticText>
-                <reportElement x="0" y="0" width="555" height="13" uuid="386fb171-7e84-4de5-aa72-892bbf493cff"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Courier New" size="8" isBold="true"/>
-                </textElement>
-                <text><![CDATA[***ESTE DOCUMENTO NÃO VALE COMO RECIBO DE PAGAMENTO***]]></text>
-            </staticText>
-        </band>
+        <band height="13"/>
     </pageFooter>
     <summary>
         <band height="113">

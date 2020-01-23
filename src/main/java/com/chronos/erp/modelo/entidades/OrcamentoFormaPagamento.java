@@ -22,6 +22,9 @@ public class OrcamentoFormaPagamento implements Serializable {
     @Embedded
     private FormaPagamento formaPagamento;
 
+    public OrcamentoFormaPagamento() {
+        formaPagamento = new FormaPagamento();
+    }
 
     public Integer getId() {
         return id;

@@ -844,7 +844,7 @@ public class NfeService implements Serializable {
                 Mensagem.addInfoMessage(retorno.getRetorno().getRetEvento().get(0).getInfEvento().getXMotivo());
             }
         } else {
-            Mensagem.addInfoMessage(retorno.getRetorno().getXMotivo());
+            Mensagem.addErrorMessage(retorno.getRetorno().getXMotivo());
         }
         return cancelado;
     }

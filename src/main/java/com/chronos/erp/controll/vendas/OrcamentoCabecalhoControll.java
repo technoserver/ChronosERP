@@ -287,6 +287,23 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     }
 
 
+    public void duplicar() {
+        try {
+            OrcamentoCabecalho orc = dataModel.getRowData(getObjetoSelecionado().getId().toString());
+            OrcamentoCabecalho novoOrc = service.duplicar(orc);
+            String msg = novoOrc.getTipo().equals("O") ? "Orçamento " : "Pedido ";
+            msg += "duplicado com sucesso";
+            Mensagem.addInfoMessage(msg);
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+                throw new RuntimeException("Ocorreu um erro ao gerar a venda", ex);
+            }
+        }
+    }
+
+
     public void incluirVendaOrcamentoDetalhe() {
         orcamentoDetalhe = new OrcamentoDetalhe();
         orcamentoDetalhe.setOrcamentoCabecalho(getObjeto());

@@ -20,6 +20,7 @@ import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.exception.EmissorException;
+import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.CellEditEvent;
@@ -361,7 +362,35 @@ public class BalcaoControll implements Serializable {
             boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
             venda = vendas.getJoinFetch(venda.getId(), PdvVendaCabecalho.class);
             if (!venda.getListaPdvVendaDetalhe().isEmpty() && !venda.getListaFormaPagamento().isEmpty()) {
-                vendaService.transmitirNFe(venda, estoque);
+                vendaService.transmitirNFe(venda, estoque, ModeloDocumento.NFCE);
+            } else {
+                Mensagem.addInfoMessage("não foram encotrado itens para essa venda");
+            }
+
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao gera NFCe \n", ex);
+            } else if (ex instanceof UnknownHostException) {
+                Mensagem.addErrorMessage("Erro ao gerar conexao com \n", ex);
+            } else if (ex instanceof EmissorException) {
+                Mensagem.addErrorMessage("Erro ao gera NFCe  \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao gerar NFce", ex);
+            }
+
+
+        }
+    }
+
+    public void gerarNfe() {
+
+
+        try {
+
+            boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
+            venda = vendas.getJoinFetch(venda.getId(), PdvVendaCabecalho.class);
+            if (!venda.getListaPdvVendaDetalhe().isEmpty() && !venda.getListaFormaPagamento().isEmpty()) {
+                vendaService.transmitirNFe(venda, estoque, ModeloDocumento.NFE);
             } else {
                 Mensagem.addInfoMessage("não foram encotrado itens para essa venda");
             }
@@ -753,151 +782,7 @@ public class BalcaoControll implements Serializable {
         venda.setListaFormaPagamento(new ArrayList<>());
     }
 
-    public void lancaPagamento() {
-        try {
-            boolean update = true;
 
-            if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
-                Mensagem.addErrorMessage("Todos os valores já foram recebidos. Finalize a venda.");
-            } else {
-                if (cliente == null && tipoPagamento.getGeraParcelas().equals("S")) {
-                    Mensagem.addErrorMessage("Para gera contas a receber é preciso informar um cliente");
-                } else if (cliente == null && tipoPagamento.getCodigo().equals("05")) {
-                    Mensagem.addErrorMessage("Para pagamento com crédito é preciso informa um cliente");
-                } else if (tipoPagamento.getCodigo().equals("03") && operadoraCartao == null) {
-                    Mensagem.addErrorMessage("Para pagamento com Cartão de crédito é preciso informa uma operadora");
-                } else {
-                    incluiPagamento(tipoPagamento, valorPago);
-                }
-            }
-
-
-        } catch (Exception ex) {
-            if (ex instanceof ChronosException) {
-                Mensagem.addErrorMessage("Erro ao lança os pagamentos", ex);
-            } else {
-                throw new RuntimeException("Erro ao lança os pagamentos", ex);
-            }
-        }
-
-
-    }
-
-    private void incluiPagamento(TipoPagamento tipoPagamento, BigDecimal valor) throws ChronosException {
-        Optional<PdvFormaPagamento> formaPagamentoOpt = bucarTipoPagamento(tipoPagamento);
-        if (formaPagamentoOpt.isPresent() && tipoPagamento.getPermiteTroco().equals("S")) {
-            Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " já incluso");
-        } else {
-            if (totalReceber.compareTo(valorPago) < 0 && tipoPagamento.getPermiteTroco().equals("N")) {
-                Mensagem.addInfoMessage("Forma de pagamento " + tipoPagamento.getDescricao() + " não permite troco");
-            } else {
-                PdvFormaPagamento formaPagamento = new PdvFormaPagamento();
-                formaPagamento.setPdvVendaCabecalho(venda);
-                formaPagamento.setTipoPagamento(tipoPagamento);
-                formaPagamento.setValor(valor);
-                formaPagamento.setForma(tipoPagamento.getCodigo());
-                formaPagamento.setEstorno("N");
-
-                if (tipoPagamento.getGeraParcelas().equals("S")) {
-                    formaPagamento.setCondicao(condicaoPagamento);
-                }
-
-                if (tipoPagamento.getCodigo().equals("03")) {
-                    formaPagamento.setQtdParcelas(qtdParcelas);
-                    formaPagamento.setOperadoraCartao(operadoraCartao);
-                }
-
-                if (tipoPagamento.getCodigo().equals("14")) {
-                    parcelas = recebimentoService.gerarParcelas(formaPagamento.getValor(), venda.getDataHoraVenda(), formaPagamento.getCondicao());
-                }
-
-
-                totalRecebido = Biblioteca.soma(totalRecebido, valor);
-                troco = Biblioteca.subtrai(totalRecebido, totalReceber);
-                if (troco.compareTo(BigDecimal.ZERO) == -1) {
-                    troco = BigDecimal.ZERO;
-                }
-                formaPagamento.setTroco(troco);
-                venda.getListaFormaPagamento().add(formaPagamento);
-                venda.setTroco(troco);
-                verificaSaldoRestante();
-
-
-            }
-
-        }
-
-    }
-
-    private Optional<PdvFormaPagamento> bucarTipoPagamento(TipoPagamento tipoPagamento) {
-        return venda.getListaFormaPagamento()
-                .stream()
-                .filter(fp -> fp.getTipoPagamento().equals(tipoPagamento))
-                .findAny();
-    }
-
-
-    public void excluirPagamento() {
-        if (formaPagamentoSelecionado != null) {
-            venda.getListaFormaPagamento().remove(formaPagamentoSelecionado);
-
-            if (formaPagamentoSelecionado.getForma().equals("14")) {
-                parcelas = new ArrayList<>();
-            }
-
-            verificaSaldoRestante();
-        }
-        Mensagem.addInfoMessage("Forma de pagamento removida");
-    }
-
-    public void finalizarVenda() {
-        try {
-            verificaSaldoRestante();
-            if (saldoRestante.compareTo(BigDecimal.ZERO) <= 0) {
-                venda.setTroco(troco);
-                venda = service.finalizarVenda(venda, parcelas);
-
-                if (parametro != null && parametro.getFaturarVenda()) {
-                    boolean estoque = FacesUtil.isUserInRole("ESTOQUE");
-                    vendaService.transmitirNFe(venda, estoque);
-                }
-
-                telaVenda = false;
-                telaPagamentos = false;
-                telaImpressao = true;
-                id = venda.getId();
-
-            } else {
-                Mensagem.addInfoMessage("Valores informados não são suficientes para finalizar a venda.");
-            }
-        } catch (Exception ex) {
-            if (ex instanceof ChronosException) {
-                Mensagem.addErrorMessage("Erro ao finalziar venda", ex);
-            } else {
-                throw new RuntimeException("Erro ao finalziar venda", ex);
-            }
-
-        }
-    }
-
-
-    private void verificaSaldoRestante() {
-        BigDecimal recebidoAteAgora = BigDecimal.ZERO;
-        List<PdvFormaPagamento> listaPagamento = venda.getListaFormaPagamento();
-        for (PdvFormaPagamento p : listaPagamento) {
-            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
-        }
-
-        saldoRestante = Biblioteca.subtrai(totalReceber, recebidoAteAgora);
-        totalRecebido = recebidoAteAgora;
-        valorPago = saldoRestante;
-        if (valorPago.compareTo(BigDecimal.ZERO) < 0) {
-            valorPago = BigDecimal.ZERO;
-        }
-        if (saldoRestante.compareTo(BigDecimal.ZERO) < 0) {
-            saldoRestante = BigDecimal.ZERO;
-        }
-    }
 
     public void cancelarPagamento() {
         telaVenda = true;
@@ -950,15 +835,6 @@ public class BalcaoControll implements Serializable {
         return pagamentos;
     }
 
-    public void editarLancamentoReceber() {
-        valorParcelas = getParcelas().stream().map(p -> p.getValor()).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
-        diferecaParcelas = formaPagamentoSelecionado == null ? BigDecimal.ZERO : Biblioteca.subtrai(formaPagamentoSelecionado.getValor(), getValorParcelas());
-    }
-
-    public void calcularDiferencaParcela() {
-        valorParcelas = getParcelas().stream().map(p -> p.getValor()).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
-        diferecaParcelas = formaPagamentoSelecionado == null ? BigDecimal.ZERO : Biblioteca.subtrai(formaPagamentoSelecionado.getValor(), getValorParcelas());
-    }
 
     public void confimarLancamento() {
 
