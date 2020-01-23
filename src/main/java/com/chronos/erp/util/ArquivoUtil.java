@@ -72,8 +72,15 @@ public class ArquivoUtil {
             File fileToZip = new File(srcFile);
             if (fileToZip.exists()) {
                 FileInputStream fis = new FileInputStream(fileToZip);
-                ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
-                zipOut.putNextEntry(zipEntry);
+
+                if (srcFile.contains("nfeProc")) {
+                    ZipEntry zipEntry = new ZipEntry("autorizadas/" + fileToZip.getName());
+                    zipOut.putNextEntry(zipEntry);
+                } else {
+                    ZipEntry zipEntry = new ZipEntry("canceladas/" + fileToZip.getName());
+                    zipOut.putNextEntry(zipEntry);
+                }
+
 
                 byte[] bytes = new byte[1024];
                 int length;

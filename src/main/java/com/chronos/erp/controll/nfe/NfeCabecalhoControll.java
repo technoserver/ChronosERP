@@ -1,6 +1,5 @@
 package com.chronos.erp.controll.nfe;
 
-import com.chronos.erp.controll.AbstractControll;
 import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.dto.ProdutoDTO;
 import com.chronos.erp.modelo.entidades.*;
@@ -40,11 +39,10 @@ import java.util.stream.IntStream;
  */
 @Named
 @ViewScoped
-public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> implements Serializable {
+public class NfeCabecalhoControll extends NfeBaseControll implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @Inject
-    private Repository<TributOperacaoFiscal> operacoes;
+
     @Inject
     private Repository<PessoaCliente> pessoas;
     @Inject
@@ -309,7 +307,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
             nfeDetalhe.setQuantidadeComercial(BigDecimal.ONE);
             nfeDetalhe.setClassificacaoContabilConta(getObjeto().getTributOperacaoFiscal().getClassificacaoContabilConta());
             if (getObjeto().getFinalidadeEmissao() > 1) {
-                instanciaImpostos();
+                instanciarImpostos(nfeDetalhe);
             }
         }
     }
@@ -393,25 +391,6 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
 
     }
 
-
-    private void instanciaImpostos() {
-        nfeDetalhe.setNfeDetalheImpostoIssqn(new NfeDetalheImpostoIssqn());
-        nfeDetalhe.getNfeDetalheImpostoIssqn().setNfeDetalhe(nfeDetalhe);
-        nfeDetalhe.setNfeDetalheImpostoPis(new NfeDetalheImpostoPis());
-        nfeDetalhe.getNfeDetalheImpostoPis().setNfeDetalhe(nfeDetalhe);
-        nfeDetalhe.setNfeDetalheImpostoCofins(new NfeDetalheImpostoCofins());
-        nfeDetalhe.getNfeDetalheImpostoCofins().setNfeDetalhe(nfeDetalhe);
-        nfeDetalhe.setNfeDetalheImpostoIcms(new NfeDetalheImpostoIcms());
-        nfeDetalhe.getNfeDetalheImpostoIcms().setNfeDetalhe(nfeDetalhe);
-        nfeDetalhe.setNfeDetalheImpostoIpi(new NfeDetalheImpostoIpi());
-        nfeDetalhe.getNfeDetalheImpostoIpi().setNfeDetalhe(nfeDetalhe);
-        nfeDetalhe.setNfeDetalheImpostoIi(new NfeDetalheImpostoIi());
-        nfeDetalhe.getNfeDetalheImpostoIi().setNfeDetalhe(nfeDetalhe);
-//
-//        nfeDetalhe.setListaArmamento(new HashSet<>());
-//        nfeDetalhe.setListaMedicamento(new HashSet<>());
-//        nfeDetalhe.setListaDeclaracaoImportacao(new HashSet<>());
-    }
 
     // </editor-fold>
 
@@ -735,16 +714,7 @@ public class NfeCabecalhoControll extends AbstractControll<NfeCabecalho> impleme
         return listaCondicoesPagamento;
     }
 
-    public List<TributOperacaoFiscal> getListaTributOperacaoFiscal(String descricao) {
-        List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
 
-        try {
-            listaTributOperacaoFiscal = operacoes.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn", "classificacaoContabilConta"});
-        } catch (Exception e) {
-            // e.printStackTrace();
-        }
-        return listaTributOperacaoFiscal;
-    }
 
     public List<PessoaCliente> getListaPessoaCliente(String nome) {
         List<PessoaCliente> listaPessoaCliente = new ArrayList<>();

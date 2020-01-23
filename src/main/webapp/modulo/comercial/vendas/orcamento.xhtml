@@ -173,6 +173,13 @@
                                             icon="fa fa-print"
                                             ajax="false"/>
 
+                                <p:menuitem value="Duplicar"
+                                            update=":formCentro:growl,tableOrcamento"
+                                            action="#{orcamentoCabecalhoControll.duplicar}">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{orcamentoCabecalhoControll.objetoSelecionado}"/>
+                                </p:menuitem>
+
                                 <p:menuitem value="Gerar OS"
                                             rendered="#{row.tipo eq 'O'}"
                                             outcome="/modulo/comercial/os/osAbertura">

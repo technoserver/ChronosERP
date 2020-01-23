@@ -514,10 +514,20 @@
                                             target="_blank"
                                             actionListener="#{vendaRelatorioControll.imprimirPedidoPdv(row.id)}"
                                             icon="fa fa-print" ajax="false"/>
-                                <p:menuitem value="Emitir NFCe"
+
+                                <p:menuitem value="Faturar - NFCe"
                                             update=":formCentro:growl,tableVenda"
                                             rendered="#{empty row.idnfe and row.sicronizado eq 'N'}"
                                             action="#{balcaoControll.gerarNfce}"
+                                >
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{balcaoControll.venda}"/>
+                                </p:menuitem>
+
+                                <p:menuitem value="Faturar - NFe"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{empty row.idnfe and row.sicronizado eq 'N'}"
+                                            action="#{balcaoControll.gerarNfe}"
                                 >
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{balcaoControll.venda}"/>
@@ -588,320 +598,9 @@
 
     <ui:define name="telaInclusaoAlteracao">
         <h:panelGroup layout="block" id="outputPanelDetalhe">
-            <p:outputPanel rendered="#{!balcaoControll.telaGrid}">
-                <p:focus context="formCentro:produto"/>
-                <h:panelGroup layout="block" id="mensagem-pdv">
-                    <h:messages showSummary="true"/>
-                </h:panelGroup>
-                <h:panelGroup id="telaPdv" layout="block">
-                    <div id="pdv" class="row">
-                        <h:panelGroup layout="block" id="tela-inicial" class="etapa" style="overflow: hidden"
-                                      rendered="#{balcaoControll.telaVenda}">
-                            <ui:include src="telaPrincipalPdv.xhtml"/>
-                        </h:panelGroup>
-
-                        <h:panelGroup layout="block" id="tela-pagamento" class="etapa" style="overflow: hidden"
-                                      rendered="#{balcaoControll.telaPagamentos}">
-                            <ui:include src="telaPagamentoBalcao.xhtml"/>
-                            <div class="hidden-xs teclas">
-                                F5 = Mudar Forma de Pagamento | F6 = Confirmar Pagamento | F7 = Finalizar Venda | F8 = Cancelar
-                            </div>
-                        </h:panelGroup>
-                        <h:panelGroup layout="block" id="tela-impressao" class="etapa" style="overflow: hidden"
-                                      rendered="#{balcaoControll.telaImpressao}">
-
-                            <div>
-                                <div class="text-center text-success" style="font-size:200px; line-height:1">
-                                    <i class="fa icon-shopping"></i>
-                                </div>
-                                <h1 class="text-center text-success margin-top-10">VENDA FINALIZADA COM SUCESSO!</h1>
-                                <br/>
-                                <div class="text-center">
-                                    <h:commandButton value="INICIAR NOVA VENDA"
-                                                     id="nova-venda"
-                                                     action="#{balcaoControll.novaVenda}"
-
-                                                     class="btn btn-success btn-lg">
-                                        <p:ajax update=":formCentro:tela-impressao,:formCentro:telaPdv"
-                                                oncomplete="$('.ibox-title').css({ display: 'none' });"/>
-                                    </h:commandButton>
-                                    &nbsp;
-                                    <h:link id="imprimir-cupom"
-                                            value="IMPRIMIR CUPOM"
-                                            class="btn btn-primary btn-lg"
-                                            outcome="/modulo/relatorios/comercial/vendas/cupomBalcao"
-                                            target="blank"
-                                            rendered="#{empty balcaoControll.venda.idnfe}">
-                                        <f:param name="idcupom" value="#{balcaoControll.venda.id}"/>
-                                    </h:link>
-                                    <h:commandButton value="IMPRIMIR CUPOM"
-                                                     id="imprimir-nfce"
-                                                     action="#{balcaoControll.danfe}"
-                                                     rendered="#{not empty balcaoControll.venda.idnfe}"
-                                                     class="btn btn-primary btn-lg">
-                                        <p:ajax disabled="true"/>
-                                    </h:commandButton>
-                                    &nbsp;
-                                    <h:commandButton value="EMITIR NFCe"
-                                                     id="emitir-nfce"
-                                                     action="#{balcaoControll.gerarNfce}"
-                                                     rendered="#{empty balcaoControll.venda.idnfe}"
-                                                     class="btn btn-warning btn-lg">
-                                        <p:ajax update=":formCentro:growl,:formCentro:tela-impressao"
-                                        />
-                                    </h:commandButton>
-
-                                </div>
-                            </div>
-                            <div class="hidden-xs teclas">
-                                F5 = Imprimir Cupom | F6 = Emitir NFC | F7 = Nova Venda
-                            </div>
-
-                        </h:panelGroup>
 
 
-                        <!--Modal Teclas-->
-                        <div class="modal" id="painel-teclas-atalho" tabindex="-1" role="dialog" aria-hidden="false"
-                             style="display: none;">
-                            <ui:include src="atalhosBalcao.xhtml"/>
-                        </div>
-                    </div>
-                </h:panelGroup>
-            </p:outputPanel>
         </h:panelGroup>
-
-
-    </ui:define>
-
-
-    <ui:define name="outrasTelas">
-        <h:form id="formOutrasTelas">
-            <p:dialog id="dialogVendedor"
-                      header="INDICAR VENDEDOR"
-                      widgetVar="dialogVendedor" showEffect="slide" hideEffect="slide"
-                      resizable="true" modal="true" closable="false" width="500">
-                <p:outputPanel id="panelVendedor">
-                    <div class="row">
-                        <erp:campoSelectConverter styleClass="col-xs-12 col-md-12"
-                                                  idComponente="vendedorSelecionado"
-                                                  label="Vendedor"
-                                                  labelItens="#{obj.colaborador.pessoa.nome}"
-                                                  nomeAtributo="#{balcaoControll.vendedor}"
-                                                  itens="#{balcaoControll.listVendedores}"/>
-                    </div>
-                </p:outputPanel>
-                <f:facet name="footer">
-                    <div class="row">
-                        <div class="col-sm-6 col-md-6 col-lg-6 text-center">
-                            <h:commandButton class="btn btn-primary"
-                                             action="#{balcaoControll.selecionarVendedor}"
-                                             value="salvar">
-                                <p:ajax update=":formOutrasTelas:panelVendedor,formCentro:indicar-vendedor,:formCentro"
-                                        oncomplete="if (!args.validationFailed) {PF('dialogVendedor').hide();}"
-                                        process="@form"/>
-                            </h:commandButton>
-                        </div>
-                        <div class="col-sm-6 col-md-6 col-lg-6 text-right">
-                            <h:commandButton value="Cancelar" class="btn btn-default center-block"
-                            >
-                                <p:ajax oncomplete="PF('dialogVendedor').hide();document.getElementById('formCentro:produto_input').focus()"
-                                        process="@this"/>
-                            </h:commandButton>
-                        </div>
-
-                    </div>
-                </f:facet>
-            </p:dialog>
-        </h:form>
-    </ui:define>
-
-
-    <ui:define name="outrasTelas1">
-        <h:form id="formOutrasTelas1">
-            <p:dialog id="dialogCliente"
-                      header="INDICAR CLIENTE"
-                      widgetVar="dialogCliente" showEffect="slide" hideEffect="slide"
-                      resizable="true" modal="true" closable="false" width="500">
-                <p:outputPanel id="panelCliente">
-                    <div class="row">
-                        <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
-                                          label="Cliente"
-                                          itemLabel="#{objeto.pessoa.nome}"
-                                          controller="#{balcaoControll}"
-                                          completeMethod="getListCliente"
-                                          nomeAtributo="#{balcaoControll.cliente}"
-                                          requerido="false"
-                                          idComponente="clienteSelecionado">
-
-                        </erp:autoComplete>
-                    </div>
-                    <div class="row">
-                        <erp:campoTexto idComponente="cpfCnpjCliente"
-                                        label="CPF/CNPJ"
-                                        nomeAtributo="#{balcaoControll.venda.cpfCnpjCliente}"
-                                        styleClass="col-xs-12 col-sm-6 col-md-6"
-                                        tamanhoMaximo="14"/>
-                        <erp:campoTexto idComponente="nomeCliente"
-                                        styleClass="col-xs-12 col-sm-6 col-md-6"
-                                        label="Nome"
-                                        tamanhoMaximo="100"
-                                        nomeAtributo="#{balcaoControll.venda.nomeCliente}"/>
-                    </div>
-                </p:outputPanel>
-                <f:facet name="footer">
-                    <div class="row">
-                        <div class="col-sm-6 col-md-6 col-lg-6 text-center">
-                            <h:commandButton class="btn btn-primary"
-                                             action="#{balcaoControll.selecionarCliente}"
-                                             value="salvar">
-                                <p:ajax update=":formOutrasTelas1:panelCliente,formCentro:indicar-cliente,:formCentro"
-                                        oncomplete="if (!args.validationFailed) {PF('dialogCliente').hide();};$('.ibox-title').css({ display: 'none' });"
-                                        process="@form"/>
-                            </h:commandButton>
-                        </div>
-                        <div class="col-sm-6 col-md-6 col-lg-6 text-right">
-                            <h:commandButton value="Cancelar" class="btn btn-default center-block">
-                                <p:ajax oncomplete="PF('dialogCliente').hide();document.getElementById('formCentro:produto_input').focus()"
-                                        process="@this"/>
-                            </h:commandButton>
-                        </div>
-
-                    </div>
-                </f:facet>
-            </p:dialog>
-        </h:form>
-    </ui:define>
-
-    <ui:define name="outrasTelas2">
-        <h:form id="formSupervisor">
-            <p:dialog id="dialogSupervisor"
-                      header="Autorização Supervisor"
-                      widgetVar="dialogSupervisor" showEffect="slide" hideEffect="slide"
-                      resizable="true" modal="true" closable="false" width="400">
-
-                <p:outputPanel id="panelSupervisor">
-
-                    <h:panelGrid columns="2" cellpadding="5">
-                        <p:outputLabel for="usuarioSupervisor" value="Usuário: "/>
-                        <p:inputText id="usuarioSupervisor" required="true"
-                                     value="#{balcaoControll.usuarioSupervisor}"/>
-                        <p:outputLabel for="senhaSupervisor" value="Senha: "/>
-                        <p:password id="senhaSupervisor" required="true" value="#{balcaoControll.senhaSupervisor}"/>
-                    </h:panelGrid>
-
-                </p:outputPanel>
-
-                <f:facet name="footer">
-
-                    <div class="row">
-                        <div class="col-xs-6 col-md-6 text-center">
-                            <p:commandButton value="Autorizar"
-                                             id="btn-autorizar"
-                                             actionListener="#{balcaoControll.autorizacaoSupervisor()}"
-                                             update=":formSupervisor:panelSupervisor,:formCentro:produtos-selecionados,formCentro:growl,formCentro:produto,formCentro:mostra-produto,formCentro:totalPedido,formCentro:botao-pagar"
-                                             oncomplete="if (!args.validationFailed) {PF('dialogSupervisor').hide();document.getElementById('formCentro:produto_input').focus();}"/>
-                        </div>
-                        <div class="col-xs-6 col-md-6 text-center">
-                            <h:commandButton value="Cancelar"
-                                             styleClass="btn btn-default center-block">
-                                <p:ajax oncomplete="PF('dialogSupervisor').hide();"
-                                        process="@this"/>
-                            </h:commandButton>
-                        </div>
-                    </div>
-                </f:facet>
-
-            </p:dialog>
-        </h:form>
-    </ui:define>
-
-    <ui:define name="outrasTelas3">
-        <h:form id="formOutrasTelas3">
-            <p:dialog id="dialogOutrasTela3"
-                      header="Confirmar parcelas a receber"
-                      widgetVar="dialogOutrasTela3" showEffect="slide" hideEffect="slide"
-                      resizable="true" modal="true" closable="false" width="600">
-                <p:outputPanel id="panelOutrasTelas3">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p:dataTable value="#{balcaoControll.parcelas}" var="row" editable="true" reflow="true">
-
-                                <p:ajax event="rowEdit" listener="#{balcaoControll.calcularDiferencaParcela}"
-                                        update="formOutrasTelas3:valores-parcelas"/>
-
-                                <p:column headerText="Valor" styleClass="text-right">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{row.valor}">
-                                                <f:convertNumber pattern="#,##0.00"/>
-                                            </h:outputText>
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <p:inputNumber value="#{row.valor}"/>
-                                        </f:facet>
-                                    </p:cellEditor>
-
-                                </p:column>
-                                <p:column headerText="Vencimento" styleClass="text-center">
-                                    <p:cellEditor>
-                                        <f:facet name="output">
-                                            <h:outputText value="#{row.dataVencimento}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
-                                            </h:outputText>
-                                        </f:facet>
-                                        <f:facet name="input">
-                                            <p:calendar
-                                                    value="#{row.dataVencimento}" style="width: 100% !important;"
-                                                    pattern="dd/MM/yyyy"/>
-                                        </f:facet>
-                                    </p:cellEditor>
-
-
-                                </p:column>
-                                <p:column style="width:35px">
-                                    <p:rowEditor/>
-                                </p:column>
-                            </p:dataTable>
-                        </div>
-                    </div>
-                    <div class="row m-t">
-                        <div class="col-md-6">
-                            <p:panelGrid columns="2" cellpadding="20" cellspacing="1" id="valores-parcelas">
-                                <label>Valor total</label>
-                                <h:outputText value="#{balcaoControll.formaPagamentoSelecionado.valorTotal}">
-                                    <f:convertNumber pattern="#,##0.00"/>
-                                </h:outputText>
-                                <label>Valor das parcelas</label>
-                                <h:outputText value="#{balcaoControll.valorParcelas}">
-                                    <f:convertNumber pattern="#,##0.00"/>
-                                </h:outputText>
-                                <label>Diferença</label>
-                                <h:outputText value="#{balcaoControll.diferecaParcelas}">
-                                    <f:convertNumber pattern="#,##0.00"/>
-                                </h:outputText>
-                            </p:panelGrid>
-                        </div>
-                    </div>
-
-                </p:outputPanel>
-
-                <f:facet name="footer">
-
-                    <div class="row">
-                        <div class="col-xs-12 col-md-12 text-center">
-                            <p:commandButton value="Confirmar"
-                                             id="btn-confirmar-parcelas"
-                                             actionListener="#{balcaoControll.confimarLancamento()}"
-                                             update=":formOutrasTelas3:panelOutrasTelas3,formCentro:growl"
-                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTela3').hide();}"/>
-
-                        </div>
-                    </div>
-                </f:facet>
-
-            </p:dialog>
-
-        </h:form>
 
     </ui:define>
 
@@ -950,64 +649,6 @@
                 </f:facet>
             </p:dialog>
         </h:form>
-    </ui:define>
-
-    <ui:define name="outrasTelas5">
-        <h:form id="formOutrasTelas5" class="form-horizontal">
-
-            <p:dialog id="dialogOutrasTelas5"
-                      header="Desconto" responsive="true"
-                      widgetVar="dialogOutrasTelas5"
-                      resizable="false" draggable="false" modal="true"
-                      width="400"
-            >
-
-                <p:outputPanel id="panelOutrasTelas5">
-                    <div class="form-group text-right">
-                        <div class="text-right">
-                            <label class="control-label col-sm-4">Desonto em</label>
-                        </div>
-
-                        <div class="col-sm-3">
-                            <h:selectOneMenu id="tipo-desconto" styleClass="form-control"
-                                             value="#{ balcaoControll.tipoDesconto}">
-                                <f:selectItem itemLabel="R$" itemValue="D"/>
-                                <f:selectItem itemLabel="%" itemValue="P"/>
-                            </h:selectOneMenu>
-                        </div>
-
-                        <div class="col-sm-5">
-                            <p:inputNumber id="valor-desconto" required="true"
-                                           value="#{ balcaoControll.desconto}"/>
-                        </div>
-                    </div>
-
-
-                </p:outputPanel>
-                <f:facet name="footer">
-
-                    <div class="row">
-                        <div class="col-xs-6 col-md-6 text-center">
-                            <p:commandButton value="Salvar"
-                                             id="btnSalvarDesonto"
-                                             update="panelOutrasTelas5,:formCentro:growl,:formCentro:totalPedido"
-                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
-                                             action="#{balcaoControll.aplicarDesconto}"/>
-
-
-                        </div>
-                        <div class="col-xs-6 col-md-6 text-center">
-                            <h:commandButton value="Cancelar"
-                                             styleClass="btn btn-default">
-                                <p:ajax oncomplete="PF('dialogOutrasTelas5').hide();"
-                                        process="@this"/>
-                            </h:commandButton>
-                        </div>
-                    </div>
-                </f:facet>
-            </p:dialog>
-        </h:form>
-
     </ui:define>
 
 
@@ -1145,12 +786,6 @@
                 </f:facet>
             </p:dialog>
         </h:form>
-
-    </ui:define>
-
-
-    <ui:define name="javaScript">
-        <h:outputScript library="js" name="pdv.js"/>
 
     </ui:define>
 

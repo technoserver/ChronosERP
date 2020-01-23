@@ -338,7 +338,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             if (dadosSalvos) {
                 getObjeto().setDataHoraEmissao(new Date());
                 getObjeto().setDataHoraEntradaSaida(new Date());
-                transmitirNfe(true);
+                transmitirNfe(true, true);
             } else {
                 Mensagem.addInfoMessage("Antes de enviar a NF-e é necessário salvar as informações!");
             }

@@ -390,6 +390,8 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
                     } else if (empresa.getCrt().equals("2")) {
                         throw new ChronosException("Não existe tributação de IPI definida para os parâmetros informados. Operação não realizada.");
                     }
+                } else {
+                    item.setNfeDetalheImpostoIpi(null);
                 }
 
 

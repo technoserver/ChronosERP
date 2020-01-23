@@ -10,6 +10,7 @@ import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jpa.Transactional;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -206,5 +207,25 @@ public class OrcamentoService implements Serializable {
     public void remover(OrcamentoCabecalho orcamento) {
         orcamentoFormaPagamentoRepository.excluir(OrcamentoFormaPagamento.class, "orcamentoCabecalho.id", orcamento.getId());
         repository.excluir(orcamento, orcamento.getId());
+    }
+
+    public OrcamentoCabecalho duplicar(OrcamentoCabecalho orc) {
+        OrcamentoCabecalho novoOrcamento = new OrcamentoCabecalho();
+        BeanUtils.copyProperties(orc, novoOrcamento, "id");
+
+        novoOrcamento.setSituacao(SituacaoOrcamentoPedido.PENDENTE.getCodigo());
+
+        for (OrcamentoDetalhe orcamentoDetalhe : novoOrcamento.getListaOrcamentoDetalhe()) {
+            orcamentoDetalhe.setId(null);
+            orcamentoDetalhe.setOrcamentoCabecalho(novoOrcamento);
+        }
+
+        for (OrcamentoFormaPagamento i : novoOrcamento.getListaFormaPagamento()) {
+            i.setId(null);
+            i.setOrcamentoCabecalho(novoOrcamento);
+        }
+        novoOrcamento = repository.atualizar(novoOrcamento);
+        ;
+        return novoOrcamento;
     }
 }

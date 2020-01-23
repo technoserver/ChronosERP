@@ -24,56 +24,68 @@
 
     <ui:define name="gridDados">
         <div class="ibox-content">
-            <erp:msgPermissao permissao="#{nfceControll.podeConsultar()}"/>
+
+            <div class="row m-b">
+                <div class="col-sm-12">
+                    <p:commandButton value="Gerar NF-e refrenciada"
+                                     action="#{nfceControll.instaciarDadosNfeReferenciada}"
+                                     update=":formOutrasTelas2:panelOutrasTelas2"
+                                     oncomplete="PF('dialogOutrasTelas2').show();"/>
+
+                </div>
+            </div>
+
             <p:dataTable value="#{nfceControll.dataModel}"
                          var="row" id="dataTableNfce" paginator="true"
                          rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
-                         reflow="true" rendered="#{nfceControll.podeConsultar()}" sortOrder="DESCENDING"
-                         resizableColumns="true" lazy="true" sortBy="dataHoraEmissao"
+                         reflow="true" sortOrder="DESCENDING"
+                         lazy="true" sortBy="dataHoraEmissao"
+                         selection="#{nfceControll.nfeSelecionadas}" rowKey="#{row.id}"
             >
 
-
-                <p:column headerText="Número" sortBy="#{row.numero}" width="120">
-                    <h:outputLabel value="#{row.numero}">
+                <p:column selectionMode="multiple" style="width:40px;text-align:center"/>
+                <p:column headerText="Número" sortBy="#{row.numero}" width="100">
+                    <h:outputText value="#{row.numero}">
                         <f:convertNumber type="number" parent="0"/>
-                    </h:outputLabel>
+                    </h:outputText>
                 </p:column>
 
                 <p:column headerText="Chave Acesso" width="380">
-                    <h:outputLabel value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
+                    <h:outputText value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
                 </p:column>
-                <p:column headerText="Data Emissão"
+                <p:column headerText="Emissão"
                           sortBy="#{row.dataHoraEmissao}" width="140" styleClass="text-center">
-                    <h:outputLabel value="#{row.dataHoraEmissao}">
+                    <h:outputText value="#{row.dataHoraEmissao}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputLabel>
+                    </h:outputText>
                 </p:column>
-                <p:column headerText="Valor Total" style="text-align: right;" width="100">
-                    <h:outputLabel value="#{row.valorTotal}">
+                <p:column headerText="Valor Total" style="text-align: right;" width="105">
+                    <h:outputText value="#{row.valorTotal}">
                         <f:convertNumber pattern="#,###,##0.00"/>
-                    </h:outputLabel>
+                    </h:outputText>
                 </p:column>
-                <p:column headerText="Status" sortBy="#{row.statusNota}" width="120" styleClass="text-center">
-                    <h:outputLabel
-                            value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
+                <p:column headerText="Status" sortBy="#{row.statusNota}" width="90" styleClass="text-center">
+                    <h:outputText
+                            value="#{nfceControll.keyFromValue(nfceControll.statusNfe, row.statusNota)}"/>
                 </p:column>
-                <p:column headerText="Ações" width="60">
+                <p:column headerText="Ações" width="70" styleClass="text-center">
                     <p:menuButton>
-                        <p:menuitem value="Cancelar NFCe"
-                                    icon="fa fa-ban"
-                                    update=":formJustificativaCancelamento:panelJustificativaCancelamento"
-                                    oncomplete="PF('dialogJustificativaCancelamento').show();"
-                        >
-                            <f:setPropertyActionListener value="#{row}"
-                                                         target="#{nfceControll.vendaSelecionada}"/>
-                        </p:menuitem>
+
                         <p:menuitem value="Cupom"
                                     icon="fa fa-print" ajax="false"
                                     rendered="#{row.podeCancelar}"
                                     target="_blank"
                                     action="#{nfceControll.danfe}">
                             <f:setPropertyActionListener value="#{row}"
-                                                         target="#{nfceControll.vendaSelecionada}"/>
+                                                         target="#{nfceControll.objetoSelecionado}"/>
+                        </p:menuitem>
+                        <p:menuitem value="Cancelar NFCe"
+                                    icon="fa fa-ban"
+                                    update=":formJustificativaCancelamento:panelJustificativaCancelamento"
+                                    oncomplete="PF('dialogJustificativaCancelamento').show();"
+                        >
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{nfceControll.objetoSelecionado}"/>
                         </p:menuitem>
                     </p:menuButton>
                 </p:column>
@@ -92,7 +104,7 @@
                       hideEffect="slide" resizable="true" modal="true" closable="false"
                       width="800">
                 <p:outputPanel id="panelJustificativaCancelamento">
-                    <div class="row">
+                    <div class="ui-g">
 
                         <erp:campoTexto idComponente="labelJustificativaCancelamento"
                                         label="Justificativa:" styleClass="col-xs-12 col-sm-12 col-md-12"
@@ -121,6 +133,65 @@
                             <h:commandButton value="Cancelar"
                                              styleClass="btn btn-default center-block">
                                 <p:ajax oncomplete="PF('dialogJustificativaCancelamento').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+                </f:facet>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas2">
+        <h:form id="formOutrasTelas2">
+            <p:dialog id="dialogOutrasTelas2"
+                      header="Emissão de NFe referenciada" responsive="true"
+                      widgetVar="dialogOutrasTelas2" showEffect="slide"
+                      hideEffect="slide" resizable="true" modal="true" closable="false"
+                      width="800">
+                <p:outputPanel id="panelOutrasTelas2">
+                    <div class="ui-g">
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          id="operacaoFiscal"
+                                          label="Operação Fiscal"
+                                          itemLabel="#{objeto.descricao}"
+                                          controller="#{nfceControll}"
+                                          completeMethod="getListaTributOperacaoFiscal"
+                                          nomeAtributo="#{nfceControll.operacaoFiscal}"
+                                          idComponente="nfeCabecalhoTributOperacaoFiscal"
+                        />
+
+
+                        <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                          label="Selecione o Cliente:"
+                                          id="pessoaCliente"
+                                          itemLabel="#{objeto.nome}"
+                                          controller="#{nfceControll}"
+                                          completeMethod="getListaPessoaCliente"
+                                          nomeAtributo="#{nfceControll.pessoaCliente}"
+                                          idComponente="nfeDestinatarioSelecao"
+                        />
+
+                    </div>
+
+                </p:outputPanel>
+                <f:facet name="footer">
+
+                    <div class="row">
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <p:commandButton value="Confirmar"
+                                             actionListener="#{nfceControll.gerarNfeReferenciada}"
+                                             oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
+                                             process="@form"
+                                             update="panelOutrasTelas2,:formCentro:growl"
+                            />
+
+
+                        </div>
+                        <div class="col-xs-6 col-md-6">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas2').hide();"
                                         process="@this"/>
                             </h:commandButton>
                         </div>

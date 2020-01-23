@@ -4,7 +4,10 @@ import com.chronos.erp.bo.nfe.VendaToNFe;
 import com.chronos.erp.dto.ConfiguracaoEmissorDTO;
 import com.chronos.erp.dto.ProdutoVendaDTO;
 import com.chronos.erp.modelo.entidades.*;
-import com.chronos.erp.modelo.enuns.*;
+import com.chronos.erp.modelo.enuns.AcaoLog;
+import com.chronos.erp.modelo.enuns.Modulo;
+import com.chronos.erp.modelo.enuns.SituacaoVenda;
+import com.chronos.erp.modelo.enuns.StatusTransmissao;
 import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
@@ -12,7 +15,6 @@ import com.chronos.erp.service.financeiro.*;
 import com.chronos.erp.service.gerencial.AuditoriaService;
 import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jpa.Transactional;
-import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import org.springframework.util.StringUtils;
@@ -80,66 +82,7 @@ public class VendaPdvService implements Serializable {
 
 
     @Transactional
-    public PdvVendaCabecalho finalizarVenda(PdvVendaCabecalho venda, List<FinParcelaReceber> parcelas) throws Exception {
-
-        venda.setStatusVenda(SituacaoVenda.Encerrado.getCodigo());
-        Integer idempresa = venda.getEmpresa().getId();
-        AdmParametro parametro = FacesUtil.getParamentos();
-        List<PdvFormaPagamento> pagamentos = venda.getListaFormaPagamento();
-        venda = repository.atualizar(venda);
-        List<ProdutoVendaDTO> produtos = new ArrayList<>();
-        venda.getListaPdvVendaDetalhe().forEach(p -> {
-            produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
-            if (parametro != null && parametro.getFrenteCaixa()) {
-                syncPendentesService.gerarSyncPendetensEstoque(0, idempresa, p.getProduto().getId());
-            }
-        });
-        estoqueRepositoy.atualizaEstoqueVerificado(venda.getEmpresa().getId(), produtos);
-        for (PdvFormaPagamento p : pagamentos) {
-            if (p.getTipoPagamento().getGeraParcelas().equals("S") && p.getTipoPagamento().getCodigo().equals("14")) {
-
-                if (venda.getCliente().getSituacaoForCli().getBloquear().equals("S")) {
-                    throw new ChronosException("Cliente com restrinções de bloqueio");
-                }
-
-
-                finLancamentoReceberService.gerarContasReceber(venda, parcelas);
-            }
-
-            if (p.getTipoPagamento().getCodigo().equals("05")) {
-                ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
-
-                if (conta == null || conta.getSaldo().compareTo(p.getValor()) < 0) {
-                    throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
-                } else {
-                    contaPessoaService.lancaMovimento(conta, p.getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), venda.getId().toString());
-                }
-            }
-            if (p.getTipoPagamento().getCodigo().equals("03")) {
-
-                OperadoraCartaoTaxa operadoraCartaoTaxa = operadoraCartaoService.getOperadoraCartaoTaxa(new ArrayList<>(p.getOperadoraCartao().getListaOperadoraCartaoTaxas()), p.getQtdParcelas());
-                FinLancamentoReceberCartao finLancamentoReceberCartao = finLancamentoReceberCartaoService.gerarLancamento(venda.getId(), p.getValor(), p.getOperadoraCartao(), operadoraCartaoTaxa, p.getQtdParcelas(), Modulo.VENDA.getCodigo(), venda.getEmpresa(), p.getTipoPagamento().getIdentificador());
-                finLancamentoReceberCartaoRepository.salvar(finLancamentoReceberCartao);
-            }
-
-        }
-        movimentoService.lancaVenda(venda.getValorTotal(), venda.getValorDesconto(), venda.getTroco());
-
-
-        comissaoService.gerarComissao("A", "C", venda.getValorComissao(), venda.getValorTotal(),
-                venda.getId().toString(), venda.getVendedor().getColaborador(), Modulo.PDV);
-
-
-        auditoriaService.gerarLog(AcaoLog.ENCERRAR_VENDA, "Encerramento do pedido de venda " + venda.getId(), "PDV");
-
-        return venda;
-
-
-    }
-
-
-    @Transactional
-    public void transmitirNFe(PdvVendaCabecalho venda, boolean atualizarEstoque) throws Exception {
+    public void transmitirNFe(PdvVendaCabecalho venda, boolean atualizarEstoque, ModeloDocumento modelo) throws Exception {
 
         SituacaoVenda situacao = SituacaoVenda.valueOfCodigo(venda.getStatusVenda());
 
@@ -148,7 +91,7 @@ public class VendaPdvService implements Serializable {
         }
 
 
-        VendaToNFe vendaNfe = new VendaToNFe(ModeloDocumento.NFCE, venda);
+        VendaToNFe vendaNfe = new VendaToNFe(modelo, venda);
         NfeCabecalho nfe = vendaNfe.gerarNfe();
         nfe.setPdv(venda);
 
