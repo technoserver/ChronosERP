@@ -51,7 +51,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     @Inject
     private Repository<Pessoa> pessoas;
     @Inject
-    private Repository<Empresa> empresaRepository;
+    private Repository<EmpresaPessoa> empresaPessoaRepository;
 
     @Inject
     private Repository<RestricaoSistema> restricaoSistemaRepository;

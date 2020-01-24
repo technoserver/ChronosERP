@@ -32,6 +32,22 @@
                 </div>
             </div>
             <div class="row m-t">
+
+                <div class="col-xs-12 col-sm-3">
+                    <p:outputLabel value="Produto" for="produto"/>
+                    <br/>
+                    <p:autoComplete id="produto"
+                                    value="#{estoqueAjusteControll.produto}"
+                                    completeMethod="#{estoqueAjusteControll.getListaProduto}"
+                                    var="obj" itemLabel="#{obj.nome}"
+                                    itemValue="#{obj}"
+                                    converter="defaultConverter"
+                                    dropdown="true"
+                                    forceSelection="true" minQueryLength="2" maxResults="20"
+                                    style="width: 100%"
+                                    emptyMessage="Nenhum registro encontrado"/>
+                </div>
+
                 <erp:campoTexto label="Código"
                                 idComponente="codigo"
                                 styleClass="col-xs-12 col-sm-3 col-md-3"

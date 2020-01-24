@@ -39,7 +39,7 @@ public class AdmParametrosControll extends AbstractControll<AdmParametro> implem
         AdmParametro parametro = dao.get(AdmParametro.class, "empresa.id", empresa.getId());
         parametro = parametro == null ? new AdmParametro() : parametro;
         setObjeto(parametro);
-        operacoesFiscais = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn", "classificacaoContabilConta"});
+        operacoesFiscais = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, new Object[]{"descricao", "descricaoNaNf", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn", "classificacaoContabilConta"});
 
         operacaoFiscal = new TributOperacaoFiscal(getObjeto().getTributOperacaoFiscalPadrao());
     }
