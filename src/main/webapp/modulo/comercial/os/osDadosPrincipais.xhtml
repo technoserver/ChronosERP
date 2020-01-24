@@ -119,7 +119,7 @@
 
 
         <div class="col-xs-12 col-sm-2 col-md-2">
-            <p:outputLabel value="Desonto total"
+            <p:outputLabel value="Desconto total"
                            for="valorTotalDesconto"/>
 
             <h:panelGroup layout="block" id="panel-desconto" class="field-action">
@@ -185,7 +185,7 @@
                                  rendered="#{empty osAberturaControll.objeto.id}">
 
                 </p:commandButton>
-                <c:if test="#{not empty osAberturaControll.objeto.id and !(osAberturaControll.objeto.status eq '12' or osAberturaControll.objeto.status eq '13')}">
+                <c:if test="#{not empty osAberturaControll.objeto.id and !(osAberturaControll.objeto.status eq '11' or osAberturaControll.objeto.status eq '12' or osAberturaControll.objeto.status eq '13')}">
                     <p:splitButton value="Salvar"
                                    update=":formCentro:growl"
                                    actionListener="#{osAberturaControll.salvar()}"
@@ -224,7 +224,7 @@
                     </p:splitButton>
                 </c:if>
             </div>
-            <div class="#{(osAberturaControll.objeto.status eq 12 or osAberturaControll.objeto.status eq 13)? 'col-xs-12 col-sm-12 col-md-12':'col-xs-6 col-sm-6 col-md-6'} text-center">
+            <div class="#{(osAberturaControll.objeto.status eq 11 or osAberturaControll.objeto.status eq 12 or osAberturaControll.objeto.status eq 13)? 'col-xs-12 col-sm-12 col-md-12':'col-xs-6 col-sm-6 col-md-6'} text-center">
                 <p:commandButton value="Cancelar" styleClass="default-btn"
                                  immediate="true"
                                  action="#{osAberturaControll.voltar}"

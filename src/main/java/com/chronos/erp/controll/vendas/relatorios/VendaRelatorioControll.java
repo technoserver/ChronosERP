@@ -52,6 +52,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     private VendaConsignadaCabecalho vendaConsignada;
     private PessoaCliente cliente;
     private Map<String, Integer> listaVendedor;
+    private Map<String, Integer> listaColaborador;
     private String statusVendas;
     private Map<String, Integer> listaGrupo;
 
@@ -67,7 +68,9 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     protected void init() {
         super.init();
 
-        listaVendedor = vendedorService.getMapColaboradorComissionado();
+        listaColaborador = vendedorService.getMapColaboradorComissionado();
+
+        listaColaborador = vendedorService.getMapVendedores();
 
         listaGrupo = new LinkedHashMap<>();
         listaGrupo.put("TODOS", 0);
@@ -451,4 +454,9 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     public VendaConsignadaCabecalho getVendaConsignada() {
         return vendaConsignada;
     }
+
+    public Map<String, Integer> getListaColaborador() {
+        return listaColaborador;
+    }
+
 }

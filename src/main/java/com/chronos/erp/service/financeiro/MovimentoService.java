@@ -49,11 +49,6 @@ public class MovimentoService implements Serializable {
     @Inject
     private ExternalContext context;
 
-    @Inject
-    private Repository<PdvOperador> pdvOperadorRepository;
-    @Inject
-    private Repository<PdvConfiguracao> repositoryConf;
-
     private PdvMovimento movimento;
     private StringBuilder linhasRelatorio;
     private String nomeImpressaoMovimento;
@@ -205,12 +200,6 @@ public class MovimentoService implements Serializable {
         FacesUtil.setMovimento(movimento);
     }
 
-    public boolean verificarConfPdv(Empresa empresa) {
-        conf = repositoryConf.get(PdvConfiguracao.class, "empresa.id", empresa.getId(), new Object[]{"pdvCaixa"});
-        if (conf == null) {
-            return false;
-        } else return conf.getPdvCaixa() != null;
-    }
 
     public PdvMovimento verificarMovimento(Empresa empresa) throws ChronosException {
 

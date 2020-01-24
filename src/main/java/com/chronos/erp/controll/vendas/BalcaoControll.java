@@ -183,7 +183,7 @@ public class BalcaoControll implements Serializable {
         this.podeAlterarPreco = usuario.getAdministrador().equals("S")
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
 
-        List<PdvCaixa> Caixas = caixaRepository.getEntitys(PdvCaixa.class, new Object[]{"codigo", "nome"});
+        List<PdvCaixa> Caixas = caixaRepository.getEntitys(PdvCaixa.class, "idempresa", empresa.getId(), new Object[]{"codigo", "nome"});
 
         caixaDomain = new LinkedHashMap<>();
         caixaDomain.put("Todos", 0);

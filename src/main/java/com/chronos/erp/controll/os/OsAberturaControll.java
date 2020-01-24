@@ -97,6 +97,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private Date dataFinal;
     private String justificativa;
     private int statusOs;
+    private String tipoAtendimento;
     private Integer idmepresaFiltro;
 
     private Map<String, Integer> status;
@@ -313,6 +314,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             int tipo = tipoDesconto.equals("RS") ? 1 : 0;
             osService.aplicarDesconto(getObjeto(), tipo, desconto);
             desconto = BigDecimal.ZERO;
+            totalReceber = getObjeto().getValorTotal();
+            verificaSaldoRestante();
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("Ocorreu um erro!", ex);
@@ -757,8 +760,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         }
     }
 
-
-
     private void iniciarValoresPagamento() {
         totalReceber = BigDecimal.ZERO;
         troco = BigDecimal.ZERO;
@@ -996,5 +997,13 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public boolean isExibirOpcaoFaturamento() {
         return empresa.buscarEnderecoPrincipal() != null && empresa.buscarEnderecoPrincipal().getUf().equals("DF");
+    }
+
+    public String getTipoAtendimento() {
+        return tipoAtendimento;
+    }
+
+    public void setTipoAtendimento(String tipoAtendimento) {
+        this.tipoAtendimento = tipoAtendimento;
     }
 }
