@@ -78,8 +78,16 @@
                     </h:selectOneMenu>
                 </h:panelGroup>
 
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <h:outputLabel value="Tipo Atedimento"/>
+                    <h:selectOneMenu value="#{osAberturaControll.tipoAtendimento}"
+                                     styleClass="form-control">
+                        <f:selectItem itemValue="" itemLabel="Todos"/>
+                        <f:selectItems value="#{osAberturaControll.tiposAtendimento}"/>
+                    </h:selectOneMenu>
+                </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-6">
+                <div class="col-xs-12 col-sm-3 col-md-3">
                     <h:outputLabel value="Status" for="status"/>
 
                     <div class="field-action">
@@ -127,12 +135,18 @@
                     </h:outputLabel>
                 </p:column>
                 <p:column headerText="Status" width="200" styleClass="text-center">
-                    <h:outputLabel value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"
+                    <h:outputLabel value="Faturado"
                                    rendered="#{row.status eq 13}" styleClass="label  label-primary"/>
-                    <h:outputLabel value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"
+
+                    <h:outputLabel value="Encerrado"
                                    rendered="#{row.status eq 12}" styleClass="label  label-success"/>
+
+                    <h:outputLabel value="Cancelada"
+                                   rendered="#{row.status eq 11}" styleClass="label  label-warning"/>
+
                     <h:outputLabel value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"
-                                   rendered="#{row.status ne 13 and row.status ne 12}" styleClass="label  label-info"/>
+                                   rendered="#{row.status ne 13 and row.status ne 12 and row.status ne 11}"
+                                   styleClass="label  label-info"/>
                 </p:column>
                 <p:column headerText="Ações" width="160" styleClass="text-center">
                     <p:commandLink title="Alterar" id="btnEditar" action="#{osAberturaControll.doEdit()}"
@@ -148,7 +162,8 @@
                                    disabled="#{!osAberturaControll.podeExcluir()}"
                                    process="dataTableOsAbertura"
                                    class="btn btn-default"
-                                   rendered="#{row.podeExcluir}">
+                                   rendered="#{! (row.status == 11 or row.status == 12 or row.status == 13)}"
+                    >
                         <i class="fa fa-times"></i>
                         <p:confirm header="Confirmar" message="Deseja excluir ?"/>
                         <f:setPropertyActionListener value="#{row}" target="#{osAberturaControll.objetoSelecionado}"/>
@@ -163,7 +178,7 @@
                         <f:setPropertyActionListener value="#{row}" target="#{osAberturaControll.objetoSelecionado}"/>
                     </p:commandLink>
                     &nbsp;
-                    <p:menuButton style="height: 26px;">
+                    <p:menuButton style="height: 26px;" rendered="#{row.status ne 11}">
                         <p:menuitem value="Imprimir OS 1 Via"
                                     icon="fa fa-print"
                                     action="#{osRelatorioControll.imprimirOS(row.id)}"
@@ -629,7 +644,10 @@
                         <div class="col-xs-6 col-md-6 text-center">
                             <p:commandButton value="Salvar"
                                              id="btnSalvarDesonto"
-                                             update="panelOutrasTelas5,:formCentro:growl,:formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:panel-desconto,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico"
+                                             update="panelOutrasTelas5,:formCentro:growl,:formCentro:telaDetalhe:panel-valores,
+                                             :formCentro:telaDetalhe:tabViewDetalhes:panel-desconto,
+                                             :formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico,
+                                             :formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:valo-pago"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
                                              action="#{osAberturaControll.aplicarDesconto}"/>
 

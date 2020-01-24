@@ -24,6 +24,8 @@ public class RestricaoSistema implements Serializable {
     private BigDecimal descontoVenda;
     @Column(name = "altera_preco_na_venda")
     private String alteraPrecoNaVenda;
+    @Column(name = "estoque_negativo")
+    private String estoqueNegativo;
     @Column(name = "bloquear_venda_por_limite_credito")
     private String bloquearVendaPorLimiteCredito;
 
@@ -36,6 +38,7 @@ public class RestricaoSistema implements Serializable {
         this.alteraPrecoNaVenda = "S";
         this.bloquearVendaPorLimiteCredito = "N";
         this.descontoVenda = BigDecimal.ZERO;
+        this.estoqueNegativo = "S";
     }
 
 
@@ -77,6 +80,14 @@ public class RestricaoSistema implements Serializable {
 
     public void setBloquearVendaPorLimiteCredito(String bloquearVendaPorLimiteCredito) {
         this.bloquearVendaPorLimiteCredito = bloquearVendaPorLimiteCredito;
+    }
+
+    public String getEstoqueNegativo() {
+        return estoqueNegativo;
+    }
+
+    public void setEstoqueNegativo(String estoqueNegativo) {
+        this.estoqueNegativo = estoqueNegativo;
     }
 
     @Override

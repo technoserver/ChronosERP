@@ -257,7 +257,7 @@ public class OsService extends AbstractService<OsAbertura> {
             }
 
             for (OsFormaPagamento p : os.getListaFormaPagamento()) {
-                recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+                recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getFormaPagamento().getValor());
             }
 
             if (os.getValorTotal().compareTo(recebidoAteAgora) != 0) {
@@ -271,20 +271,20 @@ public class OsService extends AbstractService<OsAbertura> {
             Optional<OsFormaPagamento> formaPagamento = os.getListaFormaPagamento().stream().filter(f -> f.equals("14")).findFirst();
 
             if (formaPagamento.isPresent()) {
-                formaPagamento.get().getCondicao();
+                formaPagamento.get().getFormaPagamento().getCondicao();
                 finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
-                        formaPagamento.get().getCondicao(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, os.getEmpresa());
+                        formaPagamento.get().getFormaPagamento().getCondicao(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, os.getEmpresa());
             }
 
-            formaPagamento = os.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("05")).findFirst();
+            formaPagamento = os.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("05")).findFirst();
 
             if (formaPagamento.isPresent()) {
                 ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", os.getCliente().getPessoa().getId());
 
-                if (conta == null || conta.getSaldo().compareTo(formaPagamento.get().getValor()) < 0) {
+                if (conta == null || conta.getSaldo().compareTo(formaPagamento.get().getFormaPagamento().getValor()) < 0) {
                     throw new ChronosException("Saldo insuficiente para debita na conta do cliente");
                 } else {
-                    contaPessoaService.lancaMovimento(conta, formaPagamento.get().getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), os.getId().toString());
+                    contaPessoaService.lancaMovimento(conta, formaPagamento.get().getFormaPagamento().getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), os.getId().toString());
                 }
             }
 
@@ -359,16 +359,16 @@ public class OsService extends AbstractService<OsAbertura> {
 
         for (OrcamentoFormaPagamento p : orcamento.getListaFormaPagamento()) {
             OsFormaPagamento pag = new OsFormaPagamento();
-            pag.setEstorno(p.getFormaPagamento().getEstorno());
-            pag.setForma(p.getFormaPagamento().getForma());
+            pag.getFormaPagamento().setEstorno(p.getFormaPagamento().getEstorno());
+            pag.getFormaPagamento().setForma(p.getFormaPagamento().getForma());
             pag.setOsAbertura(os);
-            pag.setTipoPagamento(p.getFormaPagamento().getTipoPagamento());
-            pag.setTroco(p.getFormaPagamento().getTroco());
-            pag.setValor(p.getFormaPagamento().getValor());
-            pag.setBandeira(p.getFormaPagamento().getBandeira());
-            pag.setCartaoTipoIntegracao(p.getFormaPagamento().getCartaoTipoIntegracao());
-            pag.setCnpjOperadoraCartao(p.getFormaPagamento().getCnpjOperadoraCartao());
-            pag.setNumeroAutorizacao(p.getFormaPagamento().getNumeroAutorizacao());
+            pag.getFormaPagamento().setTipoPagamento(p.getFormaPagamento().getTipoPagamento());
+            pag.getFormaPagamento().setTroco(p.getFormaPagamento().getTroco());
+            pag.getFormaPagamento().setValor(p.getFormaPagamento().getValor());
+            pag.getFormaPagamento().setBandeira(p.getFormaPagamento().getBandeira());
+            pag.getFormaPagamento().setCartaoTipoIntegracao(p.getFormaPagamento().getCartaoTipoIntegracao());
+            pag.getFormaPagamento().setCnpjOperadoraCartao(p.getFormaPagamento().getCnpjOperadoraCartao());
+            pag.getFormaPagamento().setNumeroAutorizacao(p.getFormaPagamento().getNumeroAutorizacao());
 
             os.getListaFormaPagamento().add(pag);
         }

@@ -597,10 +597,6 @@ public abstract class AbstractControll<T> implements Serializable {
         osStatus.put("AGUARDANDO DIAGNÓSTICO", 8);
         osStatus.put("DIAGNÓSTICO PRONTO", 9);
         osStatus.put("SEM CONSERTO", 10);
-        osStatus.put("CANCELADA", 11);
-        osStatus.put("ENCERRADO", 12);
-        osStatus.put("FATURADO", 13);
-
 
         //Agenda
         categoriaCompromissoCor = new HashMap<>();

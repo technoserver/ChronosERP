@@ -107,17 +107,15 @@ public class PdvMovimentoControll implements Serializable {
         try {
             empresa = FacesUtil.getEmpresaUsuario();
             movimentoAberto = FacesUtil.getMovimento();
-            temConfiguracao = service.verificarConfPdv(empresa);
+
             usuario = FacesUtil.getUsuarioSessao();
             idoperador = usuario != null && usuario.getOperador() != null ? usuario.getOperador().getId() : idoperador;
             tiposLancamento = new HashMap<>();
             tiposLancamento.put("Suprimento", 1);
             tiposLancamento.put("Sangria", 2);
-            if (temConfiguracao) {
-                iniciarObjetos();
-            } else {
-                Mensagem.addInfoMessage("É preciso informar as configuracoes do PDV");
-            }
+            iniciarObjetos();
+            movimento = service.verificarMovimento(empresa);
+            temMovimento = movimento != null;
             formasPagamento = new ArrayList<>();
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -321,9 +319,9 @@ public class PdvMovimentoControll implements Serializable {
 
     private void iniciarObjetos() throws ChronosException {
 
-        movimento = service.verificarMovimento(empresa);
+
         turnos = pdvTurnoRepository.getAll(PdvTurno.class);
-        Caixas = caixaRepository.getEntitys(PdvCaixa.class, new Object[]{"codigo", "nome"});
+        Caixas = caixaRepository.getEntitys(PdvCaixa.class, "idempresa", empresa.getId(), new Object[]{"codigo", "nome"});
 
         caixaDomain = new LinkedHashMap<>();
         caixaDomain.put("Todos", 0);

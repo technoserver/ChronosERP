@@ -97,6 +97,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private Date dataFinal;
     private String justificativa;
     private int statusOs;
+    private String tipoAtendimento;
     private Integer idmepresaFiltro;
 
     private Map<String, Integer> status;
@@ -313,6 +314,8 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             int tipo = tipoDesconto.equals("RS") ? 1 : 0;
             osService.aplicarDesconto(getObjeto(), tipo, desconto);
             desconto = BigDecimal.ZERO;
+            totalReceber = getObjeto().getValorTotal();
+            verificaSaldoRestante();
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("Ocorreu um erro!", ex);
@@ -591,17 +594,17 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             } else {
                 OsFormaPagamento formaPagamento = new OsFormaPagamento();
                 formaPagamento.setOsAbertura(getObjeto());
-                formaPagamento.setTipoPagamento(tipoPagamento);
-                formaPagamento.setValor(valor);
-                formaPagamento.setForma(tipoPagamento.getCodigo());
-                formaPagamento.setEstorno("N");
+                formaPagamento.getFormaPagamento().setTipoPagamento(tipoPagamento);
+                formaPagamento.getFormaPagamento().setValor(valor);
+                formaPagamento.getFormaPagamento().setForma(tipoPagamento.getCodigo());
+                formaPagamento.getFormaPagamento().setEstorno("N");
 
                 if (tipoPagamento.getGeraParcelas().equals("S")) {
-                    formaPagamento.setCondicao(condicaoPagamento);
+                    formaPagamento.getFormaPagamento().setCondicao(condicaoPagamento);
                 }
 
-                if (formaPagamento.getForma().equals("03") || formaPagamento.getForma().equals("04")) {
-                    formaPagamento.setCartaoTipoIntegracao("2");
+                if (formaPagamento.getFormaPagamento().getForma().equals("03") || formaPagamento.getFormaPagamento().getForma().equals("04")) {
+                    formaPagamento.getFormaPagamento().setCartaoTipoIntegracao("2");
                 }
 
                 totalRecebido = Biblioteca.soma(totalRecebido, valor);
@@ -609,7 +612,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 if (troco.compareTo(BigDecimal.ZERO) == -1) {
                     troco = BigDecimal.ZERO;
                 }
-                formaPagamento.setTroco(troco);
+                formaPagamento.getFormaPagamento().setTroco(troco);
                 getObjeto().getListaFormaPagamento().add(formaPagamento);
                 verificaSaldoRestante();
 
@@ -631,7 +634,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private Optional<OsFormaPagamento> bucarTipoPagamento(TipoPagamento tipoPagamento) {
         return getObjeto().getListaFormaPagamento()
                 .stream()
-                .filter(fp -> fp.getTipoPagamento().equals(tipoPagamento))
+                .filter(fp -> fp.getFormaPagamento().getTipoPagamento().equals(tipoPagamento))
                 .findAny();
     }
 
@@ -735,7 +738,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     private void verificaSaldoRestante() {
         BigDecimal recebidoAteAgora = BigDecimal.ZERO;
         for (OsFormaPagamento p : getObjeto().getListaFormaPagamento()) {
-            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getValor());
+            recebidoAteAgora = Biblioteca.soma(recebidoAteAgora, p.getFormaPagamento().getValor());
         }
 
         saldoRestante = Biblioteca.subtrai(totalReceber, recebidoAteAgora);
@@ -756,8 +759,6 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             e.printStackTrace();
         }
     }
-
-
 
     private void iniciarValoresPagamento() {
         totalReceber = BigDecimal.ZERO;
@@ -996,5 +997,13 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
 
     public boolean isExibirOpcaoFaturamento() {
         return empresa.buscarEnderecoPrincipal() != null && empresa.buscarEnderecoPrincipal().getUf().equals("DF");
+    }
+
+    public String getTipoAtendimento() {
+        return tipoAtendimento;
+    }
+
+    public void setTipoAtendimento(String tipoAtendimento) {
+        this.tipoAtendimento = tipoAtendimento;
     }
 }

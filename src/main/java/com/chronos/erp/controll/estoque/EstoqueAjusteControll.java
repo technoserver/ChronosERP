@@ -49,6 +49,7 @@ public class EstoqueAjusteControll implements Serializable {
     private BigDecimal quantidade;
     private BigDecimal valorVenda;
     private Integer tipoEstoque;
+    private Produto produto;
 
     private List<EmpresaProduto> produtos;
     private EmpresaProduto produtoSelecionado;
@@ -66,10 +67,12 @@ public class EstoqueAjusteControll implements Serializable {
     }
 
     public void addProduto() {
-        if (!StringUtils.isEmpty(codigo)) {
+        if (produto != null || !StringUtils.isEmpty(codigo)) {
             List<Filtro> filtros = new LinkedList<>();
             filtros.add(new Filtro("empresa.id", empresa.getId()));
-            if (codigo.length() >= 8) {
+            if (produto != null) {
+                filtros.add(new Filtro("produto.id", produto.getId()));
+            } else if (codigo.length() >= 8) {
                 filtros.add(new Filtro("produto.gtin", Filtro.IGUAL, codigo));
             } else {
                 String str = "0" + codigo.replaceAll("\\D", "");
@@ -96,7 +99,7 @@ public class EstoqueAjusteControll implements Serializable {
 
 
                     produto.setValorVenda(Optional.ofNullable(valorVenda).orElse(produto.getProduto().getValorVenda()));
-
+                    this.produto = null;
                     if (produto.getProduto().getPossuiGrade()) {
 
                         filtros = new ArrayList<>();
@@ -124,6 +127,18 @@ public class EstoqueAjusteControll implements Serializable {
             Mensagem.addErrorMessage("Produto não localizado");
         }
     }
+
+    public List<Produto> getListaProduto(String nome) {
+        List<Produto> lista = new ArrayList<>();
+
+        try {
+            lista = produtoRepository.getEntitys(Produto.class, "nome", nome, new Object[]{"nome"});
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return lista;
+    }
+
 
     public void remover() {
         produtos.remove(produtoSelecionado);
@@ -257,5 +272,13 @@ public class EstoqueAjusteControll implements Serializable {
 
     public void setGrades(List<EstoqueGrade> grades) {
         this.grades = grades;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
 }

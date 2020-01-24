@@ -128,7 +128,11 @@ public class VendaToNFe extends ManualCDILookup {
         nfe.setEmitente(emitente);
     }
 
-    private void definirDestinatario() {
+    private void definirDestinatario() throws ChronosException {
+
+        if (modelo == ModeloDocumento.NFE && cliente == null) {
+            throw new ChronosException("Para emissão de NF-e é preciso informar um cliente");
+        }
 
         nfe.setDestinatario(new NfeDestinatario());
         nfe.getDestinatario().setNfeCabecalho(nfe);
@@ -266,53 +270,39 @@ public class VendaToNFe extends ManualCDILookup {
         if (tipoVenda == TipoVenda.PDV) {
             nfe.setTroco(pdvVenda.getTroco());
             pdvVenda.getListaFormaPagamento().stream().forEach(f -> {
-                NfeFormaPagamento pagamento = new NfeFormaPagamento();
-                pagamento.setTroco(f.getTroco());
-                pagamento.setBandeira(f.getBandeira());
-                pagamento.setCartaoTipoIntegracao(f.getCartaoTipoIntegracao());
-                pagamento.setCnpjOperadoraCartao(f.getCnpjOperadoraCartao());
-                pagamento.setEstorno(f.getEstorno());
-                pagamento.setForma(f.getForma());
-                pagamento.setNumeroAutorizacao(f.getNumeroAutorizacao());
-                pagamento.setTipoPagamento(f.getTipoPagamento());
-                pagamento.setNfeCabecalho(nfe);
-                pagamento.setValor(f.getValor());
+                NfeFormaPagamento pagamento = preecherFormarPagamento(f.getFormaPagamento());
                 nfe.getListaNfeFormaPagamento().add(pagamento);
             });
         } else if (tipoVenda == TipoVenda.OS) {
             os.getListaFormaPagamento().stream().forEach(f -> {
-                NfeFormaPagamento pagamento = new NfeFormaPagamento();
-                pagamento.setTroco(f.getTroco());
-                pagamento.setBandeira(f.getBandeira());
-                pagamento.setCartaoTipoIntegracao(f.getCartaoTipoIntegracao());
-                pagamento.setCnpjOperadoraCartao(f.getCnpjOperadoraCartao());
-                pagamento.setEstorno(f.getEstorno());
-                pagamento.setForma(f.getForma());
-                pagamento.setNumeroAutorizacao(f.getNumeroAutorizacao());
-                pagamento.setTipoPagamento(f.getTipoPagamento());
-                pagamento.setNfeCabecalho(nfe);
-                pagamento.setValor(f.getValor());
+                NfeFormaPagamento pagamento = preecherFormarPagamento(f.getFormaPagamento());
                 nfe.getListaNfeFormaPagamento().add(pagamento);
             });
         } else {
 
             venda.getListaFormaPagamento().stream().forEach(f -> {
-                NfeFormaPagamento pagamento = new NfeFormaPagamento();
-                pagamento.setTroco(f.getFormaPagamento().getTroco());
-                pagamento.setBandeira(f.getFormaPagamento().getBandeira());
-                pagamento.setCartaoTipoIntegracao(f.getFormaPagamento().getCartaoTipoIntegracao());
-                pagamento.setCnpjOperadoraCartao(f.getFormaPagamento().getCnpjOperadoraCartao());
-                pagamento.setEstorno(f.getFormaPagamento().getEstorno());
-                pagamento.setForma(f.getFormaPagamento().getForma());
-                pagamento.setNumeroAutorizacao(f.getFormaPagamento().getNumeroAutorizacao());
-                pagamento.setTipoPagamento(f.getFormaPagamento().getTipoPagamento());
-                pagamento.setNfeCabecalho(nfe);
-                pagamento.setValor(f.getFormaPagamento().getValor());
+                NfeFormaPagamento pagamento = preecherFormarPagamento(f.getFormaPagamento());
                 nfe.getListaNfeFormaPagamento().add(pagamento);
             });
 
 
         }
+    }
+
+    public NfeFormaPagamento preecherFormarPagamento(FormaPagamento forma) {
+        NfeFormaPagamento pagamento = new NfeFormaPagamento();
+        pagamento.setTroco(forma.getTroco());
+        pagamento.setBandeira(forma.getBandeira());
+        pagamento.setCartaoTipoIntegracao(forma.getCartaoTipoIntegracao());
+        pagamento.setCnpjOperadoraCartao(forma.getCnpjOperadoraCartao());
+        pagamento.setEstorno(forma.getEstorno());
+        pagamento.setForma(forma.getForma());
+        pagamento.setNumeroAutorizacao(forma.getNumeroAutorizacao());
+        pagamento.setTipoPagamento(forma.getTipoPagamento());
+        pagamento.setNfeCabecalho(nfe);
+        pagamento.setValor(forma.getValor());
+
+        return pagamento;
     }
 
     public void gerarDuplicatas() throws ChronosException {
@@ -332,12 +322,14 @@ public class VendaToNFe extends ManualCDILookup {
                 BigDecimal valorParcela;
                 int number = 0;
 
-                CondicoesPagamento condicao = tipoVenda == TipoVenda.OS
-                        ? os.getListaFormaPagamento().stream().filter(p -> p.getForma().equals("14")).findFirst().get().getCondicao()
-                        : venda.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("14")).findFirst().get().getFormaPagamento().getCondicoesPagamento();
+                FormaPagamento formaPagamento = tipoVenda == TipoVenda.OS
+                        ? os.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("14")).findFirst().get().getFormaPagamento()
+                        : venda.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("14")).findFirst().get().getFormaPagamento();
+                if (formaPagamento.getCondicoesPagamento() == null) {
+                    throw new ChronosException("Para geração de Duplicatas na NFe é preciso informar a condição de pagamento");
+                }
 
-
-                List<CondicoesParcelas> parcelas = condicao.getParcelas();
+                List<CondicoesParcelas> parcelas = formaPagamento.getCondicoesPagamento().getParcelas();
 
                 for (CondicoesParcelas parcela : parcelas) {
                     NfeDuplicata duplicata = new NfeDuplicata();
