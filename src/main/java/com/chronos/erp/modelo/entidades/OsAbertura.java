@@ -116,13 +116,15 @@ public class OsAbertura implements Serializable {
     }
 
 
-    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, BigDecimal valorTotal, int idcliente, String nome, Integer status, Integer idnfeCabecalho) {
+    public OsAbertura(Integer id, String numero, Date dataInicio, Date dataPrevisao, Date dataFim, BigDecimal valorTotal,
+                      int idcliente, String nome, String tipoAtendimento, Integer status, Integer idnfeCabecalho) {
         this.id = id;
         this.numero = numero;
         this.dataInicio = dataInicio;
         this.dataPrevisao = dataPrevisao;
         this.dataFim = dataFim;
         this.cliente = new Cliente(idcliente, nome);
+        this.tipoAtendimento = tipoAtendimento;
         this.status = status;
         this.idnfeCabecalho = idnfeCabecalho;
         this.valorTotal = valorTotal;
