@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="2.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="374"/>
+    <property name="ireport.y" value="384"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <style name="table">
         <box>
@@ -35,10 +35,13 @@
     <subDataset name="equipamentoDTS" uuid="1b169113-e2e6-41fd-b0f3-39ad99acb70e"/>
     <parameter name="logo" class="java.awt.Image"/>
     <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
-        <defaultValueExpression><![CDATA["E:\\projetos\\jasper\\MyReports\\MyReports\\"]]></defaultValueExpression>
+        <defaultValueExpression><![CDATA[""]]></defaultValueExpression>
     </parameter>
     <parameter name="id_os" class="java.lang.Integer">
         <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="comprovanteEntrega" class="java.lang.Boolean">
+        <defaultValueExpression><![CDATA[false]]></defaultValueExpression>
     </parameter>
     <queryString>
         <![CDATA[SELECT
@@ -254,34 +257,30 @@ WHERE
                 <textFieldExpression><![CDATA[$F{empresa_email}==null?"":$F{empresa_email}]]></textFieldExpression>
             </textField>
             <textField pattern="dd/MM/yyyy">
-                <reportElement x="479" y="81" width="75" height="14" uuid="08715cba-59c2-4071-9808-e2941dfdb4e0"/>
+                <reportElement x="475" y="63" width="46" height="14" uuid="08715cba-59c2-4071-9808-e2941dfdb4e0"/>
+                <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
             </textField>
             <textField pattern="HH:mm">
-                <reportElement x="479" y="94" width="75" height="14" uuid="68f116aa-e1ee-402f-a1fd-1aaa48fe9578"/>
+                <reportElement x="521" y="63" width="31" height="14" uuid="68f116aa-e1ee-402f-a1fd-1aaa48fe9578"/>
+                <textElement textAlignment="Right"/>
                 <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="439" y="81" width="41" height="14" uuid="0308f1da-c227-4637-9e2d-eee1ab75dc1b"/>
+                <reportElement x="434" y="63" width="41" height="14" uuid="0308f1da-c227-4637-9e2d-eee1ab75dc1b"/>
                 <textElement>
                     <font fontName="Courier New" size="12" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Data:]]></text>
             </staticText>
-            <staticText>
-                <reportElement x="439" y="94" width="41" height="14" uuid="39ef6df0-2e43-4ded-a70a-80d1aa833a79"/>
-                <textElement>
-                    <font fontName="Courier New" size="12" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Hora:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="79" width="439" height="29" uuid="8f005b14-0cd6-4980-9621-f58de4312734"/>
-                <textElement verticalAlignment="Middle">
+            <textField>
+                <reportElement x="0" y="79" width="552" height="21" uuid="27e8eb6a-6f6d-44d5-ba2e-b0179ed4c11e"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
                     <font fontName="Courier New" size="18" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Ordem de Serviço]]></text>
-            </staticText>
+                <textFieldExpression>
+                    <![CDATA[$P{comprovanteEntrega} ?"Comprovante de Entrega" :"Ordem de Serviço"]]></textFieldExpression>
+            </textField>
             <line>
                 <reportElement x="0" y="129" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
             </line>
@@ -441,7 +440,37 @@ WHERE
         </band>
     </detail>
     <pageFooter>
-        <band height="13"/>
+        <band height="18">
+            <staticText>
+                <reportElement x="3" y="0" width="278" height="8" uuid="a70b6a81-809c-4421-a65a-d30d33ce99a7"/>
+                <textElement textAlignment="Center" verticalAlignment="Top">
+                    <font fontName="Courier New" size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[___________________________________]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="3" y="7" width="278" height="10" uuid="3856c491-8b68-4cdf-a846-88452f34e60a"/>
+                <textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
+                    <font fontName="Courier New" size="7" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{comprovanteEntrega}? "Empresa" : "Solicitante"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="281" y="7" width="277" height="10" uuid="4f90b383-d32f-4760-af02-8812cc31b51c"/>
+                <textElement textAlignment="Center" verticalAlignment="Bottom" markup="none">
+                    <font fontName="Courier New" size="7" isBold="true"/>
+                </textElement>
+                <textFieldExpression>
+                    <![CDATA[$P{comprovanteEntrega}?"Cliente/Recebedor":"tecnico"]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="281" y="0" width="277" height="8" uuid="fe9c26f6-3497-4043-88c7-3e677eb7d5a2"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Courier New" size="7" isBold="true"/>
+                </textElement>
+                <text><![CDATA[___________________________________]]></text>
+            </staticText>
+        </band>
     </pageFooter>
     <summary>
         <band height="113">
@@ -474,14 +503,14 @@ WHERE
                 <text><![CDATA[Valor Total Serviço:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="89" width="76" height="13" uuid="f12b2eaf-e7ce-40dc-8d73-b73dbc329148"/>
+                <reportElement x="1" y="59" width="76" height="13" uuid="f12b2eaf-e7ce-40dc-8d73-b73dbc329148"/>
                 <textElement>
                     <font fontName="Courier New" size="10" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Observações:]]></text>
             </staticText>
             <textField isStretchWithOverflow="true" isBlankWhenNull="true">
-                <reportElement stretchType="RelativeToBandHeight" x="0" y="101" width="555" height="12"
+                <reportElement stretchType="RelativeToBandHeight" x="1" y="71" width="555" height="12"
                                uuid="93d488b7-600a-4e82-9273-50d81a9e8234"/>
                 <textElement>
                     <font fontName="Times New Roman" size="8"/>
@@ -519,7 +548,7 @@ WHERE
                 </textElement>
                 <text><![CDATA[Situação.....:]]></text>
             </staticText>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement x="94" y="0" width="241" height="12" uuid="34cfaf26-0ce0-47fb-b245-2cb116389867"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New"/>
@@ -587,34 +616,6 @@ $F{status}.equals(11) ? "CANCELADA" :
 $F{status}.equals(12) ? "ENCERRADO" :
 $F{status}.equals(13) ? "FATURADO" : ""]]></textFieldExpression>
             </textField>
-            <staticText>
-                <reportElement x="0" y="66" width="278" height="10" uuid="d93ebe80-c125-4fd9-853a-6e2f7564c959"/>
-                <textElement textAlignment="Center" verticalAlignment="Bottom">
-                    <font fontName="Courier New" size="7" isBold="true"/>
-                </textElement>
-                <text><![CDATA[Solicitante]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="59" width="278" height="8" uuid="32823659-356e-48c7-966c-6e383b0f82d0"/>
-                <textElement textAlignment="Center" verticalAlignment="Top">
-                    <font fontName="Courier New" size="7" isBold="true"/>
-                </textElement>
-                <text><![CDATA[___________________________________]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="278" y="66" width="277" height="10" uuid="9c3fd58b-2680-400b-bb1c-55093e1f4d69"/>
-                <textElement textAlignment="Center" verticalAlignment="Bottom">
-                    <font fontName="Courier New" size="7" isBold="true"/>
-                </textElement>
-                <text><![CDATA[tecnico]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="278" y="59" width="277" height="8" uuid="b3d0dfbf-9a06-4f5f-aef5-ae88f4e45b93"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font fontName="Courier New" size="7" isBold="true"/>
-                </textElement>
-                <text><![CDATA[___________________________________]]></text>
-            </staticText>
         </band>
     </summary>
 </jasperReport>

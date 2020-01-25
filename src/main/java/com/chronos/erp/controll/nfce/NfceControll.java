@@ -6,6 +6,7 @@ import com.chronos.erp.modelo.entidades.NfeCabecalho;
 import com.chronos.erp.modelo.entidades.NfeDetalhe;
 import com.chronos.erp.modelo.entidades.NfeReferenciada;
 import com.chronos.erp.modelo.entidades.TributOperacaoFiscal;
+import com.chronos.erp.modelo.enuns.StatusTransmissao;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.NfeCabecalhoRepository;
 import com.chronos.erp.service.ChronosException;
@@ -14,8 +15,10 @@ import com.chronos.erp.service.comercial.NfeService;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -24,6 +27,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,6 +51,9 @@ public class NfceControll extends NfeBaseControll implements Serializable {
     private List<NfeCabecalho> nfeSelecionadas;
     private TributOperacaoFiscal operacaoFiscal;
 
+    private Date dataInicial;
+    private Date dataFinal;
+    private String numero;
 
     @PostConstruct
     @Override
@@ -61,11 +69,31 @@ public class NfceControll extends NfeBaseControll implements Serializable {
             dataModel.setClazz(NfeCabecalho.class);
         }
         dataModel.setAtributos(new Object[]{"serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo", "qrcode"});
+        pesquisar();
+        return dataModel;
+    }
+
+    public void pesquisar() {
         dataModel.getFiltros().clear();
         dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         dataModel.addFiltro("codigoModelo", "65", Filtro.IGUAL);
-        return dataModel;
+        dataModel.addFiltro("statusNota", StatusTransmissao.AUTORIZADA.getCodigo(), Filtro.IGUAL);
+
+
+        if (!StringUtils.isEmpty(numero)) {
+            dataModel.addFiltro("numero", numero, Filtro.LIKE);
+        }
+
+        if (dataInicial != null) {
+            dataInicial = DateUtils.truncate(dataInicial, Calendar.DATE);
+            dataModel.addFiltro("dataHoraEmissao", dataInicial, Filtro.MAIOR_OU_IGUAL);
+        }
+
+        if (dataFinal != null) {
+            dataFinal = DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataFinal, 23), 59), 59);
+            dataModel.addFiltro("dataHoraEmissao", dataFinal, Filtro.MENOR_OU_IGUAL);
+        }
     }
 
     public void setDataModel(ERPLazyDataModel dataModel) {
@@ -183,5 +211,29 @@ public class NfceControll extends NfeBaseControll implements Serializable {
 
     public void setOperacaoFiscal(TributOperacaoFiscal operacaoFiscal) {
         this.operacaoFiscal = operacaoFiscal;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 }

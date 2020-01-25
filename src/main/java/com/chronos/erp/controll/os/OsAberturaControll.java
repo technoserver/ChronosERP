@@ -149,7 +149,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             dataModel.setClazz(getClazz());
             dataModel.setDao(dao);
         }
-        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "valorTotal", "cliente.id", "cliente.pessoa.nome", "status", "idnfeCabecalho"});
+        dataModel.setAtributos(new Object[]{"numero", "dataInicio", "dataPrevisao", "dataFim", "valorTotal", "cliente.id", "cliente.pessoa.nome", "tipoAtendimento", "status", "idnfeCabecalho"});
 
         if (dataModel.getFiltros().isEmpty()) {
             dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);

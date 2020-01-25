@@ -116,37 +116,41 @@
 
 
                 <p:column headerText="Numero" width="115" sortBy="#{row.numero}">
-                    <h:outputLabel value="#{row.numero}"/>
+                    <h:outputText value="#{row.numero}"/>
                 </p:column>
 
 
                 <p:column headerText="Cliente">
-                    <h:outputLabel value="#{row.cliente.pessoa.nome}"/>
+                    <h:outputText value="#{row.cliente.pessoa.nome}"/>
                 </p:column>
 
                 <p:column headerText="Data Inicio" width="135" styleClass="text-center" sortBy="#{row.dataInicio}">
-                    <h:outputLabel value="#{row.dataInicio}">
+                    <h:outputText value="#{row.dataInicio}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputLabel>
+                    </h:outputText>
                 </p:column>
                 <p:column headerText="Valor Total" width="150" styleClass="text-right">
-                    <h:outputLabel value="#{row.valorTotal}">
+                    <h:outputText value="#{row.valorTotal}">
                         <f:convertNumber pattern="#,##0.00"/>
-                    </h:outputLabel>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Tipo" styleClass="text-center">
+                    <h:outputText
+                            value="#{osAberturaControll.keyFromValue(osAberturaControll.tiposAtendimento, row.tipoAtendimento)}"/>
                 </p:column>
                 <p:column headerText="Status" width="200" styleClass="text-center">
-                    <h:outputLabel value="Faturado"
-                                   rendered="#{row.status eq 13}" styleClass="label  label-primary"/>
+                    <h:outputText value="Faturado"
+                                  rendered="#{row.status eq 13}" styleClass="label  label-primary"/>
 
-                    <h:outputLabel value="Encerrado"
-                                   rendered="#{row.status eq 12}" styleClass="label  label-success"/>
+                    <h:outputText value="Encerrado"
+                                  rendered="#{row.status eq 12}" styleClass="label  label-success"/>
 
-                    <h:outputLabel value="Cancelada"
-                                   rendered="#{row.status eq 11}" styleClass="label  label-warning"/>
+                    <h:outputText value="Cancelada"
+                                  rendered="#{row.status eq 11}" styleClass="label  label-warning"/>
 
-                    <h:outputLabel value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"
-                                   rendered="#{row.status ne 13 and row.status ne 12 and row.status ne 11}"
-                                   styleClass="label  label-info"/>
+                    <h:outputText value="#{osAberturaControll.keyFromValue(osAberturaControll.osStatus, row.status)}"
+                                  rendered="#{row.status ne 13 and row.status ne 12 and row.status ne 11}"
+                                  styleClass="label  label-info"/>
                 </p:column>
                 <p:column headerText="Ações" width="160" styleClass="text-center">
                     <p:commandLink title="Alterar" id="btnEditar" action="#{osAberturaControll.doEdit()}"
@@ -181,7 +185,7 @@
                     <p:menuButton style="height: 26px;" rendered="#{row.status ne 11}">
                         <p:menuitem value="Imprimir OS 1 Via"
                                     icon="fa fa-print"
-                                    action="#{osRelatorioControll.imprimirOS(row.id)}"
+                                    action="#{osRelatorioControll.imprimirOS(row.id,row.tipoAtendimento)}"
                                     target="_blank"
                                     ajax="false">
 
@@ -199,10 +203,18 @@
                                     ajax="false">
 
                         </p:menuitem>
+                        <p:menuitem value="Comp. de Entrega"
+                                    icon="fa fa-print"
+                                    action="#{osRelatorioControll.imprimirComprovanteOS(row.id)}"
+                                    target="_blank"
+                                    rendered="#{row.status  eq 13  or row.status eq 12}"
+                                    ajax="false">
+
+                        </p:menuitem>
                         <p:menuitem value="Encerrar OS"
                                     action="#{osAberturaControll.encerrar}"
                                     update=":formCentro:mensagem,:formCentro:growl,:formCentro:telaGrid:dataTableOsAbertura"
-                                    rendered="#{osAberturaControll.isTemAcesso('FINANCEIRO') and (row.status ne 13  and row.status ne 12)}">
+                                    rendered="#{row.status ne 13  and row.status ne 12}">
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>

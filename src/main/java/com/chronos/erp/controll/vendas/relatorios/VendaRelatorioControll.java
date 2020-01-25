@@ -70,7 +70,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
 
         listaColaborador = vendedorService.getMapColaboradorComissionado();
 
-        listaColaborador = vendedorService.getMapVendedores();
+        listaVendedor = vendedorService.getMapVendedores();
 
         listaGrupo = new LinkedHashMap<>();
         listaGrupo.put("TODOS", 0);

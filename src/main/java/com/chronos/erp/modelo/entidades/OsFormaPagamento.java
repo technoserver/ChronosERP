@@ -21,6 +21,10 @@ public class OsFormaPagamento implements Serializable {
     @Embedded
     private FormaPagamento formaPagamento;
 
+    public OsFormaPagamento() {
+        this.formaPagamento = new FormaPagamento();
+    }
+
     public Integer getId() {
         return id;
     }
