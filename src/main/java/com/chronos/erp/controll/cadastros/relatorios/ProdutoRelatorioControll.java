@@ -36,7 +36,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
     private String inativo;
     private String tipoProduto;
     private String estoque;
-    private String resumido;
+    private String modelo;
     private ProdutoGrupo grupo;
 
     private HashMap<String, Integer> listSubGrupos = new LinkedHashMap<>();
@@ -61,7 +61,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         parametros.put("idempresa", empresa.getId());
         parametros.put("estoqueVerificado", estoqueVerificado);
 
-        if (resumido.equals("N")) {
+        if (modelo.equals("R")) {
             parametros.put("tipoDescricao", tipoDescricao);
         }
 
@@ -87,7 +87,9 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         definirOrdenacao(parametros, campo, orderEnum);
 
         String caminhoRelatorio = "/relatorios/cadastros";
-        String nomeRelatorio = resumido.equals("N") ? "relacaoProdutos.jasper" : "relacaoProdutosResumido.jasper";
+        String nomeRelatorio = modelo.equals("C")
+                ? "relacaoProdutos.jasper"
+                : modelo.equals("R") ? "relacaoProdutosResumido.jasper" : "relacaoProdutosFiscal.jasper";
         String nome = "relacaoProdutos." + tipoRelatorio;
         executarRelatorio(caminhoRelatorio, nomeRelatorio, nome);
     }
@@ -233,12 +235,12 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         this.tipoOrdenacao = tipoOrdenacao;
     }
 
-    public String getResumido() {
-        return resumido;
+    public String getModelo() {
+        return modelo;
     }
 
-    public void setResumido(String resumido) {
-        this.resumido = resumido;
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
 
     public String getTipoDescricao() {

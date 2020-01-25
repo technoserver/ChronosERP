@@ -25,7 +25,7 @@
     <ui:define name="gridDados">
         <div class="ibox-content">
 
-            <div class="row m-b">
+            <div class="row ">
                 <div class="col-sm-12">
                     <p:commandButton value="Gerar NF-e refrenciada"
                                      action="#{nfceControll.instaciarDadosNfeReferenciada}"
@@ -33,6 +33,30 @@
                                      oncomplete="PF('dialogOutrasTelas2').show();"/>
 
                 </div>
+            </div>
+
+            <div class="row m-b">
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                  idComponente="numeroNfe" label="Numero"
+                                  nomeAtributo="#{nfceControll.numero}"/>
+
+
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                               label="Data Inicial" idComponente="dataInicial"
+                               nomeAtributo="#{nfceControll.dataInicial}"/>
+                <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
+                               label="Data Final" idComponente="dataFinal"
+                               nomeAtributo="#{nfceControll.dataFinal}"/>
+
+                <div class="col-md-1" style="margin-top: 20px">
+                    <p:commandButton value=""
+                                     title="Pesquisar"
+                                     icon="fa fa-refresh"
+                                     style="height: 30px"
+                                     action="#{nfceControll.pesquisar}"
+                                     update="formCentro:dataTableNfce"/>
+                </div>
+
             </div>
 
             <p:dataTable value="#{nfceControll.dataModel}"

@@ -239,10 +239,10 @@ public class PdvMovimentoControll implements Serializable {
             i++;
         }
         if (ids.length > 0) {
-            String jpql = "SELECT new com.chronos.erp.dto.MapDTO(t.descricao,sum(f.valor)) from PdvFormaPagamento f " +
+            String jpql = "SELECT new com.chronos.erp.dto.MapDTO(t.descricao,sum(f.formaPagamento.valor)) from PdvFormaPagamento f " +
                     "inner join f.pdvVendaCabecalho v " +
                     "inner join v.pdvMovimento m " +
-                    "inner join f.tipoPagamento t " +
+                    "inner join f.formaPagamento.tipoPagamento t " +
                     "where m.id in :ids and v.statusVenda in ('F','E')" +
                     "group by t.descricao";
             formasPagamento = repository.executeQuery(MapDTO.class, jpql, ids);

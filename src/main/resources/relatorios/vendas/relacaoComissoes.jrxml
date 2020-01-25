@@ -64,8 +64,7 @@
 from comissao c
 inner join colaborador cl on cl.id = c.id_colaborador
 inner join pessoa cp on cp.id = cl.id_pessoa,
-empresa ep
-inner join empresa empresa on empresa.id = ep.id_empresa
+empresa empresa
 WHERE empresa.id = $P{idempresa} and (cl.id = $P{idvendedor} or $P{idvendedor} is null) and c.data_lancamento BETWEEN $P{peridoInicial} and $P{peridoFinal}
 order by cl.id,data_lancamento]]>
     </queryString>

@@ -33,9 +33,19 @@ public class OsRelatorioControll extends AbstractRelatorioControll implements Se
         os = repository.get(id, OsAbertura.class);
     }
 
-    public void imprimirOS(int id) {
+    public void imprimirOS(int id, String tipo) {
         parametros = new HashMap<>();
         parametros.put("id_os", id);
+        String caminhoRelatorio = "/relatorios/os";
+        String nomeRelatorio = tipo.equals("OC") ? "os_orcamento.jasper" : "os.jasper";
+
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, "os.pdf");
+    }
+
+    public void imprimirComprovanteOS(int id) {
+        parametros = new HashMap<>();
+        parametros.put("id_os", id);
+        parametros.put("comprovanteEntrega", true);
         String caminhoRelatorio = "/relatorios/os";
         String nomeRelatorio = "os.jasper";
 
