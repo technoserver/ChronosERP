@@ -55,6 +55,7 @@ public class TabelaPrecosControll extends AbstractControll<TabelaPreco> implemen
         aplicado.put("Vendedor/Região", "R");
     }
 
+
     @Override
     public void doEdit() {
         super.doEdit();

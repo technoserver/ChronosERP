@@ -158,9 +158,9 @@ public class ProdutoService implements Serializable {
             filtros.add(new Filtro(Filtro.AND, "servico", "N"));
             filtros.add(new Filtro(Filtro.AND, "tipo", "V"));
         }
-        String servico = moduloVenda ? "N" : "S";
+
         descricao = descricao.trim();
-        listaProduto = repository.getProdutoDTO(descricao, empresa, servico);
+        listaProduto = repository.getProdutoDTO(descricao, empresa, "S");
 
 
         return listaProduto;
