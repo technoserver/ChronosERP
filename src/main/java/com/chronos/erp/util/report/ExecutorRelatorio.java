@@ -100,7 +100,8 @@ public class ExecutorRelatorio implements Work {
                     exporter.exportReport();
                 } else {
                     SimpleCsvExporterConfiguration configuration = new SimpleCsvExporterConfiguration();
-
+                    configuration.setFieldDelimiter(";");
+                    //   configuration.setRecordDelimiter(";");
                     JRCsvExporter exporter = new JRCsvExporter();
 
 
