@@ -353,7 +353,8 @@ public class OsService extends AbstractService<OsAbertura> {
             item.setValorSubtotal(d.getValorSubtotal());
             item.setValorTotal(d.getValorTotal());
             item.setValorUnitario(d.getValorUnitario());
-            item.setTipo(0);
+            int tipo = d.getProduto().getServico().equals("S") ? 1 : 0;
+            item.setTipo(tipo);
             os.getListaOsProdutoServico().add(item);
         }
 
@@ -381,6 +382,7 @@ public class OsService extends AbstractService<OsAbertura> {
         os.setEmpresa(orcamento.getEmpresa());
         os.setOrcamentoCabecalho(orcamento);
         os.getVendedor().setNome(os.getVendedor().getColaborador().getPessoa().getNome());
+        os.setTipoAtendimento("OC");
 
         os.calcularValores();
 

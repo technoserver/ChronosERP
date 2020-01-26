@@ -46,6 +46,7 @@ public class AbstractRelatorioControll implements Serializable {
         this.tiposRelatorio = new HashMap<>();
         tiposRelatorio.put("PDF", "pdf");
         tiposRelatorio.put("XLS", "xls");
+        tiposRelatorio.put("CSV", "csv");
     }
 
 

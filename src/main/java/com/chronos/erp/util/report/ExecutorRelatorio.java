@@ -8,6 +8,7 @@ package com.chronos.erp.util.report;
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.export.*;
@@ -60,6 +61,7 @@ public class ExecutorRelatorio implements Work {
 
             if (!tipoRelatorio.equals("pdf")) {
                 parametros.put("IS_IGNORE_PAGINATION", true);
+                parametros.put("exibirCabecalho", false);
             }
 
             JasperPrint print = JasperFillManager.fillReport(relatorioStream, this.parametros, connection);
@@ -81,7 +83,7 @@ public class ExecutorRelatorio implements Work {
                             + this.nomeArquivoSaida + "\"");
 
                     exportadorPdv.exportReport();
-                } else {
+                } else if (tipoRelatorio.equals("xls")) {
                     SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
                     configuration.setOnePagePerSheet(true);
                     configuration.setIgnoreGraphics(false);
@@ -92,6 +94,21 @@ public class ExecutorRelatorio implements Work {
                     exporter.setConfiguration(configuration);
 
                     response.setContentType("application/vnd.ms-excel");
+                    response.setHeader("Content-Disposition", "inline; filename=\""
+                            + this.nomeArquivoSaida + "\"");
+
+                    exporter.exportReport();
+                } else {
+                    SimpleCsvExporterConfiguration configuration = new SimpleCsvExporterConfiguration();
+
+                    JRCsvExporter exporter = new JRCsvExporter();
+
+
+                    exporter.setExporterInput(new SimpleExporterInput(print));
+                    exporter.setExporterOutput(new SimpleWriterExporterOutput(response.getOutputStream()));
+                    exporter.setConfiguration(configuration);
+
+                    response.setContentType("text/csv");
                     response.setHeader("Content-Disposition", "inline; filename=\""
                             + this.nomeArquivoSaida + "\"");
 
