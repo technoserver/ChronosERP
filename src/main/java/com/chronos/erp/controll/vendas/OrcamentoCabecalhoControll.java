@@ -564,7 +564,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     public List<Produto> getListaProduto(String nome) {
         List<Produto> listaProduto = new ArrayList<>();
         try {
-            List<ProdutoDTO> list = estoqueRepository.getProdutoDTO(nome, empresa, "N");
+            List<ProdutoDTO> list = estoqueRepository.getProdutoDTO(nome, empresa, "S");
             listaProduto = list.stream().map(ProdutoDTO::getProduto).collect(Collectors.toList());
         } catch (Exception e) {
             // e.printStackTrace();

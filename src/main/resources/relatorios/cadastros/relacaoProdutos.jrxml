@@ -4,8 +4,8 @@
               xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
               name="relacaoProduto" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
-    <property name="ireport.zoom" value="2.0"/>
-    <property name="ireport.x" value="177"/>
+    <property name="ireport.zoom" value="3.0"/>
+    <property name="ireport.x" value="0"/>
     <property name="ireport.y" value="0"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -49,6 +49,9 @@
     </parameter>
     <parameter name="tipoDescricao" class="java.lang.String">
         <defaultValueExpression><![CDATA["N"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="exibirCabecalho" class="java.lang.Boolean">
+        <defaultValueExpression><![CDATA[true]]></defaultValueExpression>
     </parameter>
     <queryString>
         <![CDATA[SELECT
@@ -135,21 +138,27 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
         <band height="113" splitType="Stretch">
             <image isUsingCache="true" onErrorType="Blank">
                 <reportElement positionType="Float" mode="Transparent" x="2" y="0" width="150" height="79"
-                               uuid="39763776-99a0-40da-b698-701f2a065525"/>
+                               uuid="39763776-99a0-40da-b698-701f2a065525">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <imageExpression><![CDATA[$F{empresa_imagem_logotipo}]]></imageExpression>
             </image>
             <line>
                 <reportElement x="0" y="112" width="555" height="1" uuid="84907098-40f5-401a-b232-5785f0e8faa0"/>
             </line>
             <textField>
-                <reportElement x="278" y="0" width="277" height="14" uuid="ef82db32-1726-4cac-9ee3-442ef2dd7348"/>
+                <reportElement x="278" y="0" width="277" height="14" uuid="ef82db32-1726-4cac-9ee3-442ef2dd7348">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman" size="12" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="278" y="13" width="277" height="14" uuid="14107320-d172-4d59-a268-5adef321104a"/>
+                <reportElement x="278" y="13" width="277" height="14" uuid="14107320-d172-4d59-a268-5adef321104a">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman"/>
                 </textElement>
@@ -157,28 +166,36 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
                     <![CDATA[$F{empresa_endereco_logradouro}+","+$F{empresa_endereco_numero}+"-"+$F{empresa_endereco_bairro}]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="278" y="26" width="36" height="14" uuid="a149d8c6-723f-4357-9d21-645cb4198c1a"/>
+                <reportElement x="278" y="26" width="36" height="14" uuid="a149d8c6-723f-4357-9d21-645cb4198c1a">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman"/>
                 </textElement>
                 <text><![CDATA[CNPJ:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="414" y="26" width="36" height="14" uuid="4317725a-a011-4efa-a747-33d0d6ac5668"/>
+                <reportElement x="414" y="26" width="36" height="14" uuid="4317725a-a011-4efa-a747-33d0d6ac5668">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman"/>
                 </textElement>
                 <text><![CDATA[IE:]]></text>
             </staticText>
             <textField>
-                <reportElement x="314" y="26" width="100" height="14" uuid="1c93043a-de2c-469a-b30f-97b358a0bef6"/>
+                <reportElement x="314" y="26" width="100" height="14" uuid="1c93043a-de2c-469a-b30f-97b358a0bef6">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{empresa_cnpj}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement x="450" y="26" width="105" height="14" uuid="28109b0f-511b-49bc-9be3-71e5f0970c7a"/>
+                <reportElement x="450" y="26" width="105" height="14" uuid="28109b0f-511b-49bc-9be3-71e5f0970c7a">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman"/>
                 </textElement>
@@ -186,14 +203,18 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
                     <![CDATA[$F{empresa_inscricao_estadual}==null?"":$F{empresa_inscricao_estadual}]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="278" y="39" width="36" height="14" uuid="bc675e70-68e2-4869-a07a-a903455d3aad"/>
+                <reportElement x="278" y="39" width="36" height="14" uuid="bc675e70-68e2-4869-a07a-a903455d3aad">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman"/>
                 </textElement>
                 <text><![CDATA[FONE:]]></text>
             </staticText>
             <textField>
-                <reportElement x="314" y="39" width="100" height="14" uuid="e74f0bb5-464b-4151-ba79-52e5c583565c"/>
+                <reportElement x="314" y="39" width="100" height="14" uuid="e74f0bb5-464b-4151-ba79-52e5c583565c">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman"/>
                 </textElement>
@@ -201,50 +222,64 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
                     <![CDATA[$F{empresa_endereco_fone}==null?"":$F{empresa_endereco_fone}]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="278" y="52" width="36" height="14" uuid="97d8cc50-d1d9-4406-bef4-4f7e1bd328dd"/>
+                <reportElement x="278" y="52" width="36" height="14" uuid="97d8cc50-d1d9-4406-bef4-4f7e1bd328dd">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman"/>
                 </textElement>
                 <text><![CDATA[EMAIL:]]></text>
             </staticText>
             <textField>
-                <reportElement x="314" y="52" width="241" height="14" uuid="fe6cdf0f-3001-4494-83a5-e61c65526513"/>
+                <reportElement x="314" y="52" width="241" height="14" uuid="fe6cdf0f-3001-4494-83a5-e61c65526513">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{empresa_email}==null?"":$F{empresa_email}]]></textFieldExpression>
             </textField>
             <textField pattern="dd/MM/yyyy">
-                <reportElement x="460" y="65" width="37" height="14" uuid="08715cba-59c2-4071-9808-e2941dfdb4e0"/>
+                <reportElement x="460" y="65" width="37" height="14" uuid="08715cba-59c2-4071-9808-e2941dfdb4e0">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
             </textField>
             <textField pattern="HH:mm">
-                <reportElement x="523" y="65" width="32" height="14" uuid="68f116aa-e1ee-402f-a1fd-1aaa48fe9578"/>
+                <reportElement x="523" y="65" width="32" height="14" uuid="68f116aa-e1ee-402f-a1fd-1aaa48fe9578">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman" size="8"/>
                 </textElement>
                 <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="436" y="65" width="22" height="14" uuid="0308f1da-c227-4637-9e2d-eee1ab75dc1b"/>
+                <reportElement x="436" y="65" width="22" height="14" uuid="0308f1da-c227-4637-9e2d-eee1ab75dc1b">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman" size="8" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Data:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="500" y="65" width="23" height="14" uuid="39ef6df0-2e43-4ded-a70a-80d1aa833a79"/>
+                <reportElement x="500" y="65" width="23" height="14" uuid="39ef6df0-2e43-4ded-a70a-80d1aa833a79">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
                 <textElement>
                     <font fontName="Times New Roman" size="8" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Hora:]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="81" width="555" height="19" uuid="8f005b14-0cd6-4980-9621-f58de4312734"/>
-                <textElement>
+                <reportElement x="0" y="81" width="555" height="19" uuid="8f005b14-0cd6-4980-9621-f58de4312734">
+                    <printWhenExpression><![CDATA[$P{exibirCabecalho}]]></printWhenExpression>
+                </reportElement>
+                <textElement textAlignment="Center">
                     <font fontName="Times New Roman" size="12" isBold="true"/>
                 </textElement>
                 <text><![CDATA[Relação de Produtos]]></text>

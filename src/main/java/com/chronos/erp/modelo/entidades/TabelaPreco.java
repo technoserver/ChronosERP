@@ -31,8 +31,8 @@ package com.chronos.erp.modelo.entidades;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -58,10 +58,10 @@ public class TabelaPreco implements Serializable {
     @Column(name = "COMISSAO_VENDEDOR")
     private BigDecimal comissaoVendedor;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "tabelaPreco", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<TabelaPrecoProduto> listaProduto;
+    private List<TabelaPrecoProduto> listaProduto;
 
     public TabelaPreco() {
-        this.listaProduto = new HashSet<>();
+        this.listaProduto = new ArrayList<>();
         this.comissaoVendedor = BigDecimal.ZERO;
         this.coeficiente = BigDecimal.ZERO;
 
@@ -128,11 +128,11 @@ public class TabelaPreco implements Serializable {
         this.comissaoVendedor = comissaoVendedor;
     }
 
-    public Set<TabelaPrecoProduto> getListaProduto() {
+    public List<TabelaPrecoProduto> getListaProduto() {
         return listaProduto;
     }
 
-    public void setListaProduto(Set<TabelaPrecoProduto> listaProduto) {
+    public void setListaProduto(List<TabelaPrecoProduto> listaProduto) {
         this.listaProduto = listaProduto;
     }
 

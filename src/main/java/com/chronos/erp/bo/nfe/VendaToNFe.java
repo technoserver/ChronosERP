@@ -234,27 +234,35 @@ public class VendaToNFe extends ManualCDILookup {
 
         List<NfeDetalhe> itensNfe = new ArrayList<>();
         NfeUtil nfeUtil = new NfeUtil();
+
         for (ItemVendaDTO item : itens) {
+
             if (item.getProduto().getNcm() == null) {
                 throw new ChronosException("Não existe NCM para o produto :" + item.getProduto().getDescricaoPdv() + " informado. Operação não realizada.");
             }
-            NfeDetalhe itemNfe = new NfeDetalhe();
-            itemNfe.setNfeCabecalho(nfe);
-            itemNfe.setQuantidadeComercial(item.getQuantidade());
-            itemNfe.setQuantidadeTributavel(item.getQuantidade());
-            itemNfe.setProduto(item.getProduto());
-            itemNfe.pegarInfoProduto();
-            itemNfe.setClassificacaoContabilConta(operacaoFiscal.getClassificacaoContabilConta());
-            BigDecimal valorVenda = item.getValor();
-            valorVenda = valorVenda == null ? itemNfe.getProduto().getValorVenda() : valorVenda;
-            itemNfe.setValorUnitarioComercial(valorVenda);
-            itemNfe.setValorUnitarioTributavel(valorVenda);
-            itemNfe.setValorDesconto(item.getDesconto());
-            itemNfe.setNumeroItem(++numeroItem);
-            itemNfe.setEntraTotal(1);
 
-            itemNfe = nfeUtil.defineTributacao(itemNfe, operacaoFiscal, nfe.getDestinatario());
-            itensNfe.add(itemNfe);
+            if (empresa.buscarEnderecoPrincipal().getUf().equals("DF") || !item.getProduto().getServico().equals("S")) {
+
+                NfeDetalhe itemNfe = new NfeDetalhe();
+                itemNfe.setNfeCabecalho(nfe);
+                itemNfe.setQuantidadeComercial(item.getQuantidade());
+                itemNfe.setQuantidadeTributavel(item.getQuantidade());
+                itemNfe.setProduto(item.getProduto());
+                itemNfe.pegarInfoProduto();
+                itemNfe.setClassificacaoContabilConta(operacaoFiscal.getClassificacaoContabilConta());
+                BigDecimal valorVenda = item.getValor();
+                valorVenda = valorVenda == null ? itemNfe.getProduto().getValorVenda() : valorVenda;
+                itemNfe.setValorUnitarioComercial(valorVenda);
+                itemNfe.setValorUnitarioTributavel(valorVenda);
+                itemNfe.setValorDesconto(item.getDesconto());
+                itemNfe.setNumeroItem(++numeroItem);
+                itemNfe.setEntraTotal(1);
+
+                itemNfe = nfeUtil.defineTributacao(itemNfe, operacaoFiscal, nfe.getDestinatario());
+                itensNfe.add(itemNfe);
+            }
+
+
         }
 
         nfe.getListaNfeDetalhe().addAll(itensNfe);

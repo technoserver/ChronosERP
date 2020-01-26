@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="row m-b">
+            <div class="row">
 
 
                 <erp:campoTexto nomeAtributo="#{osAberturaControll.cliente}"
@@ -67,6 +67,11 @@
                                label="Data Final"
                                idComponente="dataFinal"
                                styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+
+            </div>
+
+            <div class="row m-b">
 
                 <h:panelGroup class="col-xs-12 col-sm-6 col-md-6" layout="block"
                               rendered="#{osAberturaControll.listaEmpresas.size() gt 1}">
@@ -105,8 +110,6 @@
                                          style="margin-left: 10px"/>
                     </div>
                 </div>
-
-
             </div>
 
             <p:dataTable value="#{osAberturaControll.dataModel}" var="row" id="dataTableOsAbertura"
@@ -115,12 +118,8 @@
                          rendered="#{osAberturaControll.podeConsultar()}">
 
 
-                <p:column headerText="Numero" width="115" sortBy="#{row.numero}">
-                    <h:outputText value="#{row.numero}"/>
-                </p:column>
-
-
                 <p:column headerText="Cliente">
+                    <p><b><h:outputText value="#{row.numero}"/></b></p>
                     <h:outputText value="#{row.cliente.pessoa.nome}"/>
                 </p:column>
 
@@ -129,12 +128,17 @@
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
                     </h:outputText>
                 </p:column>
-                <p:column headerText="Valor Total" width="150" styleClass="text-right">
+                <p:column headerText="Finalizada" width="135" styleClass="text-center" sortBy="#{row.dataInicio}">
+                    <h:outputText value="#{row.dataFim}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </p:column>
+                <p:column headerText="Valor Total" width="130" styleClass="text-right">
                     <h:outputText value="#{row.valorTotal}">
                         <f:convertNumber pattern="#,##0.00"/>
                     </h:outputText>
                 </p:column>
-                <p:column headerText="Tipo" styleClass="text-center">
+                <p:column headerText="Tipo" styleClass="text-center" width="115">
                     <h:outputText
                             value="#{osAberturaControll.keyFromValue(osAberturaControll.tiposAtendimento, row.tipoAtendimento)}"/>
                 </p:column>
@@ -152,37 +156,30 @@
                                   rendered="#{row.status ne 13 and row.status ne 12 and row.status ne 11}"
                                   styleClass="label  label-info"/>
                 </p:column>
-                <p:column headerText="Ações" width="160" styleClass="text-center">
-                    <p:commandLink title="Alterar" id="btnEditar" action="#{osAberturaControll.doEdit()}"
-                                   class=" btn btn-default"
-                                   update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
-                                   process="dataTableOsAbertura">
-                        <i class="fa fa-file-text-o"></i>
-                        <f:setPropertyActionListener value="#{row}" target="#{osAberturaControll.objetoSelecionado}"/>
-                    </p:commandLink>
-                    &nbsp;
-                    <p:commandLink title="Excluir" id="btnExcluir" action="#{osAberturaControll.remover()}"
-                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
-                                   disabled="#{!osAberturaControll.podeExcluir()}"
-                                   process="dataTableOsAbertura"
-                                   class="btn btn-default"
-                                   rendered="#{! (row.status == 11 or row.status == 12 or row.status == 13)}"
-                    >
-                        <i class="fa fa-times"></i>
-                        <p:confirm header="Confirmar" message="Deseja excluir ?"/>
-                        <f:setPropertyActionListener value="#{row}" target="#{osAberturaControll.objetoSelecionado}"/>
-                    </p:commandLink>
-                    <p:commandLink title="Cancelar" id="btnCancelar" action="#{osAberturaControll.cancelar}"
-                                   update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
-                                   process="dataTableOsAbertura"
-                                   class="btn btn-default"
-                                   rendered="#{row.podeCancelar}">
-                        <i class="fa fa-ban"></i>
-                        <p:confirm header="Confirmar" message="Deseja cancelar ?"/>
-                        <f:setPropertyActionListener value="#{row}" target="#{osAberturaControll.objetoSelecionado}"/>
-                    </p:commandLink>
+                <p:column headerText="Ações" width="80" styleClass="text-center">
                     &nbsp;
                     <p:menuButton style="height: 26px;" rendered="#{row.status ne 11}">
+                        <p:menuitem value="Alterar"
+                                    action="#{osAberturaControll.doEdit()}"
+                                    process="dataTableOsAbertura"
+                                    update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                        >
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{osAberturaControll.objetoSelecionado}"/>
+                        </p:menuitem>
+
+                        <p:menuitem value="Excluir"
+                                    action="#{osAberturaControll.remover()}"
+                                    process="dataTableOsAbertura"
+                                    rendered="#{! (row.status == 11 or row.status == 12 or row.status == 13)}"
+                                    update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                        >
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{osAberturaControll.objetoSelecionado}"/>
+                            <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                        </p:menuitem>
+
+
                         <p:menuitem value="Imprimir OS 1 Via"
                                     icon="fa fa-print"
                                     action="#{osRelatorioControll.imprimirOS(row.id,row.tipoAtendimento)}"
@@ -211,6 +208,13 @@
                                     ajax="false">
 
                         </p:menuitem>
+                        <p:menuitem value="Gerar Danfe"
+                                    icon="fa fa-print" ajax="false"
+                                    rendered="#{(osAberturaControll.isTemAcesso('NFCE') or osAberturaControll.isTemAcesso('NFE'))  and not empty row.idnfeCabecalho and osAberturaControll.exibirOpcaoFaturamento}"
+                                    action="#{osAberturaControll.danfe}">
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{osAberturaControll.objetoSelecionado}"/>
+                        </p:menuitem>
                         <p:menuitem value="Encerrar OS"
                                     action="#{osAberturaControll.encerrar}"
                                     update=":formCentro:mensagem,:formCentro:growl,:formCentro:telaGrid:dataTableOsAbertura"
@@ -234,13 +238,18 @@
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
-                        <p:menuitem value="Gerar Danfe"
-                                    icon="fa fa-print" ajax="false"
-                                    rendered="#{(osAberturaControll.isTemAcesso('NFCE') or osAberturaControll.isTemAcesso('NFE'))  and not empty row.idnfeCabecalho and osAberturaControll.exibirOpcaoFaturamento}"
-                                    action="#{osAberturaControll.danfe}">
+
+                        <p:menuitem value="Cancelar"
+                                    action="#{osAberturaControll.cancelar}"
+                                    process="dataTableOsAbertura"
+                                    rendered="#{row.podeCancelar}"
+                                    update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                        >
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
+                            <p:confirm header="Confirmar" message="Deseja cancelar ?"/>
                         </p:menuitem>
+
                     </p:menuButton>
 
                 </p:column>
