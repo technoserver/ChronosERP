@@ -169,11 +169,14 @@
                                             target="_blank"
                                             actionListener="#{vendaRelatorioControll.imprimirPedido(row.id)}"
                                             icon="fa fa-print" ajax="false"/>
+
                                 <p:menuitem value="Imprimir Cupom"
                                             target="_blank"
-                                            actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(row.id)}"
+                                            outcome="/modulo/relatorios/comercial/vendas/pedidoVendaCupom"
                                             icon="fa fa-print"
-                                            ajax="false"/>
+                                >
+                                    <f:param name="idcupom" value="#{row.id}"/>
+                                </p:menuitem>
 
                                 <p:menuitem value="Encerrar"
                                             update=":formCentro:growl,tableVenda"
@@ -192,9 +195,11 @@
                                             icon="fa fa-print" ajax="false"/>
                                 <p:menuitem value="Imprimir Cupom"
                                             target="_blank"
-                                            actionListener="#{vendaRelatorioControll.imprimirPedidoCupom(row.id)}"
+                                            outcome="/modulo/relatorios/comercial/vendas/pedidoVendaCupom"
                                             icon="fa fa-print"
-                                            ajax="false"/>
+                                >
+                                    <f:param name="idcupom" value="#{row.id}"/>
+                                </p:menuitem>
                                 <p:menuitem value="Romaneio"
                                             target="_blank"
                                             actionListener="#{vendaRelatorioControll.imprimirRomaneio(row.id)}"

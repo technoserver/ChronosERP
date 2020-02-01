@@ -4,79 +4,181 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:erp="http://java.sun.com/jsf/composite/components"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://java.sun.com/jsf/html">
 
-    <div class="row">
-        <div class="col-lg-12">
-            <h:commandLink title="Novo" class="btn btn-default margem-bottom-10"
-                           action="#{osAberturaControll.incluirOsProdutoServico()}"
-                           type="button">
-                <i class="glyphicon glyphicon-plus"/>
-                <p:ajax update=":formOutrasTelas2:panelOsProdutoServico,dataTableOsProdutoServico"
-                        oncomplete="PF('dialogOsProdutoServico').show()"
-                        process="@this"/>
-            </h:commandLink>
-        </div>
+    <div class="row m-b">
+        <h:form id="form-produtos">
+            <h:panelGroup layout="block" id="container-item"
+                          style="height: min-content;background: #e0dfdf;padding: 5px">
+                <div class="row" style="height: 100%">
+                    <h:panelGroup layout="block" class="col-xs-12 col-sm-5 col-md-5"
+                                  id="produto-selecionado">
+                        <p:focus context="produto-selecionado"/>
+                        <p:outputLabel value="Serviço/produto" for="produto"/>
+                        <div style="display: flex;align-items: center; height: 100%;">
+                            <p:autoComplete id="produto"
+                                            value="#{osAberturaControll.osProdutoServico.produto}"
+                                            completeMethod="#{osAberturaControll.getListaProduto}"
+                                            var="objeto"
+                                            itemLabel="#{objeto.nome}" itemValue="#{objeto}"
+                                            queryDelay="500"
+                                            style="width: 100%"
+                                            placeholder="Digite o nome ou código ou código interno do Serv/Prod."
+                                            converter="defaultConverter"
+                                            forceSelection="true"
+                                            minQueryLength="3"
+                                            required="true"
+                                            emptyMessage="Nenhum serviço/produto encontrado">
+
+                                <p:column headerText="Produto">
+                                    <p:outputLabel value="#{objeto.nome}"/>
+                                </p:column>
+                                <p:column headerText="Valor Venda" class="coluna-monetaria">
+                                    <p:outputLabel value="#{objeto.valorVenda}">
+                                        <f:convertNumber pattern="#,###,##0.00"/>
+                                    </p:outputLabel>
+                                </p:column>
+                                <p:column headerText="EV" class="coluna-monetaria">
+                                    <p:outputLabel value="#{objeto.controle}">
+                                        <f:convertNumber pattern="#,###,##0.00"/>
+                                    </p:outputLabel>
+                                </p:column>
+
+                                <p:column headerText="Estoque" class="coluna-monetaria">
+                                    <p:outputLabel value="#{objeto.quantidadeEstoque}">
+                                        <f:convertNumber pattern="#,###,##0.00"/>
+                                    </p:outputLabel>
+                                </p:column>
+
+                                <p:ajax event="itemSelect" process="@this"
+                                        update="formCentro:telaDetalhe:tabViewDetalhes:form-produtos:container-item"
+                                        listener="#{osAberturaControll.selecionaValorProduto}"/>
+
+                            </p:autoComplete>
+                        </div>
+
+
+                    </h:panelGroup>
+
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="osProdutoServicoQuantidade" label="Quantidade"
+                                      nomeAtributo="#{osAberturaControll.osProdutoServico.quantidade}"/>
+
+                    <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
+                                      idComponente="valorUnitario" label="Valor"
+                                      desabilitado="#{!osAberturaControll.podeAlterarPreco}"
+                                      nomeAtributo="#{osAberturaControll.osProdutoServico.valorUnitario}"
+                                      id="campoDecimalValorUnitario"/>
+
+                    <div class="col-xs-12 col-sm-3 col-md-3">
+                        <p:outputLabel value="Desconto" for="desconto"/>
+                        <div class="ui-inputgroup">
+
+                            <p:inputNumber id="desconto"
+                                           value="#{osAberturaControll.desconto}"
+                                           required="true"
+                                           style="width: 100%;"
+                                           decimalPlaces="2"
+                                           minValue="0"/>
+
+
+                            <p:commandButton id="btnTipoDesconto"
+                                             action="#{osAberturaControll.alterarTipoDesconto}"
+                                             process="@this"
+                                             update="formCentro:telaDetalhe:tabViewDetalhes:form-produtos:btnTipoDesconto"
+                                             value="#{osAberturaControll.tipoDesconto}"/>
+
+                            <p:commandButton value="Salvar"
+                                             style="margin-left: 5px"
+                                             actionListener="#{osAberturaControll.salvarOsProdutoServico}"
+                                             update=":formCentro:growl,
+                                             :formCentro:telaDetalhe:tabViewDetalhes:form-produtos:container-item,
+                                             :formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:valo-pago,
+                                             :formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico,
+                                             :formCentro:telaDetalhe:tabViewDetalhes:form-dados-principais:panel-desconto"
+                                             process="form-produtos"
+                                             id="btnSalvarProdutoServico"/>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                    idComponente="complemento" label="Complemento do servico"
+                                    nomeAtributo="#{osAberturaControll.osProdutoServico.complemento}"
+                                    tamanhoMaximo="100"
+                    />
+                </div>
+
+            </h:panelGroup>
+        </h:form>
     </div>
-    <p:dataTable id="dataTableOsProdutoServico" var="obj"
-                 value="#{osAberturaControll.objeto.listaOsProdutoServico}"
-                 paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
-                 reflow="true" paginatorPosition="bottom"
+    <div class="row">
+        <p:dataTable id="dataTableOsProdutoServico" var="obj"
+                     value="#{osAberturaControll.objeto.listaOsProdutoServico}"
+                     paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20"
+                     reflow="true" paginatorPosition="bottom"
 
-    >
+        >
 
 
-        <p:column headerText="Produto/Serviço">
-            <h:outputLabel value="#{obj.produto.nome}"/>
-        </p:column>
-        <p:column headerText="Tipo" width="100">
-            <h:outputLabel
-                    value="#{osAberturaControll.keyFromValue(osAberturaControll.osTipoProdutoServico, obj.tipo)}"/>
-        </p:column>
-        <p:column headerText="QTD" styleClass="text-center" width="120">
-            <h:outputLabel value="#{obj.quantidade}">
-                <f:convertNumber pattern="#,##0.00"/>
-            </h:outputLabel>
-        </p:column>
-        <p:column headerText="Valor UN" styleClass="text-right" width="140">
-            <h:outputLabel value="#{obj.valorUnitario}">
-                <f:convertNumber pattern="#,##0.00"/>
-            </h:outputLabel>
-        </p:column>
-        <p:column headerText="Subtotal" styleClass="text-right" width="125">
-            <h:outputLabel value="#{obj.valorSubtotal}">
-                <f:convertNumber pattern="#,##0.00"/>
-            </h:outputLabel>
-        </p:column>
-        <p:column headerText="DESC" styleClass="text-right" width="100">
-            <h:outputLabel value="#{obj.valorDesconto}">
-                <f:convertNumber pattern="#,##0.00"/>
-            </h:outputLabel>
-        </p:column>
-        <p:column headerText="Total" styleClass="text-right" width="125">
-            <h:outputLabel value="#{obj.valorTotal}">
-                <f:convertNumber pattern="#,##0.00"/>
-            </h:outputLabel>
-        </p:column>
-        <p:column headerText="Ações" width="120" styleClass="text-center">
-            <p:commandLink process="dataTableOsProdutoServico" title="Alterar" style="margin-right: 4px"
-                           oncomplete="PF('dialogOsProdutoServico').show()" styleClass="btn btn-default"
-                           action="#{osAberturaControll.alterarOsProdutoServico}"
-                           update=":formOutrasTelas2:panelOsProdutoServico,dataTableOsProdutoServico">
-                <i class="fa fa-file-text-o"></i>
-                <f:setPropertyActionListener value="#{obj}" target="#{osAberturaControll.osProdutoServicoSelecionado}"/>
-            </p:commandLink>
-            &nbsp;
-            <p:commandLink process="dataTableOsProdutoServico" title="Excluir" styleClass="btn btn-default"
-                           action="#{osAberturaControll.excluirOsProdutoServico}"
-                           update="dataTableOsProdutoServico,formCentro:telaDetalhe:panel-valores">
-                <i class="fa fa-close"/>
-                <p:confirm header="Confirmação" message="Confirma Exclusão?"
-                           icon="ui-icon-alert"/>
-                <f:setPropertyActionListener value="#{obj}" target="#{osAberturaControll.osProdutoServicoSelecionado}"/>
-            </p:commandLink>
-        </p:column>
-    </p:dataTable>
+            <p:column headerText="Produto/Serviço">
+                <h:outputText value="#{obj.produto.nome} #{obj.complemento}"/>
+            </p:column>
+            <p:column headerText="Tipo" width="100">
+                <h:outputText
+                        value="#{osAberturaControll.keyFromValue(osAberturaControll.osTipoProdutoServico, obj.tipo)}"/>
+            </p:column>
+            <p:column headerText="QTD" styleClass="text-center" width="120">
+                <h:outputText value="#{obj.quantidade}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Valor UN" styleClass="text-right" width="140">
+                <h:outputText value="#{obj.valorUnitario}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Subtotal" styleClass="text-right" width="125">
+                <h:outputText value="#{obj.valorSubtotal}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="DESC" styleClass="text-right" width="100">
+                <h:outputText value="#{obj.valorDesconto}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Total" styleClass="text-right" width="125">
+                <h:outputText value="#{obj.valorTotal}">
+                    <f:convertNumber pattern="#,##0.00"/>
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Ações" width="120" styleClass="text-center">
+                <p:commandLink process="dataTableOsProdutoServico" title="Alterar" style="margin-right: 4px"
+                               oncomplete="PF('dialogOsProdutoServico').show()" styleClass="btn btn-default"
+                               action="#{osAberturaControll.alterarOsProdutoServico}"
+                               update=":formOutrasTelas2:panelOsProdutoServico,dataTableOsProdutoServico">
+                    <i class="fa fa-file-text-o"></i>
+                    <f:setPropertyActionListener value="#{obj}"
+                                                 target="#{osAberturaControll.osProdutoServicoSelecionado}"/>
+                </p:commandLink>
+                &nbsp;
+                <p:commandLink process="dataTableOsProdutoServico" title="Excluir" styleClass="btn btn-default"
+                               action="#{osAberturaControll.excluirOsProdutoServico}"
+                               update="dataTableOsProdutoServico,formCentro:telaDetalhe:panel-valores">
+                    <i class="fa fa-close"/>
+                    <p:confirm header="Confirmação" message="Confirma Exclusão?"
+                               icon="ui-icon-alert"/>
+                    <f:setPropertyActionListener value="#{obj}"
+                                                 target="#{osAberturaControll.osProdutoServicoSelecionado}"/>
+                </p:commandLink>
+            </p:column>
+        </p:dataTable>
+    </div>
+
 
 </ui:composition>
