@@ -87,9 +87,28 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
         definirOrdenacao(parametros, campo, orderEnum);
 
         String caminhoRelatorio = "/relatorios/cadastros";
-        String nomeRelatorio = modelo.equals("C")
-                ? "relacaoProdutos.jasper"
-                : modelo.equals("R") ? "relacaoProdutosResumido.jasper" : "relacaoProdutosFiscal.jasper";
+
+        String nomeRelatorio = "relacaoProdutos.jasper";
+
+        switch (modelo) {
+            case "C": {
+                nomeRelatorio = "relacaoProdutos.jasper";
+                break;
+            }
+            case "R": {
+                nomeRelatorio = "relacaoProdutosResumido.jasper";
+                break;
+            }
+            case "F": {
+                nomeRelatorio = "relacaoProdutosFiscal.jasper";
+                break;
+            }
+            case "CG": {
+                nomeRelatorio = "relacaoProdutosContagem.jasper";
+                break;
+            }
+        }
+
         String nome = "relacaoProdutos." + tipoRelatorio;
         executarRelatorio(caminhoRelatorio, nomeRelatorio, nome);
     }

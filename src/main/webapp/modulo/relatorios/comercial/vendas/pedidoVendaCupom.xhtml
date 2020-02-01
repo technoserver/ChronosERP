@@ -1,0 +1,289 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xml:lang="en" lang="en">
+<head>
+    <title>CUPOM</title>
+
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            outline: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font: 14px Arial, sans-serif;
+            -webkit-font-smoothing: antialiased !important;
+        }
+
+        .conteudo {
+            width: 385px;
+            height: auto;
+            background: #FFFFFF;
+            margin: 0 auto;
+            padding: 25px;
+        }
+
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .rodape {
+            position: fixed;
+            left: 0px;
+            bottom: 20px;
+            right: 0px;
+            text-align: center;
+            width: 100%;
+            border-top: #000000 solid 1px
+        }
+
+        .rodape h2 {
+            margin: 0
+        }
+
+        @page {
+            margin: 0;
+            padding: 0;
+            outline: 0;
+            box-sizing: border-box;
+        }
+
+
+    </style>
+    <h:outputScript library="primefaces" name="jquery/jquery.js"/>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            window.print();
+            setTimeout(function () {
+                window.onmouseover = function () {
+                    window.close();
+                }
+            }, 1000);
+        });
+    </script>
+    <f:metadata>
+        <f:viewParam name="idcupom" value="#{vendaRelatorioControll.idcupom}"/>
+        <f:viewAction action="#{vendaRelatorioControll.buscarPedidoVenda()}"/>
+    </f:metadata>
+</head>
+<h:body>
+
+
+    <div class="conteudo">
+
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+                <td>
+                    <div id="empresa" class="text-center">
+                        <b>#{vendaRelatorioControll.pedidoVenda.empresa.razaoSocial}</b></div>
+                    <div>#{vendaRelatorioControll.pedidoVenda.empresa.buscarEnderecoPrincipal().logradouro}, #{vendaRelatorioControll.vendaCupom.empresa.buscarEnderecoPrincipal().numero}, #{vendaRelatorioControll.vendaCupom.empresa.buscarEnderecoPrincipal().bairro}</div>
+                    <div>#{vendaRelatorioControll.pedidoVenda.empresa.buscarEnderecoPrincipal().cep} - #{vendaRelatorioControll.vendaCupom.empresa.buscarEnderecoPrincipal().cidade} ­ #{vendaRelatorioControll.vendaCupom.empresa.buscarEnderecoPrincipal().uf}</div>
+
+                    #{vendaRelatorioControll.pedidoVenda.empresa.buscarEnderecoPrincipal().fone}
+                    <div>Vendedor: #{vendaRelatorioControll.pedidoVenda.vendedor.colaborador.pessoa.nome}</div>
+                </td>
+            </tr>
+        </table>
+        <div style="display:flex;background: #e8e8e8;border-bottom: 2px solid #000;border-top: 2px solid #000;padding: 5px 0 5px 0;margin-top: 5px">
+          <span style="width: 50%">
+            PV - #{vendaRelatorioControll.pedidoVenda.id}
+          </span>
+            <span style="width: 50%;text-align:right">
+                <b>
+                    <h:outputText value="#{vendaRelatorioControll.pedidoVenda.dataVenda}">
+                        <f:convertDateTime pattern="dd/MM/yyyy"/>
+                    </h:outputText>
+                </b>
+            </span>
+        </div>
+
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+                <td>
+                    <b>Cliente</b>
+                </td>
+                <td style="text-align: left; margin-left: 5px;">
+                    #{vendaRelatorioControll.pedidoVenda.cliente.pessoa.nome}
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 78px">
+                    <b>endereço</b>
+                </td>
+                <td style="text-align: left; margin-left: 5px;">
+                    <span>#{vendaRelatorioControll.pedidoVenda.cliente.pessoa.buscarEnderecoPrincipal().logradouro} - #{vendaRelatorioControll.pedidoVenda.cliente.pessoa.buscarEnderecoPrincipal().numero}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Cidade</b>
+                </td>
+                <td style="text-align: left; margin-left: 5px;">
+                    <span>#{vendaRelatorioControll.pedidoVenda.cliente.pessoa.buscarEnderecoPrincipal().cidade}-#{vendaRelatorioControll.pedidoVenda.cliente.pessoa.buscarEnderecoPrincipal().uf}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>CEP</b>
+                </td>
+                <td style="text-align: left; margin-left: 5px;">
+                    <span>#{vendaRelatorioControll.pedidoVenda.cliente.pessoa.buscarEnderecoPrincipal().cep}</span>
+                </td>
+            </tr>
+        </table>
+
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr style="background: #e8e8e8">
+                <th style="border-bottom: 1px solid #000;border-top: 1px solid #000">
+                    <b>Produto</b>
+                </th>
+                <th style="padding: 5px 0 5px 0; text-align:center;border-bottom: 1px solid #000;border-top: 1px solid #000">
+                    <b>Qtd.</b>
+                </th>
+                <th style="padding: 5px 0 5px 0; text-align:center;border-bottom: 1px solid #000;border-top: 1px solid #000"></th>
+                <th style="padding: 5px 0 5px 0; text-align:right;border-bottom: 1px solid #000;border-top: 1px solid #000">
+                    <b>VL. UNIT.</b>
+                </th>
+                <th style="text-align:right;border-bottom: 1px solid #000;border-top: 1px solid #000">
+                    <b>Total</b>
+                </th>
+            </tr>
+            <c:forEach var="item" items="#{vendaRelatorioControll.pedidoVenda.listaVendaDetalhe}">
+                <tr>
+                    <td colspan="5">
+
+                        <strong>
+                            <h:outputText value="#{item.produto.id}"/>
+                        </strong>
+                        - <h:outputText value="#{item.produto.nome}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="text-align:center">
+                        <h:outputText value="#{item.quantidade}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                        #{item.produto.unidadeProduto.sigla}
+                    </td>
+                    <td style="text-align:center">X</td>
+                    <td style="text-align:right">
+                        <h:outputText value="#{item.valorUnitario}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                    <td style="text-align:right">
+                        <h:outputText value="#{item.valorTotal}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+            </c:forEach>
+
+
+        </table>
+        <hr/>
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+
+            <tr>
+                <td>Subtotal</td>
+                <td style="text-align:right">
+                    <h:outputText value="#{vendaRelatorioControll.pedidoVenda.valorSubtotal}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td>Desconto</td>
+                <td style="text-align:right">
+                    <h:outputText value="#{vendaRelatorioControll.pedidoVenda.valorDesconto}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputText>
+                </td>
+            </tr>
+            <tr>
+                <td><strong> Total</strong></td>
+                <td style="text-align:right">
+                    <strong>
+                        <h:outputText value="#{vendaRelatorioControll.pedidoVenda.valorTotal}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </strong>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="4">
+                    <hr/>
+                </td>
+            </tr>
+        </table>
+
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+                <td width="60%">
+                    <b>Forma de pagamento</b>
+                </td>
+                <td style="text-align:right">
+                    <b>Valor</b>
+                </td>
+            </tr>
+            <c:forEach var="pag" items="#{vendaRelatorioControll.pedidoVenda.listaFormaPagamento}">
+                <tr>
+                    <td>
+                        #{pag.formaPagamento.tipoPagamento.descricao} <h:outputText
+                            value="#{pag.formaPagamento.qtdParcelas}"
+                            rendered="#{pag.formaPagamento.forma eq '03' or pag.formaPagamento.forma eq '04'}"/>
+                    </td>
+                    <td style="text-align:right">
+                        <h:outputText value="#{pag.formaPagamento.valor}">
+                            <f:convertNumber pattern="#,##0.00"/>
+                        </h:outputText>
+                    </td>
+                </tr>
+            </c:forEach>
+
+            <tr>
+                <td colspan="4">
+                    <hr/>
+                </td>
+            </tr>
+        </table>
+
+        <br/>
+        <br/>
+        <p style="text-align: center">
+            <b>_________________________________________</b>
+        </p>
+        <p style="text-align: center">
+            <b>EMPRESA</b>
+        </p>
+        <div style="text-align: center">*** Este não é documento fiscal ***</div>
+        <br/>
+
+        <div style="text-align: center">OBRIGADO E VOLTE SEMPRE!</div>
+
+
+    </div>
+</h:body>
+</html>

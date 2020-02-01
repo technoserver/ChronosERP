@@ -1,10 +1,7 @@
 package com.chronos.erp.controll.vendas.relatorios;
 
 import com.chronos.erp.controll.AbstractRelatorioControll;
-import com.chronos.erp.modelo.entidades.PdvMovimento;
-import com.chronos.erp.modelo.entidades.PdvVendaCabecalho;
-import com.chronos.erp.modelo.entidades.ProdutoGrupo;
-import com.chronos.erp.modelo.entidades.VendaConsignadaCabecalho;
+import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.modelo.view.PessoaCliente;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.comercial.VendedorService;
@@ -31,6 +28,8 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     @Inject
     private Repository<PdvVendaCabecalho> pdvRepository;
     @Inject
+    private Repository<VendaCabecalho> vendaCabecalhoRepository;
+    @Inject
     private Repository<PdvMovimento> movimentoRepository;
 
     @Inject
@@ -49,6 +48,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     private int idvendaConsignada;
     private int idgrupo;
     private PdvVendaCabecalho vendaCupom;
+    private VendaCabecalho pedidoVenda;
     private VendaConsignadaCabecalho vendaConsignada;
     private PessoaCliente cliente;
     private Map<String, Integer> listaVendedor;
@@ -59,6 +59,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     private Map<String, String> status;
 
     private Map<String, Boolean> naoSim;
+
 
 
     private boolean agrupar;
@@ -105,6 +106,17 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         try {
             if (idcupom > 0) {
                 vendaCupom = pdvRepository.get(idcupom, PdvVendaCabecalho.class);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    public void buscarPedidoVenda() {
+        try {
+            if (idcupom > 0) {
+                pedidoVenda = vendaCabecalhoRepository.get(idcupom, VendaCabecalho.class);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -459,4 +471,7 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
         return listaColaborador;
     }
 
+    public VendaCabecalho getPedidoVenda() {
+        return pedidoVenda;
+    }
 }

@@ -230,14 +230,16 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 getObjeto().setStatus(1);
                 getObjeto().setEmpresa(empresa);
 
-                Vendedor vendedor = vendedorService.instaciarVendedor(usuario.getIdcolaborador());
-                if (vendedor != null) {
-                    vendedor.setNome(vendedor.getColaborador().getPessoa().getNome());
-                    getObjeto().setVendedor(vendedor);
-                }
+            Vendedor vendedor = vendedorService.instaciarVendedor(usuario.getIdcolaborador());
+            if (vendedor != null) {
+                vendedor.setNome(vendedor.getColaborador().getPessoa().getNome());
+                getObjeto().setVendedor(vendedor);
+            }
 
 
-                temProduto = false;
+            temProduto = false;
+
+            incluirOsProdutoServico();
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
@@ -457,7 +459,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
             }
             totalReceber = getObjeto().getValorTotal();
             verificaSaldoRestante();
-
+            incluirOsProdutoServico();
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao salvar o produto !", e);
@@ -723,6 +725,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public void selecionaValorProduto(SelectEvent event) {
         Produto produto = (Produto) event.getObject();
         osProdutoServico.setValorUnitario(produto.getValorVenda());
+        osProdutoServico.setQuantidade(BigDecimal.ONE);
     }
 
     public void definirCondicoess() {

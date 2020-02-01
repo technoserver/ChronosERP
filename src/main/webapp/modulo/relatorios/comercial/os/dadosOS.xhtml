@@ -159,7 +159,7 @@
             <c:forEach var="item" items="#{osRelatorioControll.os.listaOsProdutoServico}">
                 <tr>
                     <td>
-                        <h:outputText value="#{item.produto.nome}"/>
+                        <h:outputText value="#{item.produto.nome} #{item.complemento}"/>
                     </td>
                     <td style="text-align: center">
                         <h:outputText value="#{item.quantidade}">
