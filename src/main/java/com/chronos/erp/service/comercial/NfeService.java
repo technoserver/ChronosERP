@@ -162,18 +162,11 @@ public class NfeService implements Serializable {
 
         NfeCabecalho nfe = new NfeCabecalho();
 
-        nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO.getCodigo() : FormatoImpressaoDanfe.DANFE_NFCE.getCodigo());
+
         nfe.setUfEmitente(empresa.getCodigoIbgeUf());
         nfe.setCodigoMunicipio(empresa.getCodigoIbgeCidade());
         nfe.setCodigoModelo(String.valueOf(modelo.getCodigo()));
         nfe.setEmpresa(empresa);
-
-        if (modelo == ModeloDocumento.NFE) {
-
-            nfe.setDestinatario(new NfeDestinatario());
-            nfe.getDestinatario().setNfeCabecalho(nfe);
-        }
-
 
         definirEmitente(nfe);
 
@@ -186,9 +179,9 @@ public class NfeService implements Serializable {
     }
 
     public void instanciarDadosConfiguracoes(NfeCabecalho nfe) throws ChronosException, CertificadoException {
-        if (configuracao == null) {
-            instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
-        }
+        ModeloDocumento modelo = nfe.getModeloDocumento();
+        instanciarConfNfe(nfe.getEmpresa(), modelo);
+        nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO.getCodigo() : FormatoImpressaoDanfe.DANFE_NFCE.getCodigo());
         if (configuracao != null) {
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
             if (StringUtils.isEmpty(nfe.getInformacoesAddContribuinte())) {
@@ -214,7 +207,7 @@ public class NfeService implements Serializable {
         }
 
         nfe = repository.atualizar(nfe);
-        int count = nfe.getListaNfeFormaPagamento().size();
+
         return nfe;
     }
 
@@ -495,6 +488,16 @@ public class NfeService implements Serializable {
 
         if (nfe.getDataHoraEntradaSaida().getTime() < nfe.getDataHoraEmissao().getTime()) {
             nfe.setDataHoraEntradaSaida(nfe.getDataHoraEmissao());
+        }
+
+        if (nfe.getModeloDocumento() == ModeloDocumento.NFCE) {
+            if (StringUtils.isEmpty(nfe.getCsc())) {
+                throw new ChronosException("CSF para transmissão da NFC-e não definido");
+            }
+
+            if (StringUtils.isEmpty(nfe.getTokenCsc())) {
+                throw new ChronosException("Token CSF para transmissão da NFC-e não definido");
+            }
         }
 
 
@@ -878,7 +881,7 @@ public class NfeService implements Serializable {
     public TRetConsSitNFe consultarNfe(String chave, ModeloDocumento modelo) throws Exception {
 
 
-        TRetConsSitNFe result = NfeTransmissao.getInstance().consultarNfe(chave);
+        TRetConsSitNFe result = NfeTransmissao.getInstance().consultarNfe(chave, modelo);
 
         return result;
     }
@@ -890,14 +893,6 @@ public class NfeService implements Serializable {
             throw new ChronosException("Esta NF-e já foi autorizada. Operação não permitida ");
         }
         ModeloDocumento modelo = ModeloDocumento.getByCodigo(Integer.valueOf(nfe.getCodigoModelo()));
-
-        if (modelo == ModeloDocumento.NFCE && StringUtils.isEmpty(nfe.getCsc())) {
-            throw new ChronosException("É Necessário informar o CSC!");
-        }
-
-        if (modelo == ModeloDocumento.NFCE && StringUtils.isEmpty(nfe.getTokenCsc())) {
-            throw new ChronosException("É Necessário informar o token do CSC!");
-        }
 
 
         LocalDestino destino = LocalDestino.getByCodigo(nfe.getLocalDestino());

@@ -112,9 +112,10 @@ public class NfeTransmissao {
         return retorno;
     }
 
-    public TRetConsSitNFe consultarNfe(String chave) throws Exception {
+    public TRetConsSitNFe consultarNfe(String chave, ModeloDocumento modelo) throws Exception {
         iniciarConfiguracoes();
-        TRetConsSitNFe retorno = Nfe.consultaXml(chave, ConstantesNFe.NFE);
+
+        TRetConsSitNFe retorno = Nfe.consultaXml(chave, modelo == ModeloDocumento.NFE ? ConstantesNFe.NFE : ConstantesNFe.NFCE);
         System.out.println("Status:" + retorno.getCStat());
         System.out.println("Motivo:" + retorno.getXMotivo());
         System.out.println("Data:" + retorno.getProtNFe().getInfProt().getDhRecbto());

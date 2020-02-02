@@ -25,12 +25,19 @@
 
         <erp:formularioGrid controller="#{nfeCabecalhoControll}" id="telaGrid">
 
-            <div class="row ">
+            <div class="row m-b">
+                <div class="col-sm-12">
+                    <p:commandButton value="Nova NFe/NFCe"
+                                     title="Novo"
+                                     action="#{nfeCabecalhoControll.doCreate}"
+                                     update="formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                    />
+                </div>
 
             </div>
             <div class="row m-b">
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
+                <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                 idComponente="cliente" label="Cliente"
                                 nomeAtributo="#{nfeCabecalhoControll.cliente}"
                                 tamanhoMaximo="100"/>
@@ -47,24 +54,36 @@
                                label="Data Final" idComponente="dataFinal"
                                nomeAtributo="#{nfeCabecalhoControll.dataFinal}"/>
 
-                <div class="col-xs-12 col-sm-2 col-md-2">
-                    <h:outputLabel value="Status" for="situacao"/>
-                    <h:selectOneMenu id="situacao" class="form-control"
-                                     value="#{nfeCabecalhoControll.status}">
-                        <f:selectItem itemLabel="Todos" itemValue="-1"/>
-                        <f:selectItem itemLabel="Ediçao" itemValue="0"/>
-                        <f:selectItem itemLabel="Autorizada" itemValue="5"/>
-                        <f:selectItem itemLabel="Cancelada" itemValue="6"/>
+
+            </div>
+            <div class="row m-b">
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <h:outputLabel value="Modelo" for="modelo"/>
+                    <h:selectOneMenu id="modelo" class="form-control"
+                                     value="#{nfeCabecalhoControll.codigoModelo}">
+                        <f:selectItem itemLabel="NF-e" itemValue="55"/>
+                        <f:selectItem itemLabel="NFC-e" itemValue="65"/>
                     </h:selectOneMenu>
                 </div>
 
-                <div class="col-md-1" style="margin-top: 20px">
-                    <p:commandButton value=""
-                                     title="Pesquisar"
-                                     icon="fa fa-refresh"
-                                     style="height: 30px"
-                                     action="#{nfeCabecalhoControll.pesquisar}"
-                                     update="formCentro:telaGrid:outputPanelGrid"/>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <h:outputLabel value="Status" for="situacao"/>
+                    <div class="field-action">
+                        <h:selectOneMenu id="situacao" class="form-control"
+                                         value="#{nfeCabecalhoControll.status}">
+                            <f:selectItem itemLabel="Todos" itemValue="-1"/>
+                            <f:selectItem itemLabel="Ediçao" itemValue="0"/>
+                            <f:selectItem itemLabel="Autorizada" itemValue="5"/>
+                            <f:selectItem itemLabel="Cancelada" itemValue="6"/>
+                        </h:selectOneMenu>
+                        <div style="margin-left: 5px">
+                            <p:commandButton value="Pesquisar"
+                                             title="Pesquisar"
+                                             icon="fa fa-refresh"
+                                             update="formCentro:telaGrid:table:dataTableNfe"/>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -73,29 +92,31 @@
                                   exibirAcoes="false"
                                   controller="#{nfeCabecalhoControll}">
                 <p:column headerText="Destinatario" sortBy="#{row.destinatario.nome}">
-                    <h:outputLabel value="#{row.destinatario.nome}"/>
-                </p:column>
-                <p:column headerText="Número" sortBy="#{row.numero}" width="115">
-                    <h:outputLabel value="#{row.numero}"/>
-                </p:column>
-
-                <p:column headerText="Chave Acesso">
-                    <h:outputLabel value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
+                    <p>
+                        <strong>Número: </strong>
+                        <h:outputText value="#{row.numero}"/>
+                    </p>
+                    <p>
+                        <strong>Chave: </strong>
+                        <h:outputText value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
+                    </p>
+                    <h:outputText
+                            value="#{empty row.destinatario.nome  ? 'Cliente não identificado ': row.destinatario.nome}"/>
                 </p:column>
                 <p:column headerText="Emissão"
                           sortBy="#{row.dataHoraEmissao}" width="120">
-                    <h:outputLabel value="#{row.dataHoraEmissao}">
+                    <h:outputText value="#{row.dataHoraEmissao}">
                         <f:convertDateTime pattern="dd/MM/yyyy"/>
-                    </h:outputLabel>
+                    </h:outputText>
                 </p:column>
                 <p:column headerText="Total" style="text-align: right;" width="100">
-                    <h:outputLabel value="#{row.valorTotal}">
+                    <h:outputText value="#{row.valorTotal}">
                         <f:convertNumber pattern="#,###,##0.00"/>
-                    </h:outputLabel>
+                    </h:outputText>
                 </p:column>
                 <p:column headerText="Status" sortBy="#{row.statusNota}" width="110" styleClass="text-center">
 
-                    <h:outputLabel
+                    <h:outputText
                             value="#{nfeCabecalhoControll.keyFromValue(nfeCabecalhoControll.statusNfe, row.statusNota)}"/>
                 </p:column>
                 <p:column headerText="Ações" width="180" styleClass="text-right">

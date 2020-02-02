@@ -314,7 +314,7 @@ public class GeraXMLEnvio {
         Dest dest = null;
 
 
-        if (destinatario != null && destinatario.getCpfCnpj() != null) {
+        if (destinatario != null && !StringUtils.isEmpty(destinatario.getCpfCnpj())) {
             dest = new Dest();
             if (destinatario.getCpfCnpj().length() == 14) {
                 dest.setCNPJ(destinatario.getCpfCnpj());
@@ -1089,7 +1089,7 @@ public class GeraXMLEnvio {
         icmsTot.setVDesc(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorDesconto()));
         icmsTot.setVII(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorImpostoImportacao()));
         icmsTot.setVIPI(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorIpi()));
-        icmsTot.setVIPIDevol(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorIpiDevolvido()));
+        icmsTot.setVIPIDevol(FormatValor.getInstance().formatarValor(Optional.ofNullable(nfeCabecalho.getValorIpiDevolvido()).orElse(BigDecimal.ZERO)));
         icmsTot.setVPIS(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorPis()));
         icmsTot.setVCOFINS(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorCofins()));
         icmsTot.setVOutro(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorDespesasAcessorias()));
@@ -1097,9 +1097,9 @@ public class GeraXMLEnvio {
         icmsTot.setVICMSDeson(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorIcmsDesonerado()));
         icmsTot.setVTotTrib(nfeCabecalho.getValorTotalTributos() == null ? null : FormatValor.getInstance().formatarValor(nfeCabecalho.getValorTotalTributos()));
 
-        icmsTot.setVFCP(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcp()));
-        icmsTot.setVFCPST(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcpSt()));
-        icmsTot.setVFCPSTRet(FormatValor.getInstance().formatarValor(nfeCabecalho.getValorFcpStRetido()));
+        icmsTot.setVFCP(FormatValor.getInstance().formatarValor(Optional.ofNullable(nfeCabecalho.getValorFcp()).orElse(BigDecimal.ZERO)));
+        icmsTot.setVFCPST(FormatValor.getInstance().formatarValor(Optional.ofNullable(nfeCabecalho.getValorFcpSt()).orElse(BigDecimal.ZERO)));
+        icmsTot.setVFCPSTRet(FormatValor.getInstance().formatarValor(Optional.ofNullable(nfeCabecalho.getValorFcpStRetido()).orElse(BigDecimal.ZERO)));
 
         if (nfeCabecalho.getValorServicos().compareTo(BigDecimal.ZERO) > 0) {
             TNFe.InfNFe.Total.ISSQNtot issqnTot = new TNFe.InfNFe.Total.ISSQNtot();

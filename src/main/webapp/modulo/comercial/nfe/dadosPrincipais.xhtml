@@ -23,11 +23,12 @@
                 <p:ajax process="@this" event="itemSelecionado"/>
             </erp:autoComplete>
 
-            <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
+            <erp:campoSelect styleClass="col-xs-12 col-sm-3 col-md-3"
                              idComponente="nfeCabecalhoTipoOperacao"
                              label="Tipo Operacao"
                              nomeAtributo="#{nfeCabecalhoControll.objeto.tipoOperacao}"
                              itens="#{nfeCabecalhoControll.tipoOperacaoNfe}"/>
+
             <div class="col-xs-12 col-sm-2 col-md-2 group-control">
                 <h:outputLabel value="Finalidade" for="finalidade"/>
                 <h:selectOneMenu class="form-control" id="finalidade"
@@ -36,6 +37,23 @@
                     <p:ajax process="@this"/>
                 </h:selectOneMenu>
             </div>
+
+            <div class="col-xs-12 col-sm-2 col-md-2 group-control">
+                <h:outputLabel value="Modelo" for="codigoModeloNfe"/>
+                <h:selectOneMenu class="form-control" id="codigoModeloNfe"
+                                 value="#{nfeCabecalhoControll.objeto.codigoModelo}">
+                    <f:selectItems value="#{nfeCabecalhoControll.codigoModeloNfe}"/>
+                    <p:ajax process="@this"/>
+                </h:selectOneMenu>
+            </div>
+
+        </div>
+        <div class="row">
+            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-5"
+                            idComponente="nfeCabecalhoChaveAcesso" label="Chave Acesso"
+                            nomeAtributo="#{nfeCabecalhoControll.objeto.chaveAcessoCompleta}"
+                            tamanhoMaximo="44" somenteLeitura="true"/>
+
             <div class="col-xs-12 col-sm-3 col-md-3">
                 <h:outputLabel value="Numero"
                                for="nfeCabecalhoNumero"/>
@@ -54,12 +72,6 @@
                     </h:commandLink>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-5"
-                            idComponente="nfeCabecalhoChaveAcesso" label="Chave Acesso"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.chaveAcessoCompleta}"
-                            tamanhoMaximo="44" somenteLeitura="true"/>
 
 
             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
@@ -68,14 +80,6 @@
                             tamanhoMaximo="3" somenteLeitura="true"/>
 
 
-            <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
-                              label="Forma Pagamento"
-                              itemLabel="#{objeto.descricao}"
-                              controller="#{nfeCabecalhoControll}"
-                              completeMethod="getListaNfceTipoPagamento"
-                              nomeAtributo="#{nfeCabecalhoControll.tipoPagamento}"
-                              idComponente="nfeCabecalhoFormaPagamento"/>
-
             <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
                            idComponente="nfeCabecalhoDataHoraEntradaSaida"
                            label="DT/HR Ent/Saida"
@@ -83,6 +87,16 @@
                            formato="dd/MM/yyyy HH:mm"
             />
 
+
+        </div>
+        <div class="row">
+            <erp:autoComplete styleClass="col-xs-12 col-sm-2 col-md-2"
+                              label="Forma Pagamento"
+                              itemLabel="#{objeto.descricao}"
+                              controller="#{nfeCabecalhoControll}"
+                              completeMethod="getListaNfceTipoPagamento"
+                              nomeAtributo="#{nfeCabecalhoControll.tipoPagamento}"
+                              idComponente="nfeCabecalhoFormaPagamento"/>
         </div>
 
         <div class="row">
