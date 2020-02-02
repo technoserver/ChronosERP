@@ -24,6 +24,8 @@ public class OsProdutoServico implements Serializable {
     private Integer tipo;
     @Column(name = "COMPLEMENTO")
     private String complemento;
+    //    @Column(name = "nome_produto_servico")
+//    private String nomeProdutoServico;
     @NotNull
     @Column(name = "QUANTIDADE")
     @DecimalMin(value = "0.01", message = "O valor  deve ser maior que 0,01")
@@ -89,6 +91,14 @@ public class OsProdutoServico implements Serializable {
     public void setComplemento(String complemento) {
         this.complemento = complemento;
     }
+
+//    public String getNomeProdutoServico() {
+//        return nomeProdutoServico;
+//    }
+//
+//    public void setNomeProdutoServico(String nomeProdutoServico) {
+//        this.nomeProdutoServico = nomeProdutoServico;
+//    }
 
     public BigDecimal getQuantidade() {
         return quantidade;

@@ -11,8 +11,7 @@
 
     <ui:define name="title">
         Tabela de Preço
-    </ui:define>
-
+    </ui:define>que finalizou
     <ui:define name="tela">
         #{tabelaPrecosControll.titulo}
     </ui:define>
@@ -49,6 +48,7 @@
                 </p:column>
                 <p:column headerText="Ações" width="180" styleClass="text-center"
                           rendered="#{tabelaPrecosControll.podeExcluir() or tabelaPrecosControll.podeAlterar()}">
+
                     <p:commandLink title="Alterar"
                                    action="#{tabelaPrecosControll.doEdit()}"
                                    class=" btn btn-default"
@@ -59,7 +59,7 @@
                         <f:setPropertyActionListener value="#{row}"
                                                      target="#{tabelaPrecosControll.objetoSelecionado}"/>
                     </p:commandLink>
-                    &nbsp;
+
                     <p:commandLink title="Excluir" action="#{tabelaPrecosControll.remover()}"
                                    update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                    process="list"
@@ -70,10 +70,10 @@
                     >
                         <i class="fa fa-times"></i>
                         <p:confirm header="Confirmar" message="Deseja excluir ?"/>
-
                         <f:setPropertyActionListener value="#{row}"
                                                      target="#{tabelaPrecosControll.objetoSelecionado}"/>
                     </p:commandLink>
+
 
                     <p:commandLink id="btn-print" styleClass="btn btn-default"
                                    action="#{vendaRelatorioControll.imprimirTabelaPreco(row.id)}"
@@ -82,6 +82,8 @@
                         <i class="fa fa-print"> </i>
 
                     </p:commandLink>
+
+
                 </p:column>
 
             </p:dataTable>

@@ -74,6 +74,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
     private NfeTransporteVolume volume;
     private TipoPagamento tipoPagamento;
     private CondicoesPagamento condicoesPagamento;
+    private NfeDestinatario destinatario;
     private int qtdParcelas;
     private int intervaloParcelas;
     private Date primeiroVencimento;
@@ -87,6 +88,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
     private Date dataFinal;
     private int status;
     private String cliente;
+    private String codigoModelo;
 
     private List<Veiculo> veiculos;
     private List<NfeEvento> cartas;
@@ -107,7 +109,8 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
         this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
                 || FacesUtil.getRestricao().getAlteraPrecoNaVenda().equals("S");
-
+        codigoModelo = "55";
+        status = -1;
     }
 
     @Override
@@ -121,15 +124,11 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
         dataModel.setAtributos(new Object[]{"destinatario.nome", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
 
-        if (dataModel.getFiltros().isEmpty()) {
-            dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
-            dataModel.addFiltro("codigoModelo", "55", Filtro.IGUAL);
-            dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
-        }
+
 
         dataModel.setSortOrder(SortOrder.DESCENDING);
         dataModel.setOrdernarPor("numero");
-
+        pesquisar();
         return dataModel;
     }
 
@@ -137,11 +136,14 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
     public void pesquisar() {
 
         dataModel.getFiltros().clear();
-
+        dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
+        dataModel.addFiltro("codigoModelo", codigoModelo, Filtro.IGUAL);
+        dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
 
         if (numeroNfe > 0) {
             dataModel.getFiltros().add(new Filtro("numero", Filtro.LIKE, numeroNfe + ""));
         }
+
 
         if (dataInicial != null) {
             dataModel.getFiltros().add(new Filtro("dataHoraEmissao", Filtro.MAIOR_OU_IGUAL, dataInicial));
@@ -170,12 +172,10 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
             super.doCreate();
             pessoaCliente = null;
             duplicidade = false;
-            nfeService.instanciarConfNfe(empresa, ModeloDocumento.NFE);
-            getObjeto().setDestinatario(new NfeDestinatario());
-            getObjeto().getDestinatario().setNfeCabecalho(getObjeto());
-
             NfeCabecalho nfeCabecalho = nfeService.dadosPadroes(empresa, ModeloDocumento.NFE);
             setObjeto(nfeCabecalho);
+            destinatario = new NfeDestinatario();
+            destinatario.setNfeCabecalho(getObjeto());
             dadosSalvos = false;
             observacao = getObjeto().getInformacoesAddContribuinte();
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
@@ -204,6 +204,12 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
             setObjeto(nfe);
             nfeService.instanciarConfNfe(empresa, ModeloDocumento.NFE);
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
+
+            destinatario = nfe.getDestinatario();
+            if (destinatario == null) {
+                destinatario = new NfeDestinatario();
+                destinatario.setNfeCabecalho(nfe);
+            }
 
             if (getObjeto().getTransporte() != null && getObjeto().getTransporte().getTransportadora() != null) {
                 transportadora = new ViewPessoaTransportadora();
@@ -254,6 +260,10 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
                 }
             }
 
+            if (!StringUtils.isEmpty(destinatario.getNome())) {
+                getObjeto().setDestinatario(destinatario);
+            }
+
             setObjeto(nfeService.salvar(getObjeto(), tipoPagamento));
 
             Mensagem.addInfoMessage("NFe salva com sucesso");
@@ -296,7 +306,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
             podeIncluirProduto = false;
             Mensagem.addInfoMessage("Antes de incluir produtos selecione a Operação Fiscal.");
 
-        } else if (getObjeto().getDestinatario().getNome() == null || getObjeto().getDestinatario().getNome().isEmpty()) {
+        } else if (getObjeto().getCodigoModelo().equals("55") && StringUtils.isEmpty(destinatario.getNome())) {
             podeIncluirProduto = false;
             Mensagem.addInfoMessage("Antes de incluir produtos selecione o destinatário.");
 
@@ -498,8 +508,9 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
         try {
             if (dadosSalvos) {
 
-
                 boolean estoque = isTemAcesso("ESTOQUE");
+
+                nfeService.instanciarDadosConfiguracoes(getObjeto());
 
                 StatusTransmissao status = nfeService.transmitirNFe(getObjeto(), estoque);
                 if (status == StatusTransmissao.AUTORIZADA) {
@@ -515,7 +526,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
                 Mensagem.addInfoMessage("Antes de enviar a NF-e é necessário salvar as informações!");
             }
         } catch (EmissorException ex) {
-            if (ex.getMessage().contains("Read timed out")) {
+            if (ex.getMessage().contains("Read timed out") || ex.getMessage().contains("connect timed out")) {
                 try {
                     getObjeto().setStatusNota(StatusTransmissao.ENVIADA.getCodigo());
                     dao.atualizar(getObjeto());
@@ -735,25 +746,25 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
             cliente.setId(pessoaCliente.getId());
             getObjeto().setCliente(cliente);
 
-            getObjeto().getDestinatario().setCpfCnpj(pessoaCliente.getCpfCnpj());
-            getObjeto().getDestinatario().setNome(pessoaCliente.getNome());
-            getObjeto().getDestinatario().setLogradouro(pessoaCliente.getLogradouro());
-            getObjeto().getDestinatario().setComplemento(pessoaCliente.getComplemento());
-            getObjeto().getDestinatario().setNumero(pessoaCliente.getNumero());
-            getObjeto().getDestinatario().setBairro(pessoaCliente.getBairro());
-            getObjeto().getDestinatario().setNomeMunicipio(pessoaCliente.getCidade());
-            getObjeto().getDestinatario().setCodigoMunicipio(pessoaCliente.getMunicipioIbge());
-            getObjeto().getDestinatario().setUf(pessoaCliente.getUf());
-            getObjeto().getDestinatario().setCep(pessoaCliente.getCep());
-            getObjeto().getDestinatario().setTelefone(pessoaCliente.getFone());
-            getObjeto().getDestinatario().setInscricaoEstadual(pessoaCliente.getRgIe());
-            getObjeto().getDestinatario().setEmail(pessoaCliente.getEmail());
-            getObjeto().getDestinatario().setCodigoPais(1058);
-            getObjeto().getDestinatario().setNomePais("Brazil");
+            destinatario.setCpfCnpj(pessoaCliente.getCpfCnpj());
+            destinatario.setNome(pessoaCliente.getNome());
+            destinatario.setLogradouro(pessoaCliente.getLogradouro());
+            destinatario.setComplemento(pessoaCliente.getComplemento());
+            destinatario.setNumero(pessoaCliente.getNumero());
+            destinatario.setBairro(pessoaCliente.getBairro());
+            destinatario.setNomeMunicipio(pessoaCliente.getCidade());
+            destinatario.setCodigoMunicipio(pessoaCliente.getMunicipioIbge());
+            destinatario.setUf(pessoaCliente.getUf());
+            destinatario.setCep(pessoaCliente.getCep());
+            destinatario.setTelefone(pessoaCliente.getFone());
+            destinatario.setInscricaoEstadual(pessoaCliente.getRgIe());
+            destinatario.setEmail(pessoaCliente.getEmail());
+            destinatario.setCodigoPais(1058);
+            destinatario.setNomePais("Brazil");
 
 
             getObjeto().setLocalDestino(LocalDestino.getByUf(empresa.buscarEnderecoPrincipal().getUf(), pessoaCliente.getUf()));
-            nfeService.definirIndicadorIe(getObjeto().getDestinatario(), getObjeto().getModeloDocumento());
+            nfeService.definirIndicadorIe(destinatario, getObjeto().getModeloDocumento());
             dadosSalvos = false;
         } catch (ChronosException e) {
             if (e instanceof ChronosException) {
@@ -825,6 +836,14 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
     // <editor-fold defaultstate="collapsed" desc="GETS SETS">
 
+
+    public NfeDestinatario getDestinatario() {
+        return destinatario;
+    }
+
+    public void setDestinatario(NfeDestinatario destinatario) {
+        this.destinatario = destinatario;
+    }
 
     public String getEmail() {
         return email;
@@ -1056,6 +1075,14 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
     public boolean isPodeAlterarPreco() {
         return podeAlterarPreco;
+    }
+
+    public String getCodigoModelo() {
+        return codigoModelo;
+    }
+
+    public void setCodigoModelo(String codigoModelo) {
+        this.codigoModelo = codigoModelo;
     }
 
     // </editor-fold>

@@ -180,6 +180,7 @@
         <div class="row">
             <div class="col-xs-6 col-sm-6 col-md-6 text-center">
                 <p:commandButton value="Salvar"
+                                 process="form-dados-principais"
                                  update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                  action="#{osAberturaControll.salvar()}"
                                  rendered="#{empty osAberturaControll.objeto.id}">
@@ -188,6 +189,7 @@
                 <c:if test="#{not empty osAberturaControll.objeto.id and !(osAberturaControll.objeto.status eq '11' or osAberturaControll.objeto.status eq '12' or osAberturaControll.objeto.status eq '13')}">
                     <p:splitButton value="Salvar"
                                    update=":formCentro:growl"
+                                   process="form-dados-principais"
                                    actionListener="#{osAberturaControll.salvar()}"
                                    icon="ui-icon-disk">
                         <p:menuitem value="Imprimir OS 1 Via"
@@ -211,13 +213,16 @@
 
                         </p:menuitem>
                         <p:menuitem value="Encerrar" actionListener="#{osAberturaControll.encerrar}"
+                                    process="form-dados-principais"
                                     update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     icon="ui-icon-arrowrefresh-1-w"/>
                         <p:menuitem value="Faturar - NFe"
+                                    process="form-dados-principais"
                                     update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     rendered="#{osAberturaControll.exibirOpcaoFaturamento}"
                                     action="#{osAberturaControll.faturar('55')}"/>
                         <p:menuitem value="Faturar - NFCe"
+                                    process="form-dados-principais"
                                     rendered="#{osAberturaControll.exibirOpcaoFaturamento}"
                                     update=":formCentro:growl,:formCentro:mensagem,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
                                     action="#{osAberturaControll.faturar('65')}"/>

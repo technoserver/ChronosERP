@@ -106,7 +106,7 @@
 
                         <c:if test="#{seguranca.isTemAcesso('FRENTE_CAIXA')}">
                             <li class="${fn:contains(view.viewId,'modulo/comercial/vendas/balcao') ? 'active': '' }">
-                                <h:link id="url-pdv" outcome="/modulo/comercial/vendas/balcao" value="PDV"/>
+                                <h:link id="url-pdv" outcome="/modulo/comercial/pdv/vendas" value="PDV"/>
                             </li>
                         </c:if>
 

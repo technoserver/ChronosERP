@@ -36,9 +36,6 @@ public class TabelaPrecosControll extends AbstractControll<TabelaPreco> implemen
 
     @Inject
     private TabelaPrecoService service;
-
-    @Inject
-    private Repository<Produto> produtoRepository;
     @Inject
     private Repository<EmpresaProduto> empresaProdutoRepository;
 

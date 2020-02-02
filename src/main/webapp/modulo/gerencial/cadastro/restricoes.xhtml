@@ -91,11 +91,15 @@
                                  idComponente="bloquearVendaPorLimiteCredito"
                                  itens="#{restricaoSistemaControll.simNao}"/>
 
-                <erp:campoSelect label="Permitir venda sem saldo"
-                                 styleClass="col-xs-12 col-sm-4 col-md-3"
-                                 nomeAtributo="#{restricaoSistemaControll.objeto.estoqueNegativo}"
-                                 idComponente="estoqueNegativo"
-                                 itens="#{restricaoSistemaControll.simNao}"/>
+                <div class="col-xs-12 col-sm-3 col-md-3">
+                    <h:outputLabel value="Permitir venda sem saldo"/>
+                    <h:selectOneMenu id="faturar"
+                                     value="#{restricaoSistemaControll.objeto.estoqueNegativo}"
+                                     styleClass="form-control">
+                        <f:selectItem itemLabel="SIM" itemValue="#{true}"/>
+                        <f:selectItem itemLabel="NAO" itemValue="#{false}"/>
+                    </h:selectOneMenu>
+                </div>
 
 
             </div>

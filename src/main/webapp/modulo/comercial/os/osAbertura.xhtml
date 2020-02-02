@@ -333,8 +333,9 @@
 
             <p:tabView id="tabViewDetalhes" style="border: 0px;">
                 <p:tab title="Dados Principais" id="tabDadosPrincipais">
-                    <ui:include src="osDadosPrincipais.xhtml"/>
-
+                    <h:form id="form-dados-principais">
+                        <ui:include src="osDadosPrincipais.xhtml"/>
+                    </h:form>
                 </p:tab>
                 <p:tab title="Serviço/Produto" id="tabProduto">
                     <ui:include src="osServicoProduto.xhtml"/>
@@ -431,7 +432,7 @@
                       width="800" responsive="true">
 
                 <p:outputPanel id="panelOsProdutoServico">
-                    <div class="row">
+                    <div class="ui-g">
                         <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
                                           label="Produto"
                                           itemLabel="#{objeto.nome}"
@@ -498,6 +499,14 @@
 
                     </div>
 
+                    <div class="ui-g">
+                        <erp:campoTexto styleClass="col-xs-12 col-sm-12 col-md-12"
+                                        idComponente="complemento" label="Complemento do servico"
+                                        nomeAtributo="#{osAberturaControll.osProdutoServico.complemento}"
+                                        tamanhoMaximo="100"
+                        />
+                    </div>
+
                 </p:outputPanel>
                 <f:facet name="footer">
                     <div class="row">
@@ -508,7 +517,7 @@
                                              update=":formOutrasTelas2:panelOsProdutoServico,:formCentro:growl,
                                              :formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:valo-pago,
                                              :formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico,
-                                             :formCentro:telaDetalhe:tabViewDetalhes:panel-desconto"
+                                             :formCentro:telaDetalhe:tabViewDetalhes:form-dados-principais:panel-desconto"
                                              id="btnSalvarProdutoServico">
 
                             </p:commandButton>
@@ -638,25 +647,26 @@
             >
 
                 <p:outputPanel id="panelOutrasTelas5">
-                    <div class="form-group text-right">
-                        <div class="text-right">
-                            <label class="control-label col-sm-4">Desonto em</label>
-                        </div>
+                    <div class="ui-g">
+                        <div class="form-group text-right">
+                            <div class="text-right">
+                                <label class="control-label col-sm-4">Desonto em</label>
+                            </div>
 
-                        <div class="col-sm-3">
-                            <h:selectOneMenu id="tipo-desconto" styleClass="form-control"
-                                             value="#{ osAberturaControll.tipoDesconto}">
-                                <f:selectItem itemLabel="R$" itemValue="RS"/>
-                                <f:selectItem itemLabel="%" itemValue="%"/>
-                            </h:selectOneMenu>
-                        </div>
+                            <div class="col-sm-3">
+                                <h:selectOneMenu id="tipo-desconto" styleClass="form-control"
+                                                 value="#{ osAberturaControll.tipoDesconto}">
+                                    <f:selectItem itemLabel="R$" itemValue="RS"/>
+                                    <f:selectItem itemLabel="%" itemValue="%"/>
+                                </h:selectOneMenu>
+                            </div>
 
-                        <div class="col-sm-5">
-                            <p:inputNumber id="valor-desconto" required="true"
-                                           value="#{ osAberturaControll.desconto}"/>
+                            <div class="col-sm-5">
+                                <p:inputNumber id="valor-desconto" required="true"
+                                               value="#{ osAberturaControll.desconto}"/>
+                            </div>
                         </div>
                     </div>
-
 
                 </p:outputPanel>
                 <f:facet name="footer">
@@ -666,7 +676,7 @@
                             <p:commandButton value="Salvar"
                                              id="btnSalvarDesonto"
                                              update="panelOutrasTelas5,:formCentro:growl,:formCentro:telaDetalhe:panel-valores,
-                                             :formCentro:telaDetalhe:tabViewDetalhes:panel-desconto,
+                                             :formCentro:telaDetalhe:tabViewDetalhes:form-dados-principais:panel-desconto,
                                              :formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico,
                                              :formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:valo-pago"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas5').hide();}"
