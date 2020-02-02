@@ -4,6 +4,7 @@ import com.chronos.erp.controll.AbstractRelatorioControll;
 import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.modelo.view.PessoaCliente;
 import com.chronos.erp.repository.Repository;
+import com.chronos.erp.repository.VendaRepository;
 import com.chronos.erp.service.comercial.VendedorService;
 import org.springframework.util.StringUtils;
 
@@ -31,6 +32,8 @@ public class VendaRelatorioControll extends AbstractRelatorioControll implements
     private Repository<VendaCabecalho> vendaCabecalhoRepository;
     @Inject
     private Repository<PdvMovimento> movimentoRepository;
+    @Inject
+    private VendaRepository vendaRepository;
 
     @Inject
     private Repository<VendaConsignadaCabecalho> vendaConsignadaRepository;

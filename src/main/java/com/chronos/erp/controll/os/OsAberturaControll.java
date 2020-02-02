@@ -272,6 +272,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 totalReceber = os.getValorTotal();
                 verificaSaldoRestante();
                 temProduto = getObjeto().getListaOsProdutoServico().size() > 0;
+            incluirOsProdutoServico();
 
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {

@@ -515,7 +515,8 @@ public abstract class AbstractControll<T> implements Serializable {
 
         //NFe
         codigoModeloNfe = new LinkedHashMap<>();
-        codigoModeloNfe.put("Nota Fiscal Eletrônica - NFe", "55");
+        codigoModeloNfe.put("NF-e", "55");
+        codigoModeloNfe.put("NFC-e", "65");
 
         localDestinoNfe = new LinkedHashMap<>();
         localDestinoNfe.put("Operação Interna", 1);

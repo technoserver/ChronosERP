@@ -11,7 +11,7 @@
         <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
                           label="Selecione o Cliente:"
                           id="pessoaCliente"
-                          itemLabel="#{objeto.nome}"
+                          itemLabel="#{nome}"
                           controller="#{nfeCabecalhoControll}"
                           completeMethod="getListaPessoaCliente"
                           nomeAtributo="#{nfeCabecalhoControll.pessoaCliente}"
@@ -28,77 +28,77 @@
         <div class="row">
             <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
                             idComponente="nfeDestinatarioNome" label="Nome"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.nome}"
-                            tamanhoMaximo="60" somenteLeitura="false" requerido="true"/>
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.nome}"
+                            tamanhoMaximo="60"/>
             <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-3"
                             idComponente="nfeDestinatarioCpfCnpj" label="CPF/CNPJ"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.cpfCnpj}"
-                            tamanhoMaximo="14" somenteLeitura="true"/>
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.cpfCnpj}"
+                            tamanhoMaximo="14"/>
             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                             idComponente="nfeDestinatarioInscricaoEstadual"
                             label="Inscricao Estadual"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.inscricaoEstadual}"
-                            tamanhoMaximo="14" somenteLeitura="true"/>
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.inscricaoEstadual}"
+                            tamanhoMaximo="14"/>
             <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                               idComponente="nfeDestinatarioSuframa" label="Suframa"
-                              nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.suframa}"
-                              somenteLeitura="true"/>
+                              nomeAtributo="#{nfeCabecalhoControll.destinatario.suframa}"
+            />
         </div>
         <div class="row">
             <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
                             idComponente="nfeDestinatarioLogradouro" label="Logradouro"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.logradouro}"
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.logradouro}"
                             tamanhoMaximo="60" somenteLeitura="true"/>
             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                             idComponente="nfeDestinatarioNumero" label="Numero"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.numero}"
-                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.numero}"
+                            tamanhoMaximo="60"/>
 
         </div>
         <div class="row">
             <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                             idComponente="nfeDestinatarioComplemento" label="Complemento"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.complemento}"
-                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.complemento}"
+                            tamanhoMaximo="60"/>
             <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                             idComponente="nfeDestinatarioBairro" label="Bairro"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.bairro}"
-                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.bairro}"
+                            tamanhoMaximo="60"/>
 
             <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                             idComponente="nfeDestinatarioCep" label="Cep"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.cep}"
-                            tamanhoMaximo="8" somenteLeitura="true"/>
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.cep}"
+                            tamanhoMaximo="8"/>
 
 
         </div>
         <div class="row">
             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                             idComponente="nfeDestinatarioUf" label="UF"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.uf}"
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.uf}"
                             tamanhoMaximo="2" somenteLeitura="true"/>
             <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
                             idComponente="nfeDestinatarioNomeMunicipio"
                             label="Nome Municipio"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.nomeMunicipio}"
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.nomeMunicipio}"
                             tamanhoMaximo="60" somenteLeitura="true"/>
             <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                               idComponente="nfeDestinatarioCodigoMunicipio"
                               label="Codigo Municipio"
-                              nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.codigoMunicipio}"
-                              somenteLeitura="true"/>
+                              nomeAtributo="#{nfeCabecalhoControll.destinatario.codigoMunicipio}"
+            />
 
 
         </div>
         <div class="row">
             <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
                             idComponente="nfeDestinatarioEmail" label="Email"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.email}"
-                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.email}"
+                            tamanhoMaximo="60"/>
             <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-2"
                             idComponente="nfeDestinatarioTelefone" label="Telefone"
-                            nomeAtributo="#{nfeCabecalhoControll.objeto.destinatario.telefone}"
-                            tamanhoMaximo="14" somenteLeitura="true"/>
+                            nomeAtributo="#{nfeCabecalhoControll.destinatario.telefone}"
+                            tamanhoMaximo="14"/>
         </div>
     </h:panelGroup>
 
