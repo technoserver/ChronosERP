@@ -122,6 +122,7 @@ public class PdvVendaControll extends AbstractControll<PdvVendaCabecalho> implem
         }
 
         if (dataFinal != null) {
+            dataFinal = DateUtils.truncate(dataFinal, Calendar.DATE);
             dataFinal = DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataFinal, 23), 59), 59);
             dataModel.getFiltros().add(new Filtro("dataHoraVenda", Filtro.MENOR_OU_IGUAL, dataFinal));
         }
