@@ -18,6 +18,7 @@ import com.chronos.transmissor.exception.EmissorException;
 import com.chronos.transmissor.infra.enuns.LocalDestino;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 import com.outjected.email.api.SendFailedException;
+import org.apache.commons.lang3.time.DateUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.SortOrder;
@@ -146,10 +147,13 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
 
         if (dataInicial != null) {
+            dataInicial = DateUtils.truncate(dataInicial, Calendar.DATE);
             dataModel.getFiltros().add(new Filtro("dataHoraEmissao", Filtro.MAIOR_OU_IGUAL, dataInicial));
         }
 
         if (dataFinal != null) {
+            dataFinal = DateUtils.truncate(dataFinal, Calendar.DATE);
+            dataFinal = DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataFinal, 23), 59), 59);
             dataModel.getFiltros().add(new Filtro("dataHoraEmissao", Filtro.MENOR_OU_IGUAL, dataFinal));
         }
 
