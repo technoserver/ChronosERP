@@ -135,6 +135,7 @@
                     <div style="display: flex">
                         <p:commandLink style="font-size: 20px;color: #00acac"
                                        rendered="#{osAberturaControll.objeto.valorTotal.signum() gt 0 }"
+                                       id="btn-add-desconto"
                                        update=":formOutrasTelas5:panelOutrasTelas5"
                                        oncomplete="PF('dialogOutrasTelas5').show()"
                         >
@@ -143,8 +144,9 @@
 
                         <p:commandLink style="margin-left:5px;font-size: 20px;color: #00acac"
                                        action="#{osAberturaControll.removerDesconto}"
+                                       id="btn-remover-desconto"
                                        process="@this"
-                                       update=":formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:panel-desconto,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico"
+                                       update=":formCentro:telaDetalhe:panel-valores,:formCentro:telaDetalhe:tabViewDetalhes:form-dados-principais:panel-desconto,:formCentro:telaDetalhe:tabViewDetalhes:dataTableOsProdutoServico"
                                        rendered="#{osAberturaControll.objeto.valorTotalDesconto.signum() gt 0 }">
                             <i class="fa fa-minus-circle"></i>
                         </p:commandLink>

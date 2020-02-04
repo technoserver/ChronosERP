@@ -648,24 +648,24 @@
 
                 <p:outputPanel id="panelOutrasTelas5">
                     <div class="ui-g">
-                        <div class="form-group text-right">
-                            <div class="text-right">
-                                <label class="control-label col-sm-4">Desonto em</label>
-                            </div>
 
-                            <div class="col-sm-3">
-                                <h:selectOneMenu id="tipo-desconto" styleClass="form-control"
-                                                 value="#{ osAberturaControll.tipoDesconto}">
-                                    <f:selectItem itemLabel="R$" itemValue="RS"/>
-                                    <f:selectItem itemLabel="%" itemValue="%"/>
-                                </h:selectOneMenu>
-                            </div>
+                        <div class="col-sm-4 text-right">
+                            <label class="control-label ">Desonto em</label>
+                        </div>
 
-                            <div class="col-sm-5">
+                        <div class="col-sm-3">
+                            <h:selectOneMenu id="tipo-desconto" styleClass="form-control"
+                                             value="#{ osAberturaControll.tipoDesconto}">
+                                <f:selectItem itemLabel="R$" itemValue="RS"/>
+                                <f:selectItem itemLabel="%" itemValue="%"/>
+                            </h:selectOneMenu>
+                        </div>
+
+                        <div class="col-sm-5">
                                 <p:inputNumber id="valor-desconto" required="true"
                                                value="#{ osAberturaControll.desconto}"/>
                             </div>
-                        </div>
+
                     </div>
 
                 </p:outputPanel>
