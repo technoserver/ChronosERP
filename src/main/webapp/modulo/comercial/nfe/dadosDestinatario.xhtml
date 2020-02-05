@@ -11,7 +11,7 @@
         <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
                           label="Selecione o Cliente:"
                           id="pessoaCliente"
-                          itemLabel="#{nome}"
+                          itemLabel="#{objeto.nome}"
                           controller="#{nfeCabecalhoControll}"
                           completeMethod="getListaPessoaCliente"
                           nomeAtributo="#{nfeCabecalhoControll.pessoaCliente}"
@@ -48,7 +48,7 @@
             <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
                             idComponente="nfeDestinatarioLogradouro" label="Logradouro"
                             nomeAtributo="#{nfeCabecalhoControll.destinatario.logradouro}"
-                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            tamanhoMaximo="60"/>
             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                             idComponente="nfeDestinatarioNumero" label="Numero"
                             nomeAtributo="#{nfeCabecalhoControll.destinatario.numero}"
@@ -76,12 +76,12 @@
             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
                             idComponente="nfeDestinatarioUf" label="UF"
                             nomeAtributo="#{nfeCabecalhoControll.destinatario.uf}"
-                            tamanhoMaximo="2" somenteLeitura="true"/>
+                            tamanhoMaximo="2"/>
             <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
                             idComponente="nfeDestinatarioNomeMunicipio"
                             label="Nome Municipio"
                             nomeAtributo="#{nfeCabecalhoControll.destinatario.nomeMunicipio}"
-                            tamanhoMaximo="60" somenteLeitura="true"/>
+                            tamanhoMaximo="60"/>
             <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
                               idComponente="nfeDestinatarioCodigoMunicipio"
                               label="Codigo Municipio"
