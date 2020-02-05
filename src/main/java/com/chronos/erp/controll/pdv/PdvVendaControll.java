@@ -40,6 +40,8 @@ public class PdvVendaControll extends AbstractControll<PdvVendaCabecalho> implem
     @Inject
     private Repository<NfeCabecalho> nfeRepository;
     @Inject
+    private Repository<Cliente> clienteRepository;
+    @Inject
     private VendaPdvService service;
     @Inject
     private NfeService nfeService;
@@ -293,6 +295,25 @@ public class PdvVendaControll extends AbstractControll<PdvVendaCabecalho> implem
                 throw new RuntimeException("Erro ao gerar Cupom", ex);
             }
         }
+    }
+
+    public List<Cliente> getListCliente(String nome) {
+        List<Cliente> list = new ArrayList<>();
+        try {
+
+            List<Filtro> filtros = new ArrayList<>();
+
+            filtros.add(new Filtro("pessoa.nome", Filtro.LIKE, nome));
+
+            int id = org.apache.commons.lang3.StringUtils.isNumeric(nome) ? Integer.parseInt(nome) : 0;
+
+            filtros.add(new Filtro(Filtro.OR, "id", Filtro.IGUAL, id));
+
+            list = clienteRepository.getEntitys(Cliente.class, filtros, new Object[]{"pessoa.id", "pessoa.nome"});
+        } catch (Exception ex) {
+
+        }
+        return list;
     }
 
     @Override
