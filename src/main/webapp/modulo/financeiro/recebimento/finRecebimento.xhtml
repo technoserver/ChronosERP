@@ -370,7 +370,7 @@
             >
 
                 <p:outputPanel id="panelFinChequeRecebido">
-                    <div class="row">
+                    <div class="ui-g">
                         <erp:autoComplete styleClass="col-xs-12 col-sm-8 col-md-8"
                                           label="Cliente"
                                           itemLabel="#{objeto.nome}"
@@ -389,7 +389,7 @@
                                         nomeAtributo="#{finRecebimentoControll.finChequeRecebido.cpfCnpj}"
                                         tamanhoMaximo="14" somenteLeitura="true"/>
                     </div>
-                    <div class="row">
+                    <div class="ui-g">
                         <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
                                         idComponente="finChequeRecebidoCodigoBanco" label="Codigo Banco"
                                         nomeAtributo="#{finRecebimentoControll.finChequeRecebido.codigoBanco}"
@@ -405,7 +405,7 @@
                                         tamanhoMaximo="20" requerido="true"/>
 
                     </div>
-                    <div class="row">
+                    <div class="ui-g">
                         <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-3"
                                           idComponente="finChequeRecebidoNumero" label="Numero"
                                           nomeAtributo="#{finRecebimentoControll.finChequeRecebido.numero}"
