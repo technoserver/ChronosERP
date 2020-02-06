@@ -184,7 +184,7 @@ public class GeraXMLEnvio {
         infoEvento.setTpAmb(eventoDTO.getAmbiente());
         infoEvento.setCNPJ(eventoDTO.getCnpj());
 
-        infoEvento.setDhEvento(XmlUtil.dataNfe());
+        infoEvento.setDhEvento(FormatValor.getInstance().formatarDataNota(new Date()));
         infoEvento.setTpEvento(ConstantesNFe.EVENTO.CANCELAR);
         infoEvento.setNSeqEvento("1");
         infoEvento.setVerEvento(ConstantesNFe.VERSAO.EVENTO_CANCELAMENTO);

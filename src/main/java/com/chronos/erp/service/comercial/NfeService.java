@@ -903,7 +903,7 @@ public class NfeService implements Serializable {
             throw new ChronosException("Não foram definido itens para emissão da NFe");
         }
         for (NfeDetalhe item : nfe.getListaNfeDetalhe()) {
-
+            cfop = item.getCfop();
             if (item.getCfop() == null) {
                 throw new ChronosException("CFOP para " + item.getProduto().getNome() + " não definido");
             }
@@ -912,7 +912,7 @@ public class NfeService implements Serializable {
                     && destino == LocalDestino.INTERESTADUAL
                     && nfe.getTipoOperacao() == 1
                     && item.getCfop() < 6000) {
-                throw new ChronosException("CFOP :" + cfop + " inválido para operações Interestadual");
+                throw new ChronosException("CFOP : " + cfop + " inválido para operações Interestadual");
             }
         }
 

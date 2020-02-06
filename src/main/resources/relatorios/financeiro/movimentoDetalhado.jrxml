@@ -6,9 +6,9 @@
               rightMargin="20" topMargin="20" bottomMargin="20" uuid="2cfba9f1-7bf2-4757-a73b-733d72c7a189">
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="ERP Light"/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-    <property name="ireport.zoom" value="2.0"/>
+    <property name="ireport.zoom" value="4.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="287"/>
+    <property name="ireport.y" value="48"/>
     <style name="teste"/>
     <style name="table">
         <box>
@@ -203,7 +203,7 @@ GROUP BY codigo, descricao;]]>
             and v.status_venda in('E','F','D','DP')
 UNION
             SELECT
-            concat(m.id , f.id , 3) AS id,
+            concat(m.id , f.id , 4) AS id,
             '',
             m.id AS idmovimento,
             o.id AS idorigem,
@@ -229,7 +229,7 @@ UNION
             and (o.status = 13 or o.status = 12)
 	  union
             select
-                concat(m.id , r.id , 4) AS id,
+                concat(m.id , r.id , 5) AS id,
                 o.login as operador,
                 m.id AS idmovimento,
                 r.id AS idorigem,
@@ -325,7 +325,7 @@ UNION
                     <reportElement x="477" y="0" width="78" height="12" uuid="7a4d7bee-1a35-4f3c-b812-9293c09873fe">
                         <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
                     </reportElement>
-                    <textElement>
+                    <textElement textAlignment="Right">
                         <font fontName="Times New Roman" size="8" isBold="true"/>
                     </textElement>
                     <textFieldExpression><![CDATA[$V{valor1}]]></textFieldExpression>
@@ -337,14 +337,14 @@ UNION
     <title>
         <band height="79" splitType="Stretch">
             <textField>
-                <reportElement x="1" y="0" width="277" height="14" uuid="e07572b9-ce6a-43a6-9598-9f3565923c54"/>
+                <reportElement x="0" y="0" width="278" height="14" uuid="e07572b9-ce6a-43a6-9598-9f3565923c54"/>
                 <textElement>
                     <font fontName="Times New Roman" size="12" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{empresa_razao_social}]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="2" y="14" width="36" height="14" uuid="6f31fe7e-9a4f-4212-a621-ac55adb533cc"/>
+                <reportElement x="0" y="14" width="38" height="14" uuid="6f31fe7e-9a4f-4212-a621-ac55adb533cc"/>
                 <textElement>
                     <font fontName="Times New Roman" isBold="true"/>
                 </textElement>
@@ -462,7 +462,7 @@ UNION
             </staticText>
             <staticText>
                 <reportElement x="442" y="0" width="35" height="12" uuid="4ea3f32b-1305-4417-b53d-d03f4f61cd7a"/>
-                <textElement>
+                <textElement textAlignment="Center">
                     <font fontName="Times New Roman" size="10" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Tipo]]></text>
