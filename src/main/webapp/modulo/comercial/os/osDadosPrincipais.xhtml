@@ -234,6 +234,7 @@
             <div class="#{(osAberturaControll.objeto.status eq 11 or osAberturaControll.objeto.status eq 12 or osAberturaControll.objeto.status eq 13)? 'col-xs-12 col-sm-12 col-md-12':'col-xs-6 col-sm-6 col-md-6'} text-center">
                 <p:commandButton value="Cancelar" styleClass="default-btn"
                                  immediate="true"
+                                 process="@this"
                                  action="#{osAberturaControll.voltar}"
                                  update=":formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe,navegacao,:formCentro:mensagem">
 
