@@ -269,7 +269,9 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
             }
 
             setObjeto(nfeService.salvar(getObjeto(), tipoPagamento));
-
+            if (getObjeto().getDestinatario() != null) {
+                destinatario = getObjeto().getDestinatario();
+            }
             Mensagem.addInfoMessage("NFe salva com sucesso");
             setTelaGrid(false);
             dadosSalvos = true;
