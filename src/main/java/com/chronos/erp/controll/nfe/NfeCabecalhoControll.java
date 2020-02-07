@@ -335,6 +335,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
                 PrimeFaces.current().executeScript("PF('dialogNfeDetalhe').hide();");
                 PrimeFaces.current().executeScript("PF('dialogSupervisor').show();");
             } else {
+                nfeDetalhe = nfeDetalheService.realizaCalculosItem(nfeDetalhe, getObjeto().getTributOperacaoFiscal(), destinatario);
                 NfeCabecalho nfe = nfeDetalheService.addProduto(getObjeto(), nfeDetalhe);
                 setObjeto(nfe);
                 setObjeto(nfeService.atualizarTotais(getObjeto()));
