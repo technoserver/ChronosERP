@@ -657,7 +657,7 @@ public class NfeService implements Serializable {
 
         HashMap parametrosRelatorio = new HashMap<>();
         String camLogo = configuracao.getCaminhoLogomarca();
-        camLogo = new File(camLogo).exists() ? camLogo : context.getRealPath("resources/images/logo_nfe_peq.png");
+        camLogo = !StringUtils.isEmpty(camLogo) && new File(camLogo).exists() ? camLogo : context.getRealPath("resources/images/logo_nfe_peq.png");
         Image logo = new ImageIcon(camLogo).getImage();
         // logo.flush();
         parametrosRelatorio.put("Logo", logo);
@@ -912,7 +912,12 @@ public class NfeService implements Serializable {
                     && destino == LocalDestino.INTERESTADUAL
                     && nfe.getTipoOperacao() == 1
                     && item.getCfop() < 6000) {
-                throw new ChronosException("CFOP : " + cfop + " inválido para operações Interestadual");
+                throw new ChronosException("CFOP : " + cfop + "para o produto: " + item.getNomeProduto() + " inválido para operações Interestadual");
+            } else if (nfe.getFinalidadeEmissao().equals(FinalidadeEmissao.NORMAL.getCodigo())
+                    && destino == LocalDestino.INTERNA
+                    && nfe.getTipoOperacao() == 1
+                    && item.getCfop() > 5999) {
+                throw new ChronosException("CFOP : " + cfop + "para o produto: " + item.getNomeProduto() + " inválido para operações Interestadual");
             }
         }
 
