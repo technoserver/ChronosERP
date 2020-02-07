@@ -405,7 +405,7 @@ public class NfeService implements Serializable {
 
                 NfeDuplicata duplicata = new NfeDuplicata();
                 duplicata.setNfeCabecalho(nfe);
-                duplicata.setNumero(String.format("%3s", String.valueOf(i + 1)));
+                duplicata.setNumero(String.format("%3s", (i + 1)));
 
                 if (i > 0) {
                     firstVencimento.add(Calendar.DAY_OF_MONTH, intervaloParcelas);
@@ -434,8 +434,8 @@ public class NfeService implements Serializable {
         numFatura = org.apache.commons.lang3.StringUtils.leftPad(numFatura, 3, "0");
         fatura.setNumero(numFatura);
         fatura.setValorLiquido(nfe.getValorTotal());
-
-        fatura.setValorOriginal(nfe.getValorTotalProdutos());
+        BigDecimal total = Biblioteca.soma(nfe.getValorTotalProdutos(), nfe.getValorServicos());
+        fatura.setValorOriginal(total);
         fatura.setValorDesconto(nfe.getValorDesconto());
 
 
