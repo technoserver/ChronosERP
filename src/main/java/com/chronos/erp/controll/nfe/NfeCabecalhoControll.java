@@ -269,7 +269,9 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
             }
 
             setObjeto(nfeService.salvar(getObjeto(), tipoPagamento));
-
+            if (getObjeto().getDestinatario() != null) {
+                destinatario = getObjeto().getDestinatario();
+            }
             Mensagem.addInfoMessage("NFe salva com sucesso");
             setTelaGrid(false);
             dadosSalvos = true;
@@ -335,6 +337,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
                 PrimeFaces.current().executeScript("PF('dialogNfeDetalhe').hide();");
                 PrimeFaces.current().executeScript("PF('dialogSupervisor').show();");
             } else {
+                nfeDetalhe = nfeDetalheService.realizaCalculosItem(nfeDetalhe, getObjeto().getTributOperacaoFiscal(), destinatario);
                 NfeCabecalho nfe = nfeDetalheService.addProduto(getObjeto(), nfeDetalhe);
                 setObjeto(nfe);
                 setObjeto(nfeService.atualizarTotais(getObjeto()));

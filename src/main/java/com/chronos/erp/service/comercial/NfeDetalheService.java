@@ -13,13 +13,12 @@ public class NfeDetalheService extends AbstractService<NfeDetalhe> {
 
     public NfeCabecalho addProduto(NfeCabecalho nfe, NfeDetalhe item) throws Exception {
 
-        realizaCalculosItem(item);
+
         Optional<NfeDetalhe> itemNfeOptional = buscarItemPorProduto(nfe, item.getProduto());
         if (itemNfeOptional.isPresent()) {
             NfeDetalhe nfeDetalhe = itemNfeOptional.get();
             nfeDetalhe.setQuantidadeComercial(nfeDetalhe.getQuantidadeComercial().add(item.getQuantidadeComercial()));
             nfeDetalhe.setQuantidadeTributavel(nfeDetalhe.getQuantidadeTributavel().add(item.getQuantidadeTributavel()));
-
 
         } else {
             nfe.getListaNfeDetalhe().add(0, item);
@@ -33,7 +32,7 @@ public class NfeDetalheService extends AbstractService<NfeDetalhe> {
         return verificarRestricao();
     }
 
-    private NfeDetalhe realizaCalculosItem(NfeDetalhe item) throws Exception {
+    public NfeDetalhe realizaCalculosItem(NfeDetalhe item, TributOperacaoFiscal operacaoFiscal, NfeDestinatario destinatario) throws Exception {
 
         if (item.getProduto().getNcm() == null) {
             throw new ChronosException("Não existe NCM para o produto informado. Operação não realizada.");
@@ -46,7 +45,7 @@ public class NfeDetalheService extends AbstractService<NfeDetalhe> {
         item.setValorUnitarioTributavel(valorVenda);
         item.setEntraTotal(1);
         item.pegarInfoProduto();
-        item = definirTributacao(item, item.getNfeCabecalho().getTributOperacaoFiscal(), item.getNfeCabecalho().getDestinatario());
+        item = definirTributacao(item, operacaoFiscal, destinatario);
 
         return item;
     }

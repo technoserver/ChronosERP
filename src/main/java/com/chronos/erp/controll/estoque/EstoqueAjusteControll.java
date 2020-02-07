@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Named
 @ViewScoped
@@ -132,7 +133,14 @@ public class EstoqueAjusteControll implements Serializable {
         List<Produto> lista = new ArrayList<>();
 
         try {
-            lista = produtoRepository.getEntitys(Produto.class, "nome", nome, new Object[]{"nome"});
+            List<Filtro> filtros = new ArrayList<>();
+            filtros.add(new Filtro("empresa.id", Filtro.IGUAL, empresa.getId()));
+            filtros.add(new Filtro("produto.nome", Filtro.LIKE, nome));
+            List<EmpresaProduto> prods = repository.getEntitys(EmpresaProduto.class, filtros, new Object[]{"produto.id", "produto.nome"});
+
+
+            lista = prods.stream().map(p -> p.getProduto()).collect(Collectors.toList());
+
         } catch (Exception e) {
             // e.printStackTrace();
         }
