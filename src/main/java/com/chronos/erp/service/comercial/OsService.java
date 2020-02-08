@@ -271,9 +271,9 @@ public class OsService extends AbstractService<OsAbertura> {
             Optional<OsFormaPagamento> formaPagamento = os.getListaFormaPagamento().stream().filter(f -> f.equals("14")).findFirst();
 
             if (formaPagamento.isPresent()) {
-                formaPagamento.get().getFormaPagamento().getCondicao();
+                formaPagamento.get().getFormaPagamento().getCondicoesPagamento();
                 finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
-                        formaPagamento.get().getFormaPagamento().getCondicao(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, os.getEmpresa());
+                        formaPagamento.get().getFormaPagamento().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, os.getEmpresa());
             }
 
             formaPagamento = os.getListaFormaPagamento().stream().filter(p -> p.getFormaPagamento().getForma().equals("05")).findFirst();

@@ -78,8 +78,7 @@ public class NfceControll extends NfeBaseControll implements Serializable {
         dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
         dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
         dataModel.addFiltro("codigoModelo", "65", Filtro.IGUAL);
-        dataModel.addFiltro("statusNota", StatusTransmissao.AUTORIZADA.getCodigo(), Filtro.IGUAL);
-
+        dataModel.getFiltros().add(new Filtro("statusNota", StatusTransmissao.AUTORIZADA.getCodigo(), StatusTransmissao.CANCELADA.getCodigo()));
 
         if (!StringUtils.isEmpty(numero)) {
             dataModel.addFiltro("numero", numero, Filtro.LIKE);
