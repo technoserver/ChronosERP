@@ -52,7 +52,7 @@
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{cc.attrs.controller.objetoSelecionado}"/>
                                 </p:commandLink>
-                                &nbsp;
+
                                 <p:commandLink title="Excluir" action="#{cc.attrs.controller.remover()}"
                                                update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,#{cc.attrs.telaDetalhePadrao?':formCentro:telaDetalhe:outputPanelDetalhe':':formCentro:outputPanelDetalhe'}"
                                                process="#{cc.attrs.idDataTable}"

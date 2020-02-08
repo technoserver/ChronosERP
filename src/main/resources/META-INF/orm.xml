@@ -80,7 +80,7 @@
             n.webservice_ambiente,
             n.observacao_padrao
             from certificado_configuracao c, nfe_configuracao n
-            where c.id_empresa = ?1
+            where c.id_empresa = ?1 and n.id_empresa = ?1
         </query>
 
     </named-native-query>
