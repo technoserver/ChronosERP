@@ -1,9 +1,13 @@
 
 package com.chronos.erp.modelo.entidades;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -31,10 +35,8 @@ public class FormaPagamento implements Serializable {
     @JoinColumn(name = "ID_TIPO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private TipoPagamento tipoPagamento;
-    @Transient
+    @Column(name = "QTD_PARCELA")
     private int qtdParcelas;
-    @Transient
-    private CondicoesPagamento condicao;
     @JoinColumn(name = "ID_CONDICAO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private CondicoesPagamento condicoesPagamento;
@@ -116,14 +118,6 @@ public class FormaPagamento implements Serializable {
         this.tipoPagamento = tipoPagamento;
     }
 
-    public CondicoesPagamento getCondicao() {
-        return condicao;
-    }
-
-    public void setCondicao(CondicoesPagamento condicao) {
-        this.condicao = condicao;
-    }
-
     public int getQtdParcelas() {
         return qtdParcelas;
     }
@@ -142,5 +136,28 @@ public class FormaPagamento implements Serializable {
 
     public BigDecimal getValorTotal() {
         return this.valor.subtract(Optional.ofNullable(this.troco).orElse(BigDecimal.ZERO));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FormaPagamento that = (FormaPagamento) o;
+        return qtdParcelas == that.qtdParcelas &&
+                Objects.equals(forma, that.forma) &&
+                Objects.equals(valor, that.valor) &&
+                Objects.equals(cartaoTipoIntegracao, that.cartaoTipoIntegracao) &&
+                Objects.equals(cnpjOperadoraCartao, that.cnpjOperadoraCartao) &&
+                Objects.equals(bandeira, that.bandeira) &&
+                Objects.equals(numeroAutorizacao, that.numeroAutorizacao) &&
+                Objects.equals(estorno, that.estorno) &&
+                Objects.equals(troco, that.troco) &&
+                Objects.equals(tipoPagamento, that.tipoPagamento) &&
+                Objects.equals(condicoesPagamento, that.condicoesPagamento);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(forma, valor, cartaoTipoIntegracao, cnpjOperadoraCartao, bandeira, numeroAutorizacao, estorno, troco, tipoPagamento, qtdParcelas, condicoesPagamento);
     }
 }

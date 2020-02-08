@@ -603,7 +603,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
                 formaPagamento.getFormaPagamento().setEstorno("N");
 
                 if (tipoPagamento.getGeraParcelas().equals("S")) {
-                    formaPagamento.getFormaPagamento().setCondicao(condicaoPagamento);
+                    formaPagamento.getFormaPagamento().setCondicoesPagamento(condicaoPagamento);
                 }
 
                 if (formaPagamento.getFormaPagamento().getForma().equals("03") || formaPagamento.getFormaPagamento().getForma().equals("04")) {
