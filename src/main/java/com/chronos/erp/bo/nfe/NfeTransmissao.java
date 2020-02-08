@@ -116,9 +116,6 @@ public class NfeTransmissao {
         iniciarConfiguracoes();
 
         TRetConsSitNFe retorno = Nfe.consultaXml(chave, modelo == ModeloDocumento.NFE ? ConstantesNFe.NFE : ConstantesNFe.NFCE);
-        System.out.println("Status:" + retorno.getCStat());
-        System.out.println("Motivo:" + retorno.getXMotivo());
-        System.out.println("Data:" + retorno.getProtNFe().getInfProt().getDhRecbto());
 
         return retorno;
 
