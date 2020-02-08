@@ -43,7 +43,7 @@
                 <h:selectOneMenu class="form-control" id="codigoModeloNfe"
                                  value="#{nfeCabecalhoControll.objeto.codigoModelo}">
                     <f:selectItems value="#{nfeCabecalhoControll.codigoModeloNfe}"/>
-                    <p:ajax process="@this"/>
+                    <p:ajax process="@this" update="formCentro:telaDetalhe:tabNfe:cmp-serie:nfeCabecalhoSerie"/>
                 </h:selectOneMenu>
             </div>
 
@@ -75,9 +75,11 @@
 
 
             <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                            id="cmp-serie"
                             idComponente="nfeCabecalhoSerie" label="Serie"
                             nomeAtributo="#{nfeCabecalhoControll.objeto.serie}"
-                            tamanhoMaximo="3" somenteLeitura="true"/>
+                            requerido="#{nfeCabecalhoControll.objeto.codigoModelo eq '65'}"
+                            tamanhoMaximo="3" somenteLeitura="#{nfeCabecalhoControll.objeto.codigoModelo eq '55'}"/>
 
 
             <erp:campoData styleClass="col-xs-12 col-sm-2 col-md-2"
