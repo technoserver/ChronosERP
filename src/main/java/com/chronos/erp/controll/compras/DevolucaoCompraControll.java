@@ -176,6 +176,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         List<Filtro> filtro = new LinkedList<>();
         filtro.add(new Filtro("chaveAcesso", chave));
         filtro.add(new Filtro("tipoOperacao", 0));
+        filtro.add(new Filtro("empresa.id", empresa.getId()));
 
         NfeCabecalho nfe = dao.get(NfeCabecalho.class, filtro, new Object[]{"numero"});
 

@@ -55,8 +55,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +64,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.*;
 
 import static java.nio.file.FileSystems.getDefault;
@@ -630,7 +627,6 @@ public class NfeService implements Serializable {
         File filePdf = new File(arquivoPdf);
 
 
-
         if (filePdf.exists()) {
             FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         } else {
@@ -658,10 +654,10 @@ public class NfeService implements Serializable {
         HashMap parametrosRelatorio = new HashMap<>();
         String camLogo = configuracao.getCaminhoLogomarca();
         camLogo = !StringUtils.isEmpty(camLogo) && new File(camLogo).exists() ? camLogo : context.getRealPath("resources/images/logo_nfe_peq.png");
-        Image logo = new ImageIcon(camLogo).getImage();
+
         // logo.flush();
-        parametrosRelatorio.put("Logo", logo);
-        parametrosRelatorio.put("danfe_logo", logo);
+        parametrosRelatorio.put("Logo", camLogo);
+        parametrosRelatorio.put("logo", camLogo);
         String expressaoDataSource = "";
         String nomeRelatorioJasper = "";
 

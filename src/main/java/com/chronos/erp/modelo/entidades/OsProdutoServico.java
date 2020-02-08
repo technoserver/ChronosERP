@@ -8,6 +8,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Optional;
 
 @Entity
@@ -172,4 +173,18 @@ public class OsProdutoServico implements Serializable {
         return "OsProdutoServico{" + "id=" + id + '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OsProdutoServico that = (OsProdutoServico) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(tipo, that.tipo) &&
+                Objects.equals(produto, that.produto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, tipo, produto);
+    }
 }
