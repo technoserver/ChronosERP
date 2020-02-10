@@ -78,7 +78,7 @@ public class TransferenciaService implements Serializable {
 
             NfeCabecalho nfe = transferenciaToNfe.gerarNFe();
             nfe.setTransferencia(objeto);
-            ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
+            ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), nfe.getSerie(), true);
             nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
             StatusTransmissao status = nfeService.transmitirNFe(nfe, true);
 

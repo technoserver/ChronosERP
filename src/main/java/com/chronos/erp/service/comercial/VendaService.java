@@ -179,7 +179,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             nfe = vendaNfe.gerarNfe();
 
             nfe.setVendaCabecalho(venda);
-            ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
+            ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), nfe.getSerie(), true);
             nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
             nfe.setCsc(configuracaoEmissorDTO.getCsc());
             nfe.setTokenCsc(configuracaoEmissorDTO.getTokenCsc());
@@ -271,7 +271,7 @@ public class VendaService extends AbstractService<VendaCabecalho> {
 
             nfe.setCodigoModelo(ModeloDocumento.NFE.getCodigo().toString());
 
-            ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
+            ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), nfe.getSerie(), true);
 
             nfe.setNaturezaOperacao(operacaoFiscal.getDescricao());
             nfe.setTributOperacaoFiscal(operacaoFiscal);

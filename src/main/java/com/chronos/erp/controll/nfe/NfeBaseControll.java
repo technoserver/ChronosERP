@@ -36,7 +36,7 @@ public class NfeBaseControll extends AbstractControll<NfeCabecalho> implements S
         try {
 
             if (iniciarConfiguracao) {
-                service.instanciarConfNfe(empresa, ModeloDocumento.NFE);
+                service.instanciarConfNfe(empresa, ModeloDocumento.NFE, getObjeto().getSerie());
             }
 
             StatusTransmissao status = service.transmitirNFe(getObjeto(), baixaEstoque);
@@ -66,7 +66,7 @@ public class NfeBaseControll extends AbstractControll<NfeCabecalho> implements S
     public void cancelaNfe(boolean iniciarConfiguracao) {
         try {
             if (iniciarConfiguracao) {
-                service.instanciarConfNfe(empresa, ModeloDocumento.NFE);
+                service.instanciarConfNfe(empresa, ModeloDocumento.NFE, getObjeto().getSerie());
             }
             getObjeto().setJustificativaCancelamento(justificativa);
 
@@ -90,7 +90,7 @@ public class NfeBaseControll extends AbstractControll<NfeCabecalho> implements S
     public void cartaCorrecao(boolean iniciarConfiguracao) {
         try {
             if (iniciarConfiguracao) {
-                service.instanciarConfNfe(empresa, ModeloDocumento.NFE);
+                service.instanciarConfNfe(empresa, ModeloDocumento.NFE, getObjeto().getSerie());
             }
             service.cartaCorrecao(getObjeto(), justificativa);
         } catch (Exception ex) {

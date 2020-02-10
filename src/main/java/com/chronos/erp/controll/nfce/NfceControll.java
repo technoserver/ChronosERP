@@ -126,7 +126,7 @@ public class NfceControll extends NfeBaseControll implements Serializable {
         try {
 
             NfeCabecalho nfe = nfeRepositoy.getRemusoCupom(getObjetoSelecionado().getId());
-            service.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
+            service.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), nfe.getSerie());
             service.danfe(nfe);
 
         } catch (Exception ex) {
