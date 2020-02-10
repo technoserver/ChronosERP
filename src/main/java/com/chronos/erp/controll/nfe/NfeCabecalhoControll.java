@@ -206,7 +206,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
             NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
             tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getTipoPagamento();
             setObjeto(nfe);
-            nfeService.instanciarConfNfe(empresa, ModeloDocumento.NFE);
+            nfeService.instanciarConfNfe(empresa, nfe.getModeloDocumento(), nfe.getSerie());
             tipoPagamento = nfeService.instanciarFormaPagamento(getObjeto());
 
             destinatario = nfe.getDestinatario();

@@ -108,7 +108,7 @@
             select
             c.caminho,
             c.senha,
-            n.caminho_logomarca,
+            ne.caminho_logomarca,
             n.caminho_schemas,
             n.webservice_uf,
             n.webservice_ambiente,
@@ -117,9 +117,9 @@
             cx.codigo as serie,
             n.mensagem_cupom,
             n.observacao_padrao
-            from certificado_configuracao c, pdv_configuracao n
+            from certificado_configuracao c,nfe_configuracao ne, pdv_configuracao n
             inner join pdv_caixa cx on cx.id = n.id_pdv_caixa
-            where cx.web = 'S' and c.id_empresa = ?1
+            where c.id_empresa = ?1 and n.id_empresa = ?1 and ne.id_empresa =?1 and cx.codigo = ?2
         </query>
 
     </named-native-query>

@@ -286,7 +286,7 @@ public class PdvVendaControll extends AbstractControll<PdvVendaCabecalho> implem
         try {
 
             NfeCabecalho nfe = nfeRepository.get(getObjetoSelecionado().getIdnfe(), NfeCabecalho.class);
-            nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), false);
+            nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), nfe.getSerie(), false);
             nfeService.danfe(nfe);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {

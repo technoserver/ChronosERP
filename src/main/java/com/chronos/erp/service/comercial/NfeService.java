@@ -119,18 +119,18 @@ public class NfeService implements Serializable {
         configuracoes = FacesUtil.getConfEmissor();
     }
 
-    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo, boolean buscar) throws ChronosException, CertificadoException {
+    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo, String serie, boolean buscar) throws ChronosException, CertificadoException {
 
         if (buscar) {
             configuracoes = null;
         }
-        return instanciarConfNfe(empresa, modelo);
+        return instanciarConfNfe(empresa, modelo, serie);
     }
 
-    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo) throws ChronosException, CertificadoException {
+    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo, String serie) throws ChronosException, CertificadoException {
 
         try {
-            configuracao = nfeConfiguracaoService.instanciarConfNfe(empresa, modelo);
+            configuracao = nfeConfiguracaoService.instanciarConfNfe(empresa, modelo, serie);
 
 
             if (configuracoes == null) {
@@ -177,7 +177,7 @@ public class NfeService implements Serializable {
 
     public void instanciarDadosConfiguracoes(NfeCabecalho nfe) throws ChronosException, CertificadoException {
         ModeloDocumento modelo = nfe.getModeloDocumento();
-        instanciarConfNfe(nfe.getEmpresa(), modelo);
+        instanciarConfNfe(nfe.getEmpresa(), modelo, nfe.getSerie());
         nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO.getCodigo() : FormatoImpressaoDanfe.DANFE_NFCE.getCodigo());
         if (configuracao != null) {
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
@@ -279,12 +279,12 @@ public class NfeService implements Serializable {
     }
 
     public String inutilizarNFe(Empresa empresa, ModeloDocumento modelo, Integer serie, Integer numInicial, Integer numFinal, String justificativa) throws Exception {
-
-        NotaFiscalTipo notaFiscalTipo = documentoFiscalService.getNotaFicalTipo(modelo, org.apache.commons.lang3.StringUtils.leftPad(serie.toString(), 3, '0'), empresa);
+        String strSerie = org.apache.commons.lang3.StringUtils.leftPad(serie.toString(), 3, '0');
+        NotaFiscalTipo notaFiscalTipo = documentoFiscalService.getNotaFicalTipo(modelo, strSerie, empresa);
         if (notaFiscalTipo == null) {
             throw new ChronosException("Não foi informando numeração para o modelo " + modelo);
         }
-        instanciarConfNfe(empresa, modelo);
+        instanciarConfNfe(empresa, modelo, strSerie);
         TRetInutNFe.InfInut infRetorno = NfeTransmissao.getInstance().inutilizarNFe(serie, numInicial, numFinal, modelo, empresa.getCnpj(), justificativa);
 
         String resultado = "";
@@ -463,13 +463,6 @@ public class NfeService implements Serializable {
         fc.responseComplete();
     }
 
-    public void verificarStatusNota(NfeCabecalho nfe) throws Exception {
-        if (StatusTransmissao.isAutorizado(nfe.getStatusNota())) {
-            throw new ChronosException("Esta NF-e já foi autorizada. Operação não permitida ");
-        } else if (StatusTransmissao.isCancelada(nfe.getStatusNota())) {
-            throw new ChronosException("Esta NF-e já foi autorizada. Operação não permitida ");
-        }
-    }
 
     public String consultarStatusNfe(ModeloDocumento modelo) throws Exception {
 
@@ -631,9 +624,9 @@ public class NfeService implements Serializable {
             FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         } else {
             if (configuracao == null) {
-                configuracao = nfeConfiguracaoService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
+                configuracao = nfeConfiguracaoService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), nfe.getSerie());
                 if (configuracao == null) {
-                    throw new ChronosException("COnfigurações para NFe não definida");
+                    throw new ChronosException("Configurações para NFe não definida");
                 }
             }
 
@@ -656,7 +649,7 @@ public class NfeService implements Serializable {
         camLogo = !StringUtils.isEmpty(camLogo) && new File(camLogo).exists() ? camLogo : context.getRealPath("resources/images/logo_nfe_peq.png");
 
         // logo.flush();
-        parametrosRelatorio.put("Logo", camLogo);
+
         parametrosRelatorio.put("logo", camLogo);
         String expressaoDataSource = "";
         String nomeRelatorioJasper = "";
@@ -814,7 +807,7 @@ public class NfeService implements Serializable {
             throw new ChronosException("NF-e náo autorizada. Cancelamento náo permitido!");
         }
 
-        instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento());
+        instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), nfe.getSerie());
         EventoDTO evento = new EventoDTO();
         evento.setProtocolo(nfe.getNumeroProtocolo());
         evento.setMotivo(nfe.getJustificativaCancelamento());

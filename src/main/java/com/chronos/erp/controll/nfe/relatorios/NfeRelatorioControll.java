@@ -82,7 +82,7 @@ public class NfeRelatorioControll extends AbstractRelatorioControll implements S
             nfes = repository.getEntitys(NfeCabecalho.class, filtros, 0, new Object[]{"empresa.id", "empresa.cnpj", "digitoChaveAcesso", "chaveAcesso", "qrcode", "codigoModelo", "statusNota"});
 
             if (nfes.size() > 0) {
-                service.instanciarConfNfe(empresa, ModeloDocumento.getByCodigo(Integer.valueOf(modelo)));
+                service.instanciarConfNfe(empresa, ModeloDocumento.getByCodigo(Integer.valueOf(modelo)), "001");
                 service.baixaXml(nfes, nomeArquivo);
             } else {
                 Mensagem.addInfoMessage((modelo.equals("55") ? "NFe " : "NFCe") + " não localizada");
