@@ -178,13 +178,12 @@ public class OsProdutoServico implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OsProdutoServico that = (OsProdutoServico) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(tipo, that.tipo) &&
+        return Objects.equals(tipo, that.tipo) &&
                 Objects.equals(produto, that.produto);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, tipo, produto);
+        return Objects.hash(tipo, produto);
     }
 }

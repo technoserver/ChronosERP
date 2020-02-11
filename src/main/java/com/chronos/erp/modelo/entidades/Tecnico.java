@@ -53,9 +53,9 @@ public class Tecnico implements Serializable {
 
     }
 
-    public Tecnico(Integer id, String nome, BigDecimal comissao) {
+    public Tecnico(Integer id, Integer idcolaborador, String nome, BigDecimal comissao) {
         this.id = id;
-        this.nome = nome;
+        this.colaborador = new Colaborador(idcolaborador, 0, nome);
         this.comissao = comissao;
     }
 

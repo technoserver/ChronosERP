@@ -32,7 +32,7 @@
             <p:autoComplete id="tecnico"
                             value="#{osAberturaControll.objeto.tecnico}"
                             completeMethod="#{osAberturaControll.getListaTecnico}"
-                            var="tecnico" itemLabel="#{tecnico.nome}"
+                            var="tecnico" itemLabel="#{tecnico.colaborador.pessoa.nome}"
                             itemValue="#{tecnico}"
                             converter="defaultConverter"
                             forceSelection="true" minQueryLength="3" maxResults="10"
