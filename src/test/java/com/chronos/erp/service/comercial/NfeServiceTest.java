@@ -66,7 +66,7 @@ public class NfeServiceTest {
     public void devemos_garantir_gerar_dados_padroes_para_nfe() throws Exception {
 
 
-        when(configuracaoService.instanciarConfNfe(empresa, ModeloDocumento.NFE, "001")).thenReturn(configuracao);
+        when(configuracaoService.instanciarConfNfe(empresa, ModeloDocumento.NFE, null)).thenReturn(configuracao);
 
         NfeCabecalho nfe = service.dadosPadroes(empresa, ModeloDocumento.NFE);
         assertNotNull(nfe);
@@ -78,7 +78,7 @@ public class NfeServiceTest {
 
     @Test
     public void devemos_garantir_que_seja_informado_o_cfop_conforme_operacao() throws ChronosException, CertificadoException {
-        when(configuracaoService.instanciarConfNfe(empresa, ModeloDocumento.NFE, "001")).thenReturn(configuracao);
+        when(configuracaoService.instanciarConfNfe(empresa, ModeloDocumento.NFE, null)).thenReturn(configuracao);
 
         NfeCabecalho nfe = service.dadosPadroes(empresa, ModeloDocumento.NFE);
 
