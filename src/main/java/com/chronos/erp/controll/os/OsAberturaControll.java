@@ -655,7 +655,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     public List<Tecnico> getListaTecnico(String nome) {
         List<Tecnico> tecnicos = new ArrayList<>();
         try {
-            tecnicos = tecnicoRepository.getEntitys(Tecnico.class, "colaborador.pessoa.nome", nome, new Object[]{"colaborador.pessoa.nome", "comissao"});
+            tecnicos = tecnicoRepository.getEntitys(Tecnico.class, "colaborador.pessoa.nome", nome, new Object[]{"colaborador.id", "colaborador.pessoa.nome", "comissao"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
