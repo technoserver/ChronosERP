@@ -3,6 +3,7 @@ package com.chronos.erp.modelo.entidades;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 
 @Entity
@@ -52,15 +53,15 @@ public class OsFormaPagamento implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof OsFormaPagamento)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         OsFormaPagamento that = (OsFormaPagamento) o;
-
-        return getId() != null ? getId().equals(that.getId()) : that.getId() != null;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(osAbertura, that.osAbertura) &&
+                Objects.equals(formaPagamento, that.formaPagamento);
     }
 
     @Override
     public int hashCode() {
-        return getId() != null ? getId().hashCode() : 0;
+        return Objects.hash(id, osAbertura, formaPagamento);
     }
 }

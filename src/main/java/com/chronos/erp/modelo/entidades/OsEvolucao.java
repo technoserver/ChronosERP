@@ -100,16 +100,16 @@ public class OsEvolucao implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OsEvolucao that = (OsEvolucao) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(dataRegistro, that.dataRegistro) &&
+        return Objects.equals(dataRegistro, that.dataRegistro) &&
                 Objects.equals(horaRegistro, that.horaRegistro) &&
                 Objects.equals(responsavel, that.responsavel) &&
-                Objects.equals(observacao, that.observacao);
+                Objects.equals(observacao, that.observacao) &&
+                Objects.equals(enviarEmail, that.enviarEmail);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, dataRegistro, horaRegistro, responsavel, observacao);
+        return Objects.hash(dataRegistro, horaRegistro, responsavel, observacao, enviarEmail);
     }
 
     @Override

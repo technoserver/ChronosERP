@@ -1,6 +1,5 @@
 package com.chronos.erp.service.configuracao;
 
-import br.com.samuelweb.certificado.exception.CertificadoException;
 import com.chronos.erp.dto.ConfiguracaoEmissorDTO;
 import com.chronos.erp.dto.ConfiguracaoNfeDTO;
 import com.chronos.erp.dto.ConfiguracaoPdvDTO;
@@ -27,20 +26,20 @@ public class NfeConfiguracaoService implements Serializable {
     private Repository<PdvConfiguracao> pdvConfiguracaoRepository;
 
 
-    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo) throws ChronosException, CertificadoException {
+    public ConfiguracaoEmissorDTO instanciarConfNfe(Empresa empresa, ModeloDocumento modelo, String serie) throws ChronosException {
 
         ConfiguracaoEmissorDTO configuracao;
 
-         if (modelo == ModeloDocumento.NFE) {
-             ConfiguracaoNfeDTO configuracaoNfeDTO = repository.getNamedQuery(ConfiguracaoNfeDTO.class, "Nfe.configuracao", empresa.getId());
+        if (modelo == ModeloDocumento.NFE) {
+            ConfiguracaoNfeDTO configuracaoNfeDTO = repository.getNamedQuery(ConfiguracaoNfeDTO.class, "Nfe.configuracao", empresa.getId());
 
-             if (configuracaoNfeDTO == null) {
-                 throw new ChronosException("É preciso definir as configuracoes para NF-e");
-             }
-             configuracao = new ConfiguracaoEmissorDTO(configuracaoNfeDTO);
+            if (configuracaoNfeDTO == null) {
+                throw new ChronosException("É preciso definir as configuracoes para NF-e");
+            }
+            configuracao = new ConfiguracaoEmissorDTO(configuracaoNfeDTO);
 
          } else {
-             ConfiguracaoPdvDTO configuracaoPdvDTO = repository.getNamedQuery(ConfiguracaoPdvDTO.class, "Pdv.configuracao", empresa.getId());
+            ConfiguracaoPdvDTO configuracaoPdvDTO = repository.getNamedQuery(ConfiguracaoPdvDTO.class, "Pdv.configuracao", empresa.getId(), serie);
 
             if (configuracaoPdvDTO == null) {
                 throw new ChronosException("É preciso definir as configuracoes para NF-e");

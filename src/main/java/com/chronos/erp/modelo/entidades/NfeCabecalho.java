@@ -422,7 +422,7 @@ public class NfeCabecalho implements Serializable {
     }
 
 
-    public NfeCabecalho(Integer id, Integer idempresa, String cnpjEmpresa, String digitoChaveAcesso, String chaveAcesso, String qrcode, String codigoModelo, Integer statusNota) {
+    public NfeCabecalho(Integer id, Integer idempresa, String cnpjEmpresa, String digitoChaveAcesso, String chaveAcesso, String qrcode, String codigoModelo, String serie, Integer statusNota) {
         this.id = id;
         this.qrcode = qrcode;
         this.digitoChaveAcesso = digitoChaveAcesso;
@@ -430,6 +430,7 @@ public class NfeCabecalho implements Serializable {
         this.empresa = new Empresa(idempresa);
         this.empresa.setCnpj(cnpjEmpresa);
         this.codigoModelo = codigoModelo;
+        this.serie = serie;
         this.statusNota = statusNota;
 
     }

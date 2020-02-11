@@ -18,7 +18,6 @@ import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -180,11 +179,6 @@ public class NfeUtil extends ManualCDILookup implements Serializable {
         nfe.setValorTotalTributosMunicipais(impostoMunicipal);
         nfe.setValorTotalTributos(valorTotalTributos);
 
-        String msg = "Trib. Aprox. Federal R$ " + new DecimalFormat("#,###,##0.00").format(impostoFederal)
-                + " e R$ " + new DecimalFormat("#,###,##0.00").format(impostoEstadual) + " Estadual "
-                + "e R$ " + new DecimalFormat("#,###,##0.00").format(impostoMunicipal) + " Municipal Fonte IBPT";
-
-        nfe.setInformacoesAddContribuinte(msg);
     }
 
     public NfeEmitente getEmitente(Empresa empresa) {

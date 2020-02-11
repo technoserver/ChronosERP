@@ -107,12 +107,16 @@ public class OsAberturaEquipamento implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         OsAberturaEquipamento that = (OsAberturaEquipamento) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(numeroSerie, that.numeroSerie);
+                Objects.equals(numeroSerie, that.numeroSerie) &&
+                Objects.equals(modelo, that.modelo) &&
+                Objects.equals(tipoCobertura, that.tipoCobertura) &&
+                Objects.equals(osEquipamento, that.osEquipamento) &&
+                Objects.equals(tipoAtendimento, that.tipoAtendimento);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, numeroSerie);
+        return Objects.hash(id, numeroSerie, modelo, tipoCobertura, osEquipamento, tipoAtendimento);
     }
 
     @Override

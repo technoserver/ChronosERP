@@ -211,7 +211,7 @@ public class OsService extends AbstractService<OsAbertura> {
         VendaToNFe vendaNfe = new VendaToNFe(modelo, os);
         nfe = vendaNfe.gerarNfe();
         nfe.setOs(os);
-        ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), true);
+        ConfiguracaoEmissorDTO configuracaoEmissorDTO = nfeService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), nfe.getSerie(), true);
         nfe.setSerie(configuracaoEmissorDTO.getSerie());
         nfe.setAmbiente(configuracaoEmissorDTO.getWebserviceAmbiente());
         nfe.setCsc(configuracaoEmissorDTO.getCsc());
