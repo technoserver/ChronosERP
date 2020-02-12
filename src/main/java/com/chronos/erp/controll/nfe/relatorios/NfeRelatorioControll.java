@@ -79,7 +79,7 @@ public class NfeRelatorioControll extends AbstractRelatorioControll implements S
             filtros.add(new Filtro(Filtro.AND, "codigoModelo", Filtro.IGUAL, modelo));
             filtros.add(new Filtro(Filtro.AND, "empresa.id", Filtro.IGUAL, empresa.getId()));
             filtros.add(new Filtro("statusNota", StatusTransmissao.AUTORIZADA.getCodigo(), StatusTransmissao.CANCELADA.getCodigo()));
-            nfes = repository.getEntitys(NfeCabecalho.class, filtros, 0, new Object[]{"empresa.id", "empresa.cnpj", "digitoChaveAcesso", "chaveAcesso", "qrcode", "codigoModelo", "statusNota"});
+            nfes = repository.getEntitys(NfeCabecalho.class, filtros, 0, new Object[]{"empresa.id", "empresa.cnpj", "digitoChaveAcesso", "chaveAcesso", "qrcode", "codigoModelo", "serie", "statusNota"});
 
             if (nfes.size() > 0) {
                 service.instanciarConfNfe(empresa, ModeloDocumento.getByCodigo(Integer.valueOf(modelo)), "001");
