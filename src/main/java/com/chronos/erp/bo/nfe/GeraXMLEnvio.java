@@ -1063,11 +1063,10 @@ public class GeraXMLEnvio {
 
     private InfAdic getInfAdic() {
         InfAdic infAdic = new TNFe.InfNFe.InfAdic();
-        infAdic.setInfAdFisco(nfeCabecalho.getInformacoesAddFisco() == null ? null
-                : nfeCabecalho.getInformacoesAddFisco().equals("") ? null : nfeCabecalho.getInformacoesAddFisco());
-        infAdic.setInfCpl(nfeCabecalho.getInformacoesAddContribuinte() == null ? null
-                : nfeCabecalho.getInformacoesAddContribuinte().equals("") ? null
-                : nfeCabecalho.getInformacoesAddContribuinte().trim());
+        String infoFisco = StringUtils.isEmpty(nfeCabecalho.getInformacoesAddFisco()) ? null : nfeCabecalho.getInformacoesAddFisco().trim();
+        String infoContribuinte = StringUtils.isEmpty(nfeCabecalho.getInformacoesAddContribuinte()) ? null : nfeCabecalho.getInformacoesAddContribuinte().trim();
+        infAdic.setInfAdFisco(infoFisco);
+        infAdic.setInfCpl(infoContribuinte);
         return infAdic;
     }
 
