@@ -249,8 +249,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
     @Override
     public void salvar() {
         try {
-            String str = getObjeto().getInformacoesAddContribuinte() + " " + observacao;
-            getObjeto().setInformacoesAddContribuinte(str);
+
             getObjeto().setNaturezaOperacao(getObjeto().getTributOperacaoFiscal().getDescricao());
 
 

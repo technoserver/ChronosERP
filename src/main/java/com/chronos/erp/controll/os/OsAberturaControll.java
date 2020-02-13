@@ -123,7 +123,7 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
         super.init();
 
         status = getOsStatus().entrySet().stream()
-                .filter(x -> !x.getValue().equals(11) || !x.getValue().equals(12) || !x.getValue().equals(13))
+                .filter(x -> (!x.getValue().equals(11) && !x.getValue().equals(12) && !x.getValue().equals(13)))
                 .collect(Collectors.toMap(x -> x.getKey(), x -> x.getValue()));
 
         this.podeAlterarPreco = FacesUtil.getUsuarioSessao().getAdministrador().equals("S")
@@ -290,12 +290,29 @@ public class OsAberturaControll extends AbstractControll<OsAbertura> implements 
     @Override
     public void salvar() {
         try {
-            osService.salvar(getObjeto());
+            OsAbertura os = osService.salvar(getObjeto());
+            setObjeto(os);
             setTelaGrid(false);
             Mensagem.addInfoMessage("OS salvar com sucesso");
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Erro ao salvar o servico", e);
+        }
+    }
+
+    public void duplicarOS() {
+        try {
+            OsAbertura os = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+
+            osService.duplicarOS(os);
+            Mensagem.addInfoMessage("OS duplicada com sucesso.");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Ocorreu um erro!", ex);
+                FacesContext.getCurrentInstance().validationFailed();
+            } else {
+                throw new RuntimeException("erro ao duplicar os", ex);
+            }
         }
     }
 
