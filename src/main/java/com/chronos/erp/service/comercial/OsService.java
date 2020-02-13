@@ -21,11 +21,13 @@ import com.chronos.erp.util.Constants;
 import com.chronos.erp.util.jpa.Transactional;
 import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import org.springframework.beans.BeanUtils;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -47,6 +49,9 @@ public class OsService extends AbstractService<OsAbertura> {
     private MovimentoService movimentoService;
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
+
+    @Inject
+    private Repository<OsConfiguracao> osConfiguracaoRepository;
 
     @Inject
     private Repository<CondicoesParcelas> parcelasRepository;
@@ -298,13 +303,11 @@ public class OsService extends AbstractService<OsAbertura> {
         }
 
         os.setDataFim(new Date());
-        os = repository.saveAndFlush(os);
+        os.setStatus(12);
+        repository.atualizar(os);
 
         auditoriaService.gerarLog(AcaoLog.ENCERRAR_OS, "Encerrado OS " + os.getNumero(), "OS");
 
-        os.setStatus(12);
-
-        repository.atualizar(os);
 
     }
 
@@ -417,6 +420,50 @@ public class OsService extends AbstractService<OsAbertura> {
         }
 
         return Biblioteca.soma(comissaoTecnico, comissaoVendedor);
+    }
+
+    @Transactional
+    public void duplicarOS(OsAbertura os) {
+        OsAbertura novaOs = new OsAbertura();
+
+        BeanUtils.copyProperties(os, novaOs, "id");
+        for (OsProdutoServico osProdutoServico : novaOs.getListaOsProdutoServico()) {
+            osProdutoServico.setId(null);
+            osProdutoServico.setOsAbertura(novaOs);
+        }
+        for (OsFormaPagamento osFormaPagamento : novaOs.getListaFormaPagamento()) {
+            osFormaPagamento.setId(null);
+            osFormaPagamento.setOsAbertura(novaOs);
+        }
+        for (OsEvolucao osEvolucao : novaOs.getListaOsEvolucao()) {
+            osEvolucao.setId(null);
+            osEvolucao.setOsAbertura(novaOs);
+        }
+        for (OsAberturaEquipamento i : novaOs.getListaOsAberturaEquipamento()) {
+            i.setId(null);
+            i.setOsAbertura(novaOs);
+        }
+
+        novaOs.setStatus(1);
+        novaOs.setDataInicio(new Date());
+        novaOs.setHoraInicio(new SimpleDateFormat("HH:mm:ss").format(new Date()));
+        novaOs.setDataFim(null);
+        novaOs.setMovimento(null);
+        novaOs.setIdnfeCabecalho(null);
+
+        OsConfiguracao configuracao = osConfiguracaoRepository.get(OsConfiguracao.class, "empresa.id", os.getEmpresa().getId());
+
+        if (configuracao != null) {
+            novaOs.setObservacaoAbertura(configuracao.getObservacaoPadrao());
+            int diasUteis = configuracao.getQtdDiasUteisParaEntrega() == null ? 0 : configuracao.getQtdDiasUteisParaEntrega();
+            Date date = Biblioteca.addDiasUteis(new Date(), diasUteis);
+            novaOs.setDataPrevisao(date);
+        }
+
+        novaOs = repository.atualizar(novaOs);
+        novaOs.setNumero("OS" + new DecimalFormat("0000000").format(novaOs.getId()));
+        repository.atualizar(novaOs);
+
     }
 
 

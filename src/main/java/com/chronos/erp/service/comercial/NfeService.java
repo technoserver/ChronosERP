@@ -181,7 +181,7 @@ public class NfeService implements Serializable {
         nfe.setFormatoImpressaoDanfe(modelo == ModeloDocumento.NFE ? FormatoImpressaoDanfe.DANFE_RETRATO.getCodigo() : FormatoImpressaoDanfe.DANFE_NFCE.getCodigo());
         if (configuracao != null) {
             nfe.setAmbiente(configuracao.getWebserviceAmbiente());
-            if (StringUtils.isEmpty(nfe.getInformacoesAddContribuinte())) {
+            if (StringUtils.isEmpty(nfe.getInformacoesAddContribuinte()) && !StringUtils.isEmpty(configuracao.getObservacaoPadrao())) {
                 nfe.setInformacoesAddContribuinte(configuracao.getObservacaoPadrao());
             }
             nfe.setCsc(configuracao.getCsc());

@@ -101,7 +101,7 @@
                                          class="form-control"
                         >
                             <f:selectItem itemValue="#{0}" itemLabel="Todos"/>
-                            <f:selectItems value="#{osAberturaControll.status}"/>
+                            <f:selectItems value="#{osAberturaControll.osStatus}"/>
                         </h:selectOneMenu>
 
                         <p:commandButton value="Pesquisar"
@@ -177,6 +177,15 @@
                             <f:setPropertyActionListener value="#{row}"
                                                          target="#{osAberturaControll.objetoSelecionado}"/>
                             <p:confirm header="Confirmar" message="Deseja excluir ?"/>
+                        </p:menuitem>
+
+                        <p:menuitem value="Duplicar"
+                                    action="#{osAberturaControll.duplicarOS()}"
+                                    process="dataTableOsAbertura"
+                                    update=":formCentro:growl,:formCentro:telaGrid:outputPanelGrid,:formCentro:telaDetalhe:outputPanelDetalhe"
+                        >
+                            <f:setPropertyActionListener value="#{row}"
+                                                         target="#{osAberturaControll.objetoSelecionado}"/>
                         </p:menuitem>
 
 
