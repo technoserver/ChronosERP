@@ -17,7 +17,7 @@ public class PdvSuprimento implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_SUPRIMENTO")
     private Date dataSuprimento;
     @Column(name = "VALOR")

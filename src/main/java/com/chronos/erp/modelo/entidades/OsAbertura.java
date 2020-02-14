@@ -32,7 +32,7 @@ public class OsAbertura implements Serializable {
     private String numero;
     @Column(name = "tipo_atendimento")
     private String tipoAtendimento;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_INICIO")
     private Date dataInicio;
     @Column(name = "HORA_INICIO")
@@ -42,7 +42,7 @@ public class OsAbertura implements Serializable {
     private Date dataPrevisao;
     @Column(name = "HORA_PREVISAO")
     private String horaPrevisao;
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATA_FIM")
     private Date dataFim;
     @Column(name = "HORA_FIM")
