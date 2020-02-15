@@ -5,7 +5,7 @@
               name="relacaoProduto" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="3.0"/>
-    <property name="ireport.x" value="0"/>
+    <property name="ireport.x" value="27"/>
     <property name="ireport.y" value="0"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -131,6 +131,16 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
     <field name="empresa_endereco_fone" class="java.lang.String"/>
     <field name="empresa_endereco_uf" class="java.lang.String"/>
     <field name="empresa_email" class="java.lang.String"/>
+    <variable name="custoTotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{custo_unitario}]]></variableExpression>
+    </variable>
+    <variable name="estoqueTotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression>
+            <![CDATA[$P{estoqueVerificado} ? $F{estoque_verificado} : $F{quantidade_estoque}]]></variableExpression>
+    </variable>
+    <variable name="valorVendaTotal" class="java.math.BigDecimal" calculation="Sum">
+        <variableExpression><![CDATA[$F{valor_venda}]]></variableExpression>
+    </variable>
     <background>
         <band splitType="Stretch"/>
     </background>
@@ -363,7 +373,7 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
     </title>
     <detail>
         <band height="12" splitType="Stretch">
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement style="dadosDetail" x="37" y="0" width="41" height="12"
                                uuid="2db3732e-8bce-4fbb-b6cd-f77e90c3d519"/>
                 <textElement verticalAlignment="Middle">
@@ -371,7 +381,7 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
                 </textElement>
                 <textFieldExpression><![CDATA[$F{gtin}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isStretchWithOverflow="true">
                 <reportElement style="dadosDetail" x="79" y="0" width="135" height="12"
                                uuid="bffa8ff5-e215-4d3d-bb9c-214da15ea2a9"/>
                 <textElement verticalAlignment="Middle">
@@ -380,7 +390,7 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
                 <textFieldExpression>
                     <![CDATA[$P{tipoDescricao}.equals("N") ? $F{nome} : $F{descricao_pdv}]]></textFieldExpression>
             </textField>
-            <textField>
+            <textField isBlankWhenNull="true">
                 <reportElement style="dadosDetail" x="213" y="0" width="41" height="12"
                                uuid="c457a37b-4b7b-4d22-a43c-9faa50a02146"/>
                 <textElement verticalAlignment="Middle">
@@ -437,4 +447,40 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
             </textField>
         </band>
     </detail>
+    <summary>
+        <band height="11">
+            <staticText>
+                <reportElement style="tituloDetail" x="0" y="1" width="37" height="10"
+                               uuid="862f914a-8092-4c87-8151-21d4c361346a"/>
+                <textElement>
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Totais]]></text>
+            </staticText>
+            <line>
+                <reportElement x="0" y="0" width="555" height="1" uuid="06466902-943e-4402-ba16-6544b6f9baa2"/>
+            </line>
+            <textField pattern="#,##0.00" isBlankWhenNull="true">
+                <reportElement x="463" y="0" width="58" height="10" uuid="aa3de944-e005-4e3d-9569-45e6c46e8025"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{valorVendaTotal}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00" isBlankWhenNull="true">
+                <reportElement x="405" y="0" width="58" height="10" uuid="45d331b8-2d8e-4d34-ba6a-5d797351f81a"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{custoTotal}]]></textFieldExpression>
+            </textField>
+            <textField pattern="#,##0.00" isBlankWhenNull="true">
+                <reportElement x="521" y="1" width="34" height="10" uuid="68d79d2a-fc8c-4d1b-ba8d-c1776b1bd5b9"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Times New Roman" size="8" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{estoqueTotal}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
 </jasperReport>
