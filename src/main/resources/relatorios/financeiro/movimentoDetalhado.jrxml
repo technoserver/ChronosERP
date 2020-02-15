@@ -8,7 +8,7 @@
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="ireport.zoom" value="4.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="48"/>
+    <property name="ireport.y" value="192"/>
     <style name="teste"/>
     <style name="table">
         <box>
@@ -204,11 +204,11 @@ GROUP BY codigo, descricao;]]>
 UNION
             SELECT
             concat(m.id , f.id , 4) AS id,
-            '',
+            op.login as operador,
             m.id AS idmovimento,
             o.id AS idorigem,
             o.data_fim AS data_hora,
-            ('OS n°' || o.id) || '(OS)' AS descricao,
+            ('OS n°' || o.id) || ' - ' || p.nome AS descricao,
             f.valor-f.troco,
             t.codigo AS codigo_forma_pagamento,
             t.descricao AS forma_pagamento,
@@ -222,7 +222,10 @@ UNION
             FROM pdv_movimento m
             INNER JOIN os_abertura o ON o.id_movimento = m.id
             INNER JOIN os_forma_pagamento f ON f.id_os_abertura = o.id
+            INNER JOIN cliente c ON o.id_cliente = c.id
+            INNER JOIN pessoa p ON c.id_pessoa = p.id
             INNER JOIN tipo_pagamento t ON f.id_tipo_pagamento = t.id
+            INNER JOIN pdv_operador op ON op.id = m.id_pdv_operador
             INNER JOIN empresa empresa ON m.id_empresa = empresa.id
             INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
             WHERE m.id =  $P{idmovimento}
