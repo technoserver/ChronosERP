@@ -1,5 +1,7 @@
 package com.chronos.erp.dto;
 
+import java.util.Date;
+
 public class ClienteResumDTO {
 
     private String nome;
@@ -15,6 +17,7 @@ public class ClienteResumDTO {
     private String cep;
     private String fone;
     private String email;
+    private Date dataNascimento;
 
     public ClienteResumDTO() {
         tipo = "F";
@@ -122,5 +125,13 @@ public class ClienteResumDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Date getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 }

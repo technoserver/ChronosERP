@@ -91,6 +91,7 @@ public class CadastroRapidoClienteControll implements Serializable {
                 pessoa.getPessoaFisica().setPessoa(pessoa);
                 pessoa.getPessoaFisica().setEstadoCivil(new EstadoCivil(1));
                 pessoa.getPessoaFisica().setCpf(cliente.getCpfCnpj());
+                pessoa.getPessoaFisica().setDataNascimento(cliente.getDataNascimento());
             } else {
                 pessoa.setPessoaFisica(new PessoaFisica());
                 pessoa.getPessoaJuridica().setPessoa(pessoa);
