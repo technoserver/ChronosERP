@@ -143,6 +143,12 @@
                                    nomeAtributo="#{cadastroRapidoClienteControll.cliente.cpfCnpj}"
 
                     />
+
+                    <erp:campoData nomeAtributo="#{cadastroRapidoClienteControll.cliente.dataNascimento}"
+                                   label="Data Nascimento"
+                                   idComponente="dataNascimento"
+                                   rendered="#{cadastroRapidoClienteControll.cliente.tipo eq 'F'}"
+                                   styleClass="col-xs-6 col-sm-2 col-md-2"/>
                 </h:panelGroup>
             </p:outputPanel>
             <hr/>
