@@ -21,6 +21,7 @@ import com.chronos.erp.util.Constants;
 import com.chronos.erp.util.jpa.Transactional;
 import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 
 import javax.inject.Inject;
@@ -39,6 +40,9 @@ public class OsService extends AbstractService<OsAbertura> {
     private Repository<OsAbertura> repository;
     @Inject
     private Repository<NfeCabecalho> nfeRepository;
+    @Inject
+    private Repository<OrcamentoCabecalho> orcamentoRepository;
+
     @Inject
     private EstoqueRepository estoqueRepositoy;
 
@@ -77,6 +81,15 @@ public class OsService extends AbstractService<OsAbertura> {
             throw new ChronosException("Cliente com restrinções de bloqueio");
         }
 
+        if (os.getOrcamentoCabecalho() != null) {
+            OrcamentoCabecalho orcamento = os.getOrcamentoCabecalho();
+            String codigo = "#PE";
+            codigo += StringUtils.leftPad(orcamento.getId().toString(), 3, "0");
+            orcamento.setCodigo(codigo);
+            orcamento.setTipo("P");
+            orcamento.setSituacao("F");
+            orcamentoRepository.atualizar(orcamento);
+        }
 
         if (os.isNovo()) {
             repository.salvar(os);
@@ -85,6 +98,8 @@ public class OsService extends AbstractService<OsAbertura> {
         } else {
             os = repository.atualizar(os);
         }
+
+
         return os;
     }
 
