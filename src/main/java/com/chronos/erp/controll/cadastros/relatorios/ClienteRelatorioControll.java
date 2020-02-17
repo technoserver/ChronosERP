@@ -6,6 +6,7 @@ import org.springframework.util.StringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -22,6 +23,8 @@ public class ClienteRelatorioControll extends AbstractRelatorioControll implemen
     private String cliente;
     private String tipo;
     private String cpfCnpj;
+    private Date dataInicial;
+    private Date dataFinal;
 
 
     public void executarRelatorio() {
@@ -47,6 +50,21 @@ public class ClienteRelatorioControll extends AbstractRelatorioControll implemen
         String caminhoRelatorio = "/relatorios/cadastros";
         String nomeRelatorio = "relacaoCliente.jasper";
         String nome = "relacaoClientes." + tipoRelatorio;
+        executarRelatorio(caminhoRelatorio, nomeRelatorio, nome);
+
+    }
+
+    public void gerarRelacaoAniversariantes() {
+
+        parametros = new HashMap<>();
+
+        parametros.put("periodoInicial", dataInicial);
+        parametros.put("peridoFinal", dataFinal);
+        parametros.put("idempresa", empresa.getId());
+
+        String caminhoRelatorio = "/relatorios/cadastros";
+        String nomeRelatorio = "relacaoAniversariante.jasper";
+        String nome = "aniversariantes." + tipoRelatorio;
         executarRelatorio(caminhoRelatorio, nomeRelatorio, nome);
 
     }
@@ -90,5 +108,21 @@ public class ClienteRelatorioControll extends AbstractRelatorioControll implemen
 
     public void setCpfCnpj(String cpfCnpj) {
         this.cpfCnpj = cpfCnpj;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
     }
 }
