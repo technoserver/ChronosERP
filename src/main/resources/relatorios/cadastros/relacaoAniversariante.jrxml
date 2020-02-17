@@ -5,8 +5,8 @@
               name="relacaoCliente" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="4.0"/>
-    <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="290"/>
+    <property name="ireport.x" value="1040"/>
+    <property name="ireport.y" value="168"/>
     <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
     <style name="dadosDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isBold="false"
@@ -25,38 +25,11 @@
         <defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
     </parameter>
     <queryString>
-        <![CDATA[SELECT c.id,
-    ep.id_empresa,
-    c.id_operacao_fiscal,
-    c.id_pessoa,
-    c.id_atividade_for_cli,
-    c.id_situacao_for_cli,
-    c.desde,
-    c.data_cadastro,
-    c.data_alteracao,
-    c.observacao,
-    c.conta_tomador,
-    c.gera_financeiro,
-    c.indicador_preco,
-    c.porcento_desconto,
-    c.forma_desconto,
-    c.limite_credito,
-    c.tipo_frete,
-    e.logradouro,
-    e.numero,
-    e.complemento,
-    e.bairro,
-    e.cidade,
-    e.cep,
-    e.municipio_ibge,
-    e.uf,
+        <![CDATA[SELECT
+    c.id,
     e.fone,
     p.nome,
-    p.tipo,
     p.email,
-    p.site,
-    pf.cpf AS cpf,
-    pf.rg AS rg,
     pf.data_nascimento,
     empresa.razao_social AS empresa_razao_social,
     empresa.nome_fantasia AS empresa_nome_fantasia,
@@ -72,49 +45,20 @@
     empresa_endereco.fone AS empresa_endereco_fone,
     empresa_endereco.uf AS empresa_endereco_uf,
     empresa.email AS empresa_email
-
-   FROM john.pessoa p
-   INNER JOIN john.pessoa_fisica pf ON pf.id_pessoa = p.id
-   INNER JOIN john.empresa_pessoa ep ON ep.id_pessoa = p.id
-   INNER JOIN john.cliente c ON c.id_pessoa = p.id
-   INNER JOIN john.pessoa_endereco e ON e.id_pessoa = p.id
-   INNER JOIN john.empresa empresa ON ep.id_empresa = empresa.id
-   INNER JOIN john.empresa_endereco empresa_endereco ON empresa_endereco.id_empresa = empresa.id
+   FROM pessoa p
+   INNER JOIN pessoa_fisica pf ON pf.id_pessoa = p.id
+   INNER JOIN empresa_pessoa ep ON ep.id_pessoa = p.id
+   INNER JOIN cliente c ON c.id_pessoa = p.id
+   INNER JOIN pessoa_endereco e ON e.id_pessoa = p.id
+   INNER JOIN empresa empresa ON ep.id_empresa = empresa.id
+   INNER JOIN empresa_endereco empresa_endereco ON empresa_endereco.id_empresa = empresa.id
   WHERE p.cliente = 'S' AND e.principal = 'S' and ep.id_empresa = $P{idempresa} and pf.data_nascimento between $P{periodoInicial} and $P{peridoFinal} and empresa_endereco.principal = 'S'
 order by pf.data_nascimento]]>
     </queryString>
     <field name="id" class="java.lang.Integer"/>
-    <field name="id_empresa" class="java.lang.Integer"/>
-    <field name="id_operacao_fiscal" class="java.lang.Integer"/>
-    <field name="id_pessoa" class="java.lang.Integer"/>
-    <field name="id_atividade_for_cli" class="java.lang.Integer"/>
-    <field name="id_situacao_for_cli" class="java.lang.Integer"/>
-    <field name="desde" class="java.sql.Date"/>
-    <field name="data_cadastro" class="java.sql.Date"/>
-    <field name="data_alteracao" class="java.sql.Timestamp"/>
-    <field name="observacao" class="java.lang.String"/>
-    <field name="conta_tomador" class="java.lang.String"/>
-    <field name="gera_financeiro" class="java.lang.String"/>
-    <field name="indicador_preco" class="java.lang.String"/>
-    <field name="porcento_desconto" class="java.math.BigDecimal"/>
-    <field name="forma_desconto" class="java.lang.String"/>
-    <field name="limite_credito" class="java.math.BigDecimal"/>
-    <field name="tipo_frete" class="java.lang.String"/>
-    <field name="logradouro" class="java.lang.String"/>
-    <field name="numero" class="java.lang.String"/>
-    <field name="complemento" class="java.lang.String"/>
-    <field name="bairro" class="java.lang.String"/>
-    <field name="cidade" class="java.lang.String"/>
-    <field name="cep" class="java.lang.String"/>
-    <field name="municipio_ibge" class="java.lang.Integer"/>
-    <field name="uf" class="java.lang.String"/>
     <field name="fone" class="java.lang.String"/>
     <field name="nome" class="java.lang.String"/>
-    <field name="tipo" class="java.lang.String"/>
     <field name="email" class="java.lang.String"/>
-    <field name="site" class="java.lang.String"/>
-    <field name="cpf" class="java.lang.String"/>
-    <field name="rg" class="java.lang.String"/>
     <field name="data_nascimento" class="java.sql.Date"/>
     <field name="empresa_razao_social" class="java.lang.String"/>
     <field name="empresa_nome_fantasia" class="java.lang.String"/>
@@ -134,14 +78,14 @@ order by pf.data_nascimento]]>
         <band splitType="Stretch"/>
     </background>
     <title>
-        <band height="124" splitType="Stretch">
+        <band height="116" splitType="Stretch">
             <image hAlign="Center" vAlign="Middle" isUsingCache="true" onErrorType="Blank">
                 <reportElement positionType="Float" mode="Transparent" x="2" y="0" width="150" height="79"
                                uuid="39763776-99a0-40da-b698-701f2a065525"/>
                 <imageExpression><![CDATA[$F{empresa_imagem_logotipo}]]></imageExpression>
             </image>
             <line>
-                <reportElement x="0" y="123" width="555" height="1" uuid="84907098-40f5-401a-b232-5785f0e8faa0"/>
+                <reportElement x="0" y="114" width="555" height="1" uuid="84907098-40f5-401a-b232-5785f0e8faa0"/>
             </line>
             <textField>
                 <reportElement x="278" y="0" width="277" height="14" uuid="ef82db32-1726-4cac-9ee3-442ef2dd7348"/>
@@ -249,21 +193,13 @@ order by pf.data_nascimento]]>
                 <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="12" isBold="true"/>
                 </textElement>
-                <text><![CDATA[Relação de Clientes]]></text>
+                <text><![CDATA[Relação de Aniversariantes]]></text>
             </staticText>
             <line>
                 <reportElement x="0" y="100" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
             </line>
             <staticText>
-                <reportElement style="tituloDetail" x="0" y="100" width="80" height="12"
-                               uuid="2b1bbd4e-8290-490d-8723-c21a3392d452"/>
-                <textElement>
-                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
-                </textElement>
-                <text><![CDATA[CPF/CNPJ]]></text>
-            </staticText>
-            <staticText>
-                <reportElement style="tituloDetail" x="80" y="100" width="177" height="12"
+                <reportElement style="tituloDetail" x="0" y="102" width="278" height="12"
                                uuid="f5973606-9026-4baa-be89-2713b17d1885"/>
                 <textElement>
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
@@ -271,108 +207,61 @@ order by pf.data_nascimento]]>
                 <text><![CDATA[Cliente]]></text>
             </staticText>
             <staticText>
-                <reportElement style="tituloDetail" x="260" y="100" width="46" height="12"
-                               uuid="8eabd8f1-d6d0-4981-9d73-31704d612298"/>
-                <textElement>
-                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
-                </textElement>
-                <text><![CDATA[Endereço]]></text>
-            </staticText>
-            <staticText>
-                <reportElement style="tituloDetail" x="414" y="100" width="46" height="12"
-                               uuid="3118f1af-af06-4225-8fde-56748d1ba72a"/>
-                <textElement textAlignment="Left">
-                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
-                </textElement>
-                <text><![CDATA[Bairro]]></text>
-            </staticText>
-            <staticText>
-                <reportElement style="tituloDetail" x="509" y="100" width="46" height="12"
+                <reportElement style="tituloDetail" x="426" y="102" width="129" height="12"
                                uuid="e2b04a3c-2626-448d-a82b-77ed29e521a2"/>
                 <textElement textAlignment="Center">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
-                <text><![CDATA[CEP]]></text>
+                <text><![CDATA[Email]]></text>
             </staticText>
             <staticText>
-                <reportElement style="tituloDetail" x="0" y="111" width="38" height="12"
-                               uuid="320114ee-9101-41b1-ae5a-ccf0e7944397"/>
-                <textElement>
-                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
-                </textElement>
-                <text><![CDATA[Cidade]]></text>
-            </staticText>
-            <staticText>
-                <reportElement style="tituloDetail" x="368" y="111" width="13" height="12"
-                               uuid="b7cd5038-f2d4-43a7-9f8b-d04b88808542"/>
-                <textElement>
-                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
-                </textElement>
-                <text><![CDATA[UF]]></text>
-            </staticText>
-            <staticText>
-                <reportElement style="tituloDetail" x="460" y="111" width="46" height="12"
+                <reportElement style="tituloDetail" x="278" y="102" width="76" height="12"
                                uuid="73495eac-263f-450b-96b5-a94f366d80d5"/>
-                <textElement>
+                <textElement textAlignment="Center">
                     <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
                 </textElement>
                 <text><![CDATA[Telefone]]></text>
             </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="354" y="102" width="72" height="12"
+                               uuid="58c62175-77e7-48eb-9e33-0b5b9ec21d97"/>
+                <textElement textAlignment="Center">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Data de Nascimento]]></text>
+            </staticText>
         </band>
     </title>
     <detail>
-        <band height="23" splitType="Stretch">
-            <textField>
-                <reportElement style="dadosDetail" x="0" y="0" width="80" height="12"
-                               uuid="384343e6-0241-48e0-aff2-1383e30accd9"/>
-                <textFieldExpression><![CDATA[$F{cpf} !=null && $F{cpf}.length() == 11?
-  $F{cpf}.substring(0, 3) + "."
-+ $F{cpf}.substring(3, 6) + "."
-+ $F{cpf}.substring(6, 9) + "-"
-+ $F{cpf}.substring(9, 11)
-  : ""]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement style="dadosDetail" x="0" y="11" width="366" height="12"
-                               uuid="0e34a470-ed24-4933-b0c4-31f1e64837ff"/>
-                <textFieldExpression><![CDATA[$F{cidade}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement style="dadosDetail" x="368" y="11" width="13" height="12"
-                               uuid="030a3efc-7a3e-48db-8299-28eae80a6dba"/>
-                <textFieldExpression><![CDATA[$F{uf}]]></textFieldExpression>
-            </textField>
+        <band height="14" splitType="Stretch">
             <textField isBlankWhenNull="true">
-                <reportElement style="dadosDetail" x="460" y="11" width="95" height="12"
+                <reportElement style="dadosDetail" x="278" y="0" width="76" height="12"
                                uuid="de4da122-6f72-404a-ac39-9e22650f20a8"/>
+                <textElement textAlignment="Center"/>
                 <textFieldExpression><![CDATA[$F{fone}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement style="dadosDetail" x="80" y="0" width="175" height="12"
+                <reportElement style="dadosDetail" x="0" y="0" width="278" height="12"
                                uuid="a5c20ca2-350d-49d5-a9f8-b93f1afcdaff"/>
                 <textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
             </textField>
-            <textField>
-                <reportElement style="dadosDetail" x="260" y="0" width="150" height="12"
-                               uuid="5c537fa8-bd0a-45f0-b79c-29f33f9aac48"/>
-                <textFieldExpression><![CDATA[$F{logradouro}+","+$F{numero}]]></textFieldExpression>
-            </textField>
-            <textField>
-                <reportElement style="dadosDetail" x="414" y="0" width="93" height="12"
-                               uuid="e8f2a79f-b50d-479d-9fed-e999925724df"/>
-                <textFieldExpression><![CDATA[$F{bairro}]]></textFieldExpression>
-            </textField>
             <textField isBlankWhenNull="true">
-                <reportElement style="dadosDetail" x="509" y="0" width="46" height="12"
+                <reportElement style="dadosDetail" x="426" y="0" width="129" height="12"
                                uuid="2a3ce1e5-0ae3-4c30-8516-72a9a759a609"/>
-                <textFieldExpression><![CDATA[$F{cep}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{email}]]></textFieldExpression>
             </textField>
             <line>
-                <reportElement x="0" y="22" width="555" height="1" uuid="1c47ad6b-8f10-42cb-be8a-29093333e358"/>
+                <reportElement x="0" y="12" width="555" height="1" uuid="1c47ad6b-8f10-42cb-be8a-29093333e358"/>
                 <graphicElement>
                     <pen lineWidth="0.5" lineStyle="Dashed"/>
                 </graphicElement>
             </line>
+            <textField isBlankWhenNull="true">
+                <reportElement style="dadosDetail" x="354" y="0" width="72" height="12"
+                               uuid="849f1afa-570a-4aca-b493-1cc4ee9f03ac"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{data_nascimento}]]></textFieldExpression>
+            </textField>
         </band>
     </detail>
 </jasperReport>
