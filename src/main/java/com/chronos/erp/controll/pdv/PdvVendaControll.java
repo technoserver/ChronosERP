@@ -211,6 +211,21 @@ public class PdvVendaControll extends AbstractControll<PdvVendaCabecalho> implem
         }
     }
 
+    public void estornar() {
+        try {
+
+
+            service.estornar(getObjetoSelecionado().getId());
+            Mensagem.addInfoMessage("Estorno realziado com sucesso");
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("Erro ao cancelar Cupom \n", ex);
+            } else {
+                throw new RuntimeException("Erro ao cancelar Cupom", ex);
+            }
+        }
+    }
+
     public void gerarNfe() {
 
 

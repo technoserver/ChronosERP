@@ -4,16 +4,14 @@ import com.chronos.erp.bo.nfe.VendaToNFe;
 import com.chronos.erp.dto.ConfiguracaoEmissorDTO;
 import com.chronos.erp.dto.ProdutoVendaDTO;
 import com.chronos.erp.modelo.entidades.*;
-import com.chronos.erp.modelo.enuns.AcaoLog;
-import com.chronos.erp.modelo.enuns.Modulo;
-import com.chronos.erp.modelo.enuns.SituacaoVenda;
-import com.chronos.erp.modelo.enuns.StatusTransmissao;
+import com.chronos.erp.modelo.enuns.*;
 import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.financeiro.*;
 import com.chronos.erp.service.gerencial.AuditoriaService;
 import com.chronos.erp.util.Biblioteca;
+import com.chronos.erp.util.Constants;
 import com.chronos.erp.util.jpa.Transactional;
 import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
@@ -64,7 +62,7 @@ public class VendaPdvService implements Serializable {
     private Repository<ContaPessoa> contaPessoaRepository;
 
     @Inject
-    private SyncPendentesService syncPendentesService;
+    private Repository<MovimentoContaPessoa> movimentoRepository;
 
     @Inject
     private NfeService nfeService;
@@ -140,11 +138,19 @@ public class VendaPdvService implements Serializable {
 
 
             cancelado = nfeService.cancelarNFe(nfe, estoque);
-            if (cancelado) {
+
+        }
+
+        for (PdvFormaPagamento p : venda.getListaFormaPagamento()) {
+            if (p.getFormaPagamento().getForma().equals("14") && cancelado) {
                 finLancamentoReceberService.excluirFinanceiro(numDoc, Modulo.PDV);
             }
-        } else {
-            finLancamentoReceberService.excluirFinanceiro(numDoc, Modulo.PDV);
+
+            if (p.getFormaPagamento().getForma().equals("05") && cancelado) {
+
+                contaPessoaService.excluirMovimento(venda.getCliente().getPessoa().getId(), venda.getId(), Modulo.PDV.getCodigo());
+
+            }
         }
 
 
@@ -167,6 +173,42 @@ public class VendaPdvService implements Serializable {
         venda.setStatusVenda("C");
         repository.atualizar(venda);
         Mensagem.addInfoMessage("Venda cancelada com sucesso");
+    }
+
+    @Transactional
+    public void estornar(Integer id) throws ChronosException {
+        PdvVendaCabecalho venda = repository.get(id, PdvVendaCabecalho.class);
+
+        if (venda.getPdvMovimento() != null && venda.getPdvMovimento().getStatusMovimento().equals("A")) {
+
+        }
+
+        if (venda.getStatusVenda().equals("C")) {
+
+            retornaEstoque(venda.getEmpresa().getId(), venda.getListaPdvVendaDetalhe());
+
+            for (PdvFormaPagamento p : venda.getListaFormaPagamento()) {
+                if (p.getFormaPagamento().equals("14")) {
+                    finLancamentoReceberService.gerarLancamento(venda.getId(), p.getFormaPagamento().getValor(), venda.getCliente(),
+                            p.getFormaPagamento().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
+                }
+
+                if (p.getFormaPagamento().equals("05")) {
+                    ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
+                    contaPessoaService.lancaMovimento(conta, p.getFormaPagamento().getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), venda.getId().toString());
+                }
+            }
+
+        } else if (venda.getStatusVenda().equals("D")) {
+            retornaEstoque(venda.getEmpresa().getId(), venda.getListaPdvVendaDetalhe());
+            vendaDevolucaoService.estornar(venda.getEmpresa().getId(), venda.getId(), Modulo.PDV.getCodigo(), venda.getCliente(), false);
+
+        } else if (venda.getStatusVenda().equals("DP")) {
+            vendaDevolucaoService.estornar(venda.getEmpresa().getId(), venda.getId(), Modulo.PDV.getCodigo(), venda.getCliente(), true);
+        }
+        venda.setStatusVenda("E");
+        repository.atualizar(venda);
+
     }
 
     public void aplicarDesconto(PdvVendaCabecalho venda, String tipoDesconto, BigDecimal desconto) throws ChronosException {
@@ -300,4 +342,19 @@ public class VendaPdvService implements Serializable {
 
         venda.calcularValorTotal();
     }
+
+
+    private void retornaEstoque(Integer idmepresa, List<PdvVendaDetalhe> itens) {
+        itens.forEach(item -> {
+            if (item.getProduto().getServico().equals("N")) {
+                estoqueRepositoy.atualizaEstoqueEmpresaControle(idmepresa, item.getProduto().getId(), item.getQuantidade().negate());
+                if (item.getIdgrade() != null) {
+                    EstoqueGrade grade = estoqueGradeRepository.get(item.getIdgrade(), EstoqueGrade.class);
+                    estoqueRepositoy.atualizarGradeVerificado(grade.getIdempresa(), grade.getIdproduto(), grade.getEstoqueCor().getId(), grade.getEstoqueTamanho().getId(), item.getQuantidade().negate());
+                }
+            }
+        });
+    }
+
+
 }

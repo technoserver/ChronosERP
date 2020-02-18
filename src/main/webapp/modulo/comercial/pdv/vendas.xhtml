@@ -144,7 +144,7 @@
 
                         <p:column headerText="Ações" width="63" class="text-center">
 
-                            <p:menuButton rendered="#{row.statusVenda ne 'C'}">
+                            <p:menuButton>
                                 <p:menuitem value="Cupom"
                                             rendered="#{empty row.idnfe}"
                                             target="blank"
@@ -166,7 +166,7 @@
 
                                 <p:menuitem value="Faturar - NFCe"
                                             update=":formCentro:growl,tableVenda"
-                                            rendered="#{empty row.idnfe and row.sicronizado eq 'N'}"
+                                            rendered="#{empty row.idnfe and row.sicronizado eq 'N' and row.statusVenda eq 'E'}"
                                             action="#{pdvVendaControll.gerarNfce}"
                                 >
                                     <f:setPropertyActionListener value="#{row}"
@@ -175,7 +175,7 @@
 
                                 <p:menuitem value="Faturar - NFe"
                                             update=":formCentro:growl,tableVenda"
-                                            rendered="#{empty row.idnfe and row.sicronizado eq 'N'}"
+                                            rendered="#{empty row.idnfe and row.sicronizado eq 'N' and row.statusVenda eq 'E'}"
                                             action="#{pdvVendaControll.gerarNfe}"
                                 >
                                     <f:setPropertyActionListener value="#{row}"
@@ -198,6 +198,17 @@
                                             rendered="#{row.statusVenda eq 'E' or row.sicronizado eq 'F'}"
                                             action="#{pdvVendaControll.cancelarVenda}">
                                     <p:confirm header="Confirmar" message="Deseja cancelar o cupom ?"/>
+
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{pdvVendaControll.objetoSelecionado}"/>
+                                </p:menuitem>
+
+                                <p:menuitem value="Estornar"
+                                            icon="fa fa-ban"
+                                            update=":formCentro:growl,tableVenda"
+                                            rendered="#{row.statusVenda eq 'C' or row.statusVenda eq 'D' or row.statusVenda eq 'DP'}"
+                                            action="#{pdvVendaControll.estornar}">
+                                    <p:confirm header="Confirmar" message="Deseja estornar o cupom ?"/>
 
                                     <f:setPropertyActionListener value="#{row}"
                                                                  target="#{pdvVendaControll.objetoSelecionado}"/>

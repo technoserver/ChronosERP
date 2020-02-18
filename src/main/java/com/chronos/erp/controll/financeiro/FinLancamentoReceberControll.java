@@ -282,7 +282,7 @@ public class FinLancamentoReceberControll extends AbstractControll<FinLancamento
                 if (usuario.getOperador() != null) {
                     PdvMovimento movimentoAberto = movimentoService.verificarMovimento(empresa);
 
-                    if (movimento.getId().equals(movimentoAberto.getId())) {
+                    if (movimentoAberto != null && movimento.getId().equals(movimentoAberto.getId())) {
                         movimentoService.lancaRecebimento(recebimentoSelecionado.getValorRecebido().negate());
                     } else {
                         movimento.setTotalRecebido(movimento.getTotalRecebido().subtract(recebimentoSelecionado.getValorRecebido()));

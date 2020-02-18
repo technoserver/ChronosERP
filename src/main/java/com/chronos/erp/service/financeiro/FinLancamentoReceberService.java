@@ -209,7 +209,7 @@ public class FinLancamentoReceberService implements Serializable {
         FinParcelaRecebimento finLan = recebimentoRepository.get(FinParcelaRecebimento.class, filtros, new Object[]{"dataRecebimento",});
 
         if (finLan != null) {
-            throw new Exception(modulo + " já possue recebimentos");
+            throw new ChronosException(modulo + " já possue recebimentos");
         } else {
             filtros.clear();
             filtros.add(new Filtro("numeroDocumento", Filtro.LIKE, numeroDocumeto));

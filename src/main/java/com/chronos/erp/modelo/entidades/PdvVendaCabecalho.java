@@ -75,7 +75,7 @@ public class PdvVendaCabecalho implements Serializable {
 
     @OneToMany(mappedBy = "pdvVendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PdvVendaDetalhe> listaPdvVendaDetalhe;
-    @OneToMany(mappedBy = "pdvVendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pdvVendaCabecalho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PdvFormaPagamento> listaFormaPagamento;
     @Transient
     private String caixa;

@@ -34,7 +34,7 @@ SELECT l.id,
            WHEN (select s.saldo from view_saldo_lancamento_receber s where id = l.id) > 0 THEN 'QP'
            ELSE 'A'
            END                                                                 AS status
-FROM john.fin_lancamento_receber l
-         JOIN john.cliente c ON c.id = l.id_cliente
-         JOIN john.pessoa p ON p.id = c.id_pessoa
+FROM fin_lancamento_receber l
+         JOIN cliente c ON c.id = l.id_cliente
+         JOIN pessoa p ON p.id = c.id_pessoa
 GROUP BY l.id, p.nome;
