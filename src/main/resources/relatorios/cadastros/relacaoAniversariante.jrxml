@@ -5,7 +5,7 @@
               name="relacaoCliente" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="4.0"/>
-    <property name="ireport.x" value="1040"/>
+    <property name="ireport.x" value="72"/>
     <property name="ireport.y" value="168"/>
     <style name="tituloDetail" hAlign="Left" vAlign="Middle" fontName="Times New Roman" fontSize="8" isItalic="false"
            isUnderline="false" isStrikeThrough="false"/>
@@ -18,11 +18,8 @@
     <parameter name="idempresa" class="java.lang.Integer">
         <defaultValueExpression><![CDATA[1]]></defaultValueExpression>
     </parameter>
-    <parameter name="periodoInicial" class="java.util.Date">
-        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
-    </parameter>
-    <parameter name="peridoFinal" class="java.util.Date">
-        <defaultValueExpression><![CDATA[new Date()]]></defaultValueExpression>
+    <parameter name="mes" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[1]]></defaultValueExpression>
     </parameter>
     <queryString>
         <![CDATA[SELECT
@@ -52,7 +49,8 @@
    INNER JOIN pessoa_endereco e ON e.id_pessoa = p.id
    INNER JOIN empresa empresa ON ep.id_empresa = empresa.id
    INNER JOIN empresa_endereco empresa_endereco ON empresa_endereco.id_empresa = empresa.id
-  WHERE p.cliente = 'S' AND e.principal = 'S' and ep.id_empresa = $P{idempresa} and pf.data_nascimento between $P{periodoInicial} and $P{peridoFinal} and empresa_endereco.principal = 'S'
+  WHERE p.cliente = 'S' AND e.principal = 'S' and ep.id_empresa = $P{idempresa} and
+ Extract(Month From pf.data_nascimento) = $P{mes}   and empresa_endereco.principal = 'S'
 order by pf.data_nascimento]]>
     </queryString>
     <field name="id" class="java.lang.Integer"/>
@@ -256,7 +254,7 @@ order by pf.data_nascimento]]>
                     <pen lineWidth="0.5" lineStyle="Dashed"/>
                 </graphicElement>
             </line>
-            <textField isBlankWhenNull="true">
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement style="dadosDetail" x="354" y="0" width="72" height="12"
                                uuid="849f1afa-570a-4aca-b493-1cc4ee9f03ac"/>
                 <textElement textAlignment="Center"/>

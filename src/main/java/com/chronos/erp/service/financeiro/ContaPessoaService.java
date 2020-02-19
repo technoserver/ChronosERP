@@ -6,6 +6,7 @@ import com.chronos.erp.modelo.entidades.MovimentoContaPessoa;
 import com.chronos.erp.modelo.entidades.VendaDevolucao;
 import com.chronos.erp.modelo.enuns.AcaoLog;
 import com.chronos.erp.modelo.enuns.TipoLancamento;
+import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.gerencial.AuditoriaService;
 import com.chronos.erp.util.FormatValor;
@@ -14,7 +15,9 @@ import com.chronos.erp.util.jpa.Transactional;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by john on 01/02/18.
@@ -73,6 +76,20 @@ public class ContaPessoaService implements Serializable {
     }
 
     @Transactional
+    public void excluirMovimento(Integer idpessoa, Integer idvenda, String codigoModulo) {
+        ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", idpessoa);
+
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("numeroDocumento", idvenda.toString()));
+        filtros.add(new Filtro("codigoModulo", codigoModulo));
+        MovimentoContaPessoa movimentoContaPessoa = movimentoRepository.get(MovimentoContaPessoa.class, filtros);
+
+        if (movimentoContaPessoa != null && conta != null) {
+            excluirMovimento(conta, movimentoContaPessoa);
+        }
+    }
+
+    @Transactional
     public void excluirMovimento(ContaPessoa conta, MovimentoContaPessoa movimento) {
         movimentoRepository.excluir(movimento);
         atualizarSaldoConta(conta, TipoLancamento.DEBITO, movimento.getValor());
@@ -80,6 +97,7 @@ public class ContaPessoaService implements Serializable {
         conteudo += "na conta de " + conta.getPessoa().getNome() + " no valor de " + FormatValor.getInstance().formatarValor(movimento.getValor());
         auditoriaService.gerarLog(AcaoLog.DELETE, conteudo, "LANCAMENTO DE CREDITO CLIENTE");
     }
+
 
     private void atualizarSaldoConta(ContaPessoa conta, TipoLancamento tipo, BigDecimal valor) {
         valor = tipo == TipoLancamento.CREDITO ? valor : valor.negate();

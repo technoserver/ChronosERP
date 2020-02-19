@@ -25,15 +25,11 @@
         <div class="ibox-content">
             <div class="row">
 
-                <erp:campoData nomeAtributo="#{clienteRelatorioControll.dataInicial}"
-                               label="Data inicial"
-                               idComponente="vencimentoDe"
-                               styleClass="col-xs-12 col-sm-2 col-md-2"/>
-
-                <erp:campoData nomeAtributo="#{clienteRelatorioControll.dataFinal}"
-                               label="Data Final"
-                               idComponente="vencimentoAte"
-                               styleClass="col-xs-12 col-sm-2 col-md-2"/>
+                <erp:campoSelect itens="#{clienteRelatorioControll.meses}"
+                                 styleClass="col-xs-12 col-sm-4 col-md-4"
+                                 idComponente="mes"
+                                 label="Mês"
+                                 nomeAtributo="#{clienteRelatorioControll.mes}"/>
 
                 <div class="col-xs-12 col-sm-12 col-md-12 text-center m-t">
 

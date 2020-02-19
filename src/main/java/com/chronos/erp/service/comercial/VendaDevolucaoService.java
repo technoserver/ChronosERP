@@ -2,6 +2,8 @@ package com.chronos.erp.service.comercial;
 
 import com.chronos.erp.modelo.entidades.*;
 import com.chronos.erp.modelo.enuns.Modulo;
+import com.chronos.erp.repository.EstoqueRepository;
+import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.financeiro.ContaPessoaService;
@@ -9,6 +11,8 @@ import com.chronos.erp.util.jpa.Transactional;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VendaDevolucaoService implements Serializable {
 
@@ -24,6 +28,11 @@ public class VendaDevolucaoService implements Serializable {
 
     @Inject
     private Repository<VendaCabecalho> vendaCabecalhoRepository;
+
+    @Inject
+    private Repository<EstoqueGrade> estoqueGradeRepository;
+    @Inject
+    private EstoqueRepository estoqueRepositoy;
 
     @Transactional
     public VendaDevolucao gerarDevolucao(VendaDevolucao devolucao) throws ChronosException {
@@ -95,5 +104,34 @@ public class VendaDevolucaoService implements Serializable {
         devolucao.setCreditoUtilizado("S");
         devolucao.setGeradoCredito("S");
         repository.salvar(devolucao);
+    }
+
+    @Transactional
+    public void estornar(Integer idmepresa, Integer idvenda, String codigoModulo, Cliente cliente, boolean estornaEstoque) throws ChronosException {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro("idVenda", idvenda));
+        filtros.add(new Filtro("codigoModulo", Modulo.PDV.getCodigo()));
+
+        VendaDevolucao devolucao = repository.get(VendaDevolucao.class, filtros);
+
+        if (devolucao != null) {
+            if (devolucao.getGeradoCredito().equals("S")) {
+                if (cliente == null) {
+                    throw new ChronosException("Cliente para estorno de crédito não definido");
+                }
+                contaPessoaService.excluirMovimento(cliente.getPessoa().getId(), idvenda, codigoModulo);
+            }
+
+            if (estornaEstoque) {
+                devolucao.getListaVendaDevolucaoItem().forEach(item -> {
+                    if (item.getProduto().getServico().equals("N")) {
+                        estoqueRepositoy.atualizaEstoqueEmpresaControle(idmepresa, item.getProduto().getId(), item.getQuantidade());
+                    }
+                });
+            }
+
+            repository.excluir(devolucao);
+        }
+
     }
 }
