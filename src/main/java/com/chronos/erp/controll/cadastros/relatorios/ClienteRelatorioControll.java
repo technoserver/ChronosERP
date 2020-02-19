@@ -3,11 +3,14 @@ package com.chronos.erp.controll.cadastros.relatorios;
 import com.chronos.erp.controll.AbstractRelatorioControll;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by john on 14/09/17.
@@ -25,7 +28,27 @@ public class ClienteRelatorioControll extends AbstractRelatorioControll implemen
     private String cpfCnpj;
     private Date dataInicial;
     private Date dataFinal;
+    private Integer mes = 1;
+    private Map<String, Integer> meses;
 
+    @PostConstruct
+    @Override
+    protected void init() {
+        super.init();
+        meses = new LinkedHashMap<>();
+        meses.put("Janeiro", 1);
+        meses.put("Fervereiro", 2);
+        meses.put("Marco", 3);
+        meses.put("Abril", 4);
+        meses.put("Maio", 5);
+        meses.put("Junho", 6);
+        meses.put("Julho", 7);
+        meses.put("Agosto", 8);
+        meses.put("Setembro", 9);
+        meses.put("Outubro", 10);
+        meses.put("Novembro", 11);
+        meses.put("Dezembro", 12);
+    }
 
     public void executarRelatorio() {
 
@@ -58,8 +81,8 @@ public class ClienteRelatorioControll extends AbstractRelatorioControll implemen
 
         parametros = new HashMap<>();
 
-        parametros.put("periodoInicial", dataInicial);
-        parametros.put("peridoFinal", dataFinal);
+
+        parametros.put("mes", mes);
         parametros.put("idempresa", empresa.getId());
 
         String caminhoRelatorio = "/relatorios/cadastros";
@@ -124,5 +147,17 @@ public class ClienteRelatorioControll extends AbstractRelatorioControll implemen
 
     public void setDataFinal(Date dataFinal) {
         this.dataFinal = dataFinal;
+    }
+
+    public Integer getMes() {
+        return mes;
+    }
+
+    public void setMes(Integer mes) {
+        this.mes = mes;
+    }
+
+    public Map<String, Integer> getMeses() {
+        return meses;
     }
 }
