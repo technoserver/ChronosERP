@@ -942,7 +942,7 @@ public class GeraXMLEnvio {
                 icms60.setCST(cst);
                 icms60.setOrig(origemMercadoria);
                 icms60.setVBCSTRet(FormatValor.getInstance().formatarValorToNull(impIcms.getValorBcIcmsStRetido()));
-                icms60.setVICMSSTRet(FormatValor.getInstance().formatarValor(impIcms.getValorIcmsStRetido()));
+                icms60.setVICMSSTRet(FormatValor.getInstance().formatarValorToNull(impIcms.getValorIcmsStRetido()));
             }
             if (cst.equals("70")) {
                 TNFe.InfNFe.Det.Imposto.ICMS.ICMS70 icms70 = new TNFe.InfNFe.Det.Imposto.ICMS.ICMS70();

@@ -14,7 +14,7 @@ import java.util.Optional;
 @Embeddable
 public class FormaPagamento implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     @Column(name = "FORMA")
     private String forma;
@@ -38,7 +38,7 @@ public class FormaPagamento implements Serializable {
     @Column(name = "QTD_PARCELA")
     private int qtdParcelas;
     @JoinColumn(name = "ID_CONDICAO_PAGAMENTO", referencedColumnName = "ID")
-    @ManyToOne(optional = false)
+    @ManyToOne
     private CondicoesPagamento condicoesPagamento;
 
     public FormaPagamento() {
