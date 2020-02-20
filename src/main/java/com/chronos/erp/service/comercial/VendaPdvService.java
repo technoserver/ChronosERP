@@ -168,6 +168,15 @@ public class VendaPdvService implements Serializable {
             }
         }
 
+        if (venda.getPdvMovimento().getStatusMovimento().equals("A") && cancelado) {
+            BigDecimal valorVenda = venda.getPdvMovimento().getTotalVenda();
+            BigDecimal valorMovimentoVenda = Biblioteca.subtrai(venda.getPdvMovimento().getTotalVenda(), valorVenda);
+            BigDecimal valorMovimento = Biblioteca.subtrai(venda.getPdvMovimento().getTotalFinal(), valorVenda);
+            venda.getPdvMovimento().setTotalFinal(valorMovimento);
+            venda.getPdvMovimento().setTotalVenda(valorMovimentoVenda);
+        }
+
+
         auditoriaService.gerarLog(AcaoLog.CANCELAR_VENDA, "Venda cancelada", "PDV");
 
         venda.setStatusVenda("C");
@@ -179,24 +188,28 @@ public class VendaPdvService implements Serializable {
     public void estornar(Integer id) throws ChronosException {
         PdvVendaCabecalho venda = repository.get(id, PdvVendaCabecalho.class);
 
-        if (venda.getPdvMovimento() != null && venda.getPdvMovimento().getStatusMovimento().equals("A")) {
-
-        }
-
         if (venda.getStatusVenda().equals("C")) {
 
             retornaEstoque(venda.getEmpresa().getId(), venda.getListaPdvVendaDetalhe());
 
             for (PdvFormaPagamento p : venda.getListaFormaPagamento()) {
-                if (p.getFormaPagamento().equals("14")) {
+                if (p.getFormaPagamento().getForma().equals("14") && p.getFormaPagamento().getCondicoesPagamento() != null) {
                     finLancamentoReceberService.gerarLancamento(venda.getId(), p.getFormaPagamento().getValor(), venda.getCliente(),
                             p.getFormaPagamento().getCondicoesPagamento(), Modulo.VENDA.getCodigo(), Constants.FIN.NATUREZA_VENDA, venda.getEmpresa());
                 }
 
-                if (p.getFormaPagamento().equals("05")) {
+                if (p.getFormaPagamento().getForma().equals("05")) {
                     ContaPessoa conta = contaPessoaRepository.get(ContaPessoa.class, "pessoa.id", venda.getCliente().getPessoa().getId());
                     contaPessoaService.lancaMovimento(conta, p.getFormaPagamento().getValor(), TipoLancamento.DEBITO, Modulo.PDV.getCodigo(), venda.getId().toString());
                 }
+            }
+
+            if (venda.getPdvMovimento() != null && venda.getPdvMovimento().getStatusMovimento().equals("A")) {
+                BigDecimal valorVenda = venda.getPdvMovimento().getTotalVenda();
+                BigDecimal valorMovimentoVenda = Biblioteca.soma(valorVenda, venda.getPdvMovimento().getTotalVenda());
+                BigDecimal valorMovimento = Biblioteca.soma(venda.getPdvMovimento().getTotalFinal(), valorVenda);
+                venda.getPdvMovimento().setTotalFinal(valorMovimento);
+                venda.getPdvMovimento().setTotalVenda(valorMovimentoVenda);
             }
 
         } else if (venda.getStatusVenda().equals("D")) {
@@ -206,6 +219,9 @@ public class VendaPdvService implements Serializable {
         } else if (venda.getStatusVenda().equals("DP")) {
             vendaDevolucaoService.estornar(venda.getEmpresa().getId(), venda.getId(), Modulo.PDV.getCodigo(), venda.getCliente(), true);
         }
+        auditoriaService.gerarLog(AcaoLog.ESTORNAR_VENDA, "Venda estornada", "PDV");
+
+
         venda.setStatusVenda("E");
         repository.atualizar(venda);
 

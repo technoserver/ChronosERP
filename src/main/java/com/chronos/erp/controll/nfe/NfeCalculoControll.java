@@ -10,6 +10,7 @@ import com.chronos.calc.enuns.TipoOperacao;
 import com.chronos.calc.enuns.TipoPessoa;
 import com.chronos.calc.resultados.IResultadoCalculoIbpt;
 import com.chronos.erp.modelo.entidades.*;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 
@@ -40,6 +41,15 @@ public class NfeCalculoControll {
         if (empresa.getCrt() == null) {
             throw new Exception("CRT da empresa não definido");
         }
+
+        if (empresa.getCrt().equals("1") && StringUtils.isEmpty(produto.getCsosn())) {
+            throw new Exception("CSOSN não definido");
+        }
+
+        if (!empresa.getCrt().equals("1") && StringUtils.isEmpty(produto.getCst())) {
+            throw new Exception("CST não definido");
+        }
+
         Crt crt = Crt.valueOfCodigo(Integer.valueOf(empresa.getCrt()));
         TipoOperacao tipoOperacao = isOperacaoInterestadual();
         TipoPessoa tipoPessoa = destinatario == null || destinatario.getCpfCnpj() == null || destinatario.getCpfCnpj().length() == 11 ? TipoPessoa.Fisica : TipoPessoa.Juridica;

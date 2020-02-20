@@ -184,14 +184,17 @@ public class VendaService extends AbstractService<VendaCabecalho> {
             nfe.setCsc(configuracaoEmissorDTO.getCsc());
             nfe.setTokenCsc(configuracaoEmissorDTO.getTokenCsc());
             nfe.setSerie(configuracaoEmissorDTO.getSerie());
-            String infAdd = nfe.getInformacoesAddContribuinte();
+            String infAdd = "";
 
 
-            if (!StringUtils.isEmpty(infAdd)) {
-                infAdd += "\n" + configuracaoEmissorDTO.getObservacaoPadrao();
+            if (!StringUtils.isEmpty(configuracaoEmissorDTO.getObservacaoPadrao())) {
+                infAdd += configuracaoEmissorDTO.getObservacaoPadrao();
             }
 
-            infAdd += "\n" + venda.getObservacao();
+            if (!StringUtils.isEmpty(venda.getObservacao())) {
+                infAdd += "\n" + venda.getObservacao();
+            }
+
 
             nfe.setInformacoesAddContribuinte(infAdd);
             StatusTransmissao status = nfeService.transmitirNFe(nfe, atualizarEstoque);
@@ -470,6 +473,8 @@ public class VendaService extends AbstractService<VendaCabecalho> {
                 item.setTaxaDesconto(taxDesc);
             }
         }
+
+        item.calcularValorTotal();
 
         venda.getListaVendaDetalhe().add(item);
 
