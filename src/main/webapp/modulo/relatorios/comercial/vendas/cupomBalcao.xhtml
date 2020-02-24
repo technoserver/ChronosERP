@@ -177,9 +177,9 @@
                 </tr>
                 <ui:forEach var="row" items="#{vendaRelatorioControll.vendaCupom.listaFormaPagamento}">
                     <tr>
-                        <td>#{row.tipoPagamento.descricao}</td>
+                        <td>#{row.formaPagamento.tipoPagamento.descricao}</td>
                         <td class="text-right">
-                            <h:outputText value="#{row.valorTotal}">
+                            <h:outputText value="#{row.formaPagamento.valorTotal}">
                                 <f:convertNumber pattern="#,##0.00"/>
                             </h:outputText>
                         </td>
