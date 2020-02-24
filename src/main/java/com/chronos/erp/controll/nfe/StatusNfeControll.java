@@ -2,6 +2,7 @@ package com.chronos.erp.controll.nfe;
 
 import com.chronos.erp.service.cadastros.UsuarioService;
 import com.chronos.erp.service.comercial.NfeService;
+import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
 
@@ -39,6 +40,7 @@ public class StatusNfeControll implements Serializable {
 
 
         try {
+            service.instanciarConfNfe(FacesUtil.getEmpresaUsuario(), ModeloDocumento.NFE, null);
             status = service.consultarStatusNfe(ModeloDocumento.NFE);
         } catch (Exception e) {
             e.printStackTrace();
