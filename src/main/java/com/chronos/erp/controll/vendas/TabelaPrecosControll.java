@@ -129,7 +129,7 @@ public class TabelaPrecosControll extends AbstractControll<TabelaPreco> implemen
 
             produtos = empresaProdutos
                     .stream()
-                    .map(ep -> new Produto(ep.getId(), ep.getProduto().getNome(), ep.getProduto().getValorVenda())).collect(Collectors.toList());
+                    .map(ep -> new Produto(ep.getProduto().getId(), ep.getProduto().getNome(), ep.getProduto().getValorVenda())).collect(Collectors.toList());
 
         } catch (Exception ex) {
 

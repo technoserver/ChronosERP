@@ -36,7 +36,7 @@ public class FormaPagamento implements Serializable {
     @ManyToOne(optional = false)
     private TipoPagamento tipoPagamento;
     @Column(name = "QTD_PARCELA")
-    private int qtdParcelas;
+    private Integer qtdParcelas;
     @JoinColumn(name = "ID_CONDICAO_PAGAMENTO", referencedColumnName = "ID")
     @ManyToOne
     private CondicoesPagamento condicoesPagamento;
