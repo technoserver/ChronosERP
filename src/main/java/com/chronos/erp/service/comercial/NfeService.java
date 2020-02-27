@@ -260,17 +260,15 @@ public class NfeService implements Serializable {
             for (NfeCabecalho nfe : nfes) {
 
                 String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(nfe.getEmpresa().getCnpj());
-                String arquivoPdf = pastaXml + System.getProperty("file.separator") + nfe.getNomePdf();
                 String caminhoXml = pastaXml + System.getProperty("file.separator") + nfe.getNomeXml();
-                File fileXml = new File(caminhoXml);
-                File filePdf = new File(arquivoPdf);
 
-                if (!fileXml.exists() || !filePdf.exists()) {
-                    gerarDanfe(nfe);
+
+                if (!new File(caminhoXml).exists()) {
+                    gerarXml(nfe.getId(), nfe.getNomeXml());
                 }
 
                 arqvuivos.add(caminhoXml);
-                arqvuivos.add(arquivoPdf);
+
             }
 
             File arquivoZip = ArquivoUtil.getInstance().compactarArquivos(arqvuivos, nomeArquivo);
@@ -615,14 +613,12 @@ public class NfeService implements Serializable {
         String cnpj = nfe.getEmpresa().getCnpj();
         String pastaXml = ArquivoUtil.getInstance().getPastaXmlNfeProcessada(cnpj);
         String arquivoPdf = pastaXml + System.getProperty("file.separator") + nfe.getNomePdf();
-        String caminhoXml = pastaXml + System.getProperty("file.separator") + nfe.getNomeXml();
-        File fileXml = new File(caminhoXml);
+
+
         File filePdf = new File(arquivoPdf);
 
 
-        if (filePdf.exists()) {
-            FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
-        } else {
+        if (!filePdf.exists()) {
             if (configuracao == null) {
                 configuracao = nfeConfiguracaoService.instanciarConfNfe(nfe.getEmpresa(), nfe.getModeloDocumento(), nfe.getSerie());
                 if (configuracao == null) {
@@ -631,8 +627,8 @@ public class NfeService implements Serializable {
             }
 
             gerarDanfe(nfe);
-            FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
         }
+        FacesUtil.downloadArquivo(filePdf, filePdf.getName(), false);
     }
 
     public void gerarDanfe(NfeCabecalho nfe) throws Exception {
