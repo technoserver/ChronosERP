@@ -239,6 +239,36 @@
         </query>
     </named-native-query>
 
+    <named-native-query name="PdvMovimento.lancamentos" result-set-mapping="lancamentos">
+        <query>
+            select
+            o.login as operador,
+            s.data_sangria as data,
+            s.valor,
+            coalesce(s.observacao,'') as observacao,
+            '2' as tipo
+            from pdv_sangria s
+            inner join pdv_movimento m on m.id = s.id_pdv_movimento
+            inner join pdv_operador o on o.id = m.id_pdv_operador
+            where m.id_empresa = ?1 and s.data_sangria between ?2 and ?3 and o.observacao like ?4
+
+            union
+
+            select
+            o.login as operador,
+            s.data_suprimento as data,
+            s.valor,
+            coalesce(s.observacao,'') as observacao,
+            '1' as tipo
+            from pdv_suprimento s
+            inner join pdv_movimento m on m.id = s.id_pdv_movimento
+            inner join pdv_operador o on o.id = m.id_pdv_operador
+            where m.id_empresa = ?1 and s.data_suprimento between ?2 and ?3 and o.observacao like ?4
+        </query>
+
+
+    </named-native-query>
+
 
     <sql-result-set-mapping name="produtoDTOMapping">
         <constructor-result target-class="com.chronos.erp.dto.ProdutoDTO">
@@ -349,6 +379,16 @@
         <constructor-result target-class="com.chronos.erp.dto.MapDTO">
             <column name="descricao" class="java.lang.String"/>
             <column name="total" class="java.math.BigDecimal"/>
+        </constructor-result>
+    </sql-result-set-mapping>
+
+    <sql-result-set-mapping name="lancamentos">
+        <constructor-result target-class="com.chronos.erp.dto.LancamentoMovimentoDTO">
+            <column name="operador" class="java.lang.String"/>
+            <column name="data" class="java.util.Date"/>
+            <column name="valor" class="java.math.BigDecimal"/>
+            <column name="observacao" class="java.lang.String"/>
+            <column name="tipo" class="java.lang.Integer"/>
         </constructor-result>
     </sql-result-set-mapping>
 

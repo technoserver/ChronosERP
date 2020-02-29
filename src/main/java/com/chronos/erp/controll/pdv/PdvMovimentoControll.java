@@ -1,6 +1,7 @@
 package com.chronos.erp.controll.pdv;
 
 import com.chronos.erp.controll.ERPLazyDataModel;
+import com.chronos.erp.dto.LancamentoMovimentoDTO;
 import com.chronos.erp.dto.MapDTO;
 import com.chronos.erp.dto.UsuarioDTO;
 import com.chronos.erp.modelo.entidades.*;
@@ -8,6 +9,7 @@ import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.financeiro.MovimentoService;
+import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.jsf.FacesUtil;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.apache.commons.lang3.time.DateUtils;
@@ -96,6 +98,13 @@ public class PdvMovimentoControll implements Serializable {
     private BigDecimal valorLancamento;
     private int tipoLancamento;
 
+    private Date dataLancamentoInicial;
+    private Date dataLancamentoFinal;
+    private BigDecimal valor;
+    private String observacaoLacamento = "";
+
+    private List<LancamentoMovimentoDTO> lancamentos;
+
 
     public PdvMovimentoControll() {
     }
@@ -181,7 +190,7 @@ public class PdvMovimentoControll implements Serializable {
 
     }
 
-    public void detalheMovimentos() {
+    public void totaisMovimentos() {
         List<Filtro> filtros = new ArrayList<>();
 
         filtros.add(new Filtro("empresa.id", empresa.getId()));
@@ -273,6 +282,25 @@ public class PdvMovimentoControll implements Serializable {
         }
     }
 
+    public void abrirPesquisaLancamento() {
+        lancamentos = new ArrayList<>();
+        observacaoLacamento = "";
+        dataLancamentoFinal = null;
+        dataLancamentoInicial = null;
+    }
+
+    public void pesquisarLancamento() {
+
+        dataLancamentoInicial = dataLancamentoInicial == null
+                ? DateUtils.truncate(Biblioteca.stringToDate("1990-01-01"), Calendar.DATE)
+                : DateUtils.truncate(dataLancamentoInicial, Calendar.DATE);
+        dataLancamentoFinal = dataLancamentoFinal == null
+                ? DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(new Date(), 23), 59), 59)
+                : DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataLancamentoFinal, 23), 59), 59);
+
+        lancamentos = repository.getEntitysNamedQuery(LancamentoMovimentoDTO.class, "PdvMovimento.lancamentos"
+                , empresa.getId(), dataLancamentoInicial, dataLancamentoFinal, "%" + observacaoLacamento + "%");
+    }
 
     public void iniciarMovimento() {
         telaGrid = false;
@@ -566,5 +594,41 @@ public class PdvMovimentoControll implements Serializable {
 
     public Map<String, Integer> getTiposLancamento() {
         return tiposLancamento;
+    }
+
+    public Date getDataLancamentoInicial() {
+        return dataLancamentoInicial;
+    }
+
+    public void setDataLancamentoInicial(Date dataLancamentoInicial) {
+        this.dataLancamentoInicial = dataLancamentoInicial;
+    }
+
+    public Date getDataLancamentoFinal() {
+        return dataLancamentoFinal;
+    }
+
+    public void setDataLancamentoFinal(Date dataLancamentoFinal) {
+        this.dataLancamentoFinal = dataLancamentoFinal;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
+    }
+
+    public String getObservacaoLacamento() {
+        return observacaoLacamento;
+    }
+
+    public void setObservacaoLacamento(String observacaoLacamento) {
+        this.observacaoLacamento = observacaoLacamento;
+    }
+
+    public List<LancamentoMovimentoDTO> getLancamentos() {
+        return lancamentos;
     }
 }

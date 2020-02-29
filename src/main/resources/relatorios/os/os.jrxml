@@ -292,7 +292,7 @@ WHERE
                 <reportElement x="0" y="129" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
             </line>
             <staticText>
-                <reportElement x="1" y="108" width="93" height="20" uuid="0f7d7814-df72-492f-9e12-7164cf55abd3"/>
+                <reportElement x="0" y="108" width="93" height="20" uuid="0f7d7814-df72-492f-9e12-7164cf55abd3"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
@@ -346,13 +346,6 @@ WHERE
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
                 <text><![CDATA[CEP:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="186" y="166" width="24" height="13" uuid="16458db3-ace8-494d-8049-288279e3c1fd"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Courier New" size="11" isBold="true"/>
-                </textElement>
-                <text><![CDATA[IE:]]></text>
             </staticText>
             <textField>
                 <reportElement x="63" y="130" width="319" height="13" uuid="b7101f4a-f169-4a2b-9498-3d3d6e2ab3fa"/>
