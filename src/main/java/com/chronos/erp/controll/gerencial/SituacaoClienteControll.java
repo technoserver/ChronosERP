@@ -20,7 +20,7 @@ public class SituacaoClienteControll extends AbstractControll<SituacaoForCli> im
     public void salvar() {
 
         try {
-            if (getObjeto().getId() == 1 || getObjeto().getId() == 2) {
+            if (getObjeto().getId() != null && (getObjeto().getId() == 1 || getObjeto().getId() == 2)) {
                 throw new ChronosException("Alteração para esse regitro não permitida");
             }
 
@@ -29,7 +29,7 @@ public class SituacaoClienteControll extends AbstractControll<SituacaoForCli> im
             if (ex instanceof ChronosException) {
                 Mensagem.addErrorMessage("", ex);
             } else {
-                throw new RuntimeException("Erro ao tenta excluir o registro");
+                throw new RuntimeException("Erro ao tenta salvar o registro");
             }
         }
     }

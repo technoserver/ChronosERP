@@ -2,6 +2,8 @@
 package com.chronos.erp.modelo.entidades;
 
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,6 +14,7 @@ import java.util.Optional;
 @Entity
 @Table(name = "PDV_MOVIMENTO")
 @NamedQuery(name = "PdvMovimento.Fechamento", query = "UPDATE PdvMovimento m SET m.dataFechamento = ?1, m.statusMovimento = 'F',m.horaFechamento = ?2 where m.id=?3 ")
+@DynamicUpdate
 public class PdvMovimento implements Serializable {
 
     private static final long serialVersionUID = 2L;

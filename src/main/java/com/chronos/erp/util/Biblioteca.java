@@ -617,6 +617,19 @@ public class Biblioteca {
         return dataF.getTime();
     }
 
+    public static Date stringToDate(String s) {
+
+        Date result = null;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            result = dateFormat.parse(s);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return result;
+    }
+
     public static Date dataPagamento(int dias) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new java.util.Date());

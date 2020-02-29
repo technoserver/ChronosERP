@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Table(name = "pdv_forma_pagamento")
 public class PdvFormaPagamento implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

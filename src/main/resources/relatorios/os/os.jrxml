@@ -6,7 +6,7 @@
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="2.0"/>
     <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="384"/>
+    <property name="ireport.y" value="0"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <style name="table">
         <box>
@@ -33,7 +33,6 @@
         </box>
     </style>
     <subDataset name="equipamentoDTS" uuid="1b169113-e2e6-41fd-b0f3-39ad99acb70e"/>
-    <parameter name="logo" class="java.awt.Image"/>
     <parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
         <defaultValueExpression><![CDATA[""]]></defaultValueExpression>
     </parameter>
@@ -56,6 +55,11 @@
      os.data_previsao,
      os.hora_previsao,
      os.status,
+     (CASE
+       WHEN pessoa.tipo='F' THEN pf.cpf
+       WHEN pessoa.tipo='J' THEN pj.cnpj
+       ELSE ''
+     END) as cpf_Cnpj,
      empresa.razao_social AS empresa_razao_social,
      empresa.nome_fantasia AS empresa_nome_fantasia,
      empresa.cnpj AS empresa_cnpj,
@@ -88,6 +92,8 @@ FROM
      INNER JOIN cliente cliente on os.id_cliente = cliente.id
      INNER JOIN pessoa pessoa ON cliente.id_pessoa = pessoa.id
      INNER JOIN pessoa_endereco pessoa_endereco ON pessoa.id = pessoa_endereco.id_pessoa
+     LEFT JOIN pessoa_fisica pf on pf.id_pessoa = pessoa.id
+     LEFT JOIN pessoa_juridica pj on pj.id_pessoa = pessoa.id
      LEFT JOIN tecnico t on t.id = os.id_tecnico
      LEFT JOIN colaborador colaborador on colaborador.id = t.id_colaborador
      LEFT JOIN pessoa pessoa_colaborador on pessoa_colaborador.id = colaborador.id_pessoa
@@ -110,6 +116,7 @@ WHERE
     <field name="data_previsao" class="java.sql.Date"/>
     <field name="hora_previsao" class="java.lang.String"/>
     <field name="status" class="java.lang.Integer"/>
+    <field name="cpf_cnpj" class="java.lang.String"/>
     <field name="empresa_razao_social" class="java.lang.String"/>
     <field name="empresa_nome_fantasia" class="java.lang.String"/>
     <field name="empresa_cnpj" class="java.lang.String"/>
@@ -285,7 +292,7 @@ WHERE
                 <reportElement x="0" y="129" width="555" height="1" uuid="12b0e691-b0b8-410b-9801-307a34f57b72"/>
             </line>
             <staticText>
-                <reportElement x="1" y="108" width="93" height="20" uuid="0f7d7814-df72-492f-9e12-7164cf55abd3"/>
+                <reportElement x="0" y="108" width="93" height="20" uuid="0f7d7814-df72-492f-9e12-7164cf55abd3"/>
                 <textElement verticalAlignment="Middle">
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
@@ -339,13 +346,6 @@ WHERE
                     <font fontName="Courier New" size="11" isBold="true"/>
                 </textElement>
                 <text><![CDATA[CEP:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="186" y="166" width="24" height="13" uuid="16458db3-ace8-494d-8049-288279e3c1fd"/>
-                <textElement verticalAlignment="Middle">
-                    <font fontName="Courier New" size="11" isBold="true"/>
-                </textElement>
-                <text><![CDATA[IE:]]></text>
             </staticText>
             <textField>
                 <reportElement x="63" y="130" width="319" height="13" uuid="b7101f4a-f169-4a2b-9498-3d3d6e2ab3fa"/>
@@ -423,6 +423,13 @@ WHERE
                     <font fontName="Times New Roman"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{observacao_cliente}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="63" y="166" width="123" height="13" uuid="85af1b69-2507-4eec-bdd5-3d5010449d65"/>
+                <textElement verticalAlignment="Middle">
+                    <font fontName="Courier New"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{cpf_cnpj}]]></textFieldExpression>
             </textField>
         </band>
     </title>

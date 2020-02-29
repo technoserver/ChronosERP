@@ -19,162 +19,7 @@
     <ui:define name="controle">
         Movimento
     </ui:define>
-    <ui:define name="css">
-        <h:outputStylesheet library="css" name="pdv.css"/>
-        <style type="text/css">
 
-            #bg-pdv {
-                height: 377px;
-                background-position: center;
-                background: url("#{resource['images/bgcaixa.png']}") no-repeat center
-            }
-
-            li.token-input-token p, li.token-input-token span {
-                padding-top: 12px
-            }
-
-            .padding-top-10px {
-                padding-top: 10px;
-            }
-
-            .margin-right-10px {
-                margin-right: 10px;
-            }
-
-            .margin-top-10px {
-                margin-top: 10px;
-            }
-
-            .margin-top-0 {
-                margin-top: 0 !important;
-            }
-
-            .margin-bottom-20px {
-                margin-bottom: 20px;
-            }
-
-            .margin-bottom-0 {
-                margin-bottom: 0;
-            }
-
-            .margin-bottom-10px {
-                margin-bottom: 10px;
-            }
-
-            .border-bottom-1px {
-                border-bottom: 1px solid #ccc;
-            }
-
-            .form-control-table {
-                min-width: 120px;
-                width: 100%;
-                display: block;
-                height: 34px;
-                padding: 6px 12px;
-                font-size: 14px;
-                line-height: 1.428571429;
-                color: #555555;
-                vertical-align: middle;
-                background-color: #ffffff;
-                background-image: none;
-                border: 1px solid #cccccc;
-                border-radius: 4px;
-                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-                box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-                -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-                transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-            }
-
-            .small-box {
-                position: relative;
-                display: block;
-                -webkit-border-radius: 2px;
-                -moz-border-radius: 2px;
-                border-radius: 2px;
-                margin-bottom: 15px;
-                cursor: pointer;
-            }
-
-            .bg-green {
-                background-color: #00a65a !important;
-            }
-
-            .form-control-table[disabled], .form-control-table[readonly], fieldset[disabled] .form-control-table {
-                cursor: not-allowed;
-                background-color: #eeeeee;
-            }
-
-            .muted {
-                background-color: #F2F2F2 !important;
-            }
-
-            fieldset {
-                border: 1px solid #dddddd;
-                margin-bottom: 1em;
-                padding: 0 10px 10px 10px;
-                background: #FFFFFF;
-            }
-
-            fieldset legend {
-                color: #0C1B25;
-                font-family: arial;
-                width: inherit;
-                border-bottom: initial;
-            }
-
-            h3 {
-                font-size: 24px;
-            }
-
-            h4 {
-                font-size: 20px;
-                margin-top: 10px;
-                margin-bottom: 10px;
-            }
-
-            .nowrap {
-                white-space: nowrap;
-            }
-
-            .input-pdv {
-                font-size: 20px !important;
-                height: 60px !important;
-            }
-
-            .label-pdv > label {
-                font-size: 20px !important;
-                font-weight: normal !important;
-            }
-
-            .input-group .input-group-addon {
-                border-radius: 0;
-                background-color: #f4f4f4;
-            }
-
-            .input-group-addon:last-child {
-                border-left: 0;
-            }
-
-            .btn.btn-primary {
-                background-color: #0C1B25;
-                border-color: #1F4968;
-            }
-
-            .btn.btn-primary {
-                border-color: #0C1B25;
-            }
-
-            .box-title {
-                display: none;
-            }
-
-            .ui-inputnumber valor-abertura {
-                font-size: 50px !important;
-                font-weight: bold !important;
-            }
-
-        </style>
-    </ui:define>
 
     <ui:define name="gridDados">
 
@@ -185,19 +30,29 @@
 
 
                     <div class="row m-b">
-                        <h:panelGroup layout="block" class="col-xs-12 col-sm-3 m-t"
+                        <h:panelGroup layout="block" class="col-xs-12 col-sm-2 m-t"
                                       rendered="#{seguranca.administrador}">
-                            <div class="">
-                                <p:commandButton value="Movimento detalhado"
-                                                 action="#{pdvMovimentoControll.detalheMovimentos}"
-                                                 update=":formOutrasTelas:dialogOutrasTelas"
-                                                 oncomplete="PF('dialogOutrasTelas').show()"/>
-                            </div>
+
+                            <p:commandButton value="Totais Movimento"
+                                             action="#{pdvMovimentoControll.totaisMovimentos}"
+                                             style="width: 100%"
+                                             update=":formOutrasTelas:dialogOutrasTelas"
+                                             oncomplete="PF('dialogOutrasTelas').show()"/>
+
                         </h:panelGroup>
+
+                        <div class="col-xs-12 col-sm-3 m-t">
+                            <p:commandButton value="Pesquisar lançamento"
+                                             style="width: 100%"
+                                             action="#{pdvMovimentoControll.abrirPesquisaLancamento}"
+                                             update=":formOutrasTelas4:dialogOutrasTelas4"
+                                             oncomplete="PF('dialogOutrasTelas4').show()"/>
+                        </div>
 
                         <h:panelGroup layout="block" class="col-xs-12 col-sm-2 m-t"
                                       rendered="#{pdvMovimentoControll.temMovimento}">
                             <p:commandButton value="Lançamento"
+                                             style="width: 100%"
                                              update=":formOutrasTelas3:dialogOutrasTelas3"
                                              oncomplete="PF('dialogOutrasTelas3').show()"/>
 
@@ -598,6 +453,98 @@
                             <h:commandButton value="Cancelar"
                                              styleClass="btn btn-default center-block">
                                 <p:ajax oncomplete="PF('dialogOutrasTelas3').hide();"
+                                        process="@this"/>
+                            </h:commandButton>
+                        </div>
+
+                    </div>
+
+                </f:facet>
+
+            </p:dialog>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="outrasTelas4">
+        <h:form id="formOutrasTelas4">
+            <p:dialog id="dialogOutrasTelas4" header="Pesquisar Lançamento" widgetVar="dialogOutrasTelas4"
+                      showEffect="slide" width="700" height="450" hideEffect="slide" closable="true"
+                      resizable="true" modal="true" dynamic="true" responsive="true">
+                <p:outputPanel id="panelOutrasTelas4">
+                    <div class="ui-g m-b">
+
+
+                        <erp:campoData label="Data inicial"
+                                       idComponente="dataLancamentoInicial"
+                                       styleClass="col-xs-12 col-sm-4"
+                                       nomeAtributo="#{pdvMovimentoControll.dataLancamentoInicial}"
+                        />
+                        <erp:campoData label="Data final"
+                                       idComponente="dataLancamentoFinal"
+                                       styleClass="col-xs-12 col-sm-4"
+                                       nomeAtributo="#{pdvMovimentoControll.dataLancamentoFinal}"
+                        />
+                        <div class="col-sm-12">
+                            <p:outputLabel value="Descrição" for="observacaoLacamento"/>
+                            <div class="field-action">
+                                <p:inputText id="observacaoLacamento"
+                                             value="#{pdvMovimentoControll.observacaoLacamento}"/>
+                                <div style="margin-left: 5px">
+                                    <p:commandButton value="Pesquisar"
+                                                     action="#{pdvMovimentoControll.pesquisarLancamento}"
+                                                     update="lancamentos"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <p:dataTable value="#{pdvMovimentoControll.lancamentos}"
+                                     var="row"
+                                     id="lancamentos"
+                                     reflow="true" paginator="true"
+                                     rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
+                                     emptyMessage="Nenhum lançamento encontrado">
+
+                            <p:column headerText="Tipo" style="padding: 5px;" width="100">
+                                <h:outputText value="#{row.tipo eq 1 ? 'Suprimento' : 'Sangria'}"/>
+                            </p:column>
+
+                            <p:column headerText="Operador" style="padding: 5px;" width="100">
+                                <h:outputText value="#{row.operador}"/>
+                            </p:column>
+
+                            <p:column headerText="Lançamento" sortBy="#{row.data}"
+                                      styleClass="text-center" style="padding: 5px;" width="130">
+                                <h:outputText value="#{row.data}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Descrição" style="padding: 5px;">
+                                <h:outputText value="#{row.observacao}"/>
+                            </p:column>
+
+                            <p:column headerText="Valor" styleClass="text-right" style="padding: 5px;" width="80">
+                                <h:outputText value="#{row.valor}">
+                                    <f:convertNumber pattern="#,##0.00"/>
+                                </h:outputText>
+                            </p:column>
+
+
+                        </p:dataTable>
+                    </div>
+
+                </p:outputPanel>
+
+                <f:facet name="footer">
+
+                    <div class="row">
+
+                        <div class="col-xs-12 text-center">
+                            <h:commandButton value="Fechar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas4').hide();"
                                         process="@this"/>
                             </h:commandButton>
                         </div>

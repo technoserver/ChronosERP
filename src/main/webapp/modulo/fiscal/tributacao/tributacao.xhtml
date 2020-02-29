@@ -272,7 +272,7 @@
                       resizable="true" modal="true" closable="false" width="800">
                 <h:panelGroup layout="block" id="panelTributIcmsUf">
 
-                    <div class="row">
+                    <div class="ui-g">
                         <erp:autoComplete styleClass="col-xs-12 col-sm-12 col-md-12"
                                           label="Grupo Tributario"
                                           itemLabel="#{objeto.descricao}"
@@ -285,7 +285,7 @@
 
 
                     </div>
-                    <div class="row">
+                    <div class="ui-g">
                         <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
                                          idComponente="tributIcmsUfUfDestino" label="UF Destino"
                                          nomeAtributo="#{tributacaoControll.tributIcmsUf.ufDestino}"
@@ -306,7 +306,7 @@
                                          itens="#{tributacaoControll.listaCstB}"
                                          rendered="#{!tributacaoControll.simplesNascional}"/>
                     </div>
-                    <div class="row">
+                    <div class="ui-g">
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="tributIcmsUfAliquota" label="Aliquota ICMS"
                                           nomeAtributo="#{tributacaoControll.tributIcmsUf.aliquota}"/>
@@ -326,7 +326,7 @@
 
 
                     </div>
-                    <div class="row">
+                    <div class="ui-g">
 
                         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                                           idComponente="tributIcmsUfMva" label="MVA"

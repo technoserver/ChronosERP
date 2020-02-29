@@ -24,16 +24,16 @@
     <ui:define name="gridDados">
 
         <erp:gridDados controller="#{situacaoClienteControll}"
-                       idDataTable="dataTableVendendor"
+                       idDataTable="situacaoDataTable"
                        nomeFuncao="Vendedores"
                        id="telaGrid"
 
         >
 
-            <p:column headerText="Colaborador">
+            <p:column headerText="Nome">
                 <h:outputLabel value="#{row.nome}"/>
             </p:column>
-            <p:column headerText="Bloquear" class="coluna-monetaria">
+            <p:column headerText="Bloquear">
                 <h:outputLabel value="#{row.descBloquear}"/>
             </p:column>
 
@@ -51,18 +51,18 @@
             <div class="row">
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
-                                label="Colaborador"
+                                label="Nome"
                                 tamanhoMaximo="100"
-                                idComponente="colaborador"
+                                idComponente="Nome"
                                 nomeAtributo="#{situacaoClienteControll.objeto.nome}"
-                                desabilitado="#{situacaoClienteControll.objeto.id eq 1 or situacaoClienteControll.objeto.id eq 2}"
+                                desabilitado="#{not empty situacaoClienteControll.objeto.id and (situacaoClienteControll.objeto.id eq 1 or situacaoClienteControll.objeto.id eq 2)}"
                 />
 
                 <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                label="Colaborador"
+                                label="descBloquear"
                                 tamanhoMaximo="100"
-                                idComponente="colaborador"
-                                rendered="#{situacaoClienteControll.objeto.id eq 1 or situacaoClienteControll.objeto.id eq 2}"
+                                idComponente="descBloquear"
+                                rendered="#{not empty situacaoClienteControll.objeto.id and (situacaoClienteControll.objeto.id eq 1 or situacaoClienteControll.objeto.id eq 2)}"
                                 nomeAtributo="#{situacaoClienteControll.objeto.descBloquear}"
                                 desabilitado="true"
                 />
@@ -70,7 +70,7 @@
                 <erp:campoSelect nomeAtributo="#{situacaoClienteControll.objeto.bloquear}"
                                  label="Bloquear"
                                  idComponente="bloquear"
-                                 rendered="#{empty situacaoClienteControll.objeto.id}"
+                                 rendered="#{empty situacaoClienteControll.objeto.id or (situacaoClienteControll.objeto.id ne 1 or situacaoClienteControll.objeto.id ne 2)}"
                                  itens="#{situacaoClienteControll.simNao}"
                                  styleClass="col-xs-12 col-sm-2 col-md-2"/>
 
@@ -78,7 +78,8 @@
                                     label="Descrição"
                                     idComponente="descricao"
                                     styleClass="col-xs-12 col-sm-12 col-md-12"
-                                    desabilitado="#{situacaoClienteControll.objeto.id eq 1 or situacaoClienteControll.objeto.id eq 2}"/>
+                                    desabilitado="#{not empty situacaoClienteControll.objeto.id and (situacaoClienteControll.objeto.id eq 1 or situacaoClienteControll.objeto.id eq 2)}"
+                />
 
 
             </div>
