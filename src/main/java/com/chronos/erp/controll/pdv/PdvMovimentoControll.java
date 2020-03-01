@@ -103,6 +103,7 @@ public class PdvMovimentoControll implements Serializable {
     private BigDecimal valor;
     private String observacaoLacamento = "";
 
+
     private List<LancamentoMovimentoDTO> lancamentos;
 
 
@@ -299,7 +300,7 @@ public class PdvMovimentoControll implements Serializable {
                 : DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataLancamentoFinal, 23), 59), 59);
 
         lancamentos = repository.getEntitysNamedQuery(LancamentoMovimentoDTO.class, "PdvMovimento.lancamentos"
-                , empresa.getId(), dataLancamentoInicial, dataLancamentoFinal, "%" + observacaoLacamento + "%");
+                , empresa.getId(), dataLancamentoInicial, dataLancamentoFinal, "%" + observacaoLacamento + "%", tipoLancamento);
     }
 
     public void iniciarMovimento() {

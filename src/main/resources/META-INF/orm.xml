@@ -250,7 +250,7 @@
             from pdv_sangria s
             inner join pdv_movimento m on m.id = s.id_pdv_movimento
             inner join pdv_operador o on o.id = m.id_pdv_operador
-            where m.id_empresa = ?1 and s.data_sangria between ?2 and ?3 and o.observacao like ?4
+            where m.id_empresa = ?1 and s.data_sangria between ?2 and ?3 and s.observacao like ?4 and 2 = ?5
 
             union
 
@@ -263,7 +263,7 @@
             from pdv_suprimento s
             inner join pdv_movimento m on m.id = s.id_pdv_movimento
             inner join pdv_operador o on o.id = m.id_pdv_operador
-            where m.id_empresa = ?1 and s.data_suprimento between ?2 and ?3 and o.observacao like ?4
+            where m.id_empresa = ?1 and s.data_suprimento between ?2 and ?3 and s.observacao like ?4 and 1 = ?5
         </query>
 
 

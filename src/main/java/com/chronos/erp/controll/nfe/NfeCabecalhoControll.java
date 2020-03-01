@@ -103,6 +103,8 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
     private boolean podeAlterarPreco = true;
 
+    private int tipoCstIcms;
+
     @PostConstruct
     @Override
     public void init() {
@@ -307,16 +309,19 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
     // <editor-fold defaultstate="collapsed" desc="Procedimentos Crud Produto">
 
     public void inlcuirProduto() {
-        if (getObjeto().getTributOperacaoFiscal() == null) {
+        if (getObjeto().getTributOperacaoFiscal() == null && getObjeto().getFinalidadeEmissao().equals(1)) {
             podeIncluirProduto = false;
             Mensagem.addInfoMessage("Antes de incluir produtos selecione a Operação Fiscal.");
 
-        } else if (getObjeto().getCodigoModelo().equals("55") && StringUtils.isEmpty(destinatario.getNome())) {
+        } else if (getObjeto().getCodigoModelo().equals("55")
+                && StringUtils.isEmpty(destinatario.getNome())
+                && getObjeto().getFinalidadeEmissao().equals(1)) {
             podeIncluirProduto = false;
             Mensagem.addInfoMessage("Antes de incluir produtos selecione o destinatário.");
 
         } else {
             podeIncluirProduto = true;
+            tipoCstIcms = Integer.valueOf(empresa.getCrt());
             nfeDetalhe = new NfeDetalhe();
             nfeDetalhe.setNfeCabecalho(getObjeto());
             nfeDetalhe.setQuantidadeComercial(BigDecimal.ONE);
@@ -842,6 +847,10 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
     // <editor-fold defaultstate="collapsed" desc="GETS SETS">
 
+
+    public int getTipoCstIcms() {
+        return tipoCstIcms;
+    }
 
     public NfeDestinatario getDestinatario() {
         return destinatario;
