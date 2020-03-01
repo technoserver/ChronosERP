@@ -45,8 +45,9 @@ public class NfeDetalheService extends AbstractService<NfeDetalhe> {
         item.setValorUnitarioTributavel(valorVenda);
         item.setEntraTotal(1);
         item.pegarInfoProduto();
-        item = definirTributacao(item, operacaoFiscal, destinatario);
-
+        if (item.getNfeCabecalho().getFinalidadeEmissao().equals(1)) {
+            item = definirTributacao(item, operacaoFiscal, destinatario);
+        }
         return item;
     }
 

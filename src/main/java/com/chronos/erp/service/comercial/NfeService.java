@@ -329,7 +329,9 @@ public class NfeService implements Serializable {
     public NfeCabecalho atualizarTotais(NfeCabecalho nfe) throws Exception {
         NfeUtil nFeUtil = new NfeUtil();
         nfe = nFeUtil.calcularTotalNFe(nfe);
-        nFeUtil.definirTotaisTributos(nfe);
+        if (nfe.getFinalidadeEmissao().equals(1)) {
+            nFeUtil.definirTotaisTributos(nfe);
+        }
         return nfe;
     }
 

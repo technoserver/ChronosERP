@@ -10,6 +10,7 @@ import com.chronos.calc.enuns.TipoOperacao;
 import com.chronos.calc.enuns.TipoPessoa;
 import com.chronos.calc.resultados.IResultadoCalculoIbpt;
 import com.chronos.erp.modelo.entidades.*;
+import com.chronos.erp.service.ChronosException;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -39,15 +40,15 @@ public class NfeCalculoControll {
 
         tributacao = new TributaNFe(produto);
         if (empresa.getCrt() == null) {
-            throw new Exception("CRT da empresa não definido");
+            throw new ChronosException("CRT da empresa não definido");
         }
 
-        if (empresa.getCrt().equals("1") && StringUtils.isEmpty(produto.getCsosn())) {
-            throw new Exception("CSOSN não definido");
+        if (!produto.isServico() && empresa.getCrt().equals("1") && StringUtils.isEmpty(produto.getCsosn())) {
+            throw new ChronosException("CSOSN não definido");
         }
 
-        if (!empresa.getCrt().equals("1") && StringUtils.isEmpty(produto.getCst())) {
-            throw new Exception("CST não definido");
+        if (!produto.isServico() && !empresa.getCrt().equals("1") && StringUtils.isEmpty(produto.getCst())) {
+            throw new ChronosException("CST não definido");
         }
 
         Crt crt = Crt.valueOfCodigo(Integer.valueOf(empresa.getCrt()));
