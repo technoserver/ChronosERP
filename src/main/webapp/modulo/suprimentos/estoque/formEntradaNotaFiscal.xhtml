@@ -265,7 +265,6 @@
                                     id="btnDisvincularProduto"
                                     process="formCentro:tabNfe:tabProdutos"
                                     update=":formCentro:tabNfe:tabProdutos,:formCentro:mensagem"
-                                    oncomplete="PF('dialogVincularProduto').show()"
                                     rendered="#{ not empty obj.produto.id and obj.produtoCadastrado and empty entradaNotaFiscalControll.objeto.id and entradaNotaFiscalControll.importado}"
                                     action="#{entradaNotaFiscalControll.disvincularProduto}">
                             <f:setPropertyActionListener value="#{obj}"

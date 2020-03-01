@@ -5,84 +5,165 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
                 xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
 
     <h:panelGroup rendered="#{nfeCabecalhoControll.objeto.finalidadeEmissao == 1}">
-        <div class="ui-g">
-            <div class="col-xs-12 col-sm-8 col-md-8">
-                <p:outputLabel value="Produto" for="nfeDetalheProduto"/>
-                <br/>
-                <p:autoComplete id="nfeDetalheProduto"
-                                value="#{nfeCabecalhoControll.nfeDetalhe.produto}"
-                                completeMethod="#{nfeCabecalhoControll.getListaProduto}"
-                                var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"
-                                converter="defaultConverter" forceSelection="true"
-                                minQueryLength="3" maxResults="20" required="true"
-                                style="width: 100%" emptyMessage="Nenhum registro encontrado">
-                    <p:column headerText="Produto">
-                        <p:outputLabel value="#{produto.nome}"/>
-                    </p:column>
-                    <p:column headerText="UN">
-                        <p:outputLabel value="#{produto.unidadeProduto.sigla}"/>
-                    </p:column>
-                    <p:column headerText="Valor Venda" class="coluna-monetaria">
-                        <p:outputLabel value="#{produto.valorVenda}">
-                            <f:convertNumber pattern="#,###,##0.00"/>
-                        </p:outputLabel>
-                    </p:column>
-                    <p:column headerText="EV" class="coluna-monetaria">
-                        <p:outputLabel value="#{produto.controle}">
-                            <f:convertNumber pattern="#,###,##0.00"/>
-                        </p:outputLabel>
-                    </p:column>
-                    <p:column headerText="Estoque" class="coluna-monetaria">
-                        <p:outputLabel value="#{produto.quantidadeEstoque}">
-                            <f:convertNumber pattern="#,###,##0.00"/>
-                        </p:outputLabel>
-                    </p:column>
-                    <p:ajax event="itemSelect"
-                            listener="#{nfeCabecalhoControll.selecionaValorProduto}"
-                            update="formOutrasTelas:valorVenda:nfeDetalheValorUnitarioComercial"/>
-                </p:autoComplete>
-            </div>
-            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                              idComponente="nfeDetalheQuantidadeComercial" label="Quantidade"
-                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.quantidadeComercial}"
-                              requerido="true"/>
-            <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
-                              id="valorVenda"
-                              desabilitado="#{!nfeCabecalhoControll.podeAlterarPreco}"
-                              idComponente="nfeDetalheValorUnitarioComercial" label="Valor"
-                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorUnitarioComercial}"
-                              requerido="true"/>
+        <ui:include src="dadosProduto.xhtml"/>
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{nfeCabecalhoControll.objeto.finalidadeEmissao ne 1}">
+        <p:tabView id="tabNfeProduto" style="border: 0px;">
+            <p:tab title="Dados Principais">
+                <ui:include src="dadosProduto.xhtml"/>
+            </p:tab>
+            <p:tab title="ICMS">
+                <div class="ui-g">
+                    <erp:campoSelect styleClass="col-xs-12 col-lg-12"
+                                     idComponente="nfeDetalheImpostoIcmsCst"
+                                     label="CST"
+                                     nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.cstIcms}"
+                                     itens="#{nfeCabecalhoControll.listaCstB}"
+                                     rendered="#{nfeCabecalhoControll.tipoCstIcms>1}"/>
+
+                    <erp:campoSelect styleClass="col-xs-12 col-lg-12"
+                                     idComponente="nfeDetalheImpostoIcmsCsosn"
+                                     label="CSOSN"
+                                     nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.csosn}"
+                                     itens="#{nfeCabecalhoControll.listaCst}"
+                                     rendered="#{nfeCabecalhoControll.tipoCstIcms==1}"/>
+
+                </div>
 
 
-        </div>
-        <div class="ui-g">
-            <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
-                              idComponente="nfeDetalheValorFrete" label="Valor Frete"
-                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorFrete}"/>
-            <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
-                              idComponente="nfeDetalheValorSeguro" label="Valor Seguro"
-                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorSeguro}"/>
-            <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
-                              idComponente="nfeDetalheValorDesconto" label="Valor Desconto"
-                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorDesconto}"/>
-            <erp:campoDecimal styleClass="col-xs-12 col-sm-12 col-md-3"
-                              idComponente="nfeDetalheValorOutrasDespesas"
-                              label="Outras Despesas"
-                              nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.valorOutrasDespesas}"/>
-        </div>
+                <div class="ui-g">
 
-        <div class="ui-g">
-            <erp:campoAreaTexto styleClass="col-xs-12 col-sm-12 col-md-12"
-                                idComponente="nfeDetalheInformacoesAdcionais"
-                                label="Info. Adcionais"
-                                nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.informacoesAdicionais}"
-                                linhas="5"/>
-        </div>
+
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoIcmsBaseCalculoIcms"
+                                      label="Base Calculo Icms"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.baseCalculoIcms}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoIcmsAliquotaIcms"
+                                      label="Aliquota Icms"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.aliquotaIcms}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoIcmsValorIcms" label="Valor Icms"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.valorIcms}"/>
+                </div>
+
+
+                <div class="ui-g">
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoIcmsValorBaseCalculoIcmsSt"
+                                      label="Base Calc. Icms St"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.valorBaseCalculoIcmsSt}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoIcmsAliquotaIcmsSt"
+                                      label="Aliquota Icms St"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.aliquotaIcmsSt}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoIcmsValorIcmsSt"
+                                      label="Valor Icms St"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.valorIcmsSt}"/>
+
+                </div>
+                <div class="ui-g">
+                    <erp:campoSelect styleClass="col-xs-12 col-lg-6"
+                                     idComponente="nfeDetalheImpostoIcmsCst"
+                                     label="Modalidade Base Calculo ICMS"
+                                     nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.modalidadeBcIcms}"
+                                     itens="#{nfeCabecalhoControll.tributIcmsBaseCalculo}"/>
+                    <erp:campoSelect styleClass="col-xs-12 col-lg-6"
+                                     idComponente="nfeDetalheImpostoIcmsCst"
+                                     label="Modalidade Base Calculo ICMS ST"
+                                     nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIcms.modalidadeBcIcmsSt}"
+                                     itens="#{nfeCabecalhoControll.tributIcmsStBaseCalculo}"/>
+                </div>
+
+
+            </p:tab>
+            <p:tab title="IPI">
+                <div class="ui-g">
+                    <erp:campoSelect styleClass="col-xs-12 col-lg-12"
+                                     idComponente="nfeDetalheImpostoIcmsCst"
+                                     label="CST"
+                                     nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIpi.cstIpi}"
+                                     itens="#{nfeCabecalhoControll.listaCstIpi}"/>
+
+
+                </div>
+                <div class="ui-g">
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoIpiBaseCaluclo"
+                                      label="Base Calculo"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIpi.valorBaseCalculoIpi}"/>
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoIpiAliquota"
+                                      label="Aliquota"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIpi.aliquotaIpi}"/>
+
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoIpiValor"
+                                      label="Valor"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoIpi.valorIpi}"/>
+                </div>
+            </p:tab>
+            <p:tab title="PIS">
+                <div class="ui-g">
+                    <erp:campoSelect styleClass="col-xs-12 col-lg-12"
+                                     idComponente="nfeDetalheImpostoPisCst"
+                                     label="CST"
+                                     nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoPis.cstPis}"
+                                     itens="#{nfeCabecalhoControll.listaCstPis}"/>
+
+                </div>
+                <div class="ui-g">
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoPisBaseCalculo" label="Base Calculo"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoPis.valorBaseCalculoPis}"
+                    />
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoPisAliqPerc" label="Aliquota (%)"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoPis.aliquotaPisPercentual}"
+                    />
+
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoPisValor" label="Valor"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoPis.valorPis}"
+                    />
+                </div>
+
+            </p:tab>
+            <p:tab title="COFINS">
+                <div class="ui-g">
+
+                    <erp:campoSelect styleClass="col-xs-12 col-lg-12"
+                                     idComponente="nfeDetalheImpostoCofinsCst"
+                                     label="CST"
+                                     nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoCofins.cstCofins}"
+                                     itens="#{nfeCabecalhoControll.listaCstPis}"/>
+
+                </div>
+                <div class="ui-g">
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoCofinsBaseCalculo" label="Base Calculo"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoCofins.baseCalculoCofins}"
+                    />
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoCofinsAliqPerc" label="Aliquota (%)"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoCofins.aliquotaCofinsPercentual}"
+                    />
+
+                    <erp:campoDecimal styleClass="col-xs-12 col-lg-3"
+                                      idComponente="nfeDetalheImpostoCofinsValor" label="Valor"
+                                      nomeAtributo="#{nfeCabecalhoControll.nfeDetalhe.nfeDetalheImpostoCofins.valorCofins}"
+                    />
+                </div>
+            </p:tab>
+        </p:tabView>
+
+
     </h:panelGroup>
 
 

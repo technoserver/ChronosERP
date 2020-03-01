@@ -484,6 +484,15 @@
                                        styleClass="col-xs-12 col-sm-4"
                                        nomeAtributo="#{pdvMovimentoControll.dataLancamentoFinal}"
                         />
+
+                        <erp:campoSelect styleClass="col-sm-4"
+                                         nomeAtributo="#{pdvMovimentoControll.tipoLancamento}"
+                                         label="Tipo"
+                                         idComponente="tipo"
+                                         itens="#{pdvMovimentoControll.tiposLancamento}"
+                        />
+
+
                         <div class="col-sm-12">
                             <p:outputLabel value="Descrição" for="observacaoLacamento"/>
                             <div class="field-action">
@@ -506,9 +515,6 @@
                                      rows="10" rowsPerPageTemplate="10,20,30,40" paginatorPosition="bottom"
                                      emptyMessage="Nenhum lançamento encontrado">
 
-                            <p:column headerText="Tipo" style="padding: 5px;" width="100">
-                                <h:outputText value="#{row.tipo eq 1 ? 'Suprimento' : 'Sangria'}"/>
-                            </p:column>
 
                             <p:column headerText="Operador" style="padding: 5px;" width="100">
                                 <h:outputText value="#{row.operador}"/>
