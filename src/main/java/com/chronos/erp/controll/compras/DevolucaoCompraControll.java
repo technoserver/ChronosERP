@@ -359,7 +359,7 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         List<TributOperacaoFiscal> listaTributOperacaoFiscal = new ArrayList<>();
 
         try {
-            listaTributOperacaoFiscal = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn"});
+            listaTributOperacaoFiscal = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, "descricao", descricao, new Object[]{"descricao", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins"});
         } catch (Exception e) {
             // e.printStackTrace();
         }
