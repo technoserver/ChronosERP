@@ -94,10 +94,8 @@ public class OsService extends AbstractService<OsAbertura> {
         if (os.isNovo()) {
             repository.salvar(os);
             os.setNumero("OS" + new DecimalFormat("0000000").format(os.getId()));
-            os = repository.atualizar(os);
-        } else {
-            os = repository.atualizar(os);
         }
+        os = repository.atualizar(os);
 
 
         return os;
@@ -188,10 +186,11 @@ public class OsService extends AbstractService<OsAbertura> {
         sobra = Biblioteca.subtrai(sobra, descItens);
 
         if (sobra.signum() > 0 || sobra.signum() < 0) {
-            OsProdutoServico item = os.getListaOsProdutoServico().stream().findFirst().get();
+            OsProdutoServico item;
+            item = os.getListaOsProdutoServico().stream().findFirst().get();
             BigDecimal vlrDesc = Biblioteca.soma(item.getValorDesconto(), sobra);
             BigDecimal vlrTotal = Biblioteca.subtrai(item.getValorSubtotal(), vlrDesc);
-            BigDecimal txDesc = Biblioteca.calcularFator(item.getValorSubtotal(), vlrTotal);
+
             item.setValorDesconto(vlrDesc);
             item.setValorTotal(vlrTotal);
         }
@@ -262,9 +261,7 @@ public class OsService extends AbstractService<OsAbertura> {
             os.getListaOsProdutoServico()
                     .stream()
                     .filter(p -> p.getProduto().getServico().equalsIgnoreCase("N"))
-                    .forEach(p -> {
-                        produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
-                    });
+                    .forEach(p -> produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade())));
 
             estoqueRepositoy.atualizaEstoqueVerificado(os.getEmpresa().getId(), produtos);
         }
