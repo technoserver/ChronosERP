@@ -258,10 +258,11 @@ public class OsService extends AbstractService<OsAbertura> {
 
 
             List<ProdutoVendaDTO> produtos = new ArrayList<>();
-            os.getListaOsProdutoServico()
-                    .stream()
-                    .filter(p -> p.getProduto().getServico().equalsIgnoreCase("N"))
-                    .forEach(p -> produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade())));
+            for (OsProdutoServico p : os.getListaOsProdutoServico()) {
+                if (p.getProduto().getServico().equalsIgnoreCase("N")) {
+                    produtos.add(new ProdutoVendaDTO(p.getProduto().getId(), p.getQuantidade()));
+                }
+            }
 
             estoqueRepositoy.atualizaEstoqueVerificado(os.getEmpresa().getId(), produtos);
         }
@@ -269,7 +270,7 @@ public class OsService extends AbstractService<OsAbertura> {
         if (os.getValorTotalProduto().signum() > 0 || os.getValorTotalServico().signum() > 0) {
             BigDecimal recebidoAteAgora = BigDecimal.ZERO;
 
-            if (os.getListaFormaPagamento() == null | os.getListaFormaPagamento().isEmpty()) {
+            if (os.getListaFormaPagamento() == null || os.getListaFormaPagamento().isEmpty()) {
                 throw new ChronosException("Forma de pagamento não definidas");
             }
 
@@ -334,7 +335,20 @@ public class OsService extends AbstractService<OsAbertura> {
         }
 
         if (cancelado && (os.getValorTotalProduto().signum() > 0 || os.getValorTotalServico().signum() > 0)) {
-            finLancamentoReceberService.excluirFinanceiro(os.getNumero(), Modulo.OS);
+
+            for (OsFormaPagamento p : os.getListaFormaPagamento()) {
+                if (p.getFormaPagamento().getForma().equals("14") && cancelado) {
+                    finLancamentoReceberService.excluirFinanceiro(os.getNumero(), Modulo.OS);
+                }
+
+                if (p.getFormaPagamento().getForma().equals("05") && cancelado) {
+
+                    contaPessoaService.excluirMovimento(os.getCliente().getPessoa().getId(), os.getId(), Modulo.OS.getCodigo());
+
+                }
+            }
+
+
         }
 
         if (estoque && cancelado && os.getValorTotalProduto().signum() > 0) {
