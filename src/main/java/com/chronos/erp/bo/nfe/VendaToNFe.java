@@ -79,6 +79,30 @@ public class VendaToNFe extends ManualCDILookup {
         addItens();
         definirFormaPagamento();
         gerarDuplicatas();
+        if (tipoVenda == TipoVenda.VENDA && venda.getTransportadora() != null) {
+            nfe.setTransporte(new NfeTransporte());
+            nfe.getTransporte().setNfeCabecalho(nfe);
+            String cpfCnpj = venda.getTransportadora().getPessoa().getTipo().equals("F")
+                    ? venda.getTransportadora().getPessoa().getPessoaFisica().getCpf()
+                    : venda.getTransportadora().getPessoa().getPessoaJuridica().getCnpj();
+
+            nfe.getTransporte().setTransportadora(venda.getTransportadora());
+            nfe.getTransporte().setCpfCnpj(cpfCnpj);
+            nfe.getTransporte().setEmpresaEndereco(venda.getTransportadora().getPessoa().buscarEnderecoPrincipal().getCidade());
+            nfe.getTransporte().setNome(venda.getTransportadora().getPessoa().getNome());
+            nfe.getTransporte().setMunicipio(venda.getTransportadora().getPessoa().buscarEnderecoPrincipal().getMunicipioIbge());
+            nfe.getTransporte().setNomeMunicipio(venda.getTransportadora().getPessoa().buscarEnderecoPrincipal().getCidade());
+
+            nfe.getTransporte().setUf(venda.getTransportadora().getPessoa().buscarEnderecoPrincipal().getUf());
+
+            int modalidadeFrete = 0;
+            if (!StringUtils.isEmpty(venda.getTipoFrete())) {
+                modalidadeFrete = venda.getTipoFrete().equals("C") ? 0 : 1;
+            }
+            nfe.getTransporte().setModalidadeFrete(modalidadeFrete);
+        }
+
+
         return nfe;
     }
 
