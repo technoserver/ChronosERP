@@ -1106,21 +1106,19 @@ public class NfeService implements Serializable {
         }
 
         if (nfe.getListaCupomFiscalReferenciado() != null) {
-            nfe.getListaCupomFiscalReferenciado().stream().forEach(o -> {
+            for (NfeCupomFiscalReferenciado o : nfe.getListaCupomFiscalReferenciado()) {
                 o.setId(null);
                 o.setNfeCabecalho(copia);
                 copia.getListaCupomFiscalReferenciado().add(o);
-            });
+            }
         }
 
         if (nfe.getListaNfReferenciada() != null) {
-            nfe.getListaNfReferenciada().stream().forEach(o -> {
+            for (NfeNfReferenciada o : nfe.getListaNfReferenciada()) {
                 o.setId(null);
                 o.setNfeCabecalho(copia);
                 copia.getListaNfReferenciada().add(o);
-            });
-        } else {
-
+            }
         }
 
         if (nfe.getListaCteReferenciado() != null && !nfe.getListaCteReferenciado().isEmpty()) {
@@ -1132,25 +1130,25 @@ public class NfeService implements Serializable {
         }
 
         if (nfe.getListaDuplicata() != null) {
-            nfe.getListaDuplicata().stream().forEach(o -> {
+            for (NfeDuplicata o : nfe.getListaDuplicata()) {
                 o.setId(null);
                 o.setNfeCabecalho(copia);
                 copia.getListaDuplicata().add(o);
-            });
+            }
 
         }
 
         if (nfe.getListaNfeFormaPagamento() != null) {
-            nfe.getListaNfeFormaPagamento().stream().forEach(o -> {
+            for (NfeFormaPagamento o : nfe.getListaNfeFormaPagamento()) {
                 o.setId(null);
                 o.setNfeCabecalho(copia);
                 copia.getListaNfeFormaPagamento().add(o);
-            });
+            }
         }
 
         if (nfe.getListaNfeDetalhe() != null) {
 
-            nfe.getListaNfeDetalhe().stream().forEach(i -> {
+            for (NfeDetalhe i : nfe.getListaNfeDetalhe()) {
                 i.setId(null);
                 i.setNfeCabecalho(copia);
                 i.setListaGrade(new HashSet<>());
@@ -1182,7 +1180,7 @@ public class NfeService implements Serializable {
                 }
 
                 copia.getListaNfeDetalhe().add(i);
-            });
+            }
 
         }
 

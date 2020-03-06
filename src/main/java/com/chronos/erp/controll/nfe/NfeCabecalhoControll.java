@@ -175,7 +175,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
     @Override
     public void doCreate() {
         try {
-            super.doCreate();
+            setObjeto(new NfeCabecalho());
             pessoaCliente = null;
             duplicidade = false;
             NfeCabecalho nfeCabecalho = nfeService.dadosPadroes(empresa, ModeloDocumento.NFE);
@@ -191,9 +191,10 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
             volume.setNfeTransporte(getObjeto().getTransporte());
             cartas = new ArrayList<>();
             this.setActiveTabIndex(0);
+            setTelaGrid(false);
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {
-                Mensagem.addFatalMessage("Erro ao criar a NFe. ", ex);
+                Mensagem.addErrorMessage("Erro ao criar a NFe. ", ex);
             } else {
                 throw new RuntimeException("Erro ao criar a NFe. ", ex);
             }
