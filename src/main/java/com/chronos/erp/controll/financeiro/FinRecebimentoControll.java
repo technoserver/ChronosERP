@@ -240,15 +240,16 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         for (ViewFinLancamentoReceber p : parcelasSelecionadas) {
 
             if (saldo.signum() > 0) {
+                FinParcelaRecebimento rec;
                 if (p.getValorAPagar().compareTo(saldo) <= 0) {
-                    fazerLancamento(p, p.getValorAPagar(), false, movimento);
+                    rec = fazerLancamento(p, p.getValorAPagar(), false, movimento);
                     saldo = saldo.subtract(p.getValorAPagar());
                 } else {
-                    fazerLancamento(p, saldo, true, movimento);
+                    rec = fazerLancamento(p, saldo, true, movimento);
                     saldo = BigDecimal.ZERO;
                 }
 
-                ids.add(p.getId());
+                ids.add(rec.getId());
                 idcliente = p.getIdCliente();
                 documentos += " " + p.getNumeroDocumento() + "/" + p.getNumeroParcela();
 
@@ -277,14 +278,10 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     }
 
     @Transactional
-    private void fazerLancamento(ViewFinLancamentoReceber p, BigDecimal valorPagar, boolean parcial, PdvMovimento movimento) {
+    private FinParcelaRecebimento fazerLancamento(ViewFinLancamentoReceber p, BigDecimal valorPagar, boolean parcial, PdvMovimento movimento) {
         FinParcelaRecebimento recebimento = new FinParcelaRecebimento();
         recebimento.setFinTipoRecebimento(tipoRecebimento);
         BigDecimal valorJuros = BigDecimal.ZERO;
-
-        if (valorPagar.compareTo(p.getSaldo()) > 0) {
-            //    valorJuros = valorPagar.subtract(p.getValorJuro());
-        }
 
         recebimento.setContaCaixa(tipoRecebimento.getContaCaixa());
         recebimento.setDataRecebimento(new Date());
@@ -303,8 +300,9 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         FinParcelaReceber pr = new FinParcelaReceber(p.getIdParcelaReceber());
         recebimento.setFinParcelaReceber(pr);
 
-        finParcelaRecebimentoRepository.salvar(recebimento);
+        recebimento = finParcelaRecebimentoRepository.atualizar(recebimento);
         parcelaReceberRepository.atualizarStatusParcela(recebimento.getFinParcelaReceber().getId(), status.getId());
+        return recebimento;
     }
 
     public List<Cliente> getListaCliente(String nome) {
