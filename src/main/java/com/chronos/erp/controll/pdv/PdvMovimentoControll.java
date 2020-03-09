@@ -300,7 +300,7 @@ public class PdvMovimentoControll implements Serializable {
                 : DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataLancamentoFinal, 23), 59), 59);
 
         lancamentos = repository.getEntitysNamedQuery(LancamentoMovimentoDTO.class, "PdvMovimento.lancamentos"
-                , empresa.getId(), dataLancamentoInicial, dataLancamentoFinal, "%" + observacaoLacamento + "%", tipoLancamento);
+                , empresa.getId(), dataLancamentoInicial, dataLancamentoFinal, "%" + observacaoLacamento.toLowerCase() + "%", tipoLancamento);
     }
 
     public void iniciarMovimento() {

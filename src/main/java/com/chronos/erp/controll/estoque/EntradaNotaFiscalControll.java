@@ -227,7 +227,7 @@ public class EntradaNotaFiscalControll extends AbstractControll<NfeCabecalho> im
                 entradaService.estornarEstoque(nfe);
                 Mensagem.addInfoMessage("Registro excluso com sucesso");
             } else {
-                this.remover();
+                super.remover();
             }
 
 

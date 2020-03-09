@@ -12,6 +12,7 @@ import com.chronos.erp.service.financeiro.ContaPessoaService;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -49,6 +50,7 @@ public class CreditoPessoaControll extends AbstractControll<ContaPessoa> impleme
     private List<MovimentoContaPessoa> movimentos;
 
     private MovimentoContaPessoa movimentoSelecionado;
+    private String nome;
 
 
     @Inject
@@ -62,6 +64,8 @@ public class CreditoPessoaControll extends AbstractControll<ContaPessoa> impleme
             dataModel.setClazz(ContaPessoa.class);
         }
         dataModel.setAtributos(new Object[]{"pessoa.nome", "saldo", "classificacaoContabilConta"});
+        dataModel.setOrdernarPor("pessoa.nome");
+        pesquisar();
         return dataModel;
     }
 
@@ -76,6 +80,13 @@ public class CreditoPessoaControll extends AbstractControll<ContaPessoa> impleme
         dataModelMovimento.getFiltros().clear();
         dataModelMovimento.addFiltro("contaPessoa.id", getObjeto().getId(), Filtro.IGUAL);
         return dataModelMovimento;
+    }
+
+    public void pesquisar() {
+
+        if (!StringUtils.isEmpty(nome)) {
+            dataModel.addFiltro("pessoa.nome", nome, Filtro.LIKE);
+        }
     }
 
     @Override
@@ -170,5 +181,13 @@ public class CreditoPessoaControll extends AbstractControll<ContaPessoa> impleme
 
     public void setMovimentoSelecionado(MovimentoContaPessoa movimentoSelecionado) {
         this.movimentoSelecionado = movimentoSelecionado;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 }

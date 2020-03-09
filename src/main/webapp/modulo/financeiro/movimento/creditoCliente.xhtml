@@ -22,25 +22,36 @@
 
 
     <ui:define name="gridDados">
+        <erp:formularioGrid
+                controller="#{creditoPessoaControll}"
+                id="telaGrid">
+            <div class="row m-b">
+                <div class="col-xs-12 col-sm-6">
+                    <label>Cliente</label>
+                    <div class="field-action">
+                        <p:inputText value="#{creditoPessoaControll.nome}"/>
+                        <div style="margin-left: 5px">
+                            <p:commandButton value="Pesquisar"
+                                             update="formCentro:telaGrid:grid:dataTableContaPessoa"/>
+                        </div>
+                    </div>
 
-        <erp:gridDados controller="#{creditoPessoaControll}"
-                       idDataTable="dataTableContaPessoa"
-                       nomeFuncao="credito"
-                       id="telaGrid"
-        >
+                </div>
+            </div>
+            <erp:gridDadosSemForm id="grid" idDataTable="dataTableContaPessoa" controller="#{creditoPessoaControll}">
+                <p:column headerText="Cliente">
+                    <h:outputLabel value="#{row.pessoa.nome}"/>
+                </p:column>
 
-            <p:column headerText="Cliente">
-                <h:outputLabel value="#{row.pessoa.nome}"/>
-            </p:column>
-
-            <p:column headerText="Saldo" styleClass="text-right" width="150">
-                <h:outputLabel value="#{row.saldo}">
-                    <f:convertNumber pattern="#,##0.00"/>
-                </h:outputLabel>
-            </p:column>
+                <p:column headerText="Saldo" styleClass="text-right" width="150">
+                    <h:outputLabel value="#{row.saldo}">
+                        <f:convertNumber pattern="#,##0.00"/>
+                    </h:outputLabel>
+                </p:column>
+            </erp:gridDadosSemForm>
+        </erp:formularioGrid>
 
 
-        </erp:gridDados>
     </ui:define>
 
 
