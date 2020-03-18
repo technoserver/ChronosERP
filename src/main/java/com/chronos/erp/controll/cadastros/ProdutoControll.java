@@ -6,7 +6,6 @@
 package com.chronos.erp.controll.cadastros;
 
 import com.chronos.erp.controll.AbstractControll;
-import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.controll.cadastros.datamodel.ProdutoEmpresaDataModel;
 import com.chronos.erp.dto.MapNomeIdDTO;
 import com.chronos.erp.dto.ProdutoResumDTO;
@@ -104,7 +103,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private String produto;
     private String strGrupo;
     private String strSubGrupo;
-    private String inativo;
+    private String inativo = "N";
     private String nomeProdutoOld;
     private String nomeFoto;
     private String ncm;
@@ -148,6 +147,19 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         pesquisarEmpresas();
     }
 
+    public ProdutoEmpresaDataModel getProdutoDataModel() {
+
+        if (produtoDataModel == null) {
+            produtoDataModel = new ProdutoEmpresaDataModel();
+            produtoDataModel.setClazz(ViewProdutoEmpresa.class);
+            produtoDataModel.setDao(produtos);
+        }
+
+        pesquisar();
+
+
+        return produtoDataModel;
+    }
 
     public void pesquisar() {
         produtoDataModel.getFiltros().clear();
@@ -177,39 +189,6 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         produtoDataModel.addFiltro("idempresa", idmepresaFiltro, Filtro.IGUAL);
     }
 
-    @Override
-    public ERPLazyDataModel<Produto> getDataModel() {
-        if (dataModel == null) {
-            dataModel = new ERPLazyDataModel<>();
-            dataModel.setClazz(getClazz());
-            dataModel.setDao(dao);
-            joinFetch = new Object[]{"produtoMarca"};
-            Object[] atribs = new Object[]{"nome", "valorVenda", "quantidadeEstoque", "unidadeProduto"};
-            dataModel.setAtributos(atribs);
-            dataModel.setJoinFetch(joinFetch);
-
-        }
-        pesquisar();
-        if (dataModel.getFiltros().isEmpty()) {
-            dataModel.addFiltro("inativo", "N", Filtro.IGUAL);
-        }
-
-        return dataModel;
-    }
-
-    public ProdutoEmpresaDataModel getProdutoDataModel() {
-
-        if (produtoDataModel == null) {
-            produtoDataModel = new ProdutoEmpresaDataModel();
-            produtoDataModel.setClazz(ViewProdutoEmpresa.class);
-            produtoDataModel.setDao(produtos);
-        }
-
-        pesquisar();
-
-
-        return produtoDataModel;
-    }
 
     @Override
     public void doCreate() {
@@ -241,6 +220,12 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         nomeFoto = getObjeto().getImagem();
         conversoes = unidadeConversaoRepository.getEntitys(UnidadeConversao.class, "produto.id", getObjeto().getId(), new Object[]{"sigla", "fatorConversao", "acao"});
 
+        verificarGrade();
+        incluirFichaTecnica();
+
+    }
+
+    private void verificarGrade() {
         if (getObjeto().getPossuiGrade() != null && getObjeto().getPossuiGrade()) {
             List<Filtro> filtros = new ArrayList<>();
             filtros.add(new Filtro("idproduto", getObjeto().getId()));
@@ -250,8 +235,6 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         } else {
             grades = new ArrayList<>();
         }
-        incluirFichaTecnica();
-
     }
 
     @Override
@@ -552,6 +535,10 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
                 atributos = new Object[]{"empresa.id", "empresa.razaoSocial", "quantidadeEstoque", "estoqueVerificado"};
 
                 listProdutoEmpresa = produtosEmpresa.getEntitys(EmpresaProduto.class, filtros, atributos);
+
+                Produto produto = dao.get(view.getId(), Produto.class);
+                setObjeto(produto);
+                verificarGrade();
             }
 
         } catch (Exception ex) {
