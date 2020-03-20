@@ -3,6 +3,7 @@ package com.chronos.erp.controll.estoque.relatorios;
 import com.chronos.erp.controll.AbstractRelatorioControll;
 import com.chronos.erp.modelo.entidades.Fornecedor;
 import com.chronos.erp.repository.Repository;
+import org.springframework.util.StringUtils;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -22,13 +23,13 @@ public class EstoqueRelatorioControll extends AbstractRelatorioControll implemen
 
     private static final long serialVersionUID = 1L;
 
-
     @Inject
     private Repository<Fornecedor> fornecedorRepository;
 
     private Date dataInicial;
     private Date dataFinal;
     private Fornecedor fornecedor;
+    private String numero;
 
     private String detalhado = "N";
 
@@ -41,6 +42,10 @@ public class EstoqueRelatorioControll extends AbstractRelatorioControll implemen
 
         if (fornecedor != null) {
             parametros.put("idfornecedor", fornecedor.getId());
+        }
+
+        if (!StringUtils.isEmpty(numero)) {
+            parametros.put("numero", numero);
         }
 
         String caminhoRelatorio = "/relatorios/estoque";
@@ -91,5 +96,13 @@ public class EstoqueRelatorioControll extends AbstractRelatorioControll implemen
 
     public void setDetalhado(String detalhado) {
         this.detalhado = detalhado;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 }
