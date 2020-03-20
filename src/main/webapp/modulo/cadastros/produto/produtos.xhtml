@@ -244,6 +244,34 @@
                                 </c:forEach>
 
                             </p:panelGrid>
+                            <p:dataTable var="row"
+                                         id="table-grade"
+                                         value="#{produtoControll.grades}"
+                                         reflow="true"
+                                         rendered="#{produtoControll.objeto.possuiGrade}"
+                                         emptyMessage="Nenhum registro encontrado">
+
+                                <p:column headerText="Código">
+                                    <h:outputText value="#{row.codigo}"/>
+                                </p:column>
+                                <p:column headerText="Cor" styleClass="text-center">
+                                    <h:outputText value="#{row.estoqueCor.nome}"/>
+                                </p:column>
+                                <p:column headerText="Tamanho" styleClass="text-center">
+                                    <h:outputText value="#{row.estoqueTamanho.nome}"/>
+                                </p:column>
+                                <p:column headerText="Estoque" styleClass="text-right">
+                                    <h:outputText value="#{row.quantidade}">
+                                        <f:convertNumber pattern="#,###,##0.00"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Verificado" styleClass="text-right">
+                                    <h:outputText value="#{row.verificado}">
+                                        <f:convertNumber pattern="#,###,##0.00"/>
+                                    </h:outputText>
+                                </p:column>
+
+                            </p:dataTable>
                         </p:rowExpansion>
 
                     </p:dataTable>

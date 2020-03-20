@@ -138,6 +138,15 @@
                                      label="Modelo"
                     />
 
+                    <div class="col-xs-12 col-sm-2 col-md-2">
+                        <h:outputLabel value="Verificado" for="estoqueVerificado"/>
+                        <h:selectOneMenu id="estoqueVerificado" class="form-control"
+                                         value="#{produtoRelatorioControll.estoqueVerificado}">
+                            <f:selectItem itemLabel="SIM" itemValue="#{true}"/>
+                            <f:selectItem itemLabel="NAO" itemValue="#{false}"/>
+                        </h:selectOneMenu>
+                    </div>
+
 
                     <div class="col-xs-6 col-sm-3 col-md-3">
                         <h:outputLabel value="Modelo" for="modelo"/>

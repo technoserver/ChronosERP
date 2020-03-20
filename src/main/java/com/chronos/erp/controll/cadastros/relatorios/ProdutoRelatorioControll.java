@@ -36,6 +36,7 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
     private String inativo;
     private String tipoProduto;
     private String estoque;
+    private Boolean estoqueVerificado;
     private String modelo;
     private ProdutoGrupo grupo;
 
@@ -50,8 +51,6 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     public void executarRelatorio() {
 
-
-        boolean estoqueVerificado = grupo.getId() == 999;
 
         parametros = new HashMap<>();
         parametros.put("produto", retornaValorPadrao(produto));
@@ -268,5 +267,13 @@ public class ProdutoRelatorioControll extends AbstractRelatorioControll implemen
 
     public void setTipoDescricao(String tipoDescricao) {
         this.tipoDescricao = tipoDescricao;
+    }
+
+    public Boolean getEstoqueVerificado() {
+        return estoqueVerificado;
+    }
+
+    public void setEstoqueVerificado(Boolean estoqueVerificado) {
+        this.estoqueVerificado = estoqueVerificado;
     }
 }

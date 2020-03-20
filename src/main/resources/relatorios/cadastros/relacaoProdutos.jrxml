@@ -5,8 +5,8 @@
               name="relacaoProduto" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20"
               topMargin="20" bottomMargin="20" uuid="f21f6d2d-dd2a-420f-8d48-1a71f5211286">
     <property name="ireport.zoom" value="3.0"/>
-    <property name="ireport.x" value="27"/>
-    <property name="ireport.y" value="0"/>
+    <property name="ireport.x" value="6"/>
+    <property name="ireport.y" value="100"/>
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
     <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
     <property name="com.jaspersoft.studio.report.description" value=""/>
@@ -37,7 +37,9 @@
         <defaultValueExpression><![CDATA[false]]></defaultValueExpression>
     </parameter>
     <parameter name="quantidade" class="java.math.BigDecimal"/>
-    <parameter name="negativo" class="java.lang.Boolean"/>
+    <parameter name="negativo" class="java.lang.Boolean">
+        <defaultValueExpression><![CDATA[false]]></defaultValueExpression>
+    </parameter>
     <parameter name="filtro" class="java.lang.String">
         <defaultValueExpression><![CDATA[" AND 1 = 1"]]></defaultValueExpression>
     </parameter>
@@ -52,6 +54,9 @@
     </parameter>
     <parameter name="exibirCabecalho" class="java.lang.Boolean">
         <defaultValueExpression><![CDATA[true]]></defaultValueExpression>
+    </parameter>
+    <parameter name="idmarca" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
     </parameter>
     <queryString>
         <![CDATA[SELECT
@@ -70,6 +75,10 @@
      p.inativo,
      COALESCE(ep.quantidade_estoque,0) AS quantidade_estoque,
      COALESCE(ep.estoque_verificado,0) AS estoque_verificado,
+     (COALESCE(ep.estoque_verificado,0) * COALESCE(p.custo_unitario,0)) as custo_x_verificado,
+     (COALESCE(ep.quantidade_estoque,0) * COALESCE(p.custo_unitario,0)) as custo_x_estoque,
+     (COALESCE(ep.quantidade_estoque,0) * COALESCE(p.valor_venda,0)) as valor_venda_x_estoque,
+     (COALESCE(ep.estoque_verificado,0) * COALESCE(p.valor_venda,0)) as valor_venda_x_verificado,
      m.nome as marca,
      sg.nome as subgrupo,
      g.nome as grupo,
@@ -96,8 +105,16 @@ FROM
      INNER JOIN empresa_produto ep ON ep.id_produto = p.id
      INNER JOIN empresa empresa ON ep.id_empresa = empresa.id
      INNER JOIN empresa_endereco empresa_endereco ON empresa.id = empresa_endereco.id_empresa
-WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_endereco.principal = 'S' and p.nome like $P{produto} and p.servico = 'N' and (sg.id = $P{idsubgrupo} or $P{idsubgrupo} is null) and (p.inativo = $P{inativo} or $P{inativo} is null)  and (p.tipo = $P{tipoProduto} or $P{tipoProduto} is null)
-   $P!{filtro}]]>
+WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null ) and  empresa_endereco.principal = 'S'
+and p.nome like $P{produto} and p.servico = 'N'
+and (sg.id = $P{idsubgrupo} or $P{idsubgrupo} is null)
+and (m.id = $P{idmarca} or $P{idmarca} is null)
+and (p.inativo = $P{inativo} or $P{inativo} is null)
+and (p.tipo = $P{tipoProduto} or $P{tipoProduto} is null)
+and ( ($P{estoqueVerificado} and ((not $P{negativo} and ep.estoque_verificado >= 0) or $P{negativo} ))
+or (not $P{estoqueVerificado} and ((not $P{negativo} and ep.quantidade_estoque >= 0) or $P{negativo} )))
+
+$P!{filtro}]]>
     </queryString>
     <field name="id" class="java.lang.Integer"/>
     <field name="codigo_interno" class="java.lang.String"/>
@@ -114,6 +131,10 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
     <field name="inativo" class="java.lang.String"/>
     <field name="quantidade_estoque" class="java.math.BigDecimal"/>
     <field name="estoque_verificado" class="java.math.BigDecimal"/>
+    <field name="custo_x_verificado" class="java.math.BigDecimal"/>
+    <field name="custo_x_estoque" class="java.math.BigDecimal"/>
+    <field name="valor_venda_x_estoque" class="java.math.BigDecimal"/>
+    <field name="valor_venda_x_verificado" class="java.math.BigDecimal"/>
     <field name="marca" class="java.lang.String"/>
     <field name="subgrupo" class="java.lang.String"/>
     <field name="grupo" class="java.lang.String"/>
@@ -132,14 +153,16 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
     <field name="empresa_endereco_uf" class="java.lang.String"/>
     <field name="empresa_email" class="java.lang.String"/>
     <variable name="custoTotal" class="java.math.BigDecimal" calculation="Sum">
-        <variableExpression><![CDATA[$F{custo_unitario}]]></variableExpression>
+        <variableExpression>
+            <![CDATA[$P{estoqueVerificado} ? $F{custo_x_verificado} :$F{custo_x_estoque}]]></variableExpression>
     </variable>
     <variable name="estoqueTotal" class="java.math.BigDecimal" calculation="Sum">
         <variableExpression>
             <![CDATA[$P{estoqueVerificado} ? $F{estoque_verificado} : $F{quantidade_estoque}]]></variableExpression>
     </variable>
     <variable name="valorVendaTotal" class="java.math.BigDecimal" calculation="Sum">
-        <variableExpression><![CDATA[$F{valor_venda}]]></variableExpression>
+        <variableExpression>
+            <![CDATA[$P{estoqueVerificado} ? $F{valor_venda_x_verificado} : $F{valor_venda_x_estoque}]]></variableExpression>
     </variable>
     <background>
         <band splitType="Stretch"/>
@@ -448,39 +471,55 @@ WHERE (empresa.id = $P{idempresa} or $P{idempresa} is null )and  empresa_enderec
         </band>
     </detail>
     <summary>
-        <band height="11">
-            <staticText>
-                <reportElement style="tituloDetail" x="0" y="1" width="37" height="10"
-                               uuid="862f914a-8092-4c87-8151-21d4c361346a"/>
-                <textElement>
-                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
-                </textElement>
-                <text><![CDATA[Totais]]></text>
-            </staticText>
+        <band height="57">
             <line>
                 <reportElement x="0" y="0" width="555" height="1" uuid="06466902-943e-4402-ba16-6544b6f9baa2"/>
             </line>
             <textField pattern="#,##0.00" isBlankWhenNull="true">
-                <reportElement x="463" y="0" width="58" height="10" uuid="aa3de944-e005-4e3d-9569-45e6c46e8025"/>
+                <reportElement x="500" y="33" width="55" height="12" uuid="aa3de944-e005-4e3d-9569-45e6c46e8025"/>
                 <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$V{valorVendaTotal}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00" isBlankWhenNull="true">
-                <reportElement x="405" y="0" width="58" height="10" uuid="45d331b8-2d8e-4d34-ba6a-5d797351f81a"/>
+                <reportElement x="500" y="22" width="55" height="12" uuid="45d331b8-2d8e-4d34-ba6a-5d797351f81a"/>
                 <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$V{custoTotal}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00" isBlankWhenNull="true">
-                <reportElement x="521" y="1" width="34" height="10" uuid="68d79d2a-fc8c-4d1b-ba8d-c1776b1bd5b9"/>
+                <reportElement x="500" y="11" width="55" height="12" uuid="68d79d2a-fc8c-4d1b-ba8d-c1776b1bd5b9"/>
                 <textElement textAlignment="Right" verticalAlignment="Middle">
                     <font fontName="Times New Roman" size="8" isBold="true"/>
                 </textElement>
                 <textFieldExpression><![CDATA[$V{estoqueTotal}]]></textFieldExpression>
             </textField>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="11" width="86" height="12"
+                               uuid="44dae184-ca48-4110-91b5-b5bcb3ef8eef"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Estoque Total: ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="33" width="86" height="12"
+                               uuid="d5a86cf5-1a5e-4e4a-877b-d7848facf2a4"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Valor Venda Total: ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="tituloDetail" x="414" y="22" width="86" height="12"
+                               uuid="4af729fa-5d2c-4d29-a9ee-d77c86306819"/>
+                <textElement textAlignment="Right">
+                    <font fontName="Times New Roman" size="8" isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Custo Total: ]]></text>
+            </staticText>
         </band>
     </summary>
 </jasperReport>
