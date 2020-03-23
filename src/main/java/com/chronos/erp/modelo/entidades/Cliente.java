@@ -71,6 +71,7 @@ public class Cliente implements Serializable {
     private Regiao regiao;
 
     public Cliente() {
+        this.indicadorPreco = "P";
     }
 
     public Cliente(Integer id, String nome) {
@@ -96,8 +97,13 @@ public class Cliente implements Serializable {
         this.situacaoForCli = new SituacaoForCli(situacao, bloquear);
     }
 
-    @PreUpdate
     @PrePersist
+    private void prePersit() {
+        this.dataCadastro = new Date();
+        this.dataAlteracao = new Date();
+    }
+
+    @PreUpdate
     private void preUpdate() {
         this.dataAlteracao = new Date();
     }

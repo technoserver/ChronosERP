@@ -21,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.UploadedFile;
 
 import javax.faces.view.ViewScoped;
@@ -49,17 +50,26 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
     private Repository<FornecedorProduto> fornecedorProdutoRepository;
     @Inject
     private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
+    @Inject
+    private Repository<Veiculo> veiculoRepository;
+    @Inject
+    private Repository<ViewPessoaTransportadora> transportadoraRepository;
 
     private NfeDetalhe nfeDetalheSelecionado;
     private NfeDetalheImpostoCofins nfeDetalheImpostoCofins;
     private NfeDetalheImpostoPis nfeDetalheImpostoPis;
     private NfeDetalheImpostoIcms nfeDetalheImpostoIcms;
     private NfeDetalheImpostoIpi nfeDetalheImpostoIpi;
+    private NfeTransporteVolume volume;
 
     private boolean dadosSalvos;
     private BigDecimal vlrAux;
     private BigDecimal qtdAux;
     private BigDecimal qtdOld;
+
+    private ViewPessoaTransportadora transportadora;
+    private List<Veiculo> veiculos;
+    private Veiculo veiculo;
 
 
     @Override
@@ -85,14 +95,55 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         Empresa emp = nfe.getEmpresa();
         nfe.setEmpresa(emp);
         setObjeto(nfe);
+
+        volume = new NfeTransporteVolume();
+
+        if (getObjeto().getTransporte() != null && getObjeto().getTransporte().getTransportadora() != null) {
+            transportadora = new ViewPessoaTransportadora();
+            transportadora.setId(getObjeto().getTransporte().getTransportadora().getId());
+            transportadora.setNome(getObjeto().getTransporte().getTransportadora().getPessoa().getNome());
+            veiculo = new Veiculo();
+            veiculo.setPlaca(getObjeto().getTransporte().getPlacaVeiculo());
+            veiculos = new ArrayList<>();
+            veiculos.add(veiculo);
+            getObjeto().getTransporte().setPlacaVeiculo(veiculo.getUf());
+            getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
+
+            if (getObjeto().getTransporte().getListaTransporteVolume() != null && getObjeto().getTransporte().getListaTransporteVolume().size() > 0) {
+                volume = getObjeto().getTransporte().getListaTransporteVolume().iterator().next();
+            } else {
+                volume = new NfeTransporteVolume();
+                volume.setNfeTransporte(getObjeto().getTransporte());
+                getObjeto().getTransporte().setListaTransporteVolume(new HashSet<>());
+
+            }
+
+        }
+
         setTelaGrid(false);
         dadosSalvos = true;
+
+
     }
 
     @Override
     public void salvar() {
 
+
+        if (getObjeto().getTransporte() != null && getObjeto().getTransporte().getTransportadora() != null && veiculo != null) {
+            getObjeto().getTransporte().setPlacaVeiculo(veiculo.getPlaca());
+            getObjeto().getTransporte().setUfVeiculo(veiculo.getUf());
+
+            if (getObjeto().getTransporte().getListaTransporteVolume() != null) {
+                getObjeto().getTransporte().getListaTransporteVolume().clear();
+                getObjeto().getTransporte().getListaTransporteVolume().add(volume);
+            }
+        }
+
+
         super.salvar();
+
+
         setTelaGrid(false);
         dadosSalvos = true;
     }
@@ -134,7 +185,9 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
             getObjeto().setFinalidadeEmissao(FinalidadeEmissao.DEVOLUCAO.getCodigo());
             getObjeto().setListaNfeDetalhe((ArrayList) map.get("detalhe"));
             getObjeto().setListaNfeReferenciada(new HashSet<>(listNfeReferenciada));
-
+            transportadora = null;
+            volume = new NfeTransporteVolume();
+            volume.setNfeTransporte(getObjeto().getTransporte());
 
             for (NfeDetalhe item : getObjeto().getListaNfeDetalhe()) {
                 ImpostoDTO impostoDTO = new ImpostoDTO(item.getNfeDetalheImpostoIcms());
@@ -484,6 +537,37 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
 
     }
 
+    public List<ViewPessoaTransportadora> getListaTransportadora(String nome) {
+        List<ViewPessoaTransportadora> listaTransportadora = new ArrayList<>();
+        try {
+            listaTransportadora = transportadoraRepository.getEntitys(ViewPessoaTransportadora.class, "nome", nome);
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return listaTransportadora;
+    }
+
+    public void selecionarTransportadora(SelectEvent event) {
+        transportadora = (ViewPessoaTransportadora) event.getObject();
+
+        NfeTransporte nfeTransporte = getObjeto().getTransporte();
+
+        nfeTransporte.setTransportadora(new Transportadora(transportadora.getId(), transportadora.getNome()));
+
+        nfeTransporte.setCpfCnpj(transportadora.getCpfCnpj());
+        nfeTransporte.setEmpresaEndereco(transportadora.getCidade());
+        nfeTransporte.setNome(transportadora.getNome());
+        nfeTransporte.setMunicipio(transportadora.getMunicipioIbge());
+        nfeTransporte.setNomeMunicipio(transportadora.getCidade());
+
+        nfeTransporte.setRntcVeiculo(transportadora.getRntrc());
+        nfeTransporte.setUf(transportadora.getUf());
+
+        veiculos = veiculoRepository.getEntitys(Veiculo.class, "transportadora.id", transportadora.getId());
+        veiculo = null;
+
+    }
+
     @Override
     protected Class<NfeCabecalho> getClazz() {
         return NfeCabecalho.class;
@@ -543,5 +627,31 @@ public class DevolucaoCompraControll extends NfeBaseControll implements Serializ
         return empresa;
     }
 
+    public ViewPessoaTransportadora getTransportadora() {
+        return transportadora;
+    }
 
+    public void setTransportadora(ViewPessoaTransportadora transportadora) {
+        this.transportadora = transportadora;
+    }
+
+    public Veiculo getVeiculo() {
+        return veiculo;
+    }
+
+    public void setVeiculo(Veiculo veiculo) {
+        this.veiculo = veiculo;
+    }
+
+    public List<Veiculo> getVeiculos() {
+        return veiculos;
+    }
+
+    public NfeTransporteVolume getVolume() {
+        return volume;
+    }
+
+    public void setVolume(NfeTransporteVolume volume) {
+        this.volume = volume;
+    }
 }
