@@ -110,6 +110,7 @@ public class OrcamentoCabecalhoControll extends AbstractControll<OrcamentoCabeca
     public void init() {
         super.init();
         idvendedor = 0;
+        idmepresaFiltro = empresa.getId();
         listaVendedor = vendedorService.getMapVendedores();
 
         situacoes = new LinkedHashMap<>();

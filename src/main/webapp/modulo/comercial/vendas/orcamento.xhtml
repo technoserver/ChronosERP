@@ -270,9 +270,10 @@
             >
 
                 <p:outputPanel id="panelOutrasTelas2">
-                    <div class="form-group text-right">
-                        <div class="text-right">
-                            <label class="control-label col-sm-4">Desonto em</label>
+                    <div class="ui-g">
+
+                        <div class="text-right col-sm-4">
+                            <label class="control-label">Desonto em</label>
                         </div>
 
                         <div class="col-sm-3">
@@ -287,6 +288,7 @@
                             <p:inputNumber id="valor-desconto" required="true"
                                            value="#{ orcamentoCabecalhoControll.desconto}"/>
                         </div>
+
                     </div>
 
 
@@ -297,7 +299,7 @@
                         <div class="col-xs-6 col-md-6 text-center">
                             <p:commandButton value="Salvar"
                                              id="btnSalvarDesonto"
-                                             update="panelOutrasTelas2,:formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos"
+                                             update="panelOutrasTelas2,:formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos,:formCentro:tab-view-orcamento:form-dados-pricipais:panel-desconto"
                                              oncomplete="if (!args.validationFailed) {PF('dialogOutrasTelas2').hide();}"
                                              action="#{orcamentoCabecalhoControll.aplicarDesconto}"/>
 

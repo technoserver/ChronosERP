@@ -68,22 +68,6 @@
                                                         <f:convertNumber pattern="#,##0.00"/>
                                                     </h:outputText>
                                                 </span>
-                                                <p:commandLink styleClass="btn btn-link"
-                                                               title="Aplicar desconto no valor total da venda"
-                                                               update=":formOutrasTelas5:panelOutrasTelas5"
-                                                               disabled="#{vendaCabecalhoControll.objeto.valorTotal.signum() eq 0}"
-                                                               oncomplete="PF('dialogOutrasTelas5').show()">
-                                                    <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
-                                                </p:commandLink>
-
-                                                <p:commandLink styleClass="btn btn-link"
-                                                               title="Remover Desconto"
-                                                               action="#{vendaCabecalhoControll.removerDesconto}"
-                                                               process="@this"
-                                                               update=":formCentro:growl,:formCentro:panel-valores,:formCentro:tab-view-vendas:itens,:formCentro:tab-view-vendas:valo-pago,:formCentro:tab-view-vendas:pagamentos"
-                                                               rendered="#{vendaCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
-                                                    <i class="fa fa-ban fa-2x" aria-hidden="true"></i>
-                                                </p:commandLink>
                                             </h3>
 
                                             <p>Valor do Desconto</p>
@@ -170,6 +154,48 @@
                                                               label="Valor frete"
                                                               idComponente="valorFrete"
                                                               styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                                            <div class="col-xs-12 col-sm-2 col-md-2">
+                                                <p:outputLabel value="Desconto total"
+                                                               for="valorTotalDesconto"/>
+
+                                                <h:panelGroup layout="block" id="panel-desconto" class="field-action">
+                                                    <p:inputNumber id="valorTotalDesconto"
+                                                                   value="#{vendaCabecalhoControll.objeto.valorDesconto}"
+                                                                   style="width: 100%;"
+                                                                   disabled="true"
+                                                                   readonly="true"
+                                                                   decimalPlaces="2"
+
+                                                    />
+                                                    <div class="field-action__icon">
+                                                        <div style="display: flex">
+                                                            <p:commandLink style="font-size: 20px;color: #00acac"
+                                                                           rendered="#{vendaCabecalhoControll.objeto.valorTotal.signum() gt 0 }"
+                                                                           id="btn-add-desconto"
+                                                                           update=":formOutrasTelas5:panelOutrasTelas5"
+                                                                           oncomplete="PF('dialogOutrasTelas5').show()"
+                                                            >
+                                                                <i class="fa fa-plus-circle"></i>
+                                                            </p:commandLink>
+
+                                                            <p:commandLink
+                                                                    style="margin-left:5px;font-size: 20px;color: #00acac"
+                                                                    action="#{vendaCabecalhoControll.removerDesconto}"
+                                                                    id="btn-remover-desconto"
+                                                                    process="@this"
+                                                                    update=":formCentro:panelValores,:formCentro:tableOrcamento,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos,:formCentro:tab-view-orcamento:form-dados-pricipais:panel-desconto,:formCentro:tab-view-vendas:form-dados-pripais:panel-desconto"
+
+                                                                    rendered="#{vendaCabecalhoControll.objeto.valorDesconto.signum() gt 0 }">
+                                                                <i class="fa fa-minus-circle"></i>
+                                                            </p:commandLink>
+                                                        </div>
+
+                                                    </div>
+                                                </h:panelGroup>
+
+                                            </div>
+
 
                                             <h:panelGroup layout="block"
                                                           id="lista-empresa"

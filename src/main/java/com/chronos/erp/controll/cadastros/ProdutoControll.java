@@ -76,6 +76,8 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     @Inject
     private Repository<Ncm> ncmRepository;
     @Inject
+    private Repository<Cest> cestRepository;
+    @Inject
     private Repository<TabelaNutricionalCabecalho> tabelaNutricionalRepository;
 
     @Inject
@@ -107,6 +109,7 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private String nomeProdutoOld;
     private String nomeFoto;
     private String ncm;
+    private String cest;
 
     private ProdutoMarca marca;
     private Almoxarifado almoxarifado;
@@ -119,6 +122,9 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
     private List<UnidadeConversao> conversoes;
     private List<Ncm> ncms;
     private Ncm ncmSelecionado;
+
+    private List<Cest> cests;
+    private Cest cestSelecionado;
 
     @NotNull(message = "Unidade de conversão obrigatória")
     private UnidadeProduto unidadeProduto;
@@ -705,6 +711,15 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
         ncm = "";
     }
 
+    public void exibirPesquisaCest() {
+        cests = new ArrayList<>();
+        cest = StringUtils.isEmpty(getObjeto().getNcm()) ? "" : getObjeto().getNcm();
+        if (cest.length() > 0) {
+            pesquisarCest();
+        }
+
+    }
+
     public void pesquisarNcm() {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro(Filtro.AND, "descricao", Filtro.LIKE, ncm));
@@ -714,9 +729,24 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     }
 
+    public void pesquisarCest() {
+        List<Filtro> filtros = new ArrayList<>();
+        filtros.add(new Filtro(Filtro.AND, "descricaoCest", Filtro.LIKE, cest));
+        filtros.add(new Filtro(Filtro.OR, "cest", Filtro.LIKE, cest));
+        filtros.add(new Filtro(Filtro.OR, "ncmSh", Filtro.LIKE, cest));
+
+        cests = cestRepository.getEntitys(Cest.class, filtros);
+
+    }
+
     public void selecionarNcm() {
         getObjeto().setNcm(ncmSelecionado.getCodigo());
         ncm = "";
+    }
+
+    public void selecionarCest() {
+        getObjeto().setCest(cestSelecionado.getCest());
+        cest = "";
     }
 
     private List<Produto> buscarProdutosBalanca() {
@@ -998,5 +1028,25 @@ public class ProdutoControll extends AbstractControll<Produto> implements Serial
 
     public void setProdutoFichaTecnica(MapNomeIdDTO produtoFichaTecnica) {
         this.produtoFichaTecnica = produtoFichaTecnica;
+    }
+
+    public Cest getCestSelecionado() {
+        return cestSelecionado;
+    }
+
+    public void setCestSelecionado(Cest cestSelecionado) {
+        this.cestSelecionado = cestSelecionado;
+    }
+
+    public String getCest() {
+        return cest;
+    }
+
+    public void setCest(String cest) {
+        this.cest = cest;
+    }
+
+    public List<Cest> getCests() {
+        return cests;
     }
 }

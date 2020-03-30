@@ -340,7 +340,7 @@
             </h:panelGroup>
 
 
-            <p:tabView id="tabViewDetalhes" style="border: 0px;">
+            <p:tabView id="tabViewDetalhes" style="border: 0px;" scrollable="true">
                 <p:tab title="Dados Principais" id="tabDadosPrincipais">
                     <h:form id="form-dados-principais">
                         <ui:include src="osDadosPrincipais.xhtml"/>
@@ -375,7 +375,7 @@
                       width="800">
 
                 <p:outputPanel id="panelOsAberturaEquipamento">
-                    <div class="row">
+                    <div class="ui-g">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <p:outputLabel value="Os Equipamento"
                                            for="osAberturaEquipamentoOsEquipamento"/>
@@ -391,7 +391,7 @@
                                             emptyMessage="Nenhum registro encontrado"/>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="ui-g">
                         <erp:campoTexto styleClass="col-xs-12 col-sm-6 col-md-6"
                                         idComponente="osAberturaEquipamentoNumeroSerie"
                                         label="Numero Serie"
@@ -407,7 +407,7 @@
 
                 </p:outputPanel>
                 <f:facet name="footer">
-                    <div class="row">
+                    <div class="ui-g">
                         <div class="col-xs-6 col-sm-6 col-md-6 text-center">
                             <p:commandButton value="Salvar"
                                              action="#{osAberturaControll.salvarOsAberturaEquipamento}"

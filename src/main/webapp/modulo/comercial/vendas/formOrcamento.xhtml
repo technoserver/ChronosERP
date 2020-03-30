@@ -19,7 +19,7 @@
 
                             <h:panelGroup layout="block" id="panelValores" styleClass="row">
 
-                                <div class="col-lg-4 col-xs-6">
+                                <div class="col-lg-4 col-xs-12">
                                     <!-- small box -->
                                     <div class="small-box bg-gray">
                                         <div class="inner">
@@ -39,7 +39,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-xs-6">
+                                <div class="col-lg-4 col-xs-12">
                                     <!-- small box -->
                                     <div class="small-box bg-gray">
                                         <div class="inner">
@@ -61,7 +61,7 @@
                                 </div>
 
 
-                                <div class="col-lg-4 col-xs-6">
+                                <div class="col-lg-4 col-xs-12">
                                     <!-- small box -->
                                     <div class="small-box bg-gray">
                                         <div class="inner">
@@ -69,27 +69,12 @@
                                             <h3>
                                                 R$
                                                 <span>
-                                                            <h:outputText
-                                                                    value="#{orcamentoCabecalhoControll.objeto.valorDesconto}">
-                                                                <f:convertNumber pattern="#,##0.00"/>
-                                                            </h:outputText>
-                                                        </span>
-                                                <p:commandLink styleClass="btn btn-link"
-                                                               title="Aplicar desconto no valor total"
-                                                               update=":formOutrasTelas2:panelOutrasTelas2"
-                                                               disabled="#{orcamentoCabecalhoControll.objeto.valorTotal.signum() eq 0}"
-                                                               oncomplete="PF('dialogOutrasTelas2').show()">
-                                                    <i class="fa fa-pencil fa-2x" aria-hidden="true"></i>
-                                                </p:commandLink>
+                                                    <h:outputText
+                                                            value="#{orcamentoCabecalhoControll.objeto.valorDesconto}">
+                                                        <f:convertNumber pattern="#,##0.00"/>
+                                                    </h:outputText>
+                                                 </span>
 
-                                                <p:commandLink styleClass="btn btn-link"
-                                                               title="Remover Desconto"
-                                                               action="#{orcamentoCabecalhoControll.removerDesconto}"
-                                                               process="@this"
-                                                               update=":formCentro:growl,:formCentro:panelValores,:formCentro:tableOrcamento,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos"
-                                                               rendered="#{orcamentoCabecalhoControll.objeto.valorDesconto.signum() ne 0}">
-                                                    <i class="fa fa-ban fa-2x" aria-hidden="true"></i>
-                                                </p:commandLink>
                                             </h3>
 
 
@@ -160,6 +145,47 @@
                                                            styleClass="col-xs-12 col-sm-2 col-md-2"
                                                            idComponente="dataEntrega"
                                                            nomeAtributo="#{orcamentoCabecalhoControll.objeto.dataEntrega}"/>
+
+                                            <div class="col-xs-12 col-sm-2 col-md-2">
+                                                <p:outputLabel value="Desconto total"
+                                                               for="valorTotalDesconto"/>
+
+                                                <h:panelGroup layout="block" id="panel-desconto" class="field-action">
+                                                    <p:inputNumber id="valorTotalDesconto"
+                                                                   value="#{orcamentoCabecalhoControll.objeto.valorDesconto}"
+                                                                   style="width: 100%;"
+                                                                   disabled="true"
+                                                                   readonly="true"
+                                                                   decimalPlaces="2"
+
+                                                    />
+                                                    <div class="field-action__icon">
+                                                        <div style="display: flex">
+                                                            <p:commandLink style="font-size: 20px;color: #00acac"
+                                                                           rendered="#{orcamentoCabecalhoControll.objeto.valorTotal.signum() gt 0 }"
+                                                                           id="btn-add-desconto"
+                                                                           update=":formOutrasTelas2:panelOutrasTelas2"
+                                                                           oncomplete="PF('dialogOutrasTelas2').show()"
+                                                            >
+                                                                <i class="fa fa-plus-circle"></i>
+                                                            </p:commandLink>
+
+                                                            <p:commandLink
+                                                                    style="margin-left:5px;font-size: 20px;color: #00acac"
+                                                                    action="#{orcamentoCabecalhoControll.removerDesconto}"
+                                                                    id="btn-remover-desconto"
+                                                                    process="@this"
+                                                                    update=":formCentro:panelValores,:formCentro:tableOrcamento,:formCentro:tab-view-orcamento:valo-pago,:formCentro:tab-view-orcamento:pagamentos,:formCentro:tab-view-orcamento:form-dados-pricipais:panel-desconto"
+
+                                                                    rendered="#{orcamentoCabecalhoControll.objeto.valorDesconto.signum() gt 0 }">
+                                                                <i class="fa fa-minus-circle"></i>
+                                                            </p:commandLink>
+                                                        </div>
+
+                                                    </div>
+                                                </h:panelGroup>
+
+                                            </div>
 
 
                                         </div>
