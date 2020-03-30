@@ -520,10 +520,10 @@
         <h:form id="formOutrasTelas6">
             <p:dialog id="dialogOutrasTelas6"
                       header="Lista de NCM"
-                      widgetVar="dialogOutrasTelas6" showEffect="slide" hideEffect="slide"
-                      resizable="true" modal="true" closable="false" width="800">
+                      widgetVar="dialogOutrasTelas6" showEffect="slide" hideEffect="slide" responsive="true"
+                      modal="true" closable="true" width="800" Height="500">
 
-                <p:outputPanel id="panelOutrasTelas6">
+                <p:outputPanel id="panelOutrasTelas6" styleClass="ui-fluid">
                     <div class="ui-g m-b">
                         <div class="col-xs-12 col-sm-12 col-md-12">
                             <p:outputLabel value="Descrição ou Código" for="filtro"/>
@@ -546,27 +546,28 @@
                         </div>
                     </div>
                     <div class="ui-g">
-                        <div class="col-sm-12">
-                            <p:dataTable value="#{produtoControll.ncms}" var="row" paginator="true" reflow="true"
-                                         paginatorPosition="bottom">
-                                <p:column headerText="Código" width="100">
-                                    <h:outputLabel value="#{row.codigo}"/>
-                                </p:column>
-                                <p:column headerText="Descrição">
-                                    <h:outputLabel value="#{row.descricao}"/>
-                                </p:column>
-                                <p:column headerText="Ações" width="100" styleClass="text-center">
-                                    <p:commandButton icon="ui-icon-check" title="Selecionar"
-                                                     action="#{produtoControll.selecionarNcm}"
-                                                     update="formCentro:telaDetalhe:tabProduto:ncm"
-                                                     oncomplete="PF('dialogOutrasTelas6').hide();"
-                                                     process="@this">
-                                        <f:setPropertyActionListener value="#{row}"
-                                                                     target="#{produtoControll.ncmSelecionado}"/>
-                                    </p:commandButton>
-                                </p:column>
+
+                        <p:dataTable value="#{produtoControll.ncms}" var="row" paginator="true" reflow="true"
+                                     rows="10" rowsPerPageTemplate="10,20,30,40"
+                                     paginatorPosition="bottom" scrollable="true" scrollHeight="400">
+                            <p:column headerText="Código" width="100">
+                                <h:outputLabel value="#{row.codigo}"/>
+                            </p:column>
+                            <p:column headerText="Descrição" width="431">
+                                <h:outputLabel value="#{row.descricao}"/>
+                            </p:column>
+                            <p:column headerText="Ações" width="40" styleClass="text-center">
+                                <p:commandButton icon="ui-icon-check" title="Selecionar"
+                                                 action="#{produtoControll.selecionarNcm}"
+                                                 update="formCentro:telaDetalhe:tabProduto:ncm"
+                                                 oncomplete="PF('dialogOutrasTelas6').hide();"
+                                                 process="@this">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{produtoControll.ncmSelecionado}"/>
+                                </p:commandButton>
+                            </p:column>
                             </p:dataTable>
-                        </div>
+
 
                     </div>
 
@@ -634,6 +635,83 @@
                 </f:facet>
             </p:dialog>
         </h:form>
+    </ui:define>
+
+
+    <ui:define name="outrasTelas8">
+        <h:form id="formOutrasTelas8">
+            <p:dialog id="dialogOutrasTelas8"
+                      header="Lista de CEST"
+                      widgetVar="dialogOutrasTelas8" showEffect="slide" hideEffect="slide" responsive="true"
+                      modal="true" closable="true" width="800" Height="500">
+
+                <p:outputPanel id="panelOutrasTelas8" styleClass="ui-fluid">
+                    <div class="ui-g m-b">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p:outputLabel value="Descrição ou Cest ou NCM" for="filtroCest"/>
+                            <div class="field-action">
+                                <p:inputText id="filtroCest"
+                                             value="#{produtoControll.cest}"
+
+                                />
+                                <div class="field-action__icon">
+                                    <p:commandLink title="Pesquisar CEST" style="font-size: 20px;color: #00acac"
+                                                   update=":formOutrasTelas8:panelOutrasTelas8"
+                                                   id="btnPesquisarCest"
+                                                   process="@form"
+                                                   action="#{produtoControll.pesquisarCest}">
+
+                                        <i class="fa fa-search"></i>
+                                    </p:commandLink>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui-g">
+
+                        <p:dataTable value="#{produtoControll.cests}" var="row" paginator="true" reflow="true"
+                                     rows="10" rowsPerPageTemplate="10,20,30,40"
+                                     paginatorPosition="bottom" scrollable="true" scrollHeight="400">
+                            <p:column headerText="Código" width="100">
+                                <h:outputLabel value="#{row.cest}"/>
+                            </p:column>
+                            <p:column headerText="NCM" width="100">
+                                <h:outputLabel value="#{row.ncmSh}"/>
+                            </p:column>
+                            <p:column headerText="Descrição" width="331">
+                                <h:outputLabel value="#{row.descricaoCest}"/>
+                            </p:column>
+                            <p:column headerText="Ações" width="40" styleClass="text-center">
+                                <p:commandButton icon="ui-icon-check" title="Selecionar"
+                                                 action="#{produtoControll.selecionarCest}"
+                                                 update="formCentro:telaDetalhe:tabProduto:cest"
+                                                 oncomplete="PF('dialogOutrasTelas8').hide();"
+                                                 process="@this">
+                                    <f:setPropertyActionListener value="#{row}"
+                                                                 target="#{produtoControll.cestSelecionado}"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+
+                    </div>
+
+
+                </p:outputPanel>
+                <f:facet name="footer">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h:commandButton value="Cancelar"
+                                             styleClass="btn btn-default center-block">
+                                <p:ajax oncomplete="PF('dialogOutrasTelas8').hide();" process="@this"/>
+                            </h:commandButton>
+                        </div>
+                    </div>
+
+                </f:facet>
+            </p:dialog>
+        </h:form>
+
     </ui:define>
 
 </ui:composition>
