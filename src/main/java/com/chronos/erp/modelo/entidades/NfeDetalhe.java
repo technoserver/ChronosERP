@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -675,26 +674,20 @@ public class NfeDetalhe implements Serializable {
 
 
     @Override
-    public int hashCode() {
-        int hash = 7;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        hash = 61 * hash + Objects.hashCode(this.id);
-        return hash;
+        NfeDetalhe that = (NfeDetalhe) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        return codigoProduto.equals(that.codigoProduto);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final NfeDetalhe other = (NfeDetalhe) obj;
-        return Objects.equals(this.id, other.id);
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + codigoProduto.hashCode();
+        return result;
     }
-
 }
