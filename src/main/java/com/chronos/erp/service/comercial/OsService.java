@@ -358,6 +358,11 @@ public class OsService extends AbstractService<OsAbertura> {
                 }
             }
         }
+
+        if (cancelado && os.getValorComissao().signum() > 0) {
+            comissaoService.excluirComissao(os.getId().toString(), Modulo.OS);
+        }
+
         os.setStatus(11);
         salvar(os);
         Mensagem.addInfoMessage("OS cancelada com sucesso");
