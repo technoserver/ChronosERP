@@ -65,6 +65,8 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     private MovimentoService movimentoService;
 
     private Cliente cliente;
+    private Date dataInicial;
+    private Date dataFinal;
 
     private List<ViewFinLancamentoReceber> parcelas;
     private List<ViewFinLancamentoReceber> parcelasSelecionadas;
@@ -88,10 +90,26 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
     private FatorGeradorDTO fatorGerador;
 
 
+    @Override
+    public void init() {
+        super.init();
+        this.dataFinal = new Date();
+        this.dataInicial = new Date();
+    }
+
     public void buscarParcelas() {
         List<Filtro> filtros = new ArrayList<>();
         filtros.add(new Filtro("idStatusParcela", Filtro.DIFERENTE, 2));
         filtros.add(new Filtro("idCliente", Filtro.IGUAL, cliente.getId()));
+
+        if (dataInicial != null) {
+            filtros.add(new Filtro("dataVencimento", Filtro.MAIOR_OU_IGUAL, dataInicial));
+        }
+
+        if (dataFinal != null) {
+            filtros.add(new Filtro("dataVencimento", Filtro.MENOR_OU_IGUAL, dataFinal));
+        }
+
         parcelas = parcelaRepository.getEntitys(ViewFinLancamentoReceber.class, filtros);
         multa = BigDecimal.ZERO;
         juros = BigDecimal.ZERO;
@@ -99,7 +117,7 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
         totalAVencer = BigDecimal.ZERO;
         qtdParcelasVencida = 0;
         qtdParcelasAvencer = 0;
-        parcelas.stream().forEach(p -> {
+        parcelas.forEach(p -> {
 
             //  p.calcularValorJuros();
             //  p.calcularValorTotal();
@@ -501,5 +519,21 @@ public class FinRecebimentoControll extends AbstractControll<FinParcelaReceber> 
 
     public FatorGeradorDTO getFatorGerador() {
         return fatorGerador;
+    }
+
+    public Date getDataInicial() {
+        return dataInicial;
+    }
+
+    public void setDataInicial(Date dataInicial) {
+        this.dataInicial = dataInicial;
+    }
+
+    public Date getDataFinal() {
+        return dataFinal;
+    }
+
+    public void setDataFinal(Date dataFinal) {
+        this.dataFinal = dataFinal;
     }
 }
