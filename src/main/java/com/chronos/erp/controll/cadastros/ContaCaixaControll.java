@@ -9,6 +9,8 @@ import com.chronos.erp.controll.AbstractControll;
 import com.chronos.erp.modelo.entidades.AgenciaBanco;
 import com.chronos.erp.modelo.entidades.ContaCaixa;
 import com.chronos.erp.repository.Repository;
+import com.chronos.erp.service.ChronosException;
+import com.chronos.erp.util.jsf.Mensagem;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -35,6 +37,26 @@ public class ContaCaixaControll extends AbstractControll<ContaCaixa> implements 
         getObjeto().setEmpresa(empresa);
     }
 
+
+    @Override
+    public void remover() {
+
+
+        try {
+
+            if (getObjetoSelecionado().getId() != null && getObjetoSelecionado().getId().equals(1)) {
+                throw new ChronosException("Conta padrão do sistema não pode ser removida");
+            }
+
+            super.remover();
+        } catch (Exception ex) {
+            if (ex instanceof ChronosException) {
+                Mensagem.addErrorMessage("", ex);
+            } else {
+
+            }
+        }
+    }
 
     public List<AgenciaBanco> getListaAgenciaBanco(String nome) {
         List<AgenciaBanco> list = new LinkedList<>();
