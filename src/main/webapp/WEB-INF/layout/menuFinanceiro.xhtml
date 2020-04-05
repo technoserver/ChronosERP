@@ -18,6 +18,11 @@
                              exibir="#{seguranca.isTemAcesso('TIPO_RECEBIMENTO')}"
                              funcao="finTipoRecebimento"/>
 
+                <erp:subMenu caminho="/modulo/financeiro/diversos/finTipoPagamento"
+                             label="Tipo Pagamento"
+                             exibir="#{seguranca.isTemAcesso('TIPO_PAGAMENTO')}"
+                             funcao="finTipoPagamento"/>
+
                 <erp:subMenu caminho="/modulo/financeiro/diversos/planoCentroResultado"
                              label="Plano Centro Resultado"
                              exibir="#{seguranca.isTemAcesso('PLANO_CENTRO_RESULTADO')}"

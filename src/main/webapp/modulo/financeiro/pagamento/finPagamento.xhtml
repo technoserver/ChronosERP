@@ -112,14 +112,26 @@
                     <p:dataTable value="#{finPagamentoControll.parcelas}"
                                  var="row" id="dataTableParcelas"
                                  reflow="true" rendered="#{finPagamentoControll.podeConsultar()}"
-                                 resizableColumns="true" sortBy="#{row.dataVencimento}"
+                                 sortBy="#{row.dataVencimento}"
                                  rowKey="#{row.idParcelaPagar}"
-                                 selectionMode="multiple" selection="#{finPagamentoControll.parcelasSelecionada}"
+                                 selection="#{finPagamentoControll.parcelasSelecionada}"
                                  rowStyleClass="#{row.vencido?'red_color':''}">
+
                         <p:ajax event="rowSelect"
                                 update="formCentro:campo:valorAPagar"/>
                         <p:ajax event="rowUnselect"
                                 update="formCentro:campo:valorAPagar"/>
+
+
+                        <p:ajax event="rowSelectCheckbox"
+                                update="formCentro:campo:valorAPagar"/>
+                        <p:ajax event="rowUnselectCheckbox"
+                                update="formCentro:campo:valorAPagar"/>
+
+                        <p:ajax event="toggleSelect"
+                                update="formCentro:campo:valorAPagar"/>
+
+                        <p:column selectionMode="multiple" style="width:16px;text-align:center"/>
                         <p:column headerText="Fornecedor" sortBy="#{row.nomeFornecedor}" style="width:21%">
                             <h:outputLabel value="#{row.nomeFornecedor}"/>
                         </p:column>
@@ -236,14 +248,14 @@
 
                                     </div>
                                     <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
-                                                      label="Tipo Recebimento"
+                                                      label="Tipo Pagamento"
                                                       itemLabel="#{objeto.descricao}"
                                                       controller="#{finPagamentoControll}"
-                                                      completeMethod="getListaFinTipoRecebimento"
-                                                      nomeAtributo="#{finPagamentoControll.tipoPagamento}"
-                                                      idComponente="tipoRecebimento" requerido="true"/>
+                                                      completeMethod="getListaFinTipoPagamento"
+                                                      nomeAtributo="#{finPagamentoControll.finTipoPagamento}"
+                                                      idComponente="tipoRecebimento"/>
 
-                                    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-3"
+                                    <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-4"
                                                       idComponente="valorAPagar"
                                                       label="Valor Parcela" requerido="true"
                                                       somenteLeitura="true"

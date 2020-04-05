@@ -23,17 +23,22 @@
 
     <ui:define name="gridDados">
 
+
         <erp:gridDados controller="#{finTipoPagamentoControll}"
                        idDataTable="dataTableFinTipoPagamento"
                        nomeFuncao="Tipo Pagamento"
                        id="telaGrid"
-                       somenteConsulta="true">
+        >
 
             <p:column headerText="Tipo">
-                <h:outputLabel value="#{row.tipo}"/>
+                <h:outputLabel
+                        value="#{finTipoRecebimentoControll.keyFromValue(finTipoRecebimentoControll.tiposPagamento,row.tipo)}"/>
             </p:column>
             <p:column headerText="Descrição">
                 <h:outputLabel value="#{row.descricao}"/>
+            </p:column>
+            <p:column headerText="Conta">
+                <h:outputLabel value="#{row.contaCaixa.nome}"/>
             </p:column>
 
 
@@ -45,20 +50,30 @@
         <erp:telaInclusaoAlteracao controller="#{finTipoPagamentoControll}"
                                    nomeFuncao="Tipo Pagamento"
                                    id="telaDetalhe"
-                                   somenteConsulta="true">
+        >
+
 
             <div class="row">
-                <erp:campoTexto styleClass="cocol-xs-12 col-sm-3 col-md-2"
-                                idComponente="finTipoPagamentoTipo" label="Tipo"
-                                nomeAtributo="#{finTipoPagamentoControll.objeto.tipo}"
-                                tamanhoMaximo="2" requerido="true"
-                                desabilitado="true"/>
 
-                <erp:campoTexto styleClass="ccol-xs-12 col-sm-3 col-md-10"
+                <erp:campoSelect label="Tipo"
+                                 nomeAtributo="#{finTipoPagamentoControll.objeto.tipo}"
+                                 idComponente="tipo"
+                                 itens="#{finTipoPagamentoControll.tiposPagamento}"
+                                 styleClass="col-xs-12 col-sm-3 col-md-2"/>
+
+                <erp:autoComplete styleClass="col-xs-12 col-sm-5 col-md-5"
+                                  label="Conta Caixa"
+                                  itemLabel="#{objeto.nome}"
+                                  controller="#{finTipoPagamentoControll}"
+                                  completeMethod="getListaContaCaixa"
+                                  nomeAtributo="#{finTipoPagamentoControll.objeto.contaCaixa}"
+                                  idComponente="finTipoRecebimentoContaCaixa"/>
+
+                <erp:campoTexto styleClass="col-xs-12 col-sm-5 col-md-5"
                                 idComponente="finTipoPagamentoDescricao" label="Descricao"
                                 nomeAtributo="#{finTipoPagamentoControll.objeto.descricao}"
                                 tamanhoMaximo="30" requerido="true"
-                                desabilitado="true"/>
+                />
 
 
             </div>
