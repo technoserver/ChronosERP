@@ -90,8 +90,9 @@
             <erp:gridDadosSemForm idDataTable="dataTableNfe"
                                   id="table"
                                   exibirAcoes="false"
+                                  dataModel="#{nfeCabecalhoControll.dataModelResumo}"
                                   controller="#{nfeCabecalhoControll}">
-                <p:column headerText="Destinatario" sortBy="#{row.destinatario.nome}">
+                <p:column headerText="Destinatario" sortBy="#{row.destinatario}">
                     <p>
                         <strong>Número: </strong>
                         <h:outputText value="#{row.numero}"/>
@@ -100,8 +101,7 @@
                         <strong>Chave: </strong>
                         <h:outputText value="#{row.chaveAcesso}#{obj.digitoChaveAcesso}"/>
                     </p>
-                    <h:outputText
-                            value="#{empty row.destinatario.nome  ? 'Cliente não identificado ': row.destinatario.nome}"/>
+                    <h:outputText value="#{row.destinatario}"/>
                 </p:column>
                 <p:column headerText="Emissão"
                           sortBy="#{row.dataHoraEmissao}" width="120">
@@ -129,7 +129,7 @@
                     >
                         <i class="fa fa-file-text-o"></i>
                         <f:setPropertyActionListener value="#{row}"
-                                                     target="#{nfeCabecalhoControll.objetoSelecionado}"/>
+                                                     target="#{nfeCabecalhoControll.nfeResumoSelecionada}"/>
                     </p:commandLink>
 
                     <p:commandLink title="Duplicar" action="#{nfeCabecalhoControll.duplicar}"
@@ -139,7 +139,7 @@
                     >
                         <i class="fa fa-files-o"></i>
                         <f:setPropertyActionListener value="#{row}"
-                                                     target="#{nfeCabecalhoControll.objetoSelecionado}"/>
+                                                     target="#{nfeCabecalhoControll.nfeResumoSelecionada}"/>
                     </p:commandLink>
                     &nbsp;
                     <p:commandLink title="Excluir" action="#{nfeCabecalhoControll.remover()}"
@@ -153,7 +153,7 @@
                         <p:confirm header="Confirmar" message="Deseja excluir ?"/>
 
                         <f:setPropertyActionListener value="#{row}"
-                                                     target="#{nfeCabecalhoControll.objetoSelecionado}"/>
+                                                     target="#{nfeCabecalhoControll.nfeResumoSelecionada}"/>
                     </p:commandLink>
 
 
