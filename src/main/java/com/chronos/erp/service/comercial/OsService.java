@@ -58,9 +58,6 @@ public class OsService extends AbstractService<OsAbertura> {
     private Repository<OsConfiguracao> osConfiguracaoRepository;
 
     @Inject
-    private Repository<CondicoesParcelas> parcelasRepository;
-
-    @Inject
     private ComissaoService comissaoService;
 
     @Inject
@@ -290,7 +287,7 @@ public class OsService extends AbstractService<OsAbertura> {
 
             if (formaPagamento.isPresent()) {
 
-                finLancamentoReceberService.gerarLancamento(os.getId(), os.getValorTotal(), os.getCliente(),
+                finLancamentoReceberService.gerarLancamento(os.getId(), formaPagamento.get().getFormaPagamento().getValor(), os.getCliente(),
                         formaPagamento.get().getFormaPagamento().getCondicoesPagamento(), Modulo.OS.getCodigo(), Constants.FIN.NATUREZA_VENDA, os.getEmpresa());
             }
 

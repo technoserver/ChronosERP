@@ -58,6 +58,8 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
     private Repository<EmailConfiguracao> emailConfiguracaoRepository;
     @Inject
     private Repository<NotaFiscalTipo> notaFiscalTipoRepository;
+    @Inject
+    private Repository<ViewNfeResumo> viewNfeResumoRepository;
 
     @Inject
     private NfeService nfeService;
@@ -66,6 +68,10 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
     @Inject
     private ProdutoService produtoService;
+
+    private ERPLazyDataModel<ViewNfeResumo> dataModelResumo;
+
+    private ViewNfeResumo nfeResumoSelecionada;
 
     private PessoaCliente pessoaCliente;
     private NfeDetalhe nfeDetalhe;
@@ -116,32 +122,27 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
         status = -1;
     }
 
-    @Override
-    public ERPLazyDataModel<NfeCabecalho> getDataModel() {
+    public ERPLazyDataModel<ViewNfeResumo> getDataModelResumo() {
 
-        if (dataModel == null) {
-            dataModel = new ERPLazyDataModel<>();
-            dataModel.setDao(dao);
-            dataModel.setClazz(NfeCabecalho.class);
+        if (dataModelResumo == null) {
+            dataModelResumo = new ERPLazyDataModel<>();
+            dataModelResumo.setDao(viewNfeResumoRepository);
+            dataModelResumo.setClazz(ViewNfeResumo.class);
         }
 
-        dataModel.setAtributos(new Object[]{"destinatario.nome", "serie", "numero", "dataHoraEmissao", "chaveAcesso", "digitoChaveAcesso", "valorTotal", "statusNota", "codigoModelo"});
-
-
-
-        dataModel.setSortOrder(SortOrder.DESCENDING);
-        dataModel.setOrdernarPor("numero");
+        dataModelResumo.setSortOrder(SortOrder.DESCENDING);
+        dataModelResumo.setOrdernarPor("numero");
         pesquisar();
-        return dataModel;
-    }
 
+        return dataModelResumo;
+    }
 
     public void pesquisar() {
 
-        dataModel.getFiltros().clear();
-        dataModel.addFiltro("empresa.id", empresa.getId(), Filtro.IGUAL);
-        dataModel.addFiltro("codigoModelo", codigoModelo, Filtro.IGUAL);
-        dataModel.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
+        dataModelResumo.getFiltros().clear();
+        dataModelResumo.addFiltro("idempresa", empresa.getId(), Filtro.IGUAL);
+        dataModelResumo.addFiltro("codigoModelo", codigoModelo, Filtro.IGUAL);
+        dataModelResumo.addFiltro("tipoOperacao", 1, Filtro.IGUAL);
 
         if (numeroNfe > 0) {
             dataModel.getFiltros().add(new Filtro("numero", Filtro.LIKE, numeroNfe + ""));
@@ -156,15 +157,15 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
         if (dataFinal != null) {
             dataFinal = DateUtils.truncate(dataFinal, Calendar.DATE);
             dataFinal = DateUtils.addSeconds(DateUtils.addMinutes(DateUtils.addHours(dataFinal, 23), 59), 59);
-            dataModel.getFiltros().add(new Filtro("dataHoraEmissao", Filtro.MENOR_OU_IGUAL, dataFinal));
+            dataModelResumo.getFiltros().add(new Filtro("dataHoraEmissao", Filtro.MENOR_OU_IGUAL, dataFinal));
         }
 
         if (status > -1) {
-            dataModel.getFiltros().add(new Filtro("statusNota", Filtro.MENOR_OU_IGUAL, status));
+            dataModelResumo.getFiltros().add(new Filtro("statusNota", Filtro.MENOR_OU_IGUAL, status));
         }
 
         if (!StringUtils.isEmpty(cliente)) {
-            dataModel.getFiltros().add(new Filtro("destinatario.nome", Filtro.LIKE, cliente));
+            dataModelResumo.getFiltros().add(new Filtro("destinatario.nome", Filtro.LIKE, cliente));
         }
 
     }
@@ -206,7 +207,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
     public void doEdit() {
         try {
             super.doEdit();
-            NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+            NfeCabecalho nfe = dao.getJoinFetch(nfeResumoSelecionada.getId(), NfeCabecalho.class);
             tipoPagamento = nfe.getListaNfeFormaPagamento().stream().findFirst().orElse(new NfeFormaPagamento()).getTipoPagamento();
             setObjeto(nfe);
             nfeService.instanciarConfNfe(empresa, nfe.getModeloDocumento(), nfe.getSerie());
@@ -247,6 +248,14 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
             this.setTelaGrid(true);
             Mensagem.addFatalMessage("Erro ao editar NFE. ", ex);
         }
+    }
+
+
+    @Override
+    public void remover() {
+        NfeCabecalho nfeCabecalho = dao.get(nfeResumoSelecionada.getId(), NfeCabecalho.class);
+        setObjetoSelecionado(nfeCabecalho);
+        super.remover();
     }
 
     @Override
@@ -290,7 +299,7 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
     public void duplicar() {
         try {
-            NfeCabecalho nfe = getDataModel().getRowData(getObjetoSelecionado().getId().toString());
+            NfeCabecalho nfe = dao.getJoinFetch(nfeResumoSelecionada.getId(), NfeCabecalho.class);
 
             nfeService.duplicarNfe(nfe);
             Mensagem.addInfoMessage("NFe duplicada com sucesso");
@@ -1099,6 +1108,14 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
 
     public void setCodigoModelo(String codigoModelo) {
         this.codigoModelo = codigoModelo;
+    }
+
+    public ViewNfeResumo getNfeResumoSelecionada() {
+        return nfeResumoSelecionada;
+    }
+
+    public void setNfeResumoSelecionada(ViewNfeResumo nfeResumoSelecionada) {
+        this.nfeResumoSelecionada = nfeResumoSelecionada;
     }
 
     // </editor-fold>
