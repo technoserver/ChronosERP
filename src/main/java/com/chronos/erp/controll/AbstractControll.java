@@ -94,6 +94,7 @@ public abstract class AbstractControll<T> implements Serializable {
     private Map<String, String> layoutRemessa;
     private Map<String, String> especieCobranca;
     private Map<String, String> tipoBaixa;
+    private Map<String, String> tiposPagamento;
 
     //Estoque
     private Map<String, String> requisicaoInternaSituacao;
@@ -400,6 +401,12 @@ public abstract class AbstractControll<T> implements Serializable {
         tipoBaixa = new LinkedHashMap<>();
         tipoBaixa.put("Total", "T");
         tipoBaixa.put("Parcial", "P");
+
+        tiposPagamento = new LinkedHashMap<>();
+        tiposPagamento.put("Dinheiro", "01");
+        tiposPagamento.put("Cheque", "02");
+        tiposPagamento.put("Cartão", "03");
+        tiposPagamento.put("Debito em Conta", "04");
 
         //Compras
         compraSituacaoCotacao = new LinkedHashMap<>();
@@ -862,11 +869,8 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public List<Estados> getEstado() {
-        List<Estados> estados = new ArrayList<>();
-        if (estados.isEmpty()) {
-            estados = new LinkedList<>();
-            estados.addAll(Arrays.asList(Estados.values()));
-        }
+        List<Estados> estados = new LinkedList<>();
+        estados.addAll(Arrays.asList(Estados.values()));
         return estados;
     }
 
@@ -908,7 +912,7 @@ public abstract class AbstractControll<T> implements Serializable {
     }
 
     public void salvar() {
-        salvar(null);
+        salvar("Registro salvo com sucesso!");
 
     }
 
@@ -919,7 +923,7 @@ public abstract class AbstractControll<T> implements Serializable {
 
             objeto = dao.atualizar(objeto);
             telaGrid = true;
-            Mensagem.addInfoMessage(mensagem != null ? mensagem : "Registro salvo com sucesso!");
+            Mensagem.addInfoMessage(mensagem);
         } catch (Exception e) {
             e.printStackTrace();
             Mensagem.addErrorMessage("Ocorreu um erro ao salvar o registro!", e);
@@ -1632,5 +1636,9 @@ public abstract class AbstractControll<T> implements Serializable {
 
     public void setEmpresasSelecionada(List<Empresa> empresasSelecionada) {
         this.empresasSelecionada = empresasSelecionada;
+    }
+
+    public Map<String, String> getTiposPagamento() {
+        return tiposPagamento;
     }
 }

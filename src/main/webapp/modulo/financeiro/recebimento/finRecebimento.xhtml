@@ -65,22 +65,45 @@
             <erp:msgPermissao permissao="#{finRecebimentoControll.podeConsultar()}"/>
             <h:panelGroup layout="block" id="panelRecebimento" rendered="#{finRecebimentoControll.podeConsultar()}">
 
-                <div class="row">
-                    <erp:autoComplete styleClass="col-xs-12 col-sm-4 col-md-4"
-                                      label="Cliente"
-                                      itemLabel="#{objeto.pessoa.nome}"
-                                      controller="#{finRecebimentoControll}"
-                                      completeMethod="getListaCliente"
-                                      nomeAtributo="#{finRecebimentoControll.cliente}"
-                                      exibirInfo="true"
-                                      mensangemInfo="Para lista as parcelas é preciso selecionar o cliente."
-                                      idComponente="vendaCabecalhoCliente">
-                        <p:ajax event="itemSelecionado"
-                                listener="#{finRecebimentoControll.buscarParcelas}"
-                                update=":formCentro:panelValores,:formCentro:btnRecebimento"/>
+                <h:form id="form-filtros">
+                    <div class="row">
 
-                    </erp:autoComplete>
-                </div>
+
+                        <erp:campoData idComponente="dataInicial"
+                                       nomeAtributo="#{finRecebimentoControll.dataInicial}"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       label="Data Inicial"/>
+
+                        <erp:campoData idComponente="dataFinal"
+                                       nomeAtributo="#{finRecebimentoControll.dataFinal}"
+                                       styleClass="col-xs-12 col-sm-2 col-md-2"
+                                       label="Data Final"/>
+
+
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <p:outputLabel value="Cliente" for="cliente"/>
+                            <div class="field-action">
+                                <p:autoComplete id="cliente"
+                                                value="#{finRecebimentoControll.cliente}"
+                                                completeMethod="#{finRecebimentoControll.getListaCliente}" var="objeto"
+                                                itemLabel="#{objeto.pessoa.nome}" itemValue="#{objeto}"
+                                                queryDelay="500"
+                                                style="width: 100%"
+                                                converter="defaultConverter" forceSelection="true"
+                                                minQueryLength="3" maxResults="10" required="true"
+                                                emptyMessage="Nenhum registro encontrado"/>
+
+                                <p:commandButton value="Pesquisar"
+                                                 update=":formCentro:growl,:formCentro:panelValores,:formCentro:btnRecebimento"
+                                                 process="formCentro:form-filtros"
+                                                 action="#{finRecebimentoControll.buscarParcelas}"
+                                                 style="margin-left: 5px"/>
+                            </div>
+                        </div>
+
+                    </div>
+                </h:form>
+
                 <br/>
                 <h:panelGroup layout="block" id="panelValores">
                     <p:dataTable value="#{finRecebimentoControll.parcelas}"

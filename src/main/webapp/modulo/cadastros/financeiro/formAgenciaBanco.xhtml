@@ -60,9 +60,9 @@
                         <div class="col-lg-2">
                             <h:outputLabel value="UF :" />
                             <h:selectOneMenu value="#{agenciaBancoControll.objeto.uf}" class="form-control">
-                                <f:selectItem itemValue="selecione" value="#{null}" />
-                                <f:selectItems var="uf" value="#{cepControll.estado}"/>
-                                <f:ajax event="valueChange" execute="@this" />
+                                <f:selectItem itemLabel="selecione" value="#{null}"/>
+                                <f:selectItems var="uf" value="#{agenciaBancoControll.estado}"/>
+                                <f:ajax event="valueChange" execute="@this"/>
                             </h:selectOneMenu>
                         </div>
                         <div class="col-xs- 12 col-sm-6">

@@ -10,6 +10,7 @@ import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
 import com.chronos.transmissor.infra.enuns.ModeloDocumento;
+import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -39,6 +40,11 @@ public class NfeConfiguracaoService implements Serializable {
             configuracao = new ConfiguracaoEmissorDTO(configuracaoNfeDTO);
 
          } else {
+
+            if (StringUtils.isEmpty(serie)) {
+                throw new ChronosException("É preciso definir a serie para localizar as configurações da NFC-e");
+            }
+
             ConfiguracaoPdvDTO configuracaoPdvDTO = repository.getNamedQuery(ConfiguracaoPdvDTO.class, "Pdv.configuracao", empresa.getId(), serie);
 
             if (configuracaoPdvDTO == null) {

@@ -7,7 +7,7 @@
                 xmlns:erp="http://java.sun.com/jsf/composite/components"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:p="http://primefaces.org/ui" xmlns:ṕ="http://java.sun.com/jsf/html">
+                xmlns:p="http://primefaces.org/ui">
 
 
     <div class="row">
@@ -48,7 +48,7 @@
 
 
                 <div class="col-xs-12 col-sm-6 col-md-6">
-                    <ṕ:outputLabel value="Veiculo" for="veiculo"/>
+                    <p:outputLabel value="Veiculo" for="veiculo"/>
                     <h:selectOneMenu value="#{nfeCabecalhoControll.veiculo}" id="veiculo" styleClass="form-control"
                                      converter="defaultConverter">
                         <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>

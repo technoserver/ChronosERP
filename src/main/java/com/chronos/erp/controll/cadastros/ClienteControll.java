@@ -11,6 +11,7 @@ import com.chronos.erp.modelo.enuns.TelaPessoa;
 import com.chronos.erp.modelo.view.PessoaCliente;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
+import com.chronos.erp.service.ChronosException;
 import com.chronos.erp.service.cadastros.PessoaService;
 import com.chronos.erp.util.jsf.Mensagem;
 import org.springframework.util.StringUtils;
@@ -50,8 +51,6 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     private Repository<SituacaoForCli> situacoesCliente;
     @Inject
     private Repository<Pessoa> pessoas;
-    @Inject
-    private Repository<EmpresaPessoa> empresaPessoaRepository;
 
     @Inject
     private Repository<RestricaoSistema> restricaoSistemaRepository;
@@ -140,6 +139,13 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
 
         Cliente cliente;
         try {
+
+            if ("T".equals(getObjeto().getIndicadorPreco()) && getObjeto().getTabelaPreco() == null) {
+                throw new ChronosException("É preciso informar a tabela de preço");
+            } else {
+                getObjeto().setTabelaPreco(null);
+            }
+
             if (completo.equals("S")) {
                 cliente = service.salvarCliente(getObjeto(), empresa);
                 setObjeto(cliente);
@@ -161,8 +167,12 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
             setTelaGrid(true);
             Mensagem.addInfoMessage("Cliente salvo com sucesso");
         } catch (Exception e) {
-            e.printStackTrace();
-            Mensagem.addErrorMessage("", e);
+            if (e instanceof ChronosException) {
+                Mensagem.addErrorMessage("", e);
+            } else {
+                throw new RuntimeException("erro ao salvar o cliente");
+            }
+
         }
 
     }
@@ -200,7 +210,7 @@ public class ClienteControll extends PessoaControll<Cliente> implements Serializ
     public List<TabelaPreco> getListaTabelaPreco(String nome) {
         List<TabelaPreco> listaTabelaPreco = new ArrayList<>();
         try {
-            listaTabelaPreco = tabelasPreco.getEntitys(TabelaPreco.class, "nome", nome, atributos);
+            listaTabelaPreco = tabelasPreco.getEntitys(TabelaPreco.class, "nome", nome, new Object[]{"nome"});
         } catch (Exception e) {
             // e.printStackTrace();
         }

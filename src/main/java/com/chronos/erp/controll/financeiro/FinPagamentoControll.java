@@ -44,7 +44,7 @@ public class FinPagamentoControll extends AbstractControll<FinParcelaPagar> impl
     private List<ViewFinLancamentoPagar> parcelas;
 
     private List<ViewFinLancamentoPagar> parcelasSelecionada;
-    private FinTipoPagamento tipoPagamento;
+    private FinTipoPagamento finTipoPagamento;
     private FinChequeEmitido finChequeEmitido;
     private String fornecedor;
     private String cnpjCpf;
@@ -101,7 +101,7 @@ public class FinPagamentoControll extends AbstractControll<FinParcelaPagar> impl
             Mensagem.addInfoMessage("É preciso seleionar ao menos 1 parcela");
         } else {
 
-            if (tipoPagamento.getTipo().equals("02") && !pagamentoCheque) {
+            if ("02".equals(finTipoPagamento.getTipo()) && !pagamentoCheque) {
                 iniciaPagamentoCheque();
             } else {
 
@@ -115,7 +115,7 @@ public class FinPagamentoControll extends AbstractControll<FinParcelaPagar> impl
                     pagamento.setFinParcelaPagar(new FinParcelaPagar(p.getIdParcelaPagar()));
 
                     pagamento.setDataPagamento(new Date());
-                    pagamento.setFinTipoPagamento(tipoPagamento);
+                    pagamento.setFinTipoPagamento(finTipoPagamento);
                     pagamento.setHistorico(observacao);
                     pagamento.setTaxaDesconto(BigDecimal.ZERO);
                     pagamento.setTaxaJuro(BigDecimal.ZERO);
@@ -129,7 +129,7 @@ public class FinPagamentoControll extends AbstractControll<FinParcelaPagar> impl
                         pagamento.setContaCaixa(finChequeEmitido.getCheque().getTalonarioCheque().getContaCaixa());
                         pagamento.setDataPagamento(finChequeEmitido.getBomPara());
                     } else {
-                        pagamento.setContaCaixa(new ContaCaixa(p.getIdContaCaixa()));
+                        pagamento.setContaCaixa(finTipoPagamento.getContaCaixa());
                     }
 
                     parcelaPagamentoRepository.salvar(pagamento);
@@ -139,6 +139,7 @@ public class FinPagamentoControll extends AbstractControll<FinParcelaPagar> impl
                 }
 
                 buscarParcelas();
+                Mensagem.addInfoMessage(parcelasSelecionada.size() > 1 ? "Parcelas pagas com sucesso" : "Parcela paga com sucesso");
             }
         }
     }
@@ -183,7 +184,7 @@ public class FinPagamentoControll extends AbstractControll<FinParcelaPagar> impl
 
     }
 
-    public List<FinTipoPagamento> getListaFinTipoRecebimento(String nome) {
+    public List<FinTipoPagamento> getListaFinTipoPagamento(String nome) {
         List<FinTipoPagamento> listaFinTipoPagamento = new ArrayList<>();
         try {
             listaFinTipoPagamento = finTipoPagamentoRepository.getEntitys(FinTipoPagamento.class, "descricao", nome);
@@ -318,12 +319,12 @@ public class FinPagamentoControll extends AbstractControll<FinParcelaPagar> impl
         this.observacao = observacao;
     }
 
-    public FinTipoPagamento getTipoPagamento() {
-        return tipoPagamento;
+    public FinTipoPagamento getFinTipoPagamento() {
+        return finTipoPagamento;
     }
 
-    public void setTipoPagamento(FinTipoPagamento tipoPagamento) {
-        this.tipoPagamento = tipoPagamento;
+    public void setFinTipoPagamento(FinTipoPagamento finTipoPagamento) {
+        this.finTipoPagamento = finTipoPagamento;
     }
 
     public FinChequeEmitido getFinChequeEmitido() {

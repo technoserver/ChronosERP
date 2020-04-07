@@ -8,7 +8,8 @@ import com.chronos.erp.modelo.enuns.*;
 import com.chronos.erp.repository.EstoqueRepository;
 import com.chronos.erp.repository.Repository;
 import com.chronos.erp.service.ChronosException;
-import com.chronos.erp.service.financeiro.*;
+import com.chronos.erp.service.financeiro.ContaPessoaService;
+import com.chronos.erp.service.financeiro.FinLancamentoReceberService;
 import com.chronos.erp.service.gerencial.AuditoriaService;
 import com.chronos.erp.util.Biblioteca;
 import com.chronos.erp.util.Constants;
@@ -34,10 +35,6 @@ public class VendaPdvService implements Serializable {
 
     @Inject
     private FinLancamentoReceberService finLancamentoReceberService;
-    @Inject
-    private FinLancamentoReceberCartaoService finLancamentoReceberCartaoService;
-    @Inject
-    private OperadoraCartaoService operadoraCartaoService;
 
     @Inject
     private Repository<PdvVendaCabecalho> repository;
@@ -48,13 +45,10 @@ public class VendaPdvService implements Serializable {
     @Inject
     private Repository<PdvVendaDetalhe> vendaDetalheRepository;
 
-    @Inject
-    private Repository<FinLancamentoReceberCartao> finLancamentoReceberCartaoRepository;
 
     @Inject
     private EstoqueRepository estoqueRepositoy;
-    @Inject
-    private MovimentoService movimentoService;
+
     @Inject
     private ContaPessoaService contaPessoaService;
 
@@ -62,7 +56,7 @@ public class VendaPdvService implements Serializable {
     private Repository<ContaPessoa> contaPessoaRepository;
 
     @Inject
-    private Repository<MovimentoContaPessoa> movimentoRepository;
+    private ComissaoService vendaComissaoService;
 
     @Inject
     private NfeService nfeService;
@@ -168,6 +162,11 @@ public class VendaPdvService implements Serializable {
             }
         }
 
+
+        if (cancelado && venda.getValorComissao().signum() > 0) {
+            comissaoService.excluirComissao(venda.getId().toString(), Modulo.PDV);
+        }
+
         if (venda.getPdvMovimento().getStatusMovimento().equals("A") && cancelado) {
             BigDecimal valorVenda = venda.getPdvMovimento().getTotalVenda();
             BigDecimal valorMovimentoVenda = Biblioteca.subtrai(venda.getPdvMovimento().getTotalVenda(), valorVenda);
@@ -211,6 +210,12 @@ public class VendaPdvService implements Serializable {
                 venda.getPdvMovimento().setTotalFinal(valorMovimento);
                 venda.getPdvMovimento().setTotalVenda(valorMovimentoVenda);
             }
+
+            if (venda.getValorComissao().signum() > 0) {
+                vendaComissaoService.gerarComissao("A", "C", venda.getValorComissao(),
+                        venda.getValorTotal(), venda.getId().toString(), venda.getVendedor().getColaborador(), Modulo.PDV);
+            }
+
 
         } else if (venda.getStatusVenda().equals("D")) {
             retornaEstoque(venda.getEmpresa().getId(), venda.getListaPdvVendaDetalhe());

@@ -155,6 +155,7 @@
 
                     <h:commandLink class="btn btn-default"
                                    title="Gerar DANFE" style="margin-left: 5px;"
+                                   target="_blank"
                                    actionListener="#{devolucaoCompraControll.danfe}"
                                    rendered="#{not empty devolucaoCompraControll.objeto.id and devolucaoCompraControll.objeto.podeCancelar}"
                                    id="btnGerardanfe">
@@ -594,6 +595,125 @@
                             <h:outputLabel value="#{row.chaveAcesso}"/>
                         </p:column>
                     </p:dataTable>
+                </p:tab>
+
+                <p:tab title="Transportadora" id="tabTransportadora">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-4">
+                            <h:outputLabel value="Modalidade Frete" for="modalidadeFrete"/>
+                            <h:selectOneMenu styleClass="form-control"
+                                             id="modalidadeFrete"
+                                             value="#{devolucaoCompraControll.objeto.transporte.modalidadeFrete}"
+                                             rendered="#{not empty devolucaoCompraControll.objeto.transporte}">
+                                <f:selectItems value="#{devolucaoCompraControll.modalidadeFreteNfe}"/>
+                                <p:ajax process="@this" update="formCentro:telaDetalhe:tabNfe:dadosTransportadora"/>
+
+                            </h:selectOneMenu>
+                        </div>
+
+
+                    </div>
+
+                    <h:panelGroup layout="block" id="dadosTransportadora">
+
+                        <h:panelGroup layout="block"
+                                      rendered="#{devolucaoCompraControll.objeto.transporte.modalidadeFrete eq 2}">
+
+                            <div class="row">
+                                <erp:autoComplete styleClass="col-xs-12 col-sm-6 col-md-6"
+                                                  label="Selecione a Transportadora"
+                                                  id="transp"
+                                                  itemLabel="#{objeto.nome}"
+                                                  controller="#{devolucaoCompraControll}"
+                                                  completeMethod="getListaTransportadora"
+                                                  nomeAtributo="#{devolucaoCompraControll.transportadora}"
+                                                  idComponente="nfeTransporteTransportadora"
+                                >
+
+                                    <p:ajax event="itemSelecionado"
+                                            listener="#{devolucaoCompraControll.selecionarTransportadora}"
+                                            update="formCentro:telaDetalhe:tabNfe:veiculo"
+                                    />
+
+                                </erp:autoComplete>
+
+
+                                <div class="col-xs-12 col-sm-6 col-md-6">
+                                    <p:outputLabel value="Veiculo" for="veiculo"/>
+                                    <h:selectOneMenu value="#{devolucaoCompraControll.veiculo}" id="veiculo"
+                                                     styleClass="form-control"
+                                                     converter="defaultConverter">
+                                        <f:selectItem itemLabel="Selecione" itemValue="#{null}"/>
+                                        <f:selectItems value="#{devolucaoCompraControll.veiculos}" var="obj"
+                                                       itemValue="#{obj}"/>
+                                    </h:selectOneMenu>
+                                </div>
+
+                            </div>
+
+                            <erp:separador label="Volumes"/>
+
+                            <div class="row">
+                                <erp:campoInteiro styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                  idComponente="volumeQuantidade" label="Quantidade"
+                                                  nomeAtributo="#{devolucaoCompraControll.volume.quantidade}"/>
+
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                idComponente="volumeEspecie" label="Especie"
+                                                tamanhoMaximo="60"
+                                                nomeAtributo="#{devolucaoCompraControll.volume.especie}"/>
+
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                idComponente="volumeMarca" label="Marca"
+                                                tamanhoMaximo="60"
+                                                nomeAtributo="#{devolucaoCompraControll.volume.marca}"/>
+
+                                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
+                                                idComponente="volumeNum" label="Numeração"
+                                                tamanhoMaximo="60"
+                                                nomeAtributo="#{devolucaoCompraControll.volume.numeracao}"/>
+
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                                  idComponente="volumePesoBruto"
+                                                  label="Peso bruto"
+                                                  nomeAtributo="#{devolucaoCompraControll.volume.pesoBruto}"/>
+
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                                  idComponente="volumePesoLiquido"
+                                                  label="Peso liquioo"
+                                                  nomeAtributo="#{devolucaoCompraControll.volume.pesoLiquido}"/>
+
+                            </div>
+
+                            <erp:separador label="Retenção ICMS"/>
+
+                            <div class="row">
+
+                                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                                  idComponente="nfeTransporteCfop" label="CFOP"
+                                                  nomeAtributo="#{devolucaoCompraControll.objeto.transporte.cfop}"/>
+
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                                  idComponente="nfeTransporteValorServico" label="Valor Serviço"
+                                                  nomeAtributo="#{devolucaoCompraControll.objeto.transporte.valorServico}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+                                                  idComponente="nfeTransporteValorBcRetencaoIcms"
+                                                  label="VLR BC Reten. ICMS"
+                                                  nomeAtributo="#{devolucaoCompraControll.objeto.transporte.valorBcRetencaoIcms}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-3"
+                                                  idComponente="nfeTransporteAliquotaRetencaoIcms"
+                                                  label="Aliquota Retenção ICMS"
+                                                  nomeAtributo="#{devolucaoCompraControll.objeto.transporte.aliquotaRetencaoIcms}"/>
+                                <erp:campoDecimal styleClass="col-xs-12 col-sm-4 col-md-3"
+                                                  idComponente="nfeTransporteValorIcmsRetido"
+                                                  label="Valor ICMS Retido"
+                                                  nomeAtributo="#{devolucaoCompraControll.objeto.transporte.valorIcmsRetido}"/>
+
+
+                            </div>
+
+                        </h:panelGroup>
+                    </h:panelGroup>
                 </p:tab>
             </p:tabView>
 
