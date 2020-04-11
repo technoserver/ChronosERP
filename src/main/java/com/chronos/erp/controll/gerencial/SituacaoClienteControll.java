@@ -20,10 +20,6 @@ public class SituacaoClienteControll extends AbstractControll<SituacaoForCli> im
     public void salvar() {
 
         try {
-            if (getObjeto().getId() != null && (getObjeto().getId() == 1 || getObjeto().getId() == 2)) {
-                throw new ChronosException("Alteração para esse regitro não permitida");
-            }
-
             super.salvar();
         } catch (Exception ex) {
             if (ex instanceof ChronosException) {

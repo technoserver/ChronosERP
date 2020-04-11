@@ -81,6 +81,26 @@
                                     </h:selectOneMenu>
                                 </div>
 
+                                <div class="col-xs-12 col-sm-3 col-md-3">
+                                    <h:outputLabel value="Bloquear cliente indadiplente?"
+                                                   for="bloquearClienteInadiplente"/>
+                                    <h:selectOneMenu id="bloquearClienteInadiplente"
+                                                     value="#{admParametrosControll.objeto.bloquearClienteInadiplente}"
+                                                     styleClass="form-control">
+                                        <f:selectItem itemLabel="NAO" itemValue="N"/>
+                                        <f:selectItem itemLabel="SIM" itemValue="S"/>
+                                    </h:selectOneMenu>
+                                </div>
+
+                                <erp:campoSelectConverter styleClass="col-xs-12 col-sm-3 col-md-3"
+
+                                                          idComponente="situacaoForCli"
+                                                          label="Situação para cliente bloqueado"
+                                                          nomeAtributo="#{admParametrosControll.situacaoForCli}"
+                                                          itens="#{admParametrosControll.situacoesCliente}"
+                                                          requerido="true"
+                                                          labelItens="#{obj.nome}"/>
+
 
                             </div>
 

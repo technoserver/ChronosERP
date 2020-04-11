@@ -34,7 +34,8 @@
                 <h:outputLabel value="#{row.nome}"/>
             </p:column>
             <p:column headerText="Bloquear">
-                <h:outputLabel value="#{row.descBloquear}"/>
+                <h:outputLabel
+                        value="#{situacaoClienteControll.keyFromValue(situacaoClienteControll.simNao,row.bloquear)}"/>
             </p:column>
 
 
@@ -50,7 +51,7 @@
 
             <div class="row">
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-10 col-md-10"
+                <erp:campoTexto styleClass="col-xs-12 col-sm-8 col-md-8"
                                 label="Nome"
                                 tamanhoMaximo="100"
                                 idComponente="Nome"
@@ -58,21 +59,19 @@
                                 desabilitado="#{not empty situacaoClienteControll.objeto.id and (situacaoClienteControll.objeto.id eq 1 or situacaoClienteControll.objeto.id eq 2)}"
                 />
 
-                <erp:campoTexto styleClass="col-xs-12 col-sm-2 col-md-2"
-                                label="descBloquear"
-                                tamanhoMaximo="100"
-                                idComponente="descBloquear"
-                                rendered="#{not empty situacaoClienteControll.objeto.id and (situacaoClienteControll.objeto.id eq 1 or situacaoClienteControll.objeto.id eq 2)}"
-                                nomeAtributo="#{situacaoClienteControll.objeto.descBloquear}"
-                                desabilitado="true"
-                />
 
                 <erp:campoSelect nomeAtributo="#{situacaoClienteControll.objeto.bloquear}"
                                  label="Bloquear"
                                  idComponente="bloquear"
                                  rendered="#{empty situacaoClienteControll.objeto.id or (situacaoClienteControll.objeto.id ne 1 or situacaoClienteControll.objeto.id ne 2)}"
                                  itens="#{situacaoClienteControll.simNao}"
+                                 desabilitado="#{not empty situacaoClienteControll.objeto.id and (situacaoClienteControll.objeto.id eq 1 or situacaoClienteControll.objeto.id eq 2)}"
                                  styleClass="col-xs-12 col-sm-2 col-md-2"/>
+
+                <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
+                                  idComponente="diasBloqueio" label="Dias Bloqueio"
+                                  nomeAtributo="#{situacaoClienteControll.objeto.diasBloqueio}"/>
+
 
                 <erp:campoAreaTexto nomeAtributo="#{situacaoClienteControll.objeto.descricao}"
                                     label="Descrição"

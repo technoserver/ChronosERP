@@ -99,27 +99,19 @@
         <erp:campoDecimal styleClass="col-xs-12 col-sm-2 col-md-2"
                           idComponente="clientePorcentoDesconto" label="% Desconto"
                           nomeAtributo="#{clienteControll.objeto.porcentoDesconto}"/>
-        <erp:campoSelect styleClass="col-xs-12 col-sm-2 col-md-2"
-                         idComponente="clienteBloqueado" label="Bloqueado"
-                         nomeAtributo="#{clienteControll.objeto.bloqueado}"
-                         itens="#{clienteControll.simNao}"/>
-
-
-    </div>
-    <div class="row">
         <erp:campoTexto styleClass="col-xs-12 col-sm-3 col-md-2"
                         idComponente="clienteContaTomador" label="Conta Tomador"
                         nomeAtributo="#{clienteControll.objeto.contaTomador}"
                         tamanhoMaximo="30"/>
 
-        <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
+    </div>
+    <div class="row">
+
+
+    <erp:campoDecimal styleClass="col-xs-12 col-sm-3 col-md-2"
                           idComponente="clienteLimiteCredito" label="Limite Crédito R$"
                           desabilitado="#{clienteControll.alteraLimiteCredito}"
                           nomeAtributo="#{clienteControll.objeto.limiteCredito}"/>
-
-        <erp:campoInteiro styleClass="col-xs-12 col-sm-3 col-md-2"
-                          idComponente="clienteDiasBloqueio" label="Dias Bloqueio"
-                          nomeAtributo="#{clienteControll.objeto.diasBloqueio}"/>
 
 
         <erp:campoTexto styleClass="col-xs-12 col-sm-4 col-md-4"
