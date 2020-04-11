@@ -161,11 +161,11 @@ public class NfeCabecalhoControll extends NfeBaseControll implements Serializabl
         }
 
         if (status > -1) {
-            dataModelResumo.getFiltros().add(new Filtro("statusNota", Filtro.MENOR_OU_IGUAL, status));
+            dataModelResumo.getFiltros().add(new Filtro("statusNota", Filtro.IGUAL, status));
         }
 
         if (!StringUtils.isEmpty(cliente)) {
-            dataModelResumo.getFiltros().add(new Filtro("destinatario.nome", Filtro.LIKE, cliente));
+            dataModelResumo.getFiltros().add(new Filtro("destinatario", Filtro.LIKE, cliente));
         }
 
     }

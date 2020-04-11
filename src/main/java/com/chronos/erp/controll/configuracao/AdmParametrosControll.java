@@ -3,6 +3,7 @@ package com.chronos.erp.controll.configuracao;
 import com.chronos.erp.controll.AbstractControll;
 import com.chronos.erp.controll.ERPLazyDataModel;
 import com.chronos.erp.modelo.entidades.AdmParametro;
+import com.chronos.erp.modelo.entidades.SituacaoForCli;
 import com.chronos.erp.modelo.entidades.TributOperacaoFiscal;
 import com.chronos.erp.repository.Filtro;
 import com.chronos.erp.repository.Repository;
@@ -27,8 +28,13 @@ public class AdmParametrosControll extends AbstractControll<AdmParametro> implem
     @Inject
     private Repository<TributOperacaoFiscal> operacaoFiscalRepository;
 
+    @Inject
+    private Repository<SituacaoForCli> situacaoForCliRepository;
+
     private TributOperacaoFiscal operacaoFiscal;
+    private SituacaoForCli situacaoForCli;
     private List<TributOperacaoFiscal> operacoesFiscais;
+    private List<SituacaoForCli> situacoesCliente;
 
     @PostConstruct
     @Override
@@ -40,7 +46,10 @@ public class AdmParametrosControll extends AbstractControll<AdmParametro> implem
         parametro = parametro == null ? new AdmParametro() : parametro;
         setObjeto(parametro);
         operacoesFiscais = operacaoFiscalRepository.getEntitys(TributOperacaoFiscal.class, new Object[]{"descricao", "descricaoNaNf", "cfop", "obrigacaoFiscal", "destacaIpi", "destacaPisCofins", "calculoIssqn", "classificacaoContabilConta"});
+        situacoesCliente = situacaoForCliRepository.getEntitys(SituacaoForCli.class, "bloquear", "S");
 
+
+        situacaoForCli = new SituacaoForCli(getObjeto().getSituacaoClienteBloqueado());
         operacaoFiscal = new TributOperacaoFiscal(getObjeto().getTributOperacaoFiscalPadrao());
     }
 
@@ -95,5 +104,17 @@ public class AdmParametrosControll extends AbstractControll<AdmParametro> implem
 
     public void setOperacoesFiscais(List<TributOperacaoFiscal> operacoesFiscais) {
         this.operacoesFiscais = operacoesFiscais;
+    }
+
+    public List<SituacaoForCli> getSituacoesCliente() {
+        return situacoesCliente;
+    }
+
+    public SituacaoForCli getSituacaoForCli() {
+        return situacaoForCli;
+    }
+
+    public void setSituacaoForCli(SituacaoForCli situacaoForCli) {
+        this.situacaoForCli = situacaoForCli;
     }
 }

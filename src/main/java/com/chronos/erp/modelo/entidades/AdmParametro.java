@@ -31,6 +31,8 @@ public class AdmParametro implements Serializable {
     private Integer compraContaCaixa;
     @Column(name = "tribut_operacao_fiscal_padrao")
     private Integer tributOperacaoFiscalPadrao;
+    @Column(name = "situacao_cliente_bloqueado")
+    private Integer situacaoClienteBloqueado;
     @Column(name = "faturar_venda")
     private Boolean faturarVenda;
     @Column(name = "frente_caixa")
@@ -39,6 +41,8 @@ public class AdmParametro implements Serializable {
     private String osGerarMovimentoCaixa;
     @Column(name = "sugerir_valor_compra_entrada")
     private String sugerirValorCompraEntrada;
+    @Column(name = "bloquear_cliente_inadiplente")
+    private String bloquearClienteInadiplente;
     @JoinColumn(name = "ID_EMPRESA", referencedColumnName = "ID")
     @ManyToOne(optional = false)
     private Empresa empresa;
@@ -159,6 +163,22 @@ public class AdmParametro implements Serializable {
 
     public void setSugerirValorCompraEntrada(String sugerirValorCompraEntrada) {
         this.sugerirValorCompraEntrada = sugerirValorCompraEntrada;
+    }
+
+    public Integer getSituacaoClienteBloqueado() {
+        return situacaoClienteBloqueado;
+    }
+
+    public void setSituacaoClienteBloqueado(Integer situacaoClienteBloqueado) {
+        this.situacaoClienteBloqueado = situacaoClienteBloqueado;
+    }
+
+    public String getBloquearClienteInadiplente() {
+        return bloquearClienteInadiplente;
+    }
+
+    public void setBloquearClienteInadiplente(String bloquearClienteInadiplente) {
+        this.bloquearClienteInadiplente = bloquearClienteInadiplente;
     }
 
     @Override

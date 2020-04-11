@@ -25,6 +25,8 @@ public class SituacaoForCli implements Serializable {
     @NotEmpty()
     @Column(name = "bloquear")
     private String bloquear;
+    @Column(name = "dias_bloqueio")
+    private Integer diasBloqueio;
 
     public SituacaoForCli() {
     }
@@ -79,8 +81,12 @@ public class SituacaoForCli implements Serializable {
         this.bloquear = bloquear;
     }
 
-    public String getDescBloquear() {
-        return this.bloquear != null && this.bloquear.equals("S") ? "SIM" : "NAO";
+    public Integer getDiasBloqueio() {
+        return diasBloqueio;
+    }
+
+    public void setDiasBloqueio(Integer diasBloqueio) {
+        this.diasBloqueio = diasBloqueio;
     }
 
     @Override
