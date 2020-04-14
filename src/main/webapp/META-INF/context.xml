@@ -9,30 +9,28 @@
               auth="Container"
               driverClass="org.postgresql.Driver"
               factory="org.apache.naming.factory.BeanFactory"
-              jdbcUrl="jdbc:postgresql://localhost:5432/admin?autoReconnect=true"
+              jdbcUrl="jdbc:postgresql://localhost:5432/erp_admin?autoReconnect=true"
               initialPoolSize="5"
               maxIdleTime="300"
               maxPoolSize="20"
               maxStatements="50"
               minPoolSize="5"
               name="jdbc/chronosAdminDB"
-              password="aplicacao"
+              password="262560f888"
               type="com.mchange.v2.c3p0.ComboPooledDataSource"
-              user="aplicacao"/>
+              user="postgres"/>
 
     <Resource acquireIncrement="1"
               auth="Container"
               driverClass="org.postgresql.Driver"
               factory="org.apache.naming.factory.BeanFactory"
-              jdbcUrl="jdbc:postgresql://localhost:5432/erp?autoReconnect=true"
+              jdbcUrl="jdbc:postgresql://localhost:5432/chronosLight?autoReconnect=true"
               initialPoolSize="5"
               maxIdleTime="300"
               maxPoolSize="20"
               maxStatements="50"
               minPoolSize="5"
               name="jdbc/chronosLightDB"
-              password="aplicacao"
+              password="262560f888"
               type="com.mchange.v2.c3p0.ComboPooledDataSource"
-              user="aplicacao"/>
-
-</Context>
+              user="postgres"/>
