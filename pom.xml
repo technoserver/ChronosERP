@@ -17,7 +17,7 @@
         <javax.mail.version>1.5.6</javax.mail.version>
 
         <!-- Logging -->
-        <log4j.version>2.6</log4j.version>
+        <log4j.version>2.13.3</log4j.version>
         <!--        Chronos Emissor-->
         <chronosNFe.version>4.2.0</chronosNFe.version>
         <jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
